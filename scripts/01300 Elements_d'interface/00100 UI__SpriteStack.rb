@@ -38,9 +38,8 @@ module UI
     # @param oy [Numeric] the oy of the sprite
     # @return [type.new(@viewport, *args)] the pushed sprite
     def push(x, y, bmp, *args, rect: nil, type: LiteRGSS::Sprite, ox: 0, oy: 0)
-      # @type [Sprite]
       sprite = type.new(@viewport, *args)
-      sprite.set_position(@x + x, @y + y).set_origin(ox, oy)
+      sprite.set_position(@x + x,@y + y).set_origin(ox, oy)
       sprite.set_bitmap(bmp, @default_cache) if bmp
       sprite.src_rect.set(*rect) if rect.is_a?(Array)
       sprite.src_rect = rect if rect.is_a?(LiteRGSS::Rect)
