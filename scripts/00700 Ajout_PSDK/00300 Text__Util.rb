@@ -1,0 +1,80 @@
+#encoding: utf-8
+
+class Text
+  # Utility module to manage text easly in user interfaces.
+  module Util
+    # Offset induced by the Font
+    FOY = 2#4
+    # Returns the text viewport
+    # @return [LiteRGSS::Viewport]
+    def text_viewport
+      return @text_viewport
+    end
+    # Change the text viewport
+    def text_viewport=(v)
+      @text_viewport = v if v.is_a?(Viewport)
+    end
+    # Initialize the texts
+    # @param font_id [Integer] the default font id of the texts
+    # @param viewport [LiteRGSS::Viewport, nil] the viewport
+    def init_text(font_id = 0, viewport = nil, z = 1000)
+      @texts = [] unless @texts.class == Array
+      @text_viewport = viewport
+      @font_id = font_id
+      @text_z = z
+    end
+    # Add a text inside the window, the offset x/y will be adjusted
+    # @param x [Integer] the x coordinate of the text surface
+    # @param y [Integer] the y coordinate of the text surface
+    # @param width [Integer] the width of the text surface
+    # @param height [Integer] the height of the text surface
+    # @param str [String] the text shown by this object
+    # @param align [0, 1, 2] the align of the text in its surface (best effort => no resize), 0 = left, 1 = center, 2 = right
+    # @param outlinesize [Integer, nil] the size of the text outline
+    # @param type [Class] the type of text
+    # @return [LiteRGSS::Text] the text object
+    def add_text(x, y, width, height, str, align = 0, outlinesize = nil, type: Text)
+      if @window and @window.viewport == @text_viewport
+        x += (@ox + @window.x)
+        y += (@oy + @window.y)
+      end
+      # voir pout y - FOY
+      text = type.new(@font_id, @text_viewport, x, y - FOY, width, height, str, align, outlinesize)
+      text.z = @window ? @window.z + 1 : @text_z
+      @texts << text
+      return text
+    end
+    # Push a text after the last one inside the window
+    # @param width [Integer] the width of the text line (manage the line jump)
+    # @param height [Integer] the height of the text surface (lines)
+    # @param str [String] the text shown by this object
+    # @param outlinesize [Integer, nil] the size of the text outline
+    # @return [LiteRGSS::Text] the text object
+    def push_text(width, height, str, outlinesize = nil)
+      if text = @texts.last
+        x = text.x + text.real_width
+        y = text.y
+      else
+        x = 0
+        y = -FOY
+      end
+      text = Text.new(@font_id, @text_viewport, x, y, 1, height, str, 0, outlinesize)
+      if(text.x + text.real_width > width)
+        text.set_position(0, text.y + height)
+      end
+      text.z = @window ? @window.z + 1 : @text_z
+      @texts << text
+      return text
+    end
+    # Dispose the texts
+    def text_dispose
+      @texts.each { |text| text.dispose unless text.disposed? }
+      @texts.clear
+    end
+    # Yield a block on each undisposed text
+    def text_each
+      return unless block_given?
+      @texts.each { |text| yield(text) unless text.disposed? }
+    end
+  end
+end

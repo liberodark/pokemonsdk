@@ -9,6 +9,10 @@
 /test/tmp/
 /test/version_tmp/
 /tmp/
+/Audio/
+/installcreator/
+/Graphics/
+/Data/
 
 ## Specific to RubyMotion:
 .dat*

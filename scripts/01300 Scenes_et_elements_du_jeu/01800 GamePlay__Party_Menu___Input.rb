@@ -1,0 +1,145 @@
+#encoding: utf-8
+
+module GamePlay
+  class Party_Menu < Base
+
+    # Array of actions to do according to the pressed button
+    Actions = %i[action_A action_X action_Y action_B]
+
+    # Action triggered when A is pressed
+    def action_A
+      #return $game_system.se_play($data_system.buzzer_se) if @page_id
+      #$game_system.se_play($data_system.decision_se)
+      case @mode
+      when :menu
+        action_A_menu
+      else
+        $game_system.se_play($data_system.decision_se)
+        show_choice
+      end
+    end
+
+    # Action when A is pressed and the mode is menu
+    def action_A_menu
+      case @intern_mode
+      when :choose_move_pokemon
+        action_move_current_pokemon
+      when :choose_move_item
+        return $game_system.se_play($data_system.buzzer_se) if @team_buttons[@index].data.item_holding.zero?
+        @team_buttons[@move = @index].selected = true
+        @intern_mode = :move_item
+        show_winText(_get(23, 22))
+      when :move_pokemon
+        process_switch
+      when :move_item
+        process_item_switch
+      else
+        $game_system.se_play($data_system.decision_se)
+        return show_choice
+      end
+      $game_system.se_play($data_system.decision_se)
+    end
+
+    # Action triggered when B is pressed
+    def action_B
+      $game_system.se_play($data_system.decision_se)
+      # Cancel choice attempt
+      return @choice_object.cancel if @choice_object
+      # Returning to normal mode
+      if @intern_mode != :normal
+        hide_winText
+        hide_item_name
+        @team_buttons[@move].selected = false if @move != -1
+        @move = -1
+        return @intern_mode = :normal
+      end
+      @running = false
+    end
+
+    # Action triggered when X is pressed
+    def action_X
+      return if @mode != :menu
+      return $game_system.se_play($data_system.buzzer_se) if @intern_mode != :normal or @party.size <= 1
+      show_winText(_get(23, 19))
+      @intern_mode = :choose_move_pokemon
+    end
+
+    # Action triggered when Y is pressed
+    def action_Y
+      return if @mode != :menu
+      return $game_system.se_play($data_system.buzzer_se) if @intern_mode != :normal or @party.size <= 1
+      show_winText(_get(23, 20))
+      @intern_mode = :choose_move_item
+      show_item_name
+    end
+
+    # Update the mouse interaction with the ctrl buttons
+    def update_mouse_ctrl
+      win_text = @winText.visible
+      if Mouse.trigger?(:left)
+        @ctrl.each_with_index do |sp, i|
+          next if win_text and i != 3
+          sp.set_press(sp.simple_mouse_in?)
+        end
+      elsif Mouse.released?(:left)
+        @ctrl.each_with_index do |sp, i|
+          next if win_text and i != 3
+          if sp.simple_mouse_in?
+            send(Actions[i])
+            sp.set_press(false)
+            break
+          end
+          sp.set_press(false)
+        end
+      end
+    end
+
+    # Update the movement of the Cursor
+    def update_selector_move
+      party_size = @team_buttons.size
+      index2 = @index % 2
+      if Input.trigger?(:DOWN)
+        next_index = @index + 2
+        next_index = index2 if next_index >= party_size
+        update_selector_coordinates(@index = next_index)
+      elsif Input.trigger?(:UP)
+        next_index = @index - 2
+        if next_index < 0
+          next_index += 6
+          next_index -= 2 while next_index >= party_size
+        end
+        update_selector_coordinates(@index = next_index)
+      elsif index_changed(:@index, :LEFT, :RIGHT, party_size - 1)
+        update_selector_coordinates
+      else
+        update_mouse_selector_move
+      end
+    end
+
+    # Update the movement of the selector with the mouse
+    def update_mouse_selector_move
+      return unless Mouse.moved or Mouse.trigger?(:left) # Safety preventing index conflict
+      @team_buttons.each_with_index do |btn, i|
+        next unless btn.simple_mouse_in?
+        update_selector_coordinates(@index = i) if @index != i
+        action_A if Mouse.trigger?(:left)
+        return true
+      end
+    end
+
+    # Update the selector coordinates
+    def update_selector_coordinates(*)
+      btn = @team_buttons[@index]
+      @selector.set_position(btn.x + 3, btn.y + 3)
+    end
+
+    # Select the current pokemon to move with an other pokemon
+    def action_move_current_pokemon
+      return if @party.size <= 1
+      @team_buttons[@move = @index].selected = true
+      @intern_mode = :move_pokemon
+      show_winText(_get(23, 21))
+    end
+
+  end
+end
