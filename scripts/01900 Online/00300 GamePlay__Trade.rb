@@ -25,15 +25,15 @@ module GamePlay
     end
 
     def update_accept
-      c = display_message("Acceptez-vous l'échange ?", 1, "Oui", "Non")
+      c = display_message(_ext(9000, 94), 1, _ext(9000, 95), _ext(9000, 96))
       if c == 1
         send_data("NO")
-        return failure("Vous refusez l'échange[WAIT 40].[WAIT 40].[WAIT 40].")
+        return failure(_ext(9000, 97))
       end
       send_data("OK")
       if receive_data == "OK"
         #> Lancer animation échange
-        display_message_and_wait("Echange effectué (l'animation c'est pour plus tard)")
+        display_message_and_wait(_ext(9000, 98))
         evolve_check
         if @box_index >= 31
           $actors[@box_index - 31] = @other_pokemon
@@ -43,7 +43,7 @@ module GamePlay
         end
         terminate
       else
-        failure("L'échange a été annulé...")
+        failure(_ext(9000, 99))
       end
     end
 
@@ -63,7 +63,7 @@ module GamePlay
         until @server.accepting?
           Graphics.update
           if Input.trigger?(:B)
-            c = display_message_and_wait("Voulez-vous abandonner ?", 1, "Non", "Oui")
+            c = display_message_and_wait(_ext(9000, 100), 1, _ext(9000, 96), _ext(9000, 95))
             return @running = false if c == 1
           elsif text = Input.get_text and text.getbyte(0) == 3
             Yuki.set_clipboard(@OpenNatCode)
@@ -78,7 +78,7 @@ module GamePlay
       if receive_data == "OK"
         @update = :update_select_pokemon
       else
-        failure("Votre partenaire a refusé l'échange.")
+        failure(_ext(9000, 101))
       end
     end
 
@@ -101,7 +101,7 @@ module GamePlay
       send_data(pokemon)
       other_pokemon = receive_data
       unless other_pokemon and other_pokemon.class == PFM::Pokemon
-        return failure("Votre partenaire a abandonné l'échange.")
+        return failure(_ext(9000, 109))
       end
       @other.bitmap = other_pokemon.battler_face
       @other.oy = @other.height
@@ -114,7 +114,7 @@ module GamePlay
     def ask_trade_with(client)
       trainer = receive_data
       if trainer.class == PFM::Trainer
-        c = display_message_and_wait(sprintf("Voulez-vous échanger avec %s (%05d)", trainer.name, trainer.id % 100_000), 1, "Oui", "Non")
+        c = display_message_and_wait(sprintf(_ext(9000, 102), trainer.name, trainer.id % 100_000), 1,  _ext(9000, 95), _ext(9000, 96))
         if c == 1
           send_data("NO")
           client.close
@@ -131,27 +131,27 @@ module GamePlay
 
     def check_server_validity
       if code = get_code
-        display_message("Votre code est \\c[2]#{code}\\c[0], donnez le à votre partenaire...\r\nVous pouvez utiliser CTRL+C pour le copier.")
+        display_message(format(_ext(9000, 103), code))
         Yuki.set_clipboard(code)
         @text.add_text(0, 0, 318, 16, "CODE : #{code}", 2, color: 2)#.bitmap.draw_shadow_text(0, 0, 320, 16, "CODE : #{code}", 2, 2)
         @update = :update_wait_client
       else
-        failure("PSDK n'a pas réussi à ouvrir un port...")
+        failure(_ext(9000, 104))
       end
     end
 
     def check_code_enter
-      display_message_and_wait("Entrez le code de votre partenaire.\r\nVous pouvez utiliser CTRL+V pour le coller.")
+      display_message_and_wait(_ext(9000, 105))
       code = input_code
       ip_info = Online::OpenNatService.decode(code)
       unless ip_info
-        c = display_message("Le code est invalide, désirez réentrer le code ?", 1, "Oui", "Non")
+        c = display_message(_ext(9000, 106), 1,  _ext(9000, 95), _ext(9000, 96))
         @running = false if c == 1
         return
       end
       check_client_connect(*ip_info)
       unless @client
-        c = display_message("Le partenaire désigné par le code ne répond pas...\nDésirez vous entrer un autre code ?", 1, "Oui", "Non")
+        c = display_message(_ext(9000, 107), 1,  _ext(9000, 95), _ext(9000, 96))
         @running = false if c == 1
       else
         @update = :update_wait_server
@@ -194,7 +194,7 @@ module GamePlay
       Graphics.update
     end
 
-    def failure(msg = "La connexion a été intérompue.")
+    def failure(msg = _ext(9000, 110))
       display_message(msg)
       terminate
     end
@@ -213,7 +213,7 @@ module GamePlay
       if !@OpenNatCode
         port = @OpenNat.open_port(20)
         return nil unless port
-        display_message_and_wait("\\c[2]Attention, votre échange se fait sur le réseau local.") unless @OpenNat.igd_available
+        display_message_and_wait(_ext(9000, 108)) unless @OpenNat.igd_available
         return @OpenNatCode = @OpenNat.code
       end
       return nil
@@ -261,7 +261,7 @@ module GamePlay
       text.add_text(x, 80, 100, 16,texts[26],0)
       text.add_text(x, 96, 100, 16,texts[22],0)
       text.add_text(x, 112, 100, 16,texts[24],0)
-      text.add_text(x, 128, 52, 16,"Cap. Spé.",0)
+      text.add_text(x, 128, 52, 16,_ext(9000, 46),0)
       x += 100
       text.add_text(x, 48, 54, 16, pokemon.atk_basis.to_s, 2)
       text.add_text(x, 64, 54, 16, pokemon.dfe_basis.to_s, 2)

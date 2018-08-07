@@ -221,7 +221,7 @@ module PFM
       chances=wi.chances
       wi.vs_type=vs_type
       if((data.size/3*3)!=data.size)
-        raise ArgumentError,"Les pokémons sauvages sont mal paramétrés"
+        raise ArgumentError, "Wild Pokémon aren't correctly configured"
       end
       0.step(data.size-1,3) do |i|
         j=i/3

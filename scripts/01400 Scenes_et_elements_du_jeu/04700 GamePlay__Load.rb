@@ -18,6 +18,7 @@ module GamePlay
         $pokemon_party.expand_global_var
         @save_window.visible = false
       end
+      new_game_window
       Graphics.sort_z
     end
 
@@ -36,12 +37,10 @@ module GamePlay
     def update
       return @message_window.update if @delete_game
       if(Input.trigger?(:DOWN))
-        return
         @index+=1
         @index=0 if @index>=@max_index
         refresh
       elsif(Input.trigger?(:UP))
-        return
         @index-=1
         @index=@max_index-1 if @index<0
         refresh
@@ -54,14 +53,27 @@ module GamePlay
       end
     end
 
+    def new_game_window
+      @new_window = Game_Window.new
+      @new_window.x = 60
+      @new_window.y = 112
+      @new_window.z = 10001
+      @new_window.width = 200
+      @new_window.height = 32
+      @new_window.add_text(0, 0, 200, 16, _ext(9000, 0))
+      @new_window.opacity = 128
+      @new_window.windowskin = RPG::Cache.windowskin(Windowskin)
+    end
+
     def action
       Graphics.freeze
+      # @@save_index = @index
       if(@fileexist and @index==0)
         load_game
       else
-        $pokemon_party=PFM::Pokemon_Party.new
-        $game_system.se_play($data_system.cursor_se)
+        $pokemon_party = PFM::Pokemon_Party.new
         $pokemon_party.expand_global_var
+        $game_system.se_play($data_system.cursor_se)
         $game_map.update
       end
       $trainer.redefine_var
@@ -69,7 +81,7 @@ module GamePlay
       $pokemon_party.env.reset_zone
       $scene = Scene_Map.new
       Yuki::TJN.force_update_tone
-      @running=false
+      @running = false
     end
 
     def mouse_action
@@ -78,6 +90,10 @@ module GamePlay
           @index = 0
           action
         end
+      end
+      if @new_window.simple_mouse_in?
+        @index = 1
+        action
       end
     end
 
@@ -100,12 +116,14 @@ module GamePlay
 
     def refresh
       if(@fileexist)
-        @save_window.opacity=(@index!=0 ? 128 : 255)
+        @save_window.opacity = (@index != 0 ? 128 : 255)
       end
+      @new_window.opacity = (@index != 1 ? 128 : 255)
     end
 
     def dispose
       super
+      @new_window.dispose if @new_window
       @viewport.dispose
     end
 
@@ -146,7 +164,7 @@ module GamePlay
         win1.width = 160
         win1.height = 44
         win1.windowskin=RPG::Cache.windowskin(Windowskin)
-        win2 = Window_Choice.new(160,["English","French","Japanese"])
+        win2 = Window_Choice.new(160,["English","French","Spanish"])
         win2.x = 80
         win2.y = 128
         win2.z = win1.z = 200
@@ -159,7 +177,7 @@ module GamePlay
           end
         end
         Graphics.freeze
-        $pokemon_party = PFM::Pokemon_Party.new(false,["en","fr","kana"][win2.index])
+        $pokemon_party = PFM::Pokemon_Party.new(false,["en","fr","es"][win2.index])
 #        win2.contents.dispose
         win2.dispose
 #        win1.contents.dispose

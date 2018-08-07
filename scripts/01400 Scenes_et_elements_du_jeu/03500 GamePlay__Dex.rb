@@ -230,12 +230,12 @@ module GamePlay
       # Return the formated weight for Pokedex
       # @return [String]
       def @pokemon.pokedex_weight
-        sprintf(GamePlay::Dex::WeightStr, self.weight)
+        format(_ext(9000, 70), self.weight)
       end
       # Return the formated height for Pokedex
       # @return [String]
       def @pokemon.pokedex_height
-        sprintf(GamePlay::Dex::HeightStr, self.height)
+        format(_ext(9000, 71), self.height)
       end
     end
 

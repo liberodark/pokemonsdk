@@ -8,8 +8,8 @@ module GamePlay
       def initialize(viewport, x = 0, y = 0, default_cache: :interface)
         super
         texts = _get_file(27)
-        add_text(4,0,95,20,"Concours", color: 8)
-        add_text(198,42,95,20,"Ruban", color: 8)
+        add_text(4,0,95,20, _ext(9000, 45), color: 8) # "Concours", color: 8)
+        add_text(198,42,95,20, _ext(9000, 46), color: 8) # "Ruban", color: 8)
         add_text(19, 23, 66, 19, :given_name, type: SymText, color: 8)
         add_text(19, 39, 66, 19, :level_text2, type: SymText)
         push(85, 27, nil, type: GenderSprite)

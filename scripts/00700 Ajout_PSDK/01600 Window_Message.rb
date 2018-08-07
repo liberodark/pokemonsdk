@@ -400,8 +400,8 @@ class Window_Message < Game_Window
     return unless $game_temp.message_text
     @drawing_message = true
     @text_viewport.oy = 0
-    text = $game_temp.message_text.dup
-    ::PFM::Text.parse_string_for_messages(text)
+    text = $game_temp.message_text
+    text = ::PFM::Text.parse_string_for_messages(text)
     text.gsub!(/\\[Gg]/) { show_gold_window }
     text.gsub!(/\[WAIT ([0-9]+)\]/) { "\x02[#{$1}]"}
     text.gsub!(/\\[Cc]\[([0-9]+)\]/) { "\001[#{$1}]" }

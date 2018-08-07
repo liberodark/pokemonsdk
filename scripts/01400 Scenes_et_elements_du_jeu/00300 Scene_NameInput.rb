@@ -42,6 +42,7 @@ class Scene_NameInput
     @viewport = Viewport.create(:main, 20000)
     @background = Sprite.new(@viewport)
       .set_bitmap("NameInput_Fond", :interface)
+    adjust_char_texts
     init_key_text
     init_input_chars
     @cursor = Sprite.new(@viewport)
@@ -81,6 +82,13 @@ class Scene_NameInput
     return self
   end
   private
+  # Function that ajust the char text array
+  def adjust_char_texts
+    Chars_Min[0][-1] = Chars_Maj[0][-1] = _ext(9000, 22)
+    Chars_Min[-1][0] = Chars_Maj[-1][0] = _ext(9000, 23)
+    Chars_Min[-1][1] = Chars_Maj[-1][1] = _ext(9000, 24)
+    Chars_Min[1][-1] = Chars_Maj[1][-1] = _ext(9000, 25)
+  end
   # Update the scene processing
   def update
     #>Mise à jour de l'opacité du curseur
@@ -283,6 +291,13 @@ class Scene_NameInput
     # Initialize the parent scene with no default name and the right amount of character
     def initialize
       super("", 17)
+    end
+    # Function that ajust the char text array
+    def adjust_char_texts
+      Chars_Num[0][-1] = _ext(9000, 22)
+      Chars_Num[-1][0] = _ext(9000, 23)
+      Chars_Num[-1][1] = _ext(9000, 24)
+      Chars_Num[1][-1] = _ext(9000, 25)
     end
     # Add the CTRL+V / right click interaction
     def update

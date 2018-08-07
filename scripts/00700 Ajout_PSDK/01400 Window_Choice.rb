@@ -133,7 +133,7 @@ class Window_Choice < Game_Window
     @texts.each { |text| text.dispose }
     @texts.clear
     @choices.each_index do |i|
-      text = @choices[i].clone
+      text = PFM::Text.detect_dialog(@choices[i]).dup
       text.gsub!(/\\[Cc]\[([0-9]+)\]/) { @colors[i] = $1.to_i ; nil}
       text.gsub!(/\\t\[(.*),(.*)\]/) { ::PFM::Text.parse($1.to_i, $2.to_i) }
       text.gsub!(/\\d\[(.*),(.*)\]/) { $daycare.parse_poke($1.to_i, $2.to_i) }

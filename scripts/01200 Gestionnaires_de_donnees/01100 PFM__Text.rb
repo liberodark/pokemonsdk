@@ -204,7 +204,10 @@ module PFM
     # @param text [String] the message
     # @return [String] the parsed message
     def parse_string_for_messages(text)
-      return if text.empty? or text.frozen?
+      return if text.empty? # or text.frozen?
+      # Detect dialog
+      text = detect_dialog(text).dup
+      # Gsub text
       text.gsub!(/\\\\/,S_000)
       text.gsub!(/\\[Vv]\[([0-9]+)\]/) { $game_variables[$1.to_i] }
       text.gsub!(/\\[Nn]\[([0-9]+)\]/) { $game_actors[$1.to_i] != nil ? $game_actors[$1.to_i].name : nil.to_s }
@@ -217,6 +220,15 @@ module PFM
       text.gsub!(*Dot)
       text.gsub!(*Money)
       @variables.each { |expr,value| text.gsub!(expr,value) }
+      return text
+    end
+    # Detect a dialog text from message and return it instead of text
+    # @param text [String]
+    def detect_dialog(text)
+      if (match = text.match(/^([0-9]+),( |)([0-9]+)/))
+        text = GameData::Text.get_dialog_message(match[1].to_i, match[3].to_i)
+      end
+      return text
     end
     # The InGame key name to their key value association
     GameKeys = { 0 => "KeyError", "a" => :A, "b" => :B, "x" => :X, "y" => :Y, 

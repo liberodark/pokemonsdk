@@ -10,6 +10,7 @@ module GamePlay
     Corrupted="Corrupted Save File"
     Unknown="Zone Inconnue"
     DispTime="%02d:%02d"
+    @@save_index = 0
     def initialize(no_message=false)
       super(no_message)
       @save_window=Game_Window.new
@@ -28,8 +29,8 @@ module GamePlay
         File.delete(SaveDir)
         Dir.mkdir(SaveDir)
       end
-      @filename=BaseFilename
-      @fileexist=File.exist?(@filename)
+      @filename = @@save_index > 0 ? format('%s-%d', BaseFilename, @@save_index) : BaseFilename
+      @fileexist = File.exist?(@filename)
       build_window if(@fileexist)
     end
 
@@ -118,6 +119,10 @@ module GamePlay
       end
       f.close
       return pokemon_party
+    end
+
+    def save_index
+      return @@save_index
     end
   end
 end

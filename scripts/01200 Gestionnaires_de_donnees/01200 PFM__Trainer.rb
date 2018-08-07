@@ -41,8 +41,8 @@ module PFM
     attr_accessor :current_version
     # Create a new Trainer
     def initialize
-      @name_boy = "Palbolsky"
-      @name_girl = "Yuri"
+      @name_boy = _ext(9000, 2) #"Palbolsky"
+      @name_girl = _ext(9000, 3) #"Yuri"
       $game_switches[Yuki::Sw::Gender] = @playing_girl = false
       $game_variables[Yuki::Var::Player_ID] = @id_boy = rand(0x3FFFFFFF)
       @id_girl = (@id_boy ^ 0x28F4AB4C)

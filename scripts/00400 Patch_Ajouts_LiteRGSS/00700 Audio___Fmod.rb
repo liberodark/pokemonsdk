@@ -82,6 +82,8 @@ module Audio
     return unless @bgm_channel
     @bgm_channel.stop
     @bgm_channel = nil
+  rescue FMOD::Error => e
+    puts e.message if $DEBUG
   end
   # plays a BGS and stop the current one
   # @param file_name [String] name of the audio file
@@ -131,6 +133,8 @@ module Audio
     return unless @bgs_channel
     @bgs_channel.stop
     @bgs_channel = nil
+  rescue FMOD::Error => e
+    puts e.message if $DEBUG
   end
   # plays a ME and stop the current one, the BGM will be paused during the ME play
   # @param file_name [String] name of the audio file
@@ -190,6 +194,8 @@ module Audio
     @bgm_channel.setDelay(0, 0, false) if @bgm_channel
     @me_channel.stop
     @me_channel = nil
+  rescue FMOD::Error => e
+    puts e.message if $DEBUG
   end
   # plays a SE if possible
   # @param file_name [String] name of the audio file

@@ -38,3 +38,10 @@ def _clean_name_utf8(arr)
   arr.each { |o| o.name.force_encoding(utf8) if o }
   return arr
 end
+# Get a text front the external text database
+# @param file_id [Integer] ID of the text file
+# @param text_id [Integer] ID of the text in the file
+# @return [String] the text
+def _ext(file_id, text_id)
+  GameData::Text.get_external(file_id, text_id)
+end

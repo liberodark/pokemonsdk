@@ -41,6 +41,10 @@ unless ARGV.grep(/--worldmap/i).size > 0 or ARGV.include?("--animation-editor") 
         Graphics.freeze
         $scene = Scheduler.get_boot_scene
       end
+
+      def update
+        return
+      end
     end
   end
 end

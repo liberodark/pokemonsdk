@@ -28,7 +28,10 @@ module UI
       push(32, 24, nil, type: PokemonIconSprite)
       add_text(50, 17, 79, 16, :given_name, type: SymText, color: 9)
       @hp = push_sprite(UI::Bar.new(viewport, @x + 64, @y + 34, RPG::Cache.interface("team/HPBars"), 53, 4, 0, 0, 3))
-      add_text(62, 34, 56, 16, :hp_pokemon_number, 2, type: SymText, color: 9)
+      # add_text(62, 34, 56, 16, :hp_pokemon_number, 2, type: SymText, color: 9)
+      @font_id = 20 # trick to get SmallGreen
+      add_text(62, 34 + 5, 56, 13, :hp_text, 1, type: SymText, color: 9)
+      @font_id = 0
       push(132, 20, nil, type: GenderSprite)
       push(123 ,31, "team/Item", type: HoldSprite)
       add_text(38, 38, 61, 16, :level_pokemon_number, type: SymText, color: 9)

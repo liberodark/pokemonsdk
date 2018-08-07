@@ -18,7 +18,7 @@ module GamePlay
       @utils.update
       return if $game_temp.message_text
       if (Input.trigger?(:B))
-        c = @utils.display_message("Rester sur cet écran ?", 2, *["Oui", "Non"])
+        c = @utils.display_message(_get(33, 85), 2, _get(33, 83), _get(33, 84))
         @running = false if (c == 1)
       end
       if (@index == 0) # Changement de boîte
@@ -34,7 +34,7 @@ module GamePlay
 
     def choice
       arr = Array.new
-      arr.push(RET, INF, REL, QTT)
+      arr.push(_get(33, 38), _get(33, 41), _get(33, 81), _get(33, 82))
       ind = @utils._party_window(*arr)
       if (ind == 0)
         remove_pokemon
@@ -47,7 +47,7 @@ module GamePlay
 
     def remove_pokemon
       if ($pokemon_party.actors.size > 5)
-        @utils.display_message("Votre équipe est déjà au complet !", 1)
+        @utils.display_message(_get(33, 91), 1)
         return
       end
       pokemon = $storage.remove(@index - 1)

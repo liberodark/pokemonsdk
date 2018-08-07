@@ -270,7 +270,7 @@ class Spriteset_Map
     # フォグプレーンを更新
     @fog.zoom_x = $game_map.fog_zoom / 100.0
     @fog.zoom_y = $game_map.fog_zoom / 100.0
-    @fog.opacity = $game_map.fog_opacity
+    @fog.opacity = $game_map.fog_opacity.to_i
 #    @fog.blend_type = $game_map.fog_blend_type
     @fog.ox = ($game_map.display_x / 4 + $game_map.fog_ox) / 2
     @fog.oy = ($game_map.display_y / 4 + $game_map.fog_oy) / 2

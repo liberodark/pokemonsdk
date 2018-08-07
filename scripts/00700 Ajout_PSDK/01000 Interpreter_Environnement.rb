@@ -78,7 +78,6 @@ class Interpreter < Interpreter_RMXP
   # @return [Boolean]
   # @author Nuri Yuri
   def detect_player_circle(r)
-    r *= r
     c = $game_map.events[@event_id]
     dx = $game_player.x - c.x
     dy = $game_player.y - c.y

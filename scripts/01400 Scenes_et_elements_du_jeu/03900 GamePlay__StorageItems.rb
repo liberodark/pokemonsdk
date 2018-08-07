@@ -18,7 +18,7 @@ module GamePlay
       @utils.update
       return if $game_temp.message_text
       if Input.trigger?(:B)
-        c = @utils.display_message("Rester sur cet écran ?", 2, *["Oui", "Non"])
+        c = @utils.display_message(_get(33, 85), 2, _get(33, 83), _get(33, 84))
         @running = false if (c == 1)
       end
       if (@index == 0) # Changement de boîte
@@ -40,7 +40,7 @@ module GamePlay
 
     def choice
       arr = Array.new
-      arr.push(DON, RET, INF, QTT)
+      arr.push(_get(33, 80), _get(33, 38), _get(33, 41), _get(33, 82))
       ind = @utils._party_window(*arr)
       if (ind == 0)
         donner_objet
@@ -65,7 +65,7 @@ module GamePlay
       else
         pokemon = $actors[@index - 31]
         if (pokemon.item_hold == 0)
-          @utils.display_message("#{pokemon.given_name} ne tient rien.", 1)
+          @utils.display_message(format(_ext(9000, 91), pokemon.given_name), 1)
         else
 
         end

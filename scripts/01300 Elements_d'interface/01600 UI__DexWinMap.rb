@@ -8,7 +8,7 @@ module UI
       super(viewport, 0, 0, default_cache: :pokedex)
       push(6, 14, "WinMap")
       push(12 + 16, 107 + 16, nil, type: PokemonIconSprite)
-      add_text(16, 18, 116, 16, "Lieu", color: 10)
+      add_text(16, 18, 116, 16, _ext(9000, 19), color: 10)
     end
     # Change the data
     def data=(pokemon)

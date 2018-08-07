@@ -21,7 +21,7 @@ module GamePlay
       return if $game_temp.message_text
       if (@mode == :selection)
         if (Input.trigger?(:B))
-          c = @utils.display_message("Rester sur cet écran ?", 2, *["Oui", "Non"])
+          c = @utils.display_message(_get(33, 85), 2, _get(33, 83), _get(33, 84))
           @running = false if (c == 1)
         end
         @index = @utils.deplacement_equipe(@index, :drop)
@@ -56,9 +56,7 @@ module GamePlay
     end
 
     def choice
-      arr = Array.new
-      arr.push(DEP, INF, REL, QTT)
-      ind = @utils._party_window(*arr)
+      ind = @utils._party_window(_get(33, 37), _get(33, 41), _get(33, 81), _get(33, 82))
       if (ind == 0)
         drop_pokemon if @utils.check
       elsif (ind == 1)

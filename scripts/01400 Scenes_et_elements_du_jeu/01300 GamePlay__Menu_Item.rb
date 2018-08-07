@@ -33,9 +33,9 @@ module GamePlay
       id = ALIAS_IDS[id]
       #>Récupération du texte du menu en fonction de la langue
       if(id !=6)
-        text=_get(14,id).gsub(TNAME, $trainer.name)
+        text = _get(14,id).gsub(TNAME, $trainer.name)
       else
-        text=STRINGS[6]
+        text = _ext(9000, 26)
       end
       @text = Text.new(0, viewport, 320, @sprite.y - 2, 
         @sprite.bitmap.width-48, @sprite.bitmap.height, text).load_color(enabled ? 0 : 7)

@@ -39,17 +39,17 @@ module GamePlay
         battle_style_free: [42, 13],
         battle_style_locked: [42, 14],
         battle_style_descr: [42, 15],
-        screen_size: "Screen Size",
+        screen_size: [9000, 27], # "Screen Size",
         screen_size_1: "320x240",
         screen_size_2: "640x480",
-        screen_size_descr: "Change the game screen resolution.",
-        volume: "Volume",
+        screen_size_descr: [9000, 28], # "Change the game screen resolution.",
+        volume: [9000, 29], # "Volume",
         volume_0: "0%",
         volume_25: "25%",
         volume_50: "50%",
         volume_75: "75%",
         volume_100: "100%",
-        volume_descr: "Change the sound volume."
+        volume_descr: [9000, 30] # "Change the sound volume."
       }
     TextError = "Text not found"
 
@@ -133,7 +133,10 @@ module GamePlay
 
     def fetch_text(id)
       text = TextData.fetch(id, TextError)
-      return GameData::Text.get(*text) if text.class == Array
+      if text.class == Array
+        return _ext(9000, text.last) if text.first == 9000
+        return GameData::Text.get(*text)
+      end
       text
     end
   end

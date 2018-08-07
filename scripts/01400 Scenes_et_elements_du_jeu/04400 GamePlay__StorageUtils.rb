@@ -105,7 +105,7 @@ module GamePlay
         Graphics.transition
         change_box
       elsif (ind == 1) # Changement thème
-        display_message("Choisissez votre thème.\n(Flèche gauche et droite pour changer de thème.)", 1)
+        display_message(_ext(9000, 88), 1)
         old_theme = $storage.get_box_theme($storage.current_box)
         new_theme = old_theme
         b = true
@@ -128,7 +128,7 @@ module GamePlay
             b = false
           end
           if (Input.trigger?(:A))
-            display_message("Le nouveau thème a été enregistré.", 1)
+            display_message(_ext(9000, 9), 1)
             b = false
           end
         end
@@ -232,7 +232,7 @@ module GamePlay
     end
 
     def release_pokemon(index)
-      c = display_message("Relâcher ce Pokémon ?", 1, *["Oui", "Non"])
+      c = display_message(_get(33, 101), 1, _get(33, 83), _get(33, 84))
       return if (c == 1)
       if (index >= 31) # Pokémon de l'équipe
         pkmn = $actors[index - 31]
@@ -246,14 +246,14 @@ module GamePlay
         pkmn = $storage.remove(index - 1)
         draw_pokemon_box
       end
-      display_message("#{pkmn.given_name} a été relâché.", 1)
-      display_message("Bye-bye, #{pkmn.given_name} !", 1)
+      display_message(_parse(33, 102, PFM::TEXT::PKNICK[0] => pkmn.given_name), 1) # "#{pkmn.given_name} a été relâché.", 1)
+      display_message(_parse(33, 103, PFM::TEXT::PKNICK[0] => pkmn.given_name), 1) # "Bye-bye, #{pkmn.given_name} !", 1)
       draw_info_pokemon(index)
     end
 
     def check
       if ($pokemon_party.pokemon_alive == 0)
-        display_message("Il vous faut au moins un Pokémon en forme !", 1)
+        display_message(_get(33, 88), 1)
         return false
       end
       return true
@@ -324,14 +324,15 @@ module GamePlay
       stack.add_text(0, 3, 100, 16, :given_name, type: SymText)
       stack.add_text(0, 19, 50, 16, :id_text2, type: SymText)
       stack.add_text(46, 19, 50, 16, :level_text2, type: SymText)
-      stack.add_text(0, 35, 50, 16, "Nature")
+      stack.add_text(0, 35, 50, 16, _get(33, 24))
       stack.add_text(0, 51, 60, 16, :nature_text, type: SymText)
-      stack.add_text(62, 35, 50, 16, "Type")
+      stack.add_text(62, 35, 50, 16, _get(33, 134))
       stack.push(61, 52, nil, type: Type1Sprite)
+      stack.add_text(96, 35, 50, 16, _get(33, 136))
       stack.push(95, 52, nil, type: Type2Sprite)
-      stack.add_text(0, 67, 50, 16, "Objet")
+      stack.add_text(0, 67, 50, 16, _get(33, 28))
       stack.add_text(0, 83, 95, 16, :item_name, type: SymText)
-      stack.add_text(0, 99, 50, 16, "Attaques")
+      stack.add_text(0, 99, 50, 16, _get(33, 30))
       @info_pokemon_skills = Array.new(4) do |i|
         stack.add_text(0, 117 + 16 * i, 100, 16, nil.to_s)
       end
