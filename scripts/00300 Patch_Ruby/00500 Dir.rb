@@ -15,3 +15,5 @@ class Dir
     Dir.chdir(ori)
   end
 end
+
+Dir.mkdir!('Data/Text/Dialogs') # Alpha 23.17 fix

@@ -142,13 +142,13 @@ module Scheduler
     if Config.const_defined?(:EditSystemTags)
       return Yuki::SystemTagEditor
     end
-    if ARGV.grep(/--worldmap/i).size > 0
+    if PARGV[:worldmap]
       return Yuki::WorldMapEditor
     end
-    if ARGV.include?("--animation-editor")
+    if PARGV[:"animation-editor"]
       return Yuki::AnimationEditor
     end
-    test = ARGV.grep(/--test=./).first.to_s.gsub("--test=","")
+    test = PARGV[:test].to_s #ARGV.grep(/--test=./).first.to_s.gsub("--test=","")
     return Scene_Title.new if test.empty?
     test = "tests/#{test}.rb"
     return Tester.new(test) if File.exist?(test)

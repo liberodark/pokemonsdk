@@ -212,6 +212,7 @@ module GamePlay
     # @param min [Integer] minmum value of the index
     def index_changed!(varname, sub_key, add_key, max, min = 0)
       index = self.instance_variable_get(varname) - min
+      mod = max - min + 1
       if Input.repeat?(sub_key) and index > 0
         self.instance_variable_set(varname, (index - 1) + min)
       elsif Input.repeat?(add_key) and index < mod

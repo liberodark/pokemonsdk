@@ -1,6 +1,6 @@
 #encoding: utf-8
 
-if ARGV.include?("--animation-editor")
+if PARGV[:"animation-editor"]
   # This is the configuration module of PSDK. 
   # In this script you can change the configuration values.
   # 

@@ -1,6 +1,7 @@
 #encoding: utf-8
 
-if Config.const_defined?(:DisableMouse) and Config::DisableMouse and !(ARGV.include?('--tags') or ARGV.grep(/--worldmap/i).size > 0 or ARGV.include?("--animation-editor"))
+if Config.const_defined?(:DisableMouse) and Config::DisableMouse and 
+  !(PARGV[:tags] or PARGV[:worldmap] or PARGV[:"animation-editor"])
   # Module helps to get the mouse informations
   module Mouse
     module_function

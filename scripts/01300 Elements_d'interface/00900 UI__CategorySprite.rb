@@ -13,7 +13,7 @@ module UI
     # @param object [Object, nil]
     def data=(object)
       if(self.visible = (object ? true : false))
-        self.sy = object.atk_class 
+        self.sy = object.atk_class - 1
       end
     end
   end

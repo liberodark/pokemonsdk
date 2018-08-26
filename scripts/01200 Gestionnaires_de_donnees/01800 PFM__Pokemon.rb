@@ -320,7 +320,7 @@ module PFM
     # Return the text of the nature
     # @return [String]
     def nature_text
-      return _get(8, @nature)
+      return _get(8, nature.first)
     end
     # Return the primitive data of the Pokemon
     # @return [GameData::Pokemon]

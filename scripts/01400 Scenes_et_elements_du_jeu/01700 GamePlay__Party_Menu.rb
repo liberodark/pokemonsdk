@@ -26,7 +26,8 @@ module GamePlay
     # @param party [Array<PFM::Pokemon>] list of Pokémon in the party
     # @param mode [Symbol] :map => from map (select), :menu => from menu, :battle => from Battle, :item => Use an item, :hold => Hold an item, :choice => processing a choice related proc (do not use)
     # @param extend_data [Integer, Hash] extend_data informations
-    def initialize(party, mode = :map, extend_data = nil)
+    # @param no_leave [Boolean] tells the interface to disallow leaving without choosing
+    def initialize(party, mode = :map, extend_data = nil, no_leave: false)
       super()
       @move = -1
       @return_data = -1
@@ -36,6 +37,7 @@ module GamePlay
       # Displayed party
       # @type [Integer, Hash, nil]
       @extend_data = extend_data
+      @no_leave = no_leave
       @index = 0
       # @type [Array<PFM::Pokemon>]
       @party = party

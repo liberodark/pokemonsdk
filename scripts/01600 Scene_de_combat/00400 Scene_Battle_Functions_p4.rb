@@ -187,10 +187,10 @@ class Scene_Battle
   #===
   def phase4_actor_select_pkmn(i)
     @message_window.visible = false
-    $scene = scene = GamePlay::Party_Menu.new(@actors, :battle)
-    scene.main(true)
+    $scene = scene = GamePlay::Party_Menu.new(@actors, :battle, no_leave: true)
+    scene.main#(true)
     @message_window.visible = true
-    $scene=self
+    $scene = self
     return_data = scene.return_data
     Graphics.transition
     return [2,return_data,i.position]

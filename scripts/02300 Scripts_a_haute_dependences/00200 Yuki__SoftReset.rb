@@ -1,7 +1,6 @@
 #encoding: utf-8
 
-unless ARGV.grep(/--worldmap/i).size > 0 or ARGV.include?("--animation-editor") or 
-    ARGV.grep(/--test=./).size > 0 or ARGV.include?("--tags")
+unless PARGV[:worldmap] or PARGV[:"animation-editor"] or PARGV[:test] or PARGV[:tags]
   module Scheduler
     add_proc(:on_update, :any, "SoftReset", 10**99,
       proc {

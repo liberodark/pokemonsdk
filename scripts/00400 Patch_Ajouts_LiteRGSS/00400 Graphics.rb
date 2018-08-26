@@ -38,7 +38,7 @@ module Graphics
     @delta_time = 0
     @frame_to_skip = 0
     @ruby_time = Time.new
-    @no_mouse = (Config.const_defined?(:DisableMouse) and Config::DisableMouse and !ARGV.include?('--tags'))
+    @no_mouse = (Config.const_defined?(:DisableMouse) and Config::DisableMouse and !PARGV[:tags])
     init_sprite
   end
   # Update the screen with the current frame state
@@ -143,7 +143,7 @@ module Graphics
     return if @text and !@text.disposed?
     @text = Text.new(0, nil, 0, 0, 318, 13, "0", 2, 1).load_color(9)
     @text.z = 200_000
-    @text.visible = !(ARGV.include?("--hide-fps") || ARGV.include?("--tags") || ARGV.include?("--animation-editor"))
+    @text.visible = PARGV[:"show-fps"]#!(ARGV.include?("--hide-fps") || ARGV.include?("--tags") || ARGV.include?("--animation-editor"))
     unless @no_mouse
       @mouse = Sprite.new
       @mouse.z = 200_001

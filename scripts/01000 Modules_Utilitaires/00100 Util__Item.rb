@@ -28,7 +28,7 @@ module Util
           end
           $bag.remove_item(item_id, 1) if GameData::Item.limited_use?(item_id) and scene.return_data != -1
         end
-        call_scene(GamePlay::Party_Menu, @team ? @team : $actors, :item, extend_data)
+        call_scene(GamePlay::Party_Menu, @team ? @team : $actors, :item, extend_data, no_leave: false)
         return false unless @running
       #> Si utilisation classique
       elsif(extend_data[:on_use])

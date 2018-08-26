@@ -234,10 +234,10 @@ module RPG::Cache
 end
 #> Tells what to do on Start
 Graphics.on_start do
-  puts "Loading cache..."
+  puts 'Loading cache...'
   t = Time.new
   RPG::Cache::LOADS.each do |k|
     RPG::Cache.send(k)
   end
-  p Time.new - t
+  puts format('Time to load cache : %<time>ss', time: (Time.new - t))
 end

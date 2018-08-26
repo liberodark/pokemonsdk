@@ -63,6 +63,7 @@ module GamePlay
       @new_window.add_text(0, 0, 200, 16, _ext(9000, 0))
       @new_window.opacity = 128
       @new_window.windowskin = RPG::Cache.windowskin(Windowskin)
+      @new_window.visible = @save_window.visible
     end
 
     def action
@@ -91,7 +92,7 @@ module GamePlay
           action
         end
       end
-      if @new_window.simple_mouse_in?
+      if @new_window.visible && @new_window.simple_mouse_in?
         @index = 1
         action
       end

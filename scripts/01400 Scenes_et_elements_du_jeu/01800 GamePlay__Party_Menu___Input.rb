@@ -42,6 +42,7 @@ module GamePlay
 
     # Action triggered when B is pressed
     def action_B
+      return if no_leave_B
       $game_system.se_play($data_system.decision_se)
       # Cancel choice attempt
       return @choice_object.cancel if @choice_object
@@ -54,6 +55,18 @@ module GamePlay
         return @intern_mode = :normal
       end
       @running = false
+    end
+
+    # Function that detect no_leave and forbit the B action to process
+    # @return [Boolean] true = no leave, false = process normally
+    def no_leave_B
+      if @no_leave
+        return false if @choice_object
+        return false if @intern_mode != :normal
+        $game_system.se_play($data_system.buzzer_se)
+        return true
+      end
+      return false
     end
 
     # Action triggered when X is pressed

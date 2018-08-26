@@ -401,7 +401,9 @@ class Window_Message < Game_Window
     @drawing_message = true
     @text_viewport.oy = 0
     text = $game_temp.message_text
+    p text
     text = ::PFM::Text.parse_string_for_messages(text)
+    p text
     text.gsub!(/\\[Gg]/) { show_gold_window }
     text.gsub!(/\[WAIT ([0-9]+)\]/) { "\x02[#{$1}]"}
     text.gsub!(/\\[Cc]\[([0-9]+)\]/) { "\001[#{$1}]" }

@@ -40,11 +40,11 @@ module Online
     def load_LiteIGD
       if Thread.main == Thread.current
         th = Thread.new do
-          require "./plugins/LiteIGD.rb"
+          require "LiteIGD"
         end
         Graphics.update while th.status
       else
-        require "./plugins/LiteIGD.rb"
+        require "LiteIGD"
       end
       @@LiteIGDLoaded = true
     end

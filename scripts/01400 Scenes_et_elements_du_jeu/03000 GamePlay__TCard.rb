@@ -9,7 +9,7 @@ module GamePlay
     def initialize
       super(true)
       @viewport = select_view(view(:main, 10000))
-      @background_main = background(Party_Menu::Background)
+      #@background_main = background(Party_Menu::Background)
       @background = sprite($trainer.playing_girl ? TC_Girl : TC_Boy, 
         32, 24, 1)
       init_text(0, @viewport)
