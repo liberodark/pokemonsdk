@@ -239,8 +239,7 @@ module PFM
     # @param name [String] the InGame key name
     # @return [String] the keyboard key name
     def get_key_name(name)
-      name.downcase!
-      key_id = GameKeys[name]
+      key_id = GameKeys[name.downcase]
       return GameKeys[0] unless key_id
       key_value = Input::Keys[key_id][0]
       return "J#{-(key_value + 1) / 32 + 1}K#{(-key_value - 1)% 32}" if(key_value < 0)
