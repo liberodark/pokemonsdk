@@ -410,7 +410,7 @@ module PFM
       potential_switch.delete_if { |pkmn| pkmn.dead? or trainer_id != pkmn.trainer_id }
       if potential_switch.size > 0
         $game_temp.vs_type.times do |j|
-          next unless enemy = @actors[j] and !enemy.dead?
+          next unless (enemy = @actors[j]) and !enemy.dead? or pokemon.dead?
           switches_efficient = Array.new(potential_switch.size) { |i| is_pokemon_strong_against(potential_switch[i], enemy) }
           if index = switches_efficient.index(true)
             _stack_add_switch(
@@ -424,7 +424,7 @@ module PFM
               current_pokemon_index: @enemies.index(pokemon)
             )
             return true
-          elsif pokemon.dead? and index = switches_efficient.index(nil)
+          elsif pokemon.dead? and (index = switches_efficient.index(nil))
             _stack_add_switch(
               new_pokemon_index: @enemies.index(potential_switch[index]),
               current_pokemon_index: @enemies.index(pokemon)
