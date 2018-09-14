@@ -621,7 +621,7 @@ module PFM
       when :send_state
         @IA_Info[:other_factor] = get_basic_factor(0.6)
       when :apply_effect
-        @IA_Info[:other_factor] = get_basic_factor(0.6)
+        @IA_Info[:other_factor] = get_basic_factor(0.3)
       when :status_chance
         @IA_Info[:status_chance] = msg.last / 100.0
       when :chance

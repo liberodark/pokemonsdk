@@ -637,14 +637,14 @@ module BattleEngine
       if(target.type_water? and target.type2 == 0)
         _message_stack_push(MSG_Fail)
       else
-        _message_stack_push([:set_type, 3, 1])
-        _message_stack_push([:set_type, 0, 2])
-        _message_stack_push([:set_type, 0, 3])
+        _message_stack_push([:set_type, target, 3, 1])
+        _message_stack_push([:set_type, target, 0, 2])
+        _message_stack_push([:set_type, target, 0, 3])
       end
     elsif(skill.id == 567) #>Halloween
-      _message_stack_push([:set_type, 14, 3])
+      _message_stack_push([:set_type, target, 14, 3])
     elsif(skill.id == 571) #>Maléfice sylvain
-      _message_stack_push([:set_type, 5, 3])
+      _message_stack_push([:set_type, target, 5, 3])
     end
   end
   #===
