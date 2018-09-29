@@ -210,18 +210,8 @@ class Spriteset_Map
   end
   # update event sprite
   def update_events
-    if $game_map.event_erased
-      @character_sprites.each(&:update)
-      $game_map.event_erased = false
-    else
-      e = nil
-      x = $game_player.x
-      y = $game_player.y
-      for sprite in @character_sprites
-        e = sprite.character
-        sprite.update if((e.x - x).abs <= 13 and (e.y - y).abs <= 13)
-      end
-    end
+    @character_sprites.each(&:update)
+    $game_map.event_erased = false if $game_map.event_erased
   end
   # update weather and picture sprites
   def update_weather_picture
