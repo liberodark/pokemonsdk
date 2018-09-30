@@ -3,6 +3,8 @@
 class Text
   # Utility module to manage text easly in user interfaces.
   module Util
+    # Default outlinesize
+    DEFAULT_OUTILINE_SIZE = nil
     # Offset induced by the Font
     FOY = 2#4
     # Returns the text viewport
@@ -33,7 +35,7 @@ class Text
     # @param outlinesize [Integer, nil] the size of the text outline
     # @param type [Class] the type of text
     # @return [LiteRGSS::Text] the text object
-    def add_text(x, y, width, height, str, align = 0, outlinesize = nil, type: Text)
+    def add_text(x, y, width, height, str, align = 0, outlinesize = DEFAULT_OUTILINE_SIZE, type: Text)
       if @window and @window.viewport == @text_viewport
         x += (@ox + @window.x)
         y += (@oy + @window.y)

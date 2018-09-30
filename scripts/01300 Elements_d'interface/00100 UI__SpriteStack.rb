@@ -63,7 +63,7 @@ module UI
     # @param type [Class] the type of text
     # @param color [Integer] the id of the color
     # @return [LiteRGSS::Text] the text object
-    def add_text(x, y, width, height, str, align = 0, outlinesize = nil, type: Text, color: 0)
+    def add_text(x, y, width, height, str, align = 0, outlinesize = Text::Util::DEFAULT_OUTILINE_SIZE, type: Text, color: 0)
       text = type.new(@font_id.to_i, @viewport, x + @x, y - Text::Util::FOY + @y, width, height, str, align, outlinesize)
       text.load_color(color) if color != 0
       @stack << text
