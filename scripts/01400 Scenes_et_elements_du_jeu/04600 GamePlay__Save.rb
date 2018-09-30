@@ -60,7 +60,7 @@ module GamePlay
     # Function creating the save directory
     def make_save_directory
       # Remove the save directory if it's a file
-      unless File.directory?(SaveDir)
+      if File.exist?(SaveDir) && !File.directory?(SaveDir)
         File.delete(SaveDir)
         Dir.mkdir(SaveDir)
       end
