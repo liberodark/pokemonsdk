@@ -39,29 +39,7 @@ class Text
         y += (@oy + @window.y)
       end
       # voir pout y - FOY
-      text = type.new(@font_id, @text_viewport, x, y - FOY, width, height, str, align, outlinesize)
-      text.z = @window ? @window.z + 1 : @text_z
-      @texts << text
-      return text
-    end
-    # Push a text after the last one inside the window
-    # @param width [Integer] the width of the text line (manage the line jump)
-    # @param height [Integer] the height of the text surface (lines)
-    # @param str [String] the text shown by this object
-    # @param outlinesize [Integer, nil] the size of the text outline
-    # @return [LiteRGSS::Text] the text object
-    def push_text(width, height, str, outlinesize = nil)
-      if text = @texts.last
-        x = text.x + text.real_width
-        y = text.y
-      else
-        x = 0
-        y = -FOY
-      end
-      text = Text.new(@font_id, @text_viewport, x, y, 1, height, str, 0, outlinesize)
-      if(text.x + text.real_width > width)
-        text.set_position(0, text.y + height)
-      end
+      text = type.new(@font_id, @text_viewport, x, y - FOY, width, height, str.to_s, align, outlinesize)
       text.z = @window ? @window.z + 1 : @text_z
       @texts << text
       return text
