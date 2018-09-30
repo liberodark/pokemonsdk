@@ -3,7 +3,7 @@
 class Text
   # Utility module to manage text easly in user interfaces.
   module Util
-    # Default outlinesize
+    # Default outlinesize, nil gives a 0 and keep shadow processing, 0 or more disable shadow processing
     DEFAULT_OUTILINE_SIZE = nil
     # Offset induced by the Font
     FOY = 2#4
@@ -43,6 +43,7 @@ class Text
       # voir pout y - FOY
       text = type.new(@font_id, @text_viewport, x, y - FOY, width, height, str.to_s, align, outlinesize)
       text.z = @window ? @window.z + 1 : @text_z
+      text.draw_shadow = outlinesize.nil?
       @texts << text
       return text
     end

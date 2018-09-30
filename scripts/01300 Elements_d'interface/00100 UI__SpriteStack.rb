@@ -66,6 +66,7 @@ module UI
     def add_text(x, y, width, height, str, align = 0, outlinesize = Text::Util::DEFAULT_OUTILINE_SIZE, type: Text, color: 0)
       text = type.new(@font_id.to_i, @viewport, x + @x, y - Text::Util::FOY + @y, width, height, str, align, outlinesize)
       text.load_color(color) if color != 0
+      text.draw_shadow = outlinesize.nil?
       @stack << text
       return text
     end
