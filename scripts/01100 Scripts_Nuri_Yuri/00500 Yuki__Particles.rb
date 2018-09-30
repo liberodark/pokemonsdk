@@ -259,7 +259,7 @@ module Yuki
     def update_sprite_position
       case @position_type
       when :center_pos
-        @sprite.x=((@x*128 - $game_map.display_x + 3) / 4 + 32)/@zoom
+        @sprite.x=((@x*128 - $game_map.display_x + 5) / 4 + 32)/@zoom
         @sprite.y=((@y*128 - $game_map.display_y + 5) / 4 + 32)
         @sprite.z=@character.screen_z(0)/@zoom
         if @sprite.y>=@character.screen_y
