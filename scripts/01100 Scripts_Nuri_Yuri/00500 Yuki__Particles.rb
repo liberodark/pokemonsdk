@@ -260,7 +260,7 @@ module Yuki
       case @position_type
       when :center_pos
         @sprite.x=((@x*128 - $game_map.display_x + 3) / 4 + 32)/@zoom
-        @sprite.y=((@y*128 - $game_map.display_y + 3) / 4 + 32)
+        @sprite.y=((@y*128 - $game_map.display_y + 5) / 4 + 32)
         @sprite.z=@character.screen_z(0)/@zoom
         if @sprite.y>=@character.screen_y
           @sprite.z=(@character.screen_z(0)+@add_z)#/@zoom
@@ -268,7 +268,7 @@ module Yuki
           @sprite.z=(@character.screen_z(0)-1)#/@zoom
         end
         @sprite.y/=@zoom
-        @sprite.ox=@ox*@zoom
+        @sprite.ox=@ox * @zoom
         @sprite.oy=@oy * @zoom + @oy_off#(@oy+@oy_off)*@zoom
       when :character_pos
         @sprite.x=@character.screen_x/@zoom
