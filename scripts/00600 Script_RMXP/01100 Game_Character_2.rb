@@ -370,16 +370,25 @@ class Game_Character
         when 44  # SE の演奏
           $game_system.se_play(command.parameters[0])
         when 45  # スクリプト
-          last_eval = Yuki::EXC.get_eval_script
-          eval_script = command.parameters[0].force_encoding('UTF-8')
-          Yuki::EXC.set_eval_script(eval_script)
-          result = eval(eval_script)
-          Yuki::EXC.set_eval_script(last_eval)
+          eval_script(command.parameters[0])
         end
         @move_route_index += 1
       end
     end
   end
+
+  # Function that execute a script
+  # @param script [String]
+  def eval_script(script)
+    last_eval = Yuki::EXC.get_eval_script
+    script = script.force_encoding('UTF-8')
+    Yuki::EXC.set_eval_script(script)
+    Yuki::ErrorHandler.critical_section("Eval from MoveRoute (EVENT_ID = #{@event_id.to_i})\nScript:\n#{script}") do
+      eval(script)
+    end
+    Yuki::EXC.set_eval_script(last_eval)
+  end
+
   # Increase step prototype (sets @stop_count to 0)
   def increase_steps
     # 停止カウントをクリア

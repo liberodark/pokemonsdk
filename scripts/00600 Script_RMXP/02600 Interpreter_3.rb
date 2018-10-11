@@ -245,11 +245,7 @@ class Interpreter_RMXP
     when 11  # ボタン
       result = (Input.press?(RGSS2LiteRGSS_Input[@parameters[1]]))
     when 12  # スクリプト
-      last_eval = Yuki::EXC.get_eval_script
-      eval_script = @parameters[1].force_encoding('UTF-8')
-      Yuki::EXC.set_eval_script(eval_script)
-      result = (eval(eval_script) ? true : false)
-      Yuki::EXC.set_eval_script(last_eval)
+      eval_condition_script(@parameters[1])
     end
     # 判定結果をハッシュに格納
     @branch[@list[@index].indent] = result
@@ -262,6 +258,20 @@ class Interpreter_RMXP
     end
     # 条件に該当しない場合 : コマンドスキップ
     return command_skip
+  end
+
+  # Function that execute a script for the conditions
+  # @param script [String]
+  def eval_condition_script(script)
+    last_eval = Yuki::EXC.get_eval_script
+    script = script.force_encoding('UTF-8')
+    result = false
+    Yuki::EXC.set_eval_script(script)
+    Yuki::ErrorHandler.critical_section("Eval from condition (EVENT_ID = #{@event_id.to_i}).\nThe condition will not be valid.\nScript:\n#{script}") do
+      result = eval(script) ? true : false
+    end
+    Yuki::EXC.set_eval_script(last_eval)
+    return result
   end
   # それ以外の場合
   def command_411

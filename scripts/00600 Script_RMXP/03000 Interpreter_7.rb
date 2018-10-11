@@ -234,10 +234,19 @@ class Interpreter_RMXP
       @index += 1
     end
     # 評価
+    eval_script(script)
+    return true
+  end
+
+  # Function that execute a script
+  # @param script [String]
+  def eval_script(script)
     last_eval = Yuki::EXC.get_eval_script
-    eval_script = script.force_encoding('UTF-8')
-    Yuki::EXC.set_eval_script(eval_script)
-    (eval(eval_script) or true)
+    script = script.force_encoding('UTF-8')
+    Yuki::EXC.set_eval_script(script)
+    Yuki::ErrorHandler.critical_section("Eval from script command (EVENT_ID = #{@event_id.to_i})\nScript:\n#{script}") do
+      eval(script)
+    end
     Yuki::EXC.set_eval_script(last_eval)
   end
 end
