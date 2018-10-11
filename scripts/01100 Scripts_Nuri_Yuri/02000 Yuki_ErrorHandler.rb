@@ -8,7 +8,7 @@ module Yuki
     # Height of a line
     LINE_HEIGHT = 16
     # List of errors that are treaten as warning in the critical section
-    WARNINGS = [SyntaxError, FMOD::Error, NameError]
+    WARNINGS = [SyntaxError, FMOD::Error, NameError, RuntimeError]
 
     module_function
 
