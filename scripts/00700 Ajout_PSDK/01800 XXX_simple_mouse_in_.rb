@@ -141,3 +141,41 @@ class Viewport
     return mx - _rc.x, my - _rc.y
   end
 end
+
+class Window
+  # Detect if the mouse is in the window
+  # @param mx [Integer] the mouse x position on the screen
+  # @param my [Integer] the mouse y position on the screen
+  # @return [Boolean]
+  # @author Nuri Yuri
+  def simple_mouse_in?(mx = Mouse.x, my = Mouse.y)
+    if self.viewport
+      rect = self.viewport.rect
+      mx -= rect.x
+      my -= rect.y
+      return false if mx >= rect.width or my >= rect.height
+    end
+    bx = self.x
+    by = self.y
+    return false if mx < bx or my < by
+    bx += self.width
+    by += self.height
+    return false if mx >= bx or my >= by
+    true
+  end
+  # Convert mouse coordinate on the screen to mouse coordinates on the window
+  # @param mx [Integer] the mouse x position on the screen
+  # @param my [Integer] the mouse y position on the screen
+  # @return [Array(Integer, Integer)] the mouse coordinates on the window
+  # @author Nuri Yuri
+  def translate_mouse_coords(mx = Mouse.x, my = Mouse.y)
+    if self.viewport
+      rect = self.viewport.rect
+      mx -= rect.x
+      my -= rect.y
+    end
+    mx -= self.x
+    my -= self.y
+    return mx, my
+  end
+end
