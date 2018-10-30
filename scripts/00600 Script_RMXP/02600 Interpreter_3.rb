@@ -245,7 +245,7 @@ class Interpreter_RMXP
     when 11  # ボタン
       result = (Input.press?(RGSS2LiteRGSS_Input[@parameters[1]]))
     when 12  # スクリプト
-      eval_condition_script(@parameters[1])
+      result = eval_condition_script(@parameters[1])
     end
     # 判定結果をハッシュに格納
     @branch[@list[@index].indent] = result
