@@ -10,11 +10,15 @@ module GUI
 
     delegate :text, :@text
 
+    # @return [Proc, Symbol, nil] action called when a action is defined
+    attr_accessor :on_action
+
     def initialize(viewport, width, text = nil, image_name = DEFAULT_NAME, builder = DEFAULT_BUILDER, color: default_text_color)
       super(viewport)
       @image_name = image_name
       @text = Text.new(0, self, default_text_x, default_text_y - Text::Util::FOY, 0, builder[3], text.to_s, default_text_align)
       @text.load_color(color) unless color.zero?
+      self.stretch = true
       self.window_builder = builder
       set_state(:normal)
       set_size(width, windowskin.height)
@@ -33,6 +37,11 @@ module GUI
         set_state(:normal)
       end
       false
+    end
+
+    def call_action(name, parent)
+      return unless @on_action
+      @on_action.is_a?(Symbol) ? parent.send(@on_action, name, self) : @on_action.call(name, self)
     end
 
     def set_state(state)
