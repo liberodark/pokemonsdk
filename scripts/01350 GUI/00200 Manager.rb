@@ -29,10 +29,12 @@ module GUI
       button
     end
 
-    def add_label(name, text, x: nil, y: nil, width: 1, height: 1, type: Text)
+    def add_label(name, text, x: nil, y: nil, width: 1, height: 1, type: Text, color: 0, align: 0)
       x_pos, y_pos = get_position(x, y)
       update_position(width) unless x
-      @labels[name] = type.new(0, @viewport, x_pos, y_pos - Text::Util::FOY, width * @element_width, height * @element_height, text)
+      text =@labels[name] = type.new(0, @viewport, x_pos, y_pos - Text::Util::FOY, width * @element_width, height * @element_height, text, align)
+      text.load_color(color) if color > 0
+      text
     end
 
     def add_input(name, x: nil, y: nil, width: 1, type: Input, on_update_text: nil, &on_update_text_proc)
