@@ -5,11 +5,11 @@ module Converter
   module_function
   # Convert a tileset to a PSDK readable PSDK tileset (if required)
   # @param filename [String]
+  # @param max_size [Integer] Maximum Size of the texture in the Graphic Card
   # @example Converter.convert_tileset("Graphics/tilesets/tileset.png")
-  def convert_tileset(filename)
+  def convert_tileset(filename, max_size = Graphics::MAX_TEXTURE_SIZE)
     return unless File.exist?(filename.downcase)
     img = Image.new(filename.downcase)
-    max_size = Graphics::MAX_TEXTURE_SIZE
     new_filename = filename.downcase.gsub('.png',sprintf('_._psdk%d.png', max_size))
     if img.height > 131072
       cc 0x01
