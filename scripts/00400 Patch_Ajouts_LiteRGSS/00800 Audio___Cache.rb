@@ -34,7 +34,7 @@ module Audio
           t = Time.new
           @sound_cache[filename] = File.open(filename, 'rb') { |f| f.read(f.size) }
           @sound_count[filename] = 5
-          print "\rAudio::Cache : #{filename} loaded in #{Time.new - t}s\nCommande : "
+          print "\rAudio::Cache : #{filename} loaded in #{Time.new - t}s\nCommande : " unless $RELEASE
         end
       end
     end
@@ -62,7 +62,7 @@ module Audio
         return sound
       end
     rescue Errno::ENOENT
-      print("\rFailed to load sound : #{filename}\nCommande : ")
+      print("\rFailed to load sound : #{filename}\n#{Audio::COMMAND_TEXT}")
       return nil
     end
     # Flush the sound cache if the sounds are not lapsed
@@ -74,7 +74,7 @@ module Audio
         end
       end
       to_delete.reverse.each do |filename|
-        print "\rAudio::Cache : #{filename} released.\nCommande : "
+        print "\rAudio::Cache : #{filename} released.\n#{Audio::COMMAND_TEXT}"
         @sound_count.delete(filename)
         @sound_cache.delete(filename)
       end

@@ -27,11 +27,13 @@ module Graphics
     @on_start.each { |block| block.call }
     @on_start.clear
     STDOUT.sync = true unless STDOUT.tty?
-    @cmd_thread = Thread.new do 
-      while true
-        print "Commande : "
-        @__cmd_to_eval = STDIN.gets.chomp
-        sleep
+    unless $RELEASE
+      @cmd_thread = Thread.new do 
+        while true
+          print "Commande : "
+          @__cmd_to_eval = STDIN.gets.chomp
+          sleep
+        end
       end
     end
     @time = Time.new

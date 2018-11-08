@@ -71,6 +71,6 @@ $game_data_trainer = load_data("Data/PSDK/Trainers.rxdata")
 #> Chargement des symbol des capacités
 unless File.exist?('Data/PSDK/Abilities_Symbols.rxdata')
   #> Update symbols
-  require "plugins/update_db_symbol.rb"
+  require "plugins/update_db_symbol.rb" unless $RELEASE
 end
 GameData::Abilities.load_symbols(load_data('Data/PSDK/Abilities_Symbols.rxdata'))

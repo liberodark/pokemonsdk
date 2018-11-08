@@ -1,6 +1,8 @@
 #encoding: utf-8
 
 module Audio
+  # Constant adding commande to messages
+  COMMAND_TEXT = $RELEASE ? '' : 'Commande : '
   # Loading the Fmod Module
   FMOD::System.init(32, FMOD::INIT::NORMAL)
   # Time it takes to fade in (in ms)
@@ -45,10 +47,10 @@ module Audio
     @fading_sounds.delete(@bgm_sound) #> Reused channel error prevention
   rescue FMOD::Error
     unless File.exist?(filename)
-      print("\rLe fichier #{filename} n'a pas été trouvé !\nCommande : ")
+      print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
     else
       cc 0x01
-      print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37mCommande : ")
+      print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37m#{COMMAND_TEXT}")
     end
   ensure
     call_was_playing_callback
@@ -111,10 +113,10 @@ module Audio
     @fading_sounds.delete(@bgs_sound) #> Reused channel error prevention
   rescue FMOD::Error
     unless File.exist?(filename)
-      print("\rLe fichier #{filename} n'a pas été trouvé !\nCommande : ")
+      print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
     else
       cc 0x01
-      print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37mCommande : ")
+      print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37m#{COMMAND_TEXT}")
     end
   ensure
     call_was_playing_callback
@@ -166,10 +168,10 @@ module Audio
     end
   rescue FMOD::Error
     unless File.exist?(filename)
-      print("\rLe fichier #{filename} n'a pas été trouvé !\nCommande : ")
+      print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
     else
       cc 0x01
-      print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37mCommande : ")
+      print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37m#{COMMAND_TEXT}")
     end
   ensure
     call_was_playing_callback
@@ -219,14 +221,14 @@ module Audio
     channel.setPaused(false)
   rescue FMOD::Error
     if !File.exist?(filename)
-      print("\rLe fichier #{filename} n'a pas été trouvé !\nCommande : ")
+      print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
     elsif $!.hr == 46
       p @se_sounds
       se_stop
       retry
     else
       cc 0x01
-      print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37mCommande : ")
+      print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37m#{COMMAND_TEXT}")
     end
   end
   # stops every SE
@@ -271,7 +273,7 @@ module Audio
       end
     end
     if start and length
-      print "\rLOOP: #{start} -> #{start+length}\nCommande : "
+      print "\rLOOP: #{start} -> #{start+length}\n#{COMMAND_TEXT}" unless $RELEASE
       sound.setLoopPoints(start, FMOD::TIMEUNIT::PCM, start + length, FMOD::TIMEUNIT::PCM)
     end
   end
