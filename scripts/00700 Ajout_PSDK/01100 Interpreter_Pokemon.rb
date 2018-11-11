@@ -92,7 +92,7 @@ class Interpreter
   def rename_pokemon(index_or_pokemon, num_char = 10)
     if index_or_pokemon.is_a?(Integer)
       pokemon = $actors[index_or_pokemon]
-      raise "IndexError : Pokemon at index #{index_or_pokemon} couldn't be found."
+      raise "IndexError : Pokemon at index #{index_or_pokemon} couldn't be found." unless pokemon
     else
       pokemon = index_or_pokemon
     end
