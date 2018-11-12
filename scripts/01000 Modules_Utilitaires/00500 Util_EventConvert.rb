@@ -66,8 +66,9 @@ module Util
             @current_list = make_list(@current_list, @current_list[:parent])
             @split_next = true
           when 404, 412 # End of choice / End of condition
-            @current_list[:end] = @index - 1
-            @current_list = make_list(@current_list, @current_list[:parent])
+            #@current_list[:end] = @index - 1
+            #@current_list = make_list(@current_list, @current_list[:parent])
+            @split_next = true
           else
             if @split_next
               @split_next = false
