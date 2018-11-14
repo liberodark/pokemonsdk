@@ -108,6 +108,7 @@ module Yuki
     # Select a zone
     def select_zone(id)
       @current_zone = id
+      puts "#{$game_data_zone[id].map_name}"
     end
     # Init the editor
     def init
