@@ -112,6 +112,8 @@ module GamePlay
     def retreive_player_coords
       zone_id = $env.master_zone >= 0 ? $env.master_zone : $env.get_current_zone
       @x, @y = $env.get_zone_pos(zone_id)
+      @x ||= 0
+      @y ||= 0
       update_infobox
       init_player_sprite
       calculate_cursor_coords
