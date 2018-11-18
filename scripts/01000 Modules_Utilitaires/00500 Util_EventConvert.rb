@@ -160,7 +160,17 @@ module Util
         param = cmd.parameters
         case cmd.code
         when 101
-          io.puts("#{' ' * @indent}# Message : #{param.first}")
+          index = translate_message_command(io, index)
+        when 102
+          translate_choice_command(io, cmd)
+        when 103
+          translate_input_number_command(io, index)
+        when 104
+          translate_window_setting_command(io, cmd)
+        when 105
+          translate_wait_input_command(io, cmd)
+        when 106
+          translate_wait_command(io, cmd)
         when 118 # label def
           io.puts("#{' ' * @indent}g#{@labels[param.first]} = false # Simulate label #{param.first}")
         when 119 # Goto label
@@ -171,19 +181,233 @@ module Util
           write_event_choice(io, cmd, current_list)
         when 111 # Conditions
           write_event_condition(io, cmd, current_list)
+        when 411 # Else
+          io.puts("#{' ' * (@indent - 2)}else")
         when 113 # Break loop
           io.puts("#{' ' * @indent}break # Leave loop")
         when 404, 412 # End of condition / end of choice
           write_end(io)
           @choices.pop if cmd.code == 404
+        when 115 # Stop current event execution
+          io.puts("#{' ' * @indent}terminate_this_event")
+        when 116 # Erase current event
+          io.puts("#{' ' * @indent}$game_map.events[@event_id].erase if @event_id > 0")
+        when 117 # Call common event
+          io.puts("#{' ' * @indent}call_common_event(#{param.first})")
+        when 121 # Multiple switch set
+          translate_multiple_switch_set(io, param)
+        when 122 # Variable set
+          translate_variable_set(io, param)
         end
         return index
+      end
+
+      def translate_variable_set(io, param)
+        value = compute_variable_set_value(param)
+        op = compute_variable_set_operation(param)
+        if param[0] == param[1]
+          if param[2].between?(4, 5)
+            io.puts("#{' ' * @indent}variable_value = #{value}")
+            io.puts("#{' ' * @indent}$game_variables[#{param[0]}] #{op} variable_value if variable_value != 0")
+          else
+            io.puts("#{' ' * @indent}$game_variables[#{param[0]}] #{op} #{value}")
+          end
+        else
+          io.puts("#{' ' * @indent}variable_value = #{value}")
+          if param[2].between?(4, 5)
+            io.puts("#{' ' * @indent}variable_value = 1 if variable_value == 0 # Prevent from dividing by 0")
+          end
+          io.puts("#{' ' * @indent}#{param[0]}.upto(#{param[1]}) { |var_id| $game_variables[var_id] #{op} variable_value")
+        end
+        io.puts("#{' ' * @indent}$game_map.need_refresh = true")
+      end
+
+      def compute_variable_set_value(param)
+        case param[3]
+        when 0 # Defined value
+          return param[4]
+        when 1 # Variable value
+          return "$game_variables[#{param[4]}]"
+        when 2 # Random value
+          return "#{param[4]} + rand(#{param[5] - param[4] + 1})"
+        when 3 # Item quantity
+          return "$bag.item_quantity(#{param[4]})"
+        when 4 # Actor info (battle)
+          actor = "actor = PFM::BattleInterface.get_actor(#{param[4]})"
+          case param[5]
+          when 0 # Level
+            return "(#{actor} and actor.level) or 0"
+          when 1 # EXP
+            return "(#{actor} and actor.exp) or 0"
+          when 2 # HP
+            return "(#{actor} and actor.hp) or 0"
+          when 4 # Max HP
+            return "(#{actor} and actor.max_hp) or 0"
+          when 6 # Loyalty
+            return "(#{actor} and actor.loyalty) or 0"
+          when 7 # Accuracy
+            return "(#{actor} and actor.acc_stage) or 0"
+          when 8 # Speed
+            return "(#{actor} and actor.spd) or 0"
+          when 9 # ATS
+            return "(#{actor} and actor.ats) or 0"
+          when 10 # Attack
+            return "(#{actor} and actor.atk) or 0"
+          when 11 # Def
+            return "(#{actor} and actor.dfe) or 0"
+          when 12 # DFS
+            return "(#{actor} and actor.dfs) or 0"
+          when 13 # Evasion
+            return "(#{actor} and actor.eva_stage) or 0"
+          end
+        when 5 # Enemy info (battle)
+          enemy = "enemy = PFM::BattleInterface.get_enemy(#{param[4]})"
+          case param[5]
+          when 0 # HP
+            return "(#{enemy} and enemy.hp) or 0"
+          when 2 # Max HP
+            return "(#{enemy} and enemy.max_hp) or 0"
+          when 4 # Loyalty
+            return "(#{enemy} and enemy.loyalty) or 0"
+          when 5 # Accuracy
+            return "(#{enemy} and enemy.acc_stage) or 0"
+          when 6 # Speed
+            return "(#{enemy} and enemy.spd) or 0"
+          when 7 # ATS
+            return "(#{enemy} and enemy.ats) or 0"
+          when 8 # Attack
+            return "(#{enemy} and enemy.atk) or 0"
+          when 9 # Def
+            return "(#{enemy} and enemy.dfe) or 0"
+          when 10 # DFS
+            return "(#{enemy} and enemy.dfs) or 0"
+          when 11 # Evasion
+            return "(#{enemy} and enemy.eva_stage) or 0"
+          end
+        when 6 # Character information
+          character = "character = get_character(#{param[4]})"
+          case param[5]
+          when 0 # X position
+            return "(#{character} and character.x - ::Yuki::MapLinker.get_OffsetX) or 0"
+          when 1 # Y Position
+            return "(#{character} and character.y - ::Yuki::MapLinker.get_OffsetY) or 0"
+          when 2 # Direction
+            return "(#{character} and character.direction) or 0"
+          when 3 # Screen X
+            return "(#{character} and character.screen_x) or 0"
+          when 4 # Screen Y
+            return "(#{character} and character.screen_y) or 0"
+          when 5 # Terrain tag
+            return "(#{character} and character.terrain_tag) or 0"
+          end
+        when 7 # Special things
+          case param[5]
+          when 0 # MAP ID
+            return "$game_map.map_id"
+          when 1 # Party Size
+            return "$actors.size"
+          when 2 # Money
+            return "$pokemon_party.money"
+          when 3 # Steps
+            return "$pokemon_party.steps"
+          when 4 # "Time"
+            return "Graphics.frame_count / 60"
+          when 5 # Timer value
+            return "$game_system.timer / 60"
+          when 6 # Save count
+            return "$game_system.save_count"
+          end
+        end
+        return '0'
+      end
+
+      def compute_variable_set_operation(param)
+        case param[2]
+        when 0
+          return '='
+        when 1
+          return '+='
+        when 2
+          return '-='
+        when 3
+          return '*='
+        when 4
+          return '/='
+        when 5
+          return '%='
+        end
+      end
+
+      def translate_multiple_switch_set(io, param)
+        if param[0] == param[1]
+          io.puts("#{' ' * @indent}$game_switches[#{param[0]}] = #{param[2].zero?}")
+        else
+          io.puts("#{' ' * @indent}#{param[0]}.upto(#{param[1]}) { |switch_id| $game_switches[switch_id] = #{param[2].zero?}}")
+        end
+        io.puts("#{' ' * @indent}$game_map.need_refresh = true")
+      end
+
+      def translate_wait_command(io, cmd)
+        io.puts("#{' ' * @indent}wait(#{cmd.parameters.first})")
+      end
+
+      def translate_wait_input_command(io, cmd)
+        io.puts("#{' ' * @indent}wait until Input.trigger?(:#{::Interpreter::RGSS2LiteRGSS_Input[cmd.parameters.first]})")
+      end
+
+      def translate_window_setting_command(io, cmd)
+        io.puts("#{' ' * @indent}$game_system.message_position = #{cmd.parameters[0]}")
+        io.puts("#{' ' * @indent}$game_system.message_frame = #{cmd.parameters[1]}")
+      end
+
+      def translate_message_command(io, index)
+        linecount = 1
+        current_message_string = @list[index].parameters[0].force_encoding(Encoding::UTF_8)
+        choice_cancel_type = nil
+        choice_list = nil
+        loop do
+          cmd = @list[index + 1]
+          if cmd.code == 401 # Message continuation
+            current_message_string << "\n" << cmd.parameters[0].force_encoding(Encoding::UTF_8)
+            linecount += 1
+          elsif cmd.code == 102 # Choice
+            choice_cancel_type = cmd.parameters[1]
+            choice_list = cmd.parameters[0].clone.collect { |s| s.force_encoding(Encoding::UTF_8) }
+          elsif cmd.code == 103 # Input number
+            translate_input_number_command(io, index + 1, linecount)
+          else
+            break
+          end
+          index += 1
+        end
+
+        if choice_list
+          io.puts("#{' ' * @indent}choice#{cmd.indent} = show_choice(#{current_message_string.inspect}, #{choice_list.inspect[1...-1]}, cancel_type: #{choice_cancel_type})")
+        else
+          io.puts("#{' ' * @indent}show_message(#{current_message_string.inspect})")
+        end
+
+        index
+      end
+
+      def translate_choice_command(io, cmd)
+        choice_cancel_type = cmd.parameters[1]
+        choice_list = cmd.parameters[0].clone.collect { |s| s.force_encoding(Encoding::UTF_8) }
+        io.puts("#{' ' * @indent}choice#{cmd.indent} = show_choice('Choose.', #{choice_list.inspect[1...-1]}, cancel_type: #{choice_cancel_type})")
+      end
+
+      def translate_input_number_command(io, index, linecount = 0)
+        cmd = @list[index]
+        io.puts("#{' ' * @indent}$game_temp.num_input_start = #{line_count}")
+        io.puts("#{' ' * @indent}$game_temp.num_input_variable_id = #{cmd.parameters[0]}")
+        io.puts("#{' ' * @indent}$game_temp.num_input_digits_max = #{@list[@index].parameters[1]}")
+        io.puts("#{' ' * @indent}show_message('Enter a number')") if linecount.zero?
       end
 
       def write_event_condition(io, cmd, current_list)
         internal_labels = @labels.keys - current_list[:internal_labels]
         internal_labels = internal_labels.collect { |label| "g#{@labels[label]}" }
-        condition_string = "some_condition"
+        condition_string = translate_condition(cmd)
         if internal_labels.empty?
           io.puts("#{' ' * @indent}if #{condition_string}")
         else
@@ -192,22 +416,111 @@ module Util
         @indent += 2
       end
 
-      def write_event_choice(io, cmd, current_list)
-        if @choices.last == cmd.indent
-          write_end(io)
-        else
-          @choices << cmd.indent
+      def translate_condition(cmd)
+        param = cmd.parameters
+        case param.first
+        when 0 # Switch condition
+          return "$game_switches[#{param[1]}] == #{param[2].zero?}"
+        when 1 # Variable condition
+          value1 = "$game_variables[#{param[1]}]"
+          value2 = param[2] != 0 ? "$game_variables[#{param[3]}]" : param[2]
+          case param[4]
+          when 0
+            return "#{value1} == #{value2}"
+          when 1
+            return "#{value1} >= #{value2}"
+          when 2
+            return "#{value1} <= #{value2}"
+          when 3
+            return "#{value1} > #{value2}"
+          when 4
+            return "#{value1} < #{value2}"
+          when 5
+            return "#{value1} != #{value2}"
+          end
+        when 2 # local switch condition
+          return param[2].zero? ? "get_self_switch('#{param[1]}')" : "not get_self_switch('#{param[1]}')"
+        when 3 # Timer condition
+          if param[2].zero?
+            return "$game_system.timer_working and ($game_system.timer / 60) >= #{param[1]}"
+          else
+            return "$game_system.timer_working and ($game_system.timer / 60) <= #{param[1]}"
+          end
+        when 4 # Actor condition (battle)
+          actor = "actor = PFM::BattleInterface.get_actor(#{param[1]})"
+          case param[2]
+          when 0 # In party && alive
+            return "#{actor} and !actor.dead?"
+          when 1 # Name
+            return "#{actor} and actor.given_name == #{param[3].inspect}"
+          when 2 # Skill learnt
+            return "#{actor} and actor.skill_learnt?(#{param[3]}, true)"
+          when 3 # Item holding
+            return "#{actor} and actor.item_holding == #{param[3]}"
+          when 4 # Ability
+            return "#{actor} and actor.current_ability == #{param[3]}"
+          when 5 # Status
+            return "#{actor} and actor.status == #{param[3]}"
+          end
+        when 5 # Enemy condition (battle)
+          enemy = "enemy = PFM::BattleInterface.get_enemy(#{param[1]})"
+          case param[2]
+          when 0 # Alive
+            return "#{enemy} and !enemy.dead?"
+          when 1 # Status
+            return "#{enemy} and enemy.status == #{param[3]}"
+          end
+        when 6 # Character direction
+          character = "character = get_character(#{param[1]})"
+          return "#{character} and character.direction == #{param[2]}"
+        when 7 # Money
+          if param[2].zero?
+            return "$pokemon_party.money >= #{param[1]}"
+          else
+            return "$pokemon_party.money <= #{param[1]}"
+          end
+        when 8 # Item stored
+          return "$bag.has_item?(#{param[1]})"
+        when 11 # Key pressed
+          return "Input.press?(:#{::Interpreter::RGSS2LiteRGSS_Input[param[1]]})"
+        when 12 # Script condition
+          return test_condition_eval(param[1])
         end
+
+        return 'false'
+      end
+
+      def test_condition_eval(script)
+        RubyVM::InstructionSequence.compile(script)
+        return script
+      rescue SyntaxError
+        puts 'Une erreur de syntaxe a été détectée dans la condition de script suivante : '
+        puts script
+        puts "Merci de bien vouloir corriger vos évènements avant de relancer ce script\n"
+        raise
+      end
+
+      def write_event_choice(io, cmd, current_list)
         internal_labels = @labels.keys - current_list[:internal_labels]
         internal_labels = internal_labels.collect { |label| "g#{@labels[label]}" }
-        io.puts(cmd.code == 403 ? "#{' ' * @indent}# Cancel option" : "#{' ' * @indent}# Choice #{cmd.parameters.first}")
         condition_string = "some_choice"
-        if internal_labels.empty?
-          io.puts("#{' ' * @indent}if #{condition_string}")
+        if @choices.last == cmd.indent && internal_labels.empty?
+          io.print("#{' ' * (@indent - 2)}els")
+          indent_str = nil
+        elsif @choices.last == cmd.indent
+          write_end(io)
+          indent_str = ' ' * @indent
         else
-          io.puts("#{' ' * @indent}if (#{condition_string}) or #{internal_labels.join(' or ')}")
+          @choices << cmd.indent
+          indent_str = ' ' * @indent
         end
-        @indent += 2
+        if internal_labels.empty?
+          io.puts("#{indent_str}if #{condition_string}")
+        else
+          io.puts("#{indent_str}if (#{condition_string}) or #{internal_labels.join(' or ')}")
+        end
+        @indent += 2 if indent_str
+        io.puts(cmd.code == 403 ? "#{' ' * @indent}# Cancel option" : "#{' ' * @indent}# Choice #{cmd.parameters.first}")
       end
 
       def is_skipable_list(current_list)
