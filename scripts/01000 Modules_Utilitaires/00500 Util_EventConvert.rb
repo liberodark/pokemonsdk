@@ -198,8 +198,154 @@ module Util
           translate_multiple_switch_set(io, param)
         when 122 # Variable set
           translate_variable_set(io, param)
+        when 123 # Self switch set
+          translate_self_switch_set(io, param)
+        when 124 # Timer management
+          translate_timer_command(io, param)
+        when 125 # Earn gold
+          translate_earn_gold_command(io, param)
+        when 126 # Item gain command
+          translate_item_gain_command(io, param)
+        when 131 # Windowskin change command
+          io.puts("#{' ' * @indent}$game_system.windowskin_name = '#{param[0]}'")
+        when 132 # Battle BGM change
+          io.puts("#{' ' * @indent}$game_system.battle_bgm = '#{param[0]}'")
+        when 133 # Battle end ME change
+          io.puts("#{' ' * @indent}$game_system.battle_end_me = '#{param[0]}'")
+        when 134 # Disable save command
+          io.puts("#{' ' * @indent}$game_system.save_disabled = #{param[0].zero?}")
+        when 135 # Disable menu command
+          io.puts("#{' ' * @indent}$game_system.menu_disabled = #{param[0].zero?}")
+        when 136 # Disable encounter command
+          translate_disable_encounter_command(io, param)
+        when 201 # Warp command
+          translate_warp_command(io, param)
+        when 202 # Displace command
+          translate_displace_command(io, param)
+        when 203 # Map scroll command
+          translate_map_scroll_command(io, param)
+        when 204 # Map property change command
+          translate_map_property_command(io, param)
+        when 205 # Tone change command
+          io.puts("#{' ' * @indent}$game_map.start_fog_tone_change(Tone.new#{param[0]}, #{param[1]} * 2)")
+        when 206 # Fog change command
+          io.puts("#{' ' * @indent}$game_map.start_fog_opacity_change(#{param[0]}, #{param[1]} * 2)")
+        when 207 # Animation on character
+          io.puts("#{' ' * @indent}show_animation(#{param[1]}, event: #{param[0]})")
+        when 208 # Player transparency
+          io.puts("#{' ' * @indent}$game_player.transparent = #{param[0].zero?}")
+        when 210 # Wait movement
+          io.puts("#{' ' * @indent}wait_movement_termination")
+        when 221 # Prepare transition
+          io.puts("#{' ' * @indent}prepare_transition")
+        when 222 # Execute transition
+          io.puts("#{' ' * @indent}execute_transition(#{param[0]})")
+
+
+
+
+        when 209 # Move route
+          io.puts("#{' ' * @indent}# TODO : Moveroute !")
+        else
+          io.puts("#{' ' * @indent}# untranslated command (#{cmd.code} : #{param})")
         end
         return index
+      end
+
+      def translate_map_property_command(io, param)
+        case param[0]
+        when 0
+          io.puts("#{' ' * @indent}$game_map.panorama_name = '#{param[1]}'")
+          io.puts("#{' ' * @indent}$game_map.panorama_hue = #{param[2]}")
+        when 1
+          io.puts("#{' ' * @indent}$game_map.fog_name = '#{param[1]}'")
+          io.puts("#{' ' * @indent}$game_map.fog_hue = #{param[2]}")
+          io.puts("#{' ' * @indent}$game_map.fog_opacity = #{param[3]}")
+          io.puts("#{' ' * @indent}$game_map.fog_blend_type = #{param[4]}")
+          io.puts("#{' ' * @indent}$game_map.fog_zoom = #{param[5]}")
+          io.puts("#{' ' * @indent}$game_map.fog_sx = #{param[6]}")
+          io.puts("#{' ' * @indent}$game_map.fog_sy = #{param[7]}")
+        when 2
+          io.puts("#{' ' * @indent}$game_map.battleback_name = '#{param[1]}'")
+          io.puts("#{' ' * @indent}$game_temp.battleback_name = '#{param[1]}'")
+        end
+      end
+
+      def translate_map_scroll_command(io, param)
+        io.puts("#{' ' * @indent}scroll_map(direction: #{param[0]}, disatance: #{param[1]}, speed: #{param[2]})")
+      end
+
+      def translate_displace_command(io, param)
+        d = value ? param[4] : "$game_variables[#{param[4]}]"
+        d = param[4].zero? ? nil : ", direction: #{d}"
+        if param[1] < 2
+          value = param[1].zero?
+          x = value ? param[2] : "$game_variables[#{param[2]}]"
+          y = value ? param[3] : "$game_variables[#{param[3]}]"
+          io.puts("#{' ' * @indent}displace_event(event: #{param[0]}, x: #{x}, y: #{y} #{d})")
+        else
+          io.puts("#{' ' * @indent}swap_event(event: #{param[0]}, with: #{param[2]} #{d})")
+        end
+      end
+
+      def translate_warp_command(io, param)
+        value = param[0].zero?
+        map_id = value ? param[1] : "$game_variables[#{param[1]}]"
+        x = value ? param[2] : "$game_variables[#{param[2]}]"
+        y = value ? param[3] : "$game_variables[#{param[3]}]"
+        d = value ? param[4] : "$game_variables[#{param[4]}]"
+        d = param[4].zero? ? nil : ", direction: #{d}"
+        io.puts("#{' ' * @indent}warp_player(map_id: #{map_id}, x: #{x}, y: #{y} #{d}, transition: #{param[5].zero?})")
+      end
+
+      def translate_disable_encounter_command(io, param)
+        io.puts("#{' ' * @indent}$game_system.encounter_disabled = #{param[0].zero?}")
+        io.puts("#{' ' * @indent}$game_player.make_encounter_count") unless param[0].zero?
+      end
+
+      def translate_item_gain_command(io, param)
+        io.puts("#{' ' * @indent}$bag.add_item(#{param[0]}, amount = #{value = operate_value(*param[1, 3])})")
+        socket = GameData::Item.socket(param[0])
+        if value.to_i >= 0
+          io.puts("#{' ' * @indent}Audio.me_play('#{::Interpreter::ItemGetME[(socket == 3 ? 2 : (socket == 5 ? 1 : 0))]}, 80) if amount > 0")
+        end
+      end
+
+      def translate_earn_gold_command(io, param)
+        io.puts("#{' ' * @indent}$game_party.gain_gold(#{operate_value(*param[0, 3])})")
+      end
+
+      # Command that retreive a value and negate it if wanted
+      # @param operation [Integer] if 1 negate the value
+      # @param operand_type [Integer] if 0 takes operand, otherwise take the game variable n°operand
+      # @param operand [Integer] the value or index
+      def operate_value(operation, operand_type, operand)
+        # オペランドを取得
+        if operand_type == 0
+          value = operand
+        else
+          value = "$game_variables[#{operand}]"
+        end
+        # 操作が [減らす] の場合は符号を反転
+        if operation == 1
+          value = "-#{value}"
+        end
+        # value を返す
+        return value
+      end
+
+      def translate_timer_command(io, param)
+        if param[0].zero?
+          io.puts("#{' ' * @indent}$game_system.timer = #{param[1]} * 60")
+          io.puts("#{' ' * @indent}$game_system.timer_working = true")
+        else
+          io.puts("#{' ' * @indent}$game_system.timer_working = false")
+        end
+      end
+
+      def translate_self_switch_set(io, param)
+        io.puts("#{' ' * @indent}set_self_switch(#{param[1].zero?}, '#{param[0]}')")
+        io.puts("#{' ' * @indent}$game_map.need_refresh = true")
       end
 
       def translate_variable_set(io, param)
@@ -208,7 +354,7 @@ module Util
         if param[0] == param[1]
           if param[2].between?(4, 5)
             io.puts("#{' ' * @indent}variable_value = #{value}")
-            io.puts("#{' ' * @indent}$game_variables[#{param[0]}] #{op} variable_value if variable_value != 0")
+            io.puts("#{' ' * @indent}$game_variables[#{param[0]}] #{op} variable_value if variable_value != 0 # Prevent from dividing by 0")
           else
             io.puts("#{' ' * @indent}$game_variables[#{param[0]}] #{op} #{value}")
           end
