@@ -61,11 +61,11 @@ module Util
             @current_list = make_list(@current_list, @current_list[:parent], label = cmd.parameters.first)
             @labels[label] ||= @index
             taint_parent_loop_with_label(@current_list, label)
-          when 402, 403, 111, 411 # Choice option, cancel, condition, else
+          when 402, 403, 111, 411, 601, 602, 603 # Choice option, cancel, condition, else, battle results
             @current_list[:end] = @index - 1
             @current_list = make_list(@current_list, @current_list[:parent])
             @split_next = true
-          when 404, 412 # End of choice / End of condition
+          when 404, 412, 604 # End of choice / End of condition / End of battle conditions
             #@current_list[:end] = @index - 1
             #@current_list = make_list(@current_list, @current_list[:parent])
             @split_next = true
@@ -153,6 +153,7 @@ module Util
       def write_end(io)
         @indent -= 2
         io.puts("#{' ' * @indent}end")
+        @last_pic_number = nil
       end
 
       def write_ruby_translation(io, index, current_list)
@@ -179,15 +180,18 @@ module Util
           # do nothing
         when 402, 403 # Choice
           write_event_choice(io, cmd, current_list)
+        when 601, 602, 603 # Battle result check
+          write_event_battle_result_conditions(io, cmd, current_list)
         when 111 # Conditions
           write_event_condition(io, cmd, current_list)
         when 411 # Else
+          @last_pic_number = nil
           io.puts("#{' ' * (@indent - 2)}else")
         when 113 # Break loop
           io.puts("#{' ' * @indent}break # Leave loop")
-        when 404, 412 # End of condition / end of choice
+        when 404, 412, 604 # End of condition / end of choice
           write_end(io)
-          @choices.pop if cmd.code == 404
+          @choices.pop if cmd.code == 404 || cmd.code == 604
         when 115 # Stop current event execution
           io.puts("#{' ' * @indent}terminate_this_event")
         when 116 # Erase current event
@@ -240,16 +244,119 @@ module Util
           io.puts("#{' ' * @indent}prepare_transition")
         when 222 # Execute transition
           io.puts("#{' ' * @indent}execute_transition(#{param[0]})")
-
-
-
-
+        when 223 # Screen tone change
+          translate_screen_tone_change(io, param)
+        when 224 # Flash screen
+          io.puts("#{' ' * @indent}$game_screen.start_flash(Color.new#{param[0]}, #{param[1]} * 2)")
+        when 225 # Shake screen
+          io.puts("#{' ' * @indent}$game_screen.start_shake(#{param[0]}, #{param[1]}, #{param[2]} * 2)")
+        when 231 # Display picture
+          translate_display_picture(io, param)
+        when 232 # Move picture
+          translate_move_picture(io, param)
+        when 233 # Rotate picture
+          translate_rotate_picture(io, param)
+        when 234 # Picture tone change
+          translate_picture_tone_change(io, param)
+        when 235 # Erase picture
+          translate_erase_picture(io, param)
+        when 236 # Weather command
+          io.puts("#{' ' * @indent}$game_screen.weather(#{param[0]}, #{param[1]}, #{param[2]})")
+        when 241 # BGM Play
+          io.puts("#{' ' * @indent}$game_system.bgm_play('#{param[0]}')")
+        when 242 # BGM Fade
+          io.puts("#{' ' * @indent}$game_system.bgm_fade(#{param[0]})")
+        when 245 # BGS Play
+          io.puts("#{' ' * @indent}$game_system.bgs_play('#{param[0]}')")
+        when 246 # BGS Fade
+          io.puts("#{' ' * @indent}$game_system.bgs_fade(#{param[0]})")
+        when 247 # BGM & BGS Memorize
+          io.puts("#{' ' * @indent}$game_system.bgm_memorize")
+          io.puts("#{' ' * @indent}$game_system.bgs_memorize")
+        when 248 # BGM & BGS Restore
+          io.puts("#{' ' * @indent}$game_system.bgm_restore")
+          io.puts("#{' ' * @indent}$game_system.bgs_restore")
+        when 249 # ME Play
+          io.puts("#{' ' * @indent}$game_system.me_play('#{param[0]}')")
+        when 250 # SE Play
+          io.puts("#{' ' * @indent}$game_system.se_play('#{param[0]}')")
+        when 251 # SE stop
+          io.puts("#{' ' * @indent}Audio.se_stop")
+        when 301 # Battle call command
+          io.puts("#{' ' * @indent}battle_result = start_battle(id: #{param[0]}, can_escape: #{param[1]}, can_loose: #{param[2]})")
+        when 302 # Call shop
+          index = translate_shop_command(io, index)
+        when 303 # Call name
+          io.puts("#{' ' * @indent}enter_name(actor_id: #{param[0]}, max_char: #{param[1]})")
+        when 320 # Name change command
+          io.puts("#{' ' * @indent}actor = $game_actors[#{param[0]}]")
+          io.puts("#{' ' * @indent}actor.name = '#{param[1]}' if actor")
+        when 322 # Set graphics command
+          io.puts("#{' ' * @indent}actor = $game_actors[#{param[0]}]")
+          io.puts("#{' ' * @indent}actor.set_graphic('#{param[1]}', #{param[2]}, '#{param[3]}', #{param[4]}) if actor")
+          io.puts("#{' ' * @indent}$game_player.refresh")
+        when 340 # Battle end command
+          io.puts("#{' ' * @indent}abort_battle")
+        when 351 # Call menu
+          io.puts("#{' ' * @indent}call_menu")
+        when 352 # Call save
+          io.puts("#{' ' * @indent}call_save")
+        when 353 # Game Over
+          io.puts("#{' ' * @indent}game_over")
+        when 354 # Return to tile
+          io.puts("#{' ' * @indent}return_to_title")
+        when 355 # Script command
+          index = translate_script_command(io, index)
         when 209 # Move route
           io.puts("#{' ' * @indent}# TODO : Moveroute !")
         else
           io.puts("#{' ' * @indent}# untranslated command (#{cmd.code} : #{param})")
         end
         return index
+      end
+
+      def translate_erase_picture(io, param)
+        io.puts("#{' ' * @indent}picture_num = #{param[0]} + ($game_temp.in_battle ? 50 : 0)") if @last_pic_number != param[0]
+        @last_pic_number = param[0]
+        io.puts("#{' ' * @indent}$game_screen.pictures[picture_num].erase")
+      end
+
+      def translate_picture_tone_change(io, param)
+        io.puts("#{' ' * @indent}picture_num = #{param[0]} + ($game_temp.in_battle ? 50 : 0)") if @last_pic_number != param[0]
+        @last_pic_number = param[0]
+        io.puts("#{' ' * @indent}$game_screen.pictures[picture_num].start_tone_change(Tone.new#{param[1]}, #{param[2]} * 2)")
+      end
+
+      def translate_rotate_picture(io, param)
+        io.puts("#{' ' * @indent}picture_num = #{param[0]} + ($game_temp.in_battle ? 50 : 0)") if @last_pic_number != param[0]
+        @last_pic_number = param[0]
+        io.puts("#{' ' * @indent}$game_screen.pictures[picture_num].rotate(#{param[1]})")
+      end
+
+      def translate_move_picture(io, param)
+        value = param[3].zero?
+        x = value ? param[4] : "$game_variables[#{param[4]}]"
+        y = value ? param[5] : "$game_variables[#{param[5]}]"
+        io.puts("#{' ' * @indent}picture_num = #{param[0]} + ($game_temp.in_battle ? 50 : 0)") if @last_pic_number != param[0]
+        @last_pic_number = param[0]
+        io.puts("#{' ' * @indent}$game_screen.pictures[picture_num].move(#{param[1]} * 2, #{param[2]}, #{x}, #{y}, #{param[6, 4].join(', ')})")
+      end
+
+      def translate_display_picture(io, param)
+        value = param[3].zero?
+        x = value ? param[4] : "$game_variables[#{param[4]}]"
+        y = value ? param[5] : "$game_variables[#{param[5]}]"
+        io.puts("#{' ' * @indent}picture_num = #{param[0]} + ($game_temp.in_battle ? 50 : 0)") if @last_pic_number != param[0]
+        @last_pic_number = param[0]
+        io.puts("#{' ' * @indent}$game_screen.pictures[picture_num].show('#{param[1]}', #{param[2]}, #{x}, #{y}, #{param[6, 4].join(', ')})")
+      end
+
+      def translate_screen_tone_change(io, param)
+        if param[0] != Yuki::TJN::TONE[3]
+          io.puts("#{' ' * @indent}$game_screen.start_tone_change(Tone.new#{param[0]}, #{param[1]} * 2)")
+        else
+          io.puts("#{' ' * @indent}Yuki::TJN.force_update_tone(0)")
+        end
       end
 
       def translate_map_property_command(io, param)
@@ -276,10 +383,10 @@ module Util
       end
 
       def translate_displace_command(io, param)
+        value = param[1].zero?
         d = value ? param[4] : "$game_variables[#{param[4]}]"
         d = param[4].zero? ? nil : ", direction: #{d}"
         if param[1] < 2
-          value = param[1].zero?
           x = value ? param[2] : "$game_variables[#{param[2]}]"
           y = value ? param[3] : "$game_variables[#{param[3]}]"
           io.puts("#{' ' * @indent}displace_event(event: #{param[0]}, x: #{x}, y: #{y} #{d})")
@@ -506,6 +613,41 @@ module Util
         io.puts("#{' ' * @indent}$game_system.message_frame = #{cmd.parameters[1]}")
       end
 
+      def translate_script_command(io, index)
+        current_message_string = @list[index].parameters[0].force_encoding(Encoding::UTF_8)
+        loop do
+          cmd = @list[index + 1]
+          if cmd.code == 655 # Script continuation
+            current_message_string << "\n" << cmd.parameters[0].force_encoding(Encoding::UTF_8)
+          else
+            break
+          end
+          index += 1
+        end
+
+        script = test_condition_eval(current_message_string).gsub("\n", "\n#{' ' * @indent}")
+        io.puts("#{' ' * @indent}#{script}")
+
+        index
+      end
+
+      def translate_shop_command(io, index)
+        goods = [@list[index].parameters]
+        loop do
+          index += 1
+          cmd = @list[index]
+          if(cmd.code == 605)
+            goods << cmd.parameters
+          else
+            break
+          end
+        end
+
+        io.puts("#{' ' * @indent}call_shop(#{goods.inspect[1...-1]})")
+
+        index
+      end
+
       def translate_message_command(io, index)
         linecount = 1
         current_message_string = @list[index].parameters[0].force_encoding(Encoding::UTF_8)
@@ -551,6 +693,7 @@ module Util
       end
 
       def write_event_condition(io, cmd, current_list)
+        @last_pic_number = nil
         internal_labels = @labels.keys - current_list[:internal_labels]
         internal_labels = internal_labels.collect { |label| "g#{@labels[label]}" }
         condition_string = translate_condition(cmd)
@@ -647,6 +790,7 @@ module Util
       end
 
       def write_event_choice(io, cmd, current_list)
+        @last_pic_number = nil
         internal_labels = @labels.keys - current_list[:internal_labels]
         internal_labels = internal_labels.collect { |label| "g#{@labels[label]}" }
         condition_string = "some_choice"
@@ -667,6 +811,30 @@ module Util
         end
         @indent += 2 if indent_str
         io.puts(cmd.code == 403 ? "#{' ' * @indent}# Cancel option" : "#{' ' * @indent}# Choice #{cmd.parameters.first}")
+      end
+
+      BATTLE_RESULT_SYM = { 601 => :victory, 602 => :escape, 603 => :defeat }
+      def write_event_battle_result_conditions(io, cmd, current_list)
+        @last_pic_number = nil
+        internal_labels = @labels.keys - current_list[:internal_labels]
+        internal_labels = internal_labels.collect { |label| "g#{@labels[label]}" }
+        condition_string = "battle_result == :#{BATTLE_RESULT_SYM[cmd.code]}"
+        if @choices.last == cmd.indent && internal_labels.empty?
+          io.print("#{' ' * (@indent - 2)}els")
+          indent_str = nil
+        elsif @choices.last == cmd.indent
+          write_end(io)
+          indent_str = ' ' * @indent
+        else
+          @choices << cmd.indent
+          indent_str = ' ' * @indent
+        end
+        if internal_labels.empty?
+          io.puts("#{indent_str}if #{condition_string}")
+        else
+          io.puts("#{indent_str}if (#{condition_string}) or #{internal_labels.join(' or ')}")
+        end
+        @indent += 2 if indent_str
       end
 
       def is_skipable_list(current_list)

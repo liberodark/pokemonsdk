@@ -354,7 +354,7 @@ class Interpreter_RMXP
     # 継続
     return true
   end
-  # BGM & BGS memorize command
+  # BGM & BGS restore command
   def command_248
     # BGM / BGS を復帰
     $game_system.bgm_restore
