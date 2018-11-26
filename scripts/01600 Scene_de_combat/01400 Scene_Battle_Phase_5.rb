@@ -126,7 +126,7 @@ class Scene_Battle
           Graphics.transition
         end
       end
-      $pokedex.pokemon_captured_add(pkmn.id)
+      $pokedex.pokemon_captured_inc(pkmn.id)
       $game_system.battle_interpreter.add_pokemon(pkmn)
       #>Renommer
       if(display_message(_parse(30, 0, PKNAME[0] => pkmn.name), true, 1, 

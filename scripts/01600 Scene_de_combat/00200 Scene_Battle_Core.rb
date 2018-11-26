@@ -122,7 +122,7 @@ class Scene_Battle
     end
     #>Marquage des Pokémon
     @enemy_fought.each do |pkmn|
-      $pokedex.pokemon_fought_add(pkmn.id)
+      $pokedex.pokemon_fought_inc(pkmn.id)
       $pokedex.mark_seen(pkmn.id,pkmn.form)
       $quests.see_pokemon(pkmn.id)
     end
