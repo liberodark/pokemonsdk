@@ -1,7 +1,7 @@
 #encoding: utf-8
 
 begin
-  File.open("version.txt") do |f|
+  File.open("#{PSDK_PATH}/version.txt") do |f|
     PSDK_Version = f.read(f.size).to_i
   end
 rescue Exception
