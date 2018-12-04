@@ -341,9 +341,10 @@ class Window_Message < Game_Window
     text.nchar_draw = 0
     text.opacity = self.contents_opacity
     until text.nchar_draw >= str.size
+      break if stop_message_proces?
       text.nchar_draw += 1
       counter += 1
-      if Input.trigger?(:A) or (Mouse.trigger?(:left) and @window.simple_mouse_in?) #> Skip request
+      if Input.trigger?(:A) or (Mouse.trigger?(:left) and @window.simple_mouse_in?) # Skip request
         text.nchar_draw = str.size
         return -1
       end
@@ -357,6 +358,7 @@ class Window_Message < Game_Window
   # Perform a line transition
   def line_transition
     LineHeight.times do
+      break if stop_message_proces?
       @text_viewport.oy += 1
       message_update_processing
     end
@@ -415,6 +417,7 @@ class Window_Message < Game_Window
     counter = 0
     generate_text_instructions(text)
     @instructions.each_with_index do |instr_arr, i|
+      break if stop_message_proces?
       marker = @markers[i]
       if marker
         call_marker_action(binding, marker)
@@ -446,6 +449,7 @@ class Window_Message < Game_Window
         skip = (counter == -1 || Input.trigger?(:A))
       end
     end
+    return if stop_message_proces?
     generate_choice_window
   end
   # Update the scene and Graphics during the message draw processing
@@ -510,5 +514,13 @@ class Window_Message < Game_Window
     @gold_window.windowskin = self.windowskin
     @gold_window.add_text(0, 0, 96, 16, ::GameData::Text.get(11, 6))
     @gold_window.add_text(0, 16, 96, 16, ::PFM::Text.parse(11, 9, ::PFM::Text::NUM7R => $pokemon_party.money.to_s), 2)
+  end
+
+  private
+
+  # Tell the process method of message to stop processing
+  # @return [Boolean]
+  def stop_message_proces?
+    return $scene.is_a?(Yuki::SoftReset)
   end
 end
