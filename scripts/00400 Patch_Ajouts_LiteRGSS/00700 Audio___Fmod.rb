@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 module Audio
   # Constant adding commande to messages
   COMMAND_TEXT = $RELEASE ? '' : 'Commande : '
@@ -19,7 +17,9 @@ module Audio
   @was_playing_callback = nil
   # List of extension that FmodEx can read (used to find files from names without ext name)
   EXT = ['.ogg', '.mp3', '.wav', '.mid', '.aac', '.wma', '.it', '.xm', '.mod', '.s3m', '.midi']
+
   module_function
+
   # plays a BGM and stop the current one
   # @param file_name [String] name of the audio file
   # @param volume [Integer] volume of the BGM between 0 and 100
@@ -31,12 +31,12 @@ module Audio
     was_playing = was_sound_previously_playing?(file_name.downcase, @bgm_name, @bgm_sound, @bgm_channel, fade_in)
     @bgm_name = file_name.downcase
     fade_in = (fade_in and @bgm_sound and !was_playing)
-    release_fading_sounds((was_playing or fade_in) ? nil : @bgm_sound)
+    release_fading_sounds((was_playing || fade_in) ? nil : @bgm_sound)
     # Unless the sound was playing, we create it
     unless was_playing
       @bgm_sound = @bgm_channel = nil
-      #@bgm_sound = FMOD::System.createSound(filename, FMOD::MODE::LOOP_NORMAL | FMOD::MODE::FMOD_2D, nil)
-      return unless @bgm_sound = Cache.create_sound_sound(filename)
+      # @bgm_sound = FMOD::System.createSound(filename, FMOD::MODE::LOOP_NORMAL | FMOD::MODE::FMOD_2D, nil)
+      return unless (@bgm_sound = Cache.create_sound_sound(filename))
       autoloop(@bgm_sound)
     end
     # we create a channel if there was no channel or the sound was not playing
@@ -44,25 +44,26 @@ module Audio
     adjust_channel(@bgm_channel, volume, pitch)
     @bgm_channel.setDelay(@me_bgm_restart, 0, fade_in = false) if @me_bgm_restart and @me_bgm_restart > @bgm_channel.getDSPClock.last
     fade(fade_in == true ? FadeInTime : fade_in, @bgm_channel, 0, 1.0) if fade_in
-    @fading_sounds.delete(@bgm_sound) #> Reused channel error prevention
+    @fading_sounds.delete(@bgm_sound) # Reused channel error prevention
   rescue FMOD::Error
-    unless File.exist?(filename)
-      print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
-    else
+    if File.exist?(filename)
       cc 0x01
       print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37m#{COMMAND_TEXT}")
+    else
+      print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
     end
+    bgm_stop
   ensure
     call_was_playing_callback
   end
+
   # Returns the BGM position
   # @return [Integer]
   def bgm_position
-    if @bgm_channel
-      return @bgm_channel.getPosition(FMOD::TIMEUNIT::PCM)
-    end
+    return @bgm_channel.getPosition(FMOD::TIMEUNIT::PCM) if @bgm_channel
     return 0
   end
+
   # Set the BGM position
   # @param position [Integer]
   def bgm_position=(position)
@@ -70,6 +71,7 @@ module Audio
       @bgm_channel.setPosition(position, FMOD::TIMEUNIT::PCM)
     end
   end
+
   # Fades the BGM
   # @param time [Integer] fade time in ms
   def bgm_fade(time)
@@ -79,6 +81,7 @@ module Audio
     fade(time, @fading_sounds[sound] = @bgm_channel)
     @bgm_channel = nil
   end
+
   # Stop the BGM
   def bgm_stop
     return unless @bgm_channel
@@ -87,6 +90,7 @@ module Audio
   rescue FMOD::Error => e
     puts e.message if $DEBUG
   end
+
   # plays a BGS and stop the current one
   # @param file_name [String] name of the audio file
   # @param volume [Integer] volume of the BGS between 0 and 100
@@ -98,29 +102,31 @@ module Audio
     was_playing = was_sound_previously_playing?(file_name.downcase, @bgs_name, @bgs_sound, @bgs_channel, fade_in)
     @bgs_name = file_name.downcase
     fade_in = (fade_in and @bgs_sound and !was_playing)
-    release_fading_sounds((was_playing or fade_in) ? nil : @bgs_sound)
+    release_fading_sounds((was_playing || fade_in) ? nil : @bgs_sound)
     # Unless the sound was playing, we create it
     unless was_playing
       @bgs_sound = @bgs_channel = nil
-      #@bgs_sound = FMOD::System.createSound(filename, FMOD::MODE::LOOP_NORMAL | FMOD::MODE::FMOD_2D, nil)
-      return unless @bgs_sound = Cache.create_sound_sound(filename)
+      # @bgs_sound = FMOD::System.createSound(filename, FMOD::MODE::LOOP_NORMAL | FMOD::MODE::FMOD_2D, nil)
+      return unless (@bgs_sound = Cache.create_sound_sound(filename))
       autoloop(@bgs_sound)
     end
     # we create a channel if there was no channel or the sound was not playing
     @bgs_channel = FMOD::System.playSound(@bgs_sound, true) unless was_playing and @bgs_channel
     adjust_channel(@bgs_channel, volume, pitch)
     fade(fade_in == true ? FadeInTime : fade_in, @bgs_channel, 0, 1.0) if fade_in
-    @fading_sounds.delete(@bgs_sound) #> Reused channel error prevention
+    @fading_sounds.delete(@bgs_sound) # Reused channel error prevention
   rescue FMOD::Error
-    unless File.exist?(filename)
-      print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
-    else
+    if File.exist?(filename)
       cc 0x01
       print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37m#{COMMAND_TEXT}")
+    else
+      print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
     end
+    bgs_stop
   ensure
     call_was_playing_callback
   end
+
   # Fades the BGS
   # @param time [Integer] fade time in ms
   def bgs_fade(time)
@@ -130,6 +136,7 @@ module Audio
     fade(time, @fading_sounds[sound] = @bgs_channel)
     @bgs_channel = nil
   end
+
   # Stop the BGS
   def bgs_stop
     return unless @bgs_channel
@@ -138,6 +145,7 @@ module Audio
   rescue FMOD::Error => e
     puts e.message if $DEBUG
   end
+
   # plays a ME and stop the current one, the BGM will be paused during the ME play
   # @param file_name [String] name of the audio file
   # @param volume [Integer] volume of the ME between 0 and 100
@@ -152,14 +160,14 @@ module Audio
     # Unless the sound was playing, we create it
     unless was_playing
       @me_sound = @me_channel = nil
-      return unless @me_sound = Cache.create_sound_sound(filename, FMOD::MODE::LOOP_OFF | FMOD::MODE::FMOD_2D)#FMOD::System.createStream(filename, FMOD::MODE::LOOP_OFF | FMOD::MODE::FMOD_2D, nil)
+      return unless (@me_sound = Cache.create_sound_sound(filename, FMOD::MODE::LOOP_OFF | FMOD::MODE::FMOD_2D)) # FMOD::System.createStream(filename, FMOD::MODE::LOOP_OFF | FMOD::MODE::FMOD_2D, nil)
     end
     # we create a channel if there was no channel or the sound was not playing
     @me_channel = FMOD::System.playSound(@me_sound, true)
     adjust_channel(@me_channel, volume, pitch)
-    @fading_sounds.delete(@me_sound) #> Reused channel error prevention
+    @fading_sounds.delete(@me_sound) # Reused channel error prevention
     return if preserve_bgm
-    if(@bgm_channel)
+    if @bgm_channel
       length = @me_sound.getLength(FMOD::TIMEUNIT::PCM) * 100
       length /= pitch
       @bgm_channel.setDelay(@me_bgm_restart = @bgm_channel.getDSPClock.last + length, 0, false)
@@ -167,29 +175,32 @@ module Audio
       @me_bgm_restart = nil
     end
   rescue FMOD::Error
-    unless File.exist?(filename)
-      print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
-    else
+    if File.exist?(filename)
       cc 0x01
       print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37m#{COMMAND_TEXT}")
+    else
+      print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
     end
+    me_stop
   ensure
     call_was_playing_callback
   end
+
   # Fades the ME
   # @param time [Integer] fade time in ms
   def me_fade(time)
     return unless @me_channel
-    return unless sound = @me_sound
+    return unless (sound = @me_sound)
     return if @fading_sounds[sound]
     fade(time, @me_channel)
-    if(@bgm_channel)
+    if @bgm_channel
       sr = FMOD::System.getSoftwareFormat.first
       delay = @bgm_channel.getDSPClock.last + Integer(time * sr / 1000)
       @bgm_channel.setDelay(delay, 0, false) if !@me_bgm_restart or @me_bgm_restart > delay
     end
     @me_channel = nil
   end
+
   # Stop the ME
   def me_stop
     return unless @me_channel
@@ -199,6 +210,7 @@ module Audio
   rescue FMOD::Error => e
     puts e.message if $DEBUG
   end
+
   # plays a SE if possible
   # @param file_name [String] name of the audio file
   # @param volume [Integer] volume of the SE between 0 and 100
@@ -206,13 +218,13 @@ module Audio
   def se_play(file_name, volume = 100, pitch = 100)
     volume = volume * @sfx_volume / 100
     filename = search_filename(file_name)
-    unless sound = @se_sounds[file_name]
+    unless (sound = @se_sounds[file_name])
       sound = FMOD::System.createStream(filename, FMOD::MODE::LOOP_OFF | FMOD::MODE::FMOD_2D, nil)
-      unless filename.include?('/cries/')
-        @se_sounds[file_name] = sound
-      else
+      if filename.include?('/cries/')
         @cries_stack << sound
         @cries_stack.shift.release if @cries_stack.size > 5
+      else
+        @se_sounds[file_name] = sound
       end
     end
     channel = FMOD::System.playSound(sound, true)
@@ -231,15 +243,15 @@ module Audio
       print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37m#{COMMAND_TEXT}")
     end
   end
-  # stops every SE
+
+  # Stops every SE
   def se_stop
-    @se_sounds.each do |name, sound|
-      sound.release
-    end
-    @cries_stack.each { |sound| sound.release }
+    @se_sounds.each_value(&:release)
+    @cries_stack.each(&:release)
     @cries_stack.clear
     @se_sounds.clear
   end
+
   # Search the real filename of the audio file
   # @param file_name [String] filename of the audio file
   # @return [String] real filename if found or file_name
@@ -247,36 +259,36 @@ module Audio
     file_name = file_name.downcase
     return file_name if File.exist?(file_name)
     EXT.each do |ext|
-      filename = file_name+ext
+      filename = file_name + ext
       return filename if File.exist?(filename)
     end
     return file_name
   end
+
   # Auto loop a music
   # @param sound [FMOD::Sound] the sound that contain the data
   # @note Only works with createSound and should be called before the channel creation
   def autoloop(sound)
-    start = sound.getTag("LOOPSTART", 0)[2].to_i rescue nil
-    length = sound.getTag("LOOPLENGTH", 0)[2].to_i rescue nil
-    unless start and length #< Probably an MP3
+    start = sound.getTag('LOOPSTART', 0)[2].to_i rescue nil
+    length = sound.getTag('LOOPLENGTH', 0)[2].to_i rescue nil
+    unless start && length # Probably an MP3
       index = 0
-      while (tag = sound.getTag("TXXX", index) rescue nil)
+      while (tag = sound.getTag('TXXX', index) rescue nil)
         index += 1
-        if(tag[2].is_a?(String))
-          name, data = tag[2].split("\x00")
-          if name == "LOOPSTART" and !start
-            start = data.to_i
-          elsif name == "LOOPLENGTH" and !length
-            length = data.to_i
-          end
+        next unless tag[2].is_a?(String)
+        name, data = tag[2].split("\x00")
+        if name == 'LOOPSTART' and !start
+          start = data.to_i
+        elsif name == 'LOOPLENGTH' and !length
+          length = data.to_i
         end
       end
     end
-    if start and length
-      print "\rLOOP: #{start} -> #{start+length}\n#{COMMAND_TEXT}" unless $RELEASE
-      sound.setLoopPoints(start, FMOD::TIMEUNIT::PCM, start + length, FMOD::TIMEUNIT::PCM)
-    end
+    return unless start && length
+    print "\rLOOP: #{start} -> #{start+length}\n#{COMMAND_TEXT}" unless $RELEASE
+    sound.setLoopPoints(start, FMOD::TIMEUNIT::PCM, start + length, FMOD::TIMEUNIT::PCM)
   end
+
   # Fade a channel
   # @param time [Integer] number of miliseconds to perform the fade
   # @param channel [FMOD::Channel] the channel to fade
@@ -288,10 +300,11 @@ module Audio
     stop_time = pdsp + Integer(time * sr / 1000)
     channel.addFadePoint(pdsp, start_value)
     channel.addFadePoint(stop_time, end_value)
-    channel.setDelay(0, stop_time + 20, false) if end_value == 0
+    channel.setDelay(0, stop_time + 20, false) if end_value.zero?
     channel.setVolumeRamp(true)
     channel.instance_variable_set(:@stop_time, stop_time)
   end
+
   # Fade in out a channel
   # @param channel [FMOD::Channel] the channel to fade
   # @param fadeout_time [Integer] number of miliseconds to perform the fade out
@@ -312,11 +325,12 @@ module Audio
     channel.addFadePoint(p3_time, 1.0)
     channel.setVolumeRamp(true)
   end
+
   # Try to release all fading sounds that are done fading
   # @param additionnal_sound [FMOD::Sound, nil] a sound that should be released with the others
   # @note : Warning ! Doing sound.release before channel.anything make the channel invalid and raise an FMOD::Error
   def release_fading_sounds(additionnal_sound)
-    if @fading_sounds.size > 0
+    unless @fading_sounds.empty?
       sound_guardian = [@bgm_sound, @bgs_sound, @me_sound]
       sounds_to_delete = []
       @fading_sounds.each do |sound, channel|
@@ -331,6 +345,7 @@ module Audio
     end
     additionnal_sound.release if additionnal_sound
   end
+
   # Function that detects if the previous playing sound is the same as the next one
   # @param filename [String] the filename of the sound
   # @param old_filename [String] the filename of the old sound
@@ -353,6 +368,7 @@ module Audio
     end
     return true
   end
+
   # Adjust channel volume and pitch
   # @param channel [Fmod::Channel]
   # @param volume [Numeric] target volume
@@ -362,13 +378,15 @@ module Audio
     channel.setPitch(pitch / 100.0)
     channel.setPaused(false)
   end
+
   # Automatically call the "was playing callback"
   def call_was_playing_callback
     @was_playing_callback.call if @was_playing_callback
     @was_playing_callback = nil
-  rescue Exception
-
+  rescue StandardError
+    @was_playing_callback = nil
   end
+
   # Reset the sound engine
   def __reset__
     bgm_stop
@@ -379,7 +397,7 @@ module Audio
     @bgs_sound = nil
     @me_sound = nil
     @se_sounds = {}
-    @fading_sounds = {} 
+    @fading_sounds = {}
     @was_playing_callback = nil
   end
 end
