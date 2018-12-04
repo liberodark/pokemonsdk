@@ -11,45 +11,49 @@ module Yuki
     # The number of tiles the Maker has to let in common between each maps
     DeltaMaker = 3
     # The default Map (black borders)
-    DefaultMap = RPG::Map.new(20,15)
-    DefaultMap.data.fill(0)
+    DefaultMap = RPG::Map.new(20, 15)
     # The map filename format
-    Map_Format = "Data/Map%03d.rxdata"
+    Map_Format = 'Data/Map%03d.rxdata'
+
     module_function
+
     # Get the OffsetX
     def get_OffsetX
       return $game_switches[Sw::MapLinkerDisabled] ? 0 : OffsetX
     end
+
     # Get the OffsetY
     def get_OffsetY
       return $game_switches[Sw::MapLinkerDisabled] ? 0 : OffsetY
     end
+
     # Get the added events
     # @return [Hash<Integer => Array<RPG::Event>>] Integer is map_id
     def get_added_events
       return @added_events
     end
+
     # Reset the module when the RGSS resets itself
     def reset
-      #  [n_id, n_addx, e_id, e_addy, s_id, s_addx, o_id, o_addy]
+      # [n_id, n_addx, e_id, e_addy, s_id, s_addx, o_id, o_addy]
       @link_data = nil
-      #> Définition des variables du data
-      @nord_data = nil
-      @est_data = nil
+      # Data of the linked maps
+      @north_data = nil
+      @east_data = nil
       @sud_data = nil
-      @ouest_data = nil
-      #> Données relatives à la dernière map
+      @west_data = nil
+      # Last map information
       @last_map = nil
       @last_map_id = nil
       @last_map_data = nil
       @last_events = nil
-      #> ID du dernier event
       @last_event_id = 0
-      #> Informateur de téléportation
-      @warp = [OffsetY,0,0,OffsetX]
-      #> Information sur les évènements ajoutés
-      @added_events = Hash.new
+      # Warp informations
+      @warp = [OffsetY, 0, 0, OffsetX]
+      # Event added in the map to ensure proper link
+      @added_events = {}
     end
+
     # Load a map and its linked map
     # @param map_id [Integer] the map ID
     # @return [RPG::Map] the map adjusted
@@ -60,84 +64,86 @@ module Yuki
         @last_map_id = map_id
         return current_map_data
       end
-      #> Restauration du data d'origine de la map
+      # Reset the last map data to its original state
       if @last_map
         @last_map.data = @last_map_data
         @last_map.events = @last_events
-        @last_map.width -= OffsetX*2
-        @last_map.height -= OffsetY*2
+        @last_map.width -= OffsetX * 2
+        @last_map.height -= OffsetY * 2
       end
-      #> Chargement de la nouvelle map
+      # Load the new map
       current_map_data = load_map_data(map_id).clone
-      #> Génération de la grille / décallage des évents / Gestion des systemTag
+      # Generate the new grid / shift events / Manage systemTags
       generate_map_grid(current_map_data, map_id)
-      #> Chargement des données de liaison
+      # Load link data
       link_data = $game_data_maplinks[map_id]
       if link_data
-        nord_data = load_map_data(link_data[0])
+        north_data = load_map_data(link_data[0])
         est_data = load_map_data(link_data[2])
         sud_data = load_map_data(link_data[4])
-        ouest_data = load_map_data(link_data[6])
+        west_data = load_map_data(link_data[6])
       else
-        nord_data = est_data = sud_data = ouest_data = load_map_data(0)
+        north_data = est_data = sud_data = west_data = load_map_data(0)
       end
       @link_data = link_data
-      #> Génération des liaisons de la grille + chargement évent
+      # Generate the grid and try to load the events
       if link_data
         @added_events.clear
-        generate_map_data_link(current_map_data, nord_data, est_data, 
-          sud_data, ouest_data)
+        generate_map_data_link(current_map_data, north_data, est_data, sud_data, west_data)
       end
-      #> Enregistrement des données
-      @nord_data = nord_data
-      @est_data = est_data
+      # Save the data
+      @north_data = north_data
+      @east_data = est_data
       @sud_data = sud_data
-      @ouest_data = ouest_data
+      @west_data = west_data
       @last_map = current_map_data
       @last_map_id = map_id
       @warp[1] = current_map_data.data.xsize - OffsetX - DeltaMaker + 1
       @warp[2] = current_map_data.data.ysize - OffsetY - DeltaMaker + 1
-      #> Chargement des musiques d'autres maps
-      #autoload_sounds(map_id)
-      #> Retour des données attendues
+      # Preload the music of the other map
+      # autoload_sounds(map_id)
+      # Return the expected data
       return current_map_data
     end
+
     # Load the data of a map (with some optimizations)
     # @param map_id [Integer] the id of the Map
     # @return [RPG::Map]
     def load_map_data(map_id)
-      return DefaultMap if map_id == 0 #> Map nulle
-      return @last_map if map_id == @last_map_id #> Map d'où on vient
-      if link_data = @link_data #> Une des map linké
-        return @nord_data if map_id == link_data[0]
-        return @est_data if map_id == link_data[2]
+      return DefaultMap if map_id.zero?
+      return @last_map if map_id == @last_map_id
+      if link_data = @link_data # Une des map linké
+        return @north_data if map_id == link_data[0]
+        return @east_data if map_id == link_data[2]
         return @sud_data if map_id == link_data[4]
-        return @ouest_data if map_id == link_data[6]
+        return @west_data if map_id == link_data[6]
       end
-      return load_data(sprintf(Map_Format, map_id))
+      return load_data(format(Map_Format, map_id))
+    rescue StandardError
+      return RPG::Map.new(20, 15)
     end
+
     # Shift the map of OffsetX, OffsetY on a larger map grid
-    def generate_map_grid(data, map_id)
+    def generate_map_grid(data, _map_id)
       last_map_data = data.data
-      tbl = Table.new(last_map_data.xsize + OffsetX*2, last_map_data.ysize + OffsetY*2, 3)
+      tbl = Table.new(last_map_data.xsize + OffsetX * 2, last_map_data.ysize + OffsetY * 2, 3)
       tbl.fill(0)
-      tag = Table.new(tbl.xsize, tbl.ysize, 3)
-      x = y = z = x2 = nil
+      x2 = nil
       last_event_id = 0
       ox = OffsetX
       oy = OffsetY
-      #> Clonage des données avec offset
+      # Clone the tiles with the correct offset
       3.times do |z|
         last_map_data.xsize.times do |x|
           x2 = x + ox
           last_map_data.ysize.times do |y|
-            tbl[x2, y+oy, z] = last_map_data[x, y, z]
+            tbl[x2, y + oy, z] = last_map_data[x, y, z]
           end
         end
       end
-      #> Recalibration des évents
+      # Adjust the event position
       events = data.events
-      nevent = Hash.new
+      nevent = {}
       tmpevt = nil
       events.each do |id, event|
         nevent[id] = tmpevt = event.clone
@@ -145,138 +151,82 @@ module Yuki
         tmpevt.y += OffsetY
         last_event_id = id if id > last_event_id
       end
-      #> Redéfinition des variables
+      # Save the old data and set the new data
       @last_map_data = last_map_data
       @last_events = events
       @last_event_id = last_event_id
       data.events = nevent
       data.data = tbl
-      data.width += OffsetX*2
-      data.height += OffsetY*2
+      data.width += OffsetX * 2
+      data.height += OffsetY * 2
     end
+
     # Generate the link (tile copy / event copy)
     # @param data [RPG::Map] the current map
-    # @param nord_data [RPG::Map] the north map
+    # @param north_data [RPG::Map] the north map
     # @param est_data [RPG::Map] the east map
-    # @param ouest_data [RPG::Map] the west map
-    def generate_map_data_link(data, nord_data, est_data, sud_data, ouest_data)
+    # @param west_data [RPG::Map] the west map
+    def generate_map_data_link(data, north_data, est_data, sud_data, west_data)
       tbl = data.data
-      x = y = z = ox = oy = modulo = id = event = nevent = nil
+      ox = oy = modulo = nil
       last_event_id = @last_event_id
       events = data.events
       link_data = @link_data
       3.times do |z|
-        #> Traitement du nord
+        # Clone north tiles
         ox = link_data[1] + OffsetX
-        oy = nord_data.height - OffsetY - DeltaMaker
-        modulo = nord_data.width
-        data = nord_data.data
+        oy = north_data.height - OffsetY - DeltaMaker
+        modulo = north_data.width
+        data = north_data.data
         OffsetY.times do |y|
-          tbl.xsize.times do |x|
-            tbl[x, y, z] = data[(x - ox)%modulo, y+oy, z]
-          end
+          tbl.xsize.times { |x| tbl[x, y, z] = data[(x - ox) % modulo, y + oy, z] }
         end
-        #> Traitement du sud
+        # Clone south tiles
         ox = link_data[5] + OffsetX
         oy = tbl.ysize - OffsetY - DeltaMaker
         modulo = sud_data.width
         data = sud_data.data
-        DeltaMaker.upto(OffsetY+DeltaMaker-1) do |y|
-          tbl.xsize.times do |x|
-            tbl[x, y+oy, z] = data[(x - ox)%modulo, y, z]
-          end
+        DeltaMaker.upto(OffsetY + DeltaMaker - 1) do |y|
+          tbl.xsize.times { |x| tbl[x, y + oy, z] = data[(x - ox) % modulo, y, z] }
         end
-        #> Traitement de l'ouest
-        ox = ouest_data.width - OffsetX - DeltaMaker
+        # Clone the west tiles
+        ox = west_data.width - OffsetX - DeltaMaker
         oy = OffsetY + link_data[7]
-        modulo = ouest_data.height
-        data = ouest_data.data
-        OffsetY.upto(tbl.ysize-OffsetY-1)  do |y|
-          OffsetX.times do |x|
-            tbl[x, y, z] = data[x + ox, (y-oy)%modulo, z]
-          end
+        modulo = west_data.height
+        data = west_data.data
+        OffsetY.upto(tbl.ysize - OffsetY - 1) do |y|
+          OffsetX.times { |x| tbl[x, y, z] = data[x + ox, (y - oy) % modulo, z] }
         end
-        #> Traitement de l'est
+        # Clone east tiles
         ox = tbl.xsize - OffsetX - DeltaMaker
         oy = link_data[3] + OffsetY
         modulo = est_data.height
         data = est_data.data
-        OffsetY.upto(tbl.ysize-OffsetY-1) do |y|
-          DeltaMaker.upto(OffsetX+DeltaMaker-1) do |x|
-            tbl[x + ox, y, z] = data[x, (y - oy)%modulo, z]
+        OffsetY.upto(tbl.ysize - OffsetY - 1) do |y|
+          DeltaMaker.upto(OffsetX + DeltaMaker - 1) do |x|
+            tbl[x + ox, y, z] = data[x, (y - oy) % modulo, z]
           end
         end
       end
-      #> Copie des évents nord
-      oy = nord_data.height - OffsetY - DeltaMaker
-      last_event_id = ajust_events(nord_data, oy, 
-        ouest_data.height - DeltaMaker - 1, link_data[1] + OffsetX, -oy, 
-        last_event_id, events, link_data[0], :y)
-=begin
-      ox = link_data[1] + OffsetX
-      oy = nord_data.height - OffsetY - DeltaMaker
-      y = ouest_data.height - DeltaMaker - 1
-      nord_data.events.each do |id, event|
-        if event.y.between?(oy, y)
-          events[last_event_id+=1] = nevent = event.clone
-          nevent.x += ox
-          nevent.y -= oy
-          nevent.id = last_event_id
-        end
-      end
-=end
-      #> Copie des évents sud
-      last_event_id = ajust_events(sud_data, DeltaMaker, 
-        OffsetY + DeltaMaker - 1, link_data[5] + OffsetX, 
-        tbl.ysize - OffsetY - DeltaMaker, last_event_id, events, link_data[4], :y)
-=begin
-      ox = link_data[5] + OffsetX
-      oy = tbl.ysize - OffsetY - DeltaMaker
-      y = OffsetY + DeltaMaker - 1
-      sud_data.events.each do |id, event|
-        if event.y.between?(DeltaMaker,y)
-          events[last_event_id+=1] = nevent = event.clone
-          nevent.x += ox
-          nevent.y += oy
-          nevent.id = last_event_id
-        end
-      end
-=end
-      #> Copie des évents ouest
-      ox = ouest_data.width - OffsetX - DeltaMaker
-      last_event_id = ajust_events(ouest_data, ox, ouest_data.width - DeltaMaker - 1, 
-        -ox, link_data[7] + OffsetY, last_event_id, events, link_data[6])
-=begin
-      oy = link_data[7] + OffsetY
-      ox = ouest_data.width - OffsetX - DeltaMaker
-      x = ouest_data.width - DeltaMaker - 1
-      ouest_data.events.each do |id, event|
-        if event.x.between?(ox, x)
-          events[last_event_id+=1] = nevent = event.clone
-          nevent.x -= ox
-          nevent.y += oy
-          nevent.id = last_event_id
-        end
-      end
-=end
-      #> Copie des évents est
-      last_event_id = ajust_events(est_data, DeltaMaker, 
-        OffsetX + DeltaMaker - 1, tbl.xsize - OffsetX - DeltaMaker, 
-        link_data[3] + OffsetY, last_event_id, events, link_data[2])
-=begin
-      oy = link_data[3] + OffsetY
-      ox = tbl.xsize - OffsetX - DeltaMaker
-      x = OffsetX + DeltaMaker - 1
-      est_data.events.each do |id, event|
-        if event.x.between?(DeltaMaker, x)
-          events[last_event_id+=1] = nevent = event.clone
-          nevent.x += ox
-          nevent.y += oy
-          nevent.id = last_event_id
-        end
-      end
-=end
+      # Copy the north events
+      oy = north_data.height - OffsetY - DeltaMaker
+      last_event_id = ajust_events(north_data, oy, north_data.height - DeltaMaker - 1,
+                                   link_data[1] + OffsetX, -oy, last_event_id,
+                                   events, link_data[0], :y)
+      # Copy the south events
+      last_event_id = ajust_events(sud_data, DeltaMaker, OffsetY + DeltaMaker - 1,
+                                   link_data[5] + OffsetX, tbl.ysize - OffsetY - DeltaMaker,
+                                   last_event_id, events, link_data[4], :y)
+      # Copy the west events
+      ox = west_data.width - OffsetX - DeltaMaker
+      last_event_id = ajust_events(west_data, ox, west_data.width - DeltaMaker - 1, -ox, 
+                                   link_data[7] + OffsetY, last_event_id, events, link_data[6])
+      # Copy the east event
+      ajust_events(est_data, DeltaMaker, OffsetX + DeltaMaker - 1,
+                   tbl.xsize - OffsetX - DeltaMaker, link_data[3] + OffsetY,
+                   last_event_id, events, link_data[2])
     end
+
     # Adjust the event position and id. Move them on the current map
     # @param data [RPG::Map] the map where the event normally are
     # @param min [Integer] the min position where the event can be to be cloned
@@ -291,56 +241,56 @@ module Yuki
     def ajust_events(data, min, max, ox, oy, last_event_id, events, map_id, type = :x)
       added_events = @added_events[map_id] = []
       nevent = nil
-      id = nil
-      event = nil
       env = $env
       data.events.each do |id, event|
-        if event.send(type).between?(min, max)
-          next if env.get_event_delete_state(id, map_id)
-          events[last_event_id+=1] = nevent = event.clone
-          nevent.x += ox
-          nevent.y += oy
-          nevent.id = last_event_id
-          nevent.original_id = id
-          nevent.original_map = map_id
-          nevent.offset_x = ox
-          nevent.offset_y = oy
-          added_events << nevent
-        end
+        next unless event.send(type).between?(min, max)
+        next if env.get_event_delete_state(id, map_id)
+        events[last_event_id += 1] = nevent = event.clone
+        nevent.x += ox
+        nevent.y += oy
+        nevent.id = last_event_id
+        nevent.original_id = id
+        nevent.original_map = map_id
+        nevent.offset_x = ox
+        nevent.offset_y = oy
+        added_events << nevent
       end
       return last_event_id
     end
+
     # Autoload the sounds of the other maps
     # @param map_id [Integer] id of the map the player warped
     def autoload_sounds(map_id)
       print "\rMapLinker autoload sounds...\nCommande : " unless $RELEASE
       args = []
-      [@nord_data, @est_data, @sud_data, @ouest_data].each do |data|
+      [@north_data, @east_data, @sud_data, @west_data].each do |data|
         next unless data
         args << "audio/bgm/#{data.bgm.name.downcase}" if data.autoplay_bgm
         args << "audio/bgm/#{data.bgs.name.downcase}" if data.autoplay_bgs
       end
       Audio::Cache.autoload_sounds(map_id, *args)
     end
+
     # Test if the player can warp between maps and warp him
     def test_warp
       return unless @link_data
       x = $game_player.x
       y = $game_player.y
-      #> Nord
+      # Nord
       if y <= @warp[0]
-        warp(@link_data[0], x - @link_data[1] - OffsetX, @nord_data.height - DeltaMaker)
-      #> Est
+        warp(@link_data[0], x - @link_data[1] - OffsetX, @north_data.height - DeltaMaker)
+      # Est
       elsif x >= @warp[1]
         warp(@link_data[2], DeltaMaker - 2, y - @link_data[3] - OffsetY)
-      #> Sud
+      # Sud
       elsif y >= @warp[2]
         warp(@link_data[4], x - @link_data[5] - OffsetX, DeltaMaker - 2)
-      #> Ouest
+      # Ouest
       elsif x <= @warp[3]
-        warp(@link_data[6], @ouest_data.width - DeltaMaker, y - @link_data[7] - OffsetY)
+        warp(@link_data[6], @west_data.width - DeltaMaker, y - @link_data[7] - OffsetY)
       end
     end
+
     # Warp a player to a new map and a new location
     # @param map_id [Integer] the ID of the new map
     # @param x [Integer] the new x position of the player
@@ -353,25 +303,26 @@ module Yuki
       $game_temp.player_new_y = y + OffsetY
       $game_temp.player_new_direction = $game_player.direction
     end
+
     # Load the buildings of the map (Building System)
     def load_buildings
       load_building(@last_map_id, 0, 0)
-      return unless link_data = @link_data
-      load_building(link_data[0], DeltaMaker, -@nord_data.height + DeltaMaker, :nord)
+      return unless (link_data = @link_data)
+      load_building(link_data[0], DeltaMaker, -@north_data.height + DeltaMaker, :nord)
       load_building(link_data[2], @last_map.width - OffsetX * 2 - DeltaMaker, -DeltaMaker, :est)
       load_building(link_data[4], -DeltaMaker, @last_map.height - OffsetY * 2 - DeltaMaker, :sud)
-      load_building(link_data[6], -@ouest_data.width + DeltaMaker, DeltaMaker, :ouest)
+      load_building(link_data[6], -@west_data.width + DeltaMaker, DeltaMaker, :ouest)
     end
+
     # Path of the building data
-    BPath = "Data/Buildings/%03d.rxdata"
+    BPath = 'Data/Buildings/%03d.rxdata'
     # Load the bulding of a map
     # @param map_id [Integer] the id of the map
     # @param ox [Integer] the offset x of the map
     # @param oy [Integer] the offset y of the map
     # @param check [Symbol, false] the criteria to check to show a building
     def load_building(map_id, ox, oy, check = false)
-      if File.exist?(filename = sprintf(BPath, map_id))
-        mod = Particles
+      if File.exist?(filename = format(BPath, map_id))
         arr = load_data(filename)
         arr.each do |args|
           if check

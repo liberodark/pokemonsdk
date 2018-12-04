@@ -417,6 +417,7 @@ module RPG
       @encounter_list = []
       @encounter_step = 30
       @data = Table.new(width, height, 3)
+      @data.fill(0)
       @events = {}
     end
     attr_accessor :tileset_id
