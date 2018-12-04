@@ -33,7 +33,6 @@ unless PARGV[:worldmap] or PARGV[:"animation-editor"] or PARGV[:test] or PARGV[:
         GC.start
         # Reloading required ressources
         Graphics.init_sprite
-        RPG::Cache.default_bitmap
         Graphics.transition(1)
         ts = 0.1
         sleep(ts) while Keyboard.press?(Keyboard::F12)
