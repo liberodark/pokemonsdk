@@ -289,6 +289,7 @@ class Scene_Map
   end
   # Teleport the play between map or inside the map
   def transfer_player
+    Yuki::ElapsedTime.start(:transfer_player)
     #> Calculations
     transfer_player_begin
     #> Adjustment of the Spriteset Data
@@ -306,6 +307,7 @@ class Scene_Map
     transfer_player_specific_transition unless transition_sprite
     @spriteset.reload(zone)
     ::Scheduler.start(:on_warp_end)
+    Yuki::ElapsedTime.show(:transfer_player, 'Transfering player took')
     # フレームリセット
     Graphics.frame_reset
     #> Transition processing

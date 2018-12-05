@@ -58,6 +58,7 @@ module Yuki
     # @param map_id [Integer] the map ID
     # @return [RPG::Map] the map adjusted
     def load_map(map_id)
+      Yuki::ElapsedTime.start(:maplinker)
       if $game_switches[Sw::MapLinkerDisabled]
         @link_data = nil
         @last_map = current_map_data = load_map_data(map_id)
@@ -73,8 +74,10 @@ module Yuki
       end
       # Load the new map
       current_map_data = load_map_data(map_id).clone
+      Yuki::ElapsedTime.show(:maplinker, 'Loading the map data took')
       # Generate the new grid / shift events / Manage systemTags
       generate_map_grid(current_map_data, map_id)
+      Yuki::ElapsedTime.show(:maplinker, 'Generating the grid took')
       # Load link data
       link_data = $game_data_maplinks[map_id]
       if link_data
@@ -82,6 +85,7 @@ module Yuki
         est_data = load_map_data(link_data[2])
         sud_data = load_map_data(link_data[4])
         west_data = load_map_data(link_data[6])
+        Yuki::ElapsedTime.show(:maplinker, 'Loading the map links took')
       else
         north_data = est_data = sud_data = west_data = load_map_data(0)
       end
@@ -90,6 +94,7 @@ module Yuki
       if link_data
         @added_events.clear
         generate_map_data_link(current_map_data, north_data, est_data, sud_data, west_data)
+        Yuki::ElapsedTime.show(:maplinker, 'Loading the linked events took')
       end
       # Save the data
       @north_data = north_data

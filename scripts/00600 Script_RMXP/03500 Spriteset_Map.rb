@@ -14,6 +14,7 @@ class Spriteset_Map
     @viewport1 = Viewport.create(:main, 0)
     @viewport2 = Viewport.create(:main, 200)
     @viewport3 = Viewport.create(:main, 5000)
+    Yuki::ElapsedTime.start(:spriteset_map)
     init_tilemap
     init_panorama_fog
     init_psdk_add
@@ -22,16 +23,19 @@ class Spriteset_Map
     init_weather_picture_timer
     finish_init(zone)
   end
+
   # Do the same as initialize but without viewport initialization (opti)
   # @param zone [Integer, nil] the id of the zone where the player is
   def reload(zone = nil)
-    dispose_sp_map if(@sp_bg)
+    Yuki::ElapsedTime.start(:spriteset_map)
+    dispose_sp_map if @sp_bg
     init_tilemap
     init_psdk_add
     init_characters
     init_player
     finish_init(zone)
   end
+
   # Last step of the Spriteset initialization
   # @param zone [Integer, nil] the id of the zone where the player is
   def finish_init(zone)
@@ -40,19 +44,29 @@ class Spriteset_Map
     Yuki::TJN.force_update_tone
     Yuki::TJN.update
     Yuki::MapLinker.load_buildings
+    Yuki::ElapsedTime.show(:spriteset_map, 'End of spriteset init took')
     update
     Graphics.sort_z
   end
+
+  # Return the prefered tilemap class
+  # @return [Class]
+  def tilemap_class
+    # ((::Config::Yuri_Tilemap_Disabled or $zoom_factor == 2) ? Tilemap : Yuri_Tilemap)
+    return Yuri_Tilemap
+  end
+
   # Tilemap initialization
   def init_tilemap
     # タイルマップを作成
-    #>Adapter en fonction du jeu, sur Pokémon SDK 2x2 => 32x32
-    tilemap_class = Yuri_Tilemap#((::Config::Yuri_Tilemap_Disabled or $zoom_factor == 2) ? Tilemap : Yuri_Tilemap)
+    tilemap_class = self.tilemap_class
     if @tilemap.class != tilemap_class
       @tilemap.dispose if @tilemap
       @tilemap = tilemap_class.new(@viewport1)
     end
+    Yuki::ElapsedTime.show(:spriteset_map, 'Creating tilemap object took')
     @tilemap.tileset = RPG::Cache.tileset($game_map.tileset_name)
+    Yuki::ElapsedTime.show(:spriteset_map, 'Loading tileset took')
     7.times do |i|
       filename = $game_map.autotile_names[i] + '_._tiled'
       unless RPG::Cache.autotile_exist?(filename)
@@ -61,10 +75,13 @@ class Spriteset_Map
       filename = $game_map.autotile_names[i] unless RPG::Cache.autotile_exist?(filename)
       @tilemap.autotiles[i] = RPG::Cache.autotile(filename)
     end
+    Yuki::ElapsedTime.show(:spriteset_map, 'Loading autotiles took')
     @tilemap.map_data = $game_map.data
     @tilemap.priorities = $game_map.priorities
     @tilemap.reset
+    Yuki::ElapsedTime.show(:spriteset_map, 'Resetting the tilemap took')
   end
+
   # Panorama and fog initialization
   def init_panorama_fog
     # パノラマプレーンを作成
@@ -74,17 +91,20 @@ class Spriteset_Map
     @fog = Plane.new(@viewport1)
     @fog.z = 3000
   end
+
   # PSDK related thing initialization
   def init_psdk_add
-    #Particles System Add
-    Yuki::Particles::init(@viewport1)
-    Yuki::Particles::set_on_teleportation(true)
-    Yuki::FollowMe::init(@viewport1)
+    Yuki::ElapsedTime.start(:spriteset_map)
+    Yuki::Particles.init(@viewport1)
+    Yuki::Particles.set_on_teleportation(true)
+    Yuki::FollowMe.init(@viewport1)
+    Yuki::ElapsedTime.show(:spriteset_map, 'Loading FollowMe & Particle took')
   end
+
   # Sprite_Character initialization
   def init_characters
     # キャラクタースプライトを作成
-    if character_sprites = @character_sprites
+    if (character_sprites = @character_sprites)
       $game_map.events.size.upto(character_sprites.size - 1) do |i|
         character_sprites[i].dispose
         character_sprites[i] = nil
@@ -100,6 +120,7 @@ class Spriteset_Map
           character_sprites[i] = Sprite_Character.new(@viewport1, event)
         end
       end
+      Yuki::ElapsedTime.show(:spriteset_map, 'Fast character sprite creation took')
       return
     end
     @character_sprites = character_sprites = []
@@ -108,6 +129,7 @@ class Spriteset_Map
       event.particle_push
       character_sprites.push(sprite)
     end
+    Yuki::ElapsedTime.show(:spriteset_map, 'Slow character sprite creation took')
   end
   # Player initialization
   def init_player
@@ -116,8 +138,9 @@ class Spriteset_Map
     Yuki::FollowMe::particle_push
     @character_sprites.push(@game_player_sprite = Sprite_Character.new(@viewport1, $game_player))
     $game_player.particle_push
-    Yuki::Particles::update
-    Yuki::Particles::set_on_teleportation(false)
+    Yuki::Particles.update
+    Yuki::Particles.set_on_teleportation(false)
+    Yuki::ElapsedTime.show(:spriteset_map, 'init_player took')
   end
   # Weather, picture and timer initialization
   def init_weather_picture_timer
@@ -126,8 +149,7 @@ class Spriteset_Map
     # ピクチャを作成
     @picture_sprites = []
     for i in 1..50
-      @picture_sprites.push(Sprite_Picture.new(@viewport2,
-        $game_screen.pictures[i]))
+      @picture_sprites.push(Sprite_Picture.new(@viewport2, $game_screen.pictures[i]))
     end
     # タイマースプライトを作成
     @timer_sprite = Sprite_Timer.new

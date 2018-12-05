@@ -35,10 +35,12 @@ class Game_Map
   # setup the Game_Map object with the right Map data
   # @param map_id [Integer] the ID of the map
   def setup(map_id)
+    Yuki::ElapsedTime.start(:map_loading)
     # マップ ID を @map_id に記憶
     @map_id = map_id
     # マップをファイルからロードし、@map に設定
     @map = Yuki::MapLinker.load_map(@map_id)
+    Yuki::ElapsedTime.show(:map_loading, 'MapLinker.load_map took')
     # 公開インスタンス変数にタイルセットの情報を設定
     load_systemtags
     tileset = $data_tilesets[@map.tileset_id]
@@ -69,16 +71,16 @@ class Game_Map
     @events = {}
     @map.events.each do |i, event|
       next if env.get_event_delete_state(i)
-      event.name.force_encoding(Encoding::UTF_8) #£EncodingPatch
+      event.name.force_encoding(Encoding::UTF_8) # £EncodingPatch
       @events[i] = Game_Event.new(@map_id, event)
-    #for i in @map.events.keys
-    #  @events[i] = Game_Event.new(@map_id, event = @map.events[i])
     end
+    Yuki::ElapsedTime.show(:map_loading, 'Loading events took')
     # コモンイベントのデータを設定
     @common_events = {}
-    for i in 1...$data_common_events.size
+    1.upto($data_common_events.size - 1) do |i|
       @common_events[i] = Game_CommonEvent.new(i)
     end
+    Yuki::ElapsedTime.show(:map_loading, 'Loading common events took')
     # フォグの各情報を初期化
     @fog_ox = 0
     @fog_oy = 0
