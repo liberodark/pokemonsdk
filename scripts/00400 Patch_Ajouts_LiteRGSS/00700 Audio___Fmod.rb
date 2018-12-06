@@ -15,6 +15,10 @@ module Audio
   @fading_sounds = {} # Sound => Channel
   @cries_stack = []
   @was_playing_callback = nil
+  # Mutex that ensure the BGM doesn't load two sounds at the same time
+  @bgm_mutex = Mutex.new
+  @bgs_mutex = Mutex.new
+  @me_mutex = Mutex.new
   # List of extension that FmodEx can read (used to find files from names without ext name)
   EXT = ['.ogg', '.mp3', '.wav', '.mid', '.aac', '.wma', '.it', '.xm', '.mod', '.s3m', '.midi']
 
@@ -26,6 +30,17 @@ module Audio
   # @param pitch [Integer] speed of the BGM in percent
   # @param fade_in [Boolean, Integer] if the BGM fades in when different (or time in ms)
   def bgm_play(file_name, volume = 100, pitch = 100, fade_in = true)
+    Thread.new do
+      @bgm_mutex.synchronize { bgm_play_internal(file_name, volume, pitch, fade_in) }
+    end
+  end
+
+  # plays a BGM and stop the current one
+  # @param file_name [String] name of the audio file
+  # @param volume [Integer] volume of the BGM between 0 and 100
+  # @param pitch [Integer] speed of the BGM in percent
+  # @param fade_in [Boolean, Integer] if the BGM fades in when different (or time in ms)
+  def bgm_play_internal(file_name, volume, pitch, fade_in)
     volume = volume * @music_volume / 100
     filename = search_filename(file_name)
     was_playing = was_sound_previously_playing?(file_name.downcase, @bgm_name, @bgm_sound, @bgm_channel, fade_in)
@@ -60,33 +75,39 @@ module Audio
   # Returns the BGM position
   # @return [Integer]
   def bgm_position
-    return @bgm_channel.getPosition(FMOD::TIMEUNIT::PCM) if @bgm_channel
+    @bgm_mutex.synchronize do
+      return @bgm_channel.getPosition(FMOD::TIMEUNIT::PCM) if @bgm_channel
+    end
     return 0
   end
 
   # Set the BGM position
   # @param position [Integer]
   def bgm_position=(position)
-    if @bgm_channel
-      @bgm_channel.setPosition(position, FMOD::TIMEUNIT::PCM)
+    @bgm_mutex.synchronize do
+      @bgm_channel.setPosition(position, FMOD::TIMEUNIT::PCM) if @bgm_channel
     end
   end
 
   # Fades the BGM
   # @param time [Integer] fade time in ms
   def bgm_fade(time)
-    return unless @bgm_channel
-    return unless sound = @bgm_sound
-    return if @fading_sounds[sound]
-    fade(time, @fading_sounds[sound] = @bgm_channel)
-    @bgm_channel = nil
+    @bgm_mutex.synchronize do
+      return unless @bgm_channel
+      return unless (sound = @bgm_sound)
+      return if @fading_sounds[sound]
+      fade(time, @fading_sounds[sound] = @bgm_channel)
+      @bgm_channel = nil
+    end
   end
 
   # Stop the BGM
   def bgm_stop
-    return unless @bgm_channel
-    @bgm_channel.stop
-    @bgm_channel = nil
+    @bgm_mutex.synchronize do
+      return unless @bgm_channel
+      @bgm_channel.stop
+      @bgm_channel = nil
+    end
   rescue FMOD::Error => e
     puts e.message if $DEBUG
   end
@@ -97,6 +118,17 @@ module Audio
   # @param pitch [Integer] speed of the BGS in percent
   # @param fade_in [Boolean, Integer] if the BGS fades in when different (Integer = time to fade)
   def bgs_play(file_name, volume = 100, pitch = 100, fade_in = true)
+    Thread.new do
+      @bgs_mutex.synchronize { bgs_play_internal(file_name, volume, pitch, fade_in) }
+    end
+  end
+
+  # plays a BGS and stop the current one
+  # @param file_name [String] name of the audio file
+  # @param volume [Integer] volume of the BGS between 0 and 100
+  # @param pitch [Integer] speed of the BGS in percent
+  # @param fade_in [Boolean, Integer] if the BGS fades in when different (Integer = time to fade)
+  def bgs_play_internal(file_name, volume, pitch, fade_in)
     volume = volume * @sfx_volume / 100
     filename = search_filename(file_name)
     was_playing = was_sound_previously_playing?(file_name.downcase, @bgs_name, @bgs_sound, @bgs_channel, fade_in)
@@ -130,18 +162,22 @@ module Audio
   # Fades the BGS
   # @param time [Integer] fade time in ms
   def bgs_fade(time)
-    return unless @bgs_channel
-    return unless sound = @bgs_sound
-    return if @fading_sounds[sound]
-    fade(time, @fading_sounds[sound] = @bgs_channel)
-    @bgs_channel = nil
+    @bgs_mutex.synchronize do
+      return unless @bgs_channel
+      return unless (sound = @bgs_sound)
+      return if @fading_sounds[sound]
+      fade(time, @fading_sounds[sound] = @bgs_channel)
+      @bgs_channel = nil
+    end
   end
 
   # Stop the BGS
   def bgs_stop
-    return unless @bgs_channel
-    @bgs_channel.stop
-    @bgs_channel = nil
+    @bgs_mutex.synchronize do
+      return unless @bgs_channel
+      @bgs_channel.stop
+      @bgs_channel = nil
+    end
   rescue FMOD::Error => e
     puts e.message if $DEBUG
   end
@@ -152,6 +188,21 @@ module Audio
   # @param pitch [Integer] speed of the ME in percent
   # @param preserve_bgm [Boolean] tell the function not to pause the bgm
   def me_play(file_name, volume = 100, pitch = 100, preserve_bgm = false)
+    Thread.new do
+      @bgm_mutex.synchronize do
+        @me_mutex.synchronize do
+          me_play_internal(file_name, volume, pitch, preserve_bgm)
+        end
+      end
+    end
+  end
+
+  # plays a ME and stop the current one, the BGM will be paused during the ME play
+  # @param file_name [String] name of the audio file
+  # @param volume [Integer] volume of the ME between 0 and 100
+  # @param pitch [Integer] speed of the ME in percent
+  # @param preserve_bgm [Boolean] tell the function not to pause the bgm
+  def me_play_internal(file_name, volume, pitch, preserve_bgm)
     volume = volume * @music_volume / 100
     filename = search_filename(file_name)
     was_playing = was_sound_previously_playing?(file_name.downcase, @me_name, @me_sound, @me_channel)
@@ -189,24 +240,28 @@ module Audio
   # Fades the ME
   # @param time [Integer] fade time in ms
   def me_fade(time)
-    return unless @me_channel
-    return unless (sound = @me_sound)
-    return if @fading_sounds[sound]
-    fade(time, @me_channel)
-    if @bgm_channel
-      sr = FMOD::System.getSoftwareFormat.first
-      delay = @bgm_channel.getDSPClock.last + Integer(time * sr / 1000)
-      @bgm_channel.setDelay(delay, 0, false) if !@me_bgm_restart or @me_bgm_restart > delay
+    @me_mutex.synchronize do
+      return unless @me_channel
+      return unless (sound = @me_sound)
+      return if @fading_sounds[sound]
+      fade(time, @me_channel)
+      if @bgm_channel
+        sr = FMOD::System.getSoftwareFormat.first
+        delay = @bgm_channel.getDSPClock.last + Integer(time * sr / 1000)
+        @bgm_channel.setDelay(delay, 0, false) if !@me_bgm_restart or @me_bgm_restart > delay
+      end
+      @me_channel = nil
     end
-    @me_channel = nil
   end
 
   # Stop the ME
   def me_stop
-    return unless @me_channel
-    @bgm_channel.setDelay(0, 0, false) if @bgm_channel
-    @me_channel.stop
-    @me_channel = nil
+    @me_mutex.synchronize do
+      return unless @me_channel
+      @bgm_channel.setDelay(0, 0, false) if @bgm_channel
+      @me_channel.stop
+      @me_channel = nil
+    end
   rescue FMOD::Error => e
     puts e.message if $DEBUG
   end
