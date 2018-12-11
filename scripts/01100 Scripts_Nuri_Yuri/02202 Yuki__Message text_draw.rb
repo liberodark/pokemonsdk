@@ -1,0 +1,215 @@
+module Yuki
+  class Message
+    # Anti-slash character
+    S_sl = "\\"
+    # Protected Anti-Slash (special_command processing)
+    S_000 = "\000"
+    # Color change char
+    S_001 = "\001"
+    # Wait char
+    S_002 = "\x02"
+    # New Line char (add line_height to y)
+    S_n = "\n"
+
+    private
+
+    # Generate the list of text refresh instruction
+    # @param text [String]
+    def generate_text_instructions(text)
+      max_width = width - ox * 2
+      markers = []
+      text.gsub!(/([\x01-\x0F])\[([0-9]+)\]/) { markers << [$1.getbyte(0), $2.to_i]; S_000 }
+      texts = text.split(S_000)
+      if texts.first.empty?
+        texts.shift
+      else # when blabla\c[1]blabla
+        markers.insert(0, [1, get_default_color])
+      end
+      instructions = []
+      x = 0
+      texts.each { |sub_text| x = adjust_text_lines(x, max_width, sub_text, instructions) }
+      @markers = markers
+      @instructions = instructions
+    end
+
+    # Adjust the line of text by adding instructions to the stack
+    # @param x [Integer] start x
+    # @param max_width [Integer] width of the line
+    # @param text [String] the text to display
+    # @param instructions [Array] the instructions
+    # @param no_split [Boolean] indicate the function calculates the line
+    # @return [Integer] the new x
+    # TODO : Clean this function (split in multiple fuction, remove the ; thing)
+    def adjust_text_lines(x, max_width, text, instructions, no_split = false)
+      if no_split
+        sw = @text_sample.text_width(' ')
+        sw = 1 if sw.zero?
+        words = text.getbyte(0) != 32 ? '' : ' '
+        text.split(' ').each do |word|
+          w = @text_sample.text_width(word)
+          if x + w > max_width
+            x = 0
+            instructions << words unless words.empty?
+            instructions << :new_line
+            words = ''
+          end
+          words << word << ' '
+          x += (w + sw)
+        end
+        x -= sw if text.getbyte(-1) != 32 and words.rstrip!
+        instructions << words unless words.empty?
+      else
+        arr = []
+        instructions << arr
+        return x if text.empty?
+        return (arr << :new_line; x) if text == S_n
+        text.split(S_n).each_with_index do |line, i|
+          (arr << :new_line; x = 0) if i > 0
+          x = adjust_text_lines(x, max_width, line, arr, true)
+        end
+      end
+      return x
+    end
+
+    # Progress in the text display
+    # @param text [LiteRGSS::Text] the text element
+    # @param str [String] the text shown
+    # @param counter [Integer] the counter
+    # @return [Integer] the new counter, if counter == -1, the user requested to skip the progress thing
+    def progress(text, str, counter)
+      speed = $options.message_speed
+      text.nchar_draw = 0
+      text.opacity = contents_opacity
+      until text.nchar_draw >= str.size
+        text.nchar_draw += 1
+        counter += 1
+        if Input.trigger?(:A) or (Mouse.trigger?(:left) and @window.simple_mouse_in?) # Skip request
+          text.nchar_draw = str.size
+          return -1
+        end
+        if counter >= speed
+          message_update_processing
+          counter = 0
+        end
+      end
+      return counter
+    end
+
+    # Perform a line transition
+    def line_transition
+      default_line_height.times do
+        self.oy += 1
+        message_update_processing
+      end
+    end
+
+    # Get the text style code
+    # @param str [String] text style b = Bold, i = Italic, r = Reset
+    # @return [Integer] the style integer
+    def get_style_code(str)
+      return 0 if str.include?('r')
+      code = str.include?('b') ? 1 : 0
+      code |= str.include?('i') ? 2 : 0
+      return code
+    end
+
+    # Set the text style
+    # @param text [LiteRGSS::Text]
+    # @param style [Integer] 1 = bold, 2 = italic, 3 = bold & italic
+    def set_text_style(text, style)
+      text.bold = true if (style & 1) != 0
+      text.italic = true if (style & 2) != 0
+    end
+
+    # Replace the message user code to message specific code in order to generate the right marker
+    # @param text [String] text containing the message codes
+    # @return [String]
+    def replace_message_codes(text)
+      text = ::PFM::Text.parse_string_for_messages(text)
+      text.gsub!(/\\[Gg]/) { show_gold_window }
+      text.gsub!(/\[WAIT ([0-9]+)\]/) { "\x02[#{$1}]"}
+      text.gsub!(/\\[Cc]\[([0-9]+)\]/) { "\001[#{$1}]" }
+      text.gsub!(/\\[Ss]\[([bir]+)\]/) { "\x03[#{get_style_code($1)}]" }
+      text.gsub!(/\\\^/) { "\x04[0]" }
+      text.gsub!(S_000, S_sl)
+      return text
+    end
+
+    # Draw the message
+    # @param lineheight [Integer] height of the line
+    def refresh(lineheight = default_line_height)
+      return unless $game_temp.message_text
+      @drawing_message = true
+      set_origin(0, 0)
+      text = replace_message_codes($game_temp.message_text)
+      @x = @y = 0
+      @color = get_default_color
+      @style = get_default_style
+      generate_text_instructions(text)
+      refresh_internal(lineheight)
+      generate_choice_window
+    end
+
+    # Internally draw the message
+    # @param lineheight [Integer] height of the line
+    def refresh_internal(lineheight)
+      skip = false
+      counter = 0
+      @instructions.each_with_index do |instr_arr, i|
+        marker = @markers[i]
+        call_marker_action(marker) if marker
+        instr_arr.each do |instr|
+          if instr == :new_line
+            @x = 0
+            @y += lineheight
+            if @y >= lineheight * line_number
+              wait_user_input
+              line_transition
+            end
+            next
+          end
+          @text = @text_stack.add_text(@x, @y, 1, lineheight, instr, 0, color: @color)
+          set_text_style(@text, @style)
+          @x += @text.real_width
+          counter = progress(@text, instr, counter) unless skip
+          skip = (counter == -1 || Input.trigger?(:A))
+        end
+      end
+      @text = nil
+    end
+
+    # Call a marker action
+    # @param maker [Array]
+    def call_marker_action(marker)
+      sym = :"execute_marker_#{marker.first}"
+      send(sym, marker)
+    end
+
+    # Change the color
+    # @param maker [Array]
+    def execute_marker_1(marker)
+      @color = marker.last % GameData::Colors::Text_In.size
+    end
+
+    # Wait
+    # @param maker [Array]
+    def execute_marker_2(marker)
+      marker.last.times { message_update_processing }
+    end
+
+    # Style
+    # @param maker [Array]
+    def execute_marker_3(marker)
+      @style = marker.last
+    end
+
+    # Bigger text
+    # @param maker [Array]
+    def execute_marker_4(_marker)
+      return unless @text
+      @text.size = Font::FONT_SIZE
+      @text.y += 4
+      @x = @text.x + @text.real_width
+    end
+  end
+end

@@ -14,7 +14,8 @@ class Scene_Map
     # スプライトセットを作成
     @spriteset = Spriteset_Map.new($env.update_zone)
     # メッセージウィンドウを作成
-    @message_window = Window_Message.new
+    @message_viewport = Viewport.create(:main, 10_000)
+    @message_window = Yuki::Message.new(@message_viewport, self)#Window_Message.new
     #> Retour de combat
     if $game_temp.player_transferring
       transfer_player
@@ -47,6 +48,7 @@ class Scene_Map
     @spriteset.dispose
     # メッセージウィンドウを解放
     @message_window.dispose
+    @message_viewport.dispose
     #> Evènement on_scene_switch
     ::Scheduler.start(:on_scene_switch, self.class)
     # タイトル画面に切り替え中の場合

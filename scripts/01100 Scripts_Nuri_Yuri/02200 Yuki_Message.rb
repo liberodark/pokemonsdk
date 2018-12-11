@@ -1,0 +1,270 @@
+module Yuki
+  # Class that helps to show message on screen
+  #
+  # To make the message management easily this class will expose its main object through Yuki::Mesage.current with an optional argument to select the current parent
+  #
+  # List of functionalities of this class
+  # - Showing the one who is speaking (name & faceset)
+  # - Showing emotion of the one who is speaking
+  # - Choosing the number of lines
+  # - Choosing the skin of the various elements
+  # - Choosing the position of the window & the various elements (speaker etc...)
+  # - Choosing the speed of the text display
+  #
+  # Precision required :
+  #   - MASQUER LA BOITE
+  #   - surbrillance
+  #   - ANIMER LA POLICE D’ECRITURE
+  class Message < LiteRGSS::Window
+    # Name of the pause skin in Graphics/Windowskins/
+    PauseSkin = 'Pause2'
+    # @return [Symbol, Array, nil] Overwrite the message position for the current message
+    # @note Values can be : :top, :middle, :bottom, :left, :right, [x, y]
+    attr_accessor :position_overwrite
+    # @return [String, nil] Change the windowskin of the window
+    attr_accessor :windowskin_overwrite
+    # @return [String, nil] Change the windowskin of the name
+    attr_accessor :nameskin_overwrite
+    # @return [Integer, nil] Overwrite the number of line for the current message
+    attr_accessor :line_number_overwrite
+    # @return [Integer, nil] Overwrite the width of the window
+    attr_accessor :width_overwrite
+    # @return [Boolean] If the message is still drawing (block some processes in #update)
+    attr_accessor :drawing_message
+    # @return [Boolean] If the message doesn't wait the player to hit A to terminate
+    attr_accessor :auto_skip
+    # @return [Boolean] If the window message doesn't fade out
+    attr_accessor :stay_visible
+    # @return [GamePlay::InputNumber] Variable that holds the GamePlay::InputNumber object
+    attr_accessor :input_number_window
+
+    # List of message instance (to allow the access to the current message)
+    @@instances = {}
+
+    # Return the actual instance of message
+    # @param parent [GamePlay::Base, Scene_Map] parent scene we want the message window
+    # @return [Message, nil]
+    def self.current(parent = $scene)
+      @@instances[parent]
+    end
+
+    # Create a new Message handler
+    # @param viewport [LiteRGSS::Viewport]
+    # @param parent [GamePlay::Base, Scene_Map]
+    def initialize(viewport, parent = $scene)
+      raise 'Viewport required to display message' unless viewport
+      super(viewport)
+      # Content of the message
+      @text_stack = UI::SpriteStack.new(self)
+      # Sprite of the one who are speaking
+      @face_stack = UI::SpriteStack.new(viewport, default_cache: :battler)
+      # Name of the one who is speaking
+      @name_window = Window.new(viewport)
+      reset_overwrites
+      init_window
+      self.visible = false
+      @auto_skip = false
+      @stay_visible = false
+      @drawing_message = false
+      @text_sample = Text.new(0, viewport, 0, 0, 0, 0, ' ')
+      @text_sample.visible = false
+      @fade_out = false
+      @fade_in = false
+      # Register the window
+      @@instances[@parent = parent] = self
+    end
+
+    # Change the Z coordinate of the Window
+    # @param value [Integer] new z coordinate
+    def z=(value)
+      super(value = value.to_i)
+      @face_stack.z = value + 1
+      @name_window.z = value + 2
+    end
+
+    # Dispose the window
+    def dispose
+      @@instances.delete(@parent)
+      super
+      @face_stack.dispose
+      @name_window.dispose
+      dispose_sub_elements
+    end
+
+    # Terminate the message display
+    def terminate_message
+      self.active = false
+      self.pause = false
+      @contents_showing = false
+      $game_temp.message_proc.call unless $game_temp.message_proc.nil?
+      reset_game_temp_message_info
+      dispose_sub_elements
+      @auto_skip = false
+    end
+
+    private
+
+    # Reset the $game_temp stuff
+    def reset_game_temp_message_info
+      $game_temp.message_text = nil
+      $game_temp.message_proc = nil
+      $game_temp.choice_start = 99
+      $game_temp.choice_max = 0
+      $game_temp.choice_cancel_type = 0
+      $game_temp.choice_proc = nil
+      $game_temp.num_input_start = -99
+      $game_temp.num_input_variable_id = 0
+      $game_temp.num_input_digits_max = 0
+    end
+
+    # Retreive the current windowskin
+    # @return [String]
+    def current_windowskin
+      @windowskin_overwrite || $game_system.windowskin_name
+    end
+
+    # Dispose the sub element of the window (thing created during the message processing)
+    def dispose_sub_elements
+      @gold_window && @gold_window.dispose
+      @choice_window && @choice_window.dispose
+      @gold_window = @choice_window = nil
+    end
+
+    # Initialize the window Parameter
+    def init_window
+      self.z = 10_000
+      update_windowskin
+      init_pause_coordinates
+      self.pauseskin = RPG::Cache.windowskin(PauseSkin)
+      self.back_opacity = ($game_system.message_frame.zero? ? 255 : 0)
+    end
+
+    def init_pause_coordinates
+      self.pause_x = width - 15 - default_horizontal_margin
+      self.pause_y = height - 18 - default_vertical_margin
+    end
+
+    # Calculate the current window position
+    def calculate_position
+      x = default_horizontal_margin
+      case current_position
+      when :top
+        y = default_vertical_margin
+      when :middle
+        y = (viewport.rect.height - height) / 2
+      when :bottom, :left
+        y = viewport.rect.height - default_vertical_margin - height
+      when :right
+        y = viewport.rect.height - default_vertical_margin - height
+        x = viewport.rect.height - x - width
+      end
+      set_position(x, y)
+    end
+
+    # Retreive the current window position
+    # @return [Symbol, Array]
+    def current_position
+      position = @position_overwrite || $game_system.message_position
+      case position
+      when 0
+        return :top
+      when 1
+        return :middle
+      when 2
+        return :bottom
+      end
+      position
+    end
+
+    # Retreive the current window_builder
+    def current_window_builder
+      return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2] == 'M_' # SkinHGSS
+      ::GameData::Windows::MessageWindow # Skin PSDK
+    end
+
+    # Update the windowskin
+    def update_windowskin
+      windowskin_name = current_windowskin
+      return if @windowskin_name == windowskin_name
+      self.window_builder = current_window_builder
+      self.windowskin = RPG::Cache.windowskin(@windowskin_name = windowskin_name)
+      # Window size is dependant on the windowskin
+      set_size(window_width, window_height)
+      calculate_position # Recalculate the window position (dependant on the height)
+    end
+
+    # Wait the user input
+    def wait_user_input
+      self.pause = true
+      until Input.trigger?(:A) or (Mouse.trigger?(:left) and simple_mouse_in?)
+        message_update_processing
+      end
+      $game_system.se_play($data_system.cursor_se)
+      self.pause = false
+    end
+
+    # Return the window width
+    # @return [Integer]
+    def window_width
+      @width_overwrite || default_width
+    end
+
+    # Return the window height
+    def window_height
+      base_height = 2 * current_window_builder[3]
+      base_height + default_line_height * line_number
+    end
+
+    # Return the number of lines
+    def line_number
+      @line_number_overwrite || default_line_number
+    end
+
+    # Return the default window width
+    # @return [Integer]
+    def default_width
+      viewport.rect.width - default_horizontal_margin * 2
+    end
+
+    # Return the default horizontal margin
+    # @return [Integer]
+    def default_horizontal_margin
+      return 2
+    end
+
+    # Return the default vertical margin
+    # @return [Integer]
+    def default_vertical_margin
+      return 2
+    end
+
+    # Return the default line number
+    # @return [Integer]
+    def default_line_number
+      return 2
+    end
+
+    # Return the default line height
+    def default_line_height
+      return 16
+    end
+
+    # Return the default text color
+    # @return [Integer]
+    def get_default_color
+      return 0
+    end
+
+    # Return the default text style
+    # @return [Integer]
+    def get_default_style
+      return 0
+    end
+
+    # Reset all the overwrite when the message has been shown
+    def reset_overwrites
+      @position_overwrite = @windowskin_overwrite = @nameskin_overwrite = nil
+      @line_number_overwrite = @width_overwrite = nil
+    end
+  end
+end
