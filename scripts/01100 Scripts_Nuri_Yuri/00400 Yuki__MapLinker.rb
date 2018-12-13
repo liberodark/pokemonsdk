@@ -138,6 +138,7 @@ module Yuki
       ox = OffsetX
       oy = OffsetY
       # Clone the tiles with the correct offset
+=begin # Takes around 1.5 & 3ms (events.each included)
       3.times do |z|
         last_map_data.xsize.times do |x|
           x2 = x + ox
@@ -146,14 +147,16 @@ module Yuki
           end
         end
       end
+=end
+      tbl.copy(last_map_data, ox, oy) # Around 130 & 250µs => 10x faster
       # Adjust the event position
       events = data.events
       nevent = {}
       tmpevt = nil
       events.each do |id, event|
         nevent[id] = tmpevt = event.clone
-        tmpevt.x += OffsetX
-        tmpevt.y += OffsetY
+        tmpevt.x += ox
+        tmpevt.y += oy
         last_event_id = id if id > last_event_id
       end
       # Save the old data and set the new data
@@ -162,8 +165,8 @@ module Yuki
       @last_event_id = last_event_id
       data.events = nevent
       data.data = tbl
-      data.width += OffsetX * 2
-      data.height += OffsetY * 2
+      data.width += ox * 2
+      data.height += oy * 2
     end
 
     # Generate the link (tile copy / event copy)
@@ -173,10 +176,27 @@ module Yuki
     # @param west_data [RPG::Map] the west map
     def generate_map_data_link(data, north_data, est_data, sud_data, west_data)
       tbl = data.data
-      ox = oy = modulo = nil
+      ox = oy = nil
       last_event_id = @last_event_id
       events = data.events
       link_data = @link_data
+      # Clone north tiles
+      ox = link_data[1] + OffsetX
+      oy = north_data.height - OffsetY - DeltaMaker
+      tbl.copy_modulo(north_data.data, ox % north_data.width, oy, 0, 0, tbl.xsize, OffsetY)
+      # Clone south tiles
+      ox = link_data[5] + OffsetX
+      oy = tbl.ysize - OffsetY - DeltaMaker
+      tbl.copy_modulo(sud_data.data, ox % sud_data.width, DeltaMaker, 0, tbl.ysize - OffsetY, tbl.xsize, OffsetY)
+      # Clone the west tiles
+      ox = west_data.width - OffsetX - DeltaMaker
+      oy = link_data[7]
+      tbl.copy_modulo(west_data.data, ox, (-oy) % west_data.height, 0, OffsetY, OffsetX, tbl.ysize - 2 * OffsetY)
+      # Clone the east tiles
+      ox = tbl.xsize - OffsetX - DeltaMaker
+      oy = link_data[3]
+      tbl.copy_modulo(est_data.data, DeltaMaker, (-oy) % est_data.height, tbl.xsize - OffsetX, OffsetY, OffsetX, tbl.ysize - 2 * OffsetY)
+=begin
       3.times do |z|
         # Clone north tiles
         ox = link_data[1] + OffsetX
@@ -213,6 +233,7 @@ module Yuki
           end
         end
       end
+=end
       # Copy the north events
       oy = north_data.height - OffsetY - DeltaMaker
       last_event_id = ajust_events(north_data, oy, north_data.height - DeltaMaker - 1,
