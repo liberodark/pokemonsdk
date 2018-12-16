@@ -1,64 +1,103 @@
-#encoding: utf-8
-
-#noyard
 module GamePlay
+  # Scene displaying the trainer card
   class TCard < Base
-    TC_Girl = "Trainer_Card_F"
-    TC_Boy = "Trainer_Card_M"
-    include Text::Util
+    # Coordinates of the player sprite
+    PLAYER_COORDINATES = [222, 49]
+    # Surface given to the player sprite
+    PLAYER_SURFACE = [80, 73]
+    # @return [Hash{Boolean => String} Name of the trainer image
+    PLAYER_SPRITE_NAME = { true => 'tcard/female', false => 'tcard/male' }
+    # Coordinate of the first badge
+    BADGE_ORIGIN_COORDINATE = [14, 30]
+    # Offset between badges (x/y)
+    BADGE_OFFSET = [48, 49]
+    # Size of a badge in the badge image
+    BADGE_SIZE = [32, 32]
+    # Nmber of badge we can show in this UI
+    BADGE_COUNT = 8
+
+    # Create a new TCard interface
     def initialize
       super(true)
-      @viewport = select_view(view(:main, 10000))
-      #@background_main = background(Party_Menu::Background)
-      @background = sprite($trainer.playing_girl ? TC_Girl : TC_Boy, 
-        32, 24, 1)
-      init_text(0, @viewport)
-      draw_text
+      @viewport = Viewport.create(:main, 10_000)
+      create_main_background
+      create_sub_background
+      create_trainer_sprite
+      create_badge_sprites
+      create_texts
       @counter = 0
     end
 
-    def update
-      if Input.trigger?(:B)
-        @running = false
-      end
-      @counter += 1
-      if(@counter > 30)
-        switch_sprite
-        @counter = 0
+    # Create the main background sprite
+    def create_main_background
+      @main_background = Sprite.new(@viewport).set_bitmap('team/Fond', :interface)
+    end
+
+    # Create the sub background sprite (the dark surfaces in the TCard)
+    def create_sub_background
+      @sub_background = Sprite.new(@viewport).set_bitmap('tcard/background', :interface)
+    end
+
+    # Create the trainer sprite
+    def create_trainer_sprite
+      @trainer_sprite = Sprite.new(@viewport)
+                        .set_bitmap(PLAYER_SPRITE_NAME[$trainer.playing_girl], :interface)
+      # Adjust the origin of the sprite since the TCard has a smaller surface for the sprite
+      @trainer_sprite.set_origin((@trainer_sprite.width - PLAYER_SURFACE.first) / 2,
+                                 (@trainer_sprite.height - PLAYER_SURFACE.last) / 2)
+      @trainer_sprite.set_position(*PLAYER_COORDINATES)
+    end
+
+    # Create the badge sprites
+    def create_badge_sprites
+      @badges = Array.new(BADGE_COUNT) do |index|
+        sprite = Sprite.new(@viewport).set_bitmap('tcard/badges', :interface)
+        sprite.set_position(BADGE_ORIGIN_COORDINATE.first + (index % 2) * BADGE_OFFSET.first,
+                            BADGE_ORIGIN_COORDINATE.last + (index / 2) * BADGE_OFFSET.last)
+        sprite.src_rect.set((index % 2) * BADGE_SIZE.first, (index / 2) * BADGE_SIZE.last, *BADGE_SIZE)
+        sprite.visible = $trainer.has_badge?(index + 1)
+        next(sprite)
       end
     end
 
-    def draw_text
-      start_time = (Time.new-(Time.new.to_i-$trainer.start_time))
-      add_text(16,32,136,16, _get(34,0))
-      add_text(16,32,136,16, $trainer.name, 2)
-      add_text(16,48,136,16, _get(34,2))
-      add_text(16,48,136,16, sprintf("%05d",$trainer.id%100000), 2)
-      add_text(16,72,136,16, _get(34,7))
-      add_text(16,72,136,16, _parse(34,8, NUM7R => $pokemon_party.money.to_s), 2)
-      add_text(16,120,136,16, _get(25,1))
-      add_text(16,120,136,16, $trainer.badge_counter.to_s, 2)
-      add_text(16,144,224,16, _get(34,10))
-      add_text(16,160,224,16, _get(34,14))
-      add_text(16,160,224,16, _parse(34,15, 
-        /\[VAR NUM4[^\]]*\]/ => start_time.year.to_s,
-        NUM2[2] => sprintf("%02d", start_time.day),
-        NUM2[1] => sprintf("%02d", start_time.month)),
-        2)
+    # Create the texts
+    def create_texts
+      @texts = UI::SpriteStack.new(@viewport)
+      # Show the start time
+      @texts.add_text(4, 4, 0, 16,
+                      "#{_get(34, 14)} #{Time.at($trainer.start_time).strftime('%d/%m/%Y')}",
+                      color: 9)
+      @texts.add_text(225, 4, 88, 16, "#{$pokemon_party.money}$", 2, color: 9)
+      @texts.add_text(217, 26, 96, 16, $trainer.name, 1, color: 9)
+      @texts.add_text(217, 128, 96, 16,
+                      format('%<text>s %<id>05d', text: _get(34, 2), id: $trainer.id % 100_000), color: 9)
+      @texts.add_text(122, 156, 190, 16, "#{_get(25, 1)} #{$trainer.badge_counter}", color: 9)
+      @texts.add_text(122, 190, 190, 16, "#{_get(25, 5)} #{current_play_time}", color: 9)
+    end
+
+    # Function that returns the actual play time of the trainer
+    # @return [String] playtime formated like this %02d:%02d
+    def current_play_time
       time = $trainer.update_play_time
-      hours = time/3600
-      minutes = (time-3600*hours)/60
-      @txt_dot = add_text(16,144,224,16, sprintf("%02d %s %02d", hours, _get(25,6), minutes), 2)
-      @txt_ndot1 = add_text(16,144,224,16, sprintf("%02d", minutes), 2)
-      @txt_ndot2 = add_text(16,144,202,16, sprintf("%02d", hours), 2)
-      @texts.each { |text| text.set_position(text.x + 32, text.y + 24) }
-      switch_sprite
+      hours = time / 3600
+      minutes = (time - 3600 * hours) / 60
+      format('%<hours>02d %<sep>s %<mins>02d', hours: hours, sep: _get(25, 6), mins: minutes)
     end
 
-    def switch_sprite
-      state = @txt_ndot1.visible
-      @txt_ndot1.visible =@txt_ndot2.visible = !state
-      @txt_dot.visible = state
+    # Update the background animation
+    def update_background_animation
+      @main_background.set_origin((@main_background.ox - 0.5) % 16, (@main_background.oy - 0.5) % 16)
+    end
+
+    def update
+      @running = false if Input.trigger?(:B)
+      update_background_animation
+    end
+
+    # Dispose the interface
+    def dispose
+      super
+      @viewport.dispose
     end
   end
 end

@@ -48,7 +48,7 @@ module PFM
       @id_girl = (@id_boy ^ 0x28F4AB4C)
       @start_time = Time.new.to_i
       @play_time = 0
-      @badges = Array.new(6*8, false)
+      @badges = Array.new(6 * 8, false)
       @region = 0
       @game_version = Game_Version rescue 256
       @current_version = PSDK_Version rescue 0

@@ -122,8 +122,8 @@ module Graphics
     if dt >= 1
       @last_second_time = @current_time
       @ingame_fps_text.text = "FPS: #{(60 / dt).round}" if dt * 10 >= 1
-      @gpu_fps_text.text = "GPU FPS: #{(@gc_count / @gc_accu).round}" unless @gc_count.zero?
-      @ruby_fps_text.text = "Ruby FPS: #{(@ruby_count / @ruby_accu).round}" unless @ruby_count.zero?
+      @gpu_fps_text.text = "GPU FPS: #{(@gc_count / @gc_accu).round}" unless @gc_count.zero? || @gc_accu.zero?
+      @ruby_fps_text.text = "Ruby FPS: #{(@ruby_count / @ruby_accu).round}" unless @ruby_count.zero? || @ruby_accu.zero?
       reset_gc_time
       reset_ruby_time
     end
