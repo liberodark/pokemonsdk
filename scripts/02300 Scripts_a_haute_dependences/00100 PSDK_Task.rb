@@ -115,7 +115,7 @@ module Scheduler
   # Exemple de chargement de tileset automatique
   add_proc(:on_getting_tileset_name, :any, "Changement de tileset map 9", 1000,
     proc {
-      if $game_map.map_id == 9
+      if $game_temp.maplinker_map_id == 9
         $game_temp.tileset_name = "4G tileset_glace"
       end
     }

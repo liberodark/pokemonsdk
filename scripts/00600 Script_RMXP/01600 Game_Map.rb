@@ -44,9 +44,9 @@ class Game_Map
     # 公開インスタンス変数にタイルセットの情報を設定
     load_systemtags
     tileset = $data_tilesets[@map.tileset_id]
-    Scheduler.start(:on_getting_tileset_name)
-    @tileset_name = get_tileset_name($game_temp.tileset_name || tileset.tileset_name)
-    $game_temp.tileset_name = nil
+    # -- Scheduler.start(:on_getting_tileset_name)
+    @tileset_name = Yuki::MapLinker.tileset_name # -- get_tileset_name($game_temp.tileset_name || tileset.tileset_name)
+    # -- $game_temp.tileset_name = nil
     @autotile_names = tileset.autotile_names
     @panorama_name = tileset.panorama_name
     @panorama_hue = tileset.panorama_hue
@@ -93,17 +93,6 @@ class Game_Map
     @scroll_direction = 2
     @scroll_rest = 0
     @scroll_speed = 4
-  end
-  # Get the tileset_name PSDK should use
-  # @param tilesetname [String] filename of the tileset
-  # @return [String] filename of the tileset
-  def get_tileset_name(tilesetname)
-    filename = tilesetname + '_._psdk' + Graphics::MAX_TEXTURE_SIZE.to_s
-    unless RPG::Cache.tileset_exist?(filename)
-      Converter.convert_tileset("graphics/tilesets/#{tilesetname}.png")
-    end
-    filename = tilesetname unless RPG::Cache.tileset_exist?(filename)
-    return filename
   end
   # Returns the ID of the Map
   # @return [Integer]

@@ -65,8 +65,8 @@ class Spriteset_Map
       @tilemap = tilemap_class.new(@viewport1)
     end
     Yuki::ElapsedTime.show(:spriteset_map, 'Creating tilemap object took')
-    @tilemap.tileset = RPG::Cache.tileset($game_map.tileset_name)
-    Yuki::ElapsedTime.show(:spriteset_map, 'Loading tileset took')
+    # -- @tilemap.tileset = RPG::Cache.tileset($game_map.tileset_name)
+    # -- Yuki::ElapsedTime.show(:spriteset_map, 'Loading tileset took')
     7.times do |i|
       filename = $game_map.autotile_names[i] + '_._tiled'
       unless RPG::Cache.autotile_exist?(filename)

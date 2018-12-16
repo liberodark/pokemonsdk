@@ -23,7 +23,7 @@ module Converter
       return
     end
     nb_col = (img.height / max_size.to_f).ceil
-    return img.dispose if nb_col == 1
+    # return img.dispose if nb_col == 1 # Removed to get better loading.
     if nb_col > 32
       cc 0x01
       puts "\r#{filename} cannot be converted to #{new_filename}, there's too much tiles."

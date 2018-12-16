@@ -74,6 +74,7 @@ class Tilemap
     check_copy(@autotiles_copy)
     @last_ox = @last_oy = nil #> Prévenir d'un déplacement inutile
     @disposed = false
+    @map_linker = Yuki::MapLinker
   end
   # Force reset of the tilemap
   def reset
@@ -133,17 +134,23 @@ class Tilemap
   def draw_autotiles(x, y, ox, oy)
     map_data = @map_data
     autotiles_counter = @autotiles_counter
-    autotiles_bmp = @autotiles#@autotiles_bmp
+    autotiles_bmp = @autotiles
+    add_z = oy / 2
+    maplinker = @map_linker
     update_autotile_counter(autotiles_counter, autotiles_bmp)
     @sprites.each_with_index do |sprite_table, pz|
       sprite_table.each_with_index do |sprite_col, px|
         sprite_col.each_with_index do |sprite, py|
           sprite.ox = ox
           sprite.oy = oy
-          tile_id = map_data[x + px, y + py, pz]
-          if(tile_id and tile_id > 0 and tile_id < 384) #Autotile
+          tile_id = map_data[cx = x + px, cy = y + py, pz]
+          next unless tile_id
+          if tile_id.between?(1, 383) # Autotile
             sprite.src_rect.set((tile_id % 48) * 32, autotiles_counter[tile_id / 48], 32, 32)
           end
+          priority = maplinker.get_priority(cx, cy)[tile_id] # -- priorities[tile_id]
+          next(sprite.z = 0) if !priority or priority.zero?
+          sprite.z = (py + priority) * 32 - add_z
         end
       end
     end
@@ -154,32 +161,33 @@ class Tilemap
   # @param ox [Integer] ox of every tiles
   # @param oy [Integer] oy of every tiles
   def draw_all(x, y, ox, oy)
-    priorities = @priorities
+    # -- priorities = @priorities
     map_data = @map_data
     autotiles_counter = @autotiles_counter
     autotiles_bmp = @autotiles#@autotiles_bmp
-    tileset1 = @tileset
+    # -- tileset1 = @tileset
     max_size = Graphics::MAX_TEXTURE_SIZE
     add_z = oy / 2
+    maplinker = @map_linker
     @sprites.each_with_index do |sprite_table, pz|
       sprite_table.each_with_index do |sprite_col, px|
         sprite_col.each_with_index do |sprite, py|
           sprite.ox = ox
           sprite.oy = oy
-          tile_id = map_data[x + px, y + py, pz]
+          tile_id = map_data[cx = x + px, cy = y + py, pz]
           if(!tile_id or tile_id == 0)
             next(sprite.bitmap = nil)
           elsif(tile_id < 384) #Autotile
             sprite.bitmap = autotiles_bmp[tile_id / 48 - 1]
             sprite.src_rect.set((tile_id % 48) * 32, autotiles_counter[tile_id / 48], 32, 32)
           else #Tile
-            sprite.bitmap = tileset1
+            sprite.bitmap = maplinker.get_tileset(cx, cy) # -- tileset1
             tid = tile_id - 384
             tlsy = tid / 8 * 32
             sprite.src_rect.set((tid % 8 + tlsy / max_size * 8) * 32, tlsy % max_size, 32, 32)
           end
-          priority = priorities[tile_id]
-          next(sprite.z = 0) if !priority or priority == 0
+          priority = maplinker.get_priority(cx, cy)[tile_id] # -- priorities[tile_id]
+          next(sprite.z = 0) if !priority or priority.zero?
           sprite.z = (py + priority) * 32 - add_z
         end
       end
@@ -192,18 +200,19 @@ class Tilemap
   # @param ox [Integer] ox of every tiles
   # @param oy [Integer] oy of every tiles
   def update_positions(x, y, ox, oy)
-    priorities = @priorities
+    # -- priorities = @priorities
     map_data = @map_data
     add_z = oy / 2
+    maplinker = @map_linker
     @sprites.each_with_index do |sprite_table, pz|
       sprite_table.each_with_index do |sprite_col, px|
         sprite_col.each_with_index do |sprite, py|
           sprite.ox = ox
           sprite.oy = oy
-          tile_id = map_data[x + px, y + py, pz]
-          next if(!tile_id or tile_id <= 0)
-          priority = priorities[tile_id]
-          next if !priority or priority == 0
+          tile_id = map_data[cx = x + px, cy = y + py, pz]
+          next if !tile_id or tile_id <= 0
+          priority = maplinker.get_priority(cx, cy)[tile_id] # -- priorities[tile_id]
+          next if !priority or priority.zero?
           sprite.z = (py + priority) * 32 - add_z
         end
       end

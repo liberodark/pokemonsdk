@@ -52,6 +52,10 @@ module Yuki
       @warp = [OffsetY, 0, 0, OffsetX]
       # Event added in the map to ensure proper link
       @added_events = {}
+      # Table containing the tilesets for each tile
+      @tileset_table = []
+      # Table containing the priorities for each tile
+      @priority_table = []
     end
 
     # Load a map and its linked map
@@ -105,6 +109,9 @@ module Yuki
       @last_map_id = map_id
       @warp[1] = current_map_data.data.xsize - OffsetX - DeltaMaker + 1
       @warp[2] = current_map_data.data.ysize - OffsetY - DeltaMaker + 1
+      # Generate the tileset/priority informations
+      load_tileset_and_priority
+      Yuki::ElapsedTime.show(:maplinker, 'Loading the tileset & priority took')
       # Preload the music of the other map
       # autoload_sounds(map_id)
       # Return the expected data
@@ -117,7 +124,7 @@ module Yuki
     def load_map_data(map_id)
       return DefaultMap if map_id.zero?
       return @last_map if map_id == @last_map_id
-      if link_data = @link_data # Une des map linké
+      if (link_data = @link_data) # Une des map linké
         return @north_data if map_id == link_data[0]
         return @east_data if map_id == link_data[2]
         return @sud_data if map_id == link_data[4]
@@ -133,21 +140,9 @@ module Yuki
       last_map_data = data.data
       tbl = Table.new(last_map_data.xsize + OffsetX * 2, last_map_data.ysize + OffsetY * 2, 3)
       tbl.fill(0)
-      x2 = nil
       last_event_id = 0
       ox = OffsetX
       oy = OffsetY
-      # Clone the tiles with the correct offset
-=begin # Takes around 1.5 & 3ms (events.each included)
-      3.times do |z|
-        last_map_data.xsize.times do |x|
-          x2 = x + ox
-          last_map_data.ysize.times do |y|
-            tbl[x2, y + oy, z] = last_map_data[x, y, z]
-          end
-        end
-      end
-=end
       tbl.copy(last_map_data, ox, oy) # Around 130 & 250µs => 10x faster
       # Adjust the event position
       events = data.events
@@ -176,7 +171,6 @@ module Yuki
     # @param west_data [RPG::Map] the west map
     def generate_map_data_link(data, north_data, est_data, sud_data, west_data)
       tbl = data.data
-      ox = oy = nil
       last_event_id = @last_event_id
       events = data.events
       link_data = @link_data
@@ -186,54 +180,14 @@ module Yuki
       tbl.copy_modulo(north_data.data, ox % north_data.width, oy, 0, 0, tbl.xsize, OffsetY)
       # Clone south tiles
       ox = link_data[5] + OffsetX
-      oy = tbl.ysize - OffsetY - DeltaMaker
       tbl.copy_modulo(sud_data.data, ox % sud_data.width, DeltaMaker, 0, tbl.ysize - OffsetY, tbl.xsize, OffsetY)
       # Clone the west tiles
       ox = west_data.width - OffsetX - DeltaMaker
       oy = link_data[7]
       tbl.copy_modulo(west_data.data, ox, (-oy) % west_data.height, 0, OffsetY, OffsetX, tbl.ysize - 2 * OffsetY)
       # Clone the east tiles
-      ox = tbl.xsize - OffsetX - DeltaMaker
       oy = link_data[3]
       tbl.copy_modulo(est_data.data, DeltaMaker, (-oy) % est_data.height, tbl.xsize - OffsetX, OffsetY, OffsetX, tbl.ysize - 2 * OffsetY)
-=begin
-      3.times do |z|
-        # Clone north tiles
-        ox = link_data[1] + OffsetX
-        oy = north_data.height - OffsetY - DeltaMaker
-        modulo = north_data.width
-        data = north_data.data
-        OffsetY.times do |y|
-          tbl.xsize.times { |x| tbl[x, y, z] = data[(x - ox) % modulo, y + oy, z] }
-        end
-        # Clone south tiles
-        ox = link_data[5] + OffsetX
-        oy = tbl.ysize - OffsetY - DeltaMaker
-        modulo = sud_data.width
-        data = sud_data.data
-        DeltaMaker.upto(OffsetY + DeltaMaker - 1) do |y|
-          tbl.xsize.times { |x| tbl[x, y + oy, z] = data[(x - ox) % modulo, y, z] }
-        end
-        # Clone the west tiles
-        ox = west_data.width - OffsetX - DeltaMaker
-        oy = OffsetY + link_data[7]
-        modulo = west_data.height
-        data = west_data.data
-        OffsetY.upto(tbl.ysize - OffsetY - 1) do |y|
-          OffsetX.times { |x| tbl[x, y, z] = data[x + ox, (y - oy) % modulo, z] }
-        end
-        # Clone east tiles
-        ox = tbl.xsize - OffsetX - DeltaMaker
-        oy = link_data[3] + OffsetY
-        modulo = est_data.height
-        data = est_data.data
-        OffsetY.upto(tbl.ysize - OffsetY - 1) do |y|
-          DeltaMaker.upto(OffsetX + DeltaMaker - 1) do |x|
-            tbl[x + ox, y, z] = data[x, (y - oy) % modulo, z]
-          end
-        end
-      end
-=end
       # Copy the north events
       oy = north_data.height - OffsetY - DeltaMaker
       last_event_id = ajust_events(north_data, oy, north_data.height - DeltaMaker - 1,
@@ -367,6 +321,100 @@ module Yuki
           end
         end
       end
+    end
+
+    # Load the tilesets and the priority tables
+    def load_tileset_and_priority
+      current_tileset, current_priority = get_map_tileset_name(@last_map_id, @last_map)
+      @tileset_table.clear
+      @priority_table.clear
+      @current_tileset_name = current_tileset
+      if @link_data
+        construct_tandp_tables(current_tileset, current_priority)
+      else
+        col_arr = Array.new(@last_map.height, RPG::Cache.tileset(current_tileset))
+        @last_map.width.times { @tileset_table << col_arr }
+        col_arr = Array.new(@last_map.height, current_priority)
+        @last_map.width.times { @priority_table << col_arr }
+      end
+    end
+
+    # Return the current tileset name
+    def tileset_name
+      @current_tileset_name
+    end
+
+    # Construct the 3 tables used to make the tileset & priority table
+    # @param current_tileset [String] filename of the current tileset
+    # @param current_priority [Table] priority table of the current map
+    def construct_tandp_tables(current_tileset, current_priority)
+      north_tileset, north_priority = get_map_tileset_name(@link_data[0], @north_data)
+      south_tileset, south_priority = get_map_tileset_name(@link_data[4], @sud_data)
+      west_tileset, west_priority = get_map_tileset_name(@link_data[6], @west_data)
+      east_tileset, east_priority = get_map_tileset_name(@link_data[2], @east_data)
+      north_part = Array.new(OffsetY, RPG::Cache.tileset(north_tileset))
+      south_part = Array.new(OffsetY, RPG::Cache.tileset(south_tileset))
+      west_part = north_part + Array.new(ysize = @last_map_data.ysize, RPG::Cache.tileset(west_tileset)).concat(south_part)
+      east_part = north_part + Array.new(ysize, RPG::Cache.tileset(east_tileset)).concat(south_part)
+      middle_part = north_part + Array.new(ysize, RPG::Cache.tileset(current_tileset)).concat(south_part)
+      # Priority
+      north_part = Array.new(OffsetY, north_priority)
+      south_part = Array.new(OffsetY, south_priority)
+      west_p_part = north_part + Array.new(ysize, west_priority).concat(south_part)
+      east_p_part = north_part + Array.new(ysize, east_priority).concat(south_part)
+      middle_p_part = north_part + Array.new(ysize, current_priority).concat(south_part)
+      OffsetX.times do
+        @tileset_table << west_part
+        @priority_table << west_p_part
+      end
+      @last_map_data.xsize.times do
+        @tileset_table << middle_part
+        @priority_table << middle_p_part
+      end
+      OffsetX.times do
+        @tileset_table << east_part
+        @priority_table << east_p_part
+      end
+    end
+
+    # Get the tileset name and the priority of a map
+    # @param map_id [Integer]
+    # @param data [RPG::Map] data of the map
+    def get_map_tileset_name(map_id, data)
+      $game_temp.maplinker_map_id = map_id
+      Scheduler.start(:on_getting_tileset_name)
+      tileset = $data_tilesets[data.tileset_id]
+      name = get_tileset_name($game_temp.tileset_name || tileset.tileset_name)
+      $game_temp.tileset_name = nil
+      return name, tileset.priorities
+    end
+
+    # Get the tileset for a tile
+    # @param x_pos [Integer]
+    # @param y_pos [Integer]
+    # @return [Bitmap, nil]
+    def get_tileset(x_pos, y_pos)
+      return @tileset_table[x_pos][y_pos]
+    end
+
+    # Get the priority for a tile
+    # @param x_pos [Integer]
+    # @param y_pos [Integer]
+    # @return [Table]
+    def get_priority(x_pos, y_pos)
+      return (@priority_table[x_pos][y_pos] || @priority_table[0][0])
+    end
+
+    # Get the tileset_name PSDK should use
+    # @param tilesetname [String] filename of the tileset
+    # @return [String] filename of the tileset
+    def get_tileset_name(tilesetname)
+      filename = tilesetname + '_._psdk' + Graphics::MAX_TEXTURE_SIZE.to_s
+      unless RPG::Cache.tileset_exist?(filename)
+        Converter.convert_tileset("graphics/tilesets/#{tilesetname}.png")
+        filename = tilesetname unless RPG::Cache.tileset_exist?(filename)
+      end
+      return filename
     end
   end
 end
