@@ -25,6 +25,7 @@ module GamePlay
       create_trainer_sprite
       create_badge_sprites
       create_texts
+      create_mouse_button
       @counter = 0
     end
 
@@ -84,14 +85,33 @@ module GamePlay
       format('%<hours>02d %<sep>s %<mins>02d', hours: hours, sep: _get(25, 6), mins: minutes)
     end
 
+    # Function that create the mouse button (cancel / quit) with its background
+    def create_mouse_button
+      @mouse_button_bg = Sprite.new(@viewport).set_bitmap('tcard/button_background', :interface)
+      @mouse_button_bg.set_position(0, @viewport.rect.height - @mouse_button_bg.height)
+      @mouse_button_cancel = UI::DexCTRLButton.new(@viewport, 3) # 3 is for cancel
+    end
+
     # Update the background animation
     def update_background_animation
       @main_background.set_origin((@main_background.ox - 0.5) % 16, (@main_background.oy - 0.5) % 16)
     end
 
     def update
+      return unless super
+      update_mouse_ctrl
       @running = false if Input.trigger?(:B)
       update_background_animation
+    end
+
+    # Update the mouse interaction with the ctrl buttons
+    def update_mouse_ctrl
+      if Mouse.trigger?(:left)
+        @mouse_button_cancel.set_press(@mouse_button_cancel.simple_mouse_in?)
+      elsif Mouse.released?(:left)
+        @running = false if @mouse_button_cancel.simple_mouse_in?
+        @mouse_button_cancel.set_press(false)
+      end
     end
 
     # Dispose the interface
