@@ -130,6 +130,7 @@ module PFM
         ## @game_map.update
       end
     end
+
     # Expand the global variable with the instance variables of the object
     def expand_global_var
       $pokemon_party = self
@@ -153,15 +154,17 @@ module PFM
       $storage = @storage
       $env = @env
       $wild_battle = @wild_battle
-      #>Patch 2016-02-12
-      @daycare = PFM::Daycare.new unless @daycare
+      # Patch 2016-02-12
+      @daycare ||= PFM::Daycare.new
       $daycare = @daycare
-      #>Patch 2017-05-08
-      @quests = PFM::Quests.new unless @quests
+      # Patch 2017-05-08
+      @quests ||= PFM::Quests.new
       $quests = @quests
-      #>Patch 2017-06-10
-      @game_self_variables = Game_SelfVariables.new unless @game_self_variables
+      # Patch 2017-06-10
+      @game_self_variables ||= Game_SelfVariables.new
       $game_self_variables = @game_self_variables
+      # Force the pokemon selection to be unset.
+      $game_variables[Yuki::Var::Party_Menu_Sel] = -1
     end
     # Increase the @step and manage events that trigger each steps
     # @return [Array] informations about events that has been triggered.

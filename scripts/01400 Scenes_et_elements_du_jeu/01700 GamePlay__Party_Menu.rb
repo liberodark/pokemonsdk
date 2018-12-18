@@ -53,6 +53,8 @@ module GamePlay
       create_ctrls
       create_win_text
       init_win_text
+      # Resetting the affected variable to prevent bugs
+      $game_variables[Yuki::Var::Party_Menu_Sel] = -1
       # Telling the B action the user is seeing a choice and make it able to cancel the choice
       # @type [PFM::Choice_Helper]
       @choice_object = nil
