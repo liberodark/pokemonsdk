@@ -6,37 +6,44 @@ class Interpreter
   def gv
     $game_variables
   end
+
   # Return the $game_switches
   # @return [Game_Switches]
   def gs
     $game_switches
   end
+
   # Return the $game_temp
   # @return [Game_Temp]
   def gt
     $game_temp
   end
+
   # Return the $game_map
   # @return [Game_Map]
   def gm
     $game_map
   end
+
   # Return the $game_player
   # @return [Game_Player]
   def gp
     $game_player
   end
+
   # Return the $pokemon_party
   # @return [PFM::Pokemon_Party]
   def party
     $pokemon_party
   end
+
   # Start the storage PC
   def start_pc
     pc = ::GamePlay::Storage.new
     pc.main
   end
   alias demarrer_pc start_pc
+
   # Show an emotion to an event or the player
   # @param type [Symbol] the type of emotion (see wiki)
   # @param char_id [Integer] the ID of the event (> 0), the current event (0) or the player (-1)
@@ -45,6 +52,7 @@ class Interpreter
     Yuki::Particles.add_particle(get_character(char_id), type)
     @wait_count = wait
   end
+
   # Check if the front event calls a common event (in its first non comment commands)
   # @param common_event [Integer] the id of the common event in the database
   # @return [Boolean]
@@ -60,21 +68,22 @@ class Interpreter
     end
     return false
   end
+
   # Check if an event is calling a common event (in its first non comment commands)
   # @param common_event [Integer] the id of the common event
   # @param event_id [Integer] the id of the event on the MAP
   # @return [Boolean]
   def event_calling(common_event, event_id)
-    v = $game_map.events[event_id]
-    if(v)
+    if (v = $game_map.events[event_id])
       i = 0
-      while(v.list[i] and v.list[i].code.between?(121, 122))
-        i +=1
+      while v.list[i] and v.list[i].code.between?(121, 122)
+        i += 1
       end
-      return true if(v.list[i] and v.list[i].code == 117 and v.list[i].parameters[0] == common_event)
+      return true if v.list[i] and v.list[i].code == 117 and v.list[i].parameters[0] == common_event
     end
     return false
   end
+
   # Start a choice with more option than RMXP allows.
   # @param variable_id [Integer] the id of the Variable where the choice will be store.
   # @param cancel_type [Integer] the choice that cancel (-1 = no cancel)
@@ -84,6 +93,7 @@ class Interpreter
     setup_choices([choices, cancel_type])
     $game_temp.choice_proc = proc { |choix| $game_variables[ variable_id ] = choix + 1}
   end
+
   # Open the world map
   # @param arg [Symbol] the mode of the world map, :view or :fly
   # @author Nuri Yuri
@@ -97,11 +107,13 @@ class Interpreter
     @wait_count = 2
   end
   alias world_map carte_du_monde
+
   # Save the game without asking
   def force_save
     GamePlay::Save.save
   end
   alias forcer_sauvegarde force_save
+
   # Set the value of a self_switch
   # @param value [Boolean] the new value of the switch
   # @param self_switch [String] the name of the self switch ("A", "B", "C", "D")
@@ -122,8 +134,8 @@ class Interpreter
   # @return [Boolean] the value of the self switch
   # @author Leikt
   def get_self_switch(self_switch, event_id, map_id = @map_id)
-     key = [map_id, event_id, self_switch]  # Clef pour retrouver l'interrupteur local que l'on veut modifier
-     return $game_self_switches[key]
+    key = [map_id, event_id, self_switch]  # Clef pour retrouver l'interrupteur local que l'on veut modifier
+    return $game_self_switches[key]
   end
   alias get_ss get_self_switch
   # Show the party menu in order to select a Pokemon
@@ -160,6 +172,7 @@ class Interpreter
   def add_parallax(*args)
     Yuki::Particles.add_parallax(*args)
   end
+
   # Add an item to the bag if possible, will delete the event forever
   # @param item_id [Integer] id of the item in the database
   # @param no_delete [Boolean] bypass the deletion of the event
@@ -196,5 +209,20 @@ class Interpreter
     @message_waiting = false
     delete_this_event_forever unless no_delete
     @wait_count = 2
+  end
+
+  # Return the PFM::Text module
+  # @return [PFM::Text]
+  def pfm_text
+    return PFM::Text
+  end
+
+  # Return the index of the choosen Pokemon or call a method of Pokemon_Party to find the right Pokemon
+  # @param method_name [Symbol] identifier of the method
+  # @param args [Array] parameters to send to the method
+  def pokemon_index(method_name, *args)
+    index = $game_variables[Yuki::Var::Party_Menu_Sel].to_i
+    index = party.send(method_name, *args) if index < 0
+    return index
   end
 end
