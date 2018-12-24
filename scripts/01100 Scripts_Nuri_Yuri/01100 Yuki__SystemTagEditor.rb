@@ -289,7 +289,7 @@ module Yuki
     def load_tileset
       @tileset_offset = 0
       @tileset_sprite.bitmap = RPG::Cache.tileset(
-        $game_map.get_tileset_name($data_tilesets[@tileset_id + 1].tileset_name))
+        MapLinker.get_tileset_name($data_tilesets[@tileset_id + 1].tileset_name))
       @info_text.visible = @tileset_sprite.bitmap.width > 256
       @tileset_sprite.src_rect.set(0, 0, 256, 448)
       @tileset_tag.bitmap.dispose if @tileset_tag.bitmap
