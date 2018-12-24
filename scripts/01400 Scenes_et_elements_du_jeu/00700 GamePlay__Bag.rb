@@ -17,7 +17,7 @@ module GamePlay
     MOVE="Deplacer"
     SORT_ALPHA="Tri Alphabetique"
     SORT_ID="Tri par défauts"
-    Socket_Names=[nil.to_s,"Objets","Pokéball","CT/CS","Baies","Objets Rare","Médicaments"]
+    Socket_Names=[nil.to_s,"Objets","Pokéball","CT/CS","Baies","Objets Rare","Médicaments", "Cristaux Z", "Motism'Aura"]
     Bag_IMG=["bag","bag_girl"]
     LineJump="\n"
     Battle_Socket=[1,2,4,6]
@@ -87,7 +87,7 @@ module GamePlay
         return _draw_stuff
       elsif(repeat?(:RIGHT) and @mode!=:berry and !@moving)
         @socket+=1
-        @socket=1 if @socket>6
+        @socket=1 if @socket>8
         @item_ids=$bag.get_order(@socket)
         @item_names.clear
         @item_names=_item_name_list_gen
@@ -96,7 +96,7 @@ module GamePlay
         return _draw_stuff
       elsif(repeat?(:LEFT) and @mode!=:berry and !@moving)
         @socket-=1
-        @socket=6 if @socket<1
+        @socket=8 if @socket<1
         @item_ids=$bag.get_order(@socket)
         @item_names.clear
         @item_names=_item_name_list_gen
@@ -266,7 +266,7 @@ module GamePlay
     #===
     def _bag_src_rect_gen
       @background.bitmap=RPG::Cache.interface("Bag_Background#{@socket}")
-      height=@bag.bitmap.height/6 #6poches
+      height=@bag.bitmap.height/8 #8poches
       y=(@socket-1)*height
       @bag.src_rect.set(0,y,@bag.bitmap.width,height)
     end
