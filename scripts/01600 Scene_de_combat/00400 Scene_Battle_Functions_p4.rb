@@ -332,12 +332,13 @@ class Scene_Battle
   #Animation de la capture //!!!\\ A terminer !
   #===
   def phase4_animation_capture(cnt,pokemon,id)
-    #gr_launch_ball_to_enemy
+    gr_launch_ball_to_enemy(pokemon, id)
     cnt.times do
-      #gr_animate_ball_on_enemy
+      gr_animate_ball_on_enemy(pokemon)
     end
-    if(cnt==4)
-      #gr_animate_captured
+
+    if cnt == 4
+      gr_animate_caught(pokemon)
       #Faire toute la scène de capture
       $game_switches[Yuki::Sw::BT_Catch] = true
       pokemon.captured_with = id
@@ -347,10 +348,76 @@ class Scene_Battle
       pokemon.code_generation(pokemon.shiny, !pokemon.shiny)
       start_phase5
     else
-      #gr_animate_not_captured
-      display_message(_parse(18, 63+rand(4)))
+      gr_animate_pokebreak(pokemon)
+      display_message(_parse(18, 63 + rand(4)))
     end
   end
+
+  # Show the launch ball animation
+  # @param pokemon [PFM::Pokemon] Pokemon we try to catch
+  # @param id [Integer] ID of the ball in the database
+  def gr_launch_ball_to_enemy(pokemon, id)
+    pokemon_sprite = gr_get_pokemon_sprite(pokemon)
+    origin_sprite = pokemon.position < 0 ? @actor_sprites.first : @enemy_sprites.first
+    @ball_sprite = Sprite.new(@viewport).set_bitmap(GameData::Item.ball_data(id).img, :ball)
+    @ball_sprite.visible = false
+    @animator = Yuki::Basic_Animator.new(load_data('Data/Animations/pokeball_catch.dat'), origin_sprite, pokemon_sprite)
+    @animator.parameters[:ball_sprite] = @ball_sprite
+    while @animator.update
+      @viewport.sort_z
+      update_animated_sprites
+      Graphics.update unless @animator.terminated?
+    end
+    @animator = nil
+  end
+
+  # Show the moving animation of the ball
+  # @param pokemon [PFM::Pokemon] Pokemon we try to catch
+  def gr_animate_ball_on_enemy(pokemon)
+    pokemon_sprite = gr_get_pokemon_sprite(pokemon)
+    origin_sprite = pokemon.position < 0 ? @actor_sprites.first : @enemy_sprites.first
+    @animator = Yuki::Basic_Animator.new(load_data('Data/Animations/pokeball_move.dat'), origin_sprite, pokemon_sprite)
+    @animator.parameters[:ball_sprite] = @ball_sprite
+    while @animator.update
+      @viewport.sort_z
+      update_animated_sprites
+      Graphics.update unless @animator.terminated?
+    end
+    #@ball_sprite.dispose
+    @animator = nil
+  end
+
+  # Show the catch animation of the ball
+  # @param pokemon [PFM::Pokemon] Pokemon we try to catch
+  def gr_animate_caught(pokemon)
+    pokemon_sprite = gr_get_pokemon_sprite(pokemon)
+    origin_sprite = pokemon.position < 0 ? @actor_sprites.first : @enemy_sprites.first
+    @animator = Yuki::Basic_Animator.new(load_data('Data/Animations/pokeball_got.dat'), origin_sprite, pokemon_sprite)
+    @animator.parameters[:ball_sprite] = @ball_sprite
+    while @animator.update
+      @viewport.sort_z
+      update_animated_sprites
+      Graphics.update unless @animator.terminated?
+    end
+    @animator = nil
+  end
+
+  # Show the break animation of the ball
+  # @param pokemon [PFM::Pokemon] Pokemon we try to catch
+  def gr_animate_pokebreak(pokemon)
+    pokemon_sprite = gr_get_pokemon_sprite(pokemon)
+    origin_sprite = pokemon.position < 0 ? @actor_sprites.first : @enemy_sprites.first
+    @animator = Yuki::Basic_Animator.new(load_data('Data/Animations/pokeball_break.dat'), origin_sprite, pokemon_sprite)
+    @animator.parameters[:ball_sprite] = @ball_sprite
+    while @animator.update
+      @viewport.sort_z
+      update_animated_sprites
+      Graphics.update unless @animator.terminated?
+    end
+    @ball_sprite.dispose
+    @animator = nil
+  end
+
   #===
   #>_phase4_status_check
   #Traitement des effets des status

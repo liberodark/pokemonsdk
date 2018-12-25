@@ -30,5 +30,6 @@ class Object
     :blend_type => :blend_type=,
     :mirror => :mirror=,
     :visible => :visible=,
+    :zoom => :zoom=
   }
 end
