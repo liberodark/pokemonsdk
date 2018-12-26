@@ -3,6 +3,7 @@
 # Module that helps to convert stuff
 module Converter
   module_function
+
   # Convert a tileset to a PSDK readable PSDK tileset (if required)
   # @param filename [String]
   # @param max_size [Integer] Maximum Size of the texture in the Graphic Card
@@ -10,24 +11,16 @@ module Converter
   def convert_tileset(filename, max_size = Graphics::MAX_TEXTURE_SIZE)
     return unless File.exist?(filename.downcase)
     img = Image.new(filename.downcase)
-    new_filename = filename.downcase.gsub('.png',sprintf('_._psdk%d.png', max_size))
-    if img.height > 131072
-      cc 0x01
-      puts "\r#{filename} is to big for RMXP."
-      cc 0x07
-    end
+    new_filename = filename.downcase.gsub('.png', format('_._psdk%d.png', max_size))
+    log_error("#{filename} is to big for RMXP.") if img.height > 131_072
     if img.height > (max_size / 256 * max_size)
-      cc 0x01
-      puts "\r#{filename} is too big for your Graphic Card !"
-      cc 0x07
+      log_error("#{filename} is too big for your Graphic Card !")
       return
     end
     nb_col = (img.height / max_size.to_f).ceil
     # return img.dispose if nb_col == 1 # Removed to get better loading.
     if nb_col > 32
-      cc 0x01
-      puts "\r#{filename} cannot be converted to #{new_filename}, there's too much tiles."
-      cc 0x07
+      log_error("#{filename} cannot be converted to #{new_filename}, there's too much tiles.")
       return
     end
     new_image = Image.new(256 * nb_col, max_size)
@@ -39,10 +32,11 @@ module Converter
       new_image.blt(256 * i, 0, img, Rect.new(0, i * max_size, 256, height))
     end
     new_image.to_png_file(new_filename)
-    puts "\r#{filename} converted to #{new_filename}!"
+    log_info("#{filename} converted to #{new_filename}!")
     img.dispose
     new_image.dispose
   end
+
   # Convert an autotile file to a specific autotile file
   # @param filename [String]
   # @example Converter.convert_autotile("Graphics/autotiles/eauca.png")
@@ -51,15 +45,16 @@ module Converter
     bmp_arr = Array.new(48) { |i| generate_autotile_bmp(i + 48, autotiles) }
     bmp = Bitmap.new(48 * 32, bmp_arr.first.height)
     bmp_arr.each_with_index do |sub_bmp, i|
-      bmp.blt(32*i, 0, sub_bmp, sub_bmp.rect)
+      bmp.blt(32 * i, 0, sub_bmp, sub_bmp.rect)
     end
     bmp.update
-    bmp.to_png_file(new_filename = filename.gsub('.png','_._tiled.png'))
+    bmp.to_png_file(new_filename = filename.gsub('.png', '_._tiled.png'))
     bmp.dispose
-    bmp_arr.each { |bitmap| bitmap.dispose }
+    bmp_arr.each(&:dispose)
     autotiles.first.dispose
-    puts "\r#{filename} converted to #{new_filename}!"
+    log_info("#{filename} converted to #{new_filename}!")
   end
+
   # The autotile builder data
   Autotiles = [
     [ [27, 28, 33, 34], [ 5, 28, 33, 34], [27,  6, 33, 34], [ 5,  6, 33, 34],
@@ -86,7 +81,7 @@ module Converter
     return Bitmap.new(32, 32) if !autotile or autotile.width < 96
     src = SRC
     id %= 48
-    tiles = Autotiles[id>>3][id&7]
+    tiles = Autotiles[id >> 3][id & 7]
     frames = autotile.width / 96
     bmp = Bitmap.new(32, frames * 32)
     frames.times do |x|

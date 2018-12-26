@@ -410,12 +410,24 @@ module Yuki
     # @param tilesetname [String] filename of the tileset
     # @return [String] filename of the tileset
     def get_tileset_name(tilesetname)
-      filename = tilesetname + '_._psdk' + Graphics::MAX_TEXTURE_SIZE.to_s
-      unless RPG::Cache.tileset_exist?(filename)
+      filename = tilesetname.downcase + '_._psdk' + Graphics::MAX_TEXTURE_SIZE.to_s
+      if should_tileset_be_converted?(filename, tilesetname)
         Converter.convert_tileset("graphics/tilesets/#{tilesetname}.png")
         filename = tilesetname unless RPG::Cache.tileset_exist?(filename)
       end
       return filename
+    end
+
+    # Tell if the tileset has to be reconverted
+    # @param filename [String] result of the conversion
+    # @param tilesetname [String] tileset to convert
+    # @return [Boolean]
+    def should_tileset_be_converted?(filename, tilesetname)
+      return true unless RPG::Cache.tileset_exist?(filename)
+      return false if $RELEASE
+      return true unless File.exist?(filename = "graphics/tilesets/#{filename}.png")
+      return File.mtime("graphics/tilesets/#{tilesetname}.png".downcase) >
+             File.mtime(filename)
     end
   end
 end
