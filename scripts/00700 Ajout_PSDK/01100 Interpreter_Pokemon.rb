@@ -224,5 +224,16 @@ class Interpreter
     Graphics.transition
     @wait_count = 2
   end
+
+  # Open a Pokemon Shop
+  # @param pokemon_ids [Array<Integer>] id of the Pokemon to sell
+  # @param pokemon_prices [Array<Integer>] price of the Pokemon
+  # @param pokemon_levels [Array<Integer>] level of the pokemon when sold
+  # @note pokemon_levels can be Hash instead of integer in order to call PFM::Pokemon.generate_from_hash
+  def pokemon_shop_open(pokemon_ids, pokemon_prices, pokemon_levels)
+    GamePlay::Pokemon_Shop.new(pokemon_ids, pokemon_prices, pokemon_levels).main
+    Graphics.transition
+    @wait_count = 2
+  end
   # TODO : Faire le reste
 end

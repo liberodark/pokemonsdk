@@ -24,7 +24,12 @@ module GamePlay
           NUM2[1] => "1", NUM7R => price.to_s), 1,
           _get(11,27), _get(11,28))
         return if(c != 0)
-        $pokemon_party.add_pokemon(PFM::Pokemon.new(item_id, @pokemon_levels[index]))
+        if (level = @pokemon_levels[index]).is_a?(Hash)
+          pokemon = PFM::Pokemon.generate_from_hash(level)
+        else
+          pokemon = PFM::Pokemon.new(item_id, level)
+        end
+        $pokemon_party.add_pokemon(pokemon)
         $pokemon_party.lose_money(price)
         draw_gold_window
         display_message(_get(11,29))
