@@ -7,14 +7,15 @@ module GamePlay
       super()
       @goods = pokemon_ids
       @item_names = Array.new(pokemon_ids.size) { |i| ::GameData::Pokemon.name(pokemon_ids[i]) }
-      @item_prices = pokemon_prices
+      @item_prices = Array.new(@goods.size) { |i| _parse(22,159, NUM7R => pokemon_prices[i].to_s) }
+      @pokemon_prices = pokemon_prices
       @pokemon_levels = pokemon_levels
       draw_item_list
       draw_descr
     end
-	
+
     def buy_item(item_id)
-      price = @item_prices[index = @goods.index(item_id).to_i]
+      price = @pokemon_prices[index = @goods.index(item_id).to_i]
       if(price == 0 or price > $pokemon_party.money)
         display_message(_parse(11, 24))
         return
@@ -34,7 +35,7 @@ module GamePlay
     def draw_descr
       if @index < @goods.size
         item_id = @goods[@index]
-        @icon_sprite.bitmap = RPG::Cache.icon(::GameData::Item.b_icon(item_id))
+        @icon_sprite.bitmap = RPG::Cache.b_icon(format('%03d', item_id))
         @descr_text.multiline_text = GameData::Pokemon.descr(item_id)
       else
         @descr_text.text = " "
