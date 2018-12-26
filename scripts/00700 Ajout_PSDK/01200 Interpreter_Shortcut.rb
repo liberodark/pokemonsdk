@@ -74,12 +74,10 @@ class Interpreter
   # @param event_id [Integer] the id of the event on the MAP
   # @return [Boolean]
   def event_calling(common_event, event_id)
-    if (v = $game_map.events[event_id])
+    if (v = $game_map.events[event_id]) && v.list
       i = 0
-      while v.list[i] and v.list[i].code.between?(121, 122)
-        i += 1
-      end
-      return true if v.list[i] and v.list[i].code == 117 and v.list[i].parameters[0] == common_event
+      i += 1 while v.list[i] && v.list[i].code.between?(121, 122)
+      return true if v.list[i] && v.list[i].code == 117 && v.list[i].parameters[0] == common_event
     end
     return false
   end
