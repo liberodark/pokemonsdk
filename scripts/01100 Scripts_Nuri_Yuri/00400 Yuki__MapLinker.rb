@@ -178,10 +178,10 @@ module Yuki
       # Clone north tiles
       ox = link_data[1] + OffsetX
       oy = north_data.height - OffsetY - DeltaMaker
-      tbl.copy_modulo(north_data.data, ox % north_data.width, oy, 0, 0, tbl.xsize, OffsetY)
+      tbl.copy_modulo(north_data.data, (-ox) % north_data.width, oy, 0, 0, tbl.xsize, OffsetY)
       # Clone south tiles
       ox = link_data[5] + OffsetX
-      tbl.copy_modulo(sud_data.data, ox % sud_data.width, DeltaMaker, 0, tbl.ysize - OffsetY, tbl.xsize, OffsetY)
+      tbl.copy_modulo(sud_data.data, (-ox) % sud_data.width, DeltaMaker, 0, tbl.ysize - OffsetY, tbl.xsize, OffsetY)
       # Clone the west tiles
       ox = west_data.width - OffsetX - DeltaMaker
       oy = link_data[7]
