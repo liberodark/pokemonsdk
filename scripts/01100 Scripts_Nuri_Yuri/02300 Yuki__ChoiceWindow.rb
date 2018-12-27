@@ -150,10 +150,10 @@ module Yuki
         text.gsub!(/\\t\[(.*),(.*)\]/) { ::PFM::Text.parse($1.to_i, $2.to_i) }
         text.gsub!(/\\d\[(.*),(.*)\]/) { $daycare.parse_poke($1.to_i, $2.to_i) }
         text_obj = @texts.add_text(cursor_rect.width + cursor_rect.x, i * default_line_height, 0, default_line_height, text, color: @colors[i])
-        max_width = text_obj.real_width if @autocalc_width && max_width < text_obj.real_width
+        max_width = text_obj.real_width if max_width < text_obj.real_width
       end
       self.width = max_width + 2 * window_builder[4] + cursor_rect.width + cursor_rect.x if @autocalc_width
-      @texts.stack.each { |text| text.width = width }
+      @texts.stack.each { |text| text.width = max_width }
     end
 
     # Define the cursor rect
