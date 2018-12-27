@@ -44,16 +44,20 @@ module Yuki
     # @param info_str [String] infos about the face (position,name,opacity,mirror)
     def parse_speaker_face(info_str)
       position, name, opacity, mirror = info_str.split(',')
-      position = position.to_i
-      # Parse the negative position
-      position = viewport.rect.width + position if position < 0
-      sprite = @face_stack.push(position, face_speaker_y, name.to_s)
+      sprite = @face_stack.push(parse_speaker_position(position.to_i), face_speaker_y, name.to_s)
       sprite.set_origin(sprite.width / 2, sprite.height)
       sprite.opacity = opacity.to_i if opacity
       sprite.mirror = mirror == 'true'
       sprite.instance_variable_set(:@opacity, sprite.opacity)
     end
 
+    # Function that translate the position to a coordinate
+    # @param position [Integer] position given by the maker
+    # @return [Integer] the x position
+    def parse_speaker_position(position)
+      position = viewport.rect.width + position if position < 0
+      return position
+    end
     # Update the value of the face opacity
     def face_opacity=(value)
       @face_stack.stack.each do |sprite|
