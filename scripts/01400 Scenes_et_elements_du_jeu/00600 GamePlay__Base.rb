@@ -30,6 +30,8 @@ module GamePlay
     # @param no_message [Boolean] if the scene is created wihout the message management
     # @param z [Integer] the z superiority of the message
     def initialize(no_message = false, z = 10001)
+      # Force the message window of the map to be closed
+      $scene.window_message_close(true) if $scene.class == Scene_Map
       if(no_message.class == ::Window_Message)
         @message_window = no_message
         @inherited_message_window = true

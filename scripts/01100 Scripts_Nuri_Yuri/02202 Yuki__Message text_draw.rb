@@ -16,7 +16,7 @@ module Yuki
     # Generate the list of text refresh instruction
     # @param text [String]
     def generate_text_instructions(text)
-      max_width = width - ox * 2
+      max_width = width - window_builder[4] * 2
       markers = []
       text.gsub!(/([\x01-\x0F])\[([0-9]+)\]/) { markers << [$1.getbyte(0), $2.to_i]; S_000 }
       texts = text.split(S_000)

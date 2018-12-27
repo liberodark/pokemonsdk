@@ -32,7 +32,7 @@ module GamePlay
       show_black_frame
       # @type [PFM::Pokemon]
       pokemon = @party[@index]
-      choices = PFM::Choice_Helper.new(Window_Choice::But, true, 999)
+      choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       unless pokemon.egg?
         pokemon.skills_set.each_with_index do |skill, i|
           if skill and (skill.map_use > 0 or ::PFM::SkillProcess[skill.id])
@@ -52,7 +52,7 @@ module GamePlay
       # choices.register_choice(_get(23, 138), on_validate: method(:hide_winText)) # Cancel
       show_winText(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
-      choice = choices.display_choice(@viewport, x, y, 72, choices, on_update: method(:update_menu_choice))
+      choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_winText if choice == 999
       hide_black_frame
     end
@@ -203,13 +203,13 @@ module GamePlay
       show_black_frame
       # @type [PFM::Pokemon]
       pokemon = @party[@index]
-      choices = PFM::Choice_Helper.new(Window_Choice::But, true, 999)
+      choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       choices
         .register_choice(_get(20, 26), on_validate: method(:on_send_pokemon)) # Send
         .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
       show_winText(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
-      choices.display_choice(@viewport, x, y, 72, choices, on_update: method(:update_menu_choice))
+      choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
     end
 
@@ -234,14 +234,14 @@ module GamePlay
       show_black_frame
       # @type [PFM::Pokemon]
       pokemon = @party[@index]
-      choices = PFM::Choice_Helper.new(Window_Choice::But, true, 999)
+      choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       choices
         .register_choice(_get(23, 209), on_validate: method(:on_skill_choice)) # Select
         .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
         .register_choice(_get(23, 1), on_validate: method(:hide_winText)) # Cancel
       show_winText(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
-      choice = choices.display_choice(@viewport, x, y, 72, choices, on_update: method(:update_menu_choice))
+      choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
       show_winText(_get(23, 17)) if choice != 0
     end
@@ -262,14 +262,14 @@ module GamePlay
       show_black_frame
       # @type [PFM::Pokemon]
       pokemon = @party[@index]
-      choices = PFM::Choice_Helper.new(Window_Choice::But, true, 999)
+      choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       choices
         .register_choice(_get(23, 209), on_validate: method(:on_item_use_choice)) # Select
         .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
         .register_choice(_get(23, 1), on_validate: method(:hide_winText)) # Cancel
       show_winText(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
-      choice = choices.display_choice(@viewport, x, y, 72, choices, on_update: method(:update_menu_choice))
+      choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
       show_winText(_get(23, 24)) if choice != 0
     end
@@ -308,14 +308,14 @@ module GamePlay
       show_black_frame
       # @type [PFM::Pokemon]
       pokemon = @party[@index]
-      choices = PFM::Choice_Helper.new(Window_Choice::But, true, 999)
+      choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       choices
         .register_choice(_get(23, 146), on_validate: method(:on_item_give_choice)) # Select
         .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
         .register_choice(_get(23, 1), on_validate: method(:hide_winText)) # Cancel
       show_winText(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
-      choice = choices.display_choice(@viewport, x, y, 72, choices, on_update: method(:update_menu_choice))
+      choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
       show_winText(_get(23, 23)) if choice != 0
     end
@@ -331,14 +331,14 @@ module GamePlay
       show_black_frame
       # @type [PFM::Pokemon]
       pokemon = @party[@index]
-      choices = PFM::Choice_Helper.new(Window_Choice::But, true, 999)
+      choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       choices
         .register_choice(_get(23, 209), on_validate: method(:on_map_choice)) # Select
         .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
         .register_choice(_get(23, 1), on_validate: method(:hide_winText)) # Cancel
       show_winText(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
-      choice = choices.display_choice(@viewport, x, y, 72, choices, on_update: method(:update_menu_choice))
+      choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
       show_winText(_get(23, 17)) if choice != 0
     end

@@ -5,7 +5,7 @@ module Yuki
     # Generate the choice window
     def generate_choice_window
       if($game_temp.choice_max > 0)
-        @choice_window = ::Window_Choice.generate_for_message(@text_sample, self, self)
+        @choice_window = ChoiceWindow.generate_for_message(self)
       elsif $game_temp.num_input_digits_max > 0
         @input_number_window = ::GamePlay::InputNumber.new($game_temp.num_input_digits_max)
         if($game_system.message_position != 0)

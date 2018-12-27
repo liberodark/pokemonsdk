@@ -92,7 +92,7 @@ module Yuki
             $game_temp.choice_proc.call($game_temp.choice_cancel_type - 1)
             terminate_message
           # Validation
-          elsif Input.trigger?(:A) or (Mouse.trigger?(:left) and @choice_window.simple_mouse_in?)
+          elsif @choice_window.validated?
             $game_system.se_play($data_system.decision_se)
             $game_temp.choice_proc.call(@choice_window.index)
             terminate_message
