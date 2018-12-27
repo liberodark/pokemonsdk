@@ -10,11 +10,6 @@ module Yuki
   # - Choosing the skin of the various elements
   # - Choosing the position of the window & the various elements (speaker etc...)
   # - Choosing the speed of the text display
-  #
-  # Precision required :
-  #   - MASQUER LA BOITE
-  #   - surbrillance
-  #   - ANIMER LA POLICE D’ECRITURE
   class Message < LiteRGSS::Window
     # Name of the pause skin in Graphics/Windowskins/
     PauseSkin = 'Pause2'
@@ -60,6 +55,7 @@ module Yuki
       @face_stack = UI::SpriteStack.new(viewport, default_cache: :battler)
       # Name of the one who is speaking
       @name_window = Window.new(viewport)
+      @name_text = Text.new(0, @name_window, 0, -Text::Util::FOY, 0, default_line_height, '')
       reset_overwrites
       init_window
       self.visible = false
@@ -123,6 +119,12 @@ module Yuki
       @windowskin_overwrite || $game_system.windowskin_name
     end
 
+    # Retreive the current windowskin of the name window
+    # @return [String]
+    def current_name_windowskin
+      @nameskin_overwrite || $game_system.windowskin_name
+    end
+
     # Dispose the sub element of the window (thing created during the message processing)
     def dispose_sub_elements
       @gold_window && @gold_window.dispose
@@ -133,10 +135,16 @@ module Yuki
     # Initialize the window Parameter
     def init_window
       self.z = 10_000
+      lock
+      @name_window.visible = false
+      @name_window.lock
+      @name_text.text = ''
       update_windowskin
       init_pause_coordinates
       self.pauseskin = RPG::Cache.windowskin(PauseSkin)
       self.back_opacity = ($game_system.message_frame.zero? ? 255 : 0)
+      unlock
+      @name_window.unlock
     end
 
     def init_pause_coordinates
@@ -191,6 +199,28 @@ module Yuki
       # Window size is dependant on the windowskin
       set_size(window_width, window_height)
       calculate_position # Recalculate the window position (dependant on the height)
+      update_name_windowskin
+    end
+
+    # Retreive the current window_builder of the name window
+    def current_name_window_builder
+      return ::GameData::Windows::MessageHGSS if current_name_windowskin[0, 2] == 'M_' # SkinHGSS
+      ::GameData::Windows::MessageWindow # Skin PSDK
+    end
+
+    # Update the name windowskin
+    def update_name_windowskin
+      windowskin_name = current_name_windowskin
+      return if @name_windowskin_name == windowskin_name
+      @name_window.window_builder = current_name_window_builder
+      @name_window.windowskin = RPG::Cache.windowskin(@name_windowskin_name = windowskin_name)
+      @name_window.x = x
+      if current_position != :top
+        @name_window.y = y - 2 * @name_window.window_builder[5] - default_line_height - default_vertical_margin
+      else
+        @name_window.y = y + height + default_vertical_margin
+      end
+      @name_window.height = 2 * @name_window.window_builder[5] + default_line_height
     end
 
     # Wait the user input
@@ -211,7 +241,7 @@ module Yuki
 
     # Return the window height
     def window_height
-      base_height = 2 * current_window_builder[3]
+      base_height = 2 * current_window_builder[5]
       base_height + default_line_height * line_number
     end
 

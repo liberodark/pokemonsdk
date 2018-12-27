@@ -263,7 +263,6 @@ class Scene_Map
   # Execute the begin calculation of the transfer_player processing
   def transfer_player_begin
     ::Scheduler.start(:on_warp_start)
-    @message_window.reset_zoom
     # 移動先が現在のマップと異なる場合
     if $game_map.map_id != $game_temp.player_new_map_id
       # 新しいマップをセットアップ

@@ -1,6 +1,5 @@
 module Yuki
   class Message
-
     private
 
     # Generate the choice window

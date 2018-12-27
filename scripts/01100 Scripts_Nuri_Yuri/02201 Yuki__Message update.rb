@@ -30,6 +30,8 @@ module Yuki
       if @fade_in
         update_windowskin if contents_opacity.zero?
         self.contents_opacity += 24
+        @name_window.contents_opacity += 24
+        self.face_opacity = self.opacity
         @fade_in = false if contents_opacity == 255
         return true
       end
@@ -112,8 +114,8 @@ module Yuki
         @fade_in = true
         self.visible = true
         init_window
-        self.contents_opacity = 0
-        self.opacity = $game_temp.message_text.size.zero? ? 0 : 255
+        @name_window.contents_opacity = self.contents_opacity = 0
+        @name_window.opacity = self.opacity = $game_temp.message_text.size.zero? ? 0 : 255
         refresh
         return true
       end
@@ -125,10 +127,13 @@ module Yuki
     def update_fade_out
       if visible and !@stay_visible
         @fade_out = true
-        self.opacity -= 48
+        self.face_opacity = (self.opacity -= 48)
+        @name_window.opacity -= 48
         if opacity.zero?
           @text_stack.dispose
+          @face_stack.dispose
           self.visible = false
+          @name_window.visible = false
           self.opacity = 255
           @fade_out = false
           $game_temp.message_window_showing = false

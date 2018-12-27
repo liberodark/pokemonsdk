@@ -56,7 +56,7 @@ module Yuki
           words << word << ' '
           x += (w + sw)
         end
-        x -= sw if text.getbyte(-1) != 32 and words.rstrip!
+        x -= sw if text.getbyte(-1) != 32 && words.rstrip!
         instructions << words unless words.empty?
       else
         arr = []
@@ -77,7 +77,7 @@ module Yuki
     # @param counter [Integer] the counter
     # @return [Integer] the new counter, if counter == -1, the user requested to skip the progress thing
     def progress(text, str, counter)
-      speed = $options.message_speed
+      speed = @current_speed.zero? ? $options.message_speed : @current_speed
       text.nchar_draw = 0
       text.opacity = contents_opacity
       until text.nchar_draw >= str.size
@@ -131,6 +131,8 @@ module Yuki
       text.gsub!(/\\[Cc]\[([0-9]+)\]/) { "\001[#{$1}]" }
       text.gsub!(/\\[Ss]\[([bir]+)\]/) { "\x03[#{get_style_code($1)}]" }
       text.gsub!(/\\\^/) { "\x04[0]" }
+      text.gsub!(/\\spd\[([0-9]+)\]/) { "\x05[#{$1}]" }
+      text.sub!(/\:\[([^\]]+)\]\:/) { parse_speaker($1) }
       text.gsub!(S_000, S_sl)
       return text
     end
@@ -143,6 +145,7 @@ module Yuki
       set_origin(0, 0)
       text = replace_message_codes($game_temp.message_text)
       @x = @y = 0
+      @current_speed = 0
       @color = get_default_color
       @style = get_default_style
       generate_text_instructions(text)
@@ -189,27 +192,41 @@ module Yuki
     # @param maker [Array]
     def execute_marker_1(marker)
       @color = marker.last % GameData::Colors::Text_In.size
+      marker_fix_x
+    end
+
+    # Try to fix the x error introduced with markers
+    def marker_fix_x
+      @x += 1 if @text && @text.text.getbyte(-1) != 32
     end
 
     # Wait
     # @param maker [Array]
     def execute_marker_2(marker)
       marker.last.times { message_update_processing }
+      marker_fix_x
     end
 
     # Style
     # @param maker [Array]
     def execute_marker_3(marker)
       @style = marker.last
+      marker_fix_x
     end
 
     # Bigger text
-    # @param maker [Array]
+    # @param _maker [Array]
     def execute_marker_4(_marker)
       return unless @text
       @text.size = Font::FONT_SIZE
       @text.y += 4
       @x = @text.x + @text.real_width
+    end
+
+    # Change the text speed
+    # @param marker [Array]
+    def execute_marker_5(marker)
+      @current_speed = marker.last
     end
   end
 end
