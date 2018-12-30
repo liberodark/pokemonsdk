@@ -83,7 +83,7 @@ module Yuki
       until text.nchar_draw >= str.size
         text.nchar_draw += 1
         counter += 1
-        if Input.trigger?(:A) or (Mouse.trigger?(:left) and @window.simple_mouse_in?) # Skip request
+        if Input.trigger?(:A) or (Mouse.trigger?(:left) and simple_mouse_in?) # Skip request
           text.nchar_draw = str.size
           return -1
         end
