@@ -400,6 +400,7 @@ module Yuki
         next unless tileset.is_a?(RPG::Tileset)
         tags = tag_data[i]
         tags = [] unless tags
+        tags = fix_tags_to_array(tags) if tags.is_a?(Table)
         if(tags.size < tileset.terrain_tags.xsize)
           tags[tileset.terrain_tags.xsize - 1] = 0
         end
@@ -408,6 +409,12 @@ module Yuki
         end
         tag_data[i] = tags
       end
+    end
+    # Fix the tags format
+    # @param tags [Table] the tags in the wrong format
+    # @return [Array]
+    def fix_tags_to_array(tags)
+      Array.new(tags.xsize) { |i| tags[i].to_i }
     end
   end
 end
