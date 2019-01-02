@@ -96,9 +96,9 @@ class Interpreter_RMXP
       if character != nil
         case @parameters[5]
         when 0  # X 座標
-          value = character.x - ::Yuki::MapLinker.get_OffsetX
+          value = character.x - ::Yuki::MapLinker.current_OffsetX
         when 1  # Y 座標
-          value = character.y - ::Yuki::MapLinker.get_OffsetY
+          value = character.y - ::Yuki::MapLinker.current_OffsetY
         when 2  # 向き
           value = character.direction
         when 3  # 画面 X 座標
