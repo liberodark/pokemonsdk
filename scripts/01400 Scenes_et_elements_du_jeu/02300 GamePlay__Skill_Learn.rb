@@ -9,8 +9,8 @@ module GamePlay
     include UI
     attr_accessor :learnt
     def initialize(pokemon, skill_id)
-      super(false, 20000)
-      @viewport = select_view(view(:main, 19000))
+      super(false, 20_000)
+      @viewport = Viewport.create(:main, 19_000)
       @viewport.visible = false
       @background = Sprite.new(@viewport).set_bitmap(Skill_Learn1, :interface)
       init_info_pokemon

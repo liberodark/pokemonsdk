@@ -231,7 +231,7 @@ module GamePlay
 
     def dispose
       super
-      @viewport.dispose
+      # @viewport.dispose
     end
   end
 end

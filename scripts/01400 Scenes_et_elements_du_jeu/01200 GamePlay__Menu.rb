@@ -130,12 +130,14 @@ module GamePlay
 
     def dispose
       return if @sprites[0].disposed?
-      super
       Graphics.freeze
+      super
+=begin
       @sprites.each do |i|
         i.dispose
       end
-      @viewport.dispose
+=end
+      # @viewport.dispose
       @under_viewport.dispose
     end
   end

@@ -186,11 +186,13 @@ module GamePlay
 
     def dispose
       super
+=begin
       @gold_window.dispose
       @item_window.dispose
       @descr_window.dispose
       @selector.dispose
       @viewport.dispose
+=end
     end
   end
 end

@@ -44,7 +44,7 @@ module GamePlay
     # Dispose the viewports of the interface
     def dispose
       super # Call the dispose from Base to dispose the messagebox
-      @viewport.dispose #Under LiteRGSS Viewport#dispose disposes all the sprite it holds
+      # @viewport.dispose #Under LiteRGSS Viewport#dispose disposes all the sprite it holds
     end
   end
 end

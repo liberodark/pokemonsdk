@@ -123,9 +123,9 @@ module GamePlay
     end
 
     def dispose
-      super
       @new_window.dispose if @new_window
-      @viewport.dispose
+      super
+      # @viewport.dispose
     end
 
     #===

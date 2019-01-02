@@ -8,18 +8,28 @@ module GamePlay
     def initialize
       super
       @items = $bag.get_shortcuts
-      @viewport = select_view(view(:main, 10000))
-      @back = background("Shortcut")
+      @viewport = Viewport.create(:main, 10_000)
+      @back = Sprite.new(@viewport).set_bitmap('Shortcut', :interface)
       @back.x = (320 - @back.bitmap.width) / 2
       @back.y = (240 - @back.bitmap.height) / 2 - 9
       delta_x = @back.bitmap.width / 3 + 1
       delta_y = @back.bitmap.height / 3 + 1
       @item_sprites = Array.new(PFM::Bag::MAX_ShortCut) do |i|
+        sp = Sprite.new(@viewport)
+        sp.set_position(
+          @back.x + (i & 0x01 == 1 ? (delta_x * (i & 0x02)) : delta_x) + 1,
+          @back.y + (i & 0x01 == 1 ? delta_y : delta_y * i) + 1
+        )
+        sp.opacity = $bag.has_item?(@items[i]) ? 255 : 96
+        sp.set_bitmap(GameData::Item.icon(@items[i]), :icon) unless @items[i].zero?
+=begin
         sprite(@items[i] != 0 ? GameData::Item.icon(@items[i]) : nil,
           @back.x + (i & 0x01 == 1 ? (delta_x * (i & 0x02)) : delta_x) + 1,
           @back.y + (i & 0x01 == 1 ? delta_y : delta_y * i) + 1,
           i, cache_name: :icon, 
           opacity: $bag.has_item?(@items[i]) ? 255 : 96)
+=end
+        next(sp)
       end
     end
 

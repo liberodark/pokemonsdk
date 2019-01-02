@@ -170,7 +170,7 @@ module GamePlay
 
     def dispose
       super
-      @viewport.dispose
+      # @viewport.dispose
       @__last_scene.sprite_set_visible = true if @__last_scene.class == ::Scene_Map
     end
   end

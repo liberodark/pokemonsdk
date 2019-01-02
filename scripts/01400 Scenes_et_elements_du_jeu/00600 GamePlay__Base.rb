@@ -7,7 +7,7 @@ module GamePlay
   # @author Nuri Yuri
   class Base
     # Message the displays when a GamePlay scene has been initialized without message processing and try to display a message
-    MessageError = "This interface has no MessageWindow, you cannot call display_message"
+    MessageError = 'This interface has no MessageWindow, you cannot call display_message'
     ::PFM::Text.define_const(self)
     include Sprites
     include Input
@@ -18,7 +18,7 @@ module GamePlay
     # @return [#main]
     attr_reader :__last_scene
     # The message window
-    # @return [Window_Message, nil]
+    # @return [Yuki::Message, nil]
     attr_reader :message_window
     # The process that is called when the call_scene method returns
     # @return [Proc, nil]
@@ -28,61 +28,80 @@ module GamePlay
     attr_accessor :running
     # Create a new GamePlay scene
     # @param no_message [Boolean] if the scene is created wihout the message management
-    # @param z [Integer] the z superiority of the message
-    def initialize(no_message = false, z = 10001)
+    # @param message_z [Integer] the z superiority of the message
+    # @param message_viewport_args [Array] if empty : [:main, message_z] will be used.
+    def initialize(no_message = false, message_z = 10_001, *message_viewport_args)
       # Force the message window of the map to be closed
       $scene.window_message_close(true) if $scene.class == Scene_Map
-      if(no_message.class == ::Window_Message)
-        @message_window = no_message
-        @inherited_message_window = true
-      elsif(no_message)
-        @message_window = false
-      else
-#        if $game_temp.in_battle
-#          @message_window = ::Scene_Battle::Window_Message.new
-#          @message_window.wait_input = true
-#        else
-          @message_window = ::Window_Message.new
-#        end
-        @message_window.z = z
-      end
+      message_initialize(no_message, message_z, message_viewport_args)
       _init_sprites
     end
+
+    # Initialize the window related interface of the UI
+    # @param no_message [Boolean] if the scene is created wihout the message management
+    # @param message_z [Integer] the z superiority of the message
+    # @param message_viewport_args [Array] if empty : [:main, message_z] will be used.
+    def message_initialize(no_message, message_z, message_viewport_args)
+      if no_message.is_a?(::Yuki::Message)
+        @message_window = no_message
+        @inherited_message_window = true
+      elsif no_message
+        @message_window = false
+      else
+        # if $game_temp.in_battle
+        #  @message_window = ::Scene_Battle::Window_Message.new
+        #  @message_window.wait_input = true
+        # else
+        message_viewport_args = [:main, message_z] if message_viewport_args.empty?
+        @message_window = Yuki::Message.new(Viewport.create(*message_viewport_args), self)
+        # end
+        @message_window.z = message_z
+      end
+    end
+
     # Scene update process
     # @return [Boolean] if the scene should continue the update process or abort it (message/animation etc...)
     def update
-      #> S'il y a des animations de sprite
-      continue = true #< Ajouter ici le process de certaines animations
-      #> Si l'interface a une fenêtre de message, on met à jour
+      continue = true
+      # We update the message window if there's a message window
       if @message_window
         @message_window.update
         return false if $game_temp.message_window_showing
       end
       return continue
     end
-    # Dispose the scene sprites.
+
+    # Dispose the scene graphics.
+    # @note @viewport and @message_window will be disposed.
     def dispose
-      @message_window.dispose unless @inherited_message_window || !@message_window
-      dispose_sprites
+      unless @inherited_message_window || !@message_window
+        win_viewport = @message_window.viewport
+        @message_window.dispose
+        win_viewport.dispose
+      end
+      @viewport.dispose if @viewport
     end
+
     # The GamePlay entry point (Must not be overridden).
     def main
-      #> Sauvegarde de la scène précédent
+      # Store the last scene and store self in $scene
       @__last_scene = $scene
       $scene = self
-      #> Variable indiquant que la scène est en fonctionnement
+      # Tell the interface is running
       @running = true
-      #> Process principal
+      # Main processing
       main_begin
       main_process
       main_end
-      #> Récupération de la scène précédente sauf avis contraire
+      # Reset $scene unless it was already done
       $scene = @__last_scene if $scene == self
     end
+
     # The main process at the begin of scene
     def main_begin
       Graphics.transition
     end
+
     # The main process (block until scene stop running)
     def main_process
       while @running
@@ -90,51 +109,55 @@ module GamePlay
         update
       end
     end
+
     # The main process at the end of the scene (when scene is not running anymore)
     def main_end
       Graphics.freeze
       dispose
     end
+
     # Change the viewport visibility of the scene
-    # @param v [Boolean]
-    def visible=(v)
-      @viewport.visible = v if @viewport
+    # @param value [Boolean]
+    def visible=(value)
+      @viewport.visible = value if @viewport
+      @message_window.viewport.visible = value if @message_window
     end
+
     # Call an other scene
     # @param name [Class] the scene to call
     # @param args [Array] the parameter of the initialize method of the scene to call
     # @return [Boolean] if this scene can still run
     def call_scene(name, *args)
       Graphics.freeze
-      #> Mise automatique du viewport en non visible (@__last_scene.viewport.visible = true pour rerendre visible)
+      # Make the current scene invisible
       self.visible = false
       result_process = @__result_process
       @__result_process = nil
       scene = name.new(*args)
       scene.main
-      #> Traitement du résultat si il est défini
+      # Call the result process if any
       result_process.call(scene) if result_process
-      #> Si la scène est différente, on arrête le processus de celle-ci
+      # If the scene has changed we stop this one
       return @running = false if $scene != self or !@running
       self.visible = true
       Graphics.transition
       return true
     end
+
     # Return to an other scene, create the scene if not found or args.size > 0
     # @param name [Class] the scene to return to
     # @param args [Array] the parameter of the initialize method of the scene to call
     # @note This scene will stop running
     # @return [Boolean] if the scene has successfully returned to the desired scene
     def return_to_scene(name, *args)
-      if(args.size == 0)
+      if args.empty?
         scene = self
         while scene.is_a?(Base)
           scene = scene.__last_scene
-          if(scene.class == name)
-            $scene = scene
-            @running = false
-            return true
-          end
+          next unless scene.class == name
+          $scene = scene
+          @running = false
+          return true
         end
         return false
       end
@@ -142,6 +165,7 @@ module GamePlay
       @running = false
       return true
     end
+
     # Display a message with choice or not
     # @param message [String] the message to display
     # @param start [Integer] the start choice index (1..nb_choice)
@@ -149,13 +173,13 @@ module GamePlay
     # @return [Integer, nil] the choice result
     def display_message(message, start=1, *choices)
       raise ScriptError, MessageError unless @message_window
-      #message = @message_window.contents.multiline_calibrate(message)
+      # message = @message_window.contents.multiline_calibrate(message)
       $game_temp.message_text = message
       processing_message = true
       $game_temp.message_proc = proc { processing_message = false }
-      #> Intégration du choix
+      # Choice management
       choice = nil
-      if(choices.size>0)
+      if !choices.empty?
         $game_temp.choice_max = choices.size
         $game_temp.choice_cancel_type = choices.size
         $game_temp.choice_proc = proc { |i| choice = i }
@@ -163,12 +187,12 @@ module GamePlay
         $game_temp.choices = choices
       end
       edit_max = $game_temp.num_input_start > 0
-      #> Mise à jour du message
+      # Message update
       while processing_message
         Graphics.update
         @message_window.update
         @__display_message_proc.call if @__display_message_proc
-        if(edit_max and @message_window.input_number_window)
+        if edit_max and @message_window.input_number_window
           edit_max = false
           @message_window.input_number_window.max = $game_temp.num_input_start
         end
@@ -176,6 +200,7 @@ module GamePlay
       Graphics.update
       return choice
     end
+
     # Display a message with choice or not. This method will wait the message window to disappear
     # @param message [String] the message to display
     # @param start [Integer] the start choice index (1..nb_choice)
@@ -189,6 +214,7 @@ module GamePlay
       end
       return choice
     end
+
     # Perform an index change test and update the index (rotative)
     # @param varname [Symbol] name of the instance variable that plays the index
     # @param sub_key [Symbol] name of the key that substract 1 to the index
@@ -196,16 +222,17 @@ module GamePlay
     # @param max [Integer] maximum value of the index
     # @param min [Integer] minmum value of the index
     def index_changed(varname, sub_key, add_key, max, min = 0)
-      index = self.instance_variable_get(varname) - min
+      index = instance_variable_get(varname) - min
       mod = max - min + 1
       return false if mod <= 0 # Invalid value fix
       if Input.repeat?(sub_key)
-        self.instance_variable_set(varname, (index - 1) % mod + min)
+        instance_variable_set(varname, (index - 1) % mod + min)
       elsif Input.repeat?(add_key)
-        self.instance_variable_set(varname, (index + 1) % mod + min)
+        instance_variable_set(varname, (index + 1) % mod + min)
       end
-      return self.instance_variable_get(varname) != (index + min)
+      return instance_variable_get(varname) != (index + min)
     end
+
     # Perform an index change test and update the index (borned)
     # @param varname [Symbol] name of the instance variable that plays the index
     # @param sub_key [Symbol] name of the key that substract 1 to the index
@@ -213,14 +240,14 @@ module GamePlay
     # @param max [Integer] maximum value of the index
     # @param min [Integer] minmum value of the index
     def index_changed!(varname, sub_key, add_key, max, min = 0)
-      index = self.instance_variable_get(varname) - min
+      index = instance_variable_get(varname) - min
       mod = max - min + 1
       if Input.repeat?(sub_key) && index > 0
-        self.instance_variable_set(varname, (index - 1) + min)
+        instance_variable_set(varname, (index - 1) + min)
       elsif Input.repeat?(add_key) && index < mod && index != max
-        self.instance_variable_set(varname, index + 1 + min)
+        instance_variable_set(varname, index + 1 + min)
       end
-      return self.instance_variable_get(varname) != (index + min)
+      return instance_variable_get(varname) != (index + min)
     end
   end
 end

@@ -41,6 +41,8 @@ module GamePlay
     end
 
     def dispose
+      super
+=begin
       @background.dispose
       @selector.dispose
       @buttons.each do |button|

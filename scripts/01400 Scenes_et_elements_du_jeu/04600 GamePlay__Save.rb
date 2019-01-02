@@ -121,8 +121,9 @@ module GamePlay
 
     # Function that disposes the scene
     def dispose
-      super
       @save_window.dispose
+      $game_temp.message_window_showing = false
+      super
     end
 
     # Save a game

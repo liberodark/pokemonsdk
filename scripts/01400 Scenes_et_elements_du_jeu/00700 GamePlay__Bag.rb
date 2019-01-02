@@ -1,6 +1,3 @@
-#encoding: utf-8
-
-#noyard
 module GamePlay
   class Bag < Base
     #> Inclusions
@@ -28,37 +25,30 @@ module GamePlay
     #===
     def initialize(mode=:menu)
       super()
-      #>Definition des variable de fonctionnement de l'interface
       @mode = mode
       @return_data = -1
       @moving = false
       _adjust_socket(mode)
       _calibrate_item_list
-      #>Definition des sprites
-      @viewport = select_view(view(:main, 10000))
-      #>Fond
-      @background = background(nil)
-      #>Sac
-      @bag = sprite(Bag_IMG[$trainer.playing_girl ? 1 : 0], 80, 75, 1, ox_div: 2, oy_div: 12)
+      @viewport = Viewport.create(:main, 10000)
+      @background = Sprite.new(@viewport)
+      @bag = Sprite.new(@viewport).set_bitmap(Bag_IMG[$trainer.playing_girl ? 1 : 0], :interface)
+      @bag.set_position(80, 75)
+      @bag.set_origin_div(2, 12) # sprite(Bag_IMG[$trainer.playing_girl ? 1 : 0], 80, 75, 1, ox_div: 2, oy_div: 12)
       _bag_src_rect_gen
-      #> Icone
-      @icon = sprite(nil, 24, 124, 2)
-      #> Selecteur
-      @selector = sprite_sheet("Bag_selector", 154, 124, 2, 1, 2)
-      #> Textes
-      init_text(0, @viewport)
-      @socket_text = add_text(26, 12, 113, 23, " ", 1, 1).load_color(9)
-      @quantity_text = Array.new
+      @icon = Sprite.new(@viewport).set_position(24, 124) # sprite(nil, 24, 124, 2)
+      @selector = SpriteSheet.new(@viewport, 1, 2).set_bitmap('bag_selector', :interface) # sprite_sheet("Bag_selector", 154, 124, 2, 1, 2)
+      @selector.set_position(154, 124)
+      @texts = UI::SpriteStack.new(@viewport) # init_text(0, @viewport)
+      @socket_text = @texts.add_text(26, 12, 113, 23, ' ', 1, 1, color: 9)
+      @quantity_text = []
       @name_text = Array.new(11) do |cnt|
-        @quantity_text << add_text(158, 29 + cnt* 16, 140, 16," ", 2).load_color(18)
-        add_text(158, 29 + cnt* 16, 140, 16," ").load_color(18)
+        @quantity_text << @texts.add_text(158, 29 + cnt * 16, 140, 16, ' ', 2, color: 18)
+        @texts.add_text(158, 29 + cnt * 16, 140, 16, ' ', color: 18)
       end
-      @descr_text = add_text(3, 153, 132, 16, " ").load_color(18)
+      @descr_text = @texts.add_text(3, 153, 132, 16, ' ', color: 18)
     end
 
-    #===
-    #>Méthode de fonctionnement générale
-    #===
     def main_begin
       _draw_stuff
       super
@@ -67,16 +57,13 @@ module GamePlay
     def main_end
       super
       @item_names.clear
-      @item_names=nil
-      $bag.last_socket=@socket
-      $bag.last_index=@index
+      @item_names = nil
+      $bag.last_socket = @socket
+      $bag.last_index = @index
     end
-    #===
-    #>Mise à jour de la scène
-    #===
+
     def update
-      super
-      return if $game_temp.message_window_showing
+      return unless super
       if(repeat?(:UP))
         @index-=1
         @index=@item_ids.size if @index<0
@@ -118,9 +105,7 @@ module GamePlay
         end
       end
     end
-    #===
-    #>Quand on utilise un objet
-    #===
+
     def _action_on_item
       @return_data=@item_ids[@index]
       if(@moving)

@@ -17,7 +17,7 @@ module GamePlay
       #check_alola_evolve(@clone)
       @forced = forced
       #> Génération du Background
-      @viewport = select_view(view(:main, @message_window.z - 1))
+      @viewport = Viewport.create(:main, @message_window.z - 1)
       #> Background
       id_bg = $env.get_zone_type(true)
       if(id_bg == 0)
@@ -25,13 +25,14 @@ module GamePlay
       else
         id_bg += 1
       end
-      @background = background(BackNames[id_bg], :battleback)
-      #> Sprite du Pokémon non évolué
-      @sprite_pokemon = sprite(nil, 160, 120, 1, bitmap: pkmn.battler_face, 
-        ox_div: 2, oy_div: 2)
+      @background = Sprite.new(@viewport).set_bitmap(BackNames[id_bg], :battleback) # background(BackNames[id_bg], :battleback)
+      @sprite_pokemon = Sprite.new(@viewport).set_bitmap(pkmn.battler_face)
+      @sprite_pokemon.set_position(160, 120).set_origin_div(2, 2) # sprite(nil, 160, 120, 1, bitmap: pkmn.battler_face, 
+      #  ox_div: 2, oy_div: 2)
       #> Sprite du Pokémon évolué
-      @sprite_clone = sprite(nil, 160, 120, 2, bitmap: @clone.battler_face, 
-        ox_div: 2, oy_div: 2, opacity: 0, tone: [255, 255, 255, 255])
+      @sprite_clone = Sprite.new(@viewport).set_bitmap(@clone.battler_face)
+      @sprite_pokemon.set_position(160, 120).set_origin_div(2, 2) # sprite(nil, 160, 120, 2, bitmap: @clone.battler_face, 
+      #  ox_div: 2, oy_div: 2, opacity: 0, tone: [255, 255, 255, 255])
       @evolved = false
       @counter = 0
       $game_system.bgm_memorize2
@@ -94,7 +95,7 @@ module GamePlay
         value /= 2
         @background.tone.set(value, value, value, 0)
       elsif @counter < SecondStep
-        value = (Math::cos((@counter-FirstStep)*PI2/120)+1)*128
+        value = (Math.cos((@counter-FirstStep)*PI2/120)+1)*128
         @sprite_pokemon.opacity = value
         @sprite_clone.opacity = 255-value
       elsif @counter < LastStep
@@ -102,7 +103,6 @@ module GamePlay
         @background.tone.set(value, value, value, 0)
         @sprite_clone.tone.set(value, value, value, value)
       end
-
     end
 
     def release_animation
@@ -111,16 +111,5 @@ module GamePlay
       @sprite_pokemon.tone.set(0,0,0,0)
       @background.tone.set(0,0,0,0)
     end
-=begin    
-    def check_alola_evolve(pokemon)
-      return unless $game_switches[::Yuki::Sw::Alola]
-      case pokemon.id
-      when 26, 103 #Raichu / Noadkoko 
-        pokemon.form = 1
-      when 105 # Ossatueur
-        pokemon.form = 1 if $env.night?
-      end
-    end
-=end
   end
 end
