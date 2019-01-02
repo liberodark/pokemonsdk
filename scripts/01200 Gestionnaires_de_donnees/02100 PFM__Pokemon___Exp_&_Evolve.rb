@@ -183,7 +183,7 @@ module PFM
     # @param v [Integer] the new id of the Pokemon
     def id=(v)
       @character = nil
-      if($game_data_pokemon[v])
+      if(v && $game_data_pokemon[v])
         @id = v
         @form = 0 unless $game_data_pokemon[v][@form]
         @form = _form_generation(@id, -1) if @form == 0

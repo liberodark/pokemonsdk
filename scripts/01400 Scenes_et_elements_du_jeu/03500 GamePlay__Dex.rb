@@ -200,6 +200,7 @@ module GamePlay
         selected_pokemons.sort! { |a, b| ::GameData::Pokemon.id_bis(a) <=> ::GameData::Pokemon.id_bis(b) }
         @selected_pokemons = selected_pokemons
       end
+      @selected_pokemons.compact!
       @selected_pokemons << 0 if @selected_pokemons.size == 0
       # Index ajustment
       if(page_id)
