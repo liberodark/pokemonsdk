@@ -541,9 +541,9 @@ module Util
           character = "character = get_character(#{param[4]})"
           case param[5]
           when 0 # X position
-            return "(#{character} and character.x - ::Yuki::MapLinker.get_OffsetX) or 0"
+            return "(#{character} and character.x - ::Yuki::MapLinker.current_OffsetX) or 0"
           when 1 # Y Position
-            return "(#{character} and character.y - ::Yuki::MapLinker.get_OffsetY) or 0"
+            return "(#{character} and character.y - ::Yuki::MapLinker.current_OffsetY) or 0"
           when 2 # Direction
             return "(#{character} and character.direction) or 0"
           when 3 # Screen X

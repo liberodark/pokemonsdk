@@ -62,14 +62,14 @@ class Interpreter_RMXP
     # 指定方法が [直接指定] の場合
     if @parameters[1] == 0
       # キャラクターの位置を設定
-      character.moveto(@parameters[2] + ::Yuki::MapLinker.get_OffsetX, 
-      @parameters[3] + ::Yuki::MapLinker.get_OffsetY)
+      character.moveto(@parameters[2] + ::Yuki::MapLinker.current_OffsetX, 
+      @parameters[3] + ::Yuki::MapLinker.current_OffsetY)
     # 指定方法が [変数で指定] の場合
     elsif @parameters[1] == 1
       # キャラクターの位置を設定
       character.moveto($game_variables[@parameters[2]] + 
-        ::Yuki::MapLinker.get_OffsetX,  $game_variables[@parameters[3]] + 
-        ::Yuki::MapLinker.get_OffsetY)
+        ::Yuki::MapLinker.current_OffsetX,  $game_variables[@parameters[3]] + 
+        ::Yuki::MapLinker.current_OffsetY)
     # 指定方法が [他のイベントと交換] の場合
     else
       old_x = character.x

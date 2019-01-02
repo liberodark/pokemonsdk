@@ -18,13 +18,27 @@ module Yuki
     module_function
 
     # Get the OffsetX
+    # @return [Integer]
     def get_OffsetX
       return $game_switches[Sw::MapLinkerDisabled] ? 0 : OffsetX
     end
 
     # Get the OffsetY
+    # @return [Integer]
     def get_OffsetY
       return $game_switches[Sw::MapLinkerDisabled] ? 0 : OffsetY
+    end
+
+    # Get the OffsetX for the current map
+    # @return [Integer]
+    def current_OffsetX
+      return @current_disabled_state ? 0 : OffsetX
+    end
+
+    # Get the OffsetY for the current map
+    # @return [Integer]
+    def current_OffsetY
+      return @current_disabled_state ? 0 : OffsetY
     end
 
     # Get the added events
@@ -63,7 +77,7 @@ module Yuki
     # @return [RPG::Map] the map adjusted
     def load_map(map_id)
       Yuki::ElapsedTime.start(:maplinker)
-      if $game_switches[Sw::MapLinkerDisabled]
+      if (@current_disabled_state = $game_switches[Sw::MapLinkerDisabled])
         @link_data = nil
         @last_map = current_map_data = load_map_data(map_id)
         @last_map_id = map_id
@@ -74,8 +88,8 @@ module Yuki
       if @last_map
         @last_map.data = @last_map_data
         @last_map.events = @last_events
-        @last_map.width -= OffsetX * 2
-        @last_map.height -= OffsetY * 2
+        @last_map.width = @last_map_data.xsize
+        @last_map.height = @last_map_data.ysize
       end
       # Load the new map
       current_map_data = load_map_data(map_id).clone

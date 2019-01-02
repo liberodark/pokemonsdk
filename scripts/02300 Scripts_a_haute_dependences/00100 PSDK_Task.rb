@@ -4,8 +4,8 @@ module Scheduler
   add_proc(:on_warp_start, ::Scene_Map, "Enregistrement positions",1000,
     proc {
       @storage[:was_outside] = $game_switches[Yuki::Sw::Env_CanFly]
-      @storage[:old_player_x] = $game_player.x
-      @storage[:old_player_y] = $game_player.y
+      @storage[:old_player_x] = $game_player.x - Yuki::MapLinker.current_OffsetX
+      @storage[:old_player_y] = $game_player.y - Yuki::MapLinker.current_OffsetY
       @storage[:old_player_id] = $game_map.map_id
     }
   )
