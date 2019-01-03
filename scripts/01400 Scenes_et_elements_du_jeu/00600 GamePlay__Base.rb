@@ -75,9 +75,7 @@ module GamePlay
     # @note @viewport and @message_window will be disposed.
     def dispose
       unless @inherited_message_window || !@message_window
-        win_viewport = @message_window.viewport
-        @message_window.dispose
-        win_viewport.dispose
+        @message_window.dispose(with_viewport: true)
       end
       @viewport.dispose if @viewport
     end

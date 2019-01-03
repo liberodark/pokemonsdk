@@ -79,12 +79,15 @@ module Yuki
     end
 
     # Dispose the window
-    def dispose
+    # @param with_viewport [Boolean] tell to also dispose the viewport of the Window
+    def dispose(with_viewport: false)
       @@instances.delete(@parent)
-      super
+      vp = viewport
+      super()
       @face_stack.dispose
       @name_window.dispose
       dispose_sub_elements
+      vp.dispose if with_viewport
     end
 
     # Terminate the message display

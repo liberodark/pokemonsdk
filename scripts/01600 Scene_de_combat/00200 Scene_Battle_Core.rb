@@ -41,7 +41,7 @@ class Scene_Battle
     @enemy_party=PFM::Pokemon_Party.new(true)
     @trainer_names=[]
     # Initialisation de l'affichage graphique du bas
-    @message_window = Window_Message.new()#true)
+    @message_window = Message.new(Viewport.create(:main, 2000), self)# Window_Message.new()#true)
     @action_selector=Action_Selector.new
     @skill_selector=Skill_Selector.new
     #Initialisation des variables d'état
@@ -106,7 +106,7 @@ class Scene_Battle
     # Préparation de la transition Combat <=> MAP
     Graphics.freeze
     # Effacer les fenêtres
-    @message_window.dispose
+    @message_window.dispose(with_viewport: true)
     @action_selector.dispose
     @skill_selector.dispose
     #effacement de tous les sprites générés par l'affichage graphique
