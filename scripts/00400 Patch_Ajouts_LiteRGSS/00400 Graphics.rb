@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 # Module that manage the general graphic display
 module Graphics
   @update = method(:update)
@@ -9,31 +7,26 @@ module Graphics
   @transition = method(:transition)
   @on_start = []
   @last_scene = nil
+
   module_function
+
   # Define a block that should be called when Graphics.start has been called
   # @param block [Proc] the block to call
   def on_start(&block)
     @on_start << block
   end
+
   # Start the Graphic module (show the Window and call some things)
   def start
     @start.call
-    @on_start.each { |block| block.call }
+    @on_start.each(&:call)
     @on_start.clear
-    STDOUT.sync = true unless STDOUT.tty?
-    unless $RELEASE
-      @cmd_thread = Thread.new do 
-        while true
-          print "Commande : "
-          @__cmd_to_eval = STDIN.gets.chomp
-          sleep
-        end
-      end
-    end
+    io_initialize
     frame_reset
     @no_mouse = (Config.const_defined?(:DisableMouse) and Config::DisableMouse and !PARGV[:tags])
     init_sprite
   end
+
   # Update the screen with the current frame state
   def update
     ::Scheduler.start(:on_update)
@@ -51,6 +44,7 @@ module Graphics
     FMOD::System.update
     update_cmd_eval if @__cmd_to_eval
   end
+
   # Stop the Graphic display
   def stop
     dispose_fps_text
@@ -58,6 +52,7 @@ module Graphics
     @cmd_thread.kill if @cmd_thread
     @stop.call
   end
+
   # Make the Game wait n frames
   # @param n [Integer]
   # @yield [] a block performing action after each Graphics.update (optionnal)
@@ -67,6 +62,7 @@ module Graphics
       yield if block_given?
     end
   end
+
   # Make the Graphics freeze
   def freeze
     @mouse.visible = false unless @no_mouse
@@ -74,6 +70,7 @@ module Graphics
     wait(6)
     @freeze.call
   end
+
   # Perform a Transition
   # @param args [Array<Integer, LiteRGSS::Bitmap>] number of frame to perform the transition and the bitmap to use if needed
   def transition(*args)
@@ -83,6 +80,7 @@ module Graphics
     @mouse.visible = true unless @no_mouse
     @ruby_time = Time.new
   end
+
   # Init the Sprite used by the Graphics module
   def init_sprite
     return if @mouse && !@mouse.disposed?
@@ -99,6 +97,7 @@ module Graphics
       @mouse.bitmap.update
     end
   end
+
   # Sort the Graphical element by their z coordinate (in the Graphic Stack)
   def sort_z
     @__elementtable.sort! do |a, b| 
@@ -108,17 +107,44 @@ module Graphics
     end
     reload_stack
   end
+
   # Eval a command from the console
   def update_cmd_eval
     cmd = @__cmd_to_eval
     @__cmd_to_eval = nil
     begin
-      Object.instance_eval(cmd)
+      puts Object.instance_eval(cmd)
     rescue Exception
       print "\r"
       puts "#{$!.class} : #{$!.message}"
       puts $!.backtrace
     end
-    @cmd_thread.wakeup
+    @cmd_thread.wakeup if @cmd_thread
+  end
+
+  # Initialize the IO related stuff of Graphics
+  def io_initialize
+    STDOUT.sync = true unless STDOUT.tty?
+    return if $RELEASE
+    @cmd_thread = create_command_thread
+  rescue StandardError
+    puts 'Failed to initialize IO related things'
+  end
+
+  # Create the Command thread
+  def create_command_thread
+    Thread.new do
+      loop do
+        begin
+          print 'Commande : '
+          @__cmd_to_eval = STDIN.gets.chomp
+          sleep
+        rescue StandardError
+          @cmd_thread = nil
+          @__cmd_to_eval = nil
+          break
+        end
+      end
+    end
   end
 end
