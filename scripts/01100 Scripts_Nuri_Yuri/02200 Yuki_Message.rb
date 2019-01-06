@@ -88,6 +88,7 @@ module Yuki
       @name_window.dispose
       dispose_sub_elements
       vp.dispose if with_viewport
+      $game_temp.message_window_showing = false
     end
 
     # Terminate the message display
