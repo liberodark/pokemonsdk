@@ -12,7 +12,9 @@ class Scene_Battle
     # Initialize the window Parameter
     def init_window
       super
-      @wait_input = true
+      # Make sure it's only done when called inside initialize
+      return unless @waiter.nil?
+      @wait_input = false
       @blocking = false
       @waiter = 0
     end
