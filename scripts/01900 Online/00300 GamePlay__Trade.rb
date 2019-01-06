@@ -270,10 +270,5 @@ module GamePlay
       text.add_text(x, 112, 54, 16, pokemon.dfs_basis.to_s, 2)
       text.add_text(x - 50, 128, 106, 16, pokemon.ability_name, 0)
     end
-
-    def dispose
-      super
-      @viewport.dispose
-    end
   end
 end
