@@ -81,11 +81,12 @@ module Yuki
         @link_data = nil
         @last_map = current_map_data = load_map_data(map_id)
         @last_map_id = map_id
+        @last_map_data = nil
         load_tileset_and_priority
         return current_map_data
       end
       # Reset the last map data to its original state
-      if @last_map
+      if @last_map && @last_map_data
         @last_map.data = @last_map_data
         @last_map.events = @last_events
         @last_map.width = @last_map_data.xsize
