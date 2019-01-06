@@ -164,7 +164,7 @@ module GamePlay
         $pokemon_party.load_parameters
         return $pokemon_party
       end
-    rescue StandardError
+    rescue Exception
       return nil
     end
 

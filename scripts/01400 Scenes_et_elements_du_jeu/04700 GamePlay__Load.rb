@@ -3,10 +3,15 @@
 #noyard
 module GamePlay
   class Load < Save
-    NewGame="Nouvelle partie"
+    # @return [String] Default language of the game
+    DEFAULT_GAME_LANGUAGE = 'fr'
+    # @return [Array] List of the languages the player can choose (empty list = no choice)
+    LANGUAGE_CHOICE_LIST = %w[en fr es]
+    # @return [Array] List of the language name when the player can choose
+    LANGUAGE_CHOICE_NAME = %w[English French Spanish]
     def initialize(delete_game = false)
-      @viewport=Viewport.create(:main, 1)
-      @viewport.color = Color.new(162,194,204)
+      @viewport = Viewport.create(:main, 1)
+      @viewport.color = Color.new(162, 194, 204)
       super(false)
       @save_window.x = 60
       @running=true
@@ -24,7 +29,6 @@ module GamePlay
 
     def main
       curr_scene = $scene
-      Graphics.transition
       check_up
       while(@running and curr_scene == $scene)
         Graphics.update
@@ -57,19 +61,19 @@ module GamePlay
       @new_window = Game_Window.new
       @new_window.x = 60
       @new_window.y = 112
-      @new_window.z = 10001
+      @new_window.z = 10_001
       @new_window.width = 200
       @new_window.height = 32
       @new_window.add_text(0, 0, 200, 16, _ext(9000, 0))
       @new_window.opacity = 128
       @new_window.windowskin = RPG::Cache.windowskin(Windowskin)
-      @new_window.visible = @save_window.visible
+      @new_window.visible = @save_window.visible && @pokemon_party
     end
 
     def action
       Graphics.freeze
       # @@save_index = @index
-      if(@fileexist and @index==0)
+      if(@fileexist and @index.zero?)
         load_game
       else
         $pokemon_party = PFM::Pokemon_Party.new
@@ -128,67 +132,87 @@ module GamePlay
       # @viewport.dispose
     end
 
-    #===
-    #> Vérification de l'intégrité de la sauvegarde
-    #===
-    def check_up
-      #> Affichage des choix de suppression de partie
-      if @delete_game
-        #> Petit morceau de code permettant d'éviter que la messagewindow se saute
-        while Input.press?(:B)
-          Graphics.update
-        end
-        scene = $scene
-        $scene = self
-        message = _get(25, 18)
-        oui = _get(25, 20)
-        non = _get(25, 21)
-        c = display_message(message, 1, non, oui) #> Supprimer ?
+    # Ask the player if he really wants to delete his game
+    def delete_game_question
+      Graphics.transition
+      # Message break prevention
+      Graphics.update while Input.press?(:B)
+      scene = $scene
+      $scene = self
+      message = _get(25, 18)
+      oui = _get(25, 20)
+      non = _get(25, 21)
+      # Delete the game ?
+      c = display_message(message, 1, non, oui)
+      if c == 1
+        message = _get(25, 19)
+        # Really ?
+        c = display_message(message, 1, non, oui)
         if c == 1
-          message = _get(25, 19)
-          c = display_message(message, 1, non, oui) #> Vraiment ?
-          if c == 1
-            File.delete(@filename) #> Ok :)
-            message = _get(25, 17)
-            display_message(message)
-          end
+          # Ok deleted!
+          File.delete(@filename)
+          message = _get(25, 17)
+          display_message(message)
         end
-        $scene = scene
-        return @running = false
       end
-      #> Affichage du choix de la langue
-      unless @pokemon_party
-        win1 = Game_Window.new
-        win1.add_text(0,0,160,16,"Choose your language")
-        win1.x = 80
-        win1.y = 80
-        win1.width = 160
-        win1.height = 44
-        win1.windowskin=RPG::Cache.windowskin(Windowskin)
-        win2 = Window_Choice.new(160,["English","French","Spanish"])
-        win2.x = 80
-        win2.y = 128
-        win2.z = win1.z = 200
-        Graphics.sort_z
-        loop do
-          Graphics.update
-          win2.update
-          if win2.validated?
-            break
-          end
-        end
-        Graphics.freeze
-        $pokemon_party = PFM::Pokemon_Party.new(false,["en","fr","es"][win2.index])
-#        win2.contents.dispose
-        win2.dispose
-#        win1.contents.dispose
-        win1.dispose
-        $pokemon_party.expand_global_var
-        $trainer.redefine_var
-        $scene = Scene_Map.new
-        Yuki::TJN.force_update_tone
-        @running = false
+      $scene = scene
+      return @running = false
+    end
+
+    # Create a new game and start it
+    def create_new_game
+      # No language choice => default language
+      if LANGUAGE_CHOICE_LIST.empty?
+        $pokemon_party = PFM::Pokemon_Party.new(false, DEFAULT_GAME_LANGUAGE)
+      else
+        ask_game_language
       end
+      $pokemon_party.expand_global_var
+      $trainer.redefine_var
+      $scene = Scene_Map.new
+      Yuki::TJN.force_update_tone
+      @running = false
+    end
+
+    # Ask the game language to the player
+    def ask_game_language
+      win1, win2 = create_language_window
+      Graphics.transition
+      loop do
+        Graphics.update
+        win2.update
+        break if win2.validated?
+      end
+      Graphics.freeze
+      $pokemon_party = PFM::Pokemon_Party.new(false, LANGUAGE_CHOICE_LIST[win2.index])
+      win2.dispose
+      win1.dispose
+    end
+
+    # Create the language window
+    # @return [Array]
+    def create_language_window
+      win1 = Window.new
+      win1.lock
+      stack = UI::SpriteStack.new(win1)
+      stack.add_text(0, 0, 160, 16, 'Choose your language')
+      win1.set_position(80, 80)
+      win1.set_size(160, 44)
+      win1.window_builder = GameData::Windows::MessageWindow
+      win1.windowskin = RPG::Cache.windowskin(Windowskin)
+      win1.unlock
+      win2 = Yuki::ChoiceWindow.new(160, LANGUAGE_CHOICE_NAME)
+      win2.set_position(80, 128)
+      win2.z = win1.z = 200
+      Graphics.transition
+      return win1, win2
+    end
+
+    # Check if the game states should be deleted or if the player should start a new game
+    def check_up
+      return delete_game_question if @delete_game
+      return create_new_game unless @pokemon_party
+      Graphics.transition
     end
   end
 end

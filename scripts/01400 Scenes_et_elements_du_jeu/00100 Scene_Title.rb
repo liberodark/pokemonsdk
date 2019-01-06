@@ -2,10 +2,15 @@
 
 # The title screen scene
 class Scene_Title
+  # @return [Integer] ID of the map to display as intro movie (0 = no intro)
+  INTRO_MOVIE_MAP_ID = 0
+  # @return [Integer] lenght of the Title BGM
+  TITLE_BGM_LENGTH = 4_418_000
+  # @return [String] name of the Title BGM
+  TITLE_BGM_NAME = 'audio/bgm/rosa_title'
   # Entry point of the scene. If player hit X + B + UP the GamePlay::Load scene will ask the save deletion.
   def main
     data_load
-    GamePlay::Save.load
     title_animation
     if $scene == self
       Yuki::MapLinker.reset
@@ -15,6 +20,7 @@ class Scene_Title
         Input.press?(:UP)).main
     end
   end
+
   # Show the title animation
   def title_animation
     @loop = true
@@ -28,6 +34,7 @@ class Scene_Title
     RPG::Cache.load_title(true)
     GC.start
   end
+
   # Init the title screen sprites
   def init_sprites
     @viewport = Viewport.create(:main, 100)
@@ -39,6 +46,7 @@ class Scene_Title
     @start_sprite.z = 1
     @main_sprite.bitmap = RPG::Cache.title("splash")
   end
+
   # Dispose the title screen sprites
   def dispose_sprites
     Graphics.freeze
@@ -47,6 +55,7 @@ class Scene_Title
     @viewport.dispose
     @main_sprite = @start_sprite = @viewport = nil
   end
+
   # Init the title display part
   def init_title
     Graphics.freeze
@@ -59,6 +68,7 @@ class Scene_Title
     @counter = 0
     Graphics.transition
   end
+
   # Play the splash part
   def play_splash
     Graphics.transition
@@ -70,17 +80,19 @@ class Scene_Title
       @viewport.color.alpha += down_col
       Graphics.update
     end
+    start_intro_movie(INTRO_MOVIE_MAP_ID) unless INTRO_MOVIE_MAP_ID.zero?
   end
+
   # Play the title display part
   def play_title
-    Audio.bgm_play("Audio/BGM/ROSA_Title")
+    Audio.bgm_play(TITLE_BGM_NAME)
     until Input.trigger?(:A) or Input.trigger?(:X) or Mouse.trigger?(:left)
       if(@counter += 1) == 45
         @start_sprite.visible = !@start_sprite.visible
         @counter = 0
       end
       Graphics.update
-      if Audio.bgm_position > 2841930 or $scene != self
+      if Audio.bgm_position > TITLE_BGM_LENGTH or $scene != self
         Audio.bgm_stop
         return
       end
@@ -89,6 +101,30 @@ class Scene_Title
     @loop = false
     Audio.bgm_stop
   end
+
+  # Show the intro movie map
+  # @param map_id [Integer] ID of the map
+  def start_intro_movie(map_id)
+    Graphics.freeze
+    @viewport.visible = false
+    $tester = true # No new GameMap hack
+    $pokemon_party = PFM::Pokemon_Party.new(false, GamePlay::Load::DEFAULT_GAME_LANGUAGE)
+    $tester = nil
+    Yuki::MapLinker.reset
+    $pokemon_party.expand_global_var
+    $game_party.setup_starting_members
+    $game_map.setup(map_id)
+    $game_player.moveto(Yuki::MapLinker.get_OffsetX, Yuki::MapLinker.get_OffsetY)
+    $game_player.refresh
+    $game_map.autoplay
+    scene = $scene
+    $scene = Scene_Map.new
+    $scene.main
+    $scene = scene
+    GamePlay::Save.load
+    @viewport.visible = true
+  end
+
   # Load the RMXP Data
   def data_load
     unless $data_actors
