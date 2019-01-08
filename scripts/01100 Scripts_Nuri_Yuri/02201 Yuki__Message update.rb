@@ -74,6 +74,7 @@ module Yuki
     # @return [Boolean] if the update function skips
     def update_choice
       if @contents_showing
+        return (terminate_message || true) if stop_message_process?
         @choice_window.update if @choice_window
         # If there's no choice
         if $game_temp.choice_max <= 0
@@ -142,6 +143,12 @@ module Yuki
         $game_temp.message_window_showing = false
       end
       return false
+    end
+
+    # Tell the process method of message to stop processing
+    # @return [Boolean]
+    def stop_message_process?
+      return $scene.is_a?(Yuki::SoftReset)
     end
   end
 end

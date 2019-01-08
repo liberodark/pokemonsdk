@@ -81,6 +81,7 @@ module Yuki
       text.nchar_draw = 0
       text.opacity = contents_opacity
       until text.nchar_draw >= str.size
+        break if stop_message_process?
         text.nchar_draw += 1
         counter += 1
         if Input.trigger?(:A) or (Mouse.trigger?(:left) and simple_mouse_in?) # Skip request
@@ -98,6 +99,7 @@ module Yuki
     # Perform a line transition
     def line_transition
       default_line_height.times do
+        return if stop_message_process?
         self.oy += 1
         message_update_processing
       end
@@ -162,6 +164,7 @@ module Yuki
         marker = @markers[i]
         call_marker_action(marker) if marker
         instr_arr.each do |instr|
+          break if stop_message_process?
           if instr == :new_line
             @x = 0
             @y += lineheight
