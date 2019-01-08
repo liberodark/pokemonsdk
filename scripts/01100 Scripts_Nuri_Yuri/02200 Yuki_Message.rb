@@ -198,7 +198,7 @@ module Yuki
     # Update the windowskin
     def update_windowskin
       windowskin_name = current_windowskin
-      return if @windowskin_name == windowskin_name
+      return calculate_position if @windowskin_name == windowskin_name
       self.window_builder = current_window_builder
       self.windowskin = RPG::Cache.windowskin(@windowskin_name = windowskin_name)
       # Window size is dependant on the windowskin
