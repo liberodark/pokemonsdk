@@ -18,6 +18,8 @@ module GamePlay
       @index=0
       @max_index=(@fileexist ? 2 : 1)
       @delete_game = @fileexist & delete_game
+      # Force the game to load the save
+      @pokemon_party &&= Save.load
       if @delete_game
         $pokemon_party = PFM::Pokemon_Party.new(false, @pokemon_party.options.language)
         $pokemon_party.expand_global_var
