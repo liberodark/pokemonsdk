@@ -66,6 +66,7 @@ module GamePlay
           $actors << PFM::Pokemon.new(292)
           $bag.remove_item(4)
         end
+        Audio.bgm_stop
         $game_system.bgm_restore2
         @running = false
         @evolved = true

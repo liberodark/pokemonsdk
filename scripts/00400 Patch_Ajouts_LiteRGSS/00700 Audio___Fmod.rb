@@ -87,6 +87,8 @@ module Audio
     @bgm_mutex.synchronize do
       @bgm_channel.setPosition(position, FMOD::TIMEUNIT::PCM) if @bgm_channel
     end
+  rescue StandardError
+    log_error("bgm_position= : #{$!.message}")
   end
 
   # Fades the BGM
