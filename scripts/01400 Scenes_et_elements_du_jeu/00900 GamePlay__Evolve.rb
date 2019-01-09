@@ -31,7 +31,7 @@ module GamePlay
       #  ox_div: 2, oy_div: 2)
       #> Sprite du Pokémon évolué
       @sprite_clone = Sprite.new(@viewport).set_bitmap(@clone.battler_face)
-      @sprite_pokemon.set_position(160, 120).set_origin_div(2, 2) # sprite(nil, 160, 120, 2, bitmap: @clone.battler_face, 
+      @sprite_clone.set_position(160, 120).set_origin_div(2, 2) # sprite(nil, 160, 120, 2, bitmap: @clone.battler_face, 
       #  ox_div: 2, oy_div: 2, opacity: 0, tone: [255, 255, 255, 255])
       @evolved = false
       @counter = 0
