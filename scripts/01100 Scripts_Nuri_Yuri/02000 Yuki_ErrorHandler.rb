@@ -46,6 +46,7 @@ module Yuki
       Text.new(0, @viewport, 0, 0, Graphics.width, LINE_HEIGHT, klass.to_s, 1).load_color(9)
       Text.new(0, @viewport, 8, LINE_HEIGHT * 2, 0, LINE_HEIGHT, message.to_s).load_color(9)
       Text.new(0, @viewport, 8, Graphics.height - LINE_HEIGHT - 4, 0, LINE_HEIGHT, "Press enter to continue...").load_color(9)
+      Graphics.transition
       Graphics.wait(20)
     end
 
