@@ -26,12 +26,14 @@ module GamePlay
         id_bg += 1
       end
       @background = Sprite.new(@viewport).set_bitmap(BackNames[id_bg], :battleback) # background(BackNames[id_bg], :battleback)
-      @sprite_pokemon = Sprite.new(@viewport).set_bitmap(pkmn.battler_face)
+      @sprite_pokemon = Sprite::WithColor.new(@viewport).set_bitmap(pkmn.battler_face)
       @sprite_pokemon.set_position(160, 120).set_origin_div(2, 2) # sprite(nil, 160, 120, 1, bitmap: pkmn.battler_face, 
       #  ox_div: 2, oy_div: 2)
       #> Sprite du Pokémon évolué
-      @sprite_clone = Sprite.new(@viewport).set_bitmap(@clone.battler_face)
+      @sprite_clone = Sprite::WithColor.new(@viewport).set_bitmap(@clone.battler_face)
+      @sprite_clone.opacity = 0
       @sprite_clone.set_position(160, 120).set_origin_div(2, 2) # sprite(nil, 160, 120, 2, bitmap: @clone.battler_face, 
+      @sprite_clone.set_color([1, 1, 1, 1])
       #  ox_div: 2, oy_div: 2, opacity: 0, tone: [255, 255, 255, 255])
       @evolved = false
       @counter = 0
@@ -91,26 +93,26 @@ module GamePlay
     PI2 = Math::PI*2
     def update_animation
       if @counter < FirstStep
-        value = 255*@counter/FirstStep
-        @sprite_pokemon.tone.set(value, value, value, value)
-        value /= 2
-        @background.tone.set(value, value, value, 0)
+        value = 255 * @counter / FirstStep
+        @sprite_pokemon.set_color(Color.new(value, value, value, value))
+        value /= 5
+        @viewport.tone.set(value, value, value, 0)
       elsif @counter < SecondStep
         value = (Math.cos((@counter-FirstStep)*PI2/120)+1)*128
         @sprite_pokemon.opacity = value
         @sprite_clone.opacity = 255-value
       elsif @counter < LastStep
         value = (60 - (@counter - SecondStep)) * 255 / 60
-        @background.tone.set(value, value, value, 0)
-        @sprite_clone.tone.set(value, value, value, value)
+        @viewport.tone.set(value, value, value, 0)
+        @sprite_clone.set_color(Color.new(value, value, value, value))
       end
     end
 
     def release_animation
       @sprite_clone.opacity = 0
       @sprite_pokemon.opacity = 255
-      @sprite_pokemon.tone.set(0,0,0,0)
-      @background.tone.set(0,0,0,0)
+      @sprite_pokemon.set_color([0, 0, 0, 0])
+      @viewport.tone.set(0, 0, 0, 0)
     end
   end
 end

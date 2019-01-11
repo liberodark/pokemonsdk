@@ -79,32 +79,30 @@ module PFM
     # @param list1 [Array<Integer>] new basis stat list
     # @param z_level [Integer] z superiority of the Window
     def level_up_window_call(list0, list1, z_level)
-      window = Game_Window.new
+      window = Window.new
+      window.lock
       window.z = z_level
-      window.width, window.height = 140, 180 
-      window.x = 320 - window.width - 2
-      window.y = 240 - window.height - 2
-      window.windowskin = RPG::Cache.windowskin("Message")
-      sprite = Sprite.new(window.text_viewport).set_bitmap(sbmp = self.icon)
-        .set_position(window.x + window.ox, window.y + window.oy)
+      window.set_size(140, 180)
+      window.set_position(Graphics.width - window.width - 2, Graphics.height - window.height - 2)
+      window.window_builder = GameData::Windows::MessageWindow
+      window.windowskin = RPG::Cache.windowskin('Message')
+      sprite = Sprite.new(window).set_bitmap(sbmp = icon)
+      texts = UI::SpriteStack.new(window)
       start_y = sbmp.height
       w = sbmp.width
-      width = 110
-      window.add_text(w, 0, width - w, start_y, self.given_name, 1)
-      i = 0
-      format = "%d (+%d)"
+      width = 140 - window.window_builder[4] * 2 - 2
+      texts.add_text(w, 0, width - w, start_y, given_name, 1)
+      format_str = '%d (+%d)'
       6.times do |i|
         start_y += 16
-        window.add_text(0, start_y, width, 16, ::GameData::Text.get(22, 121 + i))
-        window.add_text(0, start_y, width, 16, sprintf(format, list1[i], list1[i]-list0[i]), 2).load_color(1)
+        texts.add_text(0, start_y, width, 16, _get(22, 121 + i))
+        texts.add_text(0, start_y, width, 16, format(format_str, list1[i], list1[i] - list0[i]), 2, color: 1)
       end
+      window.unlock
       Graphics.sort_z
-      until Input.trigger?(:A)
-        Graphics.update
-      end
+      Graphics.update until Input.trigger?(:A)
       $game_system.se_play($data_system.decision_se)
       window.dispose
-      window = nil
       sprite.dispose unless sprite.disposed?
     end
     # Change the level of the Pokemon
