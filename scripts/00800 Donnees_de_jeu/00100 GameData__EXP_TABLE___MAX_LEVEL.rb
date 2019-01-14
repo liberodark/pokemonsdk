@@ -40,7 +40,7 @@ module GameData
     #> Table Fluctuant
     2.upto(15) { |i| EXP_TABLE[5][i] = Integer(i**3* (24 + (i+1)/3) / 50) }
     16.upto(35) { |i| EXP_TABLE[5][i] = Integer(i**3* ( 14 + i) / 50) }
-    36.upto(MAX_LEVEL) { |i| EXP_TABLE[5][i] = Integer(i**5 * ( 32 + (i/2) ) / 50) }
+    36.upto(MAX_LEVEL) { |i| EXP_TABLE[5][i] = Integer(i**3 * ( 32 + (i/2) ) / 50) }
     save_data(EXP_TABLE, "Data/Exptable.rxdata")
   end
 end
