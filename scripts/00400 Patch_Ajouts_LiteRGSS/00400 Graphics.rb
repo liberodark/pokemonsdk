@@ -74,6 +74,7 @@ module Graphics
   # Perform a Transition
   # @param args [Array<Integer, LiteRGSS::Bitmap>] number of frame to perform the transition and the bitmap to use if needed
   def transition(*args)
+    Scheduler.start(:on_transition)
     sort_z
     @transition.call(*args)
     set_fps_color(9)

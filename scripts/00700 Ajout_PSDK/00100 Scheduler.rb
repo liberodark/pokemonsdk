@@ -30,6 +30,7 @@ module Scheduler
       :on_warp_end => {},     #> A la fin de la téléportation
       :on_hour_update => {},  #> Au moment où l'heure change
       :on_getting_tileset_name => {}, #> Au moment où $game_map.setup est appelé, que $game_map.map_id est affecté au nouvel id et que le fichier du tileset est demandé.
+      :on_transition => {}, # Called during Graphics.transition
     }
     @storage = {}
   end
@@ -56,6 +57,7 @@ module Scheduler
     return unless task_hash #> Bad reason
     task_array = task_hash[_class]
     return unless task_array
+    priority = -priority
     task_array.delete_if { |obj| obj.priority == priority and obj.name == name }
   end
   # add a task (and sort them by priority)
