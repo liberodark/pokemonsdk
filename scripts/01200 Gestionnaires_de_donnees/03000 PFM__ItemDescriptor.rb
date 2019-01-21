@@ -191,7 +191,7 @@ module PFM
           end
 
         #> Sinon on espère un soin de statut
-        elsif(states = heal_data.states)
+        elsif(states = heal_data.states && !states.empty?)
           hash[:open_party] = true
           #> Le Pokémon doit avoir le status
           hash[:on_pokemon_choice] = proc do |pkmn|
@@ -365,7 +365,7 @@ module PFM
             skill.pp += 99
             $scene.display_message(_parse(22, 117, be::MOVE[0] => skill.name))
             pkmn.loyalty += heal_data.loyalty if heal_data.loyalty
-#            berry_check_bonus(item.misc_data, pkmn)
+            # berry_check_bonus(item.misc_data, pkmn)
           end
         #> Ajout d'un ou plusieurs niveaux
         elsif(level = heal_data.level)
@@ -396,9 +396,9 @@ module PFM
             pkmn.loyalty += heal_data.loyalty if heal_data.loyalty
           end
         end
-
-      #> Si c'est un objet spécial
-      elsif(misc_data = item.misc_data)
+      end
+      # If nothing has been fond and it's a special item
+      if hash.empty? && (misc_data = item.misc_data)
         #> Item permettant de fuire
         if misc_data.flee
           hash[:action_to_push] = proc do
@@ -420,6 +420,7 @@ module PFM
           hash[:open_party] = true
           #> Choix dans l'interface (le système utilisera ça pour l'aptitude
           hash[:on_pokemon_choice] = proc do |pkmn|
+            puts pkmn, pkmn.can_learn?(skill_id)
             next(false) if pkmn.egg?
             pkmn.can_learn?(skill_id)
           end
@@ -468,6 +469,7 @@ module PFM
           end
         end
       end
+      p hash
       return hash
     end
     # Add the bonus of a specific berry when used
