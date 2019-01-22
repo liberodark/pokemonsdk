@@ -186,7 +186,12 @@ module PFM
         @form = 0 unless $game_data_pokemon[v][@form]
         @form = _form_generation(@id, -1) if @form == 0
         @form = 0 unless $game_data_pokemon[v][@form]
+        update_ability
       end
+    end
+    # Update the Pokemon Ability
+    def update_ability
+      @ability_current = @ability = get_data.abilities[@ability_index.to_i]
     end
     # Check evolve condition to evolve in Hitmonlee (kicklee)
     # @return [Boolean] if the condition is valid

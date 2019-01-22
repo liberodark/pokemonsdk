@@ -232,11 +232,11 @@ module PFM
       # >Récupération du talent (caché ou non)
       ability_chance = rand(100)
       @ability = if ability_chance < 2
-                   ability[2].to_i
+                   ability[@ability_index = 2].to_i
                  elsif ability_chance < 50
-                   ability[1].to_i
+                   ability[@ability_index = 1].to_i
                  else
-                   ability[0].to_i
+                   ability[@ability_index = 0].to_i
                  end
       @ability_current = @ability
       @nature = @code % GameData::Natures.size

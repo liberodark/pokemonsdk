@@ -10,6 +10,7 @@ module PFM
       if($game_data_pokemon[@id][v])
         @form=v
         form_calibrate
+        update_ability
       end
     end
     # Check if the Pokemon can mega evolve
