@@ -37,11 +37,30 @@ end
 update_file_contents = "PSDK_INDEX_DOWNLOAD
 "
 puts "Copying PSDK scripts..."
+# add
+psdk_base_path = File.basename(psdk_path)
+mega_script_arch = {}
 files.each do |filename|
-  basename = File.basename(filename)
-  update_file_contents << "#{URI.encode(basename)}:%PSDK%/#{filename}\n"
-  copy_file(File.join(psdk_path, filename))
+  real_filename = ile.join(psdk_base_path, filename)
+  if File.exist?(filename)
+    mega_script_arch[filename] = File.read(filename)
+  end
 end
+update_file_contents << "mega_script.deflate:%PSDK%/scripts/mega_script.deflate\n"
+File.binwrite(File.join(UPDATE_PATH, 'mega_script.deflate'), Zlib::Deflate.deflate(Marshal.dump(mega_script_arch)))
+=begin
+files.each do |filename|
+  if File.exist?(File.join(psdk_path, filename))
+    basename = File.basename(filename)
+    update_file_contents << "#{URI.encode(basename)}:%PSDK%/#{filename}\n"
+    copy_file(File.join(psdk_path, filename))
+  end
+end
+=end
+
+# Copy the ScriptIndex
+update_file_contents << "script_index.txt:%PSDK%/scripts/script_index.txt\n"
+copy_file(File.join(psdk_path, 'script_index.txt'))
 
 current_path = File.expand_path('.') + '/'
 print 'Additionnal ressource : '
