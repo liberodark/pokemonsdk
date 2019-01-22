@@ -247,5 +247,29 @@ module GamePlay
       end
       return instance_variable_get(varname) != (index + min)
     end
+
+    # Update the mouse CTRL button (button hub)
+    # @param buttons [Array<UI::DexCTRLButton>] buttons to update
+    # @param actions [Array<Symbol>] method to call if the button is clicked & released
+    # @param only_test_return [Boolean] if we only test the return button
+    # @param return_index [Integer] index of the return button
+    def update_mouse_ctrl_buttons(buttons, actions, only_test_return = false, return_index = 3)
+      if Mouse.trigger?(:left)
+        buttons.each_with_index do |sp, i|
+          next if only_test_return && i != return_index
+          sp.set_press(sp.simple_mouse_in?)
+        end
+      elsif Mouse.released?(:left)
+        buttons.each_with_index do |sp, i|
+          next if only_test_return && i != return_index
+          if sp.simple_mouse_in?
+            send(actions[i])
+            sp.set_press(false)
+            break
+          end
+          sp.set_press(false)
+        end
+      end
+    end
   end
 end

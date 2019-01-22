@@ -88,23 +88,7 @@ module GamePlay
 
     # Update the mouse interaction with the ctrl buttons
     def update_mouse_ctrl
-      win_text = @winText.visible
-      if Mouse.trigger?(:left)
-        @ctrl.each_with_index do |sp, i|
-          next if win_text and i != 3
-          sp.set_press(sp.simple_mouse_in?)
-        end
-      elsif Mouse.released?(:left)
-        @ctrl.each_with_index do |sp, i|
-          next if win_text and i != 3
-          if sp.simple_mouse_in?
-            send(Actions[i])
-            sp.set_press(false)
-            break
-          end
-          sp.set_press(false)
-        end
-      end
+      update_mouse_ctrl_buttons(@ctrl, Actions, @winText.visible)
     end
 
     # Update the movement of the Cursor

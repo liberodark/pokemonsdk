@@ -16,7 +16,7 @@ module UI
       super(viewport, *Coordinates[id], default_cache: :pokedex)
       push(0, 0, "Buttons").set_rect_div(id == 3 ? 1 : 0, 0, 2, 2)
       @stack.first.src_rect.x += 1 if id == 3
-      push(0, 1, nil, Keys[id], id == 3, type: KeyShortcut)
+      push(0, 1, nil, keys[id], id == 3, type: KeyShortcut)
       @font_id = 20
       add_text(17, 3, 51, 13, get_text(0, id), color: id == 3 ? 21 : 20)
       @id = id
@@ -44,6 +44,13 @@ module UI
     # @return [String]
     def get_text(state_id, id)
       _ext(9000, TEXT_INDEXES[state_id] + id)
+    end
+
+    private
+
+    # Return the Keys Array
+    def keys
+      Keys
     end
   end
   # Control button of the Team

@@ -122,18 +122,7 @@ module GamePlay
     Actions = [:action_A, :action_X, :action_Y, :action_B]
     # Update the mouse interaction with the ctrl buttons
     def update_mouse_ctrl
-      if Mouse.trigger?(:left)
-        @ctrl.each do |sp|
-          sp.set_press(sp.simple_mouse_in?)
-        end
-      elsif Mouse.released?(:left)
-        @ctrl.each_with_index do |sp, i|
-          if sp.simple_mouse_in?
-            send(Actions[i])
-          end
-          sp.set_press(false)
-        end
-      end
+      update_mouse_ctrl_buttons(@ctrl, Actions)
     end
 
     # Change the state of the Interface
