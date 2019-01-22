@@ -1,4 +1,5 @@
 require 'uri'
+require 'zlib'
 system("git log --oneline")
 print("Enter commit short sha1 : ")
 sha1 = STDIN.gets.chomp
@@ -40,10 +41,16 @@ puts "Copying PSDK scripts..."
 # add
 psdk_base_path = File.basename(psdk_path)
 mega_script_arch = {}
+sc_load = 'scripts/ScriptLoad.rb'
 files.each do |filename|
-  real_filename = ile.join(psdk_base_path, filename)
-  if File.exist?(filename)
-    mega_script_arch[filename] = File.read(filename)
+  if filename == sc_load
+    update_file_contents << "ScriptLoad.rb:%PSDK%/#{filename}\n"
+    copy_file(File.join(psdk_path, filename))
+    next
+  end
+  real_filename = File.join(psdk_base_path, filename)
+  if File.exist?(real_filename)
+    mega_script_arch[real_filename] = File.read(real_filename)
   end
 end
 update_file_contents << "mega_script.deflate:%PSDK%/scripts/mega_script.deflate\n"
@@ -57,10 +64,6 @@ files.each do |filename|
   end
 end
 =end
-
-# Copy the ScriptIndex
-update_file_contents << "script_index.txt:%PSDK%/scripts/script_index.txt\n"
-copy_file(File.join(psdk_path, 'script_index.txt'))
 
 current_path = File.expand_path('.') + '/'
 print 'Additionnal ressource : '

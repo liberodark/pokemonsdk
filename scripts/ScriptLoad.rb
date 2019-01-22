@@ -60,20 +60,21 @@ module ScriptLoader
     end
   end
   
+  def mkdir(*args)
+    curr = args.shift
+    Dir.mkdir(curr) unless Dir.exist?(curr)
+    args.each do |dirname|
+      curr = File.join(curr, dirname)
+      Dir.mkdir(curr) unless Dir.exist?(curr)
+    end
+  end
+
   # Unpack the scripts
   def unpack_scripts
-    def mkdir(*args)
-      curr = args.shift
-      Dir.mkdir(curr) unless Dir.exist?(curr)
-      args.each do |dirname|
-        curr = File.join(curr, dirname)
-        Dir.mkdir(curr) unless Dir.exist?(curr)
-      end
-    end
     hash = Marshal.load(Zlib::Inflate.inflate(File.binread(DEFLATE_SCRIPT_PATH)))
     hash.each do |filename, contents|
       dirname = File.dirname(filename)
-      mkdir(dirname.split('/')) unless Dir.exist?(dirname)
+      mkdir(*dirname.split('/')) unless Dir.exist?(dirname)
       File.write(filename, contents)
     end
   end
