@@ -77,6 +77,7 @@ module ScriptLoader
       mkdir(*dirname.split('/')) unless Dir.exist?(dirname)
       File.write(filename, contents)
     end
+    File.delete(DEFLATE_SCRIPT_PATH)
   end
 end
 
