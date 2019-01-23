@@ -525,7 +525,6 @@ module BattleEngine
   # Définition de l'attaque Métronome
   #===
   Mirror_noMove = [555, 182, 511, 495, 274, 448, 214, 547, 102, 270, 557, 197, 553, 554, 267, 469, 166, 343, 168, 548, 165, 118, 119, 264, 382, 144, 266, 415, 516, 383, 476, 501, 194, 277, 68, 173, 364, 289, 546, 203, 271]
-  Metro_MaxAtk = $game_data_skill.size - 1 #>Penser à Gemme !
   def s_metronome(launcher, target, skill)
     target = _random_target_selection(launcher, target)
     return false unless __s_beg_step(launcher, target, skill)
@@ -551,7 +550,7 @@ module BattleEngine
       end
     else
       id = Mirror_noMove[0]
-      id = rand(Metro_MaxAtk) + 1 while(Mirror_noMove.include?(id))
+      id = rand(GameData::Skill::LastID) + 1 while(Mirror_noMove.include?(id))
     end
     skill = ::PFM::Skill.new(id)
     _msgp(18, skill.id == 267 ? 127 : 126, nil, MOVE[0] => skill.name)

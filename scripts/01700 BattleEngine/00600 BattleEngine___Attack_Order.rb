@@ -8,10 +8,15 @@ module BattleEngine
   DeltaPrio = 100000 #Ecart entre deux priorités d'attaque
   BattlePrio = 13 * DeltaPrio
   PursuitPrio = 14 * DeltaPrio
-  #>Normalement les datas sont chargés avant cette ligne
-  StrugglePrio = $game_data_skill[ID_Struggle].priority * DeltaPrio
   SpecialPriorities = [BattlePrio + 1, BattlePrio + 1000, BattlePrio + 2000, BattlePrio + 999]
+
   module_function
+
+  # Return the priority of the Struggle move
+  # @return [Integer]
+  def struggle_priority
+    $game_data_skill[ID_Struggle].priority * DeltaPrio
+  end
   #===
   #>_make_action_order
   # Génère le tableau des actions dans le bon ordre pour le système de combat
@@ -78,7 +83,7 @@ module BattleEngine
           end
         else
           skill = PFM::Skill.new(ID_Struggle)
-          i.priority = StrugglePrio
+          i.priority = struggle_priority
         end
         i.spd = pkmn.spd
         #>Vérification des objets / talents (avec prio)
@@ -128,7 +133,7 @@ module BattleEngine
       else
         #>Tout autre type d'action
         if i[0] == 3 and i[2] == :roaming
-          i.priority = StrugglePrio
+          i.priority = struggle_priority
           i.spd = i[1].spd
         else
           i.priority = SpecialPriorities[i[0]] #BattlePrio + 1000 * i[0]

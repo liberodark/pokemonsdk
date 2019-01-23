@@ -280,7 +280,7 @@ module BattleEngine
     target = _random_target_selection(launcher, target) unless target and target != launcher
     if(launcher != target and launcher.asleep?)
       id = Sleep_Talk_NoMove[0]
-      id = rand(Metro_MaxAtk) + 1 while(Sleep_Talk_NoMove.include?(id))
+      id = rand(GameData::Skill::LastID) + 1 while(Sleep_Talk_NoMove.include?(id))
       skill = ::PFM::Skill.new(id)
       _launch_skill(launcher, target, skill)
     else

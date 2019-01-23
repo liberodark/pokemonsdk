@@ -3,7 +3,12 @@
 #noyard
 # Description: Définition de la phase de choix de l'attaque à réaliser
 class Scene_Battle
-  StruggleSkill = ::PFM::Skill.new(165) #< Battle Engine n'est pas dispo à ce point de la compilation
+  # Retreive the Struggle move
+  # @return [PFM::Skill]
+  def phase3_struggle_move
+    Scene_Battle.const_set(:StruggleSkill, PFM::Skill.new(165)) unless Scene_Battle.const_defined?(:StruggleSkill)
+    return StruggleSkill
+  end
   #===
   #>start_phase3
   #Initialisation des graphismes de choix de l'attaque
@@ -13,7 +18,7 @@ class Scene_Battle
     actor=@actors[@actor_actions.size]
     #>Test du forçage de lutte
     if(BattleEngine::_lutte?(actor))
-      @actor_actions.push([0,nil,util_targetselection_automatic(actor,StruggleSkill),actor])
+      @actor_actions.push([0,nil,util_targetselection_automatic(actor, phase3_struggle_move),actor])
       update_phase2_next_act
       return
     elsif(actor.battle_effect.has_encore_effect?)
