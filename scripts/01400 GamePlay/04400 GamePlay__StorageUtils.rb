@@ -128,7 +128,7 @@ module GamePlay
             b = false
           end
           if (Input.trigger?(:A))
-            display_message(_ext(9000, 9), 1)
+            display_message(_ext(9000, 89), 1)
             b = false
           end
         end
