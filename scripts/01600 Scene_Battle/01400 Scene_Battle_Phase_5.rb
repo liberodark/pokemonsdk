@@ -179,12 +179,14 @@ class Scene_Battle
   #===
   def phase5_ramassage
     @actors.each do |pkmn|
-      #>Ramassage
-      if(pkmn and pkmn.item_holding==0 and pkmn.ability==25)
-        phase5_ramassage_take_object(pkmn) if rand(100)<10
-      #>Cherche Miel
-      elsif(pkmn and pkmn.item_holding==0 and pkmn.ability==111)
-        pkmn.item_holding=94 if rand(100)<(pkmn.level/2)
+      next unless pkmn
+      case pkmn.ability
+      when 25 # Ramassage
+        phase5_ramassage_take_object(pkmn) if rand(100) < 10 && pkmn.item_holding.zero?
+      when 111 # Cherche Miel
+        pkmn.item_holding = 94 if rand(100) < (pkmn.level / 2) && pkmn.item_holding.zero?
+      when 56 # Médic Nature
+        pkmn.cure
       end
     end
   end

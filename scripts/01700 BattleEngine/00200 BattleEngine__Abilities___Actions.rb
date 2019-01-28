@@ -321,11 +321,6 @@ module BattleEngine
               _mp([:ability_display, pkmn])
               _mp([:hp_up, pkmn, pkmn.max_hp / 16])
             end
-          when 56 #> Médic Nature
-            if pkmn.status != 0
-              _mp([:ability_display, pkmn])
-              _mp([:status_cure, pkmn])
-            end
           when 4 #> Mue
             if pkmn.status != 0 and rand(3) == 0
               _mp([:ability_display, pkmn])
