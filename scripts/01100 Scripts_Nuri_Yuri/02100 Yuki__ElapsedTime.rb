@@ -11,14 +11,14 @@ module Yuki
   #   Yuki::ElapsedTime.show(:test, "Something else took")
   module ElapsedTime
     @timers = {}
-    @disabled_timers = []
+    @disabled_timers = [:audio_load_sound, :map_loading, :spriteset_map, :transfer_player, :maplinker]
 
     module_function
 
     # Start the time counter
     # @param name [Symbol] name of the timer
     def start(name)
-      return if $RELEASE
+      return if $RELEASE || @disabled_timers.include?(name)
       @timers[name] = Time.new
     end
 
@@ -38,14 +38,19 @@ module Yuki
     # @param name [Symbol] name of the timer
     # @param message [String] message to show in the console
     def show(name, message)
-      return if $RELEASE
+      return if $RELEASE || @disabled_timers.include?(name)
       timer = @timers[name]
-      current_time = @timers[name] = Time.new
-      delta_time = current_time - timer
-      return sub_show(delta_time, message, 's') if delta_time > 1
-      return sub_show(delta_time, message, 'ms') if (delta_time *= 1000) > 1
-      return sub_show(delta_time, message, 'us') if (delta_time *= 1000) > 1
-      sub_show(delta_time * 1000, message, 'ns')
+      delta_time = Time.new - timer
+      if delta_time > 1
+        sub_show(delta_time, message, 's')
+      elsif (delta_time *= 1000) > 1
+        sub_show(delta_time, message, 'ms')
+      elsif (delta_time *= 1000) > 1
+        sub_show(delta_time, message, 'us')
+      else
+        sub_show(delta_time * 1000, message, 'ns')
+      end
+      @timers[name] = Time.new
     end
 
     # Show the real message in the console
