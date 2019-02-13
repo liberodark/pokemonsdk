@@ -72,7 +72,7 @@ class Scene_NameInput
     update_cursor
     Graphics.transition
     @running = true
-    while @running
+    while @running && $scene
       Graphics.update
       update
     end
