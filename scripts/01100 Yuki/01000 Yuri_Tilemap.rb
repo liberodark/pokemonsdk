@@ -149,7 +149,7 @@ class Tilemap
             sprite.src_rect.set((tile_id % 48) * 32, autotiles_counter[tile_id / 48], 32, 32)
           end
           priority = maplinker.get_priority(cx, cy)[tile_id] # -- priorities[tile_id]
-          next(sprite.z = 0) if !priority or priority.zero?
+          next(sprite.z = 0) if !priority or priority == 0
           sprite.z = (py + priority) * 32 - add_z
         end
       end
@@ -187,7 +187,7 @@ class Tilemap
             sprite.src_rect.set((tid % 8 + tlsy / max_size * 8) * 32, tlsy % max_size, 32, 32)
           end
           priority = maplinker.get_priority(cx, cy)[tile_id] # -- priorities[tile_id]
-          next(sprite.z = 0) if !priority or priority.zero?
+          next(sprite.z = 0) if !priority or priority == 0
           sprite.z = (py + priority) * 32 - add_z
         end
       end
@@ -212,7 +212,7 @@ class Tilemap
           tile_id = map_data[cx = x + px, cy = y + py, pz]
           next if !tile_id or tile_id <= 0
           priority = maplinker.get_priority(cx, cy)[tile_id] # -- priorities[tile_id]
-          next if !priority or priority.zero?
+          next if !priority or priority == 0
           sprite.z = (py + priority) * 32 - add_z
         end
       end

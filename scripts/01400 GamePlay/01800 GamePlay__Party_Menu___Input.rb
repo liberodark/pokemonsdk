@@ -25,7 +25,7 @@ module GamePlay
       when :choose_move_pokemon
         action_move_current_pokemon
       when :choose_move_item
-        return $game_system.se_play($data_system.buzzer_se) if @team_buttons[@index].data.item_holding.zero?
+        return $game_system.se_play($data_system.buzzer_se) if @team_buttons[@index].data.item_holding == 0
         @team_buttons[@move = @index].selected = true
         @intern_mode = :move_item
         show_winText(_get(23, 22))

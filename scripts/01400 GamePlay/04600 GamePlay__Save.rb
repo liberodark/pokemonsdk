@@ -39,7 +39,7 @@ module GamePlay
       yes = _get(25, 20)
       no = _get(25, 21)
       # Dont save the game if the player don't answer yes (0), make no (1) the default option
-      return unless display_message(save_question, 1, yes, no).zero?
+      return unless display_message(save_question, 1, yes, no) == 0
       save_game
       saved_message = _parse(26, 17, TRNAME[0] => $trainer.name)
       display_message(saved_message)

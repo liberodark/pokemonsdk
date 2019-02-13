@@ -75,7 +75,7 @@ module GamePlay
     def action
       Graphics.freeze
       # @@save_index = @index
-      if(@fileexist and @index.zero?)
+      if(@fileexist and @index == 0)
         load_game
       else
         $pokemon_party = PFM::Pokemon_Party.new
@@ -118,7 +118,6 @@ module GamePlay
       $game_temp.message_window_showing=false 
       #>On ajuste le marqueur de temps pour le temps de jeu
       $trainer.load_time
-      $game_map.autoplay
     end
 
     def refresh

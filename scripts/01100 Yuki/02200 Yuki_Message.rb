@@ -99,6 +99,7 @@ module Yuki
       $game_temp.message_proc.call unless $game_temp.message_proc.nil?
       reset_game_temp_message_info
       dispose_sub_elements
+      reset_overwrites
       @auto_skip = false
     end
 
@@ -131,9 +132,10 @@ module Yuki
 
     # Dispose the sub element of the window (thing created during the message processing)
     def dispose_sub_elements
-      @gold_window && @gold_window.dispose
-      @choice_window && @choice_window.dispose
-      @gold_window = @choice_window = nil
+      @gold_window&.dispose
+      @choice_window&.dispose
+      @city_sprite&.dispose
+      @city_sprite = @gold_window = @choice_window = nil
     end
 
     # Initialize the window Parameter
@@ -146,7 +148,7 @@ module Yuki
       update_windowskin
       init_pause_coordinates
       self.pauseskin = RPG::Cache.windowskin(PauseSkin)
-      self.back_opacity = ($game_system.message_frame.zero? ? 255 : 0)
+      self.back_opacity = ($game_system.message_frame == 0 ? 255 : 0)
       unlock
       @name_window.unlock
     end
@@ -191,7 +193,7 @@ module Yuki
     # Retreive the current window_builder
     # @return [Array]
     def current_window_builder
-      return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2] == 'M_' # SkinHGSS
+      return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2].casecmp?('m_') # SkinHGSS
       ::GameData::Windows::MessageWindow # Skin PSDK
     end
 
@@ -232,7 +234,7 @@ module Yuki
     # Wait the user input
     def wait_user_input
       self.pause = true
-      until Input.trigger?(:A) or (Mouse.trigger?(:left) and simple_mouse_in?)
+      until Input.trigger?(:A) || (Mouse.trigger?(:left) and simple_mouse_in?) || stop_message_process?
         message_update_processing
       end
       $game_system.se_play($data_system.cursor_se)

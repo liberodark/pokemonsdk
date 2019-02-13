@@ -20,6 +20,7 @@ class Game_Party
   # Set up the party with default members
   def setup_starting_members
     @actors = []
+    log_info("Initial party members : #{$data_system.party_members}")
     for i in $data_system.party_members
       @actors.push($game_actors[i])
     end

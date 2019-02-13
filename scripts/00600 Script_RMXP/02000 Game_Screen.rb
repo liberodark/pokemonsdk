@@ -2,6 +2,7 @@
 
 # Update every component that affect the screen
 class Game_Screen
+  NEUTRAL_TONE = Tone.new(0, 0, 0, 0)
   attr_reader   :tone                     # 色調
   attr_reader   :flash_color              # フラッシュ色
   attr_reader   :shake                    # シェイク位置

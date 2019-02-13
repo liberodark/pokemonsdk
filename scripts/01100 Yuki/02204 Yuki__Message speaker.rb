@@ -2,8 +2,13 @@ module Yuki
   class Message
     private
 
-    INFO_NAME = 'name='
-    INFO_FACE = 'face='
+    # @return [Hash{String=>Symbol}] function to call when a thing= (String) is detected inside the :[...]: tag
+    PARSER = {
+      'name=' => :parse_speaker_name,
+      'face=' => :parse_speaker_face,
+      'city=' => :parse_city_image
+    }
+
     # Parse the speakers information
     # @param info_str [String] string containing all the informations
     # @example example of info_str
@@ -18,10 +23,8 @@ module Yuki
     def parse_speaker(info_str)
       @face_stack.dispose
       info_str.split(';').each do |sub_info_str|
-        if sub_info_str.start_with?(INFO_NAME)
-          parse_speaker_name(sub_info_str.split('=').last)
-        elsif sub_info_str.start_with?(INFO_FACE)
-          parse_speaker_face(sub_info_str.split('=').last)
+        PARSER.each do |type, method_name|
+          break(send(method_name, sub_info_str.split('=').last)) if sub_info_str.start_with?(type)
         end
       end
       viewport.sort_z
@@ -58,6 +61,7 @@ module Yuki
       position = viewport.rect.width + position if position < 0
       return position
     end
+
     # Update the value of the face opacity
     def face_opacity=(value)
       @face_stack.stack.each do |sprite|
@@ -70,6 +74,15 @@ module Yuki
     def face_speaker_y
       return viewport.rect.height # if position == :top
       # y
+    end
+
+    # Parse the image setting of the city
+    # @param name [String] name of the image in Pictures
+    def parse_city_image(name)
+      @city_sprite ||= Sprite.new(self)
+      @city_sprite.z = z + 1
+      @city_sprite.opacity = 0
+      @city_sprite.set_bitmap(name, :picture)
     end
   end
 end

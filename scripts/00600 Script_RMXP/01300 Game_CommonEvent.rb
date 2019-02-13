@@ -1,7 +1,21 @@
-#encoding: utf-8
-
 # Describe a common event during the game processing
 class Game_CommonEvent
+  # @return [Integer] ID of the appearence common event
+  APPEARANCE = 2
+  # @return [Integer] ID of the follower speech common event
+  FOLLOWER_SPEECH = 5
+  # @return [Integer] ID of the falling from hole common event
+  HOLE_FALLING = 8
+  # @return [Integer] ID of the enter surf common event
+  SURF_ENTER = 9
+  # @return [Integer] ID of the leaving surf common event
+  SURF_LEAVE = 10
+  # @return [Integer] ID of the headbutt common event
+  HEADBUTT = 20
+  # @return [Integer] ID of the waterfall common event
+  WATERFALL = 26
+  # @return [Integer] ID of the dive common event
+  DIVE = 29
   # Initialize the Game_CommonEvent
   # @param common_event_id [Integer] id of the common event in the database
   def initialize(common_event_id)

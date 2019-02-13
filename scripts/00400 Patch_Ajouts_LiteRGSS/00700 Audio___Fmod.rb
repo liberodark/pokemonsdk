@@ -111,7 +111,7 @@ module Audio
       @bgm_channel = nil
     end
   rescue FMOD::Error => e
-    puts e.message if $DEBUG
+    puts e.message if $TEST
   end
 
   # plays a BGS and stop the current one
@@ -181,7 +181,7 @@ module Audio
       @bgs_channel = nil
     end
   rescue FMOD::Error => e
-    puts e.message if $DEBUG
+    puts e.message if $TEST
   end
 
   # plays a ME and stop the current one, the BGM will be paused during the ME play
@@ -265,7 +265,7 @@ module Audio
       @me_channel = nil
     end
   rescue FMOD::Error => e
-    puts e.message if $DEBUG
+    puts e.message if $TEST
   end
 
   # plays a SE if possible
@@ -357,7 +357,7 @@ module Audio
     stop_time = pdsp + Integer(time * sr / 1000)
     channel.addFadePoint(pdsp, start_value)
     channel.addFadePoint(stop_time, end_value)
-    channel.setDelay(0, stop_time + 20, false) if end_value.zero?
+    channel.setDelay(0, stop_time + 20, false) if end_value == 0
     channel.setVolumeRamp(true)
     channel.instance_variable_set(:@stop_time, stop_time)
   end

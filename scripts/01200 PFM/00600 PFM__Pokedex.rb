@@ -115,7 +115,7 @@ module PFM
       return unless enabled?
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= $game_data_pokemon.size
-      @seen += 1 if @has_seen_and_forms[id].to_i.zero?
+      @seen += 1 if @has_seen_and_forms[id].to_i == 0
       @has_seen_and_forms[id] = @has_seen_and_forms[id].to_i | (1 << form)
       $game_variables[Yuki::Var::Pokedex_Seen] = @seen
     end
@@ -131,7 +131,7 @@ module PFM
       else
         @has_seen_and_forms[id] = 0
       end
-      @seen -= 1 if @has_seen_and_forms[id].zero?
+      @seen -= 1 if @has_seen_and_forms[id] == 0
       $game_variables[Yuki::Var::Pokedex_Seen] = @seen
     end
 

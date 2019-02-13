@@ -26,7 +26,7 @@ module Yuki
         markers.insert(0, [1, get_default_color])
       end
       instructions = []
-      x = 0
+      x = origin_x
       texts.each { |sub_text| x = adjust_text_lines(x, max_width, sub_text, instructions) }
       @markers = markers
       @instructions = instructions
@@ -43,12 +43,12 @@ module Yuki
     def adjust_text_lines(x, max_width, text, instructions, no_split = false)
       if no_split
         sw = @text_sample.text_width(' ')
-        sw = 1 if sw.zero?
+        sw = 1 if sw == 0
         words = text.getbyte(0) != 32 ? '' : ' '
         text.split(' ').each do |word|
           w = @text_sample.text_width(word)
           if x + w > max_width
-            x = 0
+            x = origin_x
             instructions << words unless words.empty?
             instructions << :new_line
             words = ''
@@ -77,7 +77,7 @@ module Yuki
     # @param counter [Integer] the counter
     # @return [Integer] the new counter, if counter == -1, the user requested to skip the progress thing
     def progress(text, str, counter)
-      speed = @current_speed.zero? ? $options.message_speed : @current_speed
+      speed = @current_speed == 0 ? $options.message_speed : @current_speed
       text.nchar_draw = 0
       text.opacity = contents_opacity
       until text.nchar_draw >= str.size
@@ -101,6 +101,7 @@ module Yuki
       default_line_height.times do
         return if stop_message_process?
         self.oy += 1
+        @city_sprite&.y += 1
         message_update_processing
       end
     end
@@ -146,7 +147,8 @@ module Yuki
       @drawing_message = true
       set_origin(0, 0)
       text = replace_message_codes($game_temp.message_text)
-      @x = @y = 0
+      @x = origin_x
+      @y = 0
       @current_speed = 0
       @color = get_default_color
       @style = get_default_style
@@ -166,7 +168,7 @@ module Yuki
         instr_arr.each do |instr|
           break if stop_message_process?
           if instr == :new_line
-            @x = 0
+            @x = origin_x
             @y += lineheight
             if @y >= lineheight * line_number
               wait_user_input
@@ -182,6 +184,11 @@ module Yuki
         end
       end
       @text = nil
+    end
+
+    # Return the origin x for the current message
+    def origin_x
+      @city_sprite ? @city_sprite.width : 0
     end
 
     # Call a marker action

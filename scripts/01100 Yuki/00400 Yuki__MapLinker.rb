@@ -138,7 +138,7 @@ module Yuki
     # @param map_id [Integer] the id of the Map
     # @return [RPG::Map]
     def load_map_data(map_id)
-      return DefaultMap if map_id.zero?
+      return DefaultMap if map_id == 0
       return @last_map if map_id == @last_map_id
       if (link_data = @link_data) # Une des map linké
         return @north_data if map_id == link_data[0]

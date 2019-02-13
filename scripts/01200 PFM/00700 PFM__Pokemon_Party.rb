@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 module PFM
   # The game informations and Party management
   #
@@ -85,19 +83,24 @@ module PFM
     # Create a new Pokemon Party
     # @param battle [Boolean] if its a party of a NPC battler
     # @param starting_language [String] the lang id of the game described by this object
-    def initialize(battle=false, starting_language = "fr")
-      @actors = Array.new
+    def initialize(battle = false, starting_language = 'fr')
+      @actors = []
       @bag = PFM::Bag.new
       @repel_count = 0
-      @steps=0
+      @steps = 0
       return if battle
-      #>Partie gérée quand on crée une nouvelle partie
-      #Normalement vous ne devriez pas créer d'objet Pokemon_Party sans argument "true"
-      #En dehors d'une nouvelle partie !
-      @pokemon_39 = Array.new
+      game_state_initialize(starting_language)
+      rmxp_boot unless $tester
+    end
+
+    private
+
+    # Initialize the game state variable
+    # @param starting_language [String] the lang id of the game described by this object
+    def game_state_initialize(starting_language)
       @game_variables = Game_Variables.new
       @game_switches = Game_Switches.new
-      $game_switches = @game_switches unless $game_switches
+      $game_switches ||= @game_switches
       @game_self_switches = Game_SelfSwitches.new
       @game_self_variables = Game_SelfVariables.new
       @game_temp = Game_Temp.new
@@ -108,7 +111,7 @@ module PFM
       @game_troop = Game_Troop.new
       @game_map = Game_Map.new
       @game_player = Game_Player.new
-      self.expand_global_var
+      expand_global_var
       @pokedex = PFM::Pokedex.new
       @trainer = PFM::Trainer.new
       @options = PFM::Options.new(starting_language)
@@ -117,19 +120,25 @@ module PFM
       @env = PFM::Environnement.new
       @wild_battle = PFM::Wild_Battle.new
       @daycare = PFM::Daycare.new
-      @berries = Hash.new
+      @berries = {}
       @quests = PFM::Quests.new
-      unless $tester
-        expand_global_var #> Protection
-        #>Lancement de la base RMXP
-        @game_party.setup_starting_members
-        @game_map.setup($data_system.start_map_id)
-        @game_player.moveto($data_system.start_x + Yuki::MapLinker.get_OffsetX, $data_system.start_y + Yuki::MapLinker.get_OffsetY)
-        @game_player.refresh
-        @game_map.autoplay
-        ## @game_map.update
-      end
     end
+
+    # Perform the RMXP bootup
+    def rmxp_boot
+      expand_global_var # Safety to be sure the variable are really ok
+      @game_party.setup_starting_members
+      log_info("$data_system.start_map_id = #{$data_system.start_map_id}")
+      log_info("$data_system.start_x = #{$data_system.start_x}")
+      log_info("$data_system.start_x = #{$data_system.start_y}")
+      @game_map.setup($data_system.start_map_id)
+      @game_player.moveto($data_system.start_x + Yuki::MapLinker.get_OffsetX, $data_system.start_y + Yuki::MapLinker.get_OffsetY)
+      @game_player.refresh
+      @game_map.autoplay
+      ## @game_map.update
+    end
+
+    public
 
     # Expand the global variable with the instance variables of the object
     def expand_global_var

@@ -229,12 +229,12 @@ module RPG
 end
 # Tells what to do on Start
 Graphics.on_start do
-  puts 'Loading cache...'
-  t = Time.new
+  # puts 'Loading cache...'
+  # t = Time.new
   RPG::Cache::LOADS.each do |k|
     RPG::Cache.send(k)
   end
-  puts format('Time to load cache : %<time>ss', time: (Time.new - t))
+  # puts format('Time to load cache : %<time>ss', time: (Time.new - t))
   RPG::Cache.instance_eval do
     undef meta_exec
     remove_const :Cache_meta_without_hue

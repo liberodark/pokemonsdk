@@ -9,6 +9,8 @@ module Yuki
   class VD
     # @return [String] the filename of the current Yuki::VD
     attr_reader :filename
+    # Is the debug info on ?
+    DEBUG_ON = ARGV.include?('debug-yuki-vd')
     # The max size of the file that can be loaded in memory
     MAX_SIZE = 10 * 1024 * 1024 # 10Mo
     # List of allowed modes
@@ -34,7 +36,7 @@ module Yuki
       pos = @hash[filename]
       return nil unless pos
       @file.pos = pos
-      size = @file.read(POINTER_SIZE).unpack(UNPACK_METHOD).first
+      size = @file.read(POINTER_SIZE).unpack1(UNPACK_METHOD)
       return @file.read(size)
     end
 
@@ -87,9 +89,13 @@ module Yuki
     # Initialize the Yuki::VD in read mode
     def initialize_read
       @file = File.new(filename, 'rb')
-      pos = @file.pos = @file.read(POINTER_SIZE).unpack(UNPACK_METHOD).first
+      pos = @file.pos = @file.read(POINTER_SIZE).unpack1(UNPACK_METHOD)
       @hash = Marshal.load(@file)
       load_whole_file(pos) if pos < MAX_SIZE
+    rescue Errno::ENOENT
+      @file = nil
+      @hash = {}
+      log_error(format('%<filename>s not found', filename: filename)) if DEBUG_ON
     end
 
     # Load the VD in the memory
@@ -112,7 +118,7 @@ module Yuki
     # Initialize the Yuki::VD in update mode
     def initialize_update
       @file = File.new(filename, 'rb+')
-      pos = @file.pos = @file.read(POINTER_SIZE).unpack(UNPACK_METHOD).first
+      pos = @file.pos = @file.read(POINTER_SIZE).unpack1(UNPACK_METHOD)
       @hash = Marshal.load(@file)
       @file.pos = pos
     end
