@@ -73,7 +73,7 @@ module Yuki
     # Update the mouse action
     def update_mouse
       @my = Mouse.y
-      unless Mouse.wheel.zero?
+      unless Mouse.wheel == 0
         Mouse.wheel > 0 ? update_cursor_up : update_cursor_down
         return Mouse.wheel = 0
       end
@@ -91,7 +91,7 @@ module Yuki
 
     # Update the choice display when player hit UP
     def update_cursor_up
-      if @index.zero?
+      if @index == 0
         (@choices.size - 1).times { update_cursor_down }
         return
       end
@@ -112,7 +112,7 @@ module Yuki
       @index += 1
       if @index >= @choices.size
         @index -= 1
-        update_cursor_up until @index.zero?
+        update_cursor_up until @index == 0
         return
       end
       if @choices.size > MaxChoice

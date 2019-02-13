@@ -222,10 +222,10 @@ class Interpreter_RMXP
   # Screen tone change command
   def command_223
     # 色調変更を開始
-    if @parameters[0] != Yuki::TJN::TONE[3]
+    if @parameters[0] != Game_Screen::NEUTRAL_TONE
       $game_screen.start_tone_change(@parameters[0], @parameters[1] * 2)
     else
-      Yuki::TJN.force_update_tone(0)
+      $game_screen.start_tone_change(Yuki::TJN.current_tone, @parameters[1] * 2)
     end
     # 継続
     return true

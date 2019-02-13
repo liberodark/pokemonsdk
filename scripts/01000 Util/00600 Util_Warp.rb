@@ -3,7 +3,7 @@ module Util
   # @author Nuri Yuri
   module Warp
     module_function
-    
+
     # Warp to an event of another map (below by default)
     # @param map_id [Integer] ID of the map where to warp
     # @param name_or_id [Integer, String] name or ID of the event that will be found
@@ -13,7 +13,7 @@ module Util
     # @param direction [Integer] new direction of the player
     def to(map_id, name_or_id, transition_type = 0, offset_x: 0, offset_y: 1, direction: 0)
       x, y = find_event_from(map_id, name_or_id)
-      setup_transition(transition_type) unless transition_type.zero?
+      setup_transition(transition_type) unless transition_type == 0
       warp(map_id, x + offset_x, y + offset_y, direction)
     end
 

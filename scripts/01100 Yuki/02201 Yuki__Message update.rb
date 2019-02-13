@@ -21,17 +21,18 @@ module Yuki
     # Update the scene and Graphics during the message draw processing. This allow the current scene to display all the animated stuff during the message processing. Make sure its update method returns when message_window.drawing_message is true
     def message_update_processing
       Graphics.update
-      $scene.update
+      $scene&.update
     end
 
     # Show the fade in during the update
     # @return [Boolean] if the update function skips
     def update_fade_in
       if @fade_in
-        update_windowskin if contents_opacity.zero?
+        update_windowskin if contents_opacity == 0
         self.contents_opacity += 24
         @name_window.contents_opacity += 24
-        self.face_opacity = self.opacity
+        @city_sprite.opacity += 24 if @city_sprite
+        self.face_opacity = opacity
         @fade_in = false if contents_opacity == 255
         return true
       end
@@ -116,7 +117,7 @@ module Yuki
         self.visible = true
         init_window
         @name_window.contents_opacity = self.contents_opacity = 0
-        @name_window.opacity = self.opacity = $game_temp.message_text.size.zero? ? 0 : 255
+        @name_window.opacity = self.opacity = $game_temp.message_text.size == 0 ? 0 : 255
         refresh
         return true
       end
@@ -130,7 +131,8 @@ module Yuki
         @fade_out = true
         self.face_opacity = (self.opacity -= 48)
         @name_window.opacity -= 48
-        if opacity.zero?
+        @city_sprite.opacity -= 48 if @city_sprite
+        if opacity == 0
           @text_stack.dispose
           @face_stack.dispose
           self.visible = false
@@ -148,7 +150,7 @@ module Yuki
     # Tell the process method of message to stop processing
     # @return [Boolean]
     def stop_message_process?
-      return $scene.is_a?(Yuki::SoftReset)
+      return ($scene.is_a?(Yuki::SoftReset) || $scene.nil?)
     end
   end
 end

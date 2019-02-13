@@ -17,7 +17,7 @@ module GUI
       super(viewport)
       @image_name = image_name
       @text = Text.new(0, self, default_text_x, default_text_y - Text::Util::FOY, 0, builder[3], text.to_s, default_text_align)
-      @text.load_color(color) unless color.zero?
+      @text.load_color(color) unless color == 0
       self.stretch = true
       self.window_builder = builder
       set_state(:normal)

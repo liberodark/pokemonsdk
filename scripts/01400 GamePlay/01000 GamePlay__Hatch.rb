@@ -71,7 +71,7 @@ module GamePlay
     # Update the message to show according to the counter
     def update_message
       # Show the "What?" message
-      if @counter.zero?
+      if @counter == 0
         @message_window.auto_skip = true
         @message_window.stay_visible = true
         display_message(_get(36, 37))
@@ -92,7 +92,7 @@ module GamePlay
     def show_rename_choice
       PFM::Text.set_pkname(@pokemon, 0)
       choice = display_message(_get(36, 39), 1, _get(11, 27), _get(11, 28))
-      return unless choice.zero? # No
+      return unless choice == 0 # No
       Graphics.freeze
       @pokemon.given_name = Scene_NameInput.new(@pokemon.given_name, 10, @pokemon).main.return_name
     end
@@ -110,7 +110,7 @@ module GamePlay
     # Update the egg move
     def update_egg_move
       @egg_sprite.angle = EGG_MOVE_ANGLE * sin(@counter * PI / EGG_MOVE_PERIOD)**17
-      return unless ((@counter + EGG_MOVE_PERIOD / 2) % EGG_MOVE_PERIOD).zero?
+      return unless ((@counter + EGG_MOVE_PERIOD / 2) % EGG_MOVE_PERIOD) == 0
       Audio.se_play(EGG_MOVE_SE)
     end
 
@@ -157,7 +157,7 @@ module GamePlay
     # Create the background
     def create_background
       id_bg = $env.get_zone_type(true)
-      if id_bg.zero?
+      if id_bg == 0
         id_bg = 1 if $env.grass?
       else
         id_bg += 1

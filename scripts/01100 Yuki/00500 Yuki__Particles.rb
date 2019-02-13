@@ -4,90 +4,46 @@ module Yuki
   # Module that manage the particle display
   # @author Nuri Yuri
   module Particles
-    # ID of the variable that change the particle data id
-    VAR_PARTICLE_DATA_ID = 108
-    # The particle data
-    Data=Array.new
-    Data[0]=Hash.new
-    Data[0][1]={#,:oy_offset=>-2
-    :enter=>{:max_counter=>16,:data=>[{:file=>"Herbe",:rect=>[0,0,16,16],:zoom=>1,:position=>:center_pos},nil,nil,nil,{:rect=>[0,16,16,16]},nil,nil,nil,{:rect=>[0,32,16,16]},nil,nil,nil,{:rect=>[0,48,16,16]}],:loop=>false},
-    :stay =>{:max_counter=>1,:data=>[{:file=>"Herbe",:zoom=>1,:position=>:center_pos,:rect=>[0,48,16,16]}],:loop=>false},
-    :leave=>{:max_counter=>1,:data=>[],:loop=>false}}
-    Data[0][2]={
-    :enter=>{:max_counter=>8,:data=>[nil,nil,nil,{:file=>"HauteHerbe",:zoom=>1,:position=>:center_pos}],:loop=>false},
-    :stay =>{:max_counter=>1,:data=>[{:file=>"HauteHerbe",:zoom=>1,:position=>:center_pos}],:loop=>false},
-    :leave=>{:max_counter=>1,:data=>[],:loop=>false}}
-
-    Data[0][:exclamation] = {
-    :enter=>{:max_counter=>36,:data => 
-    [{:file=>"emotions",:rect=>[0,0,16,16],:zoom=>1,:position=>:center_pos, :add_z => -1, :oy_offset => 0},
-    nil,{:oy_offset => 2},
-    nil,{:oy_offset => 4},
-    nil,{:oy_offset => 8},
-    nil,{:oy_offset => 12},
-    nil,{:oy_offset => 16, :add_z => 64},
-    nil,{:oy_offset => 20},
-    nil,{:oy_offset => 24},
-    nil,{:oy_offset => 20}],
-    :loop=>false},
-    :stay=>{:max_counter=>2,:data=>[{:state => :leave}], :loop=>false},
-    :leave =>Data[0][2][:leave]}
-
-#    emotion_str = 'Data[0][:£1] = {:enter=>{:max_counter=>60,:data =>[{:file=>"emotions",:rect=>[£3,£2,16,16],:zoom=>1,:position=>:center_pos, :oy_offset => 20},nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,{:rect=>[£4,£2,16,16]}],:loop => false},:stay => Data[0][:exclamation][:stay],:leave =>Data[0][2][:leave]}'
-    emotion_str = 'Data[0][:£1] = {:enter=>{:max_counter=>60,:data =>[{:file=>"emotions",:rect=>[£3,£2,16,16],:zoom=>1,:position=>:center_pos, :oy_offset => 10},nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,{:rect=>[£4,£2,16,16]}],:loop => false},:stay => Data[0][:exclamation][:stay],:leave =>Data[0][2][:leave]}'
-    module_eval(emotion_str.gsub('£1', 'poison').gsub!('£2', '0').gsub!('£3','32').gsub!('£4','48'))
-    module_eval(emotion_str.gsub('£1', 'exclamation2').gsub!('£2', '16').gsub!('£3','0').gsub!('£4','16'))
-    module_eval(emotion_str.gsub('£1', 'interrogation').gsub!('£2', '32').gsub!('£3','0').gsub!('£4','16'))
-    module_eval(emotion_str.gsub('£1', 'music').gsub!('£2', '16').gsub!('£3','32').gsub!('£4','48'))
-    module_eval(emotion_str.gsub('£1', 'love').gsub!('£2', '32').gsub!('£3','32').gsub!('£4','48'))
-    module_eval(emotion_str.gsub('£1', 'joy').gsub!('£2', '0').gsub!('£3','64').gsub!('£4','80'))
-    module_eval(emotion_str.gsub('£1', 'sad').gsub!('£2', '16').gsub!('£3','64').gsub!('£4','80'))
-    module_eval(emotion_str.gsub('£1', 'happy').gsub!('£2', '32').gsub!('£3','64').gsub!('£4','80'))
-    module_eval(emotion_str.gsub('£1', 'angry').gsub!('£2', '0').gsub!('£3','96').gsub!('£4','112'))
-    module_eval(emotion_str.gsub('£1', 'sulk').gsub!('£2', '16').gsub!('£3','96').gsub!('£4','112'))
-    module_eval(emotion_str.gsub('£1', 'nocomment').gsub!('£2', '32').gsub!('£3','96').gsub!('£4','112'))
-
     module_function
+
     # Init the particle display on a new viewport
     # @param viewport [Viewport]
     def init(viewport)
       dispose if @stack
       @clean_stack = false
-      @stack = Array.new
+      @stack = []
       @viewport = viewport
       @on_teleportation = false
     end
+
     # Update of the particles & stack cleaning if requested
     def update
       return unless @stack
-      #> La ligne suivante a été supprimée suite aux menus, il faudra vérifier si il n'y a aucun problème relatif avec les combats et autre.
-      #return dispose if $scene.class != Scene_Map
       @stack.each do |i|
         i.update if i and !i.disposed
       end
-      if @clean_stack
-        @clean_stack=false
-        @stack.each_index do |i|
-          @stack[i]=nil if @stack[i].disposed
-        end
-        @stack.compact!
-      end
+      # Clean stack part
+      return unless @clean_stack
+      @clean_stack = false
+      @stack.delete_if(&:disposed)
     end
+
     # Request to clean the stack
     def clean_stack
       @clean_stack = true
     end
+
     # Add a particle to the stack
     # @param character [Game_Character] the character on which the particle displays
-    # @param tag [Integer] the index of the particle in the particle data
-    def add_particle(character,tag)
+    # @param particle_tag [Integer, Symbol] identifier of the particle in the hash
+    def add_particle(character, particle_tag)
       return unless @stack
-      if a=Data[$game_variables[Var::PAR_DatID]]
-        if a=a[tag]
-          @stack.push(Particle_Object.new(character,a,@on_teleportation)) if character.character_name and character.character_name.size>0
-        end
-      end
+      return if character.character_name.empty?
+      particle_data = find_particle(character.terrain_tag, particle_tag)
+      return unless particle_data
+      @stack.push(Particle_Object.new(character, particle_data, @on_teleportation))
     end
+
     # Add a parallax
     # @param image [String] name of the image in Graphics/Pictures/
     # @param x [Integer] x coordinate of the parallax from the first pixel of the Map (16x16 tiles /!\)
@@ -167,117 +123,102 @@ module Yuki
     #       chara: Boolean # If the particle Bitmap is treaten like the Character bitmap
     #       rect: Array(Integer, Integer, Integer, Integer) # the parameter of the #set function of Rect (src_rect)
     # @param on_tp [Boolean] tells the particle to skip the :enter animation or not
-    def initialize(character,data,on_tp=false)
-      @x=character.x
-      @y=character.y
-      @character=character
-      @map_id=$game_map.map_id
-      @sprite=::Sprite.new(Particles.viewport)
-      @data=data
-      @counter=0
-      @position_type=:center_pos
-      @state=(on_tp ? :stay : :enter)
-      @zoom = (zoom = ::Config::Specific_Zoom) ? zoom : ZoomDiv[1]#$zoom_factor.to_i]
-      @add_z=@zoom
-      @ox=0
-      @oy=0
-      @oy_off=0
+    def initialize(character, data, on_tp = false)
+      @x = character.x
+      @y = character.y
+      @z = character.z
+      @character = character
+      @map_id = $game_map.map_id
+      @sprite = ::Sprite.new(Particles.viewport)
+      @data = data
+      @counter = 0
+      @position_type = :center_pos
+      @state = (on_tp ? :stay : :enter)
+      init_zoom
+      @ox = 0
+      @oy = 0
+      @oy_off = 0
+      @ox_off = 0
+      @wait_count = 0
     end
+
+    # Initialize the zoom info
+    def init_zoom
+      @zoom = (zoom = ::Config::Specific_Zoom) ? zoom : ZoomDiv[1]
+      @add_z = @zoom
+    end
+
     # Update the particle animation
     def update
       return if @disposed
       return dispose if $game_map.map_id != @map_id
-      data=@data[@state]
-      if @counter<data[:max_counter]
-        exectute_action(data[:data][@counter]) if data[:data][@counter]
-        @counter+=1
-      elsif @state==:enter
-        @state=:stay
-        @counter=0
-      elsif @state==:stay 
-        if (@x!=@character.x or @y!=@character.y)# or !@character.character_name or @character.character_name.size==0)
-          @state=:leave
-          @counter=0
-        else
-          @counter=0
-        end
+      if @wait_count > 0
+        @wait_count -= 1
+        return update_sprite_position
+      end
+      update_particle_info(@data[@state]) && update_sprite_position
+    end
+
+    # Update the particle info
+    # @param data [Hash] the data related to the current state
+    # @return [Boolean] if the update_sprite_position can be done
+    def update_particle_info(data)
+      if @counter < data[:max_counter]
+        (action = data[:data][@counter]) && exectute_action(action)
+        @counter += 1
+      elsif @state == :enter
+        @state = :stay
+        @counter = 0
+      elsif @state == :stay
+        @state = :leave if @x != @character.x || @y != @character.y
+        @counter = 0
       elsif !data[:loop]
         dispose
         Particles.clean_stack
-        return
+        return false
       else
-        @counter=0
+        @counter = 0
       end
-      update_sprite_position
+      return true
     end
+
     # Execute an animation instruction
     # @param action [Hash] the animation instruction
     def exectute_action(action)
-      if d=action[:state]
-        @state = d
-      end
-      if d=action[:zoom]
-        @sprite.zoom=d*1#$zoom_factor
-      end
-      if d=action[:file] #Choix d'un fichier
-        @sprite.bitmap=RPG::Cache.particle(d)#Bitmap.new("Graphics/Particles/#{d}")
-        @ox = (@sprite.bitmap.width*@sprite.zoom_x)/2
-        @oy = (@sprite.bitmap.height*@sprite.zoom_y)/2
-      end
-      if d=action[:position]
-        @position_type=d
-      end
-      if d=action[:angle]
-        @sprite.angle=d
-      end
-      if d=action[:add_z]
-        @add_z=d
-      end
-      if d=action[:oy_offset]
-        @oy_off=d
-      end
-      if d=action[:opacity]
-        @sprite.opacity=d
-      end
-      #DOIS ETRE A LA FIN !
-      if d=action[:chara]
-        cw=@sprite.bitmap.width/4
-        ch=@sprite.bitmap.height/4
-        sx = @character.pattern * cw
-        sy = (@character.direction - 2) / 2 * ch
-        @sprite.src_rect.set(sx,sy,cw,ch)
-        @ox=(cw*@sprite.zoom_x)/2
-        @oy=(ch*@sprite.zoom_y)/2
-      end
-      if d=action[:rect] #choix d'un src_rect
-        @sprite.src_rect.set(*d)
-        @ox = (d[2]*@sprite.zoom_x)/2
-        @oy = (d[3]*@sprite.zoom_y)/2
+      ACTION_HANDLERS_ORDER.each do |name|
+        if (data = action[name])
+          instance_exec(data, &ACTION_HANDLERS[name])
+        end
       end
     end
+
     # Update the position of the particle sprite
     def update_sprite_position
       case @position_type
-      when :center_pos
-        @sprite.x=((@x*128 - $game_map.display_x + 5) / 4 + 32)/@zoom
-        @sprite.y=((@y*128 - $game_map.display_y + 5) / 4 + 32)
-        @sprite.z=@character.screen_z(0)/@zoom
-        if @sprite.y>=@character.screen_y
-          @sprite.z=(@character.screen_z(0)+@add_z)#/@zoom
+      when :center_pos, :grass_pos
+        @sprite.x = ((@x * 128 - $game_map.display_x + 5) / 4 + 32) / @zoom
+        @sprite.y = ((@y * 128 - $game_map.display_y + 5) / 4 + 32)
+        if @position_type == :center_pos || @sprite.y >= @character.screen_y
+          @sprite.z = (screen_z + @add_z)
         else
-          @sprite.z=(@character.screen_z(0)-1)#/@zoom
+          @sprite.z = (screen_z - 1)
         end
-        @sprite.y/=@zoom
-        @sprite.ox=@ox * @zoom
-        @sprite.oy=@oy * @zoom + @oy_off#(@oy+@oy_off)*@zoom
+        @sprite.y /= @zoom
+        @sprite.ox = @ox * @zoom + @ox_off
+        @sprite.oy = @oy * @zoom + @oy_off
       when :character_pos
-        @sprite.x=@character.screen_x/@zoom
-        @sprite.y=@character.screen_y/@zoom
-        @sprite.z=(@character.screen_z(0)+@add_z)/@zoom
-        @sprite.ox=@ox
-        @sprite.oy=@oy+@oy_off
+        @sprite.x = @character.screen_x / @zoom
+        @sprite.y = @character.screen_y / @zoom
+        @sprite.z = (@character.screen_z(0) + @add_z)
+        @sprite.ox = @ox + @ox_off
+        @sprite.oy = @oy + @oy_off
       end
     end
+
+    def screen_z
+      (@y * 128 - $game_map.display_y + 3) / 4 + 32 * @z + 31
+    end
+
     # Dispose the particle
     def dispose
       return if @disposed

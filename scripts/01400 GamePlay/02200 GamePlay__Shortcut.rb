@@ -21,7 +21,7 @@ module GamePlay
           @back.y + (i & 0x01 == 1 ? delta_y : delta_y * i) + 1
         )
         sp.opacity = $bag.has_item?(@items[i]) ? 255 : 96
-        sp.set_bitmap(GameData::Item.icon(@items[i]), :icon) unless @items[i].zero?
+        sp.set_bitmap(GameData::Item.icon(@items[i]), :icon) unless @items[i] == 0
 =begin
         sprite(@items[i] != 0 ? GameData::Item.icon(@items[i]) : nil,
           @back.x + (i & 0x01 == 1 ? (delta_x * (i & 0x02)) : delta_x) + 1,

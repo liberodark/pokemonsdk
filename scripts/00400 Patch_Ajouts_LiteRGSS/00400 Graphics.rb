@@ -101,7 +101,7 @@ module Graphics
 
   # Sort the Graphical element by their z coordinate (in the Graphic Stack)
   def sort_z
-    @__elementtable.sort! do |a, b| 
+    @__elementtable.sort! do |a, b|
       s = a.z <=> b.z
       next(a.__index__ <=> b.__index__) if s == 0
       next(s)
@@ -120,7 +120,7 @@ module Graphics
       puts "#{$!.class} : #{$!.message}"
       puts $!.backtrace
     end
-    @cmd_thread.wakeup if @cmd_thread
+    @cmd_thread&.wakeup
   end
 
   # Initialize the IO related stuff of Graphics
@@ -136,15 +136,14 @@ module Graphics
   def create_command_thread
     Thread.new do
       loop do
-        begin
-          print 'Commande : '
-          @__cmd_to_eval = STDIN.gets.chomp
-          sleep
-        rescue StandardError
-          @cmd_thread = nil
-          @__cmd_to_eval = nil
-          break
-        end
+        log_info('Type help to get a list of the commands you can use.')
+        print 'Commande : '
+        @__cmd_to_eval = STDIN.gets.chomp
+        sleep
+      rescue StandardError
+        @cmd_thread = nil
+        @__cmd_to_eval = nil
+        break
       end
     end
   end

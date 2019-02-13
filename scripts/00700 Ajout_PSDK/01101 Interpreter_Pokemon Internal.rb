@@ -22,7 +22,7 @@ class Interpreter
   # @return [PFM::Pokemon]
   def internal_add_pokemon_check_symbol(pokemon_or_id, level, shiny, method_name)
     id = GameData::Pokemon.get_id(pokemon_or_id)
-    raise "Database Error : The Pokémon #{pokemon_or_id} doesn't exists." if id.zero?
+    raise "Database Error : The Pokémon #{pokemon_or_id} doesn't exists." if id == 0
     send(method_name, id, level, shiny)
   end
 
@@ -44,7 +44,7 @@ class Interpreter
     end
     raise do_not_add if do_not_add
     # Shiny attribute management
-    shiny = rand(shiny).zero? if shiny.is_a?(Integer) && shiny > 0
+    shiny = rand(shiny) == 0 if shiny.is_a?(Integer) && shiny > 0
     pokemon = PFM::Pokemon.new(pokemon_id, level.abs, shiny, shiny == 0)
     return send(method_name, pokemon)
   end

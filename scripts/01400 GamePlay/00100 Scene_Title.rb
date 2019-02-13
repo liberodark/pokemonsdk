@@ -80,7 +80,7 @@ class Scene_Title
       @viewport.color.alpha += down_col
       Graphics.update
     end
-    start_intro_movie(INTRO_MOVIE_MAP_ID) unless INTRO_MOVIE_MAP_ID.zero?
+    start_intro_movie(INTRO_MOVIE_MAP_ID) unless INTRO_MOVIE_MAP_ID == 0
   end
 
   # Play the title display part

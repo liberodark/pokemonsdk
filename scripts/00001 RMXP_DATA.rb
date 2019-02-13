@@ -311,6 +311,20 @@ module RPG
           @variable_value = 0
           @self_switch_ch = "A"
         end
+
+        # Return if the page condition is currently valid
+        # @param map_id [Integer] ID of the map where the event is
+        # @param event_id [Integer] ID of the event
+        # @return [Boolean] if the page is valid
+        def valid?(map_id, event_id)
+          return false if @switch1_valid && !$game_switches[@switch1_id]
+          return false if @switch2_valid && !$game_switches[@switch2_id]
+          return false if @variable_valid && $game_variables[@variable_id] < @variable_value
+          if @self_switch_valid
+            return false unless $game_self_switches[[map_id, event_id, @self_switch_ch]]
+          end
+          return true
+        end
         attr_accessor :switch1_valid
         attr_accessor :switch2_valid
         attr_accessor :variable_valid

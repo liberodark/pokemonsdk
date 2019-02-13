@@ -217,9 +217,9 @@ module Util
         when 133 # Battle end ME change
           io.puts("#{' ' * @indent}$game_system.battle_end_me = '#{param[0]}'")
         when 134 # Disable save command
-          io.puts("#{' ' * @indent}$game_system.save_disabled = #{param[0].zero?}")
+          io.puts("#{' ' * @indent}$game_system.save_disabled = #{param[0] == 0}")
         when 135 # Disable menu command
-          io.puts("#{' ' * @indent}$game_system.menu_disabled = #{param[0].zero?}")
+          io.puts("#{' ' * @indent}$game_system.menu_disabled = #{param[0] == 0}")
         when 136 # Disable encounter command
           translate_disable_encounter_command(io, param)
         when 201 # Warp command
@@ -237,7 +237,7 @@ module Util
         when 207 # Animation on character
           io.puts("#{' ' * @indent}show_animation(#{param[1]}, event: #{param[0]})")
         when 208 # Player transparency
-          io.puts("#{' ' * @indent}$game_player.transparent = #{param[0].zero?}")
+          io.puts("#{' ' * @indent}$game_player.transparent = #{param[0] == 0}")
         when 210 # Wait movement
           io.puts("#{' ' * @indent}wait_movement_termination")
         when 221 # Prepare transition
@@ -334,7 +334,7 @@ module Util
       end
 
       def translate_move_picture(io, param)
-        value = param[3].zero?
+        value = param[3] == 0
         x = value ? param[4] : "$game_variables[#{param[4]}]"
         y = value ? param[5] : "$game_variables[#{param[5]}]"
         io.puts("#{' ' * @indent}picture_num = #{param[0]} + ($game_temp.in_battle ? 50 : 0)") if @last_pic_number != param[0]
@@ -343,7 +343,7 @@ module Util
       end
 
       def translate_display_picture(io, param)
-        value = param[3].zero?
+        value = param[3] == 0
         x = value ? param[4] : "$game_variables[#{param[4]}]"
         y = value ? param[5] : "$game_variables[#{param[5]}]"
         io.puts("#{' ' * @indent}picture_num = #{param[0]} + ($game_temp.in_battle ? 50 : 0)") if @last_pic_number != param[0]
@@ -383,9 +383,9 @@ module Util
       end
 
       def translate_displace_command(io, param)
-        value = param[1].zero?
+        value = param[1] == 0
         d = value ? param[4] : "$game_variables[#{param[4]}]"
-        d = param[4].zero? ? nil : ", direction: #{d}"
+        d = param[4] == 0 ? nil : ", direction: #{d}"
         if param[1] < 2
           x = value ? param[2] : "$game_variables[#{param[2]}]"
           y = value ? param[3] : "$game_variables[#{param[3]}]"
@@ -396,18 +396,18 @@ module Util
       end
 
       def translate_warp_command(io, param)
-        value = param[0].zero?
+        value = param[0] == 0
         map_id = value ? param[1] : "$game_variables[#{param[1]}]"
         x = value ? param[2] : "$game_variables[#{param[2]}]"
         y = value ? param[3] : "$game_variables[#{param[3]}]"
         d = value ? param[4] : "$game_variables[#{param[4]}]"
-        d = param[4].zero? ? nil : ", direction: #{d}"
-        io.puts("#{' ' * @indent}warp_player(map_id: #{map_id}, x: #{x}, y: #{y} #{d}, transition: #{param[5].zero?})")
+        d = param[4] == 0 ? nil : ", direction: #{d}"
+        io.puts("#{' ' * @indent}warp_player(map_id: #{map_id}, x: #{x}, y: #{y} #{d}, transition: #{param[5] == 0})")
       end
 
       def translate_disable_encounter_command(io, param)
-        io.puts("#{' ' * @indent}$game_system.encounter_disabled = #{param[0].zero?}")
-        io.puts("#{' ' * @indent}$game_player.make_encounter_count") unless param[0].zero?
+        io.puts("#{' ' * @indent}$game_system.encounter_disabled = #{param[0] == 0}")
+        io.puts("#{' ' * @indent}$game_player.make_encounter_count") unless param[0] == 0
       end
 
       def translate_item_gain_command(io, param)
@@ -442,7 +442,7 @@ module Util
       end
 
       def translate_timer_command(io, param)
-        if param[0].zero?
+        if param[0] == 0
           io.puts("#{' ' * @indent}$game_system.timer = #{param[1]} * 60")
           io.puts("#{' ' * @indent}$game_system.timer_working = true")
         else
@@ -451,7 +451,7 @@ module Util
       end
 
       def translate_self_switch_set(io, param)
-        io.puts("#{' ' * @indent}set_self_switch(#{param[1].zero?}, '#{param[0]}')")
+        io.puts("#{' ' * @indent}set_self_switch(#{param[1] == 0}, '#{param[0]}')")
         io.puts("#{' ' * @indent}$game_map.need_refresh = true")
       end
 
@@ -593,9 +593,9 @@ module Util
 
       def translate_multiple_switch_set(io, param)
         if param[0] == param[1]
-          io.puts("#{' ' * @indent}$game_switches[#{param[0]}] = #{param[2].zero?}")
+          io.puts("#{' ' * @indent}$game_switches[#{param[0]}] = #{param[2] == 0}")
         else
-          io.puts("#{' ' * @indent}#{param[0]}.upto(#{param[1]}) { |switch_id| $game_switches[switch_id] = #{param[2].zero?}}")
+          io.puts("#{' ' * @indent}#{param[0]}.upto(#{param[1]}) { |switch_id| $game_switches[switch_id] = #{param[2] == 0}}")
         end
         io.puts("#{' ' * @indent}$game_map.need_refresh = true")
       end
@@ -689,7 +689,7 @@ module Util
         io.puts("#{' ' * @indent}$game_temp.num_input_start = #{line_count}")
         io.puts("#{' ' * @indent}$game_temp.num_input_variable_id = #{cmd.parameters[0]}")
         io.puts("#{' ' * @indent}$game_temp.num_input_digits_max = #{@list[@index].parameters[1]}")
-        io.puts("#{' ' * @indent}show_message('Enter a number')") if linecount.zero?
+        io.puts("#{' ' * @indent}show_message('Enter a number')") if linecount == 0
       end
 
       def write_event_condition(io, cmd, current_list)
@@ -709,7 +709,7 @@ module Util
         param = cmd.parameters
         case param.first
         when 0 # Switch condition
-          return "$game_switches[#{param[1]}] == #{param[2].zero?}"
+          return "$game_switches[#{param[1]}] == #{param[2] == 0}"
         when 1 # Variable condition
           value1 = "$game_variables[#{param[1]}]"
           value2 = param[2] != 0 ? "$game_variables[#{param[3]}]" : param[2]
@@ -728,9 +728,9 @@ module Util
             return "#{value1} != #{value2}"
           end
         when 2 # local switch condition
-          return param[2].zero? ? "get_self_switch('#{param[1]}')" : "not get_self_switch('#{param[1]}')"
+          return param[2] == 0 ? "get_self_switch('#{param[1]}')" : "not get_self_switch('#{param[1]}')"
         when 3 # Timer condition
-          if param[2].zero?
+          if param[2] == 0
             return "$game_system.timer_working and ($game_system.timer / 60) >= #{param[1]}"
           else
             return "$game_system.timer_working and ($game_system.timer / 60) <= #{param[1]}"
@@ -763,7 +763,7 @@ module Util
           character = "character = get_character(#{param[1]})"
           return "#{character} and character.direction == #{param[2]}"
         when 7 # Money
-          if param[2].zero?
+          if param[2] == 0
             return "$pokemon_party.money >= #{param[1]}"
           else
             return "$pokemon_party.money <= #{param[1]}"

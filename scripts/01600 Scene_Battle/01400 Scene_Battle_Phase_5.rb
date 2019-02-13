@@ -182,9 +182,9 @@ class Scene_Battle
       next unless pkmn
       case pkmn.ability
       when 25 # Ramassage
-        phase5_ramassage_take_object(pkmn) if rand(100) < 10 && pkmn.item_holding.zero?
+        phase5_ramassage_take_object(pkmn) if rand(100) < 10 && pkmn.item_holding == 0
       when 111 # Cherche Miel
-        pkmn.item_holding = 94 if rand(100) < (pkmn.level / 2) && pkmn.item_holding.zero?
+        pkmn.item_holding = 94 if rand(100) < (pkmn.level / 2) && pkmn.item_holding == 0
       when 56 # Médic Nature
         pkmn.cure
       end
