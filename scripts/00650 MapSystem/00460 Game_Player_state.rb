@@ -196,7 +196,10 @@ class Game_Player
   # Callback called when we are entering in wheel state
   def update_enter_sinking_state
     if moving?
+      last_real_x = @real_x
+      last_real_y = @real_y
       update_move
+      update_scroll_map(last_real_x, last_real_y)
       return update_pattern
     end
     unless @state == :sinking
