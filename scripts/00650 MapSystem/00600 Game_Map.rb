@@ -93,6 +93,7 @@ class Game_Map
     @scroll_direction = 2
     @scroll_rest = 0
     @scroll_speed = 4
+    load_follower if @next_setup_followers
   end
   # Returns the ID of the Map
   # @return [Integer]

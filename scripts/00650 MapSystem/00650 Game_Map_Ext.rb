@@ -122,11 +122,14 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
   # Method that prevent non wanted data save of the Game_Map object
   # @author Nuri Yuri
   def begin_save
+    save_follower
     arr = []
     IVAR_TO_REMOVE_FROM_SAVE_FILE.each do |ivar_name|
       arr << instance_variable_get(ivar_name)
       remove_instance_variable(ivar_name)
     end
+    arr << $game_player.follower
+    $game_player.instance_variable_set(:@follower, nil)
     $TMP_MAP_DATA = arr
   end
 
@@ -137,5 +140,31 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
     IVAR_TO_REMOVE_FROM_SAVE_FILE.each_with_index do |ivar_name, index|
       instance_variable_set(ivar_name, arr[index])
     end
+    $game_player.instance_variable_set(:@follower, arr.last)
+  end
+
+  private
+
+  # Method that save the Follower Event of the player
+  def save_follower
+    return unless $game_player.follower.is_a?(Game_Event)
+    @next_setup_followers = []
+    follower = $game_player
+    while (follower = follower.follower).is_a?(Game_Event)
+      @next_setup_followers << follower.id
+    end
+  end
+
+  # Method that load the follower Event of the player when the map is loaded
+  def load_follower
+    $game_player.reset_follower
+    x = $game_player.x
+    y = $game_player.y
+    @next_setup_followers.each do |id|
+      next unless (event = @events[id])
+      event.moveto(x, y)
+      $game_player.set_follower(event)
+    end
+    remove_instance_variable(:@next_setup_followers)
   end
 end
