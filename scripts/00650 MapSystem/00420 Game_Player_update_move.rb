@@ -178,18 +178,20 @@ class Game_Player
         leave_wheel_state # $game_temp.common_event_id = Game_CommonEvent::APPEARANCE
       end
     else
-      unless @surfing || cycling?
-        # Make the player run
-        if !bool && @lastdir4 != 0 && $game_switches[::Yuki::Sw::EV_CanRun] &&
-          !$game_switches[::Yuki::Sw::EV_Run] && Input.press?(:B) && !@step_anime # Test avec bump
-          $game_switches[::Yuki::Sw::EV_Run] = true
-          enter_in_running_state unless @state == :sinking # $game_temp.common_event_id = Game_CommonEvent::APPEARANCE
-        # Stop to run
-        elsif $game_switches[::Yuki::Sw::EV_Run] && (@lastdir4 == 0 || !Input.press?(:B) || $game_system.map_interpreter.running? || @step_anime)
-          $game_switches[::Yuki::Sw::EV_Run] = false
-          enter_in_walking_state unless @state == :sinking # $game_temp.common_event_id = Game_CommonEvent::APPEARANCE
-        end
-      end
+      player_update_move_running_state(bool) unless @surfing || cycling?
+    end
+  end
+
+  # Manage the running update of player_update_move inside player_update_move_common_events
+  # @param bool [Boolean]
+  def player_update_move_running_state(bool)
+    # Make the player run
+    if !bool && @lastdir4 != 0 && $game_switches[::Yuki::Sw::EV_CanRun] &&
+       !$game_switches[::Yuki::Sw::EV_Run] && Input.press?(:B) && !@step_anime # Test avec bump
+      enter_in_running_state unless @state == :sinking # $game_temp.common_event_id = Game_CommonEvent::APPEARANCE
+    # Stop to run
+    elsif $game_switches[::Yuki::Sw::EV_Run] && (@lastdir4 == 0 || !Input.press?(:B) || $game_system.map_interpreter.running? || @step_anime)
+      enter_in_walking_state unless @state == :sinking # $game_temp.common_event_id = Game_CommonEvent::APPEARANCE
     end
   end
 

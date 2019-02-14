@@ -40,6 +40,7 @@ class Game_Player
   # Enter in walking state (supports the swamp state)
   # @return [:walking] (It's used inside set_appearance_set when no state is defined)
   def enter_in_walking_state
+    $game_switches[Yuki::Sw::EV_Run] = false
     @state = @in_swamp ? :swamp : :walking
     update_move_parameter(:walking)
     update_appearance(@pattern)
@@ -48,6 +49,7 @@ class Game_Player
 
   # Enter in running state (supports the swamp state)
   def enter_in_running_state
+    $game_switches[::Yuki::Sw::EV_Run] = true
     @state = @in_swamp ? :swamp_running : :running
     update_move_parameter(:running)
     update_appearance(@pattern)
