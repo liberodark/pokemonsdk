@@ -14,7 +14,7 @@ module Yuki
       enter: {
         max_counter: 7,
         data: [
-          { file: 'herbe', rect: [0, 0, 16, 16], zoom: 1, position: :grass_pos },
+          { file: 'herbe', rect: [0, 0, 16, 16], zoom: 1, position: :grass_pos, se_player_play: 'audio/particles/grass01_a' },
           { wait: 3 },
           { rect: [0, 16, 16, 16] },
           { wait: 3 },
@@ -44,7 +44,7 @@ module Yuki
         max_counter: 8,
         data: [
           nil, nil, nil,
-          { file: 'hauteherbe', zoom: 1, position: :grass_pos }
+          { file: 'hauteherbe', zoom: 1, position: :grass_pos, se_player_play: 'audio/particles/grass01_b' }
         ],
         loop: false
       },

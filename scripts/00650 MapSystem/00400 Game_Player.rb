@@ -132,8 +132,11 @@ class Game_Player < Game_Character
     @state == :walking ? enter_in_walking_state : enter_in_running_state
   end
 
+  # Name of the JUMP SE
+  JUMP_SE = 'audio/se/jump'
   # Redefine the update_jump to support the cracked floor
   def update_jump
+    Audio.se_play(JUMP_SE) if @jump_count == @jump_peak * 2
     super
     player_move_on_cracked_floor_update unless @jump_count > 0
   end
