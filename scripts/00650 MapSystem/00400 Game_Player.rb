@@ -88,8 +88,11 @@ class Game_Player < Game_Character
     return send(@update_callback) if @update_callback
     last_moving = moving?
     if moving? || $game_system.map_interpreter.running? ||
-           @move_route_forcing || $game_temp.message_window_showing || @sliding # or follower_sliding?
-      @step_anime = false if $game_system.map_interpreter.running?
+       @move_route_forcing || $game_temp.message_window_showing || @sliding # or follower_sliding?
+      if $game_system.map_interpreter.running?
+        @step_anime = false
+        enter_in_walking_state if @state == :running
+      end
     else
       player_update_move
       player_move_on_cracked_floor_update if moving? && !last_moving
