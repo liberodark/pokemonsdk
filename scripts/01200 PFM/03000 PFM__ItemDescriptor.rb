@@ -16,7 +16,7 @@ module PFM
   #     action_to_push: opt Proc # The proc to call to push the specific action when the item is used in battle
   #     stone_evolve: opt Boolean # If a Pokemon evolve by stone
   #     use_before_telling: opt Boolean # If :on_use proc is called before telling the item is used
-  #     
+  #
   # @author Nuri Yuri
   module ItemDescriptor
     include GameData::SystemTags
@@ -24,63 +24,62 @@ module PFM
     NoCondition = proc { true }
     # Common event condition procs to call before calling event (common_event_id => proc { conditions })
     CommonEventConditions = {
-    6 => NoCondition,
-    7 => NoCondition,
-    11 => proc { !$game_player.surfing? && ($game_switches[Yuki::Sw::EV_Bicycle] || 
-          $game_switches[Yuki::Sw::Env_CanFly] || 
-          $game_switches[Yuki::Sw::Env_CanDig])},
-    13 => proc {$game_switches[Yuki::Sw::Env_CanDig]},
-    14 => proc {$game_switches[Yuki::Sw::Env_CanDig]},
-    19 => NoCondition,
-    22 => proc {st = $game_player.front_system_tag
-                st == TPond or st == TSea},
-    23 => proc {st = $game_player.front_system_tag
-                st == TPond or st == TSea},
-    24 => proc {st = $game_player.front_system_tag
-                st == TPond or st == TSea},
-    33 => proc { !$game_player.surfing? && ($game_switches[Yuki::Sw::EV_AccroBike] || 
-          $game_switches[Yuki::Sw::Env_CanFly] || 
-          $game_switches[Yuki::Sw::Env_CanDig])},
+      6 => NoCondition,
+      7 => NoCondition,
+      11 => proc do
+        !$game_player.surfing? && ($game_switches[Yuki::Sw::EV_Bicycle] ||
+        $game_switches[Yuki::Sw::Env_CanFly] ||
+        $game_switches[Yuki::Sw::Env_CanDig])
+      end,
+      13 => proc { $game_switches[Yuki::Sw::Env_CanDig] },
+      14 => proc { $game_switches[Yuki::Sw::Env_CanDig] },
+      19 => NoCondition,
+      22 => proc { Game_Character::SurfTag.include?($game_player.front_system_tag) },
+      23 => proc { Game_Character::SurfTag.include?($game_player.front_system_tag) },
+      24 => proc { Game_Character::SurfTag.include?($game_player.front_system_tag) },
+      33 => proc do
+        !$game_player.surfing? && ($game_switches[Yuki::Sw::EV_AccroBike] ||
+        $game_switches[Yuki::Sw::Env_CanFly] ||
+        $game_switches[Yuki::Sw::Env_CanDig])
+      end
     }
     CommonEventConditions.default = NoCondition
     # No effect Hash descriptor
-    NoEffect = {:no_effect => true}
+    NoEffect = { no_effect: true }
     # You cannot use this item here Hash descriptor
-    Chen = {:chen => true}
+    Chen = { chen: true }
     # Stage boost method Symbol in PFM::Pokemon
-    Boost = [:change_atk, :change_dfe, :change_spd, :change_ats, :change_dfs, :change_eva, :change_acc]
+    Boost = %i[change_atk change_dfe change_spd change_ats change_dfs change_eva change_acc]
     # Message text id of the various item heals (index => text_id)
     BagStatesHeal = [116, 110, 111, 112, 120, 113, 116, 116, 110]
     # Message text id of the various EV change (index => text_id)
     EVStat = [134, 129, 130, 133, 131, 132]
+
     module_function
+
     # Describe an item with a Hash descriptor
     # @param item_id [Integer] ID of the item in the database
     # @return [Hash] the Hash descriptor defined at the top of the doc page
     def actions(item_id)
-      if(item_id > 0 and item_id < $game_data_item.size)
-        item = $game_data_item[item_id]
-        sym = item.db_symbol
-      else
-        return NoEffect
-      end
-      #> Si on peut l'utiliser dans le contexte
+      # If the item exists
+      return NoEffect unless item_id > 0 && item_id < $game_data_item.size
+      item = $game_data_item[item_id]
+      sym = item.db_symbol
+      # If the item is usable in this context
       if $game_temp.in_battle
         return Chen unless item.battle_usable
       else
         return Chen unless item.map_usable
       end
-      #> Si c'est une Pokéball on ordonne le lancement
-      if(item.ball_data)
-        if($game_temp.in_battle and ::BattleEngine.count_alives == 1)
-          return {:ball_data => item.ball_data}
-        end
+      # If it's a ball
+      if item.ball_data
+        return { ball_data: item.ball_data } if $game_temp.in_battle && ::BattleEngine.count_alives == 1
         return Chen
       end
       hash = {}
       be = ::BattleEngine
-      #> Si c'est un Muscle+ / Baie Lensa
-      if(sym == :dire_hit or sym == :lansat_berry)
+      # If it's a lansat_berry or a dire_hit (Muscle+ / Baie Lensa)
+      if sym == :dire_hit || sym == :lansat_berry
         hash[:open_party] = true
         hash[:on_pokemon_choice] = proc do |pkmn|
           next(true) if pkmn.critical_rate == 0
@@ -89,60 +88,60 @@ module PFM
         hash[:action_to_push] = proc do |pkmn|
           pkmn.critical_rate = 1
         end
-        #> Cendres sacrées
-      elsif(sym == :sacred_ash)
+        return hash
+      # Or if it's the sacred_ash
+      elsif sym == :sacred_ash
         usable = false
         $actors.each do |pkmn|
           usable = true if pkmn.hp == 0 and !pkmn.egg?
         end
         return Chen unless usable
-        hash[:on_use] = proc do 
+        hash[:on_use] = proc do
           $actors.each do |pkmn|
             next unless pkmn and pkmn.hp == 0
             pkmn.cure
-            pkmn.hp=pkmn.max_hp
+            pkmn.hp = pkmn.max_hp
             pkmn.skills_set.each do |j|
               next unless j
-              j.pp=j.ppmax
+              j.pp = j.ppmax
             end
             $scene.display_message(_parse(22, 115, be::PKNICK[0] => pkmn.given_name))
           end
         end
         return hash
-        #> Miel
-      elsif(sym == :honey)
-        unless $env.normal? and !$env.grass? and !$env.building?
-          return Chen
-        end
-        hash[:on_use] = proc do 
-          if($wild_battle.available?)
+      # If it's the honney
+      elsif sym == :honey
+        return Chen unless $env.normal? && !$env.grass? && !$env.building?
+        hash[:on_use] = proc do
+          if $wild_battle.available?
             $scene.return_to_scene(::Scene_Map)
             $game_system.map_interpreter.launch_common_event(1)
           else
-            $scene.display_message(GameData::Text.get(39,7).clone)
+            $scene.display_message(_get(39, 7).clone)
           end
         end
         return hash
       end
-      #> Si c'est un objet de soin
-      if(heal_data = item.heal_data)
-        #> Si ça soigne des HP, les HP prennent la priorité
-        if((heal_data.hp and heal_data.hp > 0) or (heal_data.hp_rate and heal_data.hp_rate > 0))
+
+      # If it's a healing item
+      if (heal_data = item.heal_data)
+        # If it heals hp, healing hp get the priority over other heals
+        if (heal_data.hp && heal_data.hp > 0) || (heal_data.hp_rate && heal_data.hp_rate > 0)
           hash[:open_party] = true
-          #> On vérifie que le Pokémon a perdu des HP
+          # We check the Pokemon lost HP
           hash[:on_pokemon_choice] = proc do |pkmn|
             next(false) if pkmn.egg?
             states = heal_data.states
-            if(states)
-              next(pkmn.hp == 0) if(states.include?(GameData::States::Death)) #> Si ça soigne le K.O.
-              next(states.include?(pkmn.status) or (!pkmn.dead? and pkmn.hp < pkmn.max_hp)) #> Tout autre statut.
+            if states
+              next(pkmn.hp == 0) if(states.include?(GameData::States::Death)) # If it recovers from KO
+              next(states.include?(pkmn.status) or (!pkmn.dead? and pkmn.hp < pkmn.max_hp)) # All other states
             else
-              next(!pkmn.dead? and pkmn.hp < pkmn.max_hp) #> Si le Pokémon n'est pas K.O.
+              next(!pkmn.dead? && pkmn.hp < pkmn.max_hp) # If the Pokemon isn't KO
             end
           end
-          hp = heal_data.hp ? heal_data.hp : heal_data.hp_rate/100.0
-          #> En combat => action_to_push
-          if($game_temp.in_battle)
+          hp = heal_data.hp || heal_data.hp_rate / 100.0
+          # In battle = action to push
+          if $game_temp.in_battle
             # /!\ Incohérence d'une résurection d'un mort sur le banc
             hash[:action_to_push] = proc do |pkmn|
               pkmn.loyalty += heal_data.loyalty if heal_data.loyalty
@@ -191,7 +190,7 @@ module PFM
           end
 
         #> Sinon on espère un soin de statut
-        elsif(states = heal_data.states && !states.empty?)
+        elsif (states = heal_data.states) && !states.empty?
           hash[:open_party] = true
           #> Le Pokémon doit avoir le status
           hash[:on_pokemon_choice] = proc do |pkmn|
@@ -224,7 +223,7 @@ module PFM
           end
 
         #> Sinon boost de stat
-        elsif(boost = heal_data.battle_boost)
+        elsif (boost = heal_data.battle_boost)
           return Chen unless $game_temp.in_battle
           hash[:open_party] = true
           #> Le Pokémon ne doit pas être au taquet (on est gentil)
@@ -240,7 +239,7 @@ module PFM
           end
 
         #> Sinon boost EV de stat
-        elsif(boost = heal_data.boost_stat)
+        elsif (boost = heal_data.boost_stat)
           return Chen if $game_temp.in_battle
           hash[:open_party] = true
           #> Le Pokémon ne doit pas être au taquet (on est gentil)
@@ -256,7 +255,7 @@ module PFM
             pkmn.loyalty += heal_data.loyalty if heal_data.loyalty
           end
         #> Sinon ajout de PP (Toutes les attaques)
-        elsif(pp = heal_data.all_pp)
+        elsif (pp = heal_data.all_pp)
           hash[:open_party] = true
           #> Le Pokémon doit avoir un PP de moins sur une attaque
           hash[:on_pokemon_choice] = proc do |pkmn|
@@ -294,7 +293,7 @@ module PFM
           end
 
         #> Si soin de PP (une attaque)
-        elsif(pp = heal_data.pp)
+        elsif (pp = heal_data.pp)
           hash[:open_party] = true
           #> Le Pokémon doit avoir un PP de moins sur une attaque
           hash[:on_pokemon_choice] = proc do |pkmn|
@@ -334,7 +333,7 @@ module PFM
           end
 
         #> Si Ajout de PP
-        elsif(pp = heal_data.add_pp)
+        elsif (pp = heal_data.add_pp)
           return Chen if $game_temp.in_battle
           hash[:open_party] = true
           #> Le Pokémon doit avoir une attaque pouvant avoir plus de PP
@@ -368,7 +367,7 @@ module PFM
             # berry_check_bonus(item.misc_data, pkmn)
           end
         #> Ajout d'un ou plusieurs niveaux
-        elsif(level = heal_data.level)
+        elsif (level = heal_data.level)
           return Chen if($game_temp.in_battle)
           hash[:open_party] = true
           #> Le pokémon ne doit pas être au niveau max
@@ -405,7 +404,7 @@ module PFM
             be._mp([:end_flee])
           end
         #> Si c'est une baie qui modifie les EV
-        elsif misc_data.berry and item_id >= 169 and item_id <= 174
+        elsif misc_data.berry && item_id >= 169 && item_id <= 174
           hash[:open_pary] = true
           hash[:on_pokemon_choice] = proc do |pkmn|
             next(false) if(pkmn.loyalty >= 255 or pkmn.egg?)
@@ -416,7 +415,7 @@ module PFM
             pkmn.edit_bonus(misc_data.berry[:bonus])
           end
         #> Item permettant d'apprendre une attaque
-        elsif skill_id = misc_data.skill_learn
+        elsif (skill_id = misc_data.skill_learn)
           hash[:open_party] = true
           #> Choix dans l'interface (le système utilisera ça pour l'aptitude
           hash[:on_pokemon_choice] = proc do |pkmn|
@@ -426,7 +425,7 @@ module PFM
           end
           hash[:open_skill_learn] = skill_id
         #> Item permettant d'appeler un évent
-        elsif event_id = misc_data.event_id
+        elsif (event_id = misc_data.event_id)
           hash[:use_before_telling] = CommonEventConditions[event_id] != nil
           hash[:on_use] = proc do
             if condition = CommonEventConditions[event_id] and condition.call
@@ -438,7 +437,7 @@ module PFM
             end
           end
         #> Repousse
-        elsif repel_count = misc_data.repel_count
+        elsif (repel_count = misc_data.repel_count)
           hash[:use_before_telling] = true
           hash[:on_use] = proc do
             if($pokemon_party.get_repel_count > 0)
