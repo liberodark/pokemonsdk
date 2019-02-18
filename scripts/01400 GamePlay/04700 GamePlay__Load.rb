@@ -78,7 +78,7 @@ module GamePlay
       if(@fileexist and @index == 0)
         load_game
       else
-        $pokemon_party = PFM::Pokemon_Party.new
+        $pokemon_party = PFM::Pokemon_Party.new(false, @pokemon_party&.options&.language || DEFAULT_GAME_LANGUAGE)
         $pokemon_party.expand_global_var
         $game_system.se_play($data_system.cursor_se)
         $game_map.update
