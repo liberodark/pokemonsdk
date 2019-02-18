@@ -19,6 +19,12 @@ module Battle
     # @return [Integer, nil] current accuracy of the move
     attr_writer :accuracy
 
+    # @return [Boolean] if the move has been used
+    attr_accessor :used
+
+    # @return [Integer] Number of time the move was used consecutively
+    attr_accessor :consecutive_use_count
+
     # Create a new move
     # @param id [Integer] ID of the move in the database
     # @param pp [Integer] number of pp the move currently has
@@ -27,6 +33,9 @@ module Battle
       @id = id
       @pp = pp
       @ppmax = ppmax
+      @used = false
+      @consecutive_use_count = 0
+      @effectiveness = 1
     end
 
     # Return the name of the skill
@@ -43,7 +52,7 @@ module Battle
     # Return the text of the PP of the skill
     # @return [String]
     def pp_text
-      "#@pp / #@ppmax"
+      "#{@pp} / #{@ppmax}"
     end
 
     # Return the actual base power of the move
@@ -114,7 +123,6 @@ module Battle
     def gravity_affected?
       return $game_data_skill[@id].gravity
     end
-
 
     # Return the stat tage modifier the skill can apply
     # @return [Array<Integer>]
@@ -206,11 +214,17 @@ module Battle
       return $game_data_skill[@id].atk_class
     end
 
+    # Return the symbol of the move in the database
+    # @return [Symbol]
+    def db_symbol
+      return $game_data_skill[@id].db_symbol
+    end
+
     # Change the PP
     # @param value [Integer] the new pp value
     def pp=(value)
       @pp = value.to_i
-      @pp = @ppmax if(@pp > @ppmax)
+      @pp = @ppmax if @pp > @ppmax
       @pp = 0 if @pp < 0
     end
 
@@ -221,20 +235,45 @@ module Battle
     end
 
     # List of symbol describe a one target aim
-    OneTarget = [:any_other_pokemon, :random_foe, :adjacent_pokemon, :adjacent_foe, :user, :user_or_adjacent_ally, :adjacent_ally]
+    OneTarget = %i[any_other_pokemon random_foe adjacent_pokemon adjacent_foe user user_or_adjacent_ally adjacent_ally]
 
     # Does the skill aim only one Pokemon
     # @return [Boolean]
-    def is_one_target?
-      return OneTarget.include?(self.target)
+    def one_target?
+      return OneTarget.include?(target)
     end
 
     # List of symbol that doesn't show any choice of target
-    TargetNoAsk = [:adjacent_all_foe, :all_foe, :adjacent_all_pokemon, :all_pokemon, :user, :all_ally, :random_foe]
+    TargetNoAsk = %i[adjacent_all_foe all_foe adjacent_all_pokemon all_pokemon user all_ally random_foe]
+
     # Does the skill doesn't show a target choice
     # @return [Boolean]
-    def is_no_choice_skill?
-      return TargetNoAsk.include?(self.target)
+    def no_choice_skill?
+      return TargetNoAsk.include?(target)
+    end
+
+    # Was the move a critical hit
+    # @return [Boolean]
+    def critical_hit?
+      @critical
+    end
+
+    # Was the move super effective ?
+    # @return [Boolean]
+    def super_effective?
+      @effectiveness >= 2
+    end
+
+    # Was the move not very effective ?
+    # @return [Boolean]
+    def not_very_effective?
+      @effectiveness > 0 && @effectiveness < 1
+    end
+
+    # Was the move not affective
+    # @return [Boolean]
+    def not_affective?
+      @effectiveness == 0
     end
 
     class << self

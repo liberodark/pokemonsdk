@@ -16,14 +16,28 @@ module PFM
     # @return [Array<Battle::Move>] the moveset of the Pokemon
     attr_reader :moveset
 
+    # @return [Symbol, nil] the last successfull move (during the previous turn)
+    attr_accessor :last_successfull_move
+
+    # @return [Integer] number of turn the Pokemon is in battle
+    attr_accessor :turn_count
+
+    # @return [Battle::Move] last move that hit the pokemon
+    attr_accessor :last_hit_by_move
+
+    # @return [Integer] 3rd type (Mega / Move effect)
+    attr_accessor :type3
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param max_level [Integer] new max level for Online battle
-    def initialize(original, max_level = GameData::MAX_LEVEL)
+    def initialize(original, max_level = Float::INFINITY)
       @original = original
       copy_properties
       copy_moveset
       init_states
+      @level = original.level < max_level ? original.level : max_level
+      @type3 = 0
     end
 
     # Reload the original ability

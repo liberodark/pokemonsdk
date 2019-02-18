@@ -19,7 +19,10 @@ module Battle
       @actions = []
       @bags = []
       @battlers = []
+      @global_states = {}
+      @bank_states = Hash.new({})
       @battle_result = -1
+      load_rng
     end
 
     # Tell if the battle can continue
@@ -38,6 +41,24 @@ module Battle
         return false
       end
       return true
+    end
+
+    # Load the RNG for the battle logic
+    # @param seeds [Hash] seeds for the RNG
+    def load_rng(seeds = Hash.new(Random.new_seed))
+      @move_damage_rng = Random.new(seeds[:move_damage_rng])
+      @move_critical_rng = Random.new(seeds[:move_critical_rng])
+      @move_accuracy_rng = Random.new(seeds[:move_accuracy_rng])
+    end
+
+    # Get the current RNG Seeds
+    # @return [Hash{ Symbol => Integer }]
+    def rng_seeds
+      {
+        move_damage_rng: @move_damage_rng.seed,
+        move_critical_rng: @move_critical_rng.seed,
+        move_accuracy_rng: @move_accuracy_rng.seed
+      }
     end
   end
 end

@@ -6,6 +6,9 @@ module PFM
     # Initialize the states of the Pokemon
     def init_states
       @confuse_count = 0
+      @helping_hand = false
+      @turn_count = 0
+      @focus_energy = false
     end
 
     # Update all the status/effect at the end of a turn
@@ -26,5 +29,21 @@ module PFM
       # Display the message about the end of the confusion
     end
     END_TURN_UPDATE << :update_confuse_count
+
+    # @return [Boolean] Is the Pokemon on the effect of helping hand ?
+    def helping_hand?
+      @helping_hand
+    end
+
+    # Update the helping hand state
+    def update_helping_hand
+      @helping_hand = false
+    end
+    END_TURN_UPDATE << :update_helping_hand
+
+    # @return [Boolean] if the user has focus energy effect
+    def focus_energy?
+      @focus_energy
+    end
   end
 end
