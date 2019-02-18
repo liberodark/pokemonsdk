@@ -27,7 +27,7 @@ module Battle
       damage += 2
       damage = (damage * calc_ch(user)).floor
       damage = (damage * calc_mod2(user, target)).floor
-      damage *= rng.rand(R_RANGE)
+      damage *= rng.rand(calc_r_range)
       damage /= 100
       damage = (damage * calc_stab(user)).floor
       damage = (damage * calc_type_n_multiplier(target, :type1)).floor
@@ -128,6 +128,12 @@ module Battle
       result = GameData::Type.multiplier(type, user_type)
       @effectiveness *= result
       return result
+    end
+
+    # "Calc" the R range value
+    # @return [Range]
+    def calc_r_range
+      R_RANGE
     end
   end
 end
