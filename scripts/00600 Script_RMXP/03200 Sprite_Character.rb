@@ -1,7 +1,9 @@
 # Class that describe a Character Sprite on the Map
 class Sprite_Character < RPG::Sprite
   # Zoom conversion array
-  ZoomDiv = [1, 2, 1, 2/3.0, 1, 1]
+  ZoomDiv = [1, 2, 1, 2 / 3.0, 1, 1]
+  # Zoom of a tile
+  TILE_ZOOM = 0.5
   # Tag that disable shadow
   Shadow_Tag = '§'
   # Name of the shadow file
@@ -68,11 +70,9 @@ class Sprite_Character < RPG::Sprite
 
   # Update every informations about the Sprite_Character
   def update
-    super if @_animation or @_loop_animation
+    super if @_animation || @_loop_animation
     # Check if the graphic info where updated
-    if @character_name != @character.character_name or @tile_id != @character.tile_id
-      update_graphics
-    end
+    update_graphics if @character_name != @character.character_name || @tile_id != @character.tile_id
 
     return unless update_position
 
@@ -96,7 +96,7 @@ class Sprite_Character < RPG::Sprite
       tlsy = tile_id / 8 * 32
       max_size = Graphics::MAX_TEXTURE_SIZE
       src_rect.set((tile_id % 8 + tlsy / max_size * 8) * 32, tlsy % max_size, 32, @height = 32)
-      self.zoom = 0.5 # _x=self.zoom_y=(16*$zoom_factor)/32.0
+      self.zoom = TILE_ZOOM # _x=self.zoom_y=(16*$zoom_factor)/32.0
       self.ox = 16
       self.oy = 32
       @ch = 32
