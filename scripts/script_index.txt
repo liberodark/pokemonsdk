@@ -95,6 +95,7 @@ pokemonsdk/scripts/00700 Ajout_PSDK/01000 Interpreter_Environnement.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/01100 Interpreter_Pokemon.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/01101 Interpreter_Pokemon Internal.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/01200 Interpreter_Shortcut.rb
+pokemonsdk/scripts/00700 Ajout_PSDK/01201 Interpreter_add_item.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/01300 PSDK_Def.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/01400 Window_Choice.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/01500 Window_Choice__But.rb

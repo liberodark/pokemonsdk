@@ -171,44 +171,6 @@ class Interpreter
     Yuki::Particles.add_parallax(*args)
   end
 
-  # Add an item to the bag if possible, will delete the event forever
-  # @param item_id [Integer] id of the item in the database
-  # @param no_delete [Boolean] bypass the deletion of the event
-  def add_item(item_id, no_delete = false)
-    item_id = GameData::Item.get_id(item_id) if item_id.is_a?(Symbol)
-    @message_waiting = true
-    (text = ::PFM::Text).reset_variables
-    if (max = GameData::Bag::MaxItem) > 0
-      if $bag.item_quantity(item_id) >= max
-        str = _parse(41, 7, text::ITEM2[1] => ::GameData::Item.name(item_id),
-          text::TRNAME[0] => $trainer.name)
-        $scene.display_message(str)
-        return @wait_count = 2
-      end
-    end
-    misc_data = ::GameData::Item.misc_data(item_id)
-    if misc_data and misc_data.skill_learn
-      str = _parse(41, 6, text::ITEM2[1] => ::GameData::Item.name(item_id),
-        text::TRNAME[0] => $trainer.name,
-        text::MOVE[2] => ::GameData::Skill.name(misc_data.skill_learn))
-    else
-      str = _parse(41, 4, text::ITEM2[1] => ::GameData::Item.name(item_id),
-        text::TRNAME[0] => $trainer.name)
-    end
-    socket = GameData::Item.socket(item_id)
-    Audio.me_play(ItemGetME[(socket == 3 ? 2 : (socket == 5 ? 1 : 0))], 80)
-    $scene.display_message(str)
-    str = _parse(41, 9, text::ITEM2[1] => ::GameData::Item.name(item_id),
-        text::TRNAME[0] => $trainer.name,
-        "[VAR 0112(0002)]" => GameData::Bag.get_socket_name(socket))
-    @message_waiting = true
-    $scene.display_message(str)
-    $bag.add_item(item_id, 1)
-    @message_waiting = false
-    delete_this_event_forever unless no_delete
-    @wait_count = 2
-  end
-
   # Return the PFM::Text module
   # @return [PFM::Text]
   def pfm_text

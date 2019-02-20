@@ -35,7 +35,7 @@ module PFM
     # Ability var catcher
     ABILITY = ["[VAR ABILITY(0002)]","[VAR ABILITY(0001)]","[VAR ABILITY(0002)]"]
     # Kaphotics decoded var clean regexp
-    KAPHOTICS_Clean = /\[VAR [^ ]+\]/#/\[VAR .[A-Z\,\(\)a-z0-9]+\]/
+    KAPHOTICS_Clean = /\[VAR [^\]]+\]/#/\[VAR .[A-Z\,\(\)a-z0-9]+\]/
     # Nummeric branch regexp catcher
     NUMBRNCH_Reg = /\[VAR NUMBRNCH\(....,....\)\][^ ]+/
     # Gender branch regexp catcher
@@ -45,7 +45,7 @@ module PFM
     # Empty string (remove stuff)
     S_Empty = nil.to_s
     # Non breaking space "!" detector
-    NBSP_B = /[^a-z ]!/
+    NBSP_B = / !/
     # Non breaking space "!" remplacement
     NBSP_R = " !"
     # Automatic replacement of ... with the correct char
