@@ -29,12 +29,15 @@ module Battle
       call_event(:logic_init)
     end
 
+    # Disable the Graphics.transition
+    def main_begin() end
+
     # Update the scene
     def update
       # Update the visuals
       @visual.update
       # Prevent update if a message is showing
-      return unless super
+      return unless super && @visual.locking?
       # Call the next method
       send(@next_update)
     end

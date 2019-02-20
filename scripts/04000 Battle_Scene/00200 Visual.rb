@@ -6,6 +6,9 @@ module Battle
                         "back_cave", "back_mount", "back_sand", "back_pond", "back_sea",
                         "back_under_water", "back_ice","back_snow"]
 
+    # @return [Hash] List of the parallel animation
+    attr_reader :parallel_animations
+
     # Create a new visual instance
     # @param battle_scene [Scene] scene that hold the logic object
     def initialize(battle_scene)
@@ -23,11 +26,13 @@ module Battle
       @animations = []
       # All the parallel animations (manually removed)
       @parallel_animations = {}
+      # Is the visual locking the update of the battle
+      @locking = false
     end
 
     # Update the visuals
     def update
-      @animations.each(&:update)
+      @animations.delete_if(&:update)
       @parallel_animations.each_value(&:update)
     end
 
@@ -36,6 +41,16 @@ module Battle
       @animations.clear
       @parallel_animations.clear
       @viewport.dispose
+    end
+
+    # Tell if the visual are locking the battle update (for transition purpose)
+    def locking?
+      @locking
+    end
+
+    # Unlock the battle scene
+    def unlock
+      @locking = false
     end
 
     private

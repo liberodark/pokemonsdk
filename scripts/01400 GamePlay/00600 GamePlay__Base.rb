@@ -53,7 +53,7 @@ module GamePlay
         #  @message_window.wait_input = true
         # else
         message_viewport_args = [:main, message_z] if message_viewport_args.empty?
-        @message_window = Yuki::Message.new(Viewport.create(*message_viewport_args), self)
+        @message_window = message_class.new(Viewport.create(*message_viewport_args), self)
         # end
         @message_window.z = message_z
       end
@@ -270,6 +270,14 @@ module GamePlay
           sp.set_press(false)
         end
       end
+    end
+
+    private
+
+    # Return the message class used
+    # @return [Class]
+    def message_class
+      Yuki::Message
     end
   end
 end

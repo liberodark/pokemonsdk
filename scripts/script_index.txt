@@ -353,3 +353,4 @@ pokemonsdk/scripts/04150 Battle_Move/00108 Move_mod2_multiplier.rb
 pokemonsdk/scripts/04150 Battle_Move/00109 Move_mod3_multiplier.rb
 pokemonsdk/scripts/04150 Battle_Move/00200 RecoilMove.rb
 pokemonsdk/scripts/04200 Battle_AI/00100 AI.rb
+pokemonsdk/scripts/04300 Battle_Visual_Transition/00100 RBJ_WildTransition.rb
