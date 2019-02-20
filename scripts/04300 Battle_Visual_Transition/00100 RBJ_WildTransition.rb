@@ -1,5 +1,6 @@
 module Battle
   class Visual
+    # Show the Wild Battle transtion
     class RBJ_WildTransition
       # Create a new Wild Transition
       # @param battle_scene [Battle::Scene]
@@ -23,11 +24,26 @@ module Battle
       # Create the necessary sprites for the pre_transition
       def pre_transition
         @update_method = :update_pre_transition
-        @transition_sprite = Sprite.new(@viewport).set_bitmap('rbj/pre_wild', :transition)
-        @transition_sprite.src_rect.set(0, 0, 40, 30)
-        @transition_sprite.zoom = 8
+        @transition_sprite = Sprite.new(@viewport).set_bitmap(pre_transition_sprite_name, :transition)
+        @transition_sprite.src_rect.set(0, 0, *pre_transition_sprite_size)
+        @transition_sprite.zoom = Graphics.width / @transition_sprite.width.to_f
+        @transition_sprite.y = (Graphics.height - @transition_sprite.height * @transition_sprite.zoom_y) / 2
         @transition_sprite.visible = false
         @counter = 0
+      end
+
+      private
+
+      # Return the pre_transtion sprite size
+      # @return [Array]
+      def pre_transition_sprite_size
+        return 40, 30
+      end
+
+      # Return the pre_transtion sprite name
+      # @return [String]
+      def pre_transition_sprite_name
+        'rbj/pre_wild'
       end
 
       # Duration of the flash transition
