@@ -32,6 +32,23 @@ class Interpreter
     @wait_count = 2
   end
 
+  # Pick an item on the ground (and delete the event)
+  # @param item_id [Integer] id of the item in the database
+  # @param count [Integer] number of item
+  # @param no_delete [Boolean] if the event should not be delete forever
+  def pick_item(item_id, count = 1, no_delete = false)
+    add_item(item_id, no_delete, text_id: 4, count: count)
+  end
+
+  # Give an item to the player
+  # @param item_id [Integer] id of the item in the database
+  # @param count [Integer] number of item
+  def give_item(item_id, count = 1)
+    item_id = GameData::Item.get_id(item_id) if item_id.is_a?(Symbol)
+    text_id = GameData::Item.socket(item_id) == 5 ? 1 : 0
+    add_item(item_id, true, text_id: text_id, count: count)
+  end
+
   private
 
   # Show the too bad no space phrase in the add_item command
