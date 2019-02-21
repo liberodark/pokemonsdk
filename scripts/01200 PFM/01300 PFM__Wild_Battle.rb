@@ -5,7 +5,7 @@ module PFM
   # @author Nuri Yuri
   class Wild_Battle
     # The number of zone type that can be stored
-    MAX_ZONE_COUNT = 9
+    MAX_ZONE_COUNT = 10
     # List of ability that force strong Pokemon to battle (Intimidation / Regard vif)
     WEAK_POKEMON_ABILITY = %i[intimidate keen_eye]
     # List of special wild battle that are actually fishing
