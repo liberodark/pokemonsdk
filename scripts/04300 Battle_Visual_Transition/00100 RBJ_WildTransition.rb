@@ -26,8 +26,8 @@ module Battle
         @update_method = :update_pre_transition
         @transition_sprite = Sprite.new(@viewport).set_bitmap(pre_transition_sprite_name, :transition)
         @transition_sprite.src_rect.set(0, 0, *pre_transition_sprite_size)
-        @transition_sprite.zoom = Graphics.width / @transition_sprite.width.to_f
-        @transition_sprite.y = (Graphics.height - @transition_sprite.height * @transition_sprite.zoom_y) / 2
+        @transition_sprite.zoom = @viewport.rect.width / @transition_sprite.width.to_f
+        @transition_sprite.y = (@viewport.rect.height - @transition_sprite.height * @transition_sprite.zoom_y) / 2
         @transition_sprite.visible = false
         @counter = 0
       end
@@ -61,6 +61,7 @@ module Battle
           @viewport.color.set(0, 0, 0, 255)
           dispose_pre_transition
         else
+          @battle_scene&.visual&.unlock
           return true # We're done
         end
         @counter += 1
@@ -73,7 +74,7 @@ module Battle
           col = @viewport.color.red == 0 ? 255 : 0
           @viewport.color.set(col, col, col)
         end
-        @viewport.color.alpha = (Math::sin(2 * Math::PI * @counter / 30).abs2.round(2) * 180).to_i
+        @viewport.color.alpha = (Math.sin(2 * Math::PI * @counter / 30).abs2.round(2) * 180).to_i
       end
 
       # Update the sprite part of the pre transition
