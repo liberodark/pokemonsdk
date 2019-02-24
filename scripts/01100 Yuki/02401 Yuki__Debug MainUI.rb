@@ -4,28 +4,29 @@ module Yuki
     class MainUI
       # @return [Integer] x position of the GUI on the screen
       SCREEN_X = 322
-      # @return [Integer] Number of button required for the MainUI
-      BUTTON_COUNT = 8
 
       # Create a new MainUI for the debug system
       # @param viewport [Viewport] viewport used to display the UI
       def initialize(viewport)
-        @manager = GUI::Manager.new(viewport, self, 1280, 22) # 720 / 16
+        @stack = UI::SpriteStack.new(viewport, SCREEN_X)
+        @viewport = viewport
         create_class_text
-        create_buttons
+        create_systag_ui
+        create_groups_ui
       end
 
       # Update the gui
       def update
         update_class_text
-        @manager.update
+        update_systag_ui
+        update_groups_ui
       end
 
       private
 
       # Create the class text
       def create_class_text
-        @class_text = @manager.add_label(:class_text, 'TEST', x: SCREEN_X, color: 9)
+        @class_text = @stack.add_text(0, 0, 320, 16, 'TEST', color: 9)
         @last_scene = nil
       end
 
@@ -37,19 +38,24 @@ module Yuki
         end
       end
 
-      # Create the action button
-      def create_buttons
-        size_of_button = (1280 - SCREEN_X) / 4
-        x = SCREEN_X
-        y = 1
-        BUTTON_COUNT.times do |index|
-          @manager.add_button(index, "Button #{index}", x: x, y: y, width: size_of_button - 1)
-          x += size_of_button
-          if (index % 4) == 3
-            x = SCREEN_X
-            y += 1
-          end
-        end
+      # Create the systag UI
+      def create_systag_ui
+        @systag_ui = SystemTags.new(@viewport, @stack)
+      end
+
+      # Update the systag ui
+      def update_systag_ui
+        @systag_ui.update
+      end
+
+      # Create the groups UI
+      def create_groups_ui
+        @groups_ui = Groups.new(@viewport, @stack)
+      end
+
+      # Update the group UI
+      def update_groups_ui
+        @groups_ui.update
       end
     end
   end

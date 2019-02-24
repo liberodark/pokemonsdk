@@ -164,6 +164,8 @@ pokemonsdk/scripts/01100 Yuki/02300 Yuki__ChoiceWindow.rb
 pokemonsdk/scripts/01100 Yuki/02301 Yuki__ChoiceWindow__But.rb
 pokemonsdk/scripts/01100 Yuki/02400 Yuki_Debug.rb
 pokemonsdk/scripts/01100 Yuki/02401 Yuki__Debug MainUI.rb
+pokemonsdk/scripts/01100 Yuki/02402 Debug_SystemTags.rb
+pokemonsdk/scripts/01100 Yuki/02403 Debug_Groups.rb
 pokemonsdk/scripts/01200 PFM/00100 PFM__Bag.rb
 pokemonsdk/scripts/01200 PFM/00200 PFM__Daycare.rb
 pokemonsdk/scripts/01200 PFM/00300 PFM__Environnement.rb
