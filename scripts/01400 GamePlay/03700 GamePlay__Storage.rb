@@ -57,16 +57,16 @@ module GamePlay
     def storage_pc
       storage = Array.new(5) { |i| _ext(9000, 77 + i) }
       c = display_message(_ext(9000, 85), 1, *storage)
-      while $game_temp.message_window_showing
+      while $game_temp.message_window_showing && @running
         @message_window.update
         Graphics.update
       end
       case c
       when 0 # Ranger les Boîtes
         call_scene(StorageMove)   
-      when 1 # Déposer des Pokémon
+      when 2 # Déposer des Pokémon
         call_scene(StorageDrop)
-      when 2 # Retirer des Pokémon          
+      when 1 # Retirer des Pokémon          
         call_scene(StorageRemove)    
       when 3 # Réarranger des objets 
         call_scene(StorageItems) 
