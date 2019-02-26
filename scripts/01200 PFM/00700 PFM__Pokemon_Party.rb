@@ -233,9 +233,10 @@ module PFM
                 end
                 i.hp -= 2
               end
-              if i.hp <= 0
-                i.hp = 0
-                return_data << [:dead, i]
+              if i.hp <= 1
+                i.hp = 1
+                i.cure
+                return_data << [:psn_end, i]
               end
             end
             # Loyalty

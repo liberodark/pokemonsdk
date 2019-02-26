@@ -371,9 +371,12 @@ class Scene_Map
       type=i[0]
       if(type==:repel_check)
         display_message(PFM::Text.parse(39,0))
-      elsif(type==:dead)
-        display_message(PFM::Text.parse(19, 243, "[VAR PKNICK(0000)]" => i[1].given_name) + "\n" +
-          PFM::Text.parse(19, 0, "[VAR PKNICK(0000)]" => i[1].given_name))
+      elsif type == :psn_end
+        PFM::Text.set_pknick(i[1], 0)
+        display_message(_parse(22, 110))
+      # elsif(type==:dead)
+      #  display_message(PFM::Text.parse(19, 243, "[VAR PKNICK(0000)]" => i[1].given_name) + "\n" +
+      #    PFM::Text.parse(19, 0, "[VAR PKNICK(0000)]" => i[1].given_name))
       elsif(type==:psn)
         Audio.se_play("Audio/SE/psn")
         $game_screen.start_flash(GameData::Colors::PSN,20)
