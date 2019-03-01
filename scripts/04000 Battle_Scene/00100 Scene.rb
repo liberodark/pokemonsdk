@@ -6,18 +6,20 @@ module Battle
     attr_reader :visual
     # @return [Battle::Logic]
     attr_reader :logic
+    # @return [Battle::Logic::BattleInfo]
+    attr_reader :battle_info
 
     # Create a new Battle Scene
+    # @param battle_info [Battle::Logic::BattleInfo] informations about the battle
     # @note This method create the banks, the AI, the pokemon battlers and the battle logic
     #       It should call the logic_init event
-    # TODO : Input parameter to setup the battle (tell how much IA should be instancied the teams etc...)
-    def initialize
+    def initialize(battle_info)
       # Call the initialize of GamePlay::Base (show message box at z index 10001)
       super(false, 10_001)
-
+      @battle_info = battle_info
       @logic = create_logic
       @visual = create_visual
-      @AIs = Array.new(1) { create_ai }
+      @AIs = Array.new(count_ai_battler) { create_ai }
       # Next method called in update
       @next_update = :pre_transition
       # List of the player actions
@@ -66,6 +68,16 @@ module Battle
     # @return [Battle::AI]
     def create_ai
       return Battle::AI.new(self)
+    end
+
+    # Function counting the number of AI required
+    # @return [Integer]
+    def count_ai_battler
+      count = -1
+      @battle_info.parties.each do |bank|
+        count += bank.size
+      end
+      return count
     end
 
     # Method that call @visual.show_pre_transition and change @next_update to :transition_animation

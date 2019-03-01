@@ -1,0 +1,47 @@
+module Battle
+  class Logic
+    # Class describing the informations about the battle
+    class BattleInfo
+      # @return [Array<Array<String>>] List of the name of the battlers according to the bank & their position
+      attr_accessor :names
+      # @return [Array<Array<String>>] List of the battler (image) name of the battlers according to the bank
+      attr_accessor :battlers
+      # @return [Array<Array<PFM::Bag>>] List of the bags of the battlers according to the bank
+      attr_accessor :bags
+      # @return [Array<Array<Array<PFM::Pokemon>>>] List of the "Party" of the battlers according to the bank & their position
+      attr_accessor :parties
+      # @return [Integer, nil] Maximum level allowed for the battle
+      attr_accessor :max_level
+      # @return [Integer] Number of Pokemon fighting at the same time
+      attr_accessor :vs_type
+
+      # Create a new Battle Info
+      # @param hash [Hash] basic info about the battle
+      def initialize(hash = {})
+        @names = hash[:names] || [[], []]
+        @battlers = hash[:battlers] || [[], []]
+        @bags = hash[:bags] || [[], []]
+        @parties = hash[:parties] || [[], []]
+        @max_level = hash[:max_level] || nil
+        @vs_type = hash[:vs_type] || 1
+      end
+
+      # Add a party to a bank
+      # @param bank [Integer] bank where the party should be defined
+      # @param party [Array<PFM::Pokemon>] Pokemon of the battler
+      # @param name [String, nil] name of the battler (don't set it if Wild Battle)
+      # @param battler [String, nil] name of the battler image (don't set it if Wild Battle)
+      # @param bag [String, nil] Name
+      def add_party(bank, party, name = nil, battler = nil, bag = nil)
+        @parties[bank] ||= []
+        @parties[bank] << party
+        @names[bank] ||= []
+        @names[bank] << name.to_s
+        @battlers[bank] ||= []
+        @battlers[bank] << battler.to_s
+        @bags[bank] ||= []
+        @bags[bank] << (bag || PFM::Bag.new)
+      end
+    end
+  end
+end
