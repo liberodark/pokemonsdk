@@ -145,6 +145,7 @@ pokemonsdk/scripts/01100 Yuki/00700 Yuki__Berries.rb
 pokemonsdk/scripts/01100 Yuki/00800 Yuki__Utils.rb
 pokemonsdk/scripts/01100 Yuki/00900 Yuki__VD.rb
 pokemonsdk/scripts/01100 Yuki/01000 Yuri_Tilemap.rb
+pokemonsdk/scripts/01100 Yuki/01001 Yuri_Tilemap2.rb
 pokemonsdk/scripts/01100 Yuki/01100 Yuki__SystemTagEditor.rb
 pokemonsdk/scripts/01100 Yuki/01200 Yuki__WorldMapEditor.rb
 pokemonsdk/scripts/01100 Yuki/01300 Yuki__AnimationEditor.rb
