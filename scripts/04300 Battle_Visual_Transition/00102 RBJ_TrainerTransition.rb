@@ -108,5 +108,7 @@ module Battle
         @sceenshot.dispose
       end
     end
+
+    TRAINER_TRANSITIONS.default = RBJ_TrainerTransition
   end
 end

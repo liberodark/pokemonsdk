@@ -329,6 +329,7 @@ pokemonsdk/scripts/02300 Scripts_a_haute_dependences/00200 Yuki__SoftReset.rb
 pokemonsdk/scripts/03800 PokemonBattler/00100 PokemonBattler.rb
 pokemonsdk/scripts/03800 PokemonBattler/00200 States_1.rb
 pokemonsdk/scripts/03900 Battle_UI/00100 PokemonSprite.rb
+pokemonsdk/scripts/03900 Battle_UI/00101 TrainerSprite.rb
 pokemonsdk/scripts/04000 Battle_Scene/00100 Scene.rb
 pokemonsdk/scripts/04000 Battle_Scene/00101 Scene Choice.rb
 pokemonsdk/scripts/04000 Battle_Scene/00102 Scene AI trigger.rb
@@ -345,6 +346,7 @@ pokemonsdk/scripts/04100 Battle_Logic/00102 Logic_Actions.rb
 pokemonsdk/scripts/04100 Battle_Logic/00103 Logic_critical_hit.rb
 pokemonsdk/scripts/04100 Battle_Logic/00200 Logic_global_states.rb
 pokemonsdk/scripts/04100 Battle_Logic/00300 Logic_bank_states.rb
+pokemonsdk/scripts/04100 Battle_Logic/00900 Logic_Battle_Info.rb
 pokemonsdk/scripts/04150 Battle_Move/00100 Move.rb
 pokemonsdk/scripts/04150 Battle_Move/00101 Move_Damage_Calc.rb
 pokemonsdk/scripts/04150 Battle_Move/00102 Move_ITEM_MULTIPLIER.rb

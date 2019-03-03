@@ -17,6 +17,8 @@ module Battle
       # Call the initialize of GamePlay::Base (show message box at z index 10001)
       super(false, 10_001)
       @battle_info = battle_info
+      $game_temp.vs_type = battle_info.vs_type
+      $game_temp.trainer_battle = battle_info.trainer_battle?
       @logic = create_logic
       @visual = create_visual
       @AIs = Array.new(count_ai_battler) { create_ai }
@@ -39,7 +41,7 @@ module Battle
       # Update the visuals
       @visual.update
       # Prevent update if a message is showing
-      return unless super && @visual.locking?
+      return unless super && !@visual.locking?
       # Call the next method
       send(@next_update)
     end
@@ -92,6 +94,12 @@ module Battle
       @visual.show_transition
       @next_update = :player_action_choice
       call_event(:battle_begin)
+    end
+
+    # Return the message class used by this scene
+    # @return [Class]
+    def message_class
+      return Scene_Battle::Message
     end
   end
 end

@@ -9,6 +9,9 @@ module Battle
     # @return [Hash] List of the parallel animation
     attr_reader :parallel_animations
 
+    # @return [Viewport] the viewport used to show the sprites
+    attr_reader :viewport
+
     # Create a new visual instance
     # @param battle_scene [Scene] scene that hold the logic object
     def initialize(battle_scene)
@@ -17,7 +20,7 @@ module Battle
       create_background
       @screenshot = Graphics.snap_to_bitmap
       # All the battler by bank
-      @battlers = Hash.new { [] }
+      @battlers = Hash.new { {} }
       # All the bars by bank
       @info_bars = Hash.new { [] }
       # All the team info bar by bank

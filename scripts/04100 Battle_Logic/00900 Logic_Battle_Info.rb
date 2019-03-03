@@ -26,6 +26,12 @@ module Battle
         @vs_type = hash[:vs_type] || 1
       end
 
+      # Tell if the battle is a trainer battle
+      # @return [Boolean]
+      def trainer_battle?
+        !@names[1].empty?
+      end
+
       # Add a party to a bank
       # @param bank [Integer] bank where the party should be defined
       # @param party [Array<PFM::Pokemon>] Pokemon of the battler
@@ -36,9 +42,9 @@ module Battle
         @parties[bank] ||= []
         @parties[bank] << party
         @names[bank] ||= []
-        @names[bank] << name.to_s
+        @names[bank] << name if name
         @battlers[bank] ||= []
-        @battlers[bank] << battler.to_s
+        @battlers[bank] << battler if battler
         @bags[bank] ||= []
         @bags[bank] << (bag || PFM::Bag.new)
       end

@@ -19,6 +19,14 @@ module Battle
       # show the message "send x & y"
     end
 
+    # Function storing a battler sprite in the battler Hash
+    # @param bank [Integer] bank where the battler should be
+    # @param position [Integer, Symbol] Position of the battler
+    # @param sprite [Sprite] battler sprite to set
+    def store_battler_sprite(bank, position, sprite)
+      @battlers[bank][position] = sprite
+    end
+
     private
 
     # Return the current battle transition
