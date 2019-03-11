@@ -148,6 +148,7 @@ module PFM
         return true if move_set[i+1] == skill_id
       end
       return true if $game_data_pokemon[@id][@form].tech_set.include?(skill_id)
+      return true if GameData::Pokemon.master_moves(@id, @form).include?(skill_id)
       return false
     end
     # Get the number of skill of a specific category
