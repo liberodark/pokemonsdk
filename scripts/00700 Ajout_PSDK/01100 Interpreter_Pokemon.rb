@@ -35,6 +35,8 @@ class Interpreter
   # @return [PFM::Pokemon, nil] see #add_pokemon
   # @author Nuri Yuri
   def add_specific_pokemon(hash)
+    pokemon_id = hash[:id].to_i
+    raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists." if pokemon_id < 1 || pokemon_id >= $game_data_pokemon.size
     return add_pokemon(PFM::Pokemon.generate_from_hash(hash))
   end
   alias ajouter_pokemon_param add_specific_pokemon
@@ -65,9 +67,7 @@ class Interpreter
   # @author Nuri Yuri
   def skill_learn(pokemon, id_skill)
     id_skill = GameData::Skill.get_id(id_skill) if id_skill.is_a?(Symbol)
-    if id_skill < 1 || id_skill >= $game_data_skill.size
-      raise "Database Error : Skill ##{id_skill} doesn't exists."
-    end
+    raise "Database Error : Skill ##{id_skill} doesn't exists." if id_skill < 1 || id_skill >= $game_data_skill.size
     # Show the skill learn interface
     GamePlay::Skill_Learn.new(pokemon, id_skill).main
     Graphics.transition
@@ -79,9 +79,7 @@ class Interpreter
   # @param id [Integer, Symbol] the id of the Pokemon in the database
   def cry_pokemon(id)
     id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-    if id < 1 || id >= $game_data_pokemon.size
-      raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists."
-    end
+    raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists." if id < 1 || id >= $game_data_pokemon.size
     Audio.se_play(format('Audio/SE/Cries/%03dCry.wav', id))
   end
 
@@ -125,6 +123,8 @@ class Interpreter
   def add_egg(id)
     id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
     return nil if id == 0
+    pokemon_id = id.is_a?(Hash) ? id[:id].to_i : id
+    raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists." if pokemon_id < 1 || pokemon_id >= $game_data_pokemon.size
     pokemon = id.class == Hash ? PFM::Pokemon.generate_from_hash(id) : PFM::Pokemon.new(id, 1)
     pokemon.egg_init
     return add_pokemon(pokemon)
