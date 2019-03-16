@@ -425,7 +425,7 @@ module Yuki
     # @param tilesetname [String] filename of the tileset
     # @return [String] filename of the tileset
     def get_tileset_name(tilesetname)
-      filename = tilesetname.downcase + '_._psdk' + Graphics::MAX_TEXTURE_SIZE.to_s
+      filename = tilesetname.downcase + '_._ingame'
       if should_tileset_be_converted?(filename, tilesetname)
         Converter.convert_tileset("graphics/tilesets/#{tilesetname}.png")
         filename = tilesetname unless RPG::Cache.tileset_exist?(filename)

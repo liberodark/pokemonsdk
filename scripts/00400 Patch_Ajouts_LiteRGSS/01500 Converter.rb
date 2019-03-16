@@ -8,11 +8,11 @@ module Converter
   # @param filename [String]
   # @param max_size [Integer] Maximum Size of the texture in the Graphic Card
   # @example Converter.convert_tileset("Graphics/tilesets/tileset.png")
-  def convert_tileset(filename, max_size = Graphics::MAX_TEXTURE_SIZE)
+  def convert_tileset(filename, max_size = 4096)
     return unless File.exist?(filename.downcase)
     img = Image.new(filename.downcase)
-    new_filename = filename.downcase.gsub('.png', format('_._psdk%d.png', max_size))
-    log_error("#{filename} is to big for RMXP.") if img.height > 131_072
+    new_filename = filename.downcase.gsub('.png', '_._ingame.png')
+    # log_error("#{filename} is to big for RMXP.") if img.height > 131_072
     if img.height > (max_size / 256 * max_size)
       log_error("#{filename} is too big for your Graphic Card !")
       return
@@ -26,9 +26,7 @@ module Converter
     new_image = Image.new(256 * nb_col, max_size)
     nb_col.times do |i|
       height = max_size
-      if (i * max_size + height) > img.height
-        height = img.height - (i * max_size)
-      end
+      height = img.height - (i * max_size) if (i * max_size + height) > img.height
       new_image.blt(256 * i, 0, img, Rect.new(0, i * max_size, 256, height))
     end
     new_image.to_png_file(new_filename)

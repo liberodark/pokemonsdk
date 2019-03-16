@@ -94,7 +94,7 @@ class Sprite_Character < RPG::Sprite
       self.bitmap = RPG::Cache.tileset($game_map.tileset_name)
       tile_id = @tile_id - 384
       tlsy = tile_id / 8 * 32
-      max_size = Graphics::MAX_TEXTURE_SIZE
+      max_size = 4096 # Graphics::MAX_TEXTURE_SIZE
       src_rect.set((tile_id % 8 + tlsy / max_size * 8) * 32, tlsy % max_size, 32, @height = 32)
       self.zoom = TILE_ZOOM # _x=self.zoom_y=(16*$zoom_factor)/32.0
       self.ox = 16

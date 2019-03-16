@@ -46,9 +46,9 @@ class Spriteset_Map
   # Return the prefered tilemap class
   # @return [Class]
   def tilemap_class
-    return Tilemap::WithLessRubySprites_16 if ARGV.include?('tilemap')
+    return Tilemap::WithLessRubySprites_16 # if ARGV.include?('tilemap')
     # ((::Config::Yuri_Tilemap_Disabled or $zoom_factor == 2) ? Tilemap : Yuri_Tilemap)
-    return Yuri_Tilemap
+    # return Yuri_Tilemap
   end
 
   # Tilemap initialization
@@ -62,18 +62,29 @@ class Spriteset_Map
     # -- @tilemap.tileset = RPG::Cache.tileset($game_map.tileset_name)
     # -- Yuki::ElapsedTime.show(:spriteset_map, 'Loading tileset took')
     7.times do |i|
-      filename = $game_map.autotile_names[i] + '_._tiled'
-      unless RPG::Cache.autotile_exist?(filename)
-        Converter.convert_autotile("graphics/autotiles/#{$game_map.autotile_names[i]}.png") unless $game_map.autotile_names[i].empty?
-      end
-      filename = $game_map.autotile_names[i] unless RPG::Cache.autotile_exist?(filename)
-      @tilemap.autotiles[i] = RPG::Cache.autotile(filename)
+      @tilemap.autotiles[i] = load_autotile($game_map.autotile_names[i])
     end
     Yuki::ElapsedTime.show(:spriteset_map, 'Loading autotiles took')
     @tilemap.map_data = $game_map.data
     @tilemap.priorities = $game_map.priorities
     @tilemap.reset
     Yuki::ElapsedTime.show(:spriteset_map, 'Resetting the tilemap took')
+  end
+
+  # Attempt to load an autotile
+  # @param filename [String] name of the autotile
+  # @return [Bitmap] the bitmap of the autotile
+  def load_autotile(filename)
+    target_filename = filename + '_._tiled'
+    if RPG::Cache.autotile_exist?(target_filename)
+      filename = target_filename
+    else
+      if !filename.empty? && RPG::Cache.autotile_exist?(filename)
+        Converter.convert_autotile("graphics/autotiles/#{filename}.png")
+        filename = target_filename
+      end
+    end
+    return RPG::Cache.autotile(filename)
   end
 
   # Panorama and fog initialization

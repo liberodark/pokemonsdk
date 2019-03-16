@@ -49,7 +49,7 @@ class Tilemap
       autotiles_counter = @autotiles_counter
       autotiles_bmp = @autotiles#@autotiles_bmp
       # -- tileset1 = @tileset
-      max_size = Graphics::MAX_TEXTURE_SIZE
+      max_size = 4096 # Graphics::MAX_TEXTURE_SIZE
       add_z = oy / 2
       maplinker = @map_linker
 

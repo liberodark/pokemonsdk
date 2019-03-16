@@ -16,7 +16,7 @@ module Yuki
     # File where SystemTags are stored
     DataFile = "Data/PSDK/SystemTags.rxdata"
     # Max number of tile per pannel
-    MaxTiles = Graphics::MAX_TEXTURE_SIZE / 32 * 8
+    MaxTiles = 4096 / 32 * 8 # Graphics::MAX_TEXTURE_SIZE / 32 * 8
     module_function
     # Fake the main function of a scene
     def main
