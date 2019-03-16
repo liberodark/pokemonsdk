@@ -6,6 +6,8 @@ module Graphics
   # Opposite of the time of a frame
   DTM = - DT
 
+  @last_frame_count = 0
+
   module_function
 
   # Return the actual InGame graphics framerate
@@ -31,6 +33,7 @@ module Graphics
     @ruby_time = @current_time = @last_time = @last_second_time = Time.new
     reset_gc_time
     reset_ruby_time
+    @last_frame_count = Graphics.frame_count
   end
 
   # Update the GPU time counters
@@ -77,10 +80,15 @@ module Graphics
     @last_time = @current_time
     @current_time = Time.new
     fps_update
+    self.fps_visible = !@ingame_fps_text.visible if !@last_f2 && Keyboard.press?(Keyboard::F2)
+    @last_f2 = Keyboard.press?(Keyboard::F2)
+    @fps_balancing = !@fps_balancing if !@last_f3 && Keyboard.press?(Keyboard::F3)
+    @last_f3 = Keyboard.press?(Keyboard::F3)
   end
 
   # Manage the frame display (skip frames, show multiple frames)
   def update_manage
+    return update_normal unless @fps_balancing
     # Auto skip
     if @frame_to_skip > 0
       @frame_to_skip -= 1
@@ -116,12 +124,26 @@ module Graphics
     @ruby_time = Time.new
   end
 
+  # Update the graphics without the FPS balancing
+  def update_normal
+    dt = Time.new - @ruby_time
+    update_ruby_time(dt)
+    # Estimating frame duration
+    t = Time.new
+    @update.call
+    dt = Time.new - t # Time of the elapsed frame ~0.016
+    update_gc_time(dt) # Update the GPU time counters to show the right FPS
+    update_time
+    @ruby_time = Time.new
+  end
+
   # Update the FPS counter
   def fps_update
     dt = @current_time - @last_second_time
     if dt >= 1
       @last_second_time = @current_time
-      @ingame_fps_text.text = "FPS: #{(60 / dt).round}" if dt * 10 >= 1
+      @ingame_fps_text.text = "FPS: #{((Graphics.frame_count - @last_frame_count) / dt).ceil}" if dt * 10 >= 1
+      @last_frame_count = Graphics.frame_count
       @gpu_fps_text.text = "GPU FPS: #{(@gc_count / @gc_accu).round}" unless @gc_count == 0 || @gc_accu == 0
       @ruby_fps_text.text = "Ruby FPS: #{(@ruby_count / @ruby_accu).round}" unless @ruby_count == 0 || @ruby_accu == 0
       reset_gc_time
@@ -132,11 +154,17 @@ module Graphics
   # Create the FPS texts
   def init_fps_text
     return if @ingame_fps_text && !@ingame_fps_text.disposed?
-    @ingame_fps_text = Text.new(0, nil, 0, 0, w = Graphics.width - 2, 13, "", 2, 1)
-    @gpu_fps_text = Text.new(0, nil, 0, 16, w, 13, "", 2, 1)
-    @ruby_fps_text = Text.new(0, nil, 0, 32, w, 13, "", 2, 1)
+    @ingame_fps_text = Text.new(0, nil, 0, 0, w = Graphics.width - 2, 13, '', 2, 1)
+    @gpu_fps_text = Text.new(0, nil, 0, 16, w, 13, '', 2, 1)
+    @ruby_fps_text = Text.new(0, nil, 0, 32, w, 13, '', 2, 1)
     @ingame_fps_text.z = @gpu_fps_text.z = @ruby_fps_text.z = 200_000
-    @ingame_fps_text.visible = @gpu_fps_text.visible = @ruby_fps_text.visible = PARGV[:"show-fps"]
+    self.fps_visible = PARGV[:"show-fps"]
+  end
+
+  # Define the FPS text visibility
+  # @param value [Boolean]
+  def fps_visible=(value)
+    @ingame_fps_text.visible = @gpu_fps_text.visible = @ruby_fps_text.visible = value
   end
 
   # Dispose the FPS texts

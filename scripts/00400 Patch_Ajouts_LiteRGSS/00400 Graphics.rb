@@ -7,6 +7,7 @@ module Graphics
   @transition = method(:transition)
   @on_start = []
   @last_scene = nil
+  @fps_balancing = true
 
   module_function
 
@@ -48,8 +49,8 @@ module Graphics
   # Stop the Graphic display
   def stop
     dispose_fps_text
-    @mouse.dispose unless !@mouse or @mouse.disposed?
-    @cmd_thread.kill if @cmd_thread
+    @mouse.dispose unless !@mouse || @mouse.disposed?
+    @cmd_thread&.kill
     @stop.call
   end
 

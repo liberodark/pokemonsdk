@@ -1,3 +1,4 @@
+=begin
 module Graphics
   # Proc stored to soft quit
   @on_close = proc {
@@ -12,3 +13,4 @@ module Graphics
     next(!@soft_quitting)
   }
 end
+=end
