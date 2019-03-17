@@ -90,6 +90,7 @@ class Sprite_Character < RPG::Sprite
   def update_graphics
     @tile_id = @character.tile_id
     @character_name = @character.character_name
+    self.visible = !@character_name.empty? || @tile_id > 0
     if @tile_id >= 384
       self.bitmap = RPG::Cache.tileset($game_map.tileset_name)
       tile_id = @tile_id - 384
