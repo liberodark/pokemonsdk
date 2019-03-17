@@ -38,6 +38,7 @@ class Tilemap
         end
       end
     end
+
     # Draw everything
     # @param x [Integer] position x of the first tile shown
     # @param y [Integer] position y of the first tile shown
@@ -47,14 +48,14 @@ class Tilemap
       # -- priorities = @priorities
       map_data = @map_data
       autotiles_counter = @autotiles_counter
-      autotiles_bmp = @autotiles#@autotiles_bmp
+      autotiles_bmp = @autotiles # @autotiles_bmp
       # -- tileset1 = @tileset
       max_size = 4096 # Graphics::MAX_TEXTURE_SIZE
       add_z = oy / 2
       maplinker = @map_linker
 
       @all_sprites.each(&:reset)
-      
+
       @sprites.each_with_index do |layer, pz|
         # Update the coordinates
         layer.each_with_index do |priority_layer, priority|
@@ -83,6 +84,7 @@ class Tilemap
         end
       end
     end
+
     # Only change the ox, oy and z position of each tiles
     # @param x [Integer] position x of the first tile shown
     # @param y [Integer] position y of the first tile shown
@@ -100,6 +102,7 @@ class Tilemap
         end
       end
     end
+
     # Free the tilemap
     def dispose
       return if @disposed
@@ -111,7 +114,9 @@ class Tilemap
     # If the tilemap is disposed
     # @return [Boolean]
     alias disposed? disposed
+
     private
+
     # Generate the sprites of the tilemap with the right settings
     # @param viewport [Viewport] the viewport where tiles are shown
     # @param tile_size [Integer] the dimension of a tile
@@ -135,6 +140,7 @@ class Tilemap
             end
             next(priority_layer)
           else # Otherwise we take the last one
+            next(adjust_sprite_layer(priority, PRIORITY_LAYER_COUNT[priority]))
             next(@sprites.last[priority])
           end
         end
@@ -142,6 +148,19 @@ class Tilemap
       end
     end
   end
+
+  # Adjust the sprites variable when the priority allow only two sprites => c3 c2 c3
+  # @param priority [Integer] the current priority
+  # @param count [Integer] the number of layer allowed for the priority
+  # @return [Sprite_Map]
+  def adjust_sprite_layer(priority, count)
+    return @sprites.last[priority] if count != 2
+    sprite_to_return = @sprites.last[priority]
+    @sprites.last[priority] = @sprites.first[priority]
+    @sprites.first[priority] = sprite_to_return
+    return sprite_to_return
+  end
+
   # PSDK Native resolution version the Tilemap
   class WithLessRubySprites_16 < WithLessRubySprites
     # Generate the sprites of the tilemap with the right settings
