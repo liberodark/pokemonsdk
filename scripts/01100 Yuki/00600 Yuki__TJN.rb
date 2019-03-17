@@ -85,9 +85,9 @@ module Yuki
     # Update the tone of the screen
     # @note if the game switch Yuki::Sw::TJN_Enabled is off, the tone is not updated
     def update_tone
-      return unless $game_switches[Sw::TJN_Enabled]
       t = (@forced == true ? 0 : 20)
       @forced = false
+      return unless $game_switches[Sw::TJN_Enabled]
       unless (day_tone = $game_switches[Sw::Env_CanFly])
         $game_screen.start_tone_change(TONE[@current_tone = 3], t)
       end
@@ -135,7 +135,7 @@ module Yuki
     # Return the current tone
     # @return [Tone]
     def current_tone
-      TONE[@current_tone]
+      $game_switches[Sw::TJN_Enabled] ? TONE[@current_tone] : TONE[3]
     end
   end
 end
