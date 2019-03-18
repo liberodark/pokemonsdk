@@ -15,6 +15,15 @@ module GamePlay
     SORT_ALPHA="Tri Alphabetique"
     SORT_ID="Tri par défauts"
     Socket_Names=[nil.to_s,"Objets","Pokéball","CT/CS","Baies","Objets Rare","Médicaments", "Cristaux Z", "Motism'Aura"]
+    SOCKET_NAMES = [
+      nil.to_s,
+      [:_get, 15, 0], # Items
+      [:_get, 12, 4], # Pokéball
+      [:_get, 15, 2], # CT / CS
+      [:_get, 15, 3], # Berries
+      [:_get, 15, 4], # Key Items
+      [:_get, 15, 1] # Medicine
+    ]
     Bag_IMG=["bag","bag_girl"]
     LineJump="\n"
     Battle_Socket=[1,2,4,6]
@@ -73,8 +82,8 @@ module GamePlay
         @index=0 if @index>@item_ids.size
         return _draw_stuff
       elsif(repeat?(:RIGHT) and @mode!=:berry and !@moving)
-        @socket+=1
-        @socket=1 if @socket>8
+        @socket += 1
+        @socket = 1 if @socket >= SOCKET_NAMES.size
         @item_ids=$bag.get_order(@socket)
         @item_names.clear
         @item_names=_item_name_list_gen
@@ -83,7 +92,7 @@ module GamePlay
         return _draw_stuff
       elsif(repeat?(:LEFT) and @mode!=:berry and !@moving)
         @socket-=1
-        @socket=8 if @socket<1
+        @socket = SOCKET_NAMES.size - 1 if @socket < 1
         @item_ids=$bag.get_order(@socket)
         @item_names.clear
         @item_names=_item_name_list_gen
@@ -170,8 +179,15 @@ module GamePlay
     #===
     #>Dessin de la scène
     #===
+
+    def current_socket_name
+      socket_name = SOCKET_NAMES[@socket]
+      return socket_name if socket_name.is_a?(String)
+      return send(*socket_name)
+    end
+
     def _draw_stuff
-      @socket_text.text = Socket_Names[@socket]
+      @socket_text.text = current_socket_name # Socket_Names[@socket]
       size = @item_ids.size
       #>Calibrage de l'index initial
       if(@index > 4)
