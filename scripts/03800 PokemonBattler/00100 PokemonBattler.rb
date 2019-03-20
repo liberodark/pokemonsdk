@@ -28,6 +28,15 @@ module PFM
     # @return [Integer] 3rd type (Mega / Move effect)
     attr_accessor :type3
 
+    # @return [Integer] the ID of the party that control the Pokemon in the bank
+    attr_accessor :party_id
+
+    # @return [Integer] Bank where the Pokemon is supposed to be
+    attr_accessor :bank
+
+    # @return [Integer] Position of the Pokemon in the bank
+    attr_accessor :position
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param max_level [Integer] new max level for Online battle
@@ -38,6 +47,8 @@ module PFM
       init_states
       @level = original.level < max_level ? original.level : max_level
       @type3 = 0
+      @bank = 0
+      @position = -1
     end
 
     # Reload the original ability

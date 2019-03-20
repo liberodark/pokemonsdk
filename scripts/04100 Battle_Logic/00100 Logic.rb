@@ -11,10 +11,13 @@ module Battle
     attr_reader :battle_result
     # @return [Array<PFM::Bag>] bags of each banks
     attr_reader :bags
+    # @return [Battle::Logic::BattleInfo]
+    attr_reader :battle_info
     # Create a new Logic instance
     # @param battle_scene [Scene] scene that hold the logic object
     def initialize(battle_scene)
       @battle_scene = battle_scene
+      @battle_info = battle_scene.battle_info
       @messages = []
       @actions = []
       @bags = []
@@ -23,6 +26,7 @@ module Battle
       @bank_states = Hash.new({})
       @battle_result = -1
       load_rng
+      load_battlers
     end
 
     # Tell if the battle can continue
