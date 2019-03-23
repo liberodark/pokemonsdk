@@ -1,0 +1,13 @@
+--hide-void-return
+--default-return ''
+--no-private
+--title "Pokemon SDK"
+--exclude "scripts/00300 VSCodeHelper.rb"
+--exclude "scripts/00001 RMXP_DATA.rb"
+--exclude "scripts/00002 state.rb"
+--exclude "scripts/ScriptLoad.rb"
+--exclude "scripts/01400 GamePlay/*"
+--readme README.md
+
+scripts/*.rb
+scripts/**/*.rb

@@ -19,7 +19,6 @@ module Battle
           load_battlers_from_party(party, bank, index)
         end
       end
-      p @battlers
     end
 
     # Load the battlers from a party
