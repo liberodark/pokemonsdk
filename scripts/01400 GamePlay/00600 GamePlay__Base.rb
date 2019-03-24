@@ -34,6 +34,8 @@ module GamePlay
       # Force the message window of the map to be closed
       $scene.window_message_close(true) if $scene.class == Scene_Map
       message_initialize(no_message, message_z, message_viewport_args)
+      # Store the current scene
+      @__last_scene = $scene
       _init_sprites
     end
 
@@ -74,16 +76,14 @@ module GamePlay
     # Dispose the scene graphics.
     # @note @viewport and @message_window will be disposed.
     def dispose
-      unless @inherited_message_window || !@message_window
-        @message_window.dispose(with_viewport: true)
-      end
-      @viewport.dispose if @viewport
+      @message_window&.dispose(with_viewport: true) unless @inherited_message_window
+      @viewport&.dispose
     end
 
     # The GamePlay entry point (Must not be overridden).
     def main
       # Store the last scene and store self in $scene
-      @__last_scene = $scene
+      @__last_scene = $scene if $scene != self
       $scene = self
       # Tell the interface is running
       @running = true
@@ -142,7 +142,7 @@ module GamePlay
       return true
     end
 
-    # Return to an other scene, create the scene if not found or args.size > 0
+    # Return to an other scene, create the scene if args.size > 0
     # @param name [Class] the scene to return to
     # @param args [Array] the parameter of the initialize method of the scene to call
     # @note This scene will stop running
@@ -152,6 +152,7 @@ module GamePlay
         scene = self
         while scene.is_a?(Base)
           scene = scene.__last_scene
+          break if scene == self
           next unless scene.class == name
           $scene = scene
           @running = false
