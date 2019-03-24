@@ -27,6 +27,14 @@ module Battle
       @battlers[bank][position] = sprite
     end
 
+    # Retreive the sprite of a battler
+    # @param bank [Integer] bank where the battler should be
+    # @param position [Integer, Symbol] Position of the battler
+    # @return [Sprite, nil] the Sprite of the battler if it has been stored
+    def battler_sprite(bank, position)
+      @battlers[bank][position]
+    end
+
     private
 
     # Return the current battle transition

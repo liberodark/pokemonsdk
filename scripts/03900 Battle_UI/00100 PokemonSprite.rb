@@ -122,7 +122,7 @@ module Battle_UI
     def load_battler
       if @last_pokemon&.id != @pokemon.id || @last_pokemon&.form != @pokemon.form
         bitmap.dispose if @gif
-        remove_instance_variable(:@gif)
+        remove_instance_variable(:@gif) if instance_variable_defined?(:@gif)
         gif = pokemon.bank == 0 ? pokemon.gif_face : pokemon.gif_back
         if gif
           @gif = gif

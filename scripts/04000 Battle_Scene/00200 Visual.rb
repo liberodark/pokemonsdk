@@ -16,8 +16,6 @@ module Battle
     # @param battle_scene [Scene] scene that hold the logic object
     def initialize(battle_scene)
       @battle_scene = battle_scene
-      create_viewport
-      create_background
       @screenshot = Graphics.snap_to_bitmap
       # All the battler by bank
       @battlers = Hash.new { {} }
@@ -31,6 +29,10 @@ module Battle
       @parallel_animations = {}
       # Is the visual locking the update of the battle
       @locking = false
+      # Create all the sprites
+      create_viewport
+      create_background
+      create_battlers
     end
 
     # Update the visuals
@@ -75,6 +77,24 @@ module Battle
       zone_type = $env.get_zone_type
       zone_type += 1 if zone_type > 0 || $env.grass?
       return BACKGROUND_NAMES[zone_type].to_s
+    end
+
+    # Create the battler sprites (Trainer + Pokemon)
+    def create_battlers
+      infos = @battle_scene.battle_info
+      (logic = @battle_scene.logic).bank_count.times do |bank|
+        # create the trainer sprites
+        infos.battlers[bank].each_with_index do |battler, position|
+          sprite = Battle_UI::TrainerSprite.new(@viewport, battler, bank)
+          store_battler_sprite(bank, -position - 1, sprite)
+        end
+        # Create the Pokemon sprites
+        infos.vs_type.times do |position|
+          sprite = Battle_UI::PokemonSprite.new(@viewport)
+          sprite.pokemon = logic.battler(bank, position)
+          store_battler_sprite(bank, position, sprite)
+        end
+      end
     end
   end
 end

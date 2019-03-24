@@ -29,6 +29,12 @@ module Battle
       load_battlers
     end
 
+    # Return the number of bank in the current battle
+    # @return [Integer]
+    def bank_count
+      return @battlers.size
+    end
+
     # Tell if the battle can continue
     # @return [Boolean]
     def can_battle_continue?
