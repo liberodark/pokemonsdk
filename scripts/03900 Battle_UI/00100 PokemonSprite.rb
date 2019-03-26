@@ -123,13 +123,13 @@ module Battle_UI
       if @last_pokemon&.id != @pokemon.id || @last_pokemon&.form != @pokemon.form
         bitmap.dispose if @gif
         remove_instance_variable(:@gif) if instance_variable_defined?(:@gif)
-        gif = pokemon.bank == 0 ? pokemon.gif_face : pokemon.gif_back
+        gif = pokemon.bank != 0 ? pokemon.gif_face : pokemon.gif_back
         if gif
           @gif = gif
           self.bitmap = Bitmap.new(gif.width, gif.height)
           gif.draw(bitmap)
         else
-          self.bitmap = pokemon.bank == 0 ? pokemon.battler_face : pokemon.battler_back
+          self.bitmap = pokemon.bank != 0 ? pokemon.battler_face : pokemon.battler_back
         end
       end
       @last_pokemon = @pokemon

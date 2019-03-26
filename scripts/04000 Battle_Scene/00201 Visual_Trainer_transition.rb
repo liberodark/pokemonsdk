@@ -2,6 +2,7 @@ module Battle
   class Visual
     # Method that show the pre_transition of the battle
     def show_pre_transition
+      # @type [Battle::Visual::RBJ_WildTransition]
       @transition = battle_transition.new(@battle_scene, @screenshot, @viewport)
       @animations << @transition
       @transition.pre_transition
@@ -17,6 +18,10 @@ module Battle
       # Show the message "send x & y"
       # store the actor ball animation
       # show the message "send x & y"
+      @animations << @transition
+      @transition.transition
+      @locking = true
+      @battle_scene.message_window.visible = true
     end
 
     # Function storing a battler sprite in the battler Hash

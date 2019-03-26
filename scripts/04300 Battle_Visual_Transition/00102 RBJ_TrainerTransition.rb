@@ -10,6 +10,7 @@ module Battle
         @transition_sprite.bitmap = make_pre_transition_bitmap
         @transition_sprite.zoom = 8
         @counter = 0
+        @done = false
       end
 
       private
@@ -38,10 +39,9 @@ module Battle
           dispose_pre_transition
         else
           @battle_scene&.visual&.unlock
-          return true # We're done
+          @done = true # We're done
         end
         @counter += 1
-        return false
       end
 
       # Update the sprite part of the pre transition

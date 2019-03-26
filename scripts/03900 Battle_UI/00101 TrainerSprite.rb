@@ -1,18 +1,19 @@
 module Battle_UI
   # Sprite of a trainer shown in battle
   class TrainerSprite < ShaderedSprite
+    # Define the number of frames inside a back trainer
+    BACK_FRAME_COUNT = 2
+
     # Create a new TrainerSprite
     # @param viewport [Viewport]
     # @param battler [String] name of the battler in graphics/battlers
     # @param bank [Integer] Bank where the Trainer is
-    # @param rect [Array, Rect, nil] src_rect to apply (if it's animated)
-    def initialize(viewport, battler, bank, rect = nil)
+    def initialize(viewport, battler, bank)
       super(viewport)
       @bank = bank
       set_bitmap(battler, :battler)
-      set_position(basic_x_position, basic_y_position)
-      self.z = basic_z_position
-      self.src_rect.set(*rect) if rect
+      self.frame_height = bitmap.height / BACK_FRAME_COUNT if @bank == 0
+      reset_position
     end
 
     # Set the battler on its next frame
@@ -29,7 +30,26 @@ module Battle_UI
       src_rect.y = new_y if new_y >= 0
     end
 
+    # Reset the Trainer Sprite position
+    def reset_position
+      set_position(basic_x_position, basic_y_position)
+      reset_origin
+      self.z = basic_z_position
+    end
+
+    # Set the src_rect of the sprite in order to animate it
+    # @param value [Integer]
+    def frame_height=(value)
+      src_rect.height = value
+      reset_origin
+    end
+
     private
+
+    # Reset the origin x/y
+    def reset_origin
+      set_origin(width / 2, height)
+    end
 
     # Return the basic x position
     # @return [Integer]
@@ -40,7 +60,7 @@ module Battle_UI
     # Return the basic y position
     # @return [Integer]
     def basic_y_position
-      y = @bank == 0 ? 174 : 94
+      y = @bank == 0 ? 192 : 94
       y += offset_y
       return y
     end
@@ -53,7 +73,7 @@ module Battle_UI
 
     # Return the basic z position of the battler
     def basic_z_position
-      return @bank == 0 ? 501 : 1
+      return @bank == 0 ? 1001 : 0
     end
   end
 end

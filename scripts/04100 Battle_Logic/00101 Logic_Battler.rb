@@ -35,17 +35,19 @@ module Battle
         battler.party_id = index
         battlers << battler
       end
+      @battle_info.vs_type.times do |i|
+        battlers[i]&.position = i
+      end
     end
 
     # Sort a party (push the dead mon at the end)
     # @param party [Array<PFM::Pokemon>]
     # @return [Array<PFM::Pokemon>]
     def sort_party(party)
-      party.compact.sort do |a, b|
-        a = a.dead? ? 1 : 0
-        b = b.dead? ? 1 : 0
-        a <=> b
-      end
+      party = party.compact
+      dead_mons = party.select(&:dead?)
+      party.delete_if { |pokemon| dead_mons.include?(pokemon) }
+      party.concat(dead_mons)
     end
   end
 end

@@ -7,6 +7,7 @@ pokemonsdk/scripts/00100 _Patch_temporaire_/00100 Sprite_RGSS_Fix.rb
 pokemonsdk/scripts/00100 _Patch_temporaire_/00200 Plane.rb
 pokemonsdk/scripts/00200 GameData(dep)/00100 GameData__SystemTags.rb
 pokemonsdk/scripts/00300 Patch_Ruby/00100 NilClass.rb
+pokemonsdk/scripts/00300 Patch_Ruby/00101 Boolean.rb
 pokemonsdk/scripts/00300 Patch_Ruby/00200 Object.rb
 pokemonsdk/scripts/00300 Patch_Ruby/00300 String.rb
 pokemonsdk/scripts/00300 Patch_Ruby/00400 Symbol.rb
@@ -360,4 +361,5 @@ pokemonsdk/scripts/04150 Battle_Move/00109 Move_mod3_multiplier.rb
 pokemonsdk/scripts/04150 Battle_Move/00200 RecoilMove.rb
 pokemonsdk/scripts/04200 Battle_AI/00100 AI.rb
 pokemonsdk/scripts/04300 Battle_Visual_Transition/00100 RBJ_WildTransition.rb
+pokemonsdk/scripts/04300 Battle_Visual_Transition/00101 RBJ_WildTransition_transition.rb
 pokemonsdk/scripts/04300 Battle_Visual_Transition/00102 RBJ_TrainerTransition.rb

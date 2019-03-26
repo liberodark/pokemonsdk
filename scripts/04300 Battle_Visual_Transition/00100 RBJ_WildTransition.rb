@@ -8,16 +8,22 @@ module Battle
       # @param viewport [Viewport]
       def initialize(battle_scene, screenshot, viewport)
         @viewport = viewport
+        @done = false
         create_screenshot(screenshot)
         @battle_scene = battle_scene
         Graphics.transition(1)
       end
 
       # Update the transition
-      # @return [Boolean] if the animation is finished
       def update
-        return true unless @update_method
+        return (@done = true) unless @update_method
         send(@update_method)
+      end
+
+      # Is the animation done
+      # @return [Boolean]
+      def done?
+        return @done
       end
 
       # Set the Transition in pre_transition mode
@@ -30,6 +36,7 @@ module Battle
         @transition_sprite.y = (@viewport.rect.height - @transition_sprite.height * @transition_sprite.zoom_y) / 2
         @transition_sprite.visible = false
         @counter = 0
+        @done = false
       end
 
       private
@@ -51,7 +58,6 @@ module Battle
       # End date of the Sprite transition
       SPRITE_TRANSITION_END = FLASH_TRANSITION_DURATION + 30
       # Update the pre_transition
-      # @return [Boolean] if the animation is finished
       def update_pre_transition
         if @counter < FLASH_TRANSITION_DURATION
           update_pre_transition_flash
@@ -62,10 +68,9 @@ module Battle
           dispose_pre_transition
         else
           @battle_scene&.visual&.unlock
-          return true # We're done
+          @done = true
         end
         @counter += 1
-        return false
       end
 
       # Update the flash part of the pre transition

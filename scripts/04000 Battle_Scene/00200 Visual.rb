@@ -37,7 +37,8 @@ module Battle
 
     # Update the visuals
     def update
-      @animations.delete_if(&:update)
+      @animations.each(&:update)
+      @animations.delete_if(&:done?)
       @parallel_animations.each_value(&:update)
     end
 
