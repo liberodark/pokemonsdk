@@ -29,6 +29,7 @@ module Battle
     # @param position [Integer, Symbol] Position of the battler
     # @param sprite [Sprite] battler sprite to set
     def store_battler_sprite(bank, position, sprite)
+      @battlers[bank] ||= {}
       @battlers[bank][position] = sprite
     end
 
@@ -37,7 +38,7 @@ module Battle
     # @param position [Integer, Symbol] Position of the battler
     # @return [Sprite, nil] the Sprite of the battler if it has been stored
     def battler_sprite(bank, position)
-      @battlers[bank][position]
+      @battlers.dig(bank, position)
     end
 
     private

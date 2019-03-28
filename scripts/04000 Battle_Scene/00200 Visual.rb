@@ -18,9 +18,9 @@ module Battle
       @battle_scene = battle_scene
       @screenshot = Graphics.snap_to_bitmap
       # All the battler by bank
-      @battlers = Hash.new { {} }
+      @battlers = {}
       # All the bars by bank
-      @info_bars = Hash.new { [] }
+      @info_bars = {}
       # All the team info bar by bank
       @team_info = {}
       # All the animation currently being processed (automatically removed)

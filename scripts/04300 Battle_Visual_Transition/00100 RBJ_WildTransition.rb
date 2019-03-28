@@ -57,6 +57,8 @@ module Battle
       FLASH_TRANSITION_DURATION = 91
       # End date of the Sprite transition
       SPRITE_TRANSITION_END = FLASH_TRANSITION_DURATION + 30
+      # End of the black transition
+      BLACK_TRANSITION_END = SPRITE_TRANSITION_END + 15
       # Update the pre_transition
       def update_pre_transition
         if @counter < FLASH_TRANSITION_DURATION
@@ -66,7 +68,7 @@ module Battle
         elsif @counter == SPRITE_TRANSITION_END
           @viewport.color.set(0, 0, 0, 255)
           dispose_pre_transition
-        else
+        elsif @counter == BLACK_TRANSITION_END
           @battle_scene&.visual&.unlock
           @done = true
         end
