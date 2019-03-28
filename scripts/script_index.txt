@@ -134,9 +134,6 @@ pokemonsdk/scripts/01000 Util/00300 Random.rb
 pokemonsdk/scripts/01000 Util/00400 Console.rb
 pokemonsdk/scripts/01000 Util/00500 Util_EventConvert.rb
 pokemonsdk/scripts/01000 Util/00600 Util_Warp.rb
-pokemonsdk/scripts/01000 Util/00700 Animation.rb
-pokemonsdk/scripts/01000 Util/00701 Animation_Command.rb
-pokemonsdk/scripts/01000 Util/00702 Animation_MoveTo.rb
 pokemonsdk/scripts/01100 Yuki/00100 Yuki__Sprite.rb
 pokemonsdk/scripts/01100 Yuki/00200 Yuki__BasicAnimator.rb
 pokemonsdk/scripts/01100 Yuki/00300 Yuki__FollowMe.rb
