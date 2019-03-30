@@ -8,6 +8,8 @@ module Battle
     attr_reader :logic
     # @return [Battle::Logic::BattleInfo]
     attr_reader :battle_info
+    # @return [Scene_Battle::Message]
+    attr_reader :message_window
 
     # Create a new Battle Scene
     # @param battle_info [Battle::Logic::BattleInfo] informations about the battle

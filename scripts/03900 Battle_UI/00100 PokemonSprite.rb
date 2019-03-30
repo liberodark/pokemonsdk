@@ -43,6 +43,7 @@ module Battle_UI
 
     # Start the KO animation
     def start_animation_KO
+      cry(true)
       @animation = proc do
         src_rect.height -= 1
         self.opacity -= 15
@@ -51,6 +52,27 @@ module Battle_UI
           src_rect.height = bitmap.height
         end
       end
+    end
+
+    # Start the going out (of ball) Animation
+    def start_animation_going_out
+      self.zoom = 0
+      reset_position
+      @animation = proc do
+        self.zoom = zoom_x + 0.1
+        if zoom_x >= 1
+          cry
+          @animation = nil
+          self.zoom = 1
+        end
+      end
+    end
+
+    # Play the cry of the Pokemon
+    # @param dying [Boolean] if the Pokemon is dying
+    def cry(dying = false)
+      return unless @pokemon
+      Audio.se_play(@pokemon.cry, 100, dying ? 80 : 100)
     end
 
     # Reset the battler position

@@ -24,6 +24,14 @@ module Yuki
       $scene&.update
     end
 
+    # Update the scene safely
+    def safely_update_scene
+      last_state = @drawing_message
+      @drawing_message = true
+      $scene&.update
+      @drawing_message = last_state
+    end
+
     # Show the fade in during the update
     # @return [Boolean] if the update function skips
     def update_fade_in
@@ -100,6 +108,7 @@ module Yuki
             terminate_message
           end
         end
+        safely_update_scene
         return true
       end
       return false

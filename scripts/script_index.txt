@@ -364,3 +364,4 @@ pokemonsdk/scripts/04300 Battle_Visual_Transition/00100 RBJ_WildTransition.rb
 pokemonsdk/scripts/04300 Battle_Visual_Transition/00101 RBJ_WildTransition_transition.rb
 pokemonsdk/scripts/04300 Battle_Visual_Transition/00102 RBJ_TrainerTransition.rb
 pokemonsdk/scripts/04300 Battle_Visual_Transition/00103 RBJ_TrainerTransition_transition.rb
+pokemonsdk/scripts/04400 Battle_Message/00001 BattleStart.rb

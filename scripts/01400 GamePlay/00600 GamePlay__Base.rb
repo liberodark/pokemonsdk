@@ -190,7 +190,7 @@ module GamePlay
       while processing_message
         Graphics.update
         @message_window.update
-        @__display_message_proc.call if @__display_message_proc
+        @__display_message_proc&.call
         if edit_max and @message_window.input_number_window
           edit_max = false
           @message_window.input_number_window.max = $game_temp.num_input_start

@@ -18,6 +18,7 @@ module Battle
     def initialize(battle_scene)
       @battle_scene = battle_scene
       @battle_info = battle_scene.battle_info
+      Message.setup(self)
       @messages = []
       @actions = []
       @bags = []

@@ -40,6 +40,7 @@ module Battle
       @animations.each(&:update)
       @animations.delete_if(&:done?)
       @parallel_animations.each_value(&:update)
+      update_battlers
     end
 
     # Dispose the visuals
@@ -95,6 +96,13 @@ module Battle
           sprite.pokemon = logic.battler(bank, position)
           store_battler_sprite(bank, position, sprite)
         end
+      end
+    end
+
+    # Update the battler sprites
+    def update_battlers
+      @battlers.each_value do |battlers|
+        battlers.each_value(&:update)
       end
     end
   end

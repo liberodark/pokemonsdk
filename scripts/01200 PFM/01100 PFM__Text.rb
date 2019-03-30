@@ -5,11 +5,11 @@ module PFM
     @variables = {}
     @plural = Array.new(7, false)
     # Pokemon Nickname var catcher
-    PKNICK = ['[VAR PKNICK(0000)]', '[VAR PKNICK(0001)]', '[VAR PKNICK(0002)]']
+    PKNICK = Array.new(7) { |i| "[VAR PKNICK(000#{i})]" }
     # Pokemon name var catcher
-    PKNAME = ['[VAR PKNAME(0000)]', '[VAR PKNAME(0001)]', '[VAR PKNAME(0002)]']
+    PKNAME = Array.new(7) { |i| "[VAR PKNAME(000#{i})]" }
     # Trainer name var catcher
-    TRNAME = ['[VAR TRNAME(0000)]', '[VAR TRNAME(0001)]']
+    TRNAME = Array.new(7) { |i| "[VAR TRNAME(000#{i})]" }
     # Item var catcher
     ITEM2 = ['[VAR ITEM2(0000)]', '[VAR ITEM2(0001)]', '[VAR ITEM2(0002)]']
     # Move var catcher

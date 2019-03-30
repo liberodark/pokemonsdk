@@ -13,6 +13,12 @@ module PFM
     # Name of the Male battler
     MALE_NAME = '%03d'
 
+    # Return the ball image of the Pokemon
+    # @return [Bitmap]
+    def ball_image
+      return RPG::Cache.ball(GameData::Item.ball_data(@captured_with).img)
+    end
+
     # Return the icon of the Pokemon
     # @return [Bitmap]
     def icon

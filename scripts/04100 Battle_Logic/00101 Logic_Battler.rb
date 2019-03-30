@@ -9,6 +9,15 @@ module Battle
       return @battlers.dig(bank, position)
     end
 
+    # Return the number of battler (alive) in one bank
+    # @param bank [Integer]
+    # @return [Integer]
+    def battler_count(bank)
+      count = 0
+      $game_temp.vs_type.times { |i| count += 1 if battler(bank, i)&.dead? == false }
+      return count
+    end
+
     private
 
     # Load the battlers from the battle infos
