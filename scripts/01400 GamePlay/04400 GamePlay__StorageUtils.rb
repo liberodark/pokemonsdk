@@ -246,8 +246,8 @@ module GamePlay
         pkmn = $storage.remove(index - 1)
         draw_pokemon_box
       end
-      display_message(_parse(33, 102, PFM::TEXT::PKNICK[0] => pkmn.given_name), 1) # "#{pkmn.given_name} a été relâché.", 1)
-      display_message(_parse(33, 103, PFM::TEXT::PKNICK[0] => pkmn.given_name), 1) # "Bye-bye, #{pkmn.given_name} !", 1)
+      display_message(_parse(33, 102, PFM::Text::PKNICK[0] => pkmn.given_name), 1) # "#{pkmn.given_name} a été relâché.", 1)
+      display_message(_parse(33, 103, PFM::Text::PKNICK[0] => pkmn.given_name), 1) # "Bye-bye, #{pkmn.given_name} !", 1)
       draw_info_pokemon(index)
     end
 
