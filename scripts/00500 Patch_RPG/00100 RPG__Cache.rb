@@ -49,7 +49,7 @@ module RPG
     # @note This function displays a desktop notification if the image is not found. The resultat bitmap is an empty 16x16 bitmap in this case.
     def load_image(cache_tab, filename, path, file_data = nil)
       complete_filename = format(Common_filename, path, filename).downcase
-      return bitmap = Bitmap.new(16, 16) if File.directory?(complete_filename)
+      return bitmap = Bitmap.new(16, 16) if File.directory?(complete_filename) || filename.empty?
       bitmap = cache_tab.fetch(filename, nil)
       if !bitmap || bitmap.disposed?
         bitmap = Bitmap.new(complete_filename) if File.exist?(complete_filename + '.png') || !file_data.exists?(filename.downcase)
