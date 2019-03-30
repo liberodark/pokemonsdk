@@ -1,23 +1,21 @@
-#encoding: utf-8
-
 module PFM
   # The text parser of PSDK (retreive text from GameData::Text)
   # @author Nuri Yuri
   module Text
     @variables = {}
-    @numbrach_state = 0
+    @plural = Array.new(7, false)
     # Pokemon Nickname var catcher
-    PKNICK = ["[VAR PKNICK(0000)]","[VAR PKNICK(0001)]","[VAR PKNICK(0002)]"]
+    PKNICK = ['[VAR PKNICK(0000)]', '[VAR PKNICK(0001)]', '[VAR PKNICK(0002)]']
     # Pokemon name var catcher
-    PKNAME = ["[VAR PKNAME(0000)]","[VAR PKNAME(0001)]","[VAR PKNAME(0002)]"]
+    PKNAME = ['[VAR PKNAME(0000)]', '[VAR PKNAME(0001)]', '[VAR PKNAME(0002)]']
     # Trainer name var catcher
-    TRNAME = ["[VAR TRNAME(0000)]","[VAR TRNAME(0001)]"]
+    TRNAME = ['[VAR TRNAME(0000)]', '[VAR TRNAME(0001)]']
     # Item var catcher
-    ITEM2 = ["[VAR ITEM2(0000)]","[VAR ITEM2(0001)]","[VAR ITEM2(0002)]"]
+    ITEM2 = ['[VAR ITEM2(0000)]', '[VAR ITEM2(0001)]', '[VAR ITEM2(0002)]']
     # Move var catcher
-    MOVE = ["[VAR MOVE(0000)]","[VAR MOVE(0001)]","[VAR MOVE(0002)]"]
+    MOVE = ['[VAR MOVE(0000)]', '[VAR MOVE(0001)]', '[VAR MOVE(0002)]']
     # Number var catcher
-    NUMB = [nil.to_s,"[VAR NUM1(0000)]","[VAR NUM1(0001)]"]
+    NUMB = [nil.to_s, '[VAR NUM1(0000)]', '[VAR NUM1(0001)]']
     # Number 3 var catcher
     NUM3 = ['[VAR NUM3(0000)]', '[VAR NUM3(0001)]', '[VAR NUM3(0002)]']
     # Number 2 var catcher
@@ -27,33 +25,37 @@ module PFM
     # Number x var catcher regexp
     NUMXR = /\[VAR NUM.[^\]]*\]/
     # Berry var catcher
-    BERRY = ["","","","","","","","[VAR BERRY(0007)]"]
+    BERRY = [nil.to_s, nil.to_s, nil.to_s, nil.to_s, nil.to_s, nil.to_s, nil.to_s, '[VAR BERRY(0007)]']
     # Color var catcher
-    COLOR = ["[VAR COLOR(0000)]","[VAR COLOR(0001)]","[VAR COLOR(0002)]","[VAR COLOR(0003)]"]
+    COLOR = ['[VAR COLOR(0000)]', '[VAR COLOR(0001)]', '[VAR COLOR(0002)]', '[VAR COLOR(0003)]']
     # Location var catcher
-    LOCATION = ["[VAR LOCATION(0000)]","[VAR LOCATION(0001)]","[VAR LOCATION(0002)]","[VAR LOCATION(0003)]","[VAR LOCATION(0004)]"]
+    LOCATION = [
+      '[VAR LOCATION(0000)]', '[VAR LOCATION(0001)]', '[VAR LOCATION(0002)]',
+      '[VAR LOCATION(0003)]', '[VAR LOCATION(0004)]'
+    ]
     # Ability var catcher
-    ABILITY = ["[VAR ABILITY(0002)]","[VAR ABILITY(0001)]","[VAR ABILITY(0002)]"]
+    ABILITY = ['[VAR ABILITY(0002)]', '[VAR ABILITY(0001)]', '[VAR ABILITY(0002)]']
     # Kaphotics decoded var clean regexp
-    KAPHOTICS_Clean = /\[VAR [^\]]+\]/#/\[VAR .[A-Z\,\(\)a-z0-9]+\]/
+    KAPHOTICS_Clean = /\[VAR [^\]]+\]/ # /\[VAR .[A-Z\,\(\)a-z0-9]+\]/
     # Nummeric branch regexp catcher
     NUMBRNCH_Reg = /\[VAR NUMBRNCH\(....,....\)\][^ ]+/
     # Gender branch regexp catcher
-    GENDBR_Reg = /\[VAR GENDBR\(....,....\)\].*+/
+    GENDBR_Reg = /\[VAR GENDBR\(....,....\)\][^ ]+/
     # Bell detector
-    BELL_Reg = /\[VAR BE05\(([0-9]+)\)\]/ # A implémenter !
+    BELL_Reg = /\[VAR BE05\(([0-9]+)\)\]/ # TODO!
     # Empty string (remove stuff)
     S_Empty = nil.to_s
-    # Non breaking space "!" detector
+    # Non breaking space '!' detector
     NBSP_B = / !/
-    # Non breaking space "!" remplacement
-    NBSP_R = " !"
+    # Non breaking space '!' remplacement
+    NBSP_R = ' !'
     # Automatic replacement of ... with the correct char
-    Dot = ["...","…"]
+    Dot = ['...', '…']
     # Automatic replacement of the $ with a non breaking space $
-    Money = [" $"," $"]
-    @plural = false
+    Money = [' $', ' $']
+
     module_function
+
     # Define generic constants adder to an object (Get var catcher easier)
     # @param obj [Class] the object that will receive constants
     def define_const(obj)
@@ -71,6 +73,7 @@ module PFM
       obj.const_set(:NUM7R, NUM7R)
       obj.const_set(:NUMXR, NUMXR)
     end
+
     # Parse a text from the text database with specific informations
     # @param file_id [Integer] ID of the text file
     # @param text_id [Integer] ID of the text in the file
@@ -79,6 +82,7 @@ module PFM
     def parse(file_id, text_id, additionnal_var = nil)
       parse_with_pokemon(file_id, text_id, nil, additionnal_var)
     end
+
     # Parse a text from the text database with specific informations and a pokemon
     # @param file_id [Integer] ID of the text file
     # @param text_id [Integer] ID of the text in the file
@@ -86,54 +90,28 @@ module PFM
     # @param additionnal_var [nil, Hash{String => String}] additional remplacements in the text
     # @return [String] the text parsed and ready to be displayed
     def parse_with_pokemon(file_id, text_id, pokemon, additionnal_var = nil)
-      if(pokemon and pokemon.position<0)
-        text_id += ($game_temp.trainer_battle ? 2 : 1)
-      end
-      text = ::GameData::Text.get(file_id, text_id).clone
-      #>Remplacement des variables
-      if(additionnal_var)
-        additionnal_var.each { |expr,value| text.gsub!(expr,value) }
-      end
-      @variables.each { |expr,value| text.gsub!(expr,value) }
+      # Text id adjustment
+      text_id += ($game_temp.trainer_battle ? 2 : 1) if enemy_pokemon?(pokemon)
+      # Get text
+      text = GameData::Text.get(file_id, text_id).clone
+      # Parse all the variables
+      additionnal_var&.each { |expr, value| text.gsub!(expr, value) }
+      @variables.each { |expr, value| text.gsub!(expr, value) }
+      # Set the Pokemon nickname
       text.gsub!(PKNICK[0], pokemon.given_name) if pokemon
-      #>Détection des numbrnch
-      s = nil
-      text.gsub!(NUMBRNCH_Reg) do |s|
-        quant = s.split(',')[1].to_i(16)
-        ret = s.split(']')[1]
-        if(@plural)
-          beg = quant&0xFF
-          len = quant>>8
-          _end = beg + len
-          len2 = ret.size-_end
-        else
-          beg = 0
-          len = quant&0xFF
-          _end = len + (quant>>8)
-          len2 = ret.size-_end
-        end
-        ret[beg,len]+ret[_end,len2]
-      end
-      text.gsub!(GENDBR_Reg) do |s|
-        quant = s.split(',')[1].to_i(16)
-        ret = s.split(']')[1]
-        if($trainer.playing_girl)
-          beg = quant&0xFF
-          len = quant>>8
-          _end = beg + len
-          len2 = ret.size-_end
-        else
-          beg = 0
-          len = quant&0xFF
-          _end = len + (quant>>8)
-          len2 = ret.size-_end
-        end
-        ret[beg,len]+ret[_end,len2]
-      end
-      text.gsub!(KAPHOTICS_Clean,S_Empty)
-      text.gsub!(NBSP_B, NBSP_R)
+      # Parse the branches & clean the text
+      parse_rest_of_thing(text)
       return text
     end
+
+    # Detect if a Pokemon is an enemy Pokemon
+    # @param pokemon [PFM::PokemonBattler]
+    # @return [Boolean]
+    def enemy_pokemon?(pokemon)
+      return (pokemon.is_a?(PFM::PokemonBattler) && pokemon.bank != 0) ||
+             (pokemon.is_a?(PFM::Pokemon) && pokemon.position < 0)
+    end
+
     # Parse a text from the text database with specific informations and two Pokemon
     # @param file_id [Integer] ID of the text file
     # @param text_id [Integer] ID of the text in the file
@@ -142,62 +120,106 @@ module PFM
     # @param additionnal_var [nil, Hash{String => String}] additional remplacements in the text
     # @return [String] the text parsed and ready to be displayed
     def parse_with_pokemons(file_id, text_id, pokemon, pokemon2, additionnal_var = nil)
-      if(pokemon.position>=0)
-        text_id += ($game_temp.trainer_battle ? 2 : 1) if(pokemon2.position < 0)
-      else
+      # Text id adjustment
+      if enemy_pokemon?(pokemon)
         text_id += ($game_temp.trainer_battle ? 5 : 3)
-        text_id += 1 if(pokemon2.position < 0)
+        text_id += 1 if enemy_pokemon?(pokemon2)
+      elsif enemy_pokemon?(pokemon2)
+        text_id += ($game_temp.trainer_battle ? 2 : 1)
       end
+      # Get text
       text = ::GameData::Text.get(file_id, text_id).clone
-      #>Remplacement des variables
-      if(additionnal_var)
-        additionnal_var.each { |expr,value| text.gsub!(expr,value) }
-      end
-      @variables.each { |expr,value| text.gsub!(expr,value) }
+      # Parse all the variables
+      additionnal_var&.each { |expr, value| text.gsub!(expr, value) }
+      @variables.each { |expr, value| text.gsub!(expr, value) }
+      # Set the Pokemon nickname
       text.gsub!(PKNICK[0], pokemon.given_name) if pokemon
       text.gsub!(PKNICK[1], pokemon2.given_name) if pokemon2
-      #>Détection des numbrnch
-      s = nil
-      text.gsub!(NUMBRNCH_Reg) do |s|
-        quant = s.split(',')[1].to_i(16)
-        ret = s.split(']')[1]
-        if(@plural)
-          beg = quant&0xFF
-          len = quant>>8
-          _end = beg + len
-          len2 = ret.size-_end
-        else
-          beg = 0
-          len = quant&0xFF
-          _end = len + (quant>>8)
-          len2 = ret.size-_end
-        end
-        ret[beg,len]+ret[_end,len2]
-      end
-      text.gsub!(KAPHOTICS_Clean,S_Empty)
-      text.gsub!(NBSP_B, NBSP_R)
+      # Parse the branches & clean the text
+      parse_rest_of_thing(text)
       return text
     end
+
+    # Parse the NUMBRNCH (pural)
+    # @param text [String] text that will be parsed
+    # @note Sorry for the code, when I did that I wasn't in the "clear" period ^^'
+    def parse_numbrnch(text)
+      text.gsub!(NUMBRNCH_Reg) do |s|
+        index, quant = s.split(',').collect { |element| element.to_i(16) }
+        ret = s.split(']')[1]
+        if @plural[index]
+          beg = quant & 0xFF
+          len = quant >> 8
+          end_position = beg + len
+        else
+          beg = 0
+          len = quant & 0xFF
+          end_position = len + (quant >> 8)
+        end
+        len2 = ret.size - end_position
+        next(ret[beg, len] + ret[end_position, len2])
+      end
+    end
+
+    # Parse the GENDBR (gender of the player, I didn't see other case)
+    # @param text [String] text that will be parsed
+    # @note Sorry for the code, when I did that I wasn't in the "clear" period ^^'
+    def parse_gendbr(text)
+      text.gsub!(GENDBR_Reg) do |s|
+        quant = s.split(',')[1].to_i(16)
+        ret = s.split(']')[1]
+        if $trainer.playing_girl
+          beg = quant & 0xFF
+          len = quant >> 8
+          end_position = beg + len
+        else
+          beg = 0
+          len = quant & 0xFF
+          end_position = len + (quant >> 8)
+        end
+        len2 = ret.size - end_position
+        next(ret[beg, len] + ret[end_position, len2])
+      end
+    end
+
+    # Perform the rest of the automatic parse (factorization)
+    # @param text [String] text that will be parsed
+    def parse_rest_of_thing(text)
+      parse_numbrnch(text)
+      parse_gendbr(text)
+      text.gsub!(KAPHOTICS_Clean, S_Empty)
+      text.gsub!(NBSP_B, NBSP_R)
+    end
+
     # Define an automatic var catcher with its value
     # @param expr [String, Regexp] the var catcher that is replaced by the value
     # @param value [String] the value that replace the expr
     def set_variable(expr, value)
-      @variables[expr] = value.to_s
-        .force_encoding(Encoding::UTF_8) #£EncodingPatch
+      @variables[expr] = value.to_s.force_encoding(Encoding::UTF_8)
     end
+
     # Remove an automatic var catcher with its value
     # @param expr [String, Regexp] the var catcher that is replaced by a value
     def unset_variable(expr)
       @variables.delete(expr)
     end
+
     # Remove every automatic var catcher defined
     def reset_variables
       @variables.clear
     end
+
     # Set the numbranches to plural state
-    def set_plural(v = true)
-      @plural = v
+    # @param value_or_index [Integer, Boolean] the value for all branch or the index you want to set in pural
+    # @param value [Boolean] the value when you choosed an index
+    def set_plural(value_or_index = true, value = true)
+      if value_or_index.is_a?(Integer)
+        @plural[value_or_index] = value
+      else
+        @plural.collect! { value_or_index }
+      end
     end
+
     # The \\ temporary replacement
     S_000 = ::Window_Message::S_000
     # Parse a string for a message
@@ -208,20 +230,21 @@ module PFM
       # Detect dialog
       text = detect_dialog(text).dup
       # Gsub text
-      text.gsub!(/\\\\/,S_000)
-      text.gsub!(/\\[Vv]\[([0-9]+)\]/) { $game_variables[$1.to_i] }
-      text.gsub!(/\\[Nn]\[([0-9]+)\]/) { $game_actors[$1.to_i] != nil ? $game_actors[$1.to_i].name : nil.to_s }
-      text.gsub!(/\\[Pp]\[([0-9]+)\]/) { $actors[$1.to_i-1]  ? $actors[$1.to_i-1].name : nil.to_s }
-      text.gsub!(/\\[Kk]\[([^\]]+)\]/) { get_key_name($1)}
-      text.gsub!("\\E") { $game_switches[Yuki::Sw::Gender] ? "e" : nil }
-      text.gsub!(/\\[Ff]\[([A-Za-z0-9_çëïéèàêûù§]+)\]/) { $1.split("§")[$game_switches[Yuki::Sw::Gender] ? 0 : 1] }
-      text.gsub!(/\\t\[([0-9]+), *([0-9]+)\]/) { ::PFM::Text.parse($1.to_i, $2.to_i) }
-      #text.gsub!(NBSP_B, NBSP_R)
+      text.gsub!(/\\\\/, S_000)
+      text.gsub!(/\\v\[([0-9]+)\]/i) { $game_variables[$1.to_i] }
+      text.gsub!(/\\n\[([0-9]+)\]/i) { $game_actors[$1.to_i]&.name }
+      text.gsub!(/\\p\[([0-9]+)\]/i) { $actors[$1.to_i - 1]&.name }
+      text.gsub!(/\\k\[([^\]]+)\]/i) { get_key_name($1) }
+      text.gsub!('\E') { $game_switches[Yuki::Sw::Gender] ? 'e' : nil }
+      text.gsub!(/\\f\[([^\]]+)\]/i) { $1.split('§')[$game_switches[Yuki::Sw::Gender] ? 0 : 1] }
+      text.gsub!(/\\t\[([0-9]+), *([0-9]+)\]/i) { ::PFM::Text.parse($1.to_i, $2.to_i) }
+      # text.gsub!(NBSP_B, NBSP_R)
       text.gsub!(*Dot)
       text.gsub!(*Money)
-      @variables.each { |expr,value| text.gsub!(expr,value) }
+      @variables.each { |expr, value| text.gsub!(expr, value) }
       return text
     end
+
     # Detect a dialog text from message and return it instead of text
     # @param text [String]
     def detect_dialog(text)
@@ -230,11 +253,14 @@ module PFM
       end
       return text
     end
+
     # The InGame key name to their key value association
-    GameKeys = { 0 => "KeyError", "a" => :A, "b" => :B, "x" => :X, "y" => :Y, 
-      "l" => :L, "r" => :R, "l2" => :L2, "r2" => :R2, "select" => :SELECT, "start" => :START,
-      "l3" => :L3, "r3" => :R3, "down" => :DOWN, "left" => :LEFT, 
-      "right" => :RIGHT, "up" => :UP, "home" => :HOME}
+    GameKeys = {
+      0 => 'KeyError', 'a' => :A, 'b' => :B, 'x' => :X, 'y' => :Y,
+      'l' => :L, 'r' => :R, 'l2' => :L2, 'r2' => :R2, 'select' => :SELECT, 'start' => :START,
+      'l3' => :L3, 'r3' => :R3, 'down' => :DOWN, 'left' => :LEFT,
+      'right' => :RIGHT, 'up' => :UP, 'home' => :HOME
+    }
     # Return the real keyboard key name
     # @param name [String] the InGame key name
     # @return [String] the keyboard key name
@@ -242,12 +268,10 @@ module PFM
       key_id = GameKeys[name.downcase]
       return GameKeys[0] unless key_id
       key_value = Input::Keys[key_id][0]
-      return "J#{-(key_value + 1) / 32 + 1}K#{(-key_value - 1)% 32}" if(key_value < 0)
+      return "J#{-(key_value + 1) / 32 + 1}K#{(-key_value - 1) % 32}" if key_value < 0
       keybd = Input::Keyboard
       keybd.constants.each do |key_name|
-        if keybd.const_get(key_name) == key_value
-          return key_name.to_s
-        end
+        return key_name.to_s if keybd.const_get(key_name) == key_value
       end
       return GameKeys[0]
     end

@@ -1,6 +1,10 @@
 AllCops:
   TargetRubyVersion: "2.5"
 
+# Sometime I don't want to repeat top level do
+Style/Documentation:
+  Enabled: false
+
 # Tell me to change all the "" by String.new and it'll be fine when we'll use Ruby 3.0
 Style/FrozenStringLiteralComment:
   Enabled: false
