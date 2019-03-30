@@ -35,10 +35,10 @@ module Battle
           spawn_enemy_balls
         elsif @counter2 == 60
           start_enemy_mon_going_out_animation
-        elsif @counter2 > 70
+        elsif @counter2 > 90
           @update_method = :update_transition
         end
-        @enemy_sprites.each { |sprite| sprite.x += SPRITE_MOVE_PIXEL }
+        @enemy_sprites.each { |sprite| sprite.x += SPRITE_MOVE_PIXEL / 2 }
         @counter2 += 1
       end
 

@@ -2,9 +2,9 @@ module Battle
   class Visual
     class RBJ_WildTransition
       # Number of frame to move the sprites
-      SPRITE_MOVE_DURATION = 120
+      SPRITE_MOVE_DURATION = 60
       # Number of pixel the sprites moves each frames
-      SPRITE_MOVE_PIXEL = 3
+      SPRITE_MOVE_PIXEL = 6
       # Set the Transition in Transition mode
       def transition
         Graphics.freeze
@@ -88,7 +88,7 @@ module Battle
         elsif @counter2 > 70
           @update_method = :update_transition
         end
-        @actor_sprites.each { |sprite| sprite.x -= SPRITE_MOVE_PIXEL }
+        @actor_sprites.each { |sprite| sprite.x -= SPRITE_MOVE_PIXEL / 2 }
         @counter2 += 1
       end
 
