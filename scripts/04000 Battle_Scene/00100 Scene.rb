@@ -32,6 +32,8 @@ module Battle
       @battle_result = :draw
       # All the event procs
       @battle_events = {}
+      # Create the message proc
+      create_message_proc
       call_event(:logic_init)
     end
 
@@ -96,6 +98,13 @@ module Battle
       @visual.show_transition
       @next_update = :player_action_choice
       call_event(:battle_begin)
+    end
+
+    # Create the message proc ensuring the scene is still updated
+    def create_message_proc
+      @__display_message_proc = proc do
+        update if $game_temp.message_window_showing && !@message_window.drawing_message
+      end
     end
 
     # Return the message class used by this scene
