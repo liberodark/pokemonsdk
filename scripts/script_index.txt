@@ -247,6 +247,7 @@ pokemonsdk/scripts/01400 GamePlay/02100 GamePlay__Pokemon_Shop.rb
 pokemonsdk/scripts/01400 GamePlay/02200 GamePlay__Shortcut.rb
 pokemonsdk/scripts/01400 GamePlay/02300 GamePlay__Skill_Learn.rb
 pokemonsdk/scripts/01400 GamePlay/02400 GamePlay__Sumary.rb
+pokemonsdk/scripts/01400 GamePlay/02401 Summary.rb
 pokemonsdk/scripts/01400 GamePlay/02500 GamePlay__Sumary__A.rb
 pokemonsdk/scripts/01400 GamePlay/02600 GamePlay__Sumary__B.rb
 pokemonsdk/scripts/01400 GamePlay/02700 GamePlay__Sumary__C.rb
