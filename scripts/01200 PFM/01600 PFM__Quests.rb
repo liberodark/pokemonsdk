@@ -31,13 +31,13 @@ module PFM
       #> Quest info conversion
       @active_quests.each do |quest_id, quest|
         quest_data = GameData::Quest.quest(quest_id)
-        next unless quest_data
+        next unless quest_data && quest
         quest[:order] = quest_data.get_goal_order
         quest[:shown] = quest_data.get_shown_goal
       end
       @finished_quests.each do |quest_id, quest|
         quest_data = GameData::Quest.quest(quest_id)
-        next unless quest_data
+        next unless quest_data && quest
         quest[:order] = quest_data.get_goal_order
         quest[:shown] = Array.new(quest[:order].size, true)
       end
