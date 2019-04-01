@@ -317,5 +317,91 @@ module PFM
         @hp_rate = v / max_hp.to_f
       end
     end
+
+    # Return the EV HP text
+    # @return [String]
+    def ev_hp_text
+      format(ev_text, ev_hp)
+    end
+
+    # Return the EV ATK text
+    # @return [String]
+    def ev_atk_text
+      format(ev_text, ev_atk)
+    end
+
+    # Return the EV DFE text
+    # @return [String]
+    def ev_dfe_text
+      format(ev_text, ev_dfe)
+    end
+
+    # Return the EV SPD text
+    # @return [String]
+    def ev_spd_text
+      format(ev_text, ev_spd)
+    end
+
+    # Return the EV ATS text
+    # @return [String]
+    def ev_ats_text
+      format(ev_text, ev_ats)
+    end
+
+    # Return the EV DFS text
+    # @return [String]
+    def ev_dfs_text
+      format(ev_text, ev_dfs)
+    end
+
+    # Return the IV HP text
+    # @return [String]
+    def iv_hp_text
+      format(iv_text, iv_hp)
+    end
+
+    # Return the IV ATK text
+    # @return [String]
+    def iv_atk_text
+      format(iv_text, iv_atk)
+    end
+
+    # Return the IV DFE text
+    # @return [String]
+    def iv_dfe_text
+      format(iv_text, iv_dfe)
+    end
+
+    # Return the IV SPD text
+    # @return [String]
+    def iv_spd_text
+      format(iv_text, iv_spd)
+    end
+
+    # Return the IV ATS text
+    # @return [String]
+    def iv_ats_text
+      format(iv_text, iv_ats)
+    end
+
+    # Return the IV DFS text
+    # @return [String]
+    def iv_dfs_text
+      format(iv_text, iv_dfs)
+    end
+
+    private
+
+    # Return the text "EV: %d"
+    # @return [String]
+    def ev_text
+      'EV: %d'
+    end
+
+    # Return the text "IV: %d"
+    # @return [String]
+    def iv_text
+      'IV: %d'
+    end
   end
 end
