@@ -16,7 +16,7 @@ module GamePlay
       @pokemon = pokemon
       @mode = mode
       @party = party
-      @index = 1 # < test (mode == :skill ? 2 : 0)
+      @index = 2 # < test (mode == :skill ? 2 : 0)
       @skill_selected = -1
       @skill_index = 0
       @extend_data = extend_data
@@ -44,6 +44,7 @@ module GamePlay
 end
 
 module UI
+  # UI part displaying the "Memo" of the Pokemon in the Summary
   class Summary_Memo < SpriteStack
     # Create a new Memo UI for the summary
     # @param viewport [Viewport]
@@ -137,6 +138,7 @@ module UI
 end
 
 module UI
+  # UI part displaying the Stats of a Pokemon in the Summary
   class Summary_Stat < SpriteStack
     # Show the IV ?
     SHOW_IV = true
@@ -192,16 +194,6 @@ module UI
     # Init the ev/iv texts
     def init_ev_iv
       offset = 102
-      # --- IV part ---
-      if SHOW_IV
-        add_text(114 + offset, 19 + 16, 95, 16, :iv_hp_text, type: SymText)
-        add_text(114 + offset, 19 + 32, 95, 16, :iv_atk_text, type: SymText)
-        add_text(114 + offset, 19 + 48, 95, 16, :iv_dfe_text, type: SymText)
-        add_text(114 + offset, 19 + 64, 95, 16, :iv_spd_text, type: SymText)
-        add_text(114 + offset, 19 + 80, 95, 16, :iv_ats_text, type: SymText)
-        add_text(114 + offset, 19 + 96, 95, 16, :iv_dfs_text, type: SymText)
-        offset += 44
-      end
       # --- EV part ---
       if SHOW_EV
         add_text(114 + offset, 19 + 16, 95, 16, :ev_hp_text, type: SymText)
@@ -210,23 +202,139 @@ module UI
         add_text(114 + offset, 19 + 64, 95, 16, :ev_spd_text, type: SymText)
         add_text(114 + offset, 19 + 80, 95, 16, :ev_ats_text, type: SymText)
         add_text(114 + offset, 19 + 96, 95, 16, :ev_dfs_text, type: SymText)
+        offset += 44
+      end
+      # --- IV part ---
+      if SHOW_IV
+        add_text(114 + offset, 19 + 16, 95, 16, :iv_hp_text, type: SymText)
+        add_text(114 + offset, 19 + 32, 95, 16, :iv_atk_text, type: SymText)
+        add_text(114 + offset, 19 + 48, 95, 16, :iv_dfe_text, type: SymText)
+        add_text(114 + offset, 19 + 64, 95, 16, :iv_spd_text, type: SymText)
+        add_text(114 + offset, 19 + 80, 95, 16, :iv_ats_text, type: SymText)
+        add_text(114 + offset, 19 + 96, 95, 16, :iv_dfs_text, type: SymText)
       end
     end
   end
 end
 
 module UI
+  # UI part displaying the Skills of the Pokemon in the Summary
   class Summary_Skills < SpriteStack
+    # @return [Integer] The index of the move
+    attr_reader :index
     # Create a new Skills UI for the summary
     # @param viewport [Viewport]
     def initialize(viewport)
       super(viewport, 0, 0, default_cache: :interface)
       push(0, 0, 'summary/moves')
+      init_texts
+      init_skills
+      self.index = 0
+    end
+
+    # Set the data of the UI
+    # @param pokemon [PFM::Pokemon]
+    def data=(pokemon)
+      super
+      self.index = 0
+      @skills.each_with_index do |skill_stack, index|
+        skill_stack.data = pokemon.skills_set[index]
+      end
+    end
+
+    # Set the index of the shown move
+    # @param index [Integer]
+    def index=(index)
+      index %= 4
+      @skills[@index || 0].selected = false
+      @index = index.to_i
+      @move_info.data = @data.skills_set[@index] if @data
+      @skills[@index].selected = true
+    end
+
+    # Init the texts of the UI
+    def init_texts
+      texts = _get_file(27)
+      add_text(114, 19, 60, 16, texts[3]) # Type
+      add_text(114, 19 + 16, 60, 16, texts[36]) # Category
+      add_text(114 + 97, 19, 60, 16, texts[37]) # Power
+      add_text(114 + 97, 19 + 16, 60, 16, texts[39]) # Accuracy
+      @move_info = SpriteStack.new(@viewport)
+      @move_info.add_text(114 + 97, 19, 95, 16, :power_text, 2, type: SymText, color: 1)
+      @move_info.add_text(114 + 97, 19 + 16, 95, 16, :accuracy_text, 2, type: SymText, color: 1)
+      @move_info.push(175, 21, nil, type: TypeSprite)
+      @move_info.push(175, 21 + 16, nil, type: CategorySprite)
+      @move_info.add_text(114, 19 + 32, 195, 16, :description, type: SymMultilineText)
+    end
+
+    # Init the skills of the UI
+    def init_skills
+      @skills = Array.new(4) { |index| Summary_Skill.new(@viewport, index) }
+    end
+  end
+
+  # UI part displaying a Skill in the Summary_Skills UI
+  class Summary_Skill < SpriteStack
+    # Array describing the various coordinates of the skills in the UI
+    FINAL_COORDINATES = [
+      [28, 138], [174, 138],
+      [28, 170], [174, 170]
+    ]
+    # Color when it's selected
+    SELECTED_COLOR = Color.new(0, 200, 0, 255)
+    # Color when it's not selected
+    NO_SELECT_COLOR = Color.new(0, 0, 0, 0)
+    # @return [Boolean] if the move is currently selected
+    attr_reader :selected
+    # @return [Boolean] if the move is currently being moved
+    attr_reader :moving
+    # Create a new skill
+    # @param viewport [Viewport]
+    # @param index [Integer] index of the skill in the UI
+    def initialize(viewport, index)
+      super(viewport, *FINAL_COORDINATES[index % FINAL_COORDINATES.size])
+      push(0, 2, nil, type: TypeSprite)
+      add_text(34, 0, 110, 16, :name, type: SymText)
+      add_text(34, 16, 110, 16, _get(27, 32))
+      add_text(34, 16, 100, 16, :pp_text, 1, type: SymText, color: 1)
+      # @type [Sprite::WithColor]
+      @selector = push(-4, 0, 'summary/move_selector', type: Sprite::WithColor)
+      @selected = false
+      self.moving = false
+    end
+
+    # Set the skill data
+    # @param skill [PFM::Skill]
+    def data=(skill)
+      super
+      @selector.visible = @selected
+      self.moving = false
+    end
+
+    # Define if the skill is selected
+    # @param selected [Boolean]
+    def selected=(selected)
+      @selected = selected
+      @selector.visible = selected || @moving
+    end
+
+    # Define if the skill is being moved
+    # @param moving [Boolean]
+    def moving=(moving)
+      @moving = moving
+      if moving
+        @selector.visible = true
+        @selector.set_color(SELECTED_COLOR)
+      else
+        @selector.visible = @selected
+        @selector.set_color(NO_SELECT_COLOR)
+      end
     end
   end
 end
 
 module UI
+  # UI part displaying the generic information of the Pokemon in the Summary
   class Summary_Top < SpriteStack
     NO_GENDER = [29, 32]
     # Create a new Memo UI for the summary
