@@ -415,7 +415,7 @@ module PFM
             pkmn.edit_bonus(misc_data.berry[:bonus])
           end
         #> Item permettant d'apprendre une attaque
-        elsif (skill_id = misc_data.skill_learn)
+        elsif (skill_id = misc_data.skill_learn) && skill_id != 0
           hash[:open_party] = true
           #> Choix dans l'interface (le système utilisera ça pour l'aptitude
           hash[:on_pokemon_choice] = proc do |pkmn|
@@ -425,7 +425,7 @@ module PFM
           end
           hash[:open_skill_learn] = skill_id
         #> Item permettant d'appeler un évent
-        elsif (event_id = misc_data.event_id)
+        elsif (event_id = misc_data.event_id) && event_id != 0
           hash[:use_before_telling] = CommonEventConditions[event_id] != nil
           hash[:on_use] = proc do
             if condition = CommonEventConditions[event_id] and condition.call
@@ -437,7 +437,7 @@ module PFM
             end
           end
         #> Repousse
-        elsif (repel_count = misc_data.repel_count)
+        elsif (repel_count = misc_data.repel_count) && repel_count != 0
           hash[:use_before_telling] = true
           hash[:on_use] = proc do
             if($pokemon_party.get_repel_count > 0)
