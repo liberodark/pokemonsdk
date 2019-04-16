@@ -264,7 +264,7 @@ module UI
       @move_info.add_text(114 + 97, 19 + 16, 95, 16, :accuracy_text, 2, type: SymText, color: 1)
       @move_info.push(175, 21, nil, type: TypeSprite)
       @move_info.push(175, 21 + 16, nil, type: CategorySprite)
-      @move_info.add_text(114, 19 + 32, 195, 16, :description, type: SymMultilineText)
+      @move_info.add_text(114, 19 + 32, 195, 16, :description, type: SymMultilineText, color: 1)
     end
 
     # Init the skills of the UI
@@ -295,7 +295,7 @@ module UI
       super(viewport, *FINAL_COORDINATES[index % FINAL_COORDINATES.size])
       push(0, 2, nil, type: TypeSprite)
       add_text(34, 0, 110, 16, :name, type: SymText)
-      add_text(34, 16, 110, 16, _get(27, 32))
+      add_text(34, 16, 110, 16, _get(27, 32)) # PP
       add_text(34, 16, 100, 16, :pp_text, 1, type: SymText, color: 1)
       # @type [Sprite::WithColor]
       @selector = push(-4, 0, 'summary/move_selector', type: Sprite::WithColor)

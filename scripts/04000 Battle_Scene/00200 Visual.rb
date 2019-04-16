@@ -2,9 +2,8 @@ module Battle
   # Class that manage all the thing that are visually seen on the screen
   class Visual
     # Name of the background according to their processed zone_type
-    BACKGROUND_NAMES = ["back_building", "back_grass", "back_tall_grass", "back_taller_grass",
-                        "back_cave", "back_mount", "back_sand", "back_pond", "back_sea",
-                        "back_under_water", "back_ice","back_snow"]
+    BACKGROUND_NAMES = %w[back_building back_grass back_tall_grass back_taller_grass back_cave
+                          back_mount back_sand back_pond back_sea back_under_water back_ice back_snow]
 
     # @return [Hash] List of the parallel animation
     attr_reader :parallel_animations
