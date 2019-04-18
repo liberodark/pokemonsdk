@@ -219,11 +219,11 @@ module GamePlay
     def sumary_pokemon(index)
       if (index >= 31) # Pokémon de l'équipe
         pkmn = $actors[index - 31]
-        scene = GamePlay::Sumary.new(pkmn, @viewport.z, :view, $actors)
+        scene = GamePlay::Summary.new(pkmn, @viewport.z, :view, $actors)
       else # Pokémon de la boite
         pkmn = $storage.info(index - 1)
         pbox = $storage.get_box($storage.current_box).clone
-        scene = GamePlay::StorageSumary.new(pkmn, @viewport.z, :view, pbox.compact)
+        scene = GamePlay::Summary.new(pkmn, @viewport.z, :view, pbox.compact)
       end
       @viewport.visible = false
       scene.main

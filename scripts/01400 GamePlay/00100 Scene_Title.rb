@@ -140,9 +140,12 @@ class Scene_Title
       #$data_animations    = load_data("Data/Animations.rxdata")
       $data_tilesets      = _clean_name_utf8(load_data("Data/Tilesets.rxdata"))
       $data_common_events = _clean_name_utf8(load_data("Data/CommonEvents.rxdata"))
+      # @type [RPG::System]
       $data_system        = load_data_utf8("Data/System.rxdata")
     end
+    # @type [GameSystem]
     $game_system = Game_System.new
+    # @type [GameTemp]
     $game_temp = Game_Temp.new
   end
 end

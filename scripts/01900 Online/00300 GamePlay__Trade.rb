@@ -252,8 +252,6 @@ module GamePlay
       text.add_text(x, 0, 156, 16 ,pokemon.given_name, 1)
       text.add_text(x, 16, 156, 16,"#{texts[29]}#{pokemon.level}",0)
       text.push(x + 100, 16, nil, type: UI::GenderSprite).data = pokemon
-      #bmp2 = RPG::Cache.interface(Sumary::Gender[pokemon.gender])
-      #bmp.blt(x + 100, 16, bmp2, bmp2.rect)
       text.add_text(x, 32, 60, 16, _get(23,7), 0) #Objet
       text.add_text(x + 60, 32, 94, 16, pokemon.item_name, 0)
       text.add_text(x, 48, 100, 16,texts[18],0)

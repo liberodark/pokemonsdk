@@ -64,6 +64,15 @@ module PFM
       end
       return nil
     end
+
+    # Swap the position of two skills in the skills_set
+    # @param index1 [Integer] Index of the first skill to swap
+    # @param index2 [Integer] Index of the second skill to swap
+    def swap_skills_index(index1, index2)
+      @skills_set[index1], @skills_set[index2] = @skills_set[index2], @skills_set[index1]
+      @skills_set.compact!
+    end
+
     # Replace the skill at a specific index
     # @param i [Integer] index of the skill to replace by a new skill
     # @param id [Integer, Symbol] id of the new skill in the database

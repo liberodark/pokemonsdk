@@ -219,6 +219,10 @@ pokemonsdk/scripts/01300 UI/01700 UI__DexSeenGot.rb
 pokemonsdk/scripts/01300 UI/01800 UI__DexButton.rb
 pokemonsdk/scripts/01300 UI/01900 UI__Button.rb
 pokemonsdk/scripts/01300 UI/02000 UI__TeamButton.rb
+pokemonsdk/scripts/01300 UI/02100 Summary_Memo.rb
+pokemonsdk/scripts/01300 UI/02101 Summary_Stat.rb
+pokemonsdk/scripts/01300 UI/02102 Summary_Skills.rb
+pokemonsdk/scripts/01300 UI/02103 Summary_Top.rb
 pokemonsdk/scripts/01350 GUI/00100 Button.rb
 pokemonsdk/scripts/01350 GUI/00101 CheckBox.rb
 pokemonsdk/scripts/01350 GUI/00102 Input.rb
@@ -246,13 +250,8 @@ pokemonsdk/scripts/01400 GamePlay/02000 GamePlay__Shop.rb
 pokemonsdk/scripts/01400 GamePlay/02100 GamePlay__Pokemon_Shop.rb
 pokemonsdk/scripts/01400 GamePlay/02200 GamePlay__Shortcut.rb
 pokemonsdk/scripts/01400 GamePlay/02300 GamePlay__Skill_Learn.rb
-pokemonsdk/scripts/01400 GamePlay/02400 GamePlay__Sumary.rb
 pokemonsdk/scripts/01400 GamePlay/02401 Summary.rb
-pokemonsdk/scripts/01400 GamePlay/02500 GamePlay__Sumary__A.rb
-pokemonsdk/scripts/01400 GamePlay/02600 GamePlay__Sumary__B.rb
-pokemonsdk/scripts/01400 GamePlay/02700 GamePlay__Sumary__C.rb
-pokemonsdk/scripts/01400 GamePlay/02800 GamePlay__Sumary__D.rb
-pokemonsdk/scripts/01400 GamePlay/02900 GamePlay__Sumary__Skill.rb
+pokemonsdk/scripts/01400 GamePlay/02402 Summary_update.rb
 pokemonsdk/scripts/01400 GamePlay/03000 GamePlay__TCard.rb
 pokemonsdk/scripts/01400 GamePlay/03100 GamePlay__WorldMap.rb
 pokemonsdk/scripts/01400 GamePlay/03200 GamePlay__QuestBookMenu.rb
@@ -264,7 +263,6 @@ pokemonsdk/scripts/01400 GamePlay/03800 GamePlay__StorageDrop.rb
 pokemonsdk/scripts/01400 GamePlay/03900 GamePlay__StorageItems.rb
 pokemonsdk/scripts/01400 GamePlay/04000 GamePlay__StorageMove.rb
 pokemonsdk/scripts/01400 GamePlay/04100 GamePlay__StorageRemove.rb
-pokemonsdk/scripts/01400 GamePlay/04200 GamePlay__StorageSumary.rb
 pokemonsdk/scripts/01400 GamePlay/04300 GamePlay__StorageTrade.rb
 pokemonsdk/scripts/01400 GamePlay/04400 GamePlay__StorageUtils.rb
 pokemonsdk/scripts/01400 GamePlay/04600 GamePlay__Save.rb

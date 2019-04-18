@@ -120,7 +120,7 @@ module GamePlay
     # @param extend_data [Hash, nil] the extended data used to launch the summary
     def launch_summary(mode = :view, extend_data = nil)
       hide_winText
-      call_scene(Sumary, @party[@index], @viewport.z, mode, @party, extend_data)
+      call_scene(Summary, @party[@index], @viewport.z, mode, @party, extend_data)
       Graphics.wait(4) { update_during_process }
     end
 
