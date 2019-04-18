@@ -76,7 +76,7 @@ module GamePlay
     # Dispose the scene graphics.
     # @note @viewport and @message_window will be disposed.
     def dispose
-      @message_window&.dispose(with_viewport: true) unless @inherited_message_window
+      @message_window&.dispose(with_viewport: true) unless @inherited_message_window || @message_window == false
       @viewport&.dispose
     end
 
