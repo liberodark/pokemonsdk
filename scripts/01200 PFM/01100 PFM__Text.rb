@@ -157,7 +157,7 @@ module PFM
           end_position = len + (quant >> 8)
         end
         len2 = ret.size - end_position
-        next(ret[beg, len] + ret[end_position, len2])
+        next(ret[beg, len] + ret[end_position, len2].to_s)
       end
     end
 
@@ -178,7 +178,7 @@ module PFM
           end_position = len + (quant >> 8)
         end
         len2 = ret.size - end_position
-        next(ret[beg, len] + ret[end_position, len2])
+        next(ret[beg, len] + ret[end_position, len2].to_s)
       end
     end
 
