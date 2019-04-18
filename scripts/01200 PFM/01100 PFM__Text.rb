@@ -95,7 +95,7 @@ module PFM
       # Get text
       text = GameData::Text.get(file_id, text_id).clone
       # Parse all the variables
-      additionnal_var&.each { |expr, value| text.gsub!(expr, value) }
+      additionnal_var&.each { |expr, value| text.gsub!(expr, value || '<nil>') }
       @variables.each { |expr, value| text.gsub!(expr, value) }
       # Set the Pokemon nickname
       text.gsub!(PKNICK[0], pokemon.given_name) if pokemon
@@ -130,7 +130,7 @@ module PFM
       # Get text
       text = ::GameData::Text.get(file_id, text_id).clone
       # Parse all the variables
-      additionnal_var&.each { |expr, value| text.gsub!(expr, value) }
+      additionnal_var&.each { |expr, value| text.gsub!(expr, value || '<nil>') }
       @variables.each { |expr, value| text.gsub!(expr, value) }
       # Set the Pokemon nickname
       text.gsub!(PKNICK[0], pokemon.given_name) if pokemon
