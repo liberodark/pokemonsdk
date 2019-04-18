@@ -42,11 +42,11 @@ module Yuki
 
     # Update the choice, if player hit up or down the choice index changes
     def update
-      if(Input.repeat?(:DOWN))
+      if Input.repeat?(:DOWN)
         update_cursor_down
-      elsif(Input.repeat?(:UP))
+      elsif Input.repeat?(:UP)
         update_cursor_up
-      elsif(@my != Mouse.y || Mouse.wheel != 0)
+      elsif @my != Mouse.y || Mouse.wheel != 0
         update_mouse
       end
       super
@@ -96,14 +96,9 @@ module Yuki
         return
       end
       if @choices.size > MaxChoice
-        if @index < DeltaChoice || @index > (@choices.size - DeltaChoice)
-          cursor_rect.y -= 16
-        else
-          self.oy -= 16
-        end
-      else
-        cursor_rect.y -= 16
+        self.oy -= 16 unless @index < DeltaChoice || @index > (@choices.size - DeltaChoice)
       end
+      cursor_rect.y -= 16
       @index -= 1
     end
 
@@ -116,19 +111,15 @@ module Yuki
         return
       end
       if @choices.size > MaxChoice
-        if @index < DeltaChoice || @index > (@choices.size - DeltaChoice)
-          cursor_rect.y += 16
-        else
-          self.oy += 16
-        end
-      else
-        cursor_rect.y += 16
+        self.oy += 16 unless @index < DeltaChoice || @index > (@choices.size - DeltaChoice)
       end
+      cursor_rect.y += 16
     end
 
     # Change the window builder and rebuild the window
-    def window_builder=(v)
-      super(v)
+    # @param builder [Array] The new window builder
+    def window_builder=(builder)
+      super
       build_window
     end
 
