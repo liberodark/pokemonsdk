@@ -37,12 +37,14 @@ module UI
     # Set the index of the shown move
     # @param index [Integer]
     def index=(index)
-      index %= (@data&.skills_set&.size || 4)
+      index = fix_index(index)
       @skills[@index || 0].selected = false
       @index = index.to_i
       @move_info.data = @data.skills_set[@index] if @data
       @skills[@index].selected = true
     end
+
+    private
 
     # Init the texts of the UI
     def init_texts
@@ -62,6 +64,48 @@ module UI
     # Init the skills of the UI
     def init_skills
       @skills = Array.new(4) { |index| Summary_Skill.new(@viewport, index) }
+    end
+
+    # Fix the index value
+    # @param index [Integer] requested index
+    # @return [Integer] fixed index
+    def fix_index(index)
+      max_index = (@data&.skills_set&.size || 1) - 1
+      return 0 if max_index == 0
+      if index < 0
+        return fix_index_minus(index, max_index)
+      elsif index > max_index
+        return fix_index_plus(index, max_index)
+      end
+      return index
+    end
+
+    # Fix the index value when index < 0
+    # @param index [Integer] requested index
+    # @param max_index [Integer] the maximum index
+    # @return [Integer] the new index
+    def fix_index_minus(index, max_index)
+      delta = index - @index.to_i
+      if delta == -1 # LEFT
+        return max_index if @index == 0
+      elsif delta == -2 # UP
+        return max_index >= 3 ? 3 : 1 if @index == 1
+        return max_index >= 2 ? 2 : 0 if @index == 0
+      end
+      return 0
+    end
+
+    # Fix the index value when index > max_index
+    # @param index [Integer] requested index
+    # @param _max_index [Integer] the maximum index
+    # @return [Integer] the new index
+    def fix_index_plus(index, _max_index)
+      delta = index - @index.to_i
+      if delta == 2 # DOWN
+        return 0 if @index == 0 || @index == 2
+        return 1
+      end
+      return 0
     end
   end
 
@@ -89,7 +133,7 @@ module UI
       @selector = push(-8, 0, 'summary/move_selector', type: Sprite::WithColor)
       push(0, 2, nil, type: TypeSprite)
       add_text(34, 0, 110, 16, :name, type: SymText)
-      add_text(34, 16, 110, 16, _get(27, 32)) # PP
+      @pp_text = add_text(34, 16, 110, 16, _get(27, 32)) # PP
       add_text(34, 16, 100, 16, :pp_text, 1, type: SymText, color: 1)
       @selected = false
       self.moving = false
@@ -99,6 +143,7 @@ module UI
     # @param skill [PFM::Skill]
     def data=(skill)
       super
+      return unless (self.visible = skill ? true : false)
       @selector.visible = @selected
       self.moving = false
     end
@@ -106,7 +151,7 @@ module UI
     # Set the visibility of the sprite
     # @param value [Boolean] new visibility
     def visible=(value)
-      super
+      super(value && @data)
       @selector.visible = value && (@selected || @moving)
     end
 
