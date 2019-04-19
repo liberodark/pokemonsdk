@@ -28,7 +28,7 @@ module GamePlay
         return $game_system.se_play($data_system.buzzer_se) if @team_buttons[@index].data.item_holding == 0
         @team_buttons[@move = @index].selected = true
         @intern_mode = :move_item
-        show_winText(_get(23, 22))
+        show_win_text(_get(23, 22))
       when :move_pokemon
         process_switch
       when :move_item
@@ -48,7 +48,7 @@ module GamePlay
       return @choice_object.cancel if @choice_object
       # Returning to normal mode
       if @intern_mode != :normal
-        hide_winText
+        hide_win_text
         hide_item_name
         @team_buttons[@move].selected = false if @move != -1
         @move = -1
@@ -73,7 +73,7 @@ module GamePlay
     def action_X
       return if @mode != :menu
       return $game_system.se_play($data_system.buzzer_se) if @intern_mode != :normal or @party.size <= 1
-      show_winText(_get(23, 19))
+      show_win_text(_get(23, 19))
       @intern_mode = :choose_move_pokemon
     end
 
@@ -81,14 +81,14 @@ module GamePlay
     def action_Y
       return if @mode != :menu
       return $game_system.se_play($data_system.buzzer_se) if @intern_mode != :normal or @party.size <= 1
-      show_winText(_get(23, 20))
+      show_win_text(_get(23, 20))
       @intern_mode = :choose_move_item
       show_item_name
     end
 
     # Update the mouse interaction with the ctrl buttons
     def update_mouse_ctrl
-      update_mouse_ctrl_buttons(@ctrl, Actions, @winText.visible)
+      update_mouse_ctrl_buttons(@ctrl, Actions, @win_text.visible)
     end
 
     # Update the movement of the Cursor
@@ -135,7 +135,7 @@ module GamePlay
       return if @party.size <= 1
       @team_buttons[@move = @index].selected = true
       @intern_mode = :move_pokemon
-      show_winText(_get(23, 21))
+      show_win_text(_get(23, 21))
     end
 
   end

@@ -49,11 +49,11 @@ module GamePlay
           .register_choice(_get(23, 146), on_validate: method(:give_item)) # Give
           .register_choice(_get(23, 147), on_validate: method(:take_item), disable_detect: method(:current_pokemon_has_no_item)) # Take
       end
-      # choices.register_choice(_get(23, 138), on_validate: method(:hide_winText)) # Cancel
-      show_winText(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+      # choices.register_choice(_get(23, 138), on_validate: method(:hide_win_text)) # Cancel
+      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
-      hide_winText if choice == 999
+      hide_win_text if choice == 999
       hide_black_frame
     end
 
@@ -97,11 +97,11 @@ module GamePlay
           elsif type == :choice
             @mode = :choice
             @return_data = @index
-            show_winText(_get(23, 17))
+            show_win_text(_get(23, 17))
             return
           elsif type == :block
             display_message(_parse(22, 108))
-            hide_winText
+            hide_win_text
             return
           end
         else
@@ -110,7 +110,7 @@ module GamePlay
       else
         $game_temp.common_event_id = skill.map_use
       end
-      hide_winText
+      hide_win_text
       @return_data = $game_variables[Yuki::Var::Party_Menu_Sel] = @index
       @running = false
     end
@@ -119,7 +119,7 @@ module GamePlay
     # @param mode [Symbol] mode used to launch the summary
     # @param extend_data [Hash, nil] the extended data used to launch the summary
     def launch_summary(mode = :view, extend_data = nil)
-      hide_winText
+      hide_win_text
       call_scene(Summary, @party[@index], @viewport.z, mode, @party, extend_data)
       Graphics.wait(4) { update_during_process }
     end
@@ -135,15 +135,15 @@ module GamePlay
         call_scene(Bag, :hold)
         Graphics.wait(4) { update_during_process }
       end
-      return hide_winText if item2 == -1
+      return hide_win_text if item2 == -1
       item1 = pokemon.item_holding
       give_item_message(item1, item2, pokemon)
       give_item_update_state(item1, item2, pokemon)
       @team_buttons[@index].refresh
-      return hide_winText unless pokemon.form_calibrate # Form adjustment
+      return hide_win_text unless pokemon.form_calibrate # Form adjustment
       @team_buttons[@index].refresh
       form_change_message(pokemon)
-      hide_winText
+      hide_win_text
     end
 
     # Display the give item message
@@ -169,7 +169,7 @@ module GamePlay
 
     # Action of taking the item from the Pokemon
     def take_item
-      hide_winText
+      hide_win_text
       # @type [PFM::Pokemon]
       pokemon = @party[@index]
       item = pokemon.item_holding
@@ -178,10 +178,10 @@ module GamePlay
       @team_buttons[@index].data = pokemon
       @team_buttons[@index].refresh
       display_message(_parse(23, 78, ::PFM::Text::PKNICK[0] => pokemon.given_name, ::PFM::Text::ITEM2[1] => ::GameData::Item.name(item)))
-      return hide_winText unless pokemon.form_calibrate # Form ajustment
+      return hide_win_text unless pokemon.form_calibrate # Form ajustment
       @team_buttons[@index].refresh
       form_change_message(pokemon)
-      hide_winText
+      hide_win_text
     end
 
     # Form change message when item is taken or given
@@ -207,7 +207,7 @@ module GamePlay
       choices
         .register_choice(_get(20, 26), on_validate: method(:on_send_pokemon)) # Send
         .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-      show_winText(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
@@ -238,12 +238,12 @@ module GamePlay
       choices
         .register_choice(_get(23, 209), on_validate: method(:on_skill_choice)) # Select
         .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-        .register_choice(_get(23, 1), on_validate: method(:hide_winText)) # Cancel
-      show_winText(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+        .register_choice(_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
+      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
-      show_winText(_get(23, 17)) if choice != 0
+      show_win_text(_get(23, 17)) if choice != 0
     end
 
     # Event that triggers when the player choose on which pokemon to apply the move
@@ -266,12 +266,12 @@ module GamePlay
       choices
         .register_choice(_get(23, 209), on_validate: method(:on_item_use_choice)) # Select
         .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-        .register_choice(_get(23, 1), on_validate: method(:hide_winText)) # Cancel
-      show_winText(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+        .register_choice(_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
+      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
-      show_winText(_get(23, 24)) if choice != 0
+      show_win_text(_get(23, 24)) if choice != 0
     end
 
     # Event that triggers when the player choose on which pokemon to use the item
@@ -312,12 +312,12 @@ module GamePlay
       choices
         .register_choice(_get(23, 146), on_validate: method(:on_item_give_choice)) # Select
         .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-        .register_choice(_get(23, 1), on_validate: method(:hide_winText)) # Cancel
-      show_winText(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+        .register_choice(_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
+      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
-      show_winText(_get(23, 23)) if choice != 0
+      show_win_text(_get(23, 23)) if choice != 0
     end
 
     # Event that triggers when the player choose on which pokemon to give the item
@@ -335,12 +335,12 @@ module GamePlay
       choices
         .register_choice(_get(23, 209), on_validate: method(:on_map_choice)) # Select
         .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-        .register_choice(_get(23, 1), on_validate: method(:hide_winText)) # Cancel
-      show_winText(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+        .register_choice(_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
+      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
-      show_winText(_get(23, 17)) if choice != 0
+      show_win_text(_get(23, 17)) if choice != 0
     end
 
     # Event that triggers when the player has choosen a Pokemon
@@ -357,7 +357,7 @@ module GamePlay
       @party[@move] = @team_buttons[@move].data = @team_buttons[@index].data
       @party[@index] = @team_buttons[@index].data = tmp
       @move = -1
-      hide_winText
+      hide_win_text
       @intern_mode = :normal
     end
 
@@ -382,7 +382,7 @@ module GamePlay
       @team_buttons[@index].refresh
       @team_buttons[@move].selected = false
       @move = -1
-      hide_winText
+      hide_win_text
       hide_item_name
       @intern_mode = :normal
     end

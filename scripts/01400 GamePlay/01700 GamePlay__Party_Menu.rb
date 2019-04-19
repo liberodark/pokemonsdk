@@ -110,11 +110,11 @@ module GamePlay
     def create_win_text
       # Scene Text window (info)
       # @type [UI::SpriteStack]
-      @winText = UI::SpriteStack.new(@viewport)
-      @winText.push(0, 217, 'team/Win_Txt')
+      @win_text = UI::SpriteStack.new(@viewport)
+      @win_text.push(0, 217, 'team/Win_Txt')
       # Real text info
       # @type [LiteRGSS::Text]
-      @text_info = @winText.add_text(2, 220, 238, 15, nil.to_s, color: 9)
+      @text_info = @win_text.add_text(2, 220, 238, 15, nil.to_s, color: 9)
     end
 
     # Initialize the win_text according to the mode
@@ -130,7 +130,7 @@ module GamePlay
           return @text_info.text = _get(23, 24)
         end
       end
-      @winText.visible = false
+      @win_text.visible = false
     end
 
     # Function that update the team button when extend_data is correct
@@ -186,16 +186,16 @@ module GamePlay
       update_background_animation
     end
 
-    # Show the winText
+    # Show the win_text
     # @param str [String] String to put in the Win Text
-    def show_winText(str)
+    def show_win_text(str)
       @text_info.text = str
-      @winText.visible = true
+      @win_text.visible = true
     end
 
-    # Hide the winText
-    def hide_winText
-      @winText.visible = false
+    # Hide the win_text
+    def hide_win_text
+      @win_text.visible = false
     end
 
     # Show the item name
