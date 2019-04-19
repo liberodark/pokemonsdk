@@ -38,12 +38,15 @@ module Graphics
     # Internal update management
     update_manage
     unless @no_mouse
-      Mouse.moved = (@mouse.x != Mouse.x or @mouse.y != Mouse.y)
+      Mouse.moved = (@mouse.x != Mouse.x || @mouse.y != Mouse.y)
       @mouse.x = Mouse.x
       @mouse.y = Mouse.y
     end
     FMOD::System.update
     update_cmd_eval if @__cmd_to_eval
+  rescue LiteRGSS::Error
+    puts 'Graphics stopped but did not raised the `LiteRGSS::Graphics::ClosedWindowError` exception'
+    raise LiteRGSS::Graphics::ClosedWindowError, 'Temporary fix'
   end
 
   # Stop the Graphic display
