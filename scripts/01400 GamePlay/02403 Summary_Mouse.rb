@@ -32,9 +32,9 @@ module GamePlay
     # @param index [Integer] index of the button in the stack
     def update_mouse_in_skill_button(skill, index)
       return unless skill.visible && skill.simple_mouse_in?
-      @uis[2].index = index if @selecting_move && Mouse.moved
+      @uis[2].index = index if (@selecting_move || @mode == :skill) && Mouse.moved
       if Mouse.trigger?(:LEFT)
-        if @selecting_move
+        if @selecting_move || @mode == :skill
           mouse_a
         elsif @mode != :skill
           update_mouse_switch_skill(skill, index)
