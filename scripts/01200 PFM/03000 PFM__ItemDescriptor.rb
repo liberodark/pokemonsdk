@@ -16,6 +16,7 @@ module PFM
   #     action_to_push: opt Proc # The proc to call to push the specific action when the item is used in battle
   #     stone_evolve: opt Boolean # If a Pokemon evolve by stone
   #     use_before_telling: opt Boolean # If :on_use proc is called before telling the item is used
+  #     skill_message_id: opt Integer # ID of the message to show in the win_text in the Summary
   #
   # @author Nuri Yuri
   module ItemDescriptor
@@ -314,6 +315,8 @@ module PFM
           hash[:on_skill_choice] = proc do |skill|
             skill.pp < skill.ppmax
           end
+          # Add "Restore PP of which move?"
+          hash[:skill_message_id] = 34
           #> En combat
           if($game_temp.in_battle)
             hash[:action_to_push] = proc do |pkmn, skill|
@@ -324,7 +327,7 @@ module PFM
             end
           #> Hors combat on_pokemon_use
           else
-            hash[:on_skill_use] = proc do |skill|
+            hash[:on_skill_use] = proc do |pkmn, skill|
               skill.pp += pp
               $scene.display_message(_parse(22, 114, be::MOVE[0] => skill.name))
               pkmn.loyalty += heal_data.loyalty if heal_data.loyalty
@@ -351,11 +354,13 @@ module PFM
           end
           #> On doit ouvrir l'interface des skills
           hash[:open_skill] = true
+          # Add "Boost PP of which move?"
+          hash[:skill_message_id] = 35
           #> L'attaque choisie ne doit pas avoir les PP au max
           hash[:on_skill_choice] = proc do |skill|
             ($game_data_skill[skill.id].pp_max * 8 / 5) > skill.ppmax
           end
-          hash[:on_skill_use] = proc do |skill|
+          hash[:on_skill_use] = proc do |pkmn, skill|
             if pp == 2
               skill.ppmax = $game_data_skill[skill.id].pp_max * 8 / 5
             else

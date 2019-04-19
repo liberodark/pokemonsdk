@@ -5,6 +5,8 @@ module GamePlay
       update_sprites
       return unless super
       update_inputs
+      update_mouse_ctrl
+      update_mouse_move_button
     end
 
     private
@@ -44,7 +46,7 @@ module GamePlay
       return unless (skill = @pokemon.skills_set[@uis[2].index])
       if @extend_data
         if @extend_data[:on_skill_choice].call(skill)
-          @extend_data[:on_skill_use]&.call(skill)
+          @extend_data[:on_skill_use]&.call(@pokemon, skill)
           @extend_data[:skill_selected] = @skill_selected = @uis[2].index
           @running = false
         else # You cannot use that on this skill
@@ -86,7 +88,7 @@ module GamePlay
       # Make sure we don't allow to switch when there's not enough Pokemon in the party
       allow_up_down &&= @party.size > 1
       # Change the UI we show (If it's an egg it's forbidden)
-      if !@pokemon.egg? && !@selecting_move && index_changed(:@index, :LEFT, :RIGHT, 2)
+      if !@pokemon.egg? && !@selecting_move && index_changed(:@index, :LEFT, :RIGHT, LAST_STATE)
         update_ui_visibility
         return true
       elsif allow_up_down && index_changed(:@party_index, :UP, :DOWN, @party.size - 1)
@@ -115,6 +117,7 @@ module GamePlay
       if Input.trigger?(:A)
         $game_system.se_play($data_system.decision_se)
         update_input_a_skill_ui
+        update_ctrl_state
       elsif Input.trigger?(:B)
         $game_system.se_play($data_system.cancel_se)
         @skill_selected = -1
@@ -125,6 +128,7 @@ module GamePlay
           @running = false unless @selecting_move
           @selecting_move = false
         end
+        update_ctrl_state
       end
     end
 

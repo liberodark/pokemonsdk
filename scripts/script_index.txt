@@ -212,6 +212,7 @@ pokemonsdk/scripts/01300 UI/01000 UI__AttackDummySprite.rb
 pokemonsdk/scripts/01300 UI/01100 UI__PokemonSprite.rb
 pokemonsdk/scripts/01300 UI/01200 UI__KeyShortcut.rb
 pokemonsdk/scripts/01300 UI/01300 UI__DexCTLRButton.rb
+pokemonsdk/scripts/01300 UI/01301 SummaryCTRLButton.rb
 pokemonsdk/scripts/01300 UI/01400 UI__DexWinSprite.rb
 pokemonsdk/scripts/01300 UI/01500 UI__DexWinInfo.rb
 pokemonsdk/scripts/01300 UI/01600 UI__DexWinMap.rb
@@ -252,6 +253,7 @@ pokemonsdk/scripts/01400 GamePlay/02200 GamePlay__Shortcut.rb
 pokemonsdk/scripts/01400 GamePlay/02300 GamePlay__Skill_Learn.rb
 pokemonsdk/scripts/01400 GamePlay/02401 Summary.rb
 pokemonsdk/scripts/01400 GamePlay/02402 Summary_update.rb
+pokemonsdk/scripts/01400 GamePlay/02403 Summary_Mouse.rb
 pokemonsdk/scripts/01400 GamePlay/03000 GamePlay__TCard.rb
 pokemonsdk/scripts/01400 GamePlay/03100 GamePlay__WorldMap.rb
 pokemonsdk/scripts/01400 GamePlay/03200 GamePlay__QuestBookMenu.rb

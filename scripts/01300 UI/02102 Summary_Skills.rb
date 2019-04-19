@@ -85,12 +85,12 @@ module UI
     # @param index [Integer] index of the skill in the UI
     def initialize(viewport, index)
       super(viewport, *FINAL_COORDINATES[index % FINAL_COORDINATES.size])
+      # @type [Sprite::WithColor]
+      @selector = push(-8, 0, 'summary/move_selector', type: Sprite::WithColor)
       push(0, 2, nil, type: TypeSprite)
       add_text(34, 0, 110, 16, :name, type: SymText)
       add_text(34, 16, 110, 16, _get(27, 32)) # PP
       add_text(34, 16, 100, 16, :pp_text, 1, type: SymText, color: 1)
-      # @type [Sprite::WithColor]
-      @selector = push(-4, 0, 'summary/move_selector', type: Sprite::WithColor)
       @selected = false
       self.moving = false
     end
@@ -108,6 +108,12 @@ module UI
     def visible=(value)
       super
       @selector.visible = value && (@selected || @moving)
+    end
+
+    # Get the visibility of the sprite
+    # @return [Boolean]
+    def visible
+      return @stack[1].visible
     end
 
     # Define if the skill is selected
