@@ -52,6 +52,8 @@ module Graphics
     @mouse.dispose unless !@mouse || @mouse.disposed?
     @cmd_thread&.kill
     @stop.call
+  rescue LiteRGSS::Graphics::StoppedError
+    puts 'Graphics already stopped.'
   end
 
   # Make the Game wait n frames
