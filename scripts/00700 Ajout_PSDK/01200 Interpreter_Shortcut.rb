@@ -58,13 +58,12 @@ class Interpreter
   # @return [Boolean]
   # @author Nuri Yuri
   def front_event_calling(common_event)
-    v = $game_player.front_tile_event
-    if(v)
+    event = $game_player.front_tile_event
+    if event&.list
+      @event_id = event.id if @event_id == 0
       i = 0
-      while(v.list[i] and v.list[i].code.between?(121, 122))
-        i +=1
-      end
-      return true if(v.list[i] and v.list[i].code == 117 and v.list[i].parameters[0] == common_event)
+      i += 1 while event.list[i]&.code&.between?(121, 122)
+      return true if event.list[i] && event.list[i].code == 117 && event.list[i].parameters[0] == common_event
     end
     return false
   end
@@ -74,10 +73,10 @@ class Interpreter
   # @param event_id [Integer] the id of the event on the MAP
   # @return [Boolean]
   def event_calling(common_event, event_id)
-    if (v = $game_map.events[event_id]) && v.list
+    if (event = $game_map.events[event_id]) && event.list
       i = 0
-      i += 1 while v.list[i] && v.list[i].code.between?(121, 122)
-      return true if v.list[i] && v.list[i].code == 117 && v.list[i].parameters[0] == common_event
+      i += 1 while event.list[i]&.code&.between?(121, 122)
+      return true if event.list[i] && event.list[i].code == 117 && event.list[i].parameters[0] == common_event
     end
     return false
   end
