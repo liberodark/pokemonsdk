@@ -9,7 +9,7 @@ module UI
     # @param viewport [Viewport]
     def initialize(viewport)
       super(viewport, 0, 0, default_cache: :interface)
-      push(0, 0, 'summary/moves')
+      push(0, 0, background_name)
       init_texts
       init_skills
       self.index = 0
@@ -20,10 +20,7 @@ module UI
     def data=(pokemon)
       super
       self.index = index
-      pokemon.skills_set.compact!
-      @skills.each_with_index do |skill_stack, index|
-        skill_stack.data = pokemon.skills_set[index]
-      end
+      update_skills(pokemon)
     end
 
     # Set the visibility of the UI
@@ -45,6 +42,21 @@ module UI
     end
 
     private
+
+    # Return the background name
+    # @return [String]
+    def background_name
+      'summary/moves'
+    end
+
+    # Update the skills shown in the UI
+    # @param pokemon [PFM::Pokemon]
+    def update_skills(pokemon)
+      pokemon.skills_set.compact!
+      @skills.each_with_index do |skill_stack, index|
+        skill_stack.data = pokemon.skills_set[index]
+      end
+    end
 
     # Init the texts of the UI
     def init_texts
@@ -130,11 +142,11 @@ module UI
     def initialize(viewport, index)
       super(viewport, *FINAL_COORDINATES[index % FINAL_COORDINATES.size])
       # @type [Sprite::WithColor]
-      @selector = push(-8, 0, 'summary/move_selector', type: Sprite::WithColor)
+      @selector = push(-8, 0, selector_name, type: Sprite::WithColor)
       push(0, 2, nil, type: TypeSprite)
       add_text(34, 0, 110, 16, :name, type: SymText)
       @pp_text = add_text(34, 16, 110, 16, _get(27, 32)) # PP
-      add_text(34, 16, 100, 16, :pp_text, 1, type: SymText, color: 1)
+      add_text(34, 16, 100, 16, pp_method, 1, type: SymText, color: 1)
       @selected = false
       self.moving = false
     end
@@ -179,6 +191,20 @@ module UI
         @selector.visible = @selected
         @selector.set_color(NO_SELECT_COLOR)
       end
+    end
+
+    private
+
+    # Return the name of the selector file
+    # @return [String]
+    def selector_name
+      'summary/move_selector'
+    end
+
+    # Return the name of the method used to get the PP text
+    # @return [Symbol]
+    def pp_method
+      :pp_text
     end
   end
 end

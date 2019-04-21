@@ -224,6 +224,7 @@ pokemonsdk/scripts/01300 UI/02100 Summary_Memo.rb
 pokemonsdk/scripts/01300 UI/02101 Summary_Stat.rb
 pokemonsdk/scripts/01300 UI/02102 Summary_Skills.rb
 pokemonsdk/scripts/01300 UI/02103 Summary_Top.rb
+pokemonsdk/scripts/01300 UI/02104 Summary_Remind.rb
 pokemonsdk/scripts/01350 GUI/00100 Button.rb
 pokemonsdk/scripts/01350 GUI/00101 CheckBox.rb
 pokemonsdk/scripts/01350 GUI/00102 Input.rb

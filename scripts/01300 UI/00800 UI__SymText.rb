@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 module UI
   # Object that show a text using a method of the data object sent
   class SymText < Text
