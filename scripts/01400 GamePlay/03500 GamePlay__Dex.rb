@@ -178,27 +178,28 @@ module GamePlay
     # @param page_id [Integer, false] see initialize
     def generate_selected_pokemon_array(page_id)
       if $pokedex.national?
-        1.step($game_data_pokemon.size-1) do |i|
+        @selected_pokemons = []
+        1.step($game_data_pokemon.size - 1) do |i|
           @selected_pokemons << i if $pokedex.has_seen?(i)
         end
       else
-        selected_pokemons = Array.new
-        1.step($game_data_pokemon.size-1) do |i|
-          selected_pokemons << i if $pokedex.has_seen?(i) and ::GameData::Pokemon.id_bis(i) > 0
+        selected_pokemons = []
+        1.step($game_data_pokemon.size - 1) do |i|
+          selected_pokemons << i if $pokedex.has_seen?(i) && ::GameData::Pokemon.id_bis(i) > 0
         end
         selected_pokemons.sort! { |a, b| ::GameData::Pokemon.id_bis(a) <=> ::GameData::Pokemon.id_bis(b) }
         @selected_pokemons = selected_pokemons
       end
       @selected_pokemons.compact!
-      @selected_pokemons << 0 if @selected_pokemons.size == 0
+      @selected_pokemons << 0 if @selected_pokemons.empty?
       # Index ajustment
-      if(page_id)
+      if page_id
         @index = @selected_pokemons.index(page_id)
         unless @index
           @selected_pokemons << page_id
           @index = @selected_pokemons.size - 1
         end
-        #@index -= 1
+        # @index -= 1
       else
         @index = 0
       end
