@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 # A sprite that show a Game_Picture on the screen
 class Sprite_Picture < ShaderedSprite
   SPRITE_SHADER = <<-EOSHADER
@@ -24,60 +22,81 @@ class Sprite_Picture < ShaderedSprite
     super(viewport)
     self.shader = Shader.new(SPRITE_SHADER)
     @picture = picture
+    @gif_handle = nil
     update
   end
+
   # Dispose the picture
   def dispose
-    if self.bitmap != nil # /!\ Il va y avoir des pb de "Disposed Bitmap"
-      self.bitmap.dispose unless self.bitmap.disposed?
-    end
+    dispose_bitmap
     super
   end
+
   # Update the picture sprite display with the information of the current Game_Picture
   def update
     super
-    # ピクチャのファイル名が現在のものと異なる場合
+    # Try to load the new file if the name is different
     if @picture_name != @picture.name
-      # ファイル名をインスタンス変数に記憶
       @picture_name = @picture.name
-      # ファイル名が空でない場合
-      #if @picture_name != ""
-        # ピクチャグラフィックを取得
-        self.bitmap = RPG::Cache.picture(@picture_name) unless @picture_name.empty?
-      #end
+      load_bitmap
     end
-    # ファイル名が空の場合
-    if @picture_name.empty?# == nil.to_s
-      # スプライトを不可視に設定
+    # Don't update if the name is empty
+    if @picture_name.empty?
       self.visible = false
       return
     end
-    # スプライトを可視に設定
     self.visible = true
-    # 転送元原点を設定
+
+    update_properties
+    update_gif if @gif_handle
+  end
+
+  private
+
+  # Update the picture properties on the sprite
+  def update_properties
     if @picture.origin == 0
-      self.ox = 0
-      self.oy = 0
+      set_origin(0, 0)
     else
-      self.ox = self.bitmap.width / 2
-      self.oy = self.bitmap.height / 2
+      set_origin(bitmap.width / 2, bitmap.height / 2)
     end
-    # スプライトの座標を設定
-    self.x = @picture.x
-    self.y = @picture.y
+    set_position(@picture.x, @picture.y)
     self.z = @picture.number
-    # 拡大率、不透明度、ブレンド方法を設定
     self.zoom_x = @picture.zoom_x / 100.0
     self.zoom_y = @picture.zoom_y / 100.0
     self.opacity = @picture.opacity
     shader.blend_type = @picture.blend_type
-    # 回転角度、色調を設定
     self.angle = @picture.angle
-#    self.tone = @picture.tone
     tone = @picture.tone
     unless tone.eql?(@current_tone)
       shader.set_float_uniform('tone', tone)
       @current_tone = tone.clone
     end
+  end
+
+  # Update the gif animation
+  def update_gif
+    @gif_handle.update(bitmap)
+  end
+
+  # Load the picture bitmap
+  def load_bitmap
+    if @picture_name.empty?
+      dispose_bitmap if @gif_handle
+      return
+    end
+    # Test for gif loading
+    if File.exist?(gif_name = format('graphics/pictures/%<filename>s.gif', filename: @picture_name))
+      @gif_handle = Yuki::GifReader.new(gif_name)
+      self.bitmap = Bitmap.new(@gif_handle.width, @gif_handle.height)
+    else
+      set_bitmap(@picture_name, :picture)
+    end
+  end
+
+  # Dispose the bitmap
+  def dispose_bitmap
+    bitmap.dispose if bitmap && !bitmap.disposed?
+    @gif_handle = nil
   end
 end

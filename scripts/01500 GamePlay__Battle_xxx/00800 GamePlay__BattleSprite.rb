@@ -1,6 +1,3 @@
-#encoding: utf-8
-
-#noyard
 module GamePlay
   class BattleSprite < ::Yuki::Sprite
     #>Positions des sprites des Actors
@@ -23,13 +20,15 @@ module GamePlay
       @gif = nil
       self.pokemon = pokemon
     end
+
     # Update the sprite
     def update
       super
       if @gif
-        @gif.update(self.bitmap) if self.bitmap
+        @gif.update(bitmap) if bitmap
       end
     end
+
     # Dispose the sprite
     def dispose
       if @gif
@@ -38,13 +37,14 @@ module GamePlay
       end
       super
     end
+
     #===
     #>Modification du Pokémon courant
     #===
     def pokemon=(pokemon)
       test_gif_dispose(pokemon)
       @pokemon = pokemon
-      unless pokemon and !pokemon.dead?
+      unless pokemon && !pokemon.dead?
         self.visible = false
         return
       end
@@ -59,7 +59,7 @@ module GamePlay
     # Repositionne les sprites correctement sur l'écran
     #===
     def ajust_position
-      if(@pokemon.position < 0)
+      if @pokemon.position < 0
         pos = E_Pos
         index = $game_temp.vs_type == 2 ? -@pokemon.position - 1 : 2
         zoom = 1
@@ -73,19 +73,20 @@ module GamePlay
       self.z = Z[@pokemon.position]
       self.zoom = zoom
       #self.x += (self.ox = self.bitmap.width / 2)
-      self.ox = self.bitmap.width / 2
-      self.oy = self.bitmap.height
+      self.ox = bitmap.width / 2
+      self.oy = bitmap.height
     end
 
     # Test if the Gif has to be disposed
     # @param pokemon [::PFM::Pokemon] the new pokemon
     def test_gif_dispose(pokemon)
-      return unless @pokemon and @gif
-      if !pokemon or (@pokemon.id != pokemon.id) or (@pokemon.form != pokemon.form)
-        self.bitmap.dispose
+      return unless @pokemon && @gif
+      if !pokemon || (@pokemon.id != pokemon.id) || (@pokemon.form != pokemon.form)
+        bitmap.dispose
         @gif = nil
       end
     end
+
     # Load the pokemon bitmap
     # @param pokemon [::PFM::Pokemon] the new pokemon
     def load_bitmap(pokemon)
@@ -94,7 +95,7 @@ module GamePlay
         if gif
           @gif = gif
           self.bitmap = Bitmap.new(@gif.width, @gif.height)
-          @gif.draw(self.bitmap)
+          @gif.update(bitmap)
         else
           self.bitmap = pokemon.position < 0 ? pokemon.battler_face : pokemon.battler_back
         end
