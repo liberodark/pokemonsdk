@@ -333,7 +333,7 @@ class Scene_Battle
   #===
   def phase4_animation_capture(cnt,pokemon,id)
     gr_launch_ball_to_enemy(pokemon, id)
-    cnt.times do
+    (cnt - 1).times do
       gr_animate_ball_on_enemy(pokemon)
     end
 
