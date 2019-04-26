@@ -6,13 +6,13 @@ class Dir
   # @param path [String] the new path to create
   # @example Dir.mkdir!("a/b/c") will create a, a/b and a/b/c.
   def self.mkdir!(path)
-    ori = Dir.pwd
+    total_path = ''
     path.split(/[\/\\]/).each do |dirname|
       next if dirname.size == 0
-      Dir.mkdir(dirname) unless Dir.exist?(dirname)
-      Dir.chdir(dirname)
+      total_path << dirname
+      Dir.mkdir(total_path) unless Dir.exist?(total_path)
+      total_path << '/'
     end
-    Dir.chdir(ori)
   end
 end
 

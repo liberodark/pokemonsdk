@@ -9,17 +9,17 @@ module GamePlay
     LANGUAGE_CHOICE_LIST = %w[en fr es]
     # @return [Array] List of the language name when the player can choose
     LANGUAGE_CHOICE_NAME = %w[English French Spanish]
+    # Create a new GamePlay::Load scene
+    # @param delete_game [Boolean] if we should delete the save state
     def initialize(delete_game = false)
       @viewport = Viewport.create(:main, 1)
       @viewport.color = Color.new(162, 194, 204)
       super(false)
-      @save_window.x = 60
-      @running=true
-      @index=0
-      @max_index=(@fileexist ? 2 : 1)
+      @save_window.x = (@viewport.rect.width - @save_window.width) / 2
+      @running = true
+      @index = 0
+      @max_index = (@fileexist ? 2 : 1)
       @delete_game = @fileexist & delete_game
-      # Force the game to load the save
-      @pokemon_party &&= Save.load
       if @delete_game
         $pokemon_party = PFM::Pokemon_Party.new(false, @pokemon_party.options.language)
         $pokemon_party.expand_global_var
@@ -32,7 +32,7 @@ module GamePlay
     def main
       curr_scene = $scene
       check_up
-      while(@running and curr_scene == $scene)
+      while @running && curr_scene == $scene
         Graphics.update
         update
       end
@@ -42,19 +42,19 @@ module GamePlay
 
     def update
       return @message_window.update if @delete_game
-      if(Input.trigger?(:DOWN))
-        @index+=1
-        @index=0 if @index>=@max_index
+      if Input.trigger?(:DOWN)
+        @index += 1
+        @index = 0 if @index >= @max_index
         refresh
-      elsif(Input.trigger?(:UP))
-        @index-=1
-        @index=@max_index-1 if @index<0
+      elsif Input.trigger?(:UP)
+        @index -= 1
+        @index = @max_index - 1 if @index < 0
         refresh
-      elsif(Input.trigger?(:A))
+      elsif Input.trigger?(:A)
         action
-      elsif(Mouse.trigger?(:left))
+      elsif Mouse.trigger?(:left)
         mouse_action
-      elsif(Input.trigger?(:B) and $scene.class == ::Scene_Title)
+      elsif Input.trigger?(:B) && $scene.class == ::Scene_Title
         @running = false
       end
     end
@@ -75,7 +75,7 @@ module GamePlay
     def action
       Graphics.freeze
       # @@save_index = @index
-      if(@fileexist and @index == 0)
+      if @fileexist && @index == 0
         load_game
       else
         $pokemon_party = PFM::Pokemon_Party.new(false, @pokemon_party&.options&.language || DEFAULT_GAME_LANGUAGE)
@@ -109,28 +109,25 @@ module GamePlay
       $pokemon_party.expand_global_var
       $game_system.se_play($data_system.cursor_se)
       $game_map.setup($game_map.map_id)
-      $game_player.moveto($game_player.x, $game_player.y) #center
+      $game_player.moveto($game_player.x, $game_player.y) # center
       $game_party.refresh
       $game_system.bgm_play($game_system.playing_bgm)
       $game_system.bgs_play($game_system.playing_bgs)
       $game_map.update
-      #>Le système sauvegarde l'affichage de la fenêtre donc il faut régler le souci
-      $game_temp.message_window_showing=false 
-      #>On ajuste le marqueur de temps pour le temps de jeu
+      $game_temp.message_window_showing = false
       $trainer.load_time
     end
 
     def refresh
-      if(@fileexist)
+      if @fileexist
         @save_window.opacity = (@index != 0 ? 128 : 255)
       end
       @new_window.opacity = (@index != 1 ? 128 : 255)
     end
 
     def dispose
-      @new_window.dispose if @new_window
+      @new_window&.dispose
       super
-      # @viewport.dispose
     end
 
     # Ask the player if he really wants to delete his game
@@ -214,6 +211,12 @@ module GamePlay
       return delete_game_question if @delete_game
       return create_new_game unless @pokemon_party
       Graphics.transition
+    end
+
+    # Force the current pokemon party to be nil since we load the game
+    # @return [nil]
+    def current_pokemon_party
+      nil
     end
   end
 end
