@@ -23,7 +23,11 @@ module PFM
     # @return [Bitmap]
     def icon
       return (load_icon(EGG_NAME_ID, @id) || RPG::Cache.b_icon(EGG_NAME)) if @step_remaining > 0
-      bitmap = load_icon(MALE_NAME_FORM, @id, @form) if @form > 0
+      if @form > 0
+        bitmap = load_icon(FEMALE_NAME_FORM, @id, @form)
+        bitmap ||= load_icon(MALE_NAME_FORM, @id, @form)
+      end
+      bitmap ||= load_icon(FEMALE_NAME, @id) if @gender == 2
       bitmap ||= load_icon(MALE_NAME, @id)
       return bitmap
     end
@@ -44,7 +48,7 @@ module PFM
         bitmap = load_front(hue, FEMALE_NAME_FORM, @id, @form) if @gender == 2
         bitmap ||= load_front(hue, MALE_NAME_FORM, @id, @form)
       end
-      bitmap ||= load_front(hue, FEMALE_NAME, @id) if @gender == 0
+      bitmap ||= load_front(hue, FEMALE_NAME, @id) if @gender == 2
       bitmap ||= load_front(hue, MALE_NAME, @id)
       return bitmap
     end
@@ -59,7 +63,7 @@ module PFM
         bitmap = load_back(hue, FEMALE_NAME_FORM, @id, @form) if @gender == 2
         bitmap ||= load_back(hue, MALE_NAME_FORM, @id, @form)
       end
-      bitmap ||= load_back(hue, FEMALE_NAME, @id) if @gender == 0
+      bitmap ||= load_back(hue, FEMALE_NAME, @id) if @gender == 2
       bitmap ||= load_back(hue, MALE_NAME, @id)
       return bitmap
     end
