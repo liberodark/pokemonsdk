@@ -175,14 +175,21 @@ module PFM
       # Force the pokemon selection to be unset.
       $game_variables[Yuki::Var::Party_Menu_Sel] = -1
     end
-    # Increase the @step and manage events that trigger each steps
-    # @return [Array] informations about events that has been triggered.
-    def increase_steps
-      @steps+=1
-      return_data=[]
-      #>Déclanchement des combats
+
+    # Update the processing of the repel
+    def repel_update
+      return if cant_process_event_tasks?
+      if @repel_count > 0
+        @repel_count -= 1
+        $scene.delay_display_call(:display_repel_check) if @repel_count == 0
+      end
+    end
+
+    # Update the processing of the battle starting
+    def battle_starting_update
+      return if cant_process_event_tasks?
       encounter_step = $game_map.encounter_step
-      ability = $actors[0] ? $actors[0].ability_db_symbol : :__undef__
+      ability = @actors[0]&.ability_db_symbol || :__undef__
       if IncFreqEnc.include?(ability)
         encounter_step *= 1.5
       elsif DecFreqEnc.include?(ability) ||
@@ -194,57 +201,57 @@ module PFM
          @wild_battle.available?
         $game_system.map_interpreter.launch_common_event(1) unless $game_system.map_interpreter.running?
       end
-      #>Gestion de la repousse
-      if @repel_count > 0
-        @repel_count -= 1
-        return_data << [:repel_check] if @repel_count == 0
+    end
+
+    # Update the processing of the poison event
+    def poison_update
+      return unless (@steps - (@steps / 8) * 8) == 0
+      return if cant_process_event_tasks?
+      psn_event = false
+      @actors.each do |pokemon|
+        next unless pokemon.poisoned? || pokemon.toxic?
+        $scene.delay_display_call(:display_poison_animation) unless psn_event
+        psn_event = true
+        pokemon.hp -= (pokemon.toxic? ? 2 : 1)
+        next unless pokemon.hp <= 1
+        pokemon.hp = 1
+        pokemon.cure
+        $scene.delay_display_call(:display_poison_end, pokemon)
       end
-      #>Gérer la pension
-      @daycare.update
-      #>Gestion des oeufs & poison
-      psn = false
-      psn_check = ((@steps - (@steps / 8) * 8) == 0)
-      loyal_check = ((@steps - (@steps / 512) * 512) == 0)
-      # ArmureMagma / corps ardent : Eclosion plus rapide
-      amca = HatchSpeedIncreasingAbilities.include?(ability)
-      @actors.each do |i|
-        if i
-          # Oeuf
-          if i.step_remaining > 0
-            i.step_remaining -= 1
-            i.step_remaining -= 1 if amca && (i.step_remaining > 0)
-            if i.step_remaining == 0
-              i.egg_finish
-              return_data << [:egg, i]
-            end
-          elsif i.hp > 0
-            # Poison
-            if psn_check
-              if i.poisoned?
-                unless psn
-                  return_data << [:psn]
-                  psn = true
-                end
-                i.hp -= 1
-              elsif i.toxic?
-                unless psn
-                  return_data << [:psn]
-                  psn = true
-                end
-                i.hp -= 2
-              end
-              if i.hp <= 1
-                i.hp = 1
-                i.cure
-                return_data << [:psn_end, i]
-              end
-            end
-            # Loyalty
-            i.loyalty += 1 if loyal_check
-          end
+    end
+
+    def hatch_check_update
+      return if cant_process_event_tasks?
+      amca = HatchSpeedIncreasingAbilities.include?(@actors[0]&.ability_db_symbol || :__undef__)
+      @actors.each do |pokemon|
+        next unless pokemon.step_remaining > 0
+        pokemon.step_remaining -= 1
+        pokemon.step_remaining -= 1 if amca && (pokemon.step_remaining > 0)
+        if pokemon.step_remaining == 0
+          pokemon.egg_finish
+          $scene.delay_display_call(:display_egg_hatch, pokemon)
         end
       end
-      return return_data
+    end
+
+    # Update the loyalty process of the pokemon
+    def loyalty_update
+      return unless (@steps - (@steps / 512) * 512) == 0
+      return if cant_process_event_tasks?
+      @actors.each { |pokemon| pokemon.loyalty += 1 }
+    end
+
+    # Tell if EventTasks can't process
+    # @return [Boolean]
+    def cant_process_event_tasks?
+      return ($game_player.move_route_forcing || $game_system.map_interpreter.running? ||
+        $game_temp.message_window_showing || $game_player.sliding)
+    end
+
+    # Increase the @step and manage events that trigger each steps
+    # @return [Array] informations about events that has been triggered.
+    def increase_steps
+      @steps += 1
     end
     # Change the repel_count
     # @param v [Integer]

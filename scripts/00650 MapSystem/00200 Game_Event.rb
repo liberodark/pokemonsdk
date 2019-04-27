@@ -26,6 +26,10 @@ class Game_Event < Game_Character
   attr_reader :invisible_event
   # @return [Boolean] if the event was erased (needs to be removed from the view)
   attr_reader :erased
+  # @return [Integer] Original id of the event
+  attr_reader :original_id
+  # @return [Integer] Original map id of the event
+  attr_reader :original_map
   # Initialize the Game_Event with its map_id and its RPG::Event data
   # @param map_id [Integer] id of the map where the event is instanciated
   # @param event [RPG::Event] data of the event

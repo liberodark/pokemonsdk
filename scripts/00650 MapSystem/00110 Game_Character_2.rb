@@ -66,11 +66,12 @@ class Game_Character
     return if @jump_count > 0
     # Fix pattern and push dust particle
     @pattern = 0
-    Yuki::Particles.add_particle(self, :dust)
+    Scheduler::EventTasks.trigger(:end_jump, self)
   end
 
   # Update of the move animation
   def update_move
+    was_moving = moving?
     update_real_position
     # Update the anime_count for the pattern animation
     if @walk_anime
@@ -78,6 +79,7 @@ class Game_Character
     elsif @step_anime
       @anime_count += 1
     end
+    Scheduler::EventTasks.trigger(:end_step, self) if was_moving && !moving?
   end
 
   # Update the real_x/y positions
@@ -110,6 +112,7 @@ class Game_Character
   def update_sliding
     unless SlideTags.include?(sys_tag = system_tag) || sys_tag == MachBike
       @sliding = false
+      Scheduler::EventTasks.trigger(:end_slide, self)
     else
       unless moving?
         direction = @direction

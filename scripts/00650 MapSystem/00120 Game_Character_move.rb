@@ -337,10 +337,16 @@ class Game_Character
     follower_move unless no_follower_move
     particle_push
     if SlideTags.include?(sys_tag = system_tag) ||
-      (sys_tag == MachBike && !($game_switches[::Yuki::Sw::EV_Bicycle] && @lastdir4 == 8))
+       (sys_tag == MachBike && !($game_switches[::Yuki::Sw::EV_Bicycle] && @lastdir4 == 8))
       @sliding = true
+      Scheduler::EventTasks.trigger(:begin_slide, self)
     end
     z_bridge_check(sys_tag)
     detect_swamp
+    if jumping?
+      Scheduler::EventTasks.trigger(:begin_jump, self)
+    elsif moving?
+      Scheduler::EventTasks.trigger(:begin_step, self)
+    end
   end
 end

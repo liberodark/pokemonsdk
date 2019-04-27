@@ -26,6 +26,8 @@ class Game_Character
   attr_accessor :move_speed
   # @return [Game_Character, nil] the follower
   attr_reader :follower
+  # @return [Boolean] if the character is sliding
+  attr_reader :sliding
 
   # Default initializer
   def initialize

@@ -1,7 +1,7 @@
-#encoding: utf-8
-
 # The map gameplay scene
 class Scene_Map
+  # All the procedure to call at the end of the update
+  @@update_to_call = []
   # Access to the spriteset of the map
   # @return [Spriteset_Map]
   attr_reader :spriteset
@@ -56,6 +56,7 @@ class Scene_Map
       Graphics.freeze
     end
   end
+
   # Update the scene process
   def update
     # ループ
@@ -125,6 +126,8 @@ class Scene_Map
     end
     # プレイヤーの移動中ではない場合
     unless $game_player.moving?
+      # All the thing to call because of end_step process
+      send(*@@update_to_call.shift) until @@update_to_call.empty?
       # 各種画面の呼び出しを実行
       if $game_temp.battle_calling
         call_battle
@@ -144,6 +147,7 @@ class Scene_Map
       end
     end
   end
+
   # Call the Battle scene if the play encounter Pokemon or trainer and its party has Pokemon that can fight
   def call_battle
     # バトル呼び出しフラグをクリア
@@ -177,6 +181,7 @@ class Scene_Map
     $scene.screenshot = Graphics.snap_to_bitmap
     Yuki::FollowMe.set_battle_entry
   end
+
   # Call the Shop scene
   def call_shop
     # プレイヤーの姿勢を矯正
@@ -187,6 +192,7 @@ class Scene_Map
     $game_temp.shop_calling = false
     Graphics.transition
   end
+
   # Call the name input scene
   def call_name
     # 名前入力呼び出しフラグをクリア
@@ -208,6 +214,7 @@ class Scene_Map
     sprite_set_visible = true
     Graphics.transition
   end
+
   # Call the Menu interface
   def call_menu
     # メニュー呼び出しフラグをクリア
@@ -232,6 +239,7 @@ class Scene_Map
       process.call(*menu.call_skill_process)
     end
   end
+
   # Call the save interface
   def call_save
     # プレイヤーの姿勢を矯正
@@ -242,6 +250,7 @@ class Scene_Map
     GamePlay::Save.new.main
     Graphics.transition
   end
+
   # Call the debug interface (not present in PSDK)
   def call_debug
     # デバッグ呼び出しフラグをクリア
@@ -252,12 +261,14 @@ class Scene_Map
     $game_player.straighten
     # デバッグ画面に切り替え
   end
+
   # Call the shortcut interface
   def call_shortcut
     scene = GamePlay::Shortcut.new
     scene.main
     Graphics.transition
   end
+
   # Execute the begin calculation of the transfer_player processing
   def transfer_player_begin
     ::Scheduler.start(:on_warp_start)
@@ -286,6 +297,7 @@ class Scene_Map
     # マップを更新 (並列イベント実行)
     $game_map.update
   end
+
   # Teleport the play between map or inside the map
   def transfer_player
     Yuki::ElapsedTime.start(:transfer_player)
@@ -312,6 +324,7 @@ class Scene_Map
     #> Transition processing
     transfer_player_end(transition_sprite)
   end
+
   # End of the transfer player processing (transitions)
   def transfer_player_end(transition_sprite)
     if(transition_sprite)
@@ -322,9 +335,9 @@ class Scene_Map
       Graphics.brightness = 255
       $game_map.autoplay
       case transition_id
-      when 1 #> Circular transition
+      when 1 # Circular transition
         ::Yuki::Transitions.circular(1)
-      when 2 #> Directed transition
+      when 2 # Directed transition
         ::Yuki::Transitions.directed(1)
       end
       $game_temp.transition_processing = false
@@ -336,21 +349,22 @@ class Scene_Map
       $game_map.autoplay
     end
   end
+
   # Start a specific transition
   def transfer_player_specific_transition
     if (transition_id = $game_variables[::Yuki::Var::MapTransitionID]) > 0
       Graphics.transition(1) if $game_temp.transition_processing
       case transition_id
-      when 1 #> Circular transition
+      when 1 # Circular transition
         ::Yuki::Transitions.circular
-      when 2 #> Directed transition
+      when 2 # Directed transition
         ::Yuki::Transitions.directed
       end
       Graphics.brightness = 0
-      #Graphics.update
       Graphics.wait(15)
     end
   end
+
   # Update everything related to the graphics of the map (used in Interfaces that require that)
   def sprite_set_update
     $game_screen.update
@@ -359,35 +373,46 @@ class Scene_Map
     Yuki::TJN.update
     Yuki::Particles.update
   end
+
   # Change the spriteset visibility
   # @param v [Boolean] the new visibility of the spriteset
   def sprite_set_visible=(v)
     @spriteset.visible=v
   end
-  # Display the step informations returned by $pokemon_party.increase_steps
-  # @param data [Array<Array>] the step info message
-  def display_step_info(data)
-    data.each do |i|
-      type=i[0]
-      if(type==:repel_check)
-        display_message(PFM::Text.parse(39,0))
-      elsif type == :psn_end
-        PFM::Text.set_pknick(i[1], 0)
-        display_message(_parse(22, 110))
-      # elsif(type==:dead)
-      #  display_message(PFM::Text.parse(19, 243, "[VAR PKNICK(0000)]" => i[1].given_name) + "\n" +
-      #    PFM::Text.parse(19, 0, "[VAR PKNICK(0000)]" => i[1].given_name))
-      elsif(type==:psn)
-        Audio.se_play("Audio/SE/psn")
-        $game_screen.start_flash(GameData::Colors::PSN,20)
-        $game_screen.start_shake(1,20,2)
-      elsif(type == :egg)
-        GamePlay::Hatch.new(i[1]).main
-        Graphics.transition
-        $quests.hatch_egg
-      end
-    end
+
+  # Display the repel check sequence
+  def display_repel_check
+    display_message(_parse(39, 0))
   end
+
+  # Display the end of poisoning sequence
+  # @param pokemon [PFM::Pokemon] previously poisoned pokemon
+  def display_poison_end(pokemon)
+    PFM::Text.set_pknick(pokemon, 0)
+    display_message(_parse(22, 110))
+  end
+
+  # Display the poisoning animation sequence
+  def display_poison_animation
+    Audio.se_play('Audio/SE/psn')
+    $game_screen.start_flash(GameData::Colors::PSN, 20)
+    $game_screen.start_shake(1, 20, 2)
+  end
+
+  # Display the Egg hatch sequence
+  # @param pokemon [PFM::Pokemon] haching pokemon
+  def display_egg_hatch(pokemon)
+    GamePlay::Hatch.new(pokemon).main
+    Graphics.transition
+    $quests.hatch_egg
+  end
+
+  # Prepare the call of a display_ method
+  # @param args [Array] the send method parameter
+  def delay_display_call(*args)
+    @@update_to_call << args
+  end
+
   # Display a message with choice or not
   # @param str [String] the message to display
   # @param start [Integer] the start choice index (1..nb_choice)
@@ -412,6 +437,7 @@ class Scene_Map
     Graphics.update
     return c
   end
+
   # Force the message window to close
   # @param smooth [Boolean] if the message window is closed smoothly or not
   def window_message_close(smooth)
@@ -426,12 +452,14 @@ class Scene_Map
       @message_window.opacity = 255
     end
   end
+
   # Detect if the player clicked on the Player sprite to open the menu
   # @return [Boolean]
   def player_menu_trigger
     return true if Mouse.trigger?(:left) and sp = @spriteset.game_player_sprite and sp.mouse_in?
     return false
   end
+
   # Change the tileset
   # @param filename [String] filename of the new tileset
   def change_tileset(filename)

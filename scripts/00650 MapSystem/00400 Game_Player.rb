@@ -57,8 +57,7 @@ class Game_Player < Game_Character
     super
     unless @move_route_forcing || $game_system.map_interpreter.running? ||
            $game_temp.message_window_showing || @sliding
-      data = $pokemon_party.increase_steps
-      $scene.display_step_info(data) if !data.empty? && $scene.class == Scene_Map
+      $pokemon_party.increase_steps
     end
   end
 
