@@ -135,6 +135,50 @@ module GamePlay
       return choice
     end
 
+    # Call an other scene
+    # @param name [Class] the scene to call
+    # @param args [Array] the parameter of the initialize method of the scene to call
+    # @return [Boolean] if this scene can still run
+    def call_scene(name, *args, &result_process)
+      fade_out(@cfo_type || DEFAULT_TRANSITION, @cfo_param || DEFAULT_TRANSITION_PARAMETER)
+      # Make the current scene invisible
+      self.visible = false
+      result_process ||= @__result_process
+      @__result_process = nil
+      scene = name.new(*args)
+      scene.main
+      # Call the result process if any
+      result_process&.call(scene)
+      # If the scene has changed we stop this one
+      return @running = false if $scene != self || !@running
+      self.visible = true
+      fade_in(@cfi_type || DEFAULT_TRANSITION, @cfi_param || DEFAULT_TRANSITION_PARAMETER)
+      return true
+    end
+
+    # Return to an other scene, create the scene if args.size > 0
+    # @param name [Class] the scene to return to
+    # @param args [Array] the parameter of the initialize method of the scene to call
+    # @note This scene will stop running
+    # @return [Boolean] if the scene has successfully returned to the desired scene
+    def return_to_scene(name, *args)
+      if args.empty?
+        scene = self
+        while scene.is_a?(Base)
+          scene = scene.__last_scene
+          break if scene == self
+          next unless scene.class == name
+          $scene = scene
+          @running = false
+          return true
+        end
+        return false
+      end
+      $scene = name.new(*args)
+      @running = false
+      return true
+    end
+
     private
 
     # The main process at the begin of scene
@@ -235,50 +279,6 @@ module GamePlay
           sp.set_press(false)
         end
       end
-    end
-
-    # Call an other scene
-    # @param name [Class] the scene to call
-    # @param args [Array] the parameter of the initialize method of the scene to call
-    # @return [Boolean] if this scene can still run
-    def call_scene(name, *args, &result_process)
-      fade_out(@cfo_type || DEFAULT_TRANSITION, @cfo_param || DEFAULT_TRANSITION_PARAMETER)
-      # Make the current scene invisible
-      self.visible = false
-      result_process ||= @__result_process
-      @__result_process = nil
-      scene = name.new(*args)
-      scene.main
-      # Call the result process if any
-      result_process&.call(scene)
-      # If the scene has changed we stop this one
-      return @running = false if $scene != self || !@running
-      self.visible = true
-      fade_in(@cfi_type || DEFAULT_TRANSITION, @cfi_param || DEFAULT_TRANSITION_PARAMETER)
-      return true
-    end
-
-    # Return to an other scene, create the scene if args.size > 0
-    # @param name [Class] the scene to return to
-    # @param args [Array] the parameter of the initialize method of the scene to call
-    # @note This scene will stop running
-    # @return [Boolean] if the scene has successfully returned to the desired scene
-    def return_to_scene(name, *args)
-      if args.empty?
-        scene = self
-        while scene.is_a?(Base)
-          scene = scene.__last_scene
-          break if scene == self
-          next unless scene.class == name
-          $scene = scene
-          @running = false
-          return true
-        end
-        return false
-      end
-      $scene = name.new(*args)
-      @running = false
-      return true
     end
 
     # Return the message class used
