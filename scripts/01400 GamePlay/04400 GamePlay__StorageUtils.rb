@@ -283,7 +283,8 @@ module GamePlay
       poke_box = $storage.get_box($storage.current_box)
       30.times do |i|
         next(stack[i + 1].bitmap = nil) unless poke_box[i]
-        stack[i + 1].bitmap = poke_box[i].icon
+        (sp = stack[i + 1]).bitmap = poke_box[i].icon
+        sp.src_rect.width = sp.src_rect.height
       end
     end
 
@@ -294,7 +295,8 @@ module GamePlay
     end
 
     def draw_selector(index, pokemon = nil)
-      @selector.stack.first.bitmap = (pokemon ? pokemon.icon : nil)
+      (sp = @selector.stack.first).bitmap = (pokemon ? pokemon.icon : nil)
+      sp.src_rect.width = sp.src_rect.height if pokemon
       # Coordonnées
       if (index == 0) # Boîte
         @selector.set_position(70, 4)
@@ -313,7 +315,8 @@ module GamePlay
     def draw_pokemon_team
       6.times do |i|
         pokemon = $actors[i]
-        @party_back[i].stack.last.bitmap = (pokemon ? pokemon.icon : nil)
+        (sp = @party_back[i].stack.last).bitmap = (pokemon ? pokemon.icon : nil)
+        sp.src_rect.width = sp.src_rect.height if pokemon
       end
     end
 
