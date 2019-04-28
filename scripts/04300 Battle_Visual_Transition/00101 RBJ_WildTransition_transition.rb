@@ -38,7 +38,7 @@ module Battle
           update_transition_actor_sending_pokemon
         end
         @counter += 1
-        unless @counter < 180
+        unless @counter < SPRITE_MOVE_DURATION + 4
           @battle_scene.visual.unlock
           @done = true
         end

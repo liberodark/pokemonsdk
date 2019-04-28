@@ -201,6 +201,7 @@ pokemonsdk/scripts/01200 PFM/03100 PFM__SkillProcess.rb
 pokemonsdk/scripts/01200 PFM/03200 PFM__BattleInterface.rb
 pokemonsdk/scripts/01200 PFM/03300 PFM__Choice_Helper.rb
 pokemonsdk/scripts/01300 UI/00100 UI__SpriteStack.rb
+pokemonsdk/scripts/01300 UI/00101 Window.rb
 pokemonsdk/scripts/01300 UI/00200 UI__Bar.rb
 pokemonsdk/scripts/01300 UI/00300 UI__SpriteSheetManager.rb
 pokemonsdk/scripts/01300 UI/00400 UI__TypeSprite.rb
@@ -334,6 +335,8 @@ pokemonsdk/scripts/03800 PokemonBattler/00100 PokemonBattler.rb
 pokemonsdk/scripts/03800 PokemonBattler/00200 States_1.rb
 pokemonsdk/scripts/03900 Battle_UI/00100 PokemonSprite.rb
 pokemonsdk/scripts/03900 Battle_UI/00101 TrainerSprite.rb
+pokemonsdk/scripts/03900 Battle_UI/00200 PlayerChoice.rb
+pokemonsdk/scripts/03900 Battle_UI/00300 SkillChoice.rb
 pokemonsdk/scripts/04000 Battle_Scene/00100 Scene.rb
 pokemonsdk/scripts/04000 Battle_Scene/00101 Scene Choice.rb
 pokemonsdk/scripts/04000 Battle_Scene/00102 Scene AI trigger.rb

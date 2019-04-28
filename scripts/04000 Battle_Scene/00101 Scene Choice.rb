@@ -99,6 +99,7 @@ module Battle
 
     # Clean the action that was removed from the stack (Make sure we don't lock things)
     def clean_action(action)
+      return unless action
       case action[:type]
       when :switch
         action[:who].will_be_switched = false

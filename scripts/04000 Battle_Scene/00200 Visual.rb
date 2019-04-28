@@ -32,6 +32,8 @@ module Battle
       create_viewport
       create_background
       create_battlers
+      create_player_choice
+      create_skill_choice
     end
 
     # Update the visuals
@@ -103,6 +105,16 @@ module Battle
       @battlers.each_value do |battlers|
         battlers.each_value(&:update)
       end
+    end
+
+    # Create the player choice
+    def create_player_choice
+      @player_choice_ui = Battle_UI::PlayerChoice.new(@viewport)
+    end
+
+    # Create the skill choice
+    def create_skill_choice
+      @skill_choice_ui = Battle_UI::SkillChoice.new(@viewport)
     end
   end
 end
