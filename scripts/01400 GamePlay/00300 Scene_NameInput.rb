@@ -55,6 +55,7 @@ class Scene_NameInput
     if(character.class == PFM::Pokemon)
       @character.bitmap = character.icon
       @character.set_position(18, 8).mirror = true
+      @character.src_rect.width = @character.src_rect.height
     elsif(character)
       @character.bitmap = RPG::Cache.character(character)
       width = @character.bitmap.width/4
