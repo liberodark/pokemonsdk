@@ -330,6 +330,7 @@ module GamePlay
     #>Donner un objet
     #===
     def _give_item
+      return if $pokemon_party.empty?
       call_scene(Party_Menu, $actors, :hold, @item_ids[@index])
       _calibrate_item_list
       _draw_stuff
