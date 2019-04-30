@@ -136,9 +136,9 @@ module PFM
 
     # Check if the Pokemon can learn a new skill and make it learn the skill
     # @param silent [Boolean] if the skill is automatically learnt or not (false = show skill learn interface & messages)
-    def check_skill_and_learn(silent = false)
+    # @param level [Integer] The level to check in order to learn the moves
+    def check_skill_and_learn(silent = false, level = @level)
       move_set = $game_data_pokemon[@id][@form].move_set
-      level = @level
       0.step(move_set.size - 1, 2) do |i|
         id = move_set[i + 1]
         if level == move_set[i] && !skill_learnt?(id)

@@ -60,7 +60,7 @@ module GamePlay
         end
         @pokemon.id = @clone.id
         #check_alola_evolve(@pokemon)
-        @pokemon.check_skill_and_learn
+        @pokemon.check_skill_and_learn(false, -1)
         #===
         #> Munja évolution de Ningale
         #===

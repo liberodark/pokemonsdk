@@ -255,7 +255,7 @@ module PFM
       @skill_learnt = []
       @skills_set = []
       (data.move_set.size - 2).step(0, -2) do |i|
-        if data.move_set[i] <= @level
+        if data.move_set[i].between?(0, @level)
           learn_skill(data.move_set[i + 1]) unless skill_learnt?(data.move_set[i + 1])
           # @skills_set<<Skill.new(data.move_set[i+1]) unless skill_learnt?(data.move_set[i+1])
           break if @skills_set.size >= 4
