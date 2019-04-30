@@ -134,10 +134,15 @@ module GamePlay
       @pokeface.data = @pokemon if(@pokeface.visible = state != 2)
       @arrow.visible = @seen_got.visible = state == 0
       @pokemon_info.visible = @pokemon_descr.visible = state == 1
-      if @pokemon_descr.visible
-        @pokemon_descr.multiline_text = ::GameData::Pokemon.descr(@pokemon.id)
-        @pokemon_info.data = @pokemon
-      end
+    if @pokemon_descr.visible
+        if $pokedex.has_captured?(@pokemon.id)
+            @pokemon_descr.multiline_text = ::GameData::Pokemon.descr(@pokemon.id)
+            @pokemon_info.data = @pokemon
+        else
+            @pokemon_descr.multiline_text = ""
+            @pokemon_info.data = @pokemon
+        end
+    end
       @pokemon_zone.data = @pokemon if(@pokemon_zone.visible = state == 2)
       update_list(state == 0)
     end
