@@ -12,17 +12,17 @@ module UI
     # @param align [0, 1, 2] the align of the text in its surface (best effort => no resize), 0 = left, 1 = center, 2 = right
     # @param outlinesize [Integer, nil] the size of the text outline
     # @param color [Integer] the id of the color
-    def initialize(font_id, viewport, x, y, width, height, method, align = 0, outlinesize = nil, color: 0)
-      super(font_id, viewport, x, y, width, height, nil.to_s, align, outlinesize)
-      load_color(color) if color != 0
+    # @param sizeid [Intger] the id of the size to use
+    def initialize(font_id, viewport, x, y, width, height, method, align = 0, outlinesize = nil, color = nil, sizeid = nil)
+      super(font_id, viewport, x, y, width, height, nil.to_s, align, outlinesize, color, sizeid)
       @method = method
     end
+
     # Set the Object used to show the text
     # @param object [Object, nil]
     def data=(object)
-      if(self.visible = (object ? true : false))
-        self.text = object.public_send(@method).to_s
-      end
+      return unless (self.visible = (object ? true : false))
+      self.text = object.public_send(@method).to_s
     end
   end
   # Object that show a multiline text using a method of the data object sent
@@ -30,9 +30,8 @@ module UI
     # Set the Object used to show the text
     # @param object [Object, nil]
     def data=(object)
-      if(self.visible = (object ? true : false))
-        self.multiline_text = object.public_send(@method).to_s
-      end
+      return unless (self.visible = (object ? true : false))
+      self.multiline_text = object.public_send(@method).to_s
     end
   end
 end
