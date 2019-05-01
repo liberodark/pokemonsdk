@@ -18,6 +18,60 @@ module Battle
       return count
     end
 
+    # Return the adjacent foes
+    # @param pokemon [PFM::PokemonBattler]
+    # @return [Array<PFM::PokemonBattler>]
+    def adjacent_foes_of(pokemon)
+      foes_of(pokemon, true)
+    end
+
+    # Return the foes
+    # @param pokemon [PFM::PokemonBattler]
+    # @param check_adjacent [Boolean]
+    # @return [Array<PFM::PokemonBattler>]
+    def foes_of(pokemon, check_adjacent = false)
+      return [] if pokemon.position.nil? || pokemon.position >= @battle_info.vs_type
+      bank = pokemon.bank
+      position = pokemon.position
+      foes = []
+      @battlers.each_with_index do |battlers, index|
+        next if index == bank
+        battlers.each_with_index do |foe, foe_position|
+          break if foe_position >= @battle_info.vs_type
+          next unless foe.position
+          foes << foe if !check_adjacent || (foe.position - position).abs <= 1
+        end
+      end
+      return foes
+    end
+
+    # Return the adjacent allies
+    # @param pokemon [PFM::PokemonBattler]
+    # @return [Array<PFM::PokemonBattler>]
+    def adjacent_allies_of(pokemon)
+      allies_of(pokemon, true)
+    end
+
+    # Return the allies
+    # @param pokemon [PFM::PokemonBattler]
+    # @param check_adjacent [Boolean]
+    # @return [Array<PFM::PokemonBattler>]
+    def allies_of(pokemon, check_adjacent = false)
+      return [] if pokemon.position.nil? || pokemon.position >= @battle_info.vs_type
+      bank = pokemon.bank
+      position = pokemon.position
+      allies = []
+      @battlers.each_with_index do |battlers, index|
+        next if index != bank
+        battlers.each_with_index do |ally, ally_position|
+          break if ally_position >= @battle_info.vs_type
+          next unless ally.position
+          allies << ally if !check_adjacent || (ally.position - position).abs <= 1
+        end
+      end
+      return allies
+    end
+
     private
 
     # Load the battlers from the battle infos

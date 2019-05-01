@@ -234,24 +234,6 @@ module Battle
       return "<#{self.class}:#{name}_#{power}_#{accuracy}>"
     end
 
-    # List of symbol describe a one target aim
-    OneTarget = %i[any_other_pokemon random_foe adjacent_pokemon adjacent_foe user user_or_adjacent_ally adjacent_ally]
-
-    # Does the skill aim only one Pokemon
-    # @return [Boolean]
-    def one_target?
-      return OneTarget.include?(target)
-    end
-
-    # List of symbol that doesn't show any choice of target
-    TargetNoAsk = %i[adjacent_all_foe all_foe adjacent_all_pokemon all_pokemon user all_ally random_foe]
-
-    # Does the skill doesn't show a target choice
-    # @return [Boolean]
-    def no_choice_skill?
-      return TargetNoAsk.include?(target)
-    end
-
     # Was the move a critical hit
     # @return [Boolean]
     def critical_hit?
