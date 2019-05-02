@@ -11,6 +11,12 @@ module Battle
     # @return [Viewport] the viewport used to show the sprites
     attr_reader :viewport
 
+    # @return [Viewport] the viewport used to show some UI part
+    attr_reader :viewport_sub
+
+    # @return [Array<Battle_UI::GroundSprite>] the ground sprites
+    attr_reader :grounds
+
     # Create a new visual instance
     # @param battle_scene [Scene] scene that hold the logic object
     def initialize(battle_scene)
@@ -66,11 +72,16 @@ module Battle
     # Create the Visual viewport
     def create_viewport
       @viewport = Viewport.create(:main, 500)
+      rc = @viewport.rect
+      @viewport_sub = Viewport.new(rc.x, rc.y + rc.height - 48, rc.width, 48)
     end
 
-    # Create the default background
+    # Create the default background & the grounds that comes with it
     def create_background
-      @background = Sprite.new(@viewport).set_bitmap(background_name, :battleback)
+      @background = ShaderedSprite.new(@viewport).set_bitmap(name = background_name, :battleback)
+      @grounds = Array.new(@battle_scene.logic.bank_count) do |bank|
+        Battle_UI::GroundSprite.new(@viewport, name, bank)
+      end
     end
 
     # Return the background name according to the current state of the player
@@ -88,7 +99,7 @@ module Battle
       (logic = @battle_scene.logic).bank_count.times do |bank|
         # create the trainer sprites
         infos.battlers[bank].each_with_index do |battler, position|
-          sprite = Battle_UI::TrainerSprite.new(@viewport, battler, bank)
+          sprite = Battle_UI::TrainerSprite.new(@viewport, battler, bank, position, infos)
           store_battler_sprite(bank, -position - 1, sprite)
         end
         # Create the Pokemon sprites
@@ -109,12 +120,12 @@ module Battle
 
     # Create the player choice
     def create_player_choice
-      @player_choice_ui = Battle_UI::PlayerChoice.new(@viewport)
+      @player_choice_ui = Battle_UI::PlayerChoice.new(@viewport_sub)
     end
 
     # Create the skill choice
     def create_skill_choice
-      @skill_choice_ui = Battle_UI::SkillChoice.new(@viewport)
+      @skill_choice_ui = Battle_UI::SkillChoice.new(@viewport_sub)
     end
   end
 end

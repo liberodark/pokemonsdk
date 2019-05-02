@@ -81,6 +81,10 @@ module Battle
         parties.each_with_index do |party, index|
           load_battlers_from_party(party, bank, index)
         end
+        adjust_party(@battlers[bank]) if @battle_info.vs_type > 1
+        @battle_info.vs_type.times do |i|
+          @battlers.dig(bank, i)&.position = i
+        end
       end
     end
 
@@ -98,9 +102,6 @@ module Battle
         battler.party_id = index
         battlers << battler
       end
-      @battle_info.vs_type.times do |i|
-        battlers[i]&.position = i
-      end
     end
 
     # Sort a party (push the dead mon at the end)
@@ -111,6 +112,28 @@ module Battle
       dead_mons = party.select(&:dead?)
       party.delete_if { |pokemon| dead_mons.include?(pokemon) }
       party.concat(dead_mons)
+    end
+
+    # Make sure the Pokemon of each party are in first position
+    # @param party [Array<PFM::PokemonBattler>]
+    def adjust_party(party)
+      parties = {}
+      party.each do |pokemon|
+        sub_party = (parties[pokemon.party_id] ||= [])
+        sub_party << pokemon
+      end
+      party.clear
+      i = 0
+      did_something = true
+      while did_something
+        did_something = false
+        parties.each_value do |sub_party|
+          next unless (pokemon = sub_party[i])
+          party << pokemon
+          did_something = true
+        end
+        i += 1
+      end
     end
   end
 end

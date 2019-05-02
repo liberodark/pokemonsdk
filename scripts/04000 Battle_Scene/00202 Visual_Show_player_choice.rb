@@ -5,6 +5,7 @@ module Battle
     # @return [Symbol, nil] :attack, :bag, :pokemon, :flee, :cancel, :try_next
     def show_player_choice(pokemon_index)
       # return :try_next if spc_cannot_use_this_pokemon?(pokemon_index)
+      @viewport.rect.height = @viewport_sub.rect.y
       @locking = true
       @player_choice_ui.reset
       @player_choice_ui.visible = true

@@ -99,18 +99,18 @@ module Battle
     # When there's a friend trainer and we launch the Pokemon
     # @return [String]
     def player_sending_pokemon_start_multi
-      text = [@text.parse(18, 18, PKNICK[1] => @logic.battler(0, 0).name)]
+      text = [@text.parse(18, 18, PKNICK[1] => @logic.battler(0, 0).name, TRNAME[0] => @battle_info.names[0][0])]
       if @battle_info.classes[0][1]
         @text.set_pknick(@logic.battler(0, 1), 2)
         hash = {
-          TRNAME[1] => @battle_info.names[1][0],
-          '[VAR 010E(0000)]' => @battle_info.classes[1][0]
+          TRNAME[1] => @battle_info.names[0][1],
+          '[VAR 010E(0000)]' => @battle_info.classes[0][1]
         }
         hash['[VAR 019E(0000)]'] = "#{hash['[VAR 010E(0000)]']} #{hash[TRNAME[1]]}"
         text << @text.parse(18, 15, hash)
       else
         @text.set_pknick(@logic.battler(0, 1), 1)
-        text << @text.parse(18, 18)
+        text << @text.parse(18, 18, TRNAME[0] => @battle_info.names[0][0])
       end
       text.join("\n")
     end
@@ -122,9 +122,9 @@ module Battle
         @text.set_pknick(@logic.battler(0, i), i)
       end
       if count == 3
-        return @text.parse(18, 12)
-      elsif @logic.battler_count(0) == 2
-        return @text.parse(18, 12)
+        return @text.parse(18, 14)
+      elsif count == 2
+        return @text.parse(18, 13)
       end
       return @text.parse(18, 12)
     end

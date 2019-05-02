@@ -83,6 +83,20 @@ module Battle_UI
       self.oy = height
     end
 
+    # Affect the zoom property
+    # @param value [Numeric] the new zoom
+    def zoom=(value)
+      super(@pokemon&.bank == 0 ? 2 * value : value)
+    end
+
+    # Return the zoom_x value
+    # @return [Numeric]
+    def zoom_x
+      @pokemon&.bank == 0 ? super / 2 : super
+    end
+
+    alias zoom_y zoom_x
+
     private
 
     # Return the basic x position
@@ -91,8 +105,8 @@ module Battle_UI
       # @pokemon.bank == 0 means the Pokemon is in the actor bank
       x = @pokemon.bank == 0 ? 88 : 233
       # We adjust the position if we're in a multi-battle
-      x -= 28 if $game_temp.vs_type != 1
-      x += @pokemon.position * 28
+      x -= (@pokemon.bank == 0 ? 48 : 24) if $game_temp.vs_type != 1
+      x += @pokemon.position * (@pokemon.bank == 0 ? 96 : 48)
       return x
     end
 
@@ -100,10 +114,10 @@ module Battle_UI
     # @return [Integer]
     def basic_y_position
       # @pokemon.bank == 0 means the Pokemon is in the actor bank
-      y = @pokemon.bank == 0 ? 174 : 94
+      y = @pokemon.bank == 0 ? 202 : 94
       y += offset_y
       if $game_temp.vs_type != 1
-        y -= @pokemon.bank == 0 ? 0 : 14
+        y -= @pokemon.bank == 0 ? 0 : 4
         y += @pokemon.position * (@pokemon.bank == 0 ? 16 : 8)
       end
       return y

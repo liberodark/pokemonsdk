@@ -11,6 +11,7 @@ module Battle
         @done = false
         create_screenshot(screenshot)
         @battle_scene = battle_scene
+        @grounds = battle_scene.visual.grounds
         Graphics.transition(1)
       end
 

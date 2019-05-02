@@ -48,6 +48,8 @@ module Battle
       def update_transition_move_sprite
         @actor_sprites.each { |sprite| sprite.x -= SPRITE_MOVE_PIXEL }
         @enemy_sprites.each { |sprite| sprite.x += SPRITE_MOVE_PIXEL }
+        1.upto(@grounds.size - 1) { |index| @grounds[index].x += SPRITE_MOVE_PIXEL }
+        @grounds.first.x -= SPRITE_MOVE_PIXEL
       end
 
       # Execute the last frame of the move sprite
@@ -99,6 +101,7 @@ module Battle
           sprite.shader = @shader
           sprite.x -= SPRITE_MOVE_DURATION * SPRITE_MOVE_PIXEL
         end
+        1.upto(@grounds.size - 1) { |index| @grounds[index].x -= SPRITE_MOVE_DURATION * SPRITE_MOVE_PIXEL }
       end
 
       # Get the enemy sprites
@@ -118,6 +121,7 @@ module Battle
         @actor_sprites.each do |sprite|
           sprite.x += SPRITE_MOVE_DURATION * SPRITE_MOVE_PIXEL
         end
+        @grounds.first.x += SPRITE_MOVE_DURATION * SPRITE_MOVE_PIXEL
       end
 
       # Get the actor sprites (and hide the mons)

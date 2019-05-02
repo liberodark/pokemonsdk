@@ -94,8 +94,7 @@ module Battle_UI
       # Create the new SkillWindow
       # @param viewport [Viewport]
       def initialize(viewport)
-        rc = viewport.rect
-        super(viewport, 0, rc.height - WINDOW_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT)
+        super(viewport, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
         create_texts
         load_cursor
         @index = 0
@@ -146,7 +145,7 @@ module Battle_UI
       # @param viewport [Viewport]
       def initialize(viewport)
         rc = viewport.rect
-        super(viewport, rc.width - WINDOW_WIDTH, rc.height - WINDOW_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT)
+        super(viewport, rc.width - WINDOW_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
         self.visible = false
         create_stack
       end

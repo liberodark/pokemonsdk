@@ -8,9 +8,13 @@ module Battle_UI
     # @param viewport [Viewport]
     # @param battler [String] name of the battler in graphics/battlers
     # @param bank [Integer] Bank where the Trainer is
-    def initialize(viewport, battler, bank)
+    # @param position [Integer] position of the battler in the Array
+    # @param battle_info [Battle::Logic::BattleInfo]
+    def initialize(viewport, battler, bank, position, battle_info)
       super(viewport)
       @bank = bank
+      @position = position
+      @battle_info = battle_info
       set_bitmap(battler, :battler)
       self.frame_height = bitmap.height / BACK_FRAME_COUNT if @bank == 0
       reset_position
@@ -54,7 +58,21 @@ module Battle_UI
     # Return the basic x position
     # @return [Integer]
     def basic_x_position
-      return @bank == 0 ? 88 : 233
+      battler_count = @battle_info.battlers[@bank].size
+      if @bank == 0
+        x = 88
+        if battler_count > 1
+          x -= 24
+          x += @position * 48
+        end
+      else
+        x = 233
+        if battler_count > 1
+          x -= 12
+          x += @position * 24
+        end
+      end
+      return x
     end
 
     # Return the basic y position
@@ -73,7 +91,7 @@ module Battle_UI
 
     # Return the basic z position of the battler
     def basic_z_position
-      return @bank == 0 ? 1001 : 0
+      return @bank == 0 ? 1001 : 2
     end
   end
 end
