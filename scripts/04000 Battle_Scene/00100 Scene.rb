@@ -32,6 +32,8 @@ module Battle
       @battle_result = :draw
       # All the event procs
       @battle_events = {}
+      # Skip the next frame to go faster in the next update
+      @skip_frame = false
       # Create the message proc
       create_message_proc
       call_event(:logic_init)
@@ -47,7 +49,17 @@ module Battle
       # Prevent update if a message is showing
       return unless super && !@visual.locking?
       # Call the next method
-      send(@next_update)
+      next_update_process
+    end
+
+    # Process the next update method
+    def next_update_process
+      @skip_frame = true
+      # Force the next update to be called if a frame skip was requested
+      while @skip_frame
+        @skip_frame = false
+        send(@next_update)
+      end
     end
 
     # Dispose the battle scene

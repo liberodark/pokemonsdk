@@ -28,6 +28,8 @@ module Battle
         # The visual interface detected an anomaly, we go to the end of the battle
         @next_update = :battle_end
       end
+    ensure
+      @skip_frame = true
     end
 
     # Method that asks for the skill the current Pokemon should use
@@ -39,6 +41,8 @@ module Battle
         # The player canceled
         @next_update = :player_action_choice
       end
+    ensure
+      @skip_frame = true
     end
 
     # Method that asks the target of the choosen move
@@ -52,6 +56,8 @@ module Battle
         # If the player canceled we return to the player action
         @next_update = :player_action_choice
       end
+    ensure
+      @skip_frame = true
     end
 
     # Check if the player can make another action choice
