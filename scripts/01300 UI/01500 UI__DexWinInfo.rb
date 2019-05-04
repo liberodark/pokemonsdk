@@ -19,6 +19,11 @@ module UI
     def data=(pokemon)
       super(pokemon)
       @stack[1].visible = ($pokedex.has_captured?(pokemon.id))
+      @stack[3].visible = ($pokedex.has_captured?(pokemon.id))
+      @stack[4].visible = ($pokedex.has_captured?(pokemon.id))
+      @stack[5].visible = ($pokedex.has_captured?(pokemon.id))
+      @stack[6].visible = ($pokedex.has_captured?(pokemon.id))
+      @stack[7].visible = ($pokedex.has_captured?(pokemon.id))
     end
   end
 end
