@@ -52,7 +52,7 @@ module PFM
       return false if evs >= 510
       if index >= 10
         index = index % 10
-        return (ev_var(index, evs, apply ? 1 : 0) < 255)
+        return (ev_var(index, evs, apply ? 1 : 0) < 252)
       else
         return (ev_var(index, evs, apply ? 10 : 0) < 100)
       end
@@ -94,9 +94,9 @@ module PFM
     def add_ev_hp(n,evs)
       return true if n==0
       n-=1 while((evs+n)>510)
-      return false if @ev_hp>254
+      return false if @ev_hp>251
       @ev_hp+=n
-      @ev_hp=255 if @ev_hp>255
+      @ev_hp=252 if @ev_hp>252
       @ev_hp=0 if @ev_hp<0
       return true
     end
@@ -107,9 +107,9 @@ module PFM
     def add_ev_atk(n,evs)
       return true if n==0
       n-=1 while((evs+n)>510)
-      return false if @ev_atk>254
+      return false if @ev_atk>251
       @ev_atk+=n
-      @ev_atk=255 if @ev_atk>255
+      @ev_atk=252 if @ev_atk>252
       @ev_atk=0 if @ev_atk<0
       return true
     end
@@ -120,9 +120,9 @@ module PFM
     def add_ev_dfe(n,evs)
       return true if n==0
       n-=1 while((evs+n)>510)
-      return false if @ev_dfe>254
+      return false if @ev_dfe>251
       @ev_dfe+=n
-      @ev_dfe=255 if @ev_dfe>255
+      @ev_dfe=252 if @ev_dfe>252
       @ev_dfe=0 if @ev_dfe<0
       return true
     end
@@ -133,9 +133,9 @@ module PFM
     def add_ev_spd(n,evs)
       return true if n==0
       n-=1 while((evs+n)>510)
-      return false if @ev_spd>254
+      return false if @ev_spd>251
       @ev_spd+=n
-      @ev_spd=255 if @ev_spd>255
+      @ev_spd=252 if @ev_spd>252
       @ev_spd=0 if @ev_spd<0
       return true
     end
@@ -146,9 +146,9 @@ module PFM
     def add_ev_ats(n,evs)
       return true if n==0
       n-=1 while((evs+n)>510)
-      return false if @ev_ats>254
+      return false if @ev_ats>251
       @ev_ats+=n
-      @ev_ats=255 if @ev_ats>255
+      @ev_ats=252 if @ev_ats>252
       @ev_ats=0 if @ev_ats<0
       return true
     end
@@ -159,9 +159,9 @@ module PFM
     def add_ev_dfs(n,evs)
       return true if n==0
       n-=1 while((evs+n)>510)
-      return false if @ev_dfs>254
+      return false if @ev_dfs>251
       @ev_dfs+=n
-      @ev_dfs=255 if @ev_dfs>255
+      @ev_dfs=252 if @ev_dfs>252
       @ev_dfs=0 if @ev_dfs<0
       return true
     end
