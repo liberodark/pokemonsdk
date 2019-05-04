@@ -213,6 +213,7 @@ pokemonsdk/scripts/01300 UI/00900 UI__CategorySprite.rb
 pokemonsdk/scripts/01300 UI/01000 UI__AttackDummySprite.rb
 pokemonsdk/scripts/01300 UI/01100 UI__PokemonSprite.rb
 pokemonsdk/scripts/01300 UI/01200 UI__KeyShortcut.rb
+pokemonsdk/scripts/01300 UI/01201 KeyBindingViewer.rb
 pokemonsdk/scripts/01300 UI/01300 UI__DexCTLRButton.rb
 pokemonsdk/scripts/01300 UI/01301 SummaryCTRLButton.rb
 pokemonsdk/scripts/01300 UI/01400 UI__DexWinSprite.rb
@@ -272,6 +273,8 @@ pokemonsdk/scripts/01400 GamePlay/04300 GamePlay__StorageTrade.rb
 pokemonsdk/scripts/01400 GamePlay/04400 GamePlay__StorageUtils.rb
 pokemonsdk/scripts/01400 GamePlay/04600 GamePlay__Save.rb
 pokemonsdk/scripts/01400 GamePlay/04700 GamePlay__Load.rb
+pokemonsdk/scripts/01400 GamePlay/04800 KeyBinding.rb
+pokemonsdk/scripts/01400 GamePlay/04801 KeyBinding_LS.rb
 pokemonsdk/scripts/01500 GamePlay__Battle_xxx/00100 GamePlay__BattleAbilityDisplayer.rb
 pokemonsdk/scripts/01500 GamePlay__Battle_xxx/00200 GamePlay__BattleBalls.rb
 pokemonsdk/scripts/01500 GamePlay__Battle_xxx/00300 GamePlay__BattleBar.rb
