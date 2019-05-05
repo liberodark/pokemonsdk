@@ -36,8 +36,10 @@ module GamePlay
 
     # Update the inputs during the naviation
     def update_navigation_input
-      return @running = false if Input.trigger?(:B)
-      if Input.trigger?(:A) || Input.trigger?(:RIGHT)
+      if Input.trigger?(:B)
+        KeyBinding.save_inputs
+        return @running = false
+      elsif Input.trigger?(:A) || Input.trigger?(:RIGHT)
         @ui.key_index = 0
       elsif Input.trigger?(:LEFT)
         @ui.key_index = 4
@@ -77,9 +79,13 @@ module GamePlay
           return validate_key(key_value) if key_value >= 0 && Keyboard.press?(key_value)
         end
       else
-        0.upto(31) do |key_value|
+        unless Input.joy_connected?(Input.main_joy)
+          @ui.blinking = false
+          return display_message(_ext(8998, 28))
+        end
+        0.upto(Input.joy_button_count(Input.main_joy)) do |key_value|
           if Input.joy_button_press?(Input.main_joy, key_value)
-            return validate_key(key_value) if Keyboard.press?(key_value)
+            return validate_key((-key_value - 1) - 32 * Input.main_joy)
           end
         end
       end
