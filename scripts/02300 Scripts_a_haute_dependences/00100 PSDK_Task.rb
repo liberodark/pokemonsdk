@@ -111,6 +111,17 @@ module Scheduler
       end
     }
   )
+  add_proc(:on_update, :any, 'KeyBinding addition', 0,
+    proc do
+      if $scene.class != GamePlay::KeyBinding
+        if Keyboard.press?(Keyboard::F1)
+          GameData::Text.load unless $options
+          GamePlay::KeyBinding.new.main
+          Graphics.transition
+        end
+      end
+    end
+  )
 =begin
   # Exemple de chargement de tileset automatique
   add_proc(:on_getting_tileset_name, :any, "Changement de tileset map 9", 1000,

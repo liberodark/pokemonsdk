@@ -4,7 +4,7 @@ module GamePlay
     # Create a new KeyBinding UI
     def initialize
       super
-      @viewport = Viewport.create(:main, 500)
+      @viewport = Viewport.create(:main, 10_000)
       create_background
       create_overlay
       create_ctrl_buttons

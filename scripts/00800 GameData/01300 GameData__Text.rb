@@ -34,7 +34,7 @@ module GameData
     # Return the default game lang
     # @return [String]
     def default_lang
-      'fr'
+      GamePlay::Load::DEFAULT_GAME_LANGUAGE
     end
 
     # Get a text front the text database
