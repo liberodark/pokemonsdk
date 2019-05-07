@@ -201,7 +201,7 @@ module PFM
       # génération du code
       code_generation(force_shiny, no_shiny)
       # >Génération du genre
-      @gender = if $game_data_pokemon[id][0].female_rate > 0
+      @gender = if $game_data_pokemon[id][0].female_rate >= 0
                   (rand(100) < $game_data_pokemon[id][0].female_rate ? 2 : 1)
                 else
                   0
