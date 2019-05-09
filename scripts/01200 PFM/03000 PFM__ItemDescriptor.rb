@@ -410,7 +410,7 @@ module PFM
           end
         #> Si c'est une baie qui modifie les EV
         elsif misc_data.berry && item_id >= 169 && item_id <= 174
-          hash[:open_pary] = true
+          hash[:open_party] = true
           hash[:on_pokemon_choice] = proc do |pkmn|
             next(false) if(pkmn.loyalty >= 255 or pkmn.egg?)
             true
