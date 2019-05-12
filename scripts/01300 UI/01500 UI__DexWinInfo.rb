@@ -16,14 +16,14 @@ module UI
       push(243, 84, nil, true, type: Type2Sprite)
     end
     # Change the data
+    # Array of visible sprites if the Pokémon was captured
+    VISIBLE_SPRITES = 1..7
     def data=(pokemon)
       super(pokemon)
-      @stack[1].visible = ($pokedex.has_captured?(pokemon.id))
-      @stack[3].visible = ($pokedex.has_captured?(pokemon.id))
-      @stack[4].visible = ($pokedex.has_captured?(pokemon.id))
-      @stack[5].visible = ($pokedex.has_captured?(pokemon.id))
-      @stack[6].visible = ($pokedex.has_captured?(pokemon.id))
-      @stack[7].visible = ($pokedex.has_captured?(pokemon.id))
+      is_captured = $pokedex.has_captured?(pokemon.id)
+      VISIBLE_SPRITES.each do |i|
+        @stack[i].visible = is_captured
+      end
     end
   end
 end
