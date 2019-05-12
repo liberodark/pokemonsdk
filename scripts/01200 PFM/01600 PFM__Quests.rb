@@ -245,7 +245,9 @@ module PFM
         #> Pareil mais fin de quête avec @signal[:finish]
         @signal[:finish].each do |quest_id|
 #          Yuki.send_notification("Quête terminée !", _get(45, quest_id))
-          @finished_quests[quest_id] = @active_quests.delete(quest_id)
+            if @active_quests.fetch(quest_id, nil)
+                 @finished_quests[quest_id] = @active_quests.delete(quest_id)
+            end
         end
       end
       @signal[:start].clear
