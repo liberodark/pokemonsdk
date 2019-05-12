@@ -60,7 +60,9 @@ module GamePlay
 
       # Return the filename with path of the inputs.yml file
       def input_filename
-        File.join(File.dirname(Save.save_filename), 'input.yml')
+        directory = File.dirname(Save.save_filename)
+        Dir.mkdir!(directory) unless Dir.exist?(directory)
+        File.join(directory, 'input.yml')
       end
     end
     load_inputs
