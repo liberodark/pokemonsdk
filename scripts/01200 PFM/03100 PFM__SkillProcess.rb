@@ -30,8 +30,13 @@ module PFM
   end
   SkillProcess[19] = proc do |pkmn, skill, *test| #> Vol
     next false if test.size > 0 #Indique que la scène doit laisser les précédentes
-    carte = GamePlay::WorldMap.new(:fly)
-    carte.main
-    Graphics.transition
+    if $game_switches[Yuki::Sw::Env_CanFly]
+      carte = GamePlay::WorldMap.new(:fly)
+      carte.main
+      Graphics.transition
+      next true
+    else
+      next :block
+    end
   end
 end
