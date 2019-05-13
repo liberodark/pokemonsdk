@@ -116,6 +116,7 @@ class Game_Temp
     @enemy_battler=[]
     @trainer_battle=false
     @last_menu_index=0
+    @temp_team = []
   end
 end
 
