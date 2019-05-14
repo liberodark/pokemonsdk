@@ -2,7 +2,6 @@ pokemonsdk/scripts/00001 RMXP_DATA.rb
 pokemonsdk/scripts/00002 state.rb
 pokemonsdk/scripts/00100 Yuki__EXC.rb
 pokemonsdk/scripts/00200 PSDK_Version.rb
-pokemonsdk/scripts/00300 VSCodeHelper.rb
 pokemonsdk/scripts/00100 _Patch_temporaire_/00100 Sprite_RGSS_Fix.rb
 pokemonsdk/scripts/00100 _Patch_temporaire_/00200 Plane.rb
 pokemonsdk/scripts/00200 GameData(dep)/00100 GameData__SystemTags.rb
