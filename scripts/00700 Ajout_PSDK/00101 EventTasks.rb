@@ -112,4 +112,4 @@ Scheduler::EventTasks.on(:end_step, 'Daycare', -1) { $daycare.update }
 Scheduler::EventTasks.on(:end_step, 'Loyalty check', -1) { $pokemon_party.loyalty_update }
 Scheduler::EventTasks.on(:end_step, 'PoisonUpdate', -1) { $pokemon_party.poison_update }
 Scheduler::EventTasks.on(:end_step, 'Hatch check', -1) { $pokemon_party.hatch_check_update }
-Scheduler::EventTasks.on(:end_step, 'BattleStarting', -1) { $pokemon_party.battle_starting_update }
+Scheduler::EventTasks.on(:begin_step, 'BattleStarting', -1) { $pokemon_party.battle_starting_update }
