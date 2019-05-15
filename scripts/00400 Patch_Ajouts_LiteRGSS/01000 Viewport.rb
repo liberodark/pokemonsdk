@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 # Classe that describe an area where the Sprites display on the screen
 #
 # see https://psdk.pokemonworkshop.com/litergss/LiteRGSS/Viewport.html
@@ -23,15 +21,15 @@ class Viewport
   #   @param z [Integer, nil] superiority of the viewport
   # @return [Viewport] the generated viewport
   def self.create(x, y = 0, width = 1, height = 1, z = nil)
-    if(x.class == Hash)
+    if x.class == Hash
       z = x.fetch(:z, nil)
       y = x.fetch(:y, 0)
       width = x.fetch(:width, 320)
       height = x.fetch(:height, 240)
       x = x.fetch(:x, 0)
-    elsif(x == :main or x == :sub)
+    elsif x == :main || x == :sub
       z = y
-      if(x == :main)
+      if x == :main
         x = ::Config::Viewport::X
         y = ::Config::Viewport::Y
         width = ::Config::Viewport::Width
@@ -47,9 +45,10 @@ class Viewport
     v.z = z if z
     return v
   end
+
   # Sort the z sprites inside the viewport
   def sort_z
-    #@__elementtable.delete_if do |el| el.disposed? end
+    # @__elementtable.delete_if do |el| el.disposed? end
     @__elementtable.sort! do |a, b| 
       s = a.z <=> b.z
       next(a.__index__ <=> b.__index__) if s == 0
@@ -57,30 +56,33 @@ class Viewport
     end
     reload_stack
   end
+
   # To_S
   def to_s
-    return sprintf("#<Vewport:%08x : %d>", __id__, __index__)
+    return format('#<Vewport:%08x : %00d>', __id__, __index__)
   end
   alias inspect to_s
+
   # Flash the viewport
   # @param color [LiteRGSS::Color] the color used for the flash processing
   def flash(color, duration)
-    color = Color.new(0, 0, 0) unless color
+    color ||= Color.new(0, 0, 0)
     @viewport_color = self.color.clone
     @flash_color = color
     @flash_counter = 0
     @flash_duration = duration.to_f
-    ##@flash_mid = duration / 2
+    ## @flash_mid = duration / 2
   end
+
   # Update the viewport
   def update
     if @flash_color
-      #alpha = (@flash_counter < @flash_mid ? @flash_counter : @flash_duration - @flash_counter)
-      #alpha /= @flash_mid.to_f
+      # alpha = (@flash_counter < @flash_mid ? @flash_counter : @flash_duration - @flash_counter)
+      # alpha /= @flash_mid.to_f
       alpha = 1 - @flash_counter / @flash_duration
-      #alpha2 = (1 - alpha)
+      # alpha2 = (1 - alpha)
       self.color = @flash_color
-      self.color.alpha = @flash_color.alpha * alpha
+      color.alpha = @flash_color.alpha * alpha
 =begin
       self.color.set(
         @viewport_color.red * alpha2 + @flash_color.red * alpha,

@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 class Sprite
   # Define a sprite that mix with a color
   class WithColor < ShaderedSprite
@@ -13,7 +11,7 @@ class Sprite
     # @param array [Array(Numeric, Numeric, Numeric, Numeric), LiteRGSS::Color] the color (values : 0~1.0)
     # @return [self]
     def set_color(array)
-      shader.set_float_uniform("color", array)
+      shader.set_float_uniform('color', array)
       return self
     end
   end

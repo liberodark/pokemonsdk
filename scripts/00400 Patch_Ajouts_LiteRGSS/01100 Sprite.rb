@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 # Class that describe how a bitmap is shown on a screen surface
 #
 # see https://psdk.pokemonworkshop.com/litergss/LiteRGSS/Sprite.html
@@ -15,6 +13,7 @@ class Sprite
     self.z = z
     return self
   end
+
   # add value to sprite coordinates
   # @param x [Numeric] value to add to the x coordinate
   # @param y [Numeric] value to add to the y coordinate
@@ -24,6 +23,7 @@ class Sprite
     self.y += y
     return self
   end
+
   # define the superiority of the sprite
   # @param z [Integer] superiority
   # @return [self]
@@ -31,27 +31,18 @@ class Sprite
     self.z = z
     return self
   end
-=begin #Defined in LiteRGSS
-  # define the pixel of the bitmap that is shown at the coordinate of the sprite
-  # @param ox [Integer] origin x
-  # @param oy [Integer] origin y
-  # @return [self]
-  def set_origin(ox, oy)
-    self.ox = ox
-    self.oy = oy
-    return self
-  end
-=end
+
   # define the pixel of the bitmap that is shown at the coordinate of the sprite.
   # The width and the height is divided by ox and oy to determine the pixel
   # @param ox [Numeric] factor of division of width to get the origin x
   # @param oy [Numeric] factor of division of height to get the origin y
   # @return [self]
   def set_origin_div(ox, oy)
-    self.ox = self.bitmap.width / ox
-    self.oy = self.bitmap.height / oy
+    self.ox = bitmap.width / ox
+    self.oy = bitmap.height / oy
     return self
   end
+
   # Define the surface of the bitmap that is shown on the screen surface
   # @param x [Integer] x coordinate on the bitmap
   # @param y [Integer] y coordinate on the bitmap
@@ -59,9 +50,10 @@ class Sprite
   # @param height [Integer] height of the surface
   # @return [self]
   def set_rect(x, y, width, height)
-    self.src_rect.set(x, y, width, height)
+    src_rect.set(x, y, width, height)
     return self
   end
+
   # Define the surface of the bitmap that is shown with division of it
   # @param x [Integer] the division index to show on x
   # @param y [Integer] the division index to show on y
@@ -69,11 +61,12 @@ class Sprite
   # @param height [Integer] the division of height of the bitmap to show
   # @return [self]
   def set_rect_div(x, y, width, height)
-    width = self.bitmap.width / width
-    height = self.bitmap.height / height
-    self.src_rect.set(x * width, y * height, width, height)
+    width = bitmap.width / width
+    height = bitmap.height / height
+    src_rect.set(x * width, y * height, width, height)
     return self
   end
+
   # Set the bitmap show on the screen surface
   # @overload set_bitmap(bmp)
   #   @param bmp [Bitmap, nil] the bitmap to show
@@ -82,18 +75,11 @@ class Sprite
   #   @param cache_symbol [Symbol] the symbol method to call with filename argument in RPG::Cache
   # @return [self]
   def set_bitmap(bmp, cache = nil)
-    if cache and bmp.is_a?(String)
+    if cache && bmp.is_a?(String)
       self.bitmap = RPG::Cache.send(cache, bmp)
     else
       self.bitmap = bmp
     end
-    return self
-  end
-  # Change the sprite zoom
-  # @param zoom [Numeric] the new zoom value
-  # @return [self]
-  def set_zoom(zoom)
-    self.zoom_x = self.zoom_y = zoom
     return self
   end
 end

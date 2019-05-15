@@ -14,7 +14,6 @@ pokemonsdk/scripts/00300 Patch_Ruby/00500 Dir.rb
 pokemonsdk/scripts/00300 Patch_Ruby/00600 Module.rb
 pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/00100 Various_Patch.rb
 pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/00200 Bitmap.rb
-pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/00300 Font.rb
 pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/00400 Graphics.rb
 pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/00401 Graphics_framerate.rb
 pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/00402 Graphics_soft_quit.rb
@@ -29,6 +28,7 @@ pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/01200 Shader.rb
 pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/01300 Sprite__WithColor.rb
 pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/01400 Keyboard.rb
 pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/01500 Converter.rb
+pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/01600 Font.rb
 pokemonsdk/scripts/00500 Patch_RPG/00100 RPG__Cache.rb
 pokemonsdk/scripts/00500 Patch_RPG/00200 RPG__Event.rb
 pokemonsdk/scripts/00500 Patch_RPG/00300 RPG__Weather.rb
