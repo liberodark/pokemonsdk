@@ -14,7 +14,8 @@ module Yuki
     Boxes_Current = 4
     # Number the in the GamePlay::InputNumber interface (default variable)
     EnteredNumber = 5
-
+    # Number of Pokemon to select for creating temporary team
+    Max_Pokemon_Select = 6
     # ID (in the database) of the trainer battle to start
     Trainer_Battle_ID = 8
     # ID of the particle data to use in order to show particle

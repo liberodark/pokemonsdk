@@ -55,6 +55,7 @@ class Game_Temp
   attr_accessor :vs_enemies
   attr_accessor :enemy_battler
   attr_accessor :trainer_battle
+  attr_accessor :temp_team                # Tableau contenant une équipe temporaire
   # Name of the tileset to load instead of the normal one
   # @return [String]
   attr_accessor :tileset_name
@@ -115,6 +116,7 @@ class Game_Temp
     @enemy_battler=[]
     @trainer_battle=false
     @last_menu_index=0
+    @temp_team = []
   end
 end
 
