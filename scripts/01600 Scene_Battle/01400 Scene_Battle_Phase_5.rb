@@ -114,6 +114,11 @@ class Scene_Battle
     end
     if $game_switches[Yuki::Sw::BT_Catch]
       pkmn = @enemies[@enemies[0].dead? ? 1 : 0]
+      if (pkmn.sub_id != nil)
+        pkmn.id = pkmn.sub_id
+        pkmn.shiny = pkmn.sub_shiny
+        pkmn.form = pkmn.sub_form
+      end
       $quests.catch_pokemon(pkmn)
       $wild_battle.remove_roaming_pokemon(pkmn)
       display_message(_parse(18, 67, PKNAME[0] => pkmn.name))

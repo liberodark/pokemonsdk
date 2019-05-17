@@ -154,6 +154,12 @@ module PFM
     # Real id of the Pokemon when used transform
     # @return [Integer, nil]
     attr_accessor :sub_id
+    # If shiny or not for the Pokemon when used transform (needed to test if roaming pokemon is ditto)
+    # @return [Integer, nil]
+    attr_accessor :sub_shiny
+    # Real form index of the Pokemon when used transform (needed to test if roaming pokemon is ditto)
+    # @return [Integer, nil]
+    attr_accessor :sub_form
     # ID of the item the Pokemon is holding in battle
     # @return [Integer, nil]
     attr_accessor :battle_item
@@ -288,6 +294,8 @@ module PFM
       @battle_turns = 0
       @ability_used = false
       @sub_id = nil
+      @sub_shiny = nil
+      @sub_form = nil
       @hp_rate = 1
       @exp_rate = 0
       @mega_evolved = false
