@@ -33,4 +33,8 @@ class Bitmap
       end
     end
   end
+  # Clear the bitmap surface
+  def clear
+    clear_rect(0, 0, width, height)
+  end
 end
