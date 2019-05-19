@@ -11,7 +11,7 @@ class Scene_Title
   # Entry point of the scene. If player hit X + B + UP the GamePlay::Load scene will ask the save deletion.
   def main
     data_load
-    title_animation
+    title_animation if $DEBUG && ARGV.include?('skip_title')
     if $scene == self
       Yuki::MapLinker.reset
       GamePlay::Load.new(#> Suppression de sauvegarde : X+B+Haut
