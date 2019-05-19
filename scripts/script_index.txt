@@ -346,12 +346,13 @@ pokemonsdk/scripts/04000 Battle_Scene/00101 Scene Choice.rb
 pokemonsdk/scripts/04000 Battle_Scene/00102 Scene AI trigger.rb
 pokemonsdk/scripts/04000 Battle_Scene/00103 Scene Battle Phase.rb
 pokemonsdk/scripts/04000 Battle_Scene/00104 Scene Event.rb
-pokemonsdk/scripts/04000 Battle_Scene/00200 Visual.rb
-pokemonsdk/scripts/04000 Battle_Scene/00201 Visual_Trainer_transition.rb
-pokemonsdk/scripts/04000 Battle_Scene/00202 Visual_Show_player_choice.rb
-pokemonsdk/scripts/04000 Battle_Scene/00203 Visual_show_skill_or_target_choice.rb
-pokemonsdk/scripts/04000 Battle_Scene/00204 Visual_show_item_or_pokemon_choice.rb
-pokemonsdk/scripts/04000 Battle_Scene/00205 Visual_Info_Bars.rb
+pokemonsdk/scripts/04010 Battle_Visual/00200 Visual.rb
+pokemonsdk/scripts/04010 Battle_Visual/00201 Visual_Trainer_transition.rb
+pokemonsdk/scripts/04010 Battle_Visual/00202 Visual_Show_player_choice.rb
+pokemonsdk/scripts/04010 Battle_Visual/00203 Visual_show_skill_or_target_choice.rb
+pokemonsdk/scripts/04010 Battle_Visual/00204 Visual_show_item_or_pokemon_choice.rb
+pokemonsdk/scripts/04010 Battle_Visual/00205 Visual_Info_Bars.rb
+pokemonsdk/scripts/04020 Battle_Visual_Animations/00100 IdlePokemonAnimation.rb
 pokemonsdk/scripts/04100 Battle_Logic/00100 Logic.rb
 pokemonsdk/scripts/04100 Battle_Logic/00101 Logic_Battler.rb
 pokemonsdk/scripts/04100 Battle_Logic/00102 Logic_Actions.rb
