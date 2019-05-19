@@ -12,6 +12,12 @@ module PFM
     MALE_NAME_FORM = '%03d_%02d'
     # Name of the Male battler
     MALE_NAME = '%03d'
+    # Size of a battler
+    BATTLER_SIZE = 96
+    # Size of an icon
+    ICON_SIZE = 32
+    # Size of a footprint
+    FOOT_SIZE = 16
 
     # Return the ball image of the Pokemon
     # @return [Bitmap]
