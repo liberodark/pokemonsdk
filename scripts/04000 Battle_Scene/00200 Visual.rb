@@ -48,6 +48,7 @@ module Battle
       @animations.delete_if(&:done?)
       @parallel_animations.each_value(&:update)
       update_battlers
+      update_info_bars
     end
 
     # Dispose the visuals
@@ -107,8 +108,10 @@ module Battle
           sprite = Battle_UI::PokemonSprite.new(@viewport)
           sprite.pokemon = logic.battler(bank, position)
           store_battler_sprite(bank, position, sprite)
+          create_info_bar(bank, position)
         end
       end
+      hide_info_bars(true)
     end
 
     # Update the battler sprites
@@ -116,6 +119,22 @@ module Battle
       @battlers.each_value do |battlers|
         battlers.each_value(&:update)
       end
+    end
+
+    # Update the info bars
+    def update_info_bars
+      @info_bars.each_value do |info_bars|
+        info_bars.each(&:update)
+      end
+    end
+
+    # Create the info bar for a bank
+    # @param bank [Integer]
+    # @param position [Integer]
+    def create_info_bar(bank, position)
+      info_bars = (@info_bars[bank] ||= [])
+      pokemon = @battle_scene.logic.battler(bank, position)
+      info_bars[position] = Battle_UI::InfoBar.new(@viewport, pokemon)
     end
 
     # Create the player choice

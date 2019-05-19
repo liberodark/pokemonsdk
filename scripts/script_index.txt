@@ -338,6 +338,7 @@ pokemonsdk/scripts/03800 PokemonBattler/00200 States_1.rb
 pokemonsdk/scripts/03900 Battle_UI/00100 PokemonSprite.rb
 pokemonsdk/scripts/03900 Battle_UI/00101 TrainerSprite.rb
 pokemonsdk/scripts/03900 Battle_UI/00102 GroundSprite.rb
+pokemonsdk/scripts/03900 Battle_UI/00103 InfoBar.rb
 pokemonsdk/scripts/03900 Battle_UI/00200 PlayerChoice.rb
 pokemonsdk/scripts/03900 Battle_UI/00300 SkillChoice.rb
 pokemonsdk/scripts/04000 Battle_Scene/00100 Scene.rb
@@ -350,6 +351,7 @@ pokemonsdk/scripts/04000 Battle_Scene/00201 Visual_Trainer_transition.rb
 pokemonsdk/scripts/04000 Battle_Scene/00202 Visual_Show_player_choice.rb
 pokemonsdk/scripts/04000 Battle_Scene/00203 Visual_show_skill_or_target_choice.rb
 pokemonsdk/scripts/04000 Battle_Scene/00204 Visual_show_item_or_pokemon_choice.rb
+pokemonsdk/scripts/04000 Battle_Scene/00205 Visual_Info_Bars.rb
 pokemonsdk/scripts/04100 Battle_Logic/00100 Logic.rb
 pokemonsdk/scripts/04100 Battle_Logic/00101 Logic_Battler.rb
 pokemonsdk/scripts/04100 Battle_Logic/00102 Logic_Actions.rb

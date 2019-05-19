@@ -40,6 +40,7 @@ module Battle
         @counter += 1
         unless @counter < SPRITE_MOVE_DURATION + 4
           @battle_scene.visual.unlock
+          @battle_scene.visual.show_info_bars
           @done = true
         end
       end
