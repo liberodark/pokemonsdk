@@ -2,6 +2,8 @@
 
 module PFM
   class Pokemon
+    # Tell if PSDK test evolve on form 0 or the current form
+    EVOLVE_ON_FORM0 = true
     # Return the base experience of the Pokemon
     # @return [Integer]
     def base_exp
@@ -121,7 +123,7 @@ module PFM
     # @return [Integer, false] if the Pokemon can evolve, the evolve id, otherwise false
     def evolve_check(reason = :level_up, extend_data = nil)
       return false if @item_holding == 229#>Pierre Stase
-      data = $game_data_pokemon[@id][0]
+      data = EVOLVE_ON_FORM0 ? $game_data_pokemon[@id][0] : get_data
       if(reason == :level_up and data.evolution_level and data.evolution_level <= @level and data.evolution_id and data.evolution_id != 0)
         return data.evolution_id
       end
