@@ -2,6 +2,8 @@
 
 # Describe the Map processing
 class Game_Map
+  # If the Path Finding system is enabled
+  PATH_FINDING_ENABLED = true
   # If the player is always on the center of the screen
   CenterPlayer = ::Config::CenterPlayer
   attr_accessor :tileset_name             # タイルセット ファイル名
@@ -350,6 +352,7 @@ class Game_Map
   end
   # Update the Map processing
   def update
+    Pathfinding.update if PATH_FINDING_ENABLED
     # 必要ならマップをリフレッシュ
     if $game_map.need_refresh
       refresh

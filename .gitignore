@@ -39,3 +39,4 @@ build/
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
 .rvmrc
 psdk.code-workspace
+scripts/my_scripts/scripts
