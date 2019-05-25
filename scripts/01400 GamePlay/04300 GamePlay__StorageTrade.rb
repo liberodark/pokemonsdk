@@ -12,7 +12,7 @@ module GamePlay
       @utils = StorageUtils.new
       @index = 1
       @utils.draw_selector(@index)
-      @arr = [_ext(9000, 90), _get(22, 41), _get(22, 82)]
+      @arr = [_ext(9000, 90), _get(33, 41), _get(33, 82)]
       @running = true
     end
 
@@ -26,7 +26,6 @@ module GamePlay
       end
       Graphics.freeze
       dispose
-      Graphics.transition
       $scene = @last_scene
     end
 
