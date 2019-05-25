@@ -17,10 +17,14 @@ module Yuki
     # @param message [String] Message of the error
     def error(klass, message)
       klass, exception = klass.class, klass if klass.is_a?(StandardError)
-      init_graphics(ERROR_COLOR, klass, message)
-      Text.new(0, @viewport, 8, Graphics.height - LINE_HEIGHT * 2 - 4, 0, LINE_HEIGHT, "Full error log will be stored inside Error.log").load_color(9)
-      Graphics.update until Keyboard.press?(Keyboard::Enter)
-      dispose
+      begin
+        init_graphics(ERROR_COLOR, klass, message)
+        Text.new(0, @viewport, 8, Graphics.height - LINE_HEIGHT * 2 - 4, 0, LINE_HEIGHT, "Full error log will be stored inside Error.log").load_color(9)
+        Graphics.update until Keyboard.press?(Keyboard::Enter)
+        dispose
+      rescue LiteRGSS::Graphics::StoppedError
+        puts 'Window closed...'
+      end
       raise exception if exception
       raise klass, message
     end
@@ -33,6 +37,8 @@ module Yuki
       Graphics.update until Keyboard.press?(Keyboard::Enter)
       dispose
       Graphics.wait(20)
+    rescue LiteRGSS::Graphics::StoppedError
+      puts 'Window closed...'
     end
 
     # Create the graphics of the error
@@ -55,7 +61,7 @@ module Yuki
       @background_viewport.dispose
       @viewport.dispose
     end
-    
+
     # Function that yields the block and catch the error to show it to the user
     # @param extended_message [String, nil] message added to the error when it's a warning
     def critical_section(extended_message = nil)
