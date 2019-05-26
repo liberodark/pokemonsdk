@@ -36,6 +36,8 @@ module GameData
     TUnderWater = gen 6, 2
     # Snow SystemTag, used to start Snow Wild Pokemon Battle.
     TSnow = gen 7, 2
+    # SystemTag that is used by the pathfinding system as a road.
+    Road = gen 7, 5
     # Defines a Ledge SystemTag where you can jump to the right.
     JumpR = gen 0, 1
     # Defines a Ledge SystemTag where you can jump to the left.
