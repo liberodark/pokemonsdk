@@ -231,6 +231,9 @@ module Pathfinding
       if @target.reached?(@character.x, @character.y, @character.z)
         @state = :watching
         return node_counter
+      elsif @target.check_move(@character.x, @character.y)
+        @state = :reload
+        return node_counter
       end
       # Initialize
       nodes = 0
@@ -263,6 +266,10 @@ module Pathfinding
 
     # Update the request when looking for obstacles
     def update_watch
+      if @target.check_move(@character.x, @character.y)
+        @state = :reload
+        return
+      end
       # Optimization : Detect stuckness only if the character is on one tile
       if @character.real_x % 128 + @character.real_y % 128 == 0
         if is_stucked?
@@ -282,8 +289,10 @@ module Pathfinding
     # Reload the request
     def on_reload
       @character.force_move_route(WAITING_ROUTE)
-      @open = [[character.x, character.y, character.z, 0, @cursor.get_state, -1]]
-      @closed = Table32.new($game_map.width, $game_map.height, 7)
+      @open.clear
+      @open.push [character.x, character.y, character.z, 0, @cursor.get_state, -1]
+      @closed.resize(0,0,0) # Clear the table
+      @closed.resize($game_map.width, $game_map.height, 7)
       @state = :searching
     end
 
@@ -473,8 +482,21 @@ module Pathfinding
         @x, @y, @z, @radius = x + Yuki::MapLinker.get_OffsetX, y + Yuki::MapLinker.get_OffsetY, z, radius
       end
 
+      # Test if the target is reached at the fiveng coords
+      # @param x [Integer] the x coordinate to test
+      # @param y [Integer] the y coordinate to test
+      # @param z [Integer] the x coordinate to test
+      # @return [Boolean]
       def reached?(x, y, z)
         return ((@x - x).abs + (@y - y).abs) <= @radius
+      end
+
+      # Check if the character targetted has moved, considering the distance for optimisation and return true if the target is considered as moved
+      # @param x [Integer] the x coordinate of the heading event
+      # @param y [Integer] the y coordinate of the heading event
+      # @return [Boolean]
+      def check_move(x, y)
+        false
       end
     end
 
@@ -494,10 +516,31 @@ module Pathfinding
       def initialize(character, radius=1)
         @character = character
         @radius = radius
+        @sx, @sy = character.x, character.y
       end
-
+      
+      # Test if the target is reached at the fiveng coords
+      # @param x [Integer] the x coordinate to test
+      # @param y [Integer] the y coordinate to test
+      # @param z [Integer] the x coordinate to test
+      # @return [Boolean]
       def reached?(x, y, z)
         return ((@character.x - x).abs + (@character.y - y).abs) <= @radius
+      end
+
+      # Check if the character targetted has moved, considering the distance for optimisation and return true if the target is considered as moved
+      # @param x [Integer] the x coordinate of the heading event
+      # @param y [Integer] the y coordinate of the heading event
+      # @return [Boolean]
+      def check_move(x, y)
+        if ((c=@character).x - x).abs + (c.y - y).abs > 15
+          if (@sx-c.x).abs+(@sy-c.y).abs > 10
+            @sx, @sy = c.x, c.y
+            return true
+          end
+          return false
+        end
+        return @sx!=(@sx=c.x) || @sy!=(@sy=c.y)
       end
     end
   end
