@@ -72,6 +72,7 @@ pokemonsdk/scripts/00650 MapSystem/00145 Game_Character_follower.rb
 pokemonsdk/scripts/00650 MapSystem/00150 Game_Character_Ext.rb
 pokemonsdk/scripts/00650 MapSystem/00155 Game_Character_bridge.rb
 pokemonsdk/scripts/00650 MapSystem/00160 Game_Character_particles.rb
+pokemonsdk/scripts/00650 MapSystem/00170 Game_Character_pathfinding.rb
 pokemonsdk/scripts/00650 MapSystem/00200 Game_Event.rb
 pokemonsdk/scripts/00650 MapSystem/00400 Game_Player.rb
 pokemonsdk/scripts/00650 MapSystem/00405 Game_Player_passable.rb
@@ -86,7 +87,6 @@ pokemonsdk/scripts/00650 MapSystem/00465 Game_Player_hole.rb
 pokemonsdk/scripts/00650 MapSystem/00600 Game_Map.rb
 pokemonsdk/scripts/00650 MapSystem/00650 Game_Map_Ext.rb
 pokemonsdk/scripts/00650 MapSystem/00700 Pathfinding.rb
-pokemonsdk/scripts/00650 MapSystem/00701 Pathfinding Misc.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00100 Scheduler.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00101 EventTasks.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00200 Tester.rb
