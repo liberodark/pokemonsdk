@@ -141,19 +141,25 @@ class Interpreter_RMXP
       end
       # 移動完了待機中の場合
       if @move_route_waiting
-        # プレイヤーが移動ルート強制中の場合
-        if $game_player.move_route_forcing
-          return
-        end
-        # ループ (マップイベント)
-        for event in $game_map.events.values
-          # このイベントが移動ルート強制中の場合
-          if event.move_route_forcing
+        if @move_route_waiting_id
+          return if $game_map.events[@move_route_waiting_id].move_route_forcing
+          @move_route_waiting = false
+          @move_route_waiting_id = nil
+        else
+          # プレイヤーが移動ルート強制中の場合
+          if $game_player.move_route_forcing
             return
           end
+          # ループ (マップイベント)
+          for event in $game_map.events.values
+            # このイベントが移動ルート強制中の場合
+            if event.move_route_forcing
+              return
+            end
+          end
+          # 移動完了待機中フラグをクリア
+          @move_route_waiting = false
         end
-        # 移動完了待機中フラグをクリア
-        @move_route_waiting = false
       end
       # ボタン入力待機中の場合
       if @button_input_variable_id > 0

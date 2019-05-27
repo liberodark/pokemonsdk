@@ -1,4 +1,8 @@
 # Pathfinding (PSDK) by Leikt
+# Module that handle the automatic pathfinding system.
+# Djikstra Algorithm and optimized to be performance friendly.
+# If you are experimenting performance issue while the algorithm is running, down the NODE_PER_FRAME value.
+# You can customize the cost of each tag in TAGS_WEIGHT.
 
 module Pathfinding
   # Amount of node to calculate in one frame (OPTIMISATION)
@@ -27,29 +31,39 @@ module Pathfinding
   WAITING_ROUTE = RPG::MoveRoute.new
   WAITING_ROUTE.list.unshift(RPG::MoveCommand.new(15,1))
 
-  # Weight of the tags
+  # Weight of the tags, the higher is the cost, the more the path will avoid it
   TAGS_WEIGHT = {
-    GameData::SystemTags::TSand => 2, # Road
-    GameData::SystemTags::SwampBorder => 20, # Avoid swamp if possible
-    GameData::SystemTags::DeepSwamp => 30, # Avoid deep swamp whatever it takes
-    GameData::SystemTags::MachBike => 1000, # Prevent bug
+    GameData::SystemTags::Road => 2,          # Tag of the main road
+    GameData::SystemTags::SwampBorder => 20,  # Avoid swamp if possible
+    GameData::SystemTags::DeepSwamp => 30,    # Avoid deep swamp whatever it takes
+    GameData::SystemTags::MachBike => 1000,   # Prevent bug
   }
   TAGS_WEIGHT.default = 10 # Grass, ...
 
+  # Default save state
+  DEFAULT_SAVE = [[], [], []]
+
   # Initialisation
+  0
+  # List of requests looking for a path
   @requests = []
+  # List of requests detecting obstacles
   @watching_requests = []
+  # List of requests waiting before retry
   @waiting_requests = []
+  # Last updated researching request
   @last_request_id = 0
 
+  PRESET_COMMANDS = Array.new(5) {|i| RPG::MoveCommand.new(i)}.method(:[])
   # Convert a path to an RPG::MoveRoute
   # @param path [Array<Integer>] directions list
-  # @return RPG::MoveRoute
+  # @return [RPG::MoveRoute]
   def self.path_to_route(path)
     route = RPG::MoveRoute.new # Init a non repeated route
     route.repeat = false
     # Create the list with empty command at the end
-    path.reverse_each { |dir| route.list.unshift RPG::MoveCommand.new(dir) }
+    path.push 0
+    route.list = path.collect(&PRESET_COMMANDS)
     return route # Return the usable move route
   end
 
@@ -92,8 +106,8 @@ module Pathfinding
     node_counter = NODES_PER_FRAME    # Optimisation, only a certain amount of node can be search by frame
     current_id = @last_request_id     # Start this update at the same point than the last one
     until @requests.empty? || node_counter <= 0 # Continue the search until there is no requests left or to much node has been searched
-      current_request = @requests[current_id] # Get the request to update
-      node_counter = current_request.update_search(node_counter) # Update the request and the node counter
+      # current_request = @requests[current_id] # Get the request to update
+      node_counter = (current_request=@requests[current_id]).update_search(node_counter) # Update the request and the node counter
 
       if current_request.watching? # If the current request is watching, add it to the watching list
         @watching_requests.push current_request
@@ -106,7 +120,7 @@ module Pathfinding
       end
 
       if current_id >= @requests.length || # If Id's out of range (when delete a request) or
-         current_request.priority > @requests[current_id].priority # THe next request is not enough prioritary, go back to the beginning
+          current_request.priority > @requests[current_id].priority # THe next request is not enough prioritary, go back to the beginning
         current_id = 0
       end
     end
@@ -143,6 +157,22 @@ module Pathfinding
     @last_request_id = 0 # Reset the request id to prevent problems
   end
 
+  # pc Pathfinding.save.inspect
+
+  # SAVE_PROC = Proc.new {|request| return request.save}
+  def self.save
+    block = lambda {|r| r.save}
+    $pokemon_party.pathfinding_requests = [@requests.collect(&block), @watching_requests.collect(&block), @waiting_requests.collect(&block)]
+  end
+
+  def self.load
+    data = $pokemon_party.pathfinding_requests
+    block = lambda {|d| Request.load(d)}
+    @requests = data[0].collect(&block)
+    @watching_requests = data[1].collect(&block)
+    @waiting_requests = data[2].collect(&block)
+  end
+
   #-------------------------------------------
   # Class that describe a pathfinding request
   #   A request has three caracteristics :
@@ -160,9 +190,16 @@ module Pathfinding
   # 3rd step : Watch
   #   The Request look for obstacles on the path and restart the search (reload) if there is one
   class Request
+    # The character which needs a path
     attr_reader :character
+    # The priority of the request between others
     attr_reader :priority
 
+    # Create the request
+    # @param character [Game_Character] the character to give a path
+    # @param target [Target] the target data
+    # @param priority [Integer] the priority between other requests
+    # @param tries [Integer, Symbol] the amount of tries allowed before fail, use :infinity to have unlimited tries
     def initialize(character, target, priority, tries)
       @character = character
       @target = target
@@ -213,6 +250,9 @@ module Pathfinding
       if @target.reached?(@character.x, @character.y, @character.z)
         @state = :watching
         return node_counter
+      elsif @target.check_move(@character.x, @character.y)
+        @state = :reload
+        return node_counter
       end
       # Initialize
       nodes = 0
@@ -245,6 +285,10 @@ module Pathfinding
 
     # Update the request when looking for obstacles
     def update_watch
+      if @target.check_move(@character.x, @character.y)
+        @state = :reload
+        return
+      end
       # Optimization : Detect stuckness only if the character is on one tile
       if @character.real_x % 128 + @character.real_y % 128 == 0
         if is_stucked?
@@ -264,8 +308,10 @@ module Pathfinding
     # Reload the request
     def on_reload
       @character.force_move_route(WAITING_ROUTE)
-      @open = [[character.x, character.y, character.z, 0, @cursor.get_state, -1]]
-      @closed = Table32.new($game_map.width, $game_map.height, 7)
+      @open.clear
+      @open.push [character.x, character.y, character.z, 0, @cursor.get_state, -1]
+      @closed.resize(0,0,0) # Clear the table
+      @closed.resize($game_map.width, $game_map.height, 7)
       @state = :searching
     end
 
@@ -362,6 +408,22 @@ module Pathfinding
       @remaining_tries = @original_remaining_tries
       return path
     end
+
+    # Gather the data ready to be saved
+    # @return [Array<Object>]
+    def save
+      return [@character.id, @target.save, @priority, @original_remaining_tries]
+    end
+
+    # (Class method) Load the requests from the given argument
+    # @param data [Array<Object>] the data generated by the save method
+    def self.load(data)
+      character = $game_map.events[data[0]]
+      target    = Target.load(data[1])
+      priority  = data[2]
+      tries     = data[3]
+      return Request.new(character, target, priority, tries)
+    end
   end
 
   #-------------------------------------------
@@ -449,14 +511,47 @@ module Pathfinding
       end
     end
 
+    # Convert the raw data to a target object with #reached?(x,y,z) method
+    # @param data [Array] data to convert
+    # @return [Object]
+    def self.load(data)
+      case data[0]
+      when :character
+        character = data[1]==0 ? $game_player : $game_map.events[data[1]]
+        return get([character, data[2]])
+      when :coords
+        return get(data[1..2])
+      end
+    end
+
     class Coords
       attr_reader :x, :y, :z
       def initialize(x, y, z, radius)
         @x, @y, @z, @radius = x + Yuki::MapLinker.get_OffsetX, y + Yuki::MapLinker.get_OffsetY, z, radius
+        @original_x, @original_y = x, y # Prevent bug from MapLinker Enable/Disable
       end
 
+      # Test if the target is reached at the fiveng coords
+      # @param x [Integer] the x coordinate to test
+      # @param y [Integer] the y coordinate to test
+      # @param z [Integer] the x coordinate to test
+      # @return [Boolean]
       def reached?(x, y, z)
         return ((@x - x).abs + (@y - y).abs) <= @radius
+      end
+
+      # Check if the character targetted has moved, considering the distance for optimisation and return true if the target is considered as moved
+      # @param x [Integer] the x coordinate of the heading event
+      # @param y [Integer] the y coordinate of the heading event
+      # @return [Boolean]
+      def check_move(x, y)
+        false
+      end
+
+      # Gather the savable data
+      # @return [Array<Object>]
+      def save
+        return [:coords, [@original_x, @original_y, @z], @radius]
       end
     end
 
@@ -476,10 +571,37 @@ module Pathfinding
       def initialize(character, radius=1)
         @character = character
         @radius = radius
+        @sx, @sy = character.x, character.y
       end
-
+      
+      # Test if the target is reached at the fiveng coords
+      # @param x [Integer] the x coordinate to test
+      # @param y [Integer] the y coordinate to test
+      # @param z [Integer] the x coordinate to test
+      # @return [Boolean]
       def reached?(x, y, z)
         return ((@character.x - x).abs + (@character.y - y).abs) <= @radius
+      end
+
+      # Check if the character targetted has moved, considering the distance for optimisation and return true if the target is considered as moved
+      # @param x [Integer] the x coordinate of the heading event
+      # @param y [Integer] the y coordinate of the heading event
+      # @return [Boolean]
+      def check_move(x, y)
+        if ((c=@character).x - x).abs + (c.y - y).abs > 15
+          if (@sx-c.x).abs+(@sy-c.y).abs > 10
+            @sx, @sy = c.x, c.y
+            return true
+          end
+          return false
+        end
+        return @sx!=(@sx=c.x) || @sy!=(@sy=c.y)
+      end
+
+      # Gather the savable data
+      # @return [Array<Object>]
+      def save
+        return [:character, @character.id, @radius]
       end
     end
   end

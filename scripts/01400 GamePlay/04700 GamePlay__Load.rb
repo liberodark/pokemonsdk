@@ -116,6 +116,7 @@ module GamePlay
       $game_map.update
       $game_temp.message_window_showing = false
       $trainer.load_time
+      Pathfinding.load
     end
 
     def refresh
