@@ -80,6 +80,9 @@ module PFM
     # The $game_temp
     # @return [Game_Temp]
     attr_accessor :game_temp
+    # The pathfinding requests
+    # @return [Array<Object>]
+    attr_accessor :pathfinding_requests
     # Create a new Pokemon Party
     # @param battle [Boolean] if its a party of a NPC battler
     # @param starting_language [String] the lang id of the game described by this object
@@ -111,6 +114,7 @@ module PFM
       @game_troop = Game_Troop.new
       @game_map = Game_Map.new
       @game_player = Game_Player.new
+      @pathfinding_requests = Pathfinding::DEFAULT_SAVE
       expand_global_var
       @pokedex = PFM::Pokedex.new
       @trainer = PFM::Trainer.new
@@ -174,6 +178,8 @@ module PFM
       $game_self_variables = @game_self_variables
       # Force the pokemon selection to be unset.
       $game_variables[Yuki::Var::Party_Menu_Sel] = -1
+      # Patch 2019-05-27
+      @pathfinding_requests ||= Pathfinding::DEFAULT_SAVE
     end
 
     # Update the processing of the repel

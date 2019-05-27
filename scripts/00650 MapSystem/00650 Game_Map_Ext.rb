@@ -122,6 +122,7 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
   # Method that prevent non wanted data save of the Game_Map object
   # @author Nuri Yuri
   def begin_save
+    Pathfinding.save
     save_follower
     arr = []
     IVAR_TO_REMOVE_FROM_SAVE_FILE.each do |ivar_name|
