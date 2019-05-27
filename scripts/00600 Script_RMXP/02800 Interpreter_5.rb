@@ -383,4 +383,11 @@ class Interpreter_RMXP
     # 継続
     return true
   end
+  # Wait for the end of the movement of this particular character
+  # @param event_id [Integer] <default : calling event's> the id of the event to watch
+  def wait_character_move_completion(event_id = @event_id)
+      @move_route_waiting = true
+      @move_route_waiting_id = event_id
+  end
+  alias attendre_fin_deplacement_cet_event wait_character_move_completion
 end
