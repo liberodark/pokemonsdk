@@ -53,6 +53,7 @@ class Interpreter
     @wait_count = wait
   end
 
+  FEC_SKIP_CODES = [108, 121, 122]
   # Check if the front event calls a common event (in its first non comment commands)
   # @param common_event [Integer] the id of the common event in the database
   # @return [Boolean]
@@ -62,7 +63,7 @@ class Interpreter
     if event&.list
       @event_id = event.id if @event_id == 0
       i = 0
-      i += 1 while event.list[i]&.code&.between?(121, 122)
+      i += 1 while FEC_SKIP_CODES.include?(event.list[i]&.code)
       return true if event.list[i] && event.list[i].code == 117 && event.list[i].parameters[0] == common_event
     end
     return false
@@ -75,7 +76,7 @@ class Interpreter
   def event_calling(common_event, event_id)
     if (event = $game_map.events[event_id]) && event.list
       i = 0
-      i += 1 while event.list[i]&.code&.between?(121, 122)
+      i += 1 while FEC_SKIP_CODES.include?(event.list[i]&.code)
       return true if event.list[i] && event.list[i].code == 117 && event.list[i].parameters[0] == common_event
     end
     return false
@@ -88,7 +89,7 @@ class Interpreter
   # @author Nuri Yuri
   def choice(variable_id, cancel_type, *choices)
     setup_choices([choices, cancel_type])
-    $game_temp.choice_proc = proc { |choix| $game_variables[ variable_id ] = choix + 1}
+    $game_temp.choice_proc = proc { |choix| $game_variables[variable_id] = choix + 1 }
   end
 
   # Open the world map
