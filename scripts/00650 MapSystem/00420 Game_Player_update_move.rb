@@ -1,4 +1,5 @@
 class Game_Player
+  JumpTags = [JumpL, JumpR, JumpU, JumpD]
 
   # Move or turn the player according to its input. The common event 2 can be triggered there
   # @author Nuri Yuri
@@ -39,8 +40,8 @@ class Game_Player
     else
       if system_tag == Hole
         $game_temp.common_event_id = Game_CommonEvent::HOLE_FALLING
-      elsif @on_acro_bike and Input.press?(:B)
-        jump(0, 0) if update_acro_bike(30, system_tag)
+      elsif @on_acro_bike
+        update_acro_bike_turn(system_tag)
       end
     end
     calibrate_acro_direction(last_dir)
@@ -51,21 +52,23 @@ class Game_Player
   def player_move
     #> gestion du vélo cross
     jumping = false
-    if @on_acro_bike && Input.press?(:B)
-      return if (jumping = update_acro_bike(15, front_system_tag)) == false
+    jumping_dist = 1
+    if @acro_bike_bunny_hop
+      return if (jumping = update_acro_bike(5, front_system_tag)) == false
+      jumping_dist = 2 if JumpTags.include?(front_system_tag)
     end
     last_dir = @direction
     case @lastdir4
     when 2
-      jumping ? jump(0, 1) : move_down
+      jumping ? jump(0, jumping_dist) : move_down
     when 4
       turn_left
-      jumping ? jump(-1, 0) : move_left
+      jumping ? jump(-jumping_dist, 0) : move_left
     when 6
       turn_right
-      jumping ? jump(1, 0) : move_right
+      jumping ? jump(jumping_dist, 0) : move_right
     when 8
-      jumping ? jump(0, -1) : move_up
+      jumping ? jump(0, -jumping_dist) : move_up
     #else
       #@cant_bump=true
     end
@@ -94,6 +97,7 @@ class Game_Player
   # @return [Boolean, nil] if the player can jump (nil = not allowed to jump but can move forward)
   # @author Nuri Yuri
   def update_acro_bike(count, sys_tag)
+    return false if jumping?
     if SlideTags.include?(sys_tag) or sys_tag == MachBike
       return nil
     end
@@ -106,6 +110,26 @@ class Game_Player
     end
     @acro_count = 0
     return true
+  end
+
+  # Update the Acro Bike jump info when not moving
+  # @param count [Integer] number of @acro_count frame before the player is allowed to jump
+  # @param sys_tag [Integer] the current system tag
+  # @return [Boolean, nil] if the player can jump (nil = not allowed to jump but can move forward)
+  # @author Leikt
+  def update_acro_bike_turn(sys_tag)
+    if sys_tag == AcroBike
+      if update_acro_bike(5, sys_tag)
+        jump(0,0)
+      end
+    elsif Input.press?(:B)
+      if update_acro_bike((@acro_bike_bunny_hop ? 5 : 35), sys_tag)
+        jump(0,0)
+        @acro_bike_bunny_hop = true
+      end
+    elsif !Input.press?(:B)
+      @acro_bike_bunny_hop = false
+    end
   end
 
   # Manage the bump part of the player_update_move
@@ -173,7 +197,7 @@ class Game_Player
       if !@acro_appearence && Input.press?(:B)
         @acro_appearence = true
         enter_in_wheel_state # $game_temp.common_event_id = Game_CommonEvent::APPEARANCE
-      elsif @acro_appearence && !Input.press?(:B) && !jumping?
+      elsif @acro_appearence && !Input.press?(:B) && !jumping? &&!@acro_bike_bunny_hop
         @acro_appearence = false
         leave_wheel_state # $game_temp.common_event_id = Game_CommonEvent::APPEARANCE
       end
