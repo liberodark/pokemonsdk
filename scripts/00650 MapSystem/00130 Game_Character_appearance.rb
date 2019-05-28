@@ -50,6 +50,38 @@ class Game_Character
     end
   end
 
+  # Set the charset animation
+  # @param lines [Array<Integer>] list of the lines to animates (0,1,2,3)
+  # @param duration [Integer] duration of the animation in frame (30 frames per secondes)
+  # @param reverse [Boolean] <default: false> set it to true if the animation is reversed
+  # @param repeat [Boolean] <default: false> set it to true if the animation is looped
+  # @return [Boolean]
+  def animate_from_charset(lines, duration, reverse: false, repeat: false)
+    frames = []
+    lines.each do |dir|
+			[0,1,2,3].each do |patt|
+				frames.push ((((dir+1)*2)<<2) | patt)	# A frame is 0bdddpp with ddd the direction, pp the pattern
+			end
+    end
+    frames.reverse! if reverse
+    duration *= 2 #Double the frame to match the game_frames
+    # Contain the charset animation data
+    @charset_animation = {
+      running:    true,                                       # Indicate if the animation need to be updated or not
+      frames:     frames,                                     # List of frames
+      delay:      (duration.to_f / frames.size.to_f).round,   # Delay between two frame in frames
+      repeat:     repeat,                                     # Indicate if the animation is looped or not
+      counter:    -1,                                         # Frame counter (initialized at -1 so the first update will set the appearance)
+      index:      0                                           # Index of the current frame to display
+    }
+    return update_charset_animation
+  end
+
+  # Cancel the charset animation
+  def cancel_charset_animation
+    @charset_animation = nil
+  end
+
   private
 
   SHADOW_DISABLED_KEEP_VALUES = {
@@ -67,5 +99,28 @@ class Game_Character
     elsif @shadow_disabled.is_a?(Class)
       @shadow_disabled = SHADOW_DISABLED_KEEP_VALUES[@shadow_disabled]
     end
+  end
+
+  # Update the charset animation and return true if there is a charset animation
+  # @return [Boolean]
+  def update_charset_animation
+    # Check update need
+    return false if !@charset_animation or !@charset_animation[:running]
+    # Check delay
+    return true unless ((@charset_animation[:counter]+=1) % @charset_animation[:delay]) == 0
+    # Update the appearance
+    frame = @charset_animation[:frames][@charset_animation[:index]]
+    @direction = (frame >> 2)
+    @pattern = (frame & 0b11)
+    # Update the index and the repeat
+    if (@charset_animation[:index]+=1)>=@charset_animation[:frames].length
+      if @charset_animation[:repeat]
+        @charset_animation[:index]=0
+      else
+        @charset_animation[:running] = false
+        @original_pattern = @pattern
+      end
+    end
+    return true
   end
 end

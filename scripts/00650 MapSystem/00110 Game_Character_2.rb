@@ -34,6 +34,7 @@ class Game_Character
 
   # Update the pattern animation
   def update_pattern
+    return if update_charset_animation
     return unless @anime_count > 18 - @move_speed * 2
     if (!@step_anime && @stop_count > 0) || @sliding
       @pattern = @original_pattern
