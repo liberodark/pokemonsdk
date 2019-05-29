@@ -79,6 +79,7 @@ pokemonsdk/scripts/00650 MapSystem/00405 Game_Player_passable.rb
 pokemonsdk/scripts/00650 MapSystem/00410 Game_Player_check_trigger.rb
 pokemonsdk/scripts/00650 MapSystem/00420 Game_Player_update_move.rb
 pokemonsdk/scripts/00650 MapSystem/00430 Game_Player_appearance.rb
+pokemonsdk/scripts/00650 MapSystem/00435 Game_Player_particles.rb
 pokemonsdk/scripts/00650 MapSystem/00445 Game_Player_follower.rb
 pokemonsdk/scripts/00650 MapSystem/00450 Game_Player_Ext.rb
 pokemonsdk/scripts/00650 MapSystem/00455 Game_Player_bridge.rb

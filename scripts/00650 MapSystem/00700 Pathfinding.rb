@@ -206,10 +206,13 @@ module Pathfinding
       @priority = priority
       @state = :searching
       @cursor = Cursor.new(character)
-      @open = [[character.x, character.y, character.z, 0, @cursor.get_state, -1]]
+      @open = [[0, character.x, character.y, character.z, @cursor.get_state, -1]]
       @closed = Table32.new($game_map.width, $game_map.height, 7)
       @character.force_move_route(WAITING_ROUTE)
       @remaining_tries = @original_remaining_tries = tries
+
+      @total_time = 0
+      @total_node = 0
     end
 
     # Indicate if the request is search for path
@@ -259,10 +262,13 @@ module Pathfinding
       nodes_max = [NODES_PER_REQUEST, node_counter].min
       result = nil
       # Main loop : calculate a certain amount of node to get a result
+      t =Time.new
       while nodes < nodes_max && !result
         result = calculate_node
         nodes += 1
       end
+      @total_time += Time.new-t
+      @total_node += nodes
       # Handle the result
       if result == :not_found
         # If result not found, it start waiting before retrying
@@ -276,6 +282,8 @@ module Pathfinding
         end
       # A path is found : throw it to the character
       elsif result
+        pc "NODES : #{@total_node}"
+        pc "TIME : #{@total_time}"
         @state = :watching
         send_path(result)
       end
@@ -309,7 +317,7 @@ module Pathfinding
     def on_reload
       @character.force_move_route(WAITING_ROUTE)
       @open.clear
-      @open.push [character.x, character.y, character.z, 0, @cursor.get_state, -1]
+      @open.push [0, character.x, character.y, character.z, @cursor.get_state, -1]
       @closed.resize(0,0,0) # Clear the table
       @closed.resize($game_map.width, $game_map.height, 7)
       @state = :searching
@@ -342,48 +350,42 @@ module Pathfinding
     def calculate_node
       # Check for empty list
       return :not_found if (open = @open).empty?
-      t1 = Time.new
       # Initialize
       target = @target
       cursor = @cursor
       character = @character
       game_map = $game_map
 
-      # Heuristic comparaison
-      # Open : [x, y, z, heuristic, state, backtrace_move]
-      node = open.min do |a, b|
-        next(1) if a[3] > b[3]
-        next(-1) if a[3] < b[3]
-        (b[0] - character.x).abs + (b[1] - character.y).abs <=> (a[0] - character.x).abs + (a[1] - character.y).abs
-      end
+      # Get next node
+      node = open.shift
 
       # Closing the selected open node
-      (closed = @closed)[node[0], node[1], node[2]] = node[5]
-      open.delete(node)
+      (closed = @closed)[node[1], node[2], node[3]] = node[5]
 
       # Open each side nodes
       PATH_DIRS.each do |direction|
-        next unless cursor.sim_move?(node[0], node[1], node[2], direction, *node[4])
-        kx, ky, kz = cursor.x, cursor.y, cursor.z
+        next unless cursor.sim_move?(node[1], node[2], node[3], direction, *node[4])
         # Check target
-        if target.reached?(kx, ky, kz)
-          dx, dy, dz = kx - node[0], ky - node[1], kz - node[2]
-          closed[kx, ky, kz] = direction | (dx >= 0 ? 0 : 1) << 4 | dx.abs << 5 |
-                               (dy >= 0 ? 0 : 1) << 9 | dy.abs << 10 |
-                               (dz >= 0 ? 0 : 1) << 14 | dz.abs << 15
+        if target.reached?(kx=cursor.x, ky=cursor.y, kz=cursor.z)
+          closed[kx, ky, kz] = direction | node[1] << 4 | node[2] << 14 | node[3] << 24
           return backtrace(kx, ky, kz)
         end
 
         # Open the node and store the backtrace
-        next unless closed[kx, ky, kz] == 0 && open.select { |a| a[0] == kx && a[1] == ky && a[2] == kz }.empty?
-        cost = node[3] + TAGS_WEIGHT[game_map.system_tag(kx, ky)]
-        dx, dy, dz = kx - node[0], ky - node[1], kz - node[2]
-        backtrace_move = direction | (dx >= 0 ? 0 : 1) << 4 | dx.abs << 5 | # Encode the backtrace data
-                         (dy >= 0 ? 0 : 1) << 9 | dy.abs << 10 |
-                         (dz >= 0 ? 0 : 1) << 14 | dz.abs << 15 |
-                         cost << 19
-        cost -= 1 if (node[5] & 0xF) == direction # Straight line are better and cost less
-        open.unshift [kx, ky, kz, cost, cursor.get_state, backtrace_move] # Open the node with informations
+        next unless closed[kx, ky, kz] == 0 && open.select { |a| a[1] == kx && a[2] == ky && a[3] == kz }.empty?
+        # Cost calculation : start with last node cost
+        # Add the weight of the tag
+        # Retreive the straight direction (we prefer straight lines)
+        cost = node.first + TAGS_WEIGHT[game_map.system_tag(kx, ky)] - ((node[5] & 0xF) == direction ? 1 : 0)
+        backtrace_move = direction | node[1] << 4 | node[2] << 14 | node[3] << 24
+        # Sort and insert the new node
+        unless open.empty?
+            index = 0
+            index+=1 while index < open.length and open[index].first < cost
+			      open.insert(index, [cost, kx, ky, kz, cursor.get_state, backtrace_move])
+        else
+            open[0]=[cost, kx, ky, kz, cursor.get_state, backtrace_move]
+        end
       end
       # Target not found
       return nil
@@ -399,9 +401,9 @@ module Pathfinding
       code = closed[x, y, z]
       until code == -1
         path.unshift code & 0xF # Direction
-        x -= ((code >> 4) & 1 > 0 ? -1 : 1) * ((code >> 5) & 0xF)
-        y -= ((code >> 9) & 1 > 0 ? -1 : 1) * ((code >> 10) & 0xF)
-        z -= ((code >> 14) & 1 > 0 ? -1 : 1) * ((code >> 15) & 0xF)
+        x = (code >> 4) & 0x3FF
+        y = (code >> 14) & 0x3FF
+        z = (code >> 24) & 0xF
         code = closed[x, y, z]
       end
       # Reset the try counter
