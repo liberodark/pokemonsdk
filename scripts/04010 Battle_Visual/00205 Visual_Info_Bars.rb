@@ -25,7 +25,7 @@ module Battle
     # Show a specific bar
     # @param pokemon [PFM::PokemonBattler] the pokemon that should be shown by the bar
     def show_info_bar(pokemon)
-      # @type [Battle_UI::InfoBar]
+      # @type [BattleUI::InfoBar]
       bar = @info_bars.dig(pokemon.bank, pokemon.position)
       return log_error("No battle bar at position #{pokemon.bank}, #{pokemon.position}") unless bar
       bar.pokemon = pokemon
@@ -35,7 +35,7 @@ module Battle
     # Show a specific bar
     # @param pokemon [PFM::PokemonBattler] the pokemon that was shown by the bar
     def hide_info_bar(pokemon)
-      # @type [Battle_UI::InfoBar]
+      # @type [BattleUI::InfoBar]
       bar = @info_bars.dig(pokemon.bank, pokemon.position)
       return log_error("No battle bar at position #{pokemon.bank}, #{pokemon.position}") unless bar
       bar.go_out
@@ -44,7 +44,7 @@ module Battle
     # Refresh a specific bar (when Pokemon loses HP or change state)
     # @param pokemon [PFM::PokemonBattler] the pokemon that was shown by the bar
     def refresh_info_bar(pokemon)
-      # @type [Battle_UI::InfoBar]
+      # @type [BattleUI::InfoBar]
       bar = @info_bars.dig(pokemon.bank, pokemon.position)
       return log_error("No battle bar at position #{pokemon.bank}, #{pokemon.position}") unless bar
       bar.refresh

@@ -1,4 +1,4 @@
-module Battle_UI
+module BattleUI
   # Sprite of the ground in battle
   class GroundSprite < ShaderedSprite
     # Create a new ground sprite

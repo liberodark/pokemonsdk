@@ -1,4 +1,4 @@
-module Battle_UI
+module BattleUI
   # Class that allow the player to make the choice of the action he want to do
   #
   # The object tells the player validated on #validated? and the result is stored inside #result

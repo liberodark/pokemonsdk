@@ -1,4 +1,4 @@
-module Battle_UI
+module BattleUI
   # Object that show the Battle Bar of a Pokemon in Battle
   class InfoBar < UI::SpriteStack
     # FILES used to show a bar

@@ -337,12 +337,13 @@ pokemonsdk/scripts/02300 Scripts_a_haute_dependences/00100 PSDK_Task.rb
 pokemonsdk/scripts/02300 Scripts_a_haute_dependences/00200 Yuki__SoftReset.rb
 pokemonsdk/scripts/03800 PokemonBattler/00100 PokemonBattler.rb
 pokemonsdk/scripts/03800 PokemonBattler/00200 States_1.rb
-pokemonsdk/scripts/03900 Battle_UI/00100 PokemonSprite.rb
-pokemonsdk/scripts/03900 Battle_UI/00101 TrainerSprite.rb
-pokemonsdk/scripts/03900 Battle_UI/00102 GroundSprite.rb
-pokemonsdk/scripts/03900 Battle_UI/00103 InfoBar.rb
-pokemonsdk/scripts/03900 Battle_UI/00200 PlayerChoice.rb
-pokemonsdk/scripts/03900 Battle_UI/00300 SkillChoice.rb
+pokemonsdk/scripts/03900 BattleUI/00100 PokemonSprite.rb
+pokemonsdk/scripts/03900 BattleUI/00101 TrainerSprite.rb
+pokemonsdk/scripts/03900 BattleUI/00102 GroundSprite.rb
+pokemonsdk/scripts/03900 BattleUI/00103 InfoBar.rb
+pokemonsdk/scripts/03900 BattleUI/00200 PlayerChoice.rb
+pokemonsdk/scripts/03900 BattleUI/00300 SkillChoice.rb
+pokemonsdk/scripts/03900 BattleUI/00400 TargetSelectionWindow.rb
 pokemonsdk/scripts/04000 Battle_Scene/00100 Scene.rb
 pokemonsdk/scripts/04000 Battle_Scene/00101 Scene Choice.rb
 pokemonsdk/scripts/04000 Battle_Scene/00102 Scene AI trigger.rb

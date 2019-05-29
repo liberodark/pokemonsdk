@@ -1,4 +1,4 @@
-module Battle_UI
+module BattleUI
   # Sprite of a trainer shown in battle
   class TrainerSprite < ShaderedSprite
     # Define the number of frames inside a back trainer

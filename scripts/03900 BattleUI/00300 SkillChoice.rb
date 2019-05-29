@@ -1,4 +1,4 @@
-module Battle_UI
+module BattleUI
   # Class that allow to choose the skill of the Pokemon
   #
   #

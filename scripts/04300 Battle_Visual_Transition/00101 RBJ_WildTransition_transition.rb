@@ -57,7 +57,7 @@ module Battle
       def update_transition_move_sprite_end
         @enemy_sprites.each do |sprite|
           sprite.shader = nil
-          sprite.cry if sprite.is_a?(Battle_UI::PokemonSprite)
+          sprite.cry if sprite.is_a?(BattleUI::PokemonSprite)
         end
         @battle_scene.display_message(first_message)
         @battle_scene.message_window.blocking = false

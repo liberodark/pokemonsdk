@@ -9,8 +9,8 @@ module Battle
       STATE_OFFSET_BAR = [1, 0]
       # Create a new IdlePokemonAnimation
       # @param visual [Battle::Visual]
-      # @param pokemon [Battle_UI::PokemonSprite]
-      # @param bar [Battle_UI::InfoBar]
+      # @param pokemon [BattleUI::PokemonSprite]
+      # @param bar [BattleUI::InfoBar]
       def initialize(visual, pokemon, bar)
         @visual = visual
         @pokemon = pokemon

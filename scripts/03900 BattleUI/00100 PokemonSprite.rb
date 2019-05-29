@@ -1,5 +1,5 @@
 # Module that hold all the Battle UI elements
-module Battle_UI
+module BattleUI
   # Sprite of a Pokemon in the battle
   class PokemonSprite < ShaderedSprite
     # @return [Boolean] if the sprite is currently selected
