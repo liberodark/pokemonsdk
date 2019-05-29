@@ -504,10 +504,13 @@ module Pathfinding
     # @param data [Array] data to convert
     # @return [Object]
     def self.get(data)
-      if data[0].is_a?(Game_Character)
-        return Target::Character.new(data[0], data[1])
-      else
-        return Target::Coords.new(data[0][0], data[0][1], data[0][2], data[1])
+      case data[0]
+      when :character
+        return Target::Character.new(data[1], data[2])
+      when :character_rejection
+        return Target::Character_Rejection.new(data[1], data[2])
+      when :coords
+        return Target::Coords.new(data[1][0], data[1][1], data[1][2], data[2])
       end
     end
 
@@ -518,9 +521,12 @@ module Pathfinding
       case data[0]
       when :character
         character = data[1]==0 ? $game_player : $game_map.events[data[1]]
-        return get([character, data[2]])
+        return get([:character, character, data[2]])
+      when :character_rejection
+        character = data[1]==0 ? $game_player : $game_map.events[data[1]]
+        return get([:character_rejection, character, data[2]])
       when :coords
-        return get(data[1..2])
+        return get(data)
       end
     end
 
@@ -602,6 +608,56 @@ module Pathfinding
       # @return [Array<Object>]
       def save
         return [:character, @character.id, @radius]
+      end
+    end
+
+    class Character_Rejection
+      def x
+        return @character.x
+      end
+
+      def y
+        return @character.y
+      end
+
+      def z
+        return @character.z
+      end
+
+      def initialize(character, radius=1)
+        @character = character
+        @radius = radius
+        @sx, @sy = character.x, character.y
+      end
+      
+      # Test if the target is reached at the given coords
+      # @param x [Integer] the x coordinate to test
+      # @param y [Integer] the y coordinate to test
+      # @param z [Integer] the x coordinate to test
+      # @return [Boolean]
+      def reached?(x, y, z)
+        return ((@character.x - x).abs + (@character.y - y).abs) > @radius
+      end
+
+      # Check if the character targetted has moved, considering the distance for optimisation and return true if the target is considered as moved
+      # @param x [Integer] the x coordinate of the heading event
+      # @param y [Integer] the y coordinate of the heading event
+      # @return [Boolean]
+      def check_move(x, y)
+        if ((c=@character).x - x).abs + (c.y - y).abs > 15
+          if (@sx-c.x).abs+(@sy-c.y).abs > 10
+            @sx, @sy = c.x, c.y
+            return true
+          end
+          return false
+        end
+        return @sx!=(@sx=c.x) || @sy!=(@sy=c.y)
+      end
+
+      # Gather the savable data
+      # @return [Array<Object>]
+      def save
+        return [:character_rejection, @character.id, @radius]
       end
     end
   end

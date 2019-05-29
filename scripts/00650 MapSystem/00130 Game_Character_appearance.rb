@@ -50,21 +50,22 @@ class Game_Character
     end
   end
 
-  # Set the charset animation
+  # Set the charset animation. It can be needed to set the event in direction fixed.
   # @param lines [Array<Integer>] list of the lines to animates (0,1,2,3)
   # @param duration [Integer] duration of the animation in frame (30 frames per secondes)
   # @param reverse [Boolean] <default: false> set it to true if the animation is reversed
   # @param repeat [Boolean] <default: false> set it to true if the animation is looped
   # @return [Boolean]
   def animate_from_charset(lines, duration, reverse: false, repeat: false)
+    # Calculate and store the frames to display
     frames = []
     lines.each do |dir|
-			[0,1,2,3].each do |patt|
-				frames.push ((((dir+1)*2)<<2) | patt)	# A frame is 0bdddpp with ddd the direction, pp the pattern
+			[0,1,2,3].each do |pattern|
+				frames.push ((((dir+1)*2)<<2) | pattern)	# A frame is 0bdddpp with ddd the direction, pp the pattern
 			end
     end
-    frames.reverse! if reverse
-    duration *= 2 #Double the frame to match the game_frames
+    frames.reverse! if reverse  # Invert the animation if asked
+    duration *= 2               # Double the frame to match the game framerate (30 / s)
     # Contain the charset animation data
     @charset_animation = {
       running:    true,                                       # Indicate if the animation need to be updated or not
@@ -74,7 +75,7 @@ class Game_Character
       counter:    -1,                                         # Frame counter (initialized at -1 so the first update will set the appearance)
       index:      0                                           # Index of the current frame to display
     }
-    return update_charset_animation
+    return update_charset_animation   # First update, display the first frame
   end
 
   # Cancel the charset animation
@@ -105,7 +106,7 @@ class Game_Character
   # @return [Boolean]
   def update_charset_animation
     # Check update need
-    return false if !@charset_animation or !@charset_animation[:running]
+    return false unless @charset_animation&.dig(:running)
     # Check delay
     return true unless ((@charset_animation[:counter]+=1) % @charset_animation[:delay]) == 0
     # Update the appearance

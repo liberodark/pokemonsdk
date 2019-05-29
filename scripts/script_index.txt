@@ -128,6 +128,7 @@ pokemonsdk/scripts/00800 GameData/02000 GameData__Windows.rb
 pokemonsdk/scripts/00800 GameData/02100 GameData__Colors.rb
 pokemonsdk/scripts/00800 GameData/02200 GameData__Ramassage.rb
 pokemonsdk/scripts/00800 GameData/02400 GameData__Loader.rb
+pokemonsdk/scripts/00800 GameData/02500 GameData__WorldMap.rb
 pokemonsdk/scripts/00900 Constants_for_the_scripts/00100 GameData__PokemonParty.rb
 pokemonsdk/scripts/00900 Constants_for_the_scripts/00200 GameData__Bag.rb
 pokemonsdk/scripts/01000 Util/00100 Util__Item.rb
