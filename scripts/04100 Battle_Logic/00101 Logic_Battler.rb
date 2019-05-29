@@ -66,6 +66,7 @@ module Battle
         battlers.each_with_index do |ally, ally_position|
           break if ally_position >= @battle_info.vs_type
           next unless ally.position
+          next if position == ally_position # We don't want the pokemon
           allies << ally if !check_adjacent || (ally.position - position).abs <= 1
         end
       end
