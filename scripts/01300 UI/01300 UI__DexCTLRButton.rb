@@ -73,4 +73,19 @@ module UI
       return self
     end
   end
+  
+  class SelectCTRLButton < TeamCTRLButton
+    def initialize(viewport, id)
+      super
+      set_state(4)
+      self.x=(Coordinates[3][0])
+      self.y=(Coordinates[3][1])
+    end
+
+    def set_state(id_state)
+      self.visible = true
+      @stack.last.text = get_text(id_state, 3)
+      return self
+    end
+  end
 end
