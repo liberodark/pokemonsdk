@@ -170,7 +170,7 @@ module Pathfinding
 
     # Move the Game_Character lower left
     def move_lower_left
-      @direction = @direction == 6 ? 4 : (@direction == 2 ? 8 : @direction)
+      @direction = @direction == 6 ? 4 : (@direction == 8 ? 2 : @direction)
       if (passable?(@x, @y, 2) && passable?(@x, @y + 1, 4)) ||
          (passable?(@x, @y, 4) && passable?(@x - 1, @y, 2)) # 8 a la place de 2 sur les deux lignes
         @x -= 1
@@ -181,7 +181,7 @@ module Pathfinding
 
     # Move the Game_Character lower right
     def move_lower_right
-      @direction = (@direction == 4 ? 6 : @direction == 2 ? 8 : @direction)
+      @direction = (@direction == 4 ? 6 : @direction == 8 ? 2 : @direction)
       if (passable?(@x, @y, 2) && passable?(@x, @y + 1, 6)) ||
          (passable?(@x, @y, 6) && passable?(@x + 1, @y, 2))
         @x += 1
@@ -192,7 +192,7 @@ module Pathfinding
 
     # Move the Game_Character upper left
     def move_upper_left
-      @direction = (@direction == 6 ? 4 : @direction == 8 ? 2 : @direction)
+      @direction = (@direction == 6 ? 4 : @direction == 2 ? 8 : @direction)
       if (passable?(@x, @y, 8) && passable?(@x, @y - 1, 4)) ||
          (passable?(@x, @y, 4) && passable?(@x - 1, @y, 8))
         @x -= 1
@@ -203,7 +203,7 @@ module Pathfinding
 
     # Move the Game_Character upper right
     def move_upper_right
-      @direction = (@direction == 4 ? 6 : @direction == 8 ? 2 : @direction)
+      @direction = (@direction == 4 ? 6 : @direction == 2 ? 8 : @direction)
       if (passable?(@x, @y, 8) && passable?(@x, @y - 1, 6)) ||
          (passable?(@x, @y, 6) && passable?(@x + 1, @y, 8))
         @x += 1
