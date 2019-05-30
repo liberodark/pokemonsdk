@@ -9,6 +9,8 @@ module GamePlay
   #   - :battle => Select a Pokemon to send to battle
   #   - :item => Select a Pokemon in order to use an item on it (require extend data : hash)
   #   - :hold => Give an item to the Pokemon (requires extend data : item_id)
+  #   - :select => Select a number of Pokemon for a temporary team.
+  #     (Number defined by $game_variables[6] and possible list of excluded Pokemon requires extend data : array)
   #
   # This class can also show an other party than the player party,
   # the party paramter is an array of Pokemon upto 6 Pokemon
