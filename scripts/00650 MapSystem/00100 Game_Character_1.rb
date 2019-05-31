@@ -133,7 +133,7 @@ class Game_Character
   def moveto_system_tag_manage
     # return @z = 1 if !@z && self == $game_player && $scene.class != Scene_Map
     sys_tag = system_tag
-    if BRIDGE_TILES.include?(BRIDGE_TILES)
+    if BRIDGE_TILES.include?(sys_tag)
       @z = $game_map.priorities[$game_map.get_tile(@x, @y)].to_i + 1
     elsif ZTag.include?(sys_tag)
       @z = ZTag.index(sys_tag)

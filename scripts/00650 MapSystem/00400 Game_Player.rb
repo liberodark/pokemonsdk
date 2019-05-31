@@ -43,6 +43,11 @@ class Game_Player < Game_Character
     make_encounter_count
   end
 
+  # Manage the system_tag part of the moveto method
+  def moveto_system_tag_manage
+    # We remove the bridge z processing because it's breaking
+  end
+
   SURF_OFFSET_Y = [2, 2, 0, 0, 0, -2, -2, 0, 0, 0]
   # Overwrite the screen_y to add the surfing animation
   # @return [Integer]
