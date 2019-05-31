@@ -16,9 +16,9 @@ module GamePlay
         show_item_mode_choice
       when :hold
         show_hold_mode_choice
-	  when :select
-		show_select_mode_choice
-	  else
+      when :select
+        show_select_mode_choice
+      else
         show_map_mode_choice
       end
     end
@@ -336,41 +336,41 @@ module GamePlay
       extend_data = @extend_data
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       if extend_data.kind_of?(Array)
-		if !@temp_team.include?(pokemon) && !extend_data.include?(pokemon.id)
+        if !@temp_team.include?(pokemon) && !extend_data.include?(pokemon.id)
           choices
             .register_choice(_get(23, 140), on_validate: method(:on_select)) # Enter
         elsif @temp_team.include?(pokemon) && !extend_data.include?(pokemon.id)
-		  choices
-			.register_choice(_get(23, 141), on_validate: method(:on_select)) # Withdraw
+          choices
+            .register_choice(_get(23, 141), on_validate: method(:on_select)) # Withdraw
         end
       else
         unless @temp_team.include?(pokemon)
           choices
             .register_choice(_get(23, 140), on_validate: method(:on_select)) # Enter
         else
-		  choices
-			.register_choice(_get(23, 141), on_validate: method(:on_select)) # Withdraw
+          choices
+            .register_choice(_get(23, 141), on_validate: method(:on_select)) # Withdraw
         end
       end
-	  choices
-	    .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-	    .register_choice(_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
+      choices
+        .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
+        .register_choice(_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
       show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
-	  hide_black_frame
-	  show_win_text(_get(23, 110)) if choice != 0
-	end
+      hide_black_frame
+      show_win_text(_get(23, 110)) if choice != 0
+    end
 	
-	def on_select
-	  pokemon = @party[@index]
+    def on_select
+      pokemon = @party[@index]
       unless @temp_team.include?(pokemon)
         @temp_team << pokemon
       else
         @temp_team[@temp_team.index(pokemon)] = nil
         @temp_team.compact!
-	  end
-	  @team_buttons[@index].data = pokemon
+      end
+      @team_buttons[@index].data = pokemon
       @team_buttons[@index].refresh
       init_win_text
     end
