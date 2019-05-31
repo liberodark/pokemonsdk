@@ -106,6 +106,8 @@ module Yuki
     WT_Snow = 59
     # Weather is fog
     WT_Fog = 60
+    # Disable player detection by all the detection methods
+    Env_Detection = 75
 
     # Failure switch (do not use)
     Alola = 96

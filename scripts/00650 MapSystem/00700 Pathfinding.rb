@@ -40,7 +40,7 @@ module Pathfinding
   TAGS_WEIGHT.default = 10 # Grass, ...
 
   # Default save state
-  DEFAULT_SAVE = [[], [], []]
+  DEFAULT_SAVE = []
 
   # Initialisation
   # List of requests looking for a path
@@ -506,7 +506,7 @@ module Pathfinding
         return [:coords, [@original_x, @original_y, @z], @radius]
       end
     end
-
+    
     class Character
       def x
         return @character.x

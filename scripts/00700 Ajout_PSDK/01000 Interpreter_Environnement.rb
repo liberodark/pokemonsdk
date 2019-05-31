@@ -7,6 +7,7 @@ class Interpreter < Interpreter_RMXP
   # @return [Boolean] if the event spot the player or not
   # @author Nuri Yuri
   def player_spotted?(nb_pas) #, self_calling = false)
+    return false if $game_switches[Yuki::Sw::Env_Detection]
     c = $game_map.events[@event_id]
     return false if (c.x-$game_player.x).abs > nb_pas or (c.y-$game_player.y).abs > nb_pas
     return false if c.z != $game_player.z #> Décommenter si pb avec ponts
@@ -40,14 +41,15 @@ class Interpreter < Interpreter_RMXP
     end
     return result  
   end
-
   alias trainer_spotted player_spotted?
+
   # Detect the player in a specific direction
   # @param nb_pas [Integer] the number of step between the event and the player
   # @param direction [Symbol, Integer] the direction : :right, 6, :down, 2, :left, 4, :up or 8
   # @return [Boolean]
   # @author Nuri Yuri
   def detect_player(nb_pas, direction)
+    return false if $game_switches[Yuki::Sw::Env_Detection]
     c = $game_map.events[@event_id]
     dx = $game_player.x - c.x
     dy = $game_player.y - c.y
@@ -68,6 +70,7 @@ class Interpreter < Interpreter_RMXP
   # @return [Boolean]
   # @author Nuri Yuri
   def detect_player_rect(nx, ny)
+    return false if $game_switches[Yuki::Sw::Env_Detection]
     c = $game_map.events[@event_id]
     dx = ($game_player.x - c.x).abs
     dy = ($game_player.y - c.y).abs
@@ -78,6 +81,7 @@ class Interpreter < Interpreter_RMXP
   # @return [Boolean]
   # @author Nuri Yuri
   def detect_player_circle(r)
+    return false if $game_switches[Yuki::Sw::Env_Detection]
     c = $game_map.events[@event_id]
     dx = $game_player.x - c.x
     dy = $game_player.y - c.y
