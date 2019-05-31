@@ -199,9 +199,13 @@ class Interpreter
   # @param x [Integer] x coords to reach
   # @param y [Integer] y coords to reach
   # @param ms [Integer] <default : 5> movement speed
-  def fast_travel(x, y, ms = 5)
+  def fast_travel(x, y=nil, ms = 5)
     $game_player.move_speed = ms
-    $game_player.find_path to: [x, y]
+    if y
+      $game_player.find_path to: [x, y]
+    else
+      $game_player.find_path to: x, type: :Border
+    end
     wait_for_player
   end
 

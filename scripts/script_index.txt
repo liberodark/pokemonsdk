@@ -89,6 +89,7 @@ pokemonsdk/scripts/00650 MapSystem/00600 Game_Map.rb
 pokemonsdk/scripts/00650 MapSystem/00650 Game_Map_Ext.rb
 pokemonsdk/scripts/00650 MapSystem/00700 Pathfinding.rb
 pokemonsdk/scripts/00650 MapSystem/00705 Pathfinding_cursor.rb
+pokemonsdk/scripts/00650 MapSystem/00710 Pathfinding_targets.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00100 Scheduler.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00101 EventTasks.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00200 Tester.rb
