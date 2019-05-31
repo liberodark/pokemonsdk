@@ -9,6 +9,8 @@ module GamePlay
   #   - :battle => Select a Pokemon to send to battle
   #   - :item => Select a Pokemon in order to use an item on it (require extend data : hash)
   #   - :hold => Give an item to the Pokemon (requires extend data : item_id)
+  #   - :select => Select a number of Pokemon for a temporary team.
+  #     (Number defined by $game_variables[6] and possible list of excluded Pokemon requires extend data : array)
   #
   # This class can also show an other party than the player party,
   # the party paramter is an array of Pokemon upto 6 Pokemon
@@ -46,6 +48,9 @@ module GamePlay
       # Scene viewport
       # @type [LiteRGSS::Viewport]
       @viewport = Viewport.create(:main, 10_000)
+      # Array containing the temporary team selected
+      # @type [Array<PFM::Pokemon>]
+      @temp_team = []
       create_background
       create_team_buttons
       create_frames #  Must be after team buttons to ensure the black frame to work
@@ -103,7 +108,10 @@ module GamePlay
     def create_ctrls
       # Scene Control buttons
       # @type [Array<UI::TeamCTRLButton>]
-      @ctrl = Array.new(4) { |i| UI::TeamCTRLButton.new(@viewport, i) }
+      @ctrl = Array.new(4) { |i| UI::TeamCTRLButton.new(@viewport, i) } if @mode != :select
+      # Scene Control button
+      # @type [Array<UI::SelectCTRLButton>]
+      @ctrl = Array.new(1) { |i| UI::SelectCTRLButton.new(@viewport, i + 1) } if @mode == :select
     end
 
     # Create the text window (info to the player)
@@ -129,6 +137,9 @@ module GamePlay
           extend_data_button_update
           return @text_info.text = _get(23, 24)
         end
+      when :select
+        select_pokemon_button_update
+        return @text_info.text = _get(23, 17)
       end
       @win_text.visible = false
     end
@@ -149,6 +160,28 @@ module GamePlay
           end
           btn.item_text.load_color(c).text = _parse(22, v)
         end
+      end
+    end
+    
+    # Function that updates the text displayed in the team button when in :select mode
+    def select_pokemon_button_update
+      @team_buttons.each do |btn|
+        btn.show_item_name
+        c = 0
+        if @temp_team.include?(btn.data)
+          c = 1
+          v = 155 + @temp_team.index(btn.data)
+        elsif @extend_data.kind_of?(Array)
+          if @extend_data.include?(@party[@team_buttons.index(btn)].id)
+            c = 2
+            v = 154
+          else 
+            v = 153
+          end
+        else
+          v = 153
+        end
+        btn.item_text.load_color(c).text = fix_number(_parse(23, v))
       end
     end
 
@@ -227,6 +260,13 @@ module GamePlay
         Graphics.update
       end
       @black_frame.visible = false
+    end
+
+    # Fix special characters used in some Ruby Host texts
+    def fix_number(string)
+      string = string.sub('', 'er')
+      string.sub!('', 'ème')
+      return string
     end
 
     def dispose

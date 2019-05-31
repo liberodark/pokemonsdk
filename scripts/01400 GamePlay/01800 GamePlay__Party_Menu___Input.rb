@@ -54,6 +54,10 @@ module GamePlay
         @move = -1
         return @intern_mode = :normal
       end
+      # Emptying $game_temp.temp_team if in select mode
+      if @mode == :select
+        $game_temp.temp_team = []
+      end
       @running = false
     end
 
@@ -71,7 +75,10 @@ module GamePlay
 
     # Action triggered when X is pressed
     def action_X
-      return if @mode != :menu
+      $game_temp.temp_team = @temp_team if @mode == :select
+      # Check if the number of selected Pokemon is equal to the required number
+      @running = false if @mode == :select && enough_pokemon? == true
+      return if @mode != :menu 
       return $game_system.se_play($data_system.buzzer_se) if @intern_mode != :normal or @party.size <= 1
       show_win_text(_get(23, 19))
       @intern_mode = :choose_move_pokemon
@@ -88,7 +95,11 @@ module GamePlay
 
     # Update the mouse interaction with the ctrl buttons
     def update_mouse_ctrl
-      update_mouse_ctrl_buttons(@ctrl, Actions, @win_text.visible)
+      if @mode != :select
+        update_mouse_ctrl_buttons(@ctrl, Actions, @win_text.visible)
+      else
+        update_mouse_ctrl_buttons(@ctrl, [:action_X], false)
+      end
     end
 
     # Update the movement of the Cursor
