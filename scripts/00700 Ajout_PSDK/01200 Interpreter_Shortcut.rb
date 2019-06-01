@@ -196,6 +196,20 @@ class Interpreter
     get_character(@event_id).find_path(*args)
   end
 
+  # Shortcut defining the pathfinding request and wait for the end of the path following
+  # @param x [Integer] x coords to reach
+  # @param y [Integer] y coords to reach
+  # @param ms [Integer] <default : 5> movement speed
+  def fast_travel(x, y=nil, ms = 5)
+    $game_player.move_speed = ms
+    if y
+      $game_player.find_path to: [x, y]
+    else
+      $game_player.find_path to: x, type: :Border
+    end
+    wait_for_player
+  end
+
   # Shortcut for get_character(@event_id).animate_from_charset(*args)
   # @param lines [Array<Integer>] list of the lines to animates (0,1,2,3)
   # @param duration [Integer] duration of the animation in frame (60frame per secondes)
@@ -204,5 +218,10 @@ class Interpreter
   # @return [Boolean]
   def animate_from_charset(*args)
     return get_character(@event_id).animate_from_charset(*args)
+  end
+  # Shortcut for wait_character_move_completion(0)
+  # Wait for the end of the player movement
+  def wait_for_player
+    wait_character_move_completion 0
   end
 end

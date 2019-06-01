@@ -79,6 +79,7 @@ pokemonsdk/scripts/00650 MapSystem/00405 Game_Player_passable.rb
 pokemonsdk/scripts/00650 MapSystem/00410 Game_Player_check_trigger.rb
 pokemonsdk/scripts/00650 MapSystem/00420 Game_Player_update_move.rb
 pokemonsdk/scripts/00650 MapSystem/00430 Game_Player_appearance.rb
+pokemonsdk/scripts/00650 MapSystem/00435 Game_Player_particles.rb
 pokemonsdk/scripts/00650 MapSystem/00445 Game_Player_follower.rb
 pokemonsdk/scripts/00650 MapSystem/00450 Game_Player_Ext.rb
 pokemonsdk/scripts/00650 MapSystem/00455 Game_Player_bridge.rb
@@ -87,6 +88,8 @@ pokemonsdk/scripts/00650 MapSystem/00465 Game_Player_hole.rb
 pokemonsdk/scripts/00650 MapSystem/00600 Game_Map.rb
 pokemonsdk/scripts/00650 MapSystem/00650 Game_Map_Ext.rb
 pokemonsdk/scripts/00650 MapSystem/00700 Pathfinding.rb
+pokemonsdk/scripts/00650 MapSystem/00705 Pathfinding_cursor.rb
+pokemonsdk/scripts/00650 MapSystem/00710 Pathfinding_targets.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00100 Scheduler.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00101 EventTasks.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00200 Tester.rb
@@ -128,6 +131,7 @@ pokemonsdk/scripts/00800 GameData/02000 GameData__Windows.rb
 pokemonsdk/scripts/00800 GameData/02100 GameData__Colors.rb
 pokemonsdk/scripts/00800 GameData/02200 GameData__Ramassage.rb
 pokemonsdk/scripts/00800 GameData/02400 GameData__Loader.rb
+pokemonsdk/scripts/00800 GameData/02500 GameData__WorldMap.rb
 pokemonsdk/scripts/00900 Constants_for_the_scripts/00100 GameData__PokemonParty.rb
 pokemonsdk/scripts/00900 Constants_for_the_scripts/00200 GameData__Bag.rb
 pokemonsdk/scripts/01000 Util/00100 Util__Item.rb
