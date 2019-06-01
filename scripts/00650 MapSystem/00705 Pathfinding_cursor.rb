@@ -9,7 +9,6 @@ module Pathfinding
     SurfLTag = Game_Character::SurfLTag
     # SystemTags that triggers "sliding" state
     SlideTags = [TIce, RapidsL, RapidsR, RapidsU, RapidsD]
-
     # Array used to detect if a character is on a bridge tile
     BRIDGE_TILES = [BridgeRL, BridgeUD]
 

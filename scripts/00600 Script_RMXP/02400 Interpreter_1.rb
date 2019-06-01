@@ -141,10 +141,13 @@ class Interpreter_RMXP
       end
       # 移動完了待機中の場合
       if @move_route_waiting
-        if @move_route_waiting_character
-          return if @move_route_waiting_character&.move_route_forcing
+        if @move_route_waiting_id # Waiting for a specifi event move end
+          if @move_route_waiting_id > 0 && $game_map.events[@move_route_waiting_id]&.move_route_forcing or
+                    @move_route_waiting_id == 0 && $game_player.move_route_forcing
+              return
+          end
           @move_route_waiting = false
-          @move_route_waiting_character = nil
+          @move_route_waiting_id = nil
         else
           # プレイヤーが移動ルート強制中の場合
           if $game_player.move_route_forcing
