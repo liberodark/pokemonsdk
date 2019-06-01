@@ -131,6 +131,7 @@ module Pathfinding
 
   # Load the data from the pokemon_party
   def self.load
+    return unless Game_Map::PATH_FINDING_ENABLED
     data = $pokemon_party.pathfinding_requests
     @requests = data.collect { |d| Request.load(d)}
   end
