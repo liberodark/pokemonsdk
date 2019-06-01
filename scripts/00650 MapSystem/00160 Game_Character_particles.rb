@@ -16,7 +16,8 @@ class Game_Character
     TTallGrass => :particle_push_tall_grass,
     TSand => :particle_push_sand,
     TSnow => :particle_push_snow,
-    TPond => :particle_push_pond
+    TPond => :particle_push_pond,
+    TWetSand => :particle_push_wetsand
   }
 
   # Push a particle to the particle stack if possible
@@ -44,6 +45,11 @@ class Game_Character
   def particle_push_sand
     particle = SAND_PARTICLE_NAME[@direction]
     Yuki::Particles.add_particle(self, particle) if particle && @can_make_footprint
+  end
+
+  # Push a wet sand particle
+  def particle_push_wetsand
+    Yuki::Particles.add_particle(self, :wetsand)
   end
 
   # Constant telling the snow particle name to push (according to the direction)

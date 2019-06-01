@@ -292,6 +292,27 @@ module Yuki
       leave: EMPTY
     }
 
+    # Splash when standing in the water
+    Data[0][:wetsand] = {
+      enter: {
+        max_counter: 1,
+        loop: false,
+        data: [
+          { file: 'wetsand', rect: [0, 0, 20, 11], zoom: 0.8, position: :character_pos, oy_offset: 6}
+        ]
+      },
+      stay: {
+        max_counter: 9,
+        loop: false,
+        data: [
+          { wait: 1 }, { rect: [0, 0, 20, 11] },
+          { wait: 1 }, { rect: [20, 0, 20, 11] },
+          { wait: 1 }, { rect: [40, 0, 20, 11] },
+        ]
+      },
+      leave: EMPTY
+    }
+
     module_function
 
     # Function that find the data for a particle according to the terrain_tag & the particle tag
