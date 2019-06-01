@@ -56,6 +56,12 @@ module PFM
       @ability = @original.ability
     end
 
+    # Is the Pokemon able to fight ?
+    # @return [Boolean]
+    def can_fight?
+      @position && !dead?
+    end
+
     private
 
     # Copy the properties of the original pokemon

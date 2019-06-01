@@ -42,14 +42,13 @@ module BattleUI
       return validate if Input.trigger?(:A)
       return cancel if Input.trigger?(:B)
       last_index = @index
-      case Input.dir4
-      when 6
+      if Input.repeat?(:RIGHT)
         @index = (@index + 1) % @row_size + @index / @row_size * @row_size
-      when 4
+      elsif Input.repeat?(:LEFT)
         @index = (@index - 1) % @row_size + @index / @row_size * @row_size
-      when 2
+      elsif Input.repeat?(:DOWN)
         @index = (@index + @row_size) % (2 * @row_size)
-      when 8
+      elsif Input.repeat?(:UP)
         @index = (@index - @row_size) % (2 * @row_size)
       end
       update_cursor if last_index != @index

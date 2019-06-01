@@ -4,6 +4,8 @@ module Battle
 
     # Method that ask for the player choice (it calls @visual.show_player_choice)
     def player_action_choice
+      # If the method was called and the player cannot make another choice it's a bug so we end the battle
+      return @next_update = :battle_end unless can_player_make_another_action_choice?
       choice = @visual.show_player_choice(@player_actions.size)
       case choice
       when :attack
@@ -20,7 +22,11 @@ module Battle
         flee_attempt
       when :cancel
         # The player canceled, he wants to try an other strategy, we remove the last actions
-        clean_action(@player_actions.pop)
+        while (action = @player_actions.pop)
+          clean_action(action)
+          # If the action is not empty it was a Pokemon we could control so we stop poping
+          break unless action.empty?
+        end
       when :try_next
         # The visual interface detected that the current Pokemon is dead
         @player_actions << {}
@@ -61,18 +67,21 @@ module Battle
     end
 
     # Check if the player can make another action choice
+    # @note push empty hash where Pokemon cannot be controlled
     # @return [Boolean]
     def can_player_make_another_action_choice?
-      next_pokemon = @logic.battler(0, @player_actions.size)
-      unless next_pokemon&.can_fight?
-        # Make sure the multi-battle work
-        if next_pokemon&.dead?
-          @player_actions << {}
-          return true
-        end
-        return false
+      @player_actions.size.upto(@logic.battle_info.vs_type - 1) do |position|
+        next_pokemon = @logic.battler(0, position)
+        # If there's no Pokemon at this position, then it's probably the end of the team
+        break unless next_pokemon
+        # If it's not our Pokemon we don't control it
+        next(@player_actions << {}) if next_pokemon.party_id != 0
+        # If the Pokemon is dead, we also don't control it
+        next(@player_actions << {}) if next_pokemon.dead?
+        # This Pokemon can be controlled
+        return true
       end
-      return true
+      return false
     end
 
     # Method that asks the item to use

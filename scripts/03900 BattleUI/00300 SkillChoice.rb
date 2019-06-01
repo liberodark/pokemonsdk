@@ -10,6 +10,8 @@ module BattleUI
   class SkillChoice
     # @return [Battle::Move, :cancel] the selected move
     attr_reader :result
+    # @return [PFM::PokemonBattler] the pokemon the player choosed a move
+    attr_reader :pokemon
     # Create a new SkillChoice UI
     # @param viewport [Viewport]
     def initialize(viewport)
