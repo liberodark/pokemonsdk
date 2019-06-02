@@ -14,6 +14,7 @@ module GamePlay
       @pokemon = pkmn
       @clone = pkmn.clone
       @clone.id = id
+      @clone.form_calibrate(:evolve)
       #check_alola_evolve(@clone)
       @forced = forced
       #> Génération du Background
@@ -59,6 +60,7 @@ module GamePlay
           Graphics.update
         end
         @pokemon.id = @clone.id
+        @pokemon.form = @clone.form
         #check_alola_evolve(@pokemon)
         @pokemon.check_skill_and_learn(false, -1)
         #===
