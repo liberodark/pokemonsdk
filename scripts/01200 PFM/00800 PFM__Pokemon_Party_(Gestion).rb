@@ -109,6 +109,24 @@ module PFM
       return false
     end
 
+    # Check if the player has enough Pokemon to choose in its party
+    # Doesn't count banned Pokemon
+    # @param arr [Array] ids of the banned Pokemon
+    def has_enough_selectable_pokemon?(arr = [])
+      if arr.any?
+        i = 0
+        @actors.each do |pokemon|
+          if !arr.include? pokemon.id
+            i += 1
+          end
+        end
+      else
+        i = $actors.size
+      end
+      return false if $game_variables[6] > 6 || $game_variables[6] < 1
+      return $game_variables[6] <= i
+    end
+
     # Find a specific Pokemon index in the party
     # @param id [Integer, Symbol] id of the Pokemon in the database
     # @param level [Integer, nil] the level required
