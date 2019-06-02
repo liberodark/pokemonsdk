@@ -301,6 +301,8 @@ class Scene_Map
   # Teleport the play between map or inside the map
   def transfer_player
     Yuki::ElapsedTime.start(:transfer_player)
+    #> Clear the Pathfinding system
+    Pathfinding.clear
     #> Calculations
     transfer_player_begin
     #> Adjustment of the Spriteset Data
