@@ -328,7 +328,7 @@ module GamePlay
       @running = false
     end
 
-		# Show the choice when the party is in mode :select
+    # Show the choice when the party is in mode :select
     def show_select_mode_choice
       show_black_frame
       # @type [PFM::Pokemon]
@@ -362,6 +362,7 @@ module GamePlay
       show_win_text(_get(23, 110)) if choice != 0
     end
 	
+    # Event that triggers when a Pokemon is selected in :select mode
     def on_select
       pokemon = @party[@index]
       unless @temp_team.include?(pokemon)
@@ -375,6 +376,8 @@ module GamePlay
       init_win_text
     end
     
+    # Check if the temporary team contains the right number of Pokemon
+    # return Boolean 
     def enough_pokemon?
       return if check_select_mon_var == true
       if @temp_team.size > $game_variables[Yuki::Var::Max_Pokemon_Select]
@@ -390,6 +393,8 @@ module GamePlay
       end
     end
 
+    # Check if $game_variables[6] has a value between 1 and 6
+    # return Boolean
     def check_select_mon_var
       if $game_variables[6] > 6 || $game_variables[6] < 1
         display_message("Wrong number of Pokemon to select. Number must be between 1 and 6.")
