@@ -376,6 +376,7 @@ module GamePlay
     end
     
     def enough_pokemon?
+      return if check_select_mon_var == true
       if @temp_team.size > $game_variables[Yuki::Var::Max_Pokemon_Select]
         v = 115 + $game_variables[Yuki::Var::Max_Pokemon_Select]
         display_message(_get(23, v))
@@ -386,6 +387,16 @@ module GamePlay
         return false
       else
         return true
+      end
+    end
+
+    def check_select_mon_var
+      if $game_variables[6] > 6 || $game_variables[6] < 1
+        display_message("Wrong number of Pokemon to select. Number must be between 1 and 6.")
+        action_B
+        true
+      else
+        false
       end
     end
 
