@@ -134,6 +134,7 @@ module Pathfinding
     return unless Game_Map::PATH_FINDING_ENABLED
     data = $pokemon_party.pathfinding_requests
     @requests = data.collect { |d| Request.load(d)}
+    @requests.delete(nil) # Prevent loading error
   end
 
   #-------------------------------------------
@@ -433,6 +434,7 @@ module Pathfinding
       character = $game_map.events[data[0]]
       target    = Target.load(data[1])
       tries     = data[2]
+      return nil unless character && target && tries # Prevent loading error : when map change
       return Request.new(character, target, tries)
     end
   end
