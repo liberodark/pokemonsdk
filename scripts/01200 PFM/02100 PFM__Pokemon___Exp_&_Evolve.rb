@@ -186,7 +186,7 @@ module PFM
       if(v && $game_data_pokemon[v])
         @id = v
         @form = 0 unless $game_data_pokemon[v][@form]
-        @form = _form_generation(@id, -1) if @form == 0
+        @form = form_generation(-1) if @form == 0
         @form = 0 unless $game_data_pokemon[v][@form]
         update_ability
       end

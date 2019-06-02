@@ -108,7 +108,7 @@ module PFM
       @skill_use_times = 0
       #>Formes recalibrés en début de combat
       if(@id == 421) #>Ceriflor
-        @form = _form_generation(@id, -1)
+        @form = form_generation(-1)
       end
       @status_count = 0 if toxic?
     end

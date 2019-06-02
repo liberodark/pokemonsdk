@@ -214,7 +214,7 @@ module PFM
                 end
 
       @id = id
-      form = _form_generation(id, form)
+      form = form_generation(form)
       data = $game_data_pokemon[id][form]
       form = 0 unless data
       data = $game_data_pokemon[id][form]

@@ -23,7 +23,7 @@ class Scene_Battle
       pkmn.reset_stat_stage
       pkmn.form_calibrate
       #>Vérifications de cheniti
-      pkmn.form = pkmn._form_generation(412,-1) if pkmn.id == 412 or pkmn.id == 413
+      pkmn.form = pkmn.form_generation(-1) if pkmn.id == 412 || pkmn.id == 413
     end
     launch_phase_event(5,false)
     @message_window.blocking = true
