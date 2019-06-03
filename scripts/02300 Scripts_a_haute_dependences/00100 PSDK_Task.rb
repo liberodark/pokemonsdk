@@ -40,6 +40,7 @@ module Scheduler
     end
     Yuki::FollowMe.update
     Yuki::Particles.update
+    PFM::Wild_RoamingInfo.unlock
     $wild_battle.reset
     $wild_battle.load_groups
   end

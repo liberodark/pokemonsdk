@@ -14,6 +14,15 @@ module PFM
     # The roaming Pokemon
     # @return [PFM::Pokemon]
     attr_reader :pokemon
+
+    @@locked = true
+    def self.unlock
+      @@locked = false
+    end
+    def self.lock
+      @@locked = true
+    end
+
     # Create a new Wild_RoamingInfo
     # @param pokemon [PFM::Pokemon] the roaming Pokemon
     # @param chance [Integer] the chance divider to see the Pokemon
@@ -30,7 +39,7 @@ module PFM
 
     # Call the Roaming Proc to update the Roaming Pokemon zone information
     def update
-      RoamingProcs[@proc_id]&.call(self)
+      RoamingProcs[@proc_id]&.call(self) unless @@locked
     end
 
     # Test if the Pokemon is dead (delete from the stack)
@@ -69,4 +78,10 @@ end
     infos.zone_type = 1
     infos.tag = 1
   end
+  # proc do |infos|
+  #   infos.map_id = ([25, 46, 35, 27] - [infos.map_id]).sample
+  #   infos.zone_type = 1
+  #   infos.tag = 0
+  #   pc "#{infos.pokemon.name} has moved to #{infos.map_id}"
+  # end
 ]

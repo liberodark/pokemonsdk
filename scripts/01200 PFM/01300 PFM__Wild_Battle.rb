@@ -38,6 +38,7 @@ module PFM
       @remaining_pokemons.each(&:clear)
       @roaming_pokemons.each(&:update)
       @roaming_pokemons.delete_if(&:pokemon_dead?)
+      PFM::Wild_RoamingInfo.lock
       # @forced_wild_battle=false
       @fishing.clear
       @fishing[:normal] = []
@@ -98,6 +99,7 @@ module PFM
       # Check roaming pokemon
       @roaming_pokemons.each do |roaming_info|
         if roaming_info.appearing?
+          PFM::Wild_RoamingInfo.unlock  # Allow Roaming pokemon update at the end of the battle
           init_battle(roaming_info.pokemon)
           return true
         end

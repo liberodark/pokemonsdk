@@ -112,7 +112,7 @@ module PFM
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     # @param form [Integer] the specific form of the Pokemon
     def mark_seen(id, form = 0)
-      return unless enabled?
+      # return unless enabled?
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= $game_data_pokemon.size
       @seen += 1 if @has_seen_and_forms[id].to_i == 0
@@ -138,7 +138,7 @@ module PFM
     # Mark a Pokemon as captured
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     def mark_captured(id)
-      return unless enabled?
+      # return unless enabled?
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= $game_data_pokemon.size
       unless @has_captured[id]
