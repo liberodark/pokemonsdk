@@ -60,7 +60,7 @@ module GamePlay
       return action_X if Input.trigger?(:X)
       return action_Y if Input.trigger?(:Y)
       return action_B if Input.trigger?(:B)
-      if @state == 0
+      if @state == 0 # Liste
         max_index = @selected_pokemons.size - 1
         if index_changed(:@index, :UP, :DOWN, max_index)
           update_index
@@ -71,6 +71,11 @@ module GamePlay
           @index = (@index - Mouse.wheel) % (max_index + 1)
           Mouse.wheel = 0
           update_index
+        end
+      elsif @state == 1 # Description
+        max_index = @selected_pokemons.size - 1
+        if index_changed(:@index, :UP, :DOWN, max_index)
+          update_index_descr
         end
       end
     end
@@ -88,6 +93,12 @@ module GamePlay
       @pokemon.id = @selected_pokemons[@index]
       @pokeface.data = @pokemon
       update_list(true)
+    end
+
+    def update_index_descr
+      @pokemon.id = @selected_pokemons[@index]
+      @pokeface.data = @pokemon
+      change_state(1)
     end
 
     # Action triggered when A is pressed
@@ -130,20 +141,20 @@ module GamePlay
     def change_state(state)
       @state = state
       @ctrl.each { |sp| sp.set_state(state) }
-      @frame.set_bitmap(state == 1 ? "FrameInfos" : "Frame", :pokedex)
+      @frame.set_bitmap(state == 1 ? 'FrameInfos' : 'Frame', :pokedex)
       @pokeface.data = @pokemon if(@pokeface.visible = state != 2)
       @arrow.visible = @seen_got.visible = state == 0
       @pokemon_info.visible = @pokemon_descr.visible = state == 1
-    if @pokemon_descr.visible
+      if @pokemon_descr.visible
         if $pokedex.has_captured?(@pokemon.id)
-            @pokemon_descr.multiline_text = ::GameData::Pokemon.descr(@pokemon.id)
-            @pokemon_info.data = @pokemon
+          @pokemon_descr.multiline_text = ::GameData::Pokemon.descr(@pokemon.id)
+          @pokemon_info.data = @pokemon
         else
-            @pokemon_descr.multiline_text = ""
-            @pokemon_info.data = @pokemon
+          @pokemon_descr.multiline_text = ''
+          @pokemon_info.data = @pokemon
         end
-    end
-      @pokemon_zone.data = @pokemon if(@pokemon_zone.visible = state == 2)
+      end
+      @pokemon_zone.data = @pokemon if (@pokemon_zone.visible = state == 2)
       update_list(state == 0)
     end
 
