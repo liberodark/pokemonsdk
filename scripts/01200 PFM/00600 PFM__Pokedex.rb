@@ -111,8 +111,8 @@ module PFM
     # Mark a pokemon as seen
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     # @param form [Integer] the specific form of the Pokemon
-    def mark_seen(id, form = 0)
-      # return unless enabled?
+    def mark_seen(id, form = 0, forced: false)
+      return unless enabled? || forced
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= $game_data_pokemon.size
       @seen += 1 if @has_seen_and_forms[id].to_i == 0

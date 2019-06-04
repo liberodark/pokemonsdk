@@ -84,7 +84,7 @@ module GamePlay
         show_rename_choice
         Audio.bgm_stop
         $game_system.bgm_restore2
-        $pokedex.mark_seen(@pokemon.id, @pokemon.form)
+        $pokedex.mark_seen(@pokemon.id, @pokemon.form, forced: true)
         $pokedex.mark_captured(@pokemon.id)
         @running = false
       end

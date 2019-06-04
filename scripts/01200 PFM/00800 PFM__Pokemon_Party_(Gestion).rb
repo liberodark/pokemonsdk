@@ -47,7 +47,7 @@ module PFM
     # @return [Boolean, Integer] if the Pokemon has been added to the party or the PC. When Integer, its the id of the box where the Pokemon has been stored.
     def add_pokemon(pkmn)
       unless pkmn.egg?
-        @pokedex.mark_seen(pkmn.id, pkmn.form)
+        @pokedex.mark_seen(pkmn.id, pkmn.form, forced: true)
         @pokedex.mark_captured(pkmn.id)
       end
 
