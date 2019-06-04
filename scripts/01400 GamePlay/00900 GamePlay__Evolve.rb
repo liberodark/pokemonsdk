@@ -69,14 +69,14 @@ module GamePlay
         if @clone.id == 291 and $actors.size < 6 and $bag.has_item?(4)
           $actors << PFM::Pokemon.new(292)
           $bag.remove_item(4)
-          $pokedex.mark_seen(292)
+          $pokedex.mark_seen(292, forced: true)
           $pokedex.mark_captured(292)
         end
         Audio.bgm_stop
         $game_system.bgm_restore2
         @running = false
         @evolved = true
-        $pokedex.mark_seen(@pokemon.id, @pokemon.form)
+        $pokedex.mark_seen(@pokemon.id, @pokemon.form, forced: true)
         $pokedex.mark_captured(@pokemon.id)
       else
         if(@counter < SecondStep and (!@forced and Input.trigger?(:B)))
