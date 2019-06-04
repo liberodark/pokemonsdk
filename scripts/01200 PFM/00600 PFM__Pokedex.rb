@@ -4,6 +4,10 @@ module PFM
   # The Pokedex informations
   #
   # The main Pokedex object is stored in $pokedex or $pokemon_party.pokedex
+  #
+  # All Pokemon are usually marked as seen or captured in the correct scripts using $pokedex.mark_seen(id) or $pokedex.mark_captured(id).
+  # When the Pokedex is disabled, no Pokemon can be marked as seen (unless they're added to the party). All caught Pokemon are marked as captured so
+  # if for scenaristic reason you need the trainer to catch Pokemon before having the Pokedex. Don't forget to call $pokedex.unmark_captured(id) (as well $pokedex.unmark_seen(id))
   # @author Nuri Yuri
   class Pokedex
     # Create a new Pokedex object
@@ -76,7 +80,6 @@ module PFM
     # Increase the number of pokemon captured by specie
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     def pokemon_captured_inc(id)
-      return unless enabled?
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= $game_data_pokemon.size
       @nb_captured[id] = @nb_captured[id].to_i.next
@@ -94,6 +97,7 @@ module PFM
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     # @param number [Integer] the number of Pokemon fought in the specified specie
     def pokemon_mark_fought(id, number)
+      return unless enabled?
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= $game_data_pokemon.size
       @nb_fought[id] = number.to_i
@@ -111,6 +115,7 @@ module PFM
     # Mark a pokemon as seen
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     # @param form [Integer] the specific form of the Pokemon
+    # @param forced [Boolean] if the Pokemon is marked seen even if the Pokedex is disabled (Giving Pokemon before givin the Pokedex).
     def mark_seen(id, form = 0, forced: false)
       return unless enabled? || forced
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
@@ -138,7 +143,6 @@ module PFM
     # Mark a Pokemon as captured
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     def mark_captured(id)
-      # return unless enabled?
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= $game_data_pokemon.size
       unless @has_captured[id]
