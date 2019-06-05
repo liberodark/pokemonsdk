@@ -2,6 +2,7 @@ pokemonsdk/scripts/00001 RMXP_DATA.rb
 pokemonsdk/scripts/00002 state.rb
 pokemonsdk/scripts/00100 Yuki__EXC.rb
 pokemonsdk/scripts/00200 PSDK_Version.rb
+pokemonsdk/scripts/00400 Console.rb
 pokemonsdk/scripts/00100 _Patch_temporaire_/00100 Sprite_RGSS_Fix.rb
 pokemonsdk/scripts/00100 _Patch_temporaire_/00200 Plane.rb
 pokemonsdk/scripts/00200 GameData(dep)/00100 GameData__SystemTags.rb
@@ -137,7 +138,6 @@ pokemonsdk/scripts/00900 Constants_for_the_scripts/00200 GameData__Bag.rb
 pokemonsdk/scripts/01000 Util/00100 Util__Item.rb
 pokemonsdk/scripts/01000 Util/00200 Util__TargetSelection.rb
 pokemonsdk/scripts/01000 Util/00300 Random.rb
-pokemonsdk/scripts/01000 Util/00400 Console.rb
 pokemonsdk/scripts/01000 Util/00500 Util_EventConvert.rb
 pokemonsdk/scripts/01000 Util/00600 Util_Warp.rb
 pokemonsdk/scripts/01100 Yuki/00100 Yuki__Sprite.rb
