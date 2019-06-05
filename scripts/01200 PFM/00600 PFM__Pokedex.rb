@@ -202,5 +202,24 @@ module PFM
       $game_variables[Yuki::Var::Pokedex_Catch] = @captured
       $game_variables[Yuki::Var::Pokedex_Seen] = @seen
     end
+
+    # Detect the best worldmap to display for the pokemon
+    # @param pokemon_id [Integer] the pokemon we want the worldmap to display
+    # @return [Integer]
+    def best_worldmap_pokemon(pokemon_id)
+      current = result = $env.get_worldmap
+      GameData::WorldMap.each_id do |worldmap_id|
+        next unless $env.visited_worldmap?(worldmap_id)
+        wm_zones = GameData::WorldMap.zone_list(worldmap_id)
+        pkm_zones = GameData::Pokemon.spawn_zones(pokemon_id)
+        if (wm_zones - pkm_zones).length != wm_zones.length
+          result = worldmap_id
+          # return result
+          break if worldmap_id == result && result == current
+        end
+      end
+      # pc result
+      return result
+    end
   end
 end

@@ -36,7 +36,8 @@ Graphics.on_start do
   GameData::Item.const_set(:LastID, $game_data_item.size - 1)
 
   # Load WorldMap & Zone data
-  $game_data_map, $game_data_zone = load_data('Data/PSDK/MapData.rxdata')
+  # $game_data_map, $game_data_zone = load_data('Data/PSDK/MapData.rxdata')
+  $game_data_map, $game_data_zone = GameData::Map.load
 
   # Load Maplinks
   $game_data_maplinks = load_data('Data/PSDK/Maplinks.rxdata')
@@ -49,6 +50,9 @@ Graphics.on_start do
 
   # Load Trainers
   $game_data_trainer = load_data('Data/PSDK/Trainers.rxdata')
+
+  # Load World Maps (PSDK 24.28+)
+  $game_data_worldmap = GameData::WorldMap.load
 end
 
 # Load Ability symbols

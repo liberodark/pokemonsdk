@@ -94,12 +94,13 @@ class Interpreter
 
   # Open the world map
   # @param arg [Symbol] the mode of the world map, :view or :fly
+  # @param wm_id [Integer] the world map id to display
   # @author Nuri Yuri
-  def carte_du_monde(arg = :view)
+  def carte_du_monde(arg = :view, wm_id = $env.get_worldmap)
     if arg.class == String
       arg = arg.bytesize == 3 ? :fly : :view
     end
-    carte = GamePlay::WorldMap.new(arg)
+    carte = GamePlay::WorldMap.new(arg, wm_id, :map)
     carte.main
     Graphics.transition
     @wait_count = 2

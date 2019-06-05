@@ -14,11 +14,17 @@ module PFM
     # The roaming Pokemon
     # @return [PFM::Pokemon]
     attr_reader :pokemon
+    # The spotted state of the pokemon. True if the player look at the map position or after fighting the roaming pokemon
+    # @return [Boolean]
+    attr_accessor :spotted
 
+    # True if the roaming informations can't be updated
     @@locked = true
+    # Allow roaming informations to be updated
     def self.unlock
       @@locked = false
     end
+    # Disallow roaming informations to be updated
     def self.lock
       @@locked = true
     end
@@ -34,6 +40,7 @@ module PFM
       @chance = chance
       @tag = 0
       @zone_type = -1
+      @spotted = true
       update
     end
 
@@ -77,11 +84,14 @@ end
     infos.map_id = 1
     infos.zone_type = 1
     infos.tag = 1
+  end,
+  proc do |infos|
+    maps = [25, 46, 35, 27] # Maps where the pokemon can spawn
+    if (infos.map_id == $game_map.map_id && infos.spotted) || infos.map_id == -1
+      infos.map_id = (maps - [infos.map_id]).sample
+      infos.spotted = false
+    end
+    infos.zone_type = 1
+    infos.tag = 0
   end
-  # proc do |infos|
-  #   infos.map_id = ([25, 46, 35, 27] - [infos.map_id]).sample
-  #   infos.zone_type = 1
-  #   infos.tag = 0
-  #   pc "#{infos.pokemon.name} has moved to #{infos.map_id}"
-  # end
 ]

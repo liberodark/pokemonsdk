@@ -69,9 +69,9 @@ class Game_Player
     elsif $game_map.system_tag(new_x, new_y) == HeadButt
       $game_temp.common_event_id = Game_CommonEvent::HEADBUTT
     # Surf
-    elsif $game_map.passable?(x, y, d, nil) && z <= 1
-      new_x = @x + (d == 6 ? 1 : d == 4 ? -1 : 0)
-      new_y = @y + (d == 2 ? 1 : d == 8 ? -1 : 0)
+    elsif $game_map.passable?(x, y, d, nil) && 
+        $game_map.passable?(new_x = @x + (d == 6 ? 1 : d == 4 ? -1 : 0), new_y = @y + (d == 2 ? 1 : d == 8 ? -1 : 0), 10 - d, self) && 
+        z <= 1
       sys_tag = $game_map.system_tag(new_x, new_y)
       $game_temp.common_event_id = Game_CommonEvent::SURF_ENTER if !@surfing && SurfTag.include?(sys_tag)
     end

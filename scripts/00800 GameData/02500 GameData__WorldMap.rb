@@ -2,64 +2,98 @@ module GameData
   # Data structure of world maps
   # @author Leikt, Nuri Yuri
   class WorldMap < Base
+    # World map name
+    # @return [String]
+    attr_accessor :name
     # Filename of the image used to display the world map
     # @return [String]
-    attr_accessor :image
-    # Surface of the image used to display the world map
-    # @return [Rect]
-    attr_accessor :surface
+    attr_reader :image
     # Informations on the map
     # @return [Table,Array<WorldMapObject>]
     attr_accessor :data
     # Create a new GameData::WorldMap
-    def initialize(background_image, image, surface, data)
-      @image = image
-      @surface = surface
-      @data = data
-    end
-    
-    # Load the data for the worldmap into a wrapper and return it.
-    # @param wm_id [Integer] the id of the world map to load
-    # @return [GameData::WorldMap::Wrapper]
-    def self.data_zone(wm_id)
-      return GameData::WorldMap::Wrapper.new($game_data_worldmap[map_id].data)
+    def initialize(name, img)
+      @name = name
+      self.image = img
     end
 
-    # Class that wrap the world map data to GamePlay::WorldMap data
-    # @author Leikt, Nuri Yuri
-    class Wrapper
-      # Create the wrapper
-      # @param [GameData::WorldMap]
-      def initialize(wm_data)
-        @data = wm_data
-        @type = wm_data.is_a?(Array) ? :object : :grid
-      end
+    # Modify the image of the zone and resize it
+    # @param value [String] the filename
+    def image=(value)
+      @image = value
 
-      # Get the zone of the cursor and return the id of it. Return -1 if no zone.
-      # @param x [Integer] cursor's x coord (pixel)
-      # @param y [Integer] cursor's y coord (pixel)
-      # @return [Integer]
-      def get_zone(x, y)
-        if @type == :grid
-          return grid_get_zone(x, y)
-        else
-          return object_get_zone(x, y)
+      bmp = RPG::Cache.interface(value)
+      max_x = bmp.width / GamePlay::WorldMap::TileSize
+      max_y = bmp.height / GamePlay::WorldMap::TileSize
+      n_data = Table.new(max_x, max_y)
+
+      if @data
+        0.upto([n_data.xsize, @data.xsize].min) do |x|
+          0.upto([n_data.ysize, @data.ysize].min) do |y|
+            begin
+              n_data[x, y] = @data[x, y]
+            rescue Exception
+              n_data[x, y] = -1
+            end
+          end
         end
       end
+      @data = n_data
+    end
 
-      private
-
-      # To implement in a future update
-      def object_get_zone(x, y)
-        # TODO
-        return -1
-      end 
-
-      #  Same as get_zone
-      def grid_get_zone(x, y)
-        # Wrap the cursor coords into grid coords
-        return @data[x / GamePlay::WorldMap::TileSize][y / GamePlay::WorldMap::TileSize]
+    # Get the zones id of this worldmap
+    # @param id [Integer] the worldmap id
+    # @return [Array<Integer>]
+    def self.zone_list(id)
+      result = []
+      $game_data_zone.each_with_index do |zone, index|
+        result << index if zone.worldmap_id == id
       end
+      return result
+    end
+
+    # Gather the zone list from data. REALLY CONSUMING
+    # @return [Array<Integer>]
+    def zone_list_from_data
+      result = []
+      0.upto(@data.xsize - 1) do |x|
+        0.upto(@data.ysize - 1) do |y|
+          next if @data[x, y] < 0
+          
+          result.push @data[x, y] unless result.include?(@data[x, y])
+        end
+      end
+      return result
+    end
+
+    # Run the given block on each worldmap id
+    # @param &block
+    def self.each_id(&block)
+      $game_data_worldmap.size.times(&block)
+    end
+    
+    # Load the data from Data/PSDK/WorldMaps.rxdata
+    # @return [Array]
+    def self.load
+      return load_data('Data/PSDK/WorldMaps.rxdata')
+    rescue StandardError, LoadError
+      # Convert PSDK 24.27 system to PSDK 24.28+ system
+      old_data = $game_data_map
+      width = old_data.length
+      height = old_data[0].length
+      data = Table.new(width, height)
+      0.upto(width - 1) do |x| 
+        0.upto(height - 1) do |y|
+          data[x, y] = (old_data[x][y] || -1)
+        end
+      end
+      wm = GameData::WorldMap.new("___RENAME___IT___", 'world_map')
+      wm.data = data
+
+      $game_data_zone.each do |zone|
+        zone.worldmap_id = 0
+      end
+      return [wm]
     end
   end
 end
