@@ -31,12 +31,31 @@ module PFM
   SkillProcess[19] = proc do |pkmn, skill, *test| #> Vol
     next false if test.size > 0 #Indique que la scène doit laisser les précédentes
     if $game_switches[Yuki::Sw::Env_CanFly]
-      carte = GamePlay::WorldMap.new(:fly)
+      carte = GamePlay::WorldMap.new(:fly, $env.get_worldmap, pkmn)
       carte.main
       Graphics.transition
       next true
     else
       next :block
     end
+  end
+  SkillProcess[57] = proc do |pkm, skill, *test| #> Surf
+    next false if test.size > 0 #Indique que la scène doit laisser les précédentes
+
+    d = $game_player.direction
+    x = $game_player.x
+    y = $game_player.y
+    z = $game_player.z
+    new_x = x + (d == 6 ? 1 : d == 4 ? -1 : 0)
+    new_y = y + (d == 2 ? 1 : d == 8 ? -1 : 0)
+    sys_tag = $game_map.system_tag(new_x, new_y)
+    next false unless $game_map.passable?(x, y, d, nil) &&
+                      $game_map.passable?(new_x, new_y, 10 - d, $game_player) &&
+                      z <= 1 &&
+                      !$game_player.surfing? &&
+                      Game_Character::SurfTag.include?(sys_tag)
+
+    $game_temp.common_event_id = Game_CommonEvent::SURF_ENTER
+    next true
   end
 end

@@ -7,6 +7,9 @@ module GameData
     # ID or list of MAP ID the zone is related to. (RMXP MAP ID !)
     # @return [Integer, Array<Integer>]
     attr_accessor :map_id
+    # ID of the worldmap to display when in this zone
+    # @return [Integer]
+    attr_accessor :worldmap_id
     # Number at the end of the Panel file (Graphics/Windowskins/Panel_{panel_id})
     # @return [Integer] if 0 no pannel is shown
     attr_accessor :panel_id
@@ -52,8 +55,10 @@ module GameData
     # @param warp_dissalowed [Boolean] future value of the attribute
     # @param forced_weather [Integer] future value of the attribute
     # @param description [String, nil] future value of the attribute
-    def initialize(map_id, panel_id=0, description=nil, warp_x=nil, warp_y=nil, sub_map=nil, pos_x=nil, pos_y=nil, fly_allowed=true, warp_dissalowed=false,forced_weather=nil)
+    # @param worldmap_id [Integer, 0] future value of the attribute
+    def initialize(map_id, panel_id=0, description=nil, warp_x=nil, warp_y=nil, sub_map=nil, pos_x=nil, pos_y=nil, fly_allowed=true, warp_dissalowed=false,forced_weather=nil, worldmap_id = 0)
       @map_id = map_id
+      @worldmap_id = worldmap_id
       @panel_id = panel_id
       @warp_x = warp_x
       @warp_y = warp_y
@@ -84,6 +89,16 @@ module GameData
     # Correct name of the attribute
     def warp_disallowed
       @warp_dissalowed
+    end
+    # Load the data and check the version
+    def self.load
+      game_data_map, game_data_zone = load_data('Data/PSDK/MapData.rxdata')
+      # Convert from PSDK 24.27 to PSDK 24.28+
+      game_data_zone.each do |zone|
+        zone.worldmap_id ||= 0
+      end
+      # Return the loaded data
+      return game_data_map, game_data_zone
     end
   end
 end

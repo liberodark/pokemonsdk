@@ -17,14 +17,17 @@ module PFM
       @weather = 0
       @battle_weather = 0
       @duration = Float::INFINITY
-      # Zone where the player actually is
+      # Zone where the player currently is
       @zone = 0
       # Zone where the current zone is a child of
       @master_zone = 0
       @warp_zone = 0
       @last_map_id = 0
       @visited_zone = []
+      @visited_worldmap = []
       @deleted_events = {}
+      # Worldmap where the player currently is
+      @worldmap = 0
     end
 
     # Apply a new weather to the current environment
@@ -150,6 +153,10 @@ module PFM
       @master_zone = index if data.panel_id&.>(0)
       # We memorize the fact we visited this zone
       @visited_zone << index unless @visited_zone.include?(index)
+      # We memorize the fact we visited this worldmap
+      @visited_worldmap << data.worldmap_id unless @visited_worldmap.include?(data.worldmap_id)
+      # We store the zone worldmap
+      @worldmap = data.worldmap_id
       # We store the new switch info
       $game_switches[Yuki::Sw::Env_CanFly] = (!data.warp_disallowed && data.fly_allowed)
       $game_switches[Yuki::Sw::Env_CanDig] = (!data.warp_disallowed && !data.fly_allowed)
@@ -188,23 +195,26 @@ module PFM
     # Get the zone data in the worldmap
     # @param x [Integer] the x position of the zone in the World Map
     # @param y [Integer] the y position of the zone in the World Map
+    # @param worldmap_id [Integer] <default : @worldmap> the worldmap to refer at
     # @return [GameData::Map, nil] nil = no zone there
-    def get_zone(x, y)
-      return nil unless $game_data_map[x]
-      z = $game_data_map[x][y]
-      return (z && $game_data_zone[z])
+    def get_zone(x, y, worldmap_id = @worldmap)
+      zone_id = $game_data_worldmap[worldmap_id].data[x, y]
+      return (zone_id and zone_id >= 0) ? $game_data_zone[zone_id] : nil
     end
 
     # Return the zone coordinate in the worldmap
     # @param zone_id [Integer] id of the zone in the database
+    # @param worldmap_id [Integer] <default : @worldmap> the worldmap to refer at
     # @return [Array(Integer, Integer)] the x,y coordinates
-    def get_zone_pos(zone_id)
+    def get_zone_pos(zone_id, worldmap_id = @worldmap)
       return 0, 0 unless (zone = $game_data_zone[zone_id])
       return zone.pos_x, zone.pos_y if zone.pos_x && zone.pos_y
       # Trying to find the current zone
-      $game_data_map.each_with_index do |col, x|
-        col&.each_with_index do |value, y|
-          return x, y if value == zone_id
+      w = $game_data_worldmap[worldmap_id].data.xsize
+      h = $game_data_worldmap[worldmap_id].data.ysize
+      0.upto(w - 1) do |x|
+        0.upto(h - 1) do |y|
+          return x, y if $game_data_worldmap[worldmap_id].data[x, y] == zone_id
         end
       end
       return 0, 0
@@ -222,6 +232,26 @@ module PFM
         zone = zone_index || -1
       end
       return @visited_zone.include?(zone)
+    end
+
+    # Get the worldmap from the zone
+    # @param zone [Integer] <default : current zone>
+    # @return [Integer]
+    def get_worldmap(zone = @zone)
+      if zone.is_a?(GameData::Map)
+        return zone.worldmap_id
+      end
+      return $game_data_zone[zone]&.worldmap_id
+    end
+
+    # Test if the given world map has been visited
+    # @param worldmap [Integer, GameData::WorldMap]
+    # @return [Boolean]
+    def visited_worldmap?(worldmap)
+      if worldmap.is_a?(GameData::WorldMap)
+        return @visited_worldmap.include? $game_data_worldmap.index(worldmap)
+      end
+      return @visited_worldmap.include? worldmap
     end
 
     # Is the player standing in grass ?

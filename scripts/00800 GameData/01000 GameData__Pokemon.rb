@@ -609,5 +609,26 @@ module GameData
       end
       collection
     end
+    
+    # Return the list of the zone id where the pokemon spawn
+    # @param id [Integer] the id of pokemon
+    # @return [Array<Integer>]
+    def self.spawn_zones(id)
+      result = []
+      $game_data_zone.each_with_index do |zone, index|
+        is_here = false
+        zone.groups.each do |group|
+          group.each do |pkm|
+            next unless pkm.is_a?(Hash)
+            next unless pkm[:id] == id
+            result << index
+            is_here = true
+            break
+          end
+          break if is_here
+        end
+      end
+      return result
+    end
   end
 end

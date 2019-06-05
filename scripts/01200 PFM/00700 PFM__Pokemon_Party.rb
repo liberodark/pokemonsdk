@@ -180,6 +180,8 @@ module PFM
       $game_variables[Yuki::Var::Party_Menu_Sel] = -1
       # Patch 2019-05-27
       @pathfinding_requests ||= Pathfinding::DEFAULT_SAVE
+      @env.instance_variable_set(:@worldmap, 0) unless @env.instance_variable_defined?(:@worldmap) || @env.frozen?
+      @env.instance_variable_set(:@visited_worldmap, [0]) unless @env.instance_variable_defined?(:@visited_worldmap) || @env.frozen?
     end
 
     # Update the processing of the repel

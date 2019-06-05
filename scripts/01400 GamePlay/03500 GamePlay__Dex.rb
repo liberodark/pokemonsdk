@@ -35,7 +35,7 @@ module GamePlay
       @pokemon_info = DexWinInfo.new(@viewport)
       @pokemon_descr = Text.new(0, @viewport, 11, 153, 298, 16, nil.to_s).load_color(10)
       # Lieu
-      @pokemon_zone = DexWinMap.new(@viewport)
+      @pokemon_worldmap = GamePlay::WorldMap.new(:pokedex, $env.get_worldmap)
       @state = page_id ? 1 : 0
       @page_id = page_id
       @ctrl = Array.new(4) { |i| DexCTRLButton.new(@viewport, i) }
@@ -77,6 +77,8 @@ module GamePlay
         if index_changed(:@index, :UP, :DOWN, max_index)
           update_index_descr
         end
+      elsif @state == 2
+        @pokemon_worldmap.update
       end
     end
 
@@ -117,6 +119,7 @@ module GamePlay
 
     # Action triggered when X is pressed
     def action_X
+      @pokemon_worldmap.on_toggle_zoom if @state == 2
       return if @state > 1 
       return $game_system.se_play($data_system.buzzer_se) if @page_id
       return $game_system.se_play($data_system.buzzer_se) #Non programmé
@@ -124,6 +127,7 @@ module GamePlay
 
     # Action triggered when Y is pressed
     def action_Y
+      @pokemon_worldmap.on_next_worldmap if @state == 2
       return if @state > 1
       return $game_system.se_play($data_system.buzzer_se) if @state == 0
       $game_system.cry_play(@pokemon.id) if @state == 1
@@ -141,20 +145,22 @@ module GamePlay
     def change_state(state)
       @state = state
       @ctrl.each { |sp| sp.set_state(state) }
-      @frame.set_bitmap(state == 1 ? 'FrameInfos' : 'Frame', :pokedex)
-      @pokeface.data = @pokemon if(@pokeface.visible = state != 2)
+      @frame.set_bitmap(state == 1 ? "FrameInfos" : "Frame", :pokedex)
+      @pokeface.data = @pokemon if ( @pokeface.visible = state != 2 )
       @arrow.visible = @seen_got.visible = state == 0
       @pokemon_info.visible = @pokemon_descr.visible = state == 1
       if @pokemon_descr.visible
-        if $pokedex.has_captured?(@pokemon.id)
-          @pokemon_descr.multiline_text = ::GameData::Pokemon.descr(@pokemon.id)
-          @pokemon_info.data = @pokemon
-        else
-          @pokemon_descr.multiline_text = ''
-          @pokemon_info.data = @pokemon
-        end
+          if $pokedex.has_captured?(@pokemon.id)
+              @pokemon_descr.multiline_text = ::GameData::Pokemon.descr(@pokemon.id)
+              @pokemon_info.data = @pokemon
+          else
+              @pokemon_descr.multiline_text = ""
+              @pokemon_info.data = @pokemon
+          end
       end
-      @pokemon_zone.data = @pokemon if (@pokemon_zone.visible = state == 2)
+      if(@pokemon_worldmap.visible = state == 2)
+        @pokemon_worldmap.set_pokemon @pokemon
+      end
       update_list(state == 0)
     end
 

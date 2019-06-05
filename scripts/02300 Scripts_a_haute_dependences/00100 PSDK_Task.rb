@@ -31,6 +31,9 @@ module Scheduler
   end
 
   add_proc(:on_warp_end, ::Scene_Map, 'Reposition followers + update système', 1000) do
+    unless Game_Character::SurfTag.include? $game_player.system_tag
+      $game_player.leave_surfing_state
+    end
     if (@storage[:was_outside] && $game_switches[Yuki::Sw::Env_CanFly]) || $game_switches[Yuki::Sw::Env_FM_REP]
       $game_switches[Yuki::Sw::Env_FM_REP] = false
       Yuki::FollowMe.set_positions(*@storage[:follower_arr])

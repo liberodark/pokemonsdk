@@ -100,6 +100,7 @@ module PFM
       @roaming_pokemons.each do |roaming_info|
         if roaming_info.appearing?
           PFM::Wild_RoamingInfo.unlock  # Allow Roaming pokemon update at the end of the battle
+          roaming_info.spotted = true
           init_battle(roaming_info.pokemon)
           return true
         end
@@ -252,7 +253,9 @@ module PFM
     # @return [PFM::Pokemon] the generated roaming Pokemon
     def add_roaming_pokemon(chance, proc_id, pokemon_hash)
       pokemon = ::PFM::Pokemon.generate_from_hash(pokemon_hash)
+      PFM::Wild_RoamingInfo.unlock
       @roaming_pokemons << Wild_RoamingInfo.new(pokemon, chance, proc_id)
+      PFM::Wild_RoamingInfo.lock
       @code += 1
       return pokemon
     end
@@ -286,6 +289,12 @@ module PFM
     def each_roaming_pokemon
       @roaming_pokemons.each do |roaming_info|
         yield(roaming_info.pokemon)
+      end
+    end
+    # Tell the roaming pokemon that the playe has look at their position
+    def on_map_viewed
+      @roaming_pokemons.each do |info|
+        info.spotted = true
       end
     end
   end
