@@ -32,7 +32,7 @@ if Object.const_defined?(:FMOD)
     # @param fade_in [Boolean, Integer] if the BGM fades in when different (or time in ms)
     def bgm_play(file_name, volume = 100, pitch = 100, fade_in = true)
       Thread.new do
-        @bgm_mutex.synchronize { bgm_play_internal(file_name, volume, pitch, fade_in) }
+        synchronize(@bgm_mutex) { bgm_play_internal(file_name, volume, pitch, fade_in) }
       end
     end
 
@@ -76,7 +76,7 @@ if Object.const_defined?(:FMOD)
     # Returns the BGM position
     # @return [Integer]
     def bgm_position
-      @bgm_mutex.synchronize do
+      synchronize(@bgm_mutex) do
         return @bgm_channel.getPosition(FMOD::TIMEUNIT::PCM) if @bgm_channel
       end
       return 0
@@ -85,8 +85,8 @@ if Object.const_defined?(:FMOD)
     # Set the BGM position
     # @param position [Integer]
     def bgm_position=(position)
-      @bgm_mutex.synchronize do
-        @bgm_channel.setPosition(position, FMOD::TIMEUNIT::PCM) if @bgm_channel
+      synchronize(@bgm_mutex) do
+        @bgm_channel&.setPosition(position, FMOD::TIMEUNIT::PCM)
       end
     rescue StandardError
       log_error("bgm_position= : #{$!.message}")
@@ -95,7 +95,7 @@ if Object.const_defined?(:FMOD)
     # Fades the BGM
     # @param time [Integer] fade time in ms
     def bgm_fade(time)
-      @bgm_mutex.synchronize do
+      synchronize(@bgm_mutex) do
         return unless @bgm_channel
         return unless (sound = @bgm_sound)
         return if @fading_sounds[sound]
@@ -106,7 +106,7 @@ if Object.const_defined?(:FMOD)
 
     # Stop the BGM
     def bgm_stop
-      @bgm_mutex.synchronize do
+      synchronize(@bgm_mutex) do
         return unless @bgm_channel
         @bgm_channel.stop
         @bgm_channel = nil
@@ -122,7 +122,7 @@ if Object.const_defined?(:FMOD)
     # @param fade_in [Boolean, Integer] if the BGS fades in when different (Integer = time to fade)
     def bgs_play(file_name, volume = 100, pitch = 100, fade_in = true)
       Thread.new do
-        @bgs_mutex.synchronize { bgs_play_internal(file_name, volume, pitch, fade_in) }
+        synchronize(@bgs_mutex) { bgs_play_internal(file_name, volume, pitch, fade_in) }
       end
     end
 
@@ -165,7 +165,7 @@ if Object.const_defined?(:FMOD)
     # Fades the BGS
     # @param time [Integer] fade time in ms
     def bgs_fade(time)
-      @bgs_mutex.synchronize do
+      synchronize(@bgs_mutex) do
         return unless @bgs_channel
         return unless (sound = @bgs_sound)
         return if @fading_sounds[sound]
@@ -176,7 +176,7 @@ if Object.const_defined?(:FMOD)
 
     # Stop the BGS
     def bgs_stop
-      @bgs_mutex.synchronize do
+      synchronize(@bgs_mutex) do
         return unless @bgs_channel
         @bgs_channel.stop
         @bgs_channel = nil
@@ -192,8 +192,8 @@ if Object.const_defined?(:FMOD)
     # @param preserve_bgm [Boolean] tell the function not to pause the bgm
     def me_play(file_name, volume = 100, pitch = 100, preserve_bgm = false)
       Thread.new do
-        @bgm_mutex.synchronize do
-          @me_mutex.synchronize do
+        synchronize(@bgm_mutex) do
+          synchronize(@me_mutex) do
             me_play_internal(file_name, volume, pitch, preserve_bgm)
           end
         end
@@ -243,7 +243,7 @@ if Object.const_defined?(:FMOD)
     # Fades the ME
     # @param time [Integer] fade time in ms
     def me_fade(time)
-      @me_mutex.synchronize do
+      synchronize(@me_mutex) do
         return unless @me_channel
         return unless (sound = @me_sound)
         return if @fading_sounds[sound]
@@ -251,7 +251,7 @@ if Object.const_defined?(:FMOD)
         if @bgm_channel
           sr = FMOD::System.getSoftwareFormat.first
           delay = @bgm_channel.getDSPClock.last + Integer(time * sr / 1000)
-          @bgm_channel.setDelay(delay, 0, false) if !@me_bgm_restart or @me_bgm_restart > delay
+          @bgm_channel.setDelay(delay, 0, false) if !@me_bgm_restart || @me_bgm_restart > delay
         end
         @me_channel = nil
       end
@@ -259,9 +259,9 @@ if Object.const_defined?(:FMOD)
 
     # Stop the ME
     def me_stop
-      @me_mutex.synchronize do
+      synchronize(@me_mutex) do
         return unless @me_channel
-        @bgm_channel.setDelay(0, 0, false) if @bgm_channel
+        @bgm_channel&.setDelay(0, 0, false)
         @me_channel.stop
         @me_channel = nil
       end
@@ -335,9 +335,9 @@ if Object.const_defined?(:FMOD)
           index += 1
           next unless tag[2].is_a?(String)
           name, data = tag[2].split("\x00")
-          if name == 'LOOPSTART' and !start
+          if name == 'LOOPSTART' && !start
             start = data.to_i
-          elsif name == 'LOOPLENGTH' and !length
+          elsif name == 'LOOPLENGTH' && !length
             length = data.to_i
           end
         end
@@ -401,7 +401,7 @@ if Object.const_defined?(:FMOD)
         end
         sounds_to_delete.each { |sound| @fading_sounds.delete(sound) }
       end
-      additionnal_sound.release if additionnal_sound
+      additionnal_sound&.release
     end
 
     # Function that detects if the previous playing sound is the same as the next one
@@ -414,17 +414,15 @@ if Object.const_defined?(:FMOD)
     # @return [Boolean]
     def was_sound_previously_playing?(filename, old_filename, sound, channel, fade_out = false)
       return false unless sound
-      if filename != old_filename
-        if channel and (channel.isPlaying rescue false)
-          if fade_out and !@fading_sounds[sound]
-            @was_playing_callback = proc { fade(fade_out == true ? FadeInTime : fade_out, @fading_sounds[sound] = channel) }
-          else
-            @was_playing_callback = proc { channel.stop }
-          end
-        end
-        return false
+      return true unless filename != old_filename
+      return false unless channel && (channel.isPlaying rescue false)
+      if fade_out && !@fading_sounds[sound]
+        fade_time = fade_out == true ? FadeInTime : fade_out
+        @was_playing_callback = proc { fade(fade_time, @fading_sounds[sound] = channel) }
+      else
+        @was_playing_callback = proc { channel.stop }
       end
-      return true
+      return false
     end
 
     # Adjust channel volume and pitch
@@ -439,7 +437,7 @@ if Object.const_defined?(:FMOD)
 
     # Automatically call the "was playing callback"
     def call_was_playing_callback
-      @was_playing_callback.call if @was_playing_callback
+      @was_playing_callback&.call
       @was_playing_callback = nil
     rescue StandardError
       @was_playing_callback = nil
@@ -457,6 +455,14 @@ if Object.const_defined?(:FMOD)
       @se_sounds = {}
       @fading_sounds = {}
       @was_playing_callback = nil
+    end
+
+    # Synchronize a mutex
+    # @param mutex [Mutex] the mutex to safely synchronize
+    # @param block [Proc] the block to call
+    def synchronize(mutex, &block)
+      return yield if mutex.locked? && mutex.owned?
+      mutex.synchronize(&block)
     end
   end
 else
