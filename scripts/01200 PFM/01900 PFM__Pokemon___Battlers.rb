@@ -35,7 +35,7 @@ module PFM
       end
       bitmap ||= load_icon(FEMALE_NAME, @id) if @gender == 2
       bitmap ||= load_icon(MALE_NAME, @id)
-      return bitmap
+      return bitmap || RPG::Cache.b_icon('000')
     end
 
     # Return the cry file name of the Pokemon
@@ -56,7 +56,7 @@ module PFM
       end
       bitmap ||= load_front(hue, FEMALE_NAME, @id) if @gender == 2
       bitmap ||= load_front(hue, MALE_NAME, @id)
-      return bitmap
+      return bitmap || RPG::Cache.poke_front('000')
     end
     alias battler_front battler_face
 
@@ -71,7 +71,7 @@ module PFM
       end
       bitmap ||= load_back(hue, FEMALE_NAME, @id) if @gender == 2
       bitmap ||= load_back(hue, MALE_NAME, @id)
-      return bitmap
+      return bitmap || RPG::Cache.poke_front('000')
     end
 
     # Return the GifReader face of the Pokemon
