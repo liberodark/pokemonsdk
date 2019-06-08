@@ -87,8 +87,8 @@ module Pathfinding
 
   # CLear all the requests
   def self.clear
-    @requests.clone.each { |request| remove_request(request.character) }
     debug_clear
+    @requests.clone.each { |request| remove_request(request.character) }
   end
 
   # Set the number of operation per frame. By default it's 150, be careful with the performance issues.
@@ -140,79 +140,82 @@ module Pathfinding
     @requests.delete(nil) # Prevent loading error
   end
   
-    @debug = false
-    def self.debug=(value)
-      @debug = value
-      if value
-        @debug_viewport = Viewport.create(:main, 50_000)
-        @debug_sprites = {}
-        @debug_bitmap = RPG::Cache.animation('pathfinding_debug', 0)
-        @debug_sprites_pool = []
-      else
-        debug_clear
-        @debug_sprites_pool.each(&:dispose)
-        @debug_sprites_pool = []
-      end
+  @debug = false
+  def self.debug=(value)
+    @debug = value
+    if value && @debug_viewport.nil?
+      @debug_viewport = Viewport.create(:main, 50_000)
+      @debug_sprites = {}
+      @debug_bitmap = RPG::Cache.animation('pathfinding_debug', 0)
+      @debug_sprites_pool = []
     end
-
-    # Clear the pathfinding debug data
-    # @param from [Integer, nil] the id of the caracter to clear, if nil, clear all
-    def self.debug_clear(from = nil)
-      return unless @debug
-
-      if from.nil?
-        @debug_sprites.values.flatten.each { |s| 
-          s.visible = false
-          @debug_sprites_pool.push s
-        }
-        @debug_sprites.clear
-      elsif @debug_sprites.key?(from)
-        @debug_sprites[from].each{ |s|
-          s.visible = false
-          @debug_sprites_pool.push s
-        }
-        @debug_sprites.delete(from)
-      end
+    if !value && @debug_viewport
+      debug_clear
+      @debug_sprites_pool.each(&:dispose)
+      @debug_sprites_pool = []
+      @debug_viewport.dispose
+      @debug_viewport = nil
     end
+  end
 
-    # Update the pathfinding display debug
-    def self.debug_update
-      return unless @debug
-      
-      @debug_viewport.ox = $game_map.display_x / 8 - 24
-      @debug_viewport.oy = $game_map.display_y / 8 - 16
+  # Clear the pathfinding debug data
+  # @param from [Integer, nil] the id of the caracter to clear, if nil, clear all
+  def self.debug_clear(from = nil)
+    return unless @debug
+
+    if from.nil?
+      @debug_sprites.values.flatten.each { |s| 
+        s.visible = false
+        @debug_sprites_pool.push s
+      }
+      @debug_sprites.clear
+    elsif @debug_sprites.key?(from)
+      @debug_sprites[from].each{ |s|
+        s.visible = false
+        @debug_sprites_pool.push s
+      }
+      @debug_sprites.delete(from)
     end
+  end
 
-    # Add a path to display
-    # @param from [Game_Character] the character who follow the path
-    # @param cursor [Cursor] the cursor used to calculate the path
-    # @param path [Array<Integer>] the list of moveroute command
-    def self.debug_add(from, cursor, path)
-      return unless @debug
+  # Update the pathfinding display debug
+  def self.debug_update
+    return unless @debug
+    
+    @debug_viewport.ox = $game_map.display_x / 8 - 24
+    @debug_viewport.oy = $game_map.display_y / 8 - 16
+  end
 
-      # Initialisation
-      debug_clear(from.id)
-      sprites = []
-      x = from.x
-      y = from.y
-      z = from.z
-      # Run all the path and place markers
-      path.each_with_index do |dir, index|
-        code = [dir - 1, 0, 4, 3]
-        code = [dir - 1, 1, 4, 3] if index == 0
-        sprites.push s = (@debug_sprites_pool.pop || Sprite.new(@debug_viewport).set_bitmap(@debug_bitmap)).set_rect_div(*code).set_position(x * 16 - 24, y * 16 - 16)
-        s.visible = true
+  # Add a path to display
+  # @param from [Game_Character] the character who follow the path
+  # @param cursor [Cursor] the cursor used to calculate the path
+  # @param path [Array<Integer>] the list of moveroute command
+  def self.debug_add(from, cursor, path)
+    return unless @debug
 
-        cursor.sim_move?(x, y, z, dir)
-        x = cursor.x
-        y = cursor.y
-        z = cursor.z
-      end
-      # Place en marker and store
-      sprites.push s = (@debug_sprites_pool.pop || Sprite.new(@debug_viewport).set_bitmap(@debug_bitmap)).set_rect_div(0, 2, 4, 3).set_position(x * 16 - 24, y * 16 - 16)
+    # Initialisation
+    debug_clear(from.id)
+    sprites = []
+    x = from.x
+    y = from.y
+    z = from.z
+    # Run all the path and place markers
+    path.each_with_index do |dir, index|
+      code = [dir - 1, 0, 4, 3]
+      code = [dir - 1, 1, 4, 3] if index == 0
+      sprites.push s = (@debug_sprites_pool.pop || Sprite.new(@debug_viewport).set_bitmap(@debug_bitmap)).set_rect_div(*code).set_position(x * 16 - 24, y * 16 - 16)
       s.visible = true
-      @debug_sprites[from.id] = sprites
+
+      cursor.sim_move?(x, y, z, dir)
+      x = cursor.x
+      y = cursor.y
+      z = cursor.z
     end
+    # Place en marker and store
+    sprites.push s = (@debug_sprites_pool.pop || Sprite.new(@debug_viewport).set_bitmap(@debug_bitmap)).set_rect_div(0, 2, 4, 3).set_position(x * 16 - 24, y * 16 - 16)
+    s.visible = true
+    @debug_sprites[from.id] = sprites
+  end
 
   #-------------------------------------------
   # Class that describe a pathfinding request
