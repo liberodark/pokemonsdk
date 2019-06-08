@@ -233,6 +233,7 @@ pokemonsdk/scripts/01300 UI/02101 Summary_Stat.rb
 pokemonsdk/scripts/01300 UI/02102 Summary_Skills.rb
 pokemonsdk/scripts/01300 UI/02103 Summary_Top.rb
 pokemonsdk/scripts/01300 UI/02104 Summary_Remind.rb
+pokemonsdk/scripts/01300 UI/02200 UI__CasinoVoltorbFlip_sprites.rb
 pokemonsdk/scripts/01350 GUI/00100 Button.rb
 pokemonsdk/scripts/01350 GUI/00101 CheckBox.rb
 pokemonsdk/scripts/01350 GUI/00102 Input.rb
@@ -280,6 +281,7 @@ pokemonsdk/scripts/01400 GamePlay/04600 GamePlay__Save.rb
 pokemonsdk/scripts/01400 GamePlay/04700 GamePlay__Load.rb
 pokemonsdk/scripts/01400 GamePlay/04800 KeyBinding.rb
 pokemonsdk/scripts/01400 GamePlay/04801 KeyBinding_LS.rb
+pokemonsdk/scripts/01400 GamePlay/04900 GamePlay__Casino__VoltorbFlip.rb
 pokemonsdk/scripts/01500 GamePlay__Battle_xxx/00100 GamePlay__BattleAbilityDisplayer.rb
 pokemonsdk/scripts/01500 GamePlay__Battle_xxx/00200 GamePlay__BattleBalls.rb
 pokemonsdk/scripts/01500 GamePlay__Battle_xxx/00300 GamePlay__BattleBar.rb

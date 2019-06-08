@@ -225,4 +225,20 @@ class Interpreter
   def wait_for_player
     wait_character_move_completion 0
   end
+  
+  # Open the casino gameplay
+  # @param arg [Symbol] the mode of the casino :voltorb_flip, :cashmachine, ...
+  # @author Nuri Yuri
+  def casino(arg = :voltorb_flip)
+    case arg # Anticipate the creation of other casino scenes
+    when :voltorb_flip
+      casino = GamePlay::Casino::VoltorbFlip.new
+    else
+      return
+    end
+    casino.main
+    Graphics.transition
+    $game_variables[Yuki::Var::CoinCase] = casino.coin_case
+    @wait_count = 2
+  end
 end
