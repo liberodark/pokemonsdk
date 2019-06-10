@@ -555,6 +555,7 @@ module GamePlay
           zone = $game_data_zone[zone_id]
           $wild_battle.roaming_pokemons.each do |infos|
             next unless [zone.map_id].flatten.include? infos.map_id
+            next unless infos.pokemon.id == @pokemon.id
 
             pkm_zones[x, y] = 1
             infos.spotted = true

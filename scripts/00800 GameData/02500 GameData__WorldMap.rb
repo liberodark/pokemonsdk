@@ -2,18 +2,29 @@ module GameData
   # Data structure of world maps
   # @author Leikt, Nuri Yuri
   class WorldMap < Base
-    # World map name
-    # @return [String]
-    attr_accessor :name
+    # World map name text id
+    # @return [Integer]
+    attr_accessor :name_id
+    # Wolrd map name file id
+    # @return [Integer, String, nil]
+    attr_accessor :name_file_id
     # Filename of the image used to display the world map
     # @return [String]
     attr_reader :image
     # Informations on the map
     # @return [Table,Array<WorldMapObject>]
     attr_accessor :data
+    # Get the name of the worldmap
+    # @return [String]
+    def name
+      #                                 from Ruby Host                        from csv
+      return (@name_file_id.nil? ? GameData::Text.get(9, @name_id) : _ext(@name_file_id, @name_id))
+    end
+
     # Create a new GameData::WorldMap
-    def initialize(name, img)
-      @name = name
+    def initialize(img, name_id, name_file_id)
+      @name_id = name_id
+      @name_file_id = name_file_id
       self.image = img
     end
 
@@ -87,7 +98,7 @@ module GameData
           data[x, y] = (old_data[x][y] || -1)
         end
       end
-      wm = GameData::WorldMap.new("___RENAME___IT___", 'world_map')
+      wm = GameData::WorldMap.new('world_map', 0, nil)
       wm.data = data
 
       $game_data_zone.each do |zone|
