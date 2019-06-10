@@ -82,7 +82,7 @@ class Game_Player
   # @param new_y [Integer] the y position to check
   # @return [Boolean] if the trigger happened
   def check_follower_trigger_there(new_x, new_y)
-    if @follower.x == new_x && @follower.y == new_y
+    if @follower.x == new_x && @follower.y == new_y 
       if @follower.is_a?(Game_Event)
         @follower.start
       else
