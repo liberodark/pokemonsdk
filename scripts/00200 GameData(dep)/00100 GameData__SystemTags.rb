@@ -70,10 +70,6 @@ module GameData
     StairsU = gen 3, 4
     # Defines a upper right stair.
     StairsR = gen 4, 4
-    # Defines the left slope
-    SlopesL = gen 7, 3
-    # Defines the right slope
-    SlopesR = gen 7, 4
     # Defines a Ledge "passed through" by bunny hop (Acro bike).
     AcroBike = gen 6, 3
     # Defines a bike bridge that only allow right and left movement (and up down jump with acro bike).
