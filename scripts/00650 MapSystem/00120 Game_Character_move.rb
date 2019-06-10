@@ -24,21 +24,19 @@ class Game_Character
   def move_left(turn_enabled = true)
     turn_left if turn_enabled
     return if stair_move_left
-    y_modifier = slope_move_left
-    if passable?(@x, @y + y_modifier, 4)
-      if $game_map.system_tag(@x - 1, @y + y_modifier) == JumpL
+    if passable?(@x, @y, 4)
+      if $game_map.system_tag(@x - 1, @y) == JumpL
         jump(-2, 0, false)
         return follower_move
       end
       turn_left
       bridge_left_check(@z)
       @x -= 1
-      process_slope_y_modifier(y_modifier) if y_modifier != 0
       movement_process_end
       increase_steps
     else
       @sliding = false
-      check_event_trigger_touch(@x - 1, @y + y_modifier)
+      check_event_trigger_touch(@x - 1, @y)
     end
   end
 
@@ -58,72 +56,23 @@ class Game_Character
     return false
   end
 
-  # Update the slope values when moving to left
-  def slope_move_left
-    # No slope move check if no slope involved
-    front_sys_tag = front_system_tag
-    return 0 unless (sys_tag = system_tag) == SlopesL || sys_tag == SlopesR ||
-                  front_sys_tag == SlopesL || front_sys_tag == SlopesR
-
-    # Begining of Left up slope
-    if sys_tag != SlopesL && front_sys_tag == SlopesL
-      @slope_length = 0
-      nx = @x - 1
-      ny = @y
-      while $game_map.system_tag(nx, ny) == SlopesL
-        nx -= 1
-        @slope_length += 1
-      end
-      # Prepare the data
-      @slope_origin_x = @real_x
-      @slope_length *= -128 # display_length conversion
-    
-    # End of the left up slope
-    elsif sys_tag == SlopesL && front_sys_tag != SlopesL
-      @slope_offset_y = @slope_origin_x = @slope_length = nil if passable?(@x, @y - 1, 4)
-      return -1
-
-    # Start to go down the right slope
-    elsif sys_tag != SlopesR && front_sys_tag == SlopesR
-      return 1 unless passable?(@x, @y + 1, 4)
-      @slope_length = 0
-      nx = @x - 1
-      ny = @y + 1
-      while $game_map.system_tag(nx, ny) == SlopesR
-        nx -= 1
-        @slope_length += 1
-      end
-      # Prepare data
-      @slope_origin_x = (nx + 1) * 128 # Begin at next tile
-      @slope_length *= -128
-      return 1
-
-    # End of the slope left down
-    elsif sys_tag == SlopesR && front_sys_tag != SlopesR
-      @slope_offset_y = @slope_origin_x = @slope_length = nil
-    end
-    return 0
-  end
-
   # Move Game_Character right
   # @param turn_enabled [Boolean] if the Game_Character turns when impossible move
   def move_right(turn_enabled = true)
     turn_right if turn_enabled
     return if stair_move_right
-    y_modifier = slope_move_right
-    if passable?(@x, @y + y_modifier, 6)
+    if passable?(@x, @y, 6)
       if $game_map.system_tag(@x + 1, @y) == JumpR
         return (jump(2, 0, false) ? follower_move : nil)
       end
       turn_right
       bridge_right_check(@z)
       @x += 1
-        process_slope_y_modifier(y_modifier) if y_modifier != 0
       movement_process_end
       increase_steps
     else
       @sliding = false
-      check_event_trigger_touch(@x + 1, @y + y_modifier)
+      check_event_trigger_touch(@x + 1, @y)
     end
   end
 
@@ -141,55 +90,6 @@ class Game_Character
     end
     # end
     return false
-  end
-
-  # Update the slope values when moving to right, and return y slope modifier
-  # @return [Integer]
-  def slope_move_right
-    # No slope move check if no slope involved
-    front_sys_tag = front_system_tag
-    return 0 unless (sys_tag = system_tag) == SlopesL || sys_tag == SlopesR ||
-                  front_sys_tag == SlopesL || front_sys_tag == SlopesR
-
-    # Begining of Right up slope
-    if sys_tag != SlopesR && front_sys_tag == SlopesR
-      @slope_length = 0
-      nx = @x + 1
-      ny = @y
-      while $game_map.system_tag(nx, ny) == SlopesR
-        nx += 1
-        @slope_length += 1
-      end
-      # Prepare the data
-      @slope_origin_x = @real_x
-      @slope_length *= -128 # display_length conversion
-    
-    # End of the right up slope
-    elsif sys_tag == SlopesR && front_sys_tag != SlopesR
-      @slope_offset_y = @slope_origin_x = @slope_length = nil if passable?(@x, @y - 1, 6)
-      return -1
-
-    # Start to go down the left slope
-    elsif sys_tag != SlopesL && front_sys_tag == SlopesL
-      return 1 unless passable?(@x, @y + 1, 6)
-
-      @slope_length = 0
-      nx = @x + 1
-      ny = @y + 1
-      while $game_map.system_tag(nx, ny) == SlopesL
-        nx += 1
-        @slope_length += 1
-      end
-      # Prepare data
-      @slope_origin_x = (nx - 1) * 128 # Begin at next tile
-      @slope_length *= -128
-      return 1
-
-    # End of the slope left down
-    elsif sys_tag == SlopesL && front_sys_tag != SlopesL
-      @slope_offset_y = @slope_origin_x = @slope_length = nil
-    end
-    return 0
   end
 
   # Move Game_Character up

@@ -65,8 +65,6 @@ class Game_Character
     @jump_count = 0
     @jump_peak = 0
     @wait_count = 0
-    @slope_offset_y = 0
-    @slope_y_modifier = 0
     @locked = false
     @prelock_direction = 0
     @surfing = false # Variable indiquant si le chara est sur l'eau
@@ -131,41 +129,16 @@ class Game_Character
 
   # Array used to detect if a character is on a bridge tile
   BRIDGE_TILES = [BridgeRL, BridgeUD]
-  SLOPES_TILES = [SlopesL, SlopesR]
   # Manage the system_tag part of the moveto method
-  def moveto_system_tag_manage(skip_bridges = false)
+  def moveto_system_tag_manage
     # return @z = 1 if !@z && self == $game_player && $scene.class != Scene_Map
     sys_tag = system_tag
-    unless skip_bridges
-      if BRIDGE_TILES.include?(sys_tag)
-        @z = $game_map.priorities[$game_map.get_tile(@x, @y)].to_i + 1
-      elsif ZTag.include?(sys_tag)
-        @z = ZTag.index(sys_tag)
-      else
-        @z = 1
-      end
-    end
-    # Handle slope moveto
-    if SLOPES_TILES.include?(sys_tag)
-      @slope_length = -1 # the center tile is counter twice
-      furthest_x = [@x, @x]
-      [0, 2].each do |step_x| #-1 / +1
-        nx = @x
-        ny = @y
-        while $game_map.system_tag(nx, ny) == sys_tag
-          furthest_x[step_x / 2] = nx
-          nx += (step_x - 1) # -1 / +1
-          @slope_length += 1
-        end
-      end
-      # Prepare the data
-      if sys_tag == SlopesR
-        @slope_origin_x = furthest_x[0] * 128
-      else
-        @slope_origin_x = furthest_x[1] * 128
-      end
-      @slope_length *= -128
-      update_slope_offset_y
+    if BRIDGE_TILES.include?(sys_tag)
+      @z = $game_map.priorities[$game_map.get_tile(@x, @y)].to_i + 1
+    elsif ZTag.include?(sys_tag)
+      @z = ZTag.index(sys_tag)
+    else
+      @z = 1
     end
     particle_push
   end
@@ -182,8 +155,7 @@ class Game_Character
   # @return [Integer]
   def screen_y
     y = (@real_y - $game_map.display_y + 5) / 4 + 32 # +3 => +5
-    y += @offset_screen_y if @offset_shadow_screen_y
-    y += @slope_offset_y if @slope_offset_y
+    y += @offset_screen_y if @offset_screen_y
     if @jump_count >= @jump_peak
       n = @jump_count - @jump_peak
     else
@@ -201,7 +173,7 @@ class Game_Character
   # Return the y position of the shadow of the character on the screen
   # @return [Integer]
   def shadow_screen_y
-    return (@real_y - $game_map.display_y + 5) / 8 + 17 + (@offset_shadow_screen_y || 0) / 2 + (@slope_offset_y || 0) / 2 # +3 => +5
+    return (@real_y - $game_map.display_y + 5) / 8 + 17 + (@offset_shadow_screen_y || 0) / 2 # +3 => +5
   end
 
   # Return the z superiority of the sprite of the character

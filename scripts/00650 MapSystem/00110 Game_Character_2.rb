@@ -74,7 +74,6 @@ class Game_Character
   def update_move
     was_moving = moving?
     update_real_position
-    update_slope_offset_y
     # Update the anime_count for the pattern animation
     if @walk_anime
       @anime_count += 1.5
@@ -91,11 +90,6 @@ class Game_Character
     @real_x = [@real_x - distance, @x * 128].max if @x * 128 < @real_x
     @real_x = [@real_x + distance, @x * 128].min if @x * 128 > @real_x
     @real_y = [@real_y - distance, @y * 128].max if @y * 128 < @real_y
-  end
-
-  # Update the slope offset y if there is one
-  def update_slope_offset_y
-    @slope_offset_y = @slope_origin_x ? 32 * (@real_x - @slope_origin_x).abs / @slope_length : nil if @slope_origin_x
   end
 
   # Update no movement animation (triggers movement when staying on specific SystemTag)
@@ -369,11 +363,5 @@ class Game_Character
   def increase_steps
     # 停止カウントをクリア
     @stop_count = 0
-  end
-
-  def process_slope_y_modifier(y_modifier)
-      @y += y_modifier
-      @real_y = @y * 128
-      update_slope_offset_y
   end
 end
