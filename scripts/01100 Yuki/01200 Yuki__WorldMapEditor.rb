@@ -31,11 +31,10 @@ module Yuki
       puts "list_worldmap : list all the world maps"
       puts "list_worldmap(\"name\") : list the world maps that match name"
       puts "select_worldmap(id) : select the world map to edit"
-      puts "add_worldmap(\"name\", \"image name\") : add the world map with the given name and the image filename without extension"
+      puts "add_worldmap(\"image name\", text_id, [file_id) : add the world map with the image filename without extension \n\tand the given name text id in file_id (by default ruby host)"
       puts "delete_worldmap(id) : delete the worldmap and its data, be sure before use this"
-      puts "set_worldmap_name(id, \"new_name\") : change the name of the worldmap"
+      puts "set_worldmap_name(id, new_text_id, [new_file_id) : change the name of the worldmap to the given text id and \n\tthe given file id (by default, file is ruby host)"
       puts "set_worldmap_image(id, \"new_image\") : change the file displayed for the world map"
-      puts "set_worldmap_back(id, \"new_image\") : change the file displayed behind the worldmap"
       cc 7
     end
     # Update the scene
@@ -59,16 +58,8 @@ module Yuki
     end
     # Update the current zone
     def update_zone
-      # adjust_map
-      # $game_data_map[@x][@y] = @current_zone
       $game_data_worldmap[@current_worldmap].data[@x, @y] = @current_zone
       update_infobox
-    end
-    # Adjust the map array data
-    def adjust_map
-      # unless $game_data_map[@x]
-      #   $game_data_map[@x] = Array.new(@map_sprite.height / GamePlay::WorldMap::TileSize)
-      # end
     end
     # Clear the map
     def clear_map
@@ -86,9 +77,6 @@ module Yuki
     end
     # Remove the zone
     def remove_zone
-      # adjust_map
-      # $game_data_map[@x][@y] = nil
-      # update_infobox
       $game_data_worldmap[@current_worldmap].data[@x, @y] = -1
       update_infobox
     end
@@ -152,12 +140,17 @@ module Yuki
       puts "World map #{$game_data_worldmap[id].name} is now selected."
     end
     # Add a new world map and select it
-    def add_worldmap(name, image)
-      $game_data_worldmap.push GameData::WorldMap.new(name.downcase, image)
+    # @param image [String] the image of the map in graphics/interface folder
+    # @param name_id [Integer] the text id in the file
+    # @param file_id [String, Integer, nil] the file to pick the region name, by default the Ruby Host
+    def add_worldmap(image, name_id, file_id = nil)
+      $game_data_worldmap.push GameData::WorldMap.new(image, name_id, file_id)
+      name = $game_data_worldmap.last.name
       puts "World map added : #{name.downcase}"
       select_worldmap($game_data_worldmap.length - 1)
     end
     # Delete world map
+    # @param id [Integer] the id of the map to delete
     def delete_worldmap(id)
       if $game_data_worldmap.length <= 1
         puts "You can't delete the last world map"
@@ -168,6 +161,7 @@ module Yuki
       select_worldmap(0)
     end
     # Display all worldmaps
+    # @param name [String, ''] the name to filter
     def list_worldmap(name = "")
       name = name.downcase
       $game_data_worldmap.each_with_index do |wm, index|
@@ -177,22 +171,25 @@ module Yuki
       end
       show_help
     end
-    def set_worldmap_name(id, new_name)
-        new_name = new_name.downcase
+    # Change the worldmap name to the given name text id in the given file id (by default in the ruby host)
+    # @param id [Integer] the id of the world map to edit
+    # @param name_id [Integer] the id of the text in the file
+    # @param file_id [Integer, String, nil] the file id / name by default ruby host
+    def set_worldmap_name(id, name_id, file_id = nil)
         old_name = $game_data_worldmap[id].name
-        $game_data_worldmap[id].name = new_name
+        $game_data_worldmap[id].name_id = name_id
+        $game_data_worldmap[id].name_file_id = file_id
+        new_name = $game_data_worldmap[id].name
         puts "\"#{old_name}\" has been rename to \"#{new_name}\""
     end
+    # Change the worldmap image to the given one
+    # @param id [Integer] the id of the world map to edit
+    # @param new_image [Integer] the new filename of the image
     def set_worldmap_image(id, new_image)
         old_img = $game_data_worldmap[id].image
         $game_data_worldmap[id].image = new_image
         @map_sprite.set_bitmap(new_image, :interface) if @current_worldmap == id
         puts "#{$game_data_worldmap[id].name}'s' image updated to #{new_image}"
-    end
-    def set_worldmap_back(id, new_image)
-        old_img = $game_data_worldmap[id].background_image
-        $game_data_worldmap[id].background_image = new_image
-        puts "#{$game_data_worldmap[id].name}'s' background updated to #{new_image}"
     end
     # Init the editor
     def init

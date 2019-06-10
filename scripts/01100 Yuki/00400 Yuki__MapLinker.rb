@@ -47,6 +47,14 @@ module Yuki
       return @added_events
     end
 
+    # Test if the given event is from the center map or not
+    # @param event [Game_Event] the event to test
+    # @return [Boolean, nil]
+    def from_center_map?(event)
+      return !@added_events.key?(event.original_map)
+      # return !(@added_events[event.original_map].select { |e| e.id == event.original_id }).empty?
+    end
+
     # Reset the module when the RGSS resets itself
     def reset
       # [n_id, n_addx, e_id, e_addy, s_id, s_addx, o_id, o_addy]

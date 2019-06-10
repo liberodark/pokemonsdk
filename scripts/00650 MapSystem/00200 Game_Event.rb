@@ -132,6 +132,11 @@ class Game_Event < Game_Character
     @interpreter.setup(@list, @event.id) unless @interpreter.running?
     @interpreter.update
   end
+  
+  def find_path(*args)
+    return unless Yuki::MapLinker.from_center_map?(self)
+    super(*args)
+  end
 
   private
 

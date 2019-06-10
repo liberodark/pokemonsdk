@@ -32,6 +32,7 @@ module Pathfinding
   # Weight of the tags, the higher is the cost, the more the path will avoid it
   TAGS_WEIGHT = {
     GameData::SystemTags::Road => 2,          # Tag of the main road
+    GameData::SystemTags::TSand => 4,         # Tag of the road
     GameData::SystemTags::SwampBorder => 20,  # Avoid swamp if possible
     GameData::SystemTags::DeepSwamp => 30,    # Avoid deep swamp whatever it takes
     GameData::SystemTags::MachBike => 1000,   # Prevent bug
@@ -99,9 +100,10 @@ module Pathfinding
 
   # Update the pathfinding system
   def self.update
+    update_stats = [Time.new, 0, 0, 0, 0]
+
     debug_update
     return if @requests.empty?
-    
     # Initialize
     request_id = @last_request_id # Get the last updates where it's stop
     operation_counter = 0         # Count the amount of operation in this update
@@ -111,6 +113,8 @@ module Pathfinding
     while operation_counter < @operation_per_frame
       # Update the request and calculate the new operation counter
       operation_counter += (current_request = @requests[request_id]).update(operation_counter, first_update)
+      update_stats = current_request.get_update_stats(update_stats)
+
       need_update ||= current_request.need_update # Need update to true if the request needs update and keep its value if not
       current_request.character.stop_path if current_request.finished? # Delete the finished requests
 
@@ -124,6 +128,10 @@ module Pathfinding
       need_update = false       # No first update, reset the need_update to false, it will be turned to true if update is needed
     end
     @last_request_id = request_id # Save the last update position
+
+    update_stats[0] = Time.new - update_stats[0]
+
+    # pc "Update Stats duration=#{update_stats[0]} nodes=#{update_stats[1]} watch=#{update_stats[2]} wait=#{update_stats[3]} reload=#{update_stats[4]}"
   end
 
   # Create an savable array of the current requests
@@ -135,6 +143,7 @@ module Pathfinding
   # Load the data from the pokemon_party
   def self.load
     return unless Game_Map::PATH_FINDING_ENABLED
+
     data = $pokemon_party.pathfinding_requests
     @requests = data.collect { |d| Request.load(d)}
     @requests.delete(nil) # Prevent loading error
@@ -293,6 +302,7 @@ module Pathfinding
     # @param is_first_update [Boolean] indicate if it's the first update of the frame
     # @return [Integer]
     def update(operation_counter, is_first_update)
+      @update_stats = [0, 0, 0, 0]
       @need_update ||= is_first_update # Need update forced to true if it's the first update
       case @state
       when :search then return update_search(operation_counter)
@@ -325,6 +335,7 @@ module Pathfinding
         result = calculate_node
         nodes += 1
       end
+      @update_stats[0] = nodes
       # Process the result
       process_result(result)
       return nodes + 1
@@ -357,13 +368,14 @@ module Pathfinding
       # Check first update
       return 1 unless is_first_update
 
-      # Check target movement
-      if @target.check_move(@character.x, @character.y)
-        @state = :reload
-        return 1
-      end
-      # Optimization : Detect stuckness only if the character is on one tile
+      # Optimization : Detect stuckness and target mouvement only if the character is on one tile
       if @character.real_x % 128 + @character.real_y % 128 == 0
+        # Check target movement
+        if @target.check_move(@character.x, @character.y)
+          @state = :reload
+          return 1
+        end
+        # Check if the character is stucked
         if stucked?
           @state = :reload
         # Detect if the target is already reached (player passing next to the event, etc)
@@ -371,6 +383,7 @@ module Pathfinding
           @character.stop_path
         end
       end
+      @update_stats[1] += 1
       # Return default cost of a watch update
       @need_update = false
       return COST_WATCH
@@ -385,6 +398,8 @@ module Pathfinding
       @retry_countdown -= 1
       @state = :reload if @retry_countdown <= 0
       @need_update = false
+      
+        @update_stats[2] += 1
       return COST_WAIT
     end
 
@@ -399,6 +414,8 @@ module Pathfinding
       @closed.resize(0, 0, 0) # Clear the table
       @closed.resize($game_map.width, $game_map.height, 7)
       @state = :search
+      
+        @update_stats[3] += 1
       return COST_RELOAD
     end
 
@@ -514,6 +531,10 @@ module Pathfinding
       tries     = data[2]
       return nil unless character && target && tries # Prevent loading error : when map change
       return Request.new(character, target, tries)
+    end
+
+    def get_update_stats(stats)
+      return [stats[0], stats[1] + @update_stats[0], stats[2] + @update_stats[1], stats[3] + @update_stats[2], stats[4] + @update_stats[3]]
     end
   end
 end
