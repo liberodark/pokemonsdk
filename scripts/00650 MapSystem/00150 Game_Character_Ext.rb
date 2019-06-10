@@ -94,7 +94,7 @@ class Game_Character
   # @return [Boolean]
   # @author Nuri Yuri
   def contact?(x, y, z)
-    @x == x and y == @y and (@z - z).abs <= 1
+    return (@x == x and y == @y and (@z - z).abs <= 1)
   end
 
   # Detect if the event walks in a swamp or a deep swamp and change the Game_Character states.
