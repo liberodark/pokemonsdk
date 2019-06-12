@@ -154,7 +154,9 @@ class Game_Map
   end
   # Scrolls the map down
   # @param distance [Integer] distance in y to scroll
-  def scroll_down(distance)
+  # @param is_priority [Boolean] used if there is a prioratary scroll running
+  def scroll_down(distance, is_priority = false)
+    return if @scroll_y_priority && !is_priority
     unless CenterPlayer
       @display_y = [@display_y + distance, (self.height - 15) * 128].min
     else
@@ -163,7 +165,9 @@ class Game_Map
   end
   # Scrolls the map left
   # @param distance [Integer] distance in -x to scroll
-  def scroll_left(distance)
+  # @param is_priority [Boolean] used if there is a prioratary scroll running
+  def scroll_left(distance, is_priority = false)
+    return if @scroll_x_priority && !is_priority
     unless CenterPlayer
       @display_x = [@display_x - distance, 0].max
     else
@@ -172,7 +176,9 @@ class Game_Map
   end
   # Scrolls the map right
   # @param distance [Integer] distance in x to scroll
-  def scroll_right(distance)
+  # @param is_priority [Boolean] used if there is a prioratary scroll running
+  def scroll_right(distance, is_priority = false)
+    return if @scroll_x_priority && !is_priority
     unless CenterPlayer
       @display_x = [@display_x + distance, (self.width - 20) * 128].min
     else
@@ -181,7 +187,9 @@ class Game_Map
   end
   # Scrolls the map up
   # @param distance [Integer] distance in -y to scroll
-  def scroll_up(distance)
+  # @param is_priority [Boolean] used if there is a prioratary scroll running
+  def scroll_up(distance, is_priority = false)
+    return if @scroll_y_priority && !is_priority
     unless CenterPlayer
       @display_y = [@display_y - distance, 0].max
     else
@@ -320,10 +328,14 @@ class Game_Map
   # @param direction [Integer] the direction to scroll
   # @param distance [Integer] the distance to scroll
   # @param speed [Integer] the speed of the scroll processing
-  def start_scroll(direction, distance, speed)
+  # @param x_priority [Boolean] true if the scroll is prioritary in x axis, be careful using this
+  # @param y_priority [Boolean] true if the scroll is prioritary in y axis, be careful using this
+  def start_scroll(direction, distance, speed, x_priority = false, y_priority = false)
     @scroll_direction = direction
     @scroll_rest = distance * 128
     @scroll_speed = speed
+    @scroll_x_priority = x_priority
+    @scroll_y_priority = y_priority
   end
   # is the map scrolling ?
   # @return [Boolean]
@@ -364,16 +376,17 @@ class Game_Map
       # スクロールを実行
       case @scroll_direction
       when 2  # 下
-        scroll_down(distance)
+        scroll_down(distance, @scroll_y_priority)
       when 4  # 左
-        scroll_left(distance)
+        scroll_left(distance, @scroll_x_priority)
       when 6  # 右
-        scroll_right(distance)
+        scroll_right(distance, @scroll_x_priority)
       when 8  # 上
-        scroll_up(distance)
+        scroll_up(distance, @scroll_y_priority)
       end
       # スクロールした距離を減算
       @scroll_rest -= distance
+      @scroll_y_priority = @scroll_x_priority = nil unless scrolling?
     end
     #>Partie édition des SystemTag
 #    return if Yuki::SystemTag.running?

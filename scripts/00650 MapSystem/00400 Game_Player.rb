@@ -46,6 +46,7 @@ class Game_Player < Game_Character
   # Manage the system_tag part of the moveto method
   def moveto_system_tag_manage
     # We remove the bridge z processing because it's breaking
+    return super(true)
   end
 
   SURF_OFFSET_Y = [2, 2, 0, 0, 0, -2, -2, 0, 0, 0]
@@ -116,6 +117,11 @@ class Game_Player < Game_Character
     update_scroll_map(last_real_x, last_real_y)
 
     update_check_trigger(last_moving) unless moving? || @sliding
+  end
+
+  def process_slope_y_modifier(y_modifier)
+    super(y_modifier)
+    $game_map.start_scroll(y_modifier < 0 ? 8 : 2, 1, 4, false, true)
   end
 
   private

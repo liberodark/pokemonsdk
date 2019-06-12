@@ -7,7 +7,8 @@ class Game_Player
     result = false
     z = @z
     $game_map.events.each_value do |event|
-      next unless event.contact?(@x, @y, z) && triggers.include?(event.trigger)
+      y_modifier = (@direction == 4 ? slope_check_left(false) : @direction == 6 ? slope_check_right(false) : 0)
+      next unless event.contact?(@x, @y + y_modifier, z) && triggers.include?(event.trigger)
       next unless !event.jumping? && event.over_trigger?
       event.start
       result = true
@@ -23,7 +24,7 @@ class Game_Player
     result = false
     d = @direction
     new_x = @x + (d == 6 ? 1 : d == 4 ? -1 : 0)
-    new_y = @y + (d == 2 ? 1 : d == 8 ? -1 : 0)
+    new_y = @y + (d == 2 ? 1 : d == 8 ? -1 : 0) + (@direction == 4 ? slope_check_left(false) : @direction == 6 ? slope_check_right(false) : 0)
     z = @z
 
     $game_map.events.each_value do |event|
