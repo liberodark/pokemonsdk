@@ -87,7 +87,7 @@ module Pathfinding
     def move_left
       @direction = 4
       return if stair_move_left
-
+      y_modifier = slope_check_left
       if passable?(@x, @y, 4)
         if $game_map.system_tag(@x - 1, @y) == JumpL
           jump(-2, 0)
@@ -95,6 +95,7 @@ module Pathfinding
         end
         bridge_left_check(@z)
         @x -= 1
+        @y += y_modifier
         movement_process_end
       else
         @sliding = false
@@ -115,20 +116,35 @@ module Pathfinding
       end
       return false
     end
+    
+    # Update the slope values when moving to left
+    def slope_check_left
+      front_sys_tag = front_system_tag
+      return 0 unless (sys_tag = system_tag) == SlopesL || sys_tag == SlopesR ||
+                      front_sys_tag == SlopesL || front_sys_tag == SlopesR
+
+      if sys_tag == SlopesL && front_sys_tag != SlopesL
+        return -1
+      elsif sys_tag != SlopesR && front_sys_tag == SlopesR
+        return 1
+      end
+      return 0
+    end
 
     # Move Game_Character right
     # @param turn_enabled [Boolean] if the Game_Character turns when impossible move
     def move_right
       @direction = 6
       return if stair_move_right
-
-      if passable?(@x, @y, 6)
+      y_modifier = slope_check_right
+      if passable?(@x, @y + y_modifier, 6)
         if $game_map.system_tag(@x + 1, @y) == JumpL
           jump(2, 0)
           return
         end
         bridge_left_check(@z)
         @x += 1
+        @y += y_modifier
         movement_process_end
       else
         @sliding = false
@@ -148,6 +164,22 @@ module Pathfinding
         return true
       end
       return false
+    end
+
+    
+    # Update the slope values when moving to right, and return y slope modifier
+    # @return [Integer]
+    def slope_check_right
+      front_sys_tag = front_system_tag
+      return 0 unless (sys_tag = system_tag) == SlopesL || sys_tag == SlopesR ||
+                      front_sys_tag == SlopesL || front_sys_tag == SlopesR
+
+      if sys_tag == SlopesR && front_sys_tag != SlopesR
+        return -1
+      elsif sys_tag != SlopesL && front_sys_tag == SlopesL
+        return 1
+      end
+      return 0
     end
 
     # Move Game_Character up
