@@ -365,11 +365,13 @@ module GamePlay
     # Event that triggers when a Pokemon is selected in :select mode
     def on_select
       pokemon = @party[@index]
-      unless @temp_team.include?(pokemon)
+      if !@temp_team.include?(pokemon) && enough_pokemon?(:button)
         @temp_team << pokemon
-      else
+      elsif @temp_team.include?(pokemon)
         @temp_team[@temp_team.index(pokemon)] = nil
         @temp_team.compact!
+      else
+        return
       end
       @team_buttons[@index].data = pokemon
       @team_buttons[@index].refresh
@@ -377,31 +379,26 @@ module GamePlay
     end
     
     # Check if the temporary team contains the right number of Pokemon
+    # @param caller [Symbol] used to determine the caller of the method
     # return Boolean 
-    def enough_pokemon?
+    def enough_pokemon?(caller = :validate)
       return if check_select_mon_var == true
-      if @temp_team.size > $game_variables[Yuki::Var::Max_Pokemon_Select]
-        v = 115 + $game_variables[Yuki::Var::Max_Pokemon_Select]
-        display_message(_get(23, v))
-        return false
-      elsif @temp_team.size < $game_variables[Yuki::Var::Max_Pokemon_Select]
-        v = 109 + $game_variables[Yuki::Var::Max_Pokemon_Select]
-        display_message(_get(23, v))
-        return false
-      else
-        return true
-      end
-    end
-
-    # Check if $game_variables[6] has a value between 1 and 6
-    # return Boolean
-    def check_select_mon_var
-      if $game_variables[6] > 6 || $game_variables[6] < 1
-        display_message("Wrong number of Pokemon to select. Number must be between 1 and 6.")
-        action_B
-        true
-      else
-        false
+      if caller == :button
+        if @temp_team.size + 1 > $game_variables[Yuki::Var::Max_Pokemon_Select]
+          v = 115 + $game_variables[Yuki::Var::Max_Pokemon_Select]
+          display_message(_get(23, v))
+          return false
+        else
+          return true
+        end
+      else 
+        if @temp_team.size < $game_variables[Yuki::Var::Max_Pokemon_Select]
+          v = 109 + $game_variables[Yuki::Var::Max_Pokemon_Select]
+          display_message(_get(23, v))
+          return false
+        else
+          return true
+        end
       end
     end
 
