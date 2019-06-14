@@ -154,6 +154,7 @@ class Game_Player
   # Enter in fishing state
   def enter_in_fishing_state
     @offset_screen_y = 8 unless @surfing
+    leave_cycling_state if cycling?
     @state = @surfing ? :surf_fishing : :fishing
     @update_callback = :update_enter_fishing_state
     @update_callback_count = 0
