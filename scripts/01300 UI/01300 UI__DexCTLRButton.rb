@@ -8,7 +8,7 @@ module UI
     # Array of Key to press
     Keys = [:A, :X, :Y, :B]
     # Text base indexes in the file
-    TEXT_INDEXES = [6, 10, 6, 14]
+    TEXT_INDEXES = [6, 10, 6, 14, 22]
     # Create a new Button
     # @param viewport [LiteRGSS::Viewport]
     # @param id [Integer] the id of the button
