@@ -124,6 +124,7 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
   def begin_save
     Pathfinding.save
     save_follower
+    save_events
     arr = []
     IVAR_TO_REMOVE_FROM_SAVE_FILE.each do |ivar_name|
       arr << instance_variable_get(ivar_name)
@@ -167,5 +168,52 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
       $game_player.set_follower(event)
     end
     remove_instance_variable(:@next_setup_followers)
+  end
+
+  # Method that save the event position, direction & move_route info
+  def save_events
+    return unless @events
+    @events_info = {}
+    @events.each_value do |event|
+      next if event.original_map != @map_id
+      index = event.instance_variable_get(:@move_route_index)
+      @events_info[event.original_id] = [event.x, event.y, event.z, event.direction, index, event.__bridge]
+    end
+    @events_info[:player] = $game_player.z
+  end
+
+  # Method that save the events & fix the event offset added by the MapLinker
+  def save_events_offset
+    return unless @events
+    @events_info = {}
+    ml_ox = Yuki::MapLinker.current_OffsetX
+    ml_oy = Yuki::MapLinker.current_OffsetY
+    @events.each_value do |event|
+      next if event.original_map != @map_id
+      # @type [RPG::Event]
+      event_data = event.event
+      index = event.instance_variable_get(:@move_route_index)
+      x = event.x - event_data.offset_x + ml_ox
+      y = event.y - event_data.offset_y + ml_oy
+      @events_info[event.original_id] = [x, y, event.z, event.direction, index, event.__bridge]
+    end
+    @events_info[:player] = $game_player.z
+  end
+
+  # Method that load the event
+  def load_events
+    return unless @events_info
+    $game_player.z = @events_info[:player]
+    @events_info.each do |id, info|
+      next unless (event = @events[id])
+      event.moveto(info[0], info[1])
+      event.z = info[2]
+      event.direction = info[3]
+      event.instance_variable_set(:@move_route_index, info[4])
+      event.__bridge = info[5]
+      event.clear_starting
+      event.check_event_trigger_auto
+    end
+    @events_info = nil
   end
 end

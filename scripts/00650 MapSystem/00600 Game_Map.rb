@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 # Describe the Map processing
 class Game_Map
   # If the Path Finding system is enabled
@@ -24,7 +22,8 @@ class Game_Map
   attr_reader   :passages                 # 通行 テーブル
   attr_reader   :priorities               # プライオリティ テーブル
   attr_reader   :terrain_tags             # 地形タグ テーブル
-  attr_reader   :events                   # イベント
+  # @return [Hash{Integer => Game_Event}] all the living events
+  attr_reader   :events
   attr_reader   :fog_ox                   # フォグ 原点 X 座標
   attr_reader   :fog_oy                   # フォグ 原点 Y 座標
   attr_reader   :fog_tone                 # フォグ 色調
@@ -40,6 +39,8 @@ class Game_Map
     Yuki::ElapsedTime.start(:map_loading)
     # マップ ID を @map_id に記憶
     @map_id = map_id
+    # We save events to make sure they'll be correctly transfered on the with the MapLinker
+    save_events_offset unless @events_info
     # マップをファイルからロードし、@map に設定
     @map = Yuki::MapLinker.load_map(@map_id)
     Yuki::ElapsedTime.show(:map_loading, 'MapLinker.load_map took')
@@ -76,6 +77,7 @@ class Game_Map
       event.name.force_encoding(Encoding::UTF_8) # £EncodingPatch
       @events[i] = Game_Event.new(@map_id, event)
     end
+    load_events
     Yuki::ElapsedTime.show(:map_loading, 'Loading events took')
     # コモンイベントのデータを設定
     @common_events = {}
@@ -154,9 +156,7 @@ class Game_Map
   end
   # Scrolls the map down
   # @param distance [Integer] distance in y to scroll
-  # @param is_priority [Boolean] used if there is a prioratary scroll running
-  def scroll_down(distance, is_priority = false)
-    return if @scroll_y_priority && !is_priority
+  def scroll_down(distance)
     unless CenterPlayer
       @display_y = [@display_y + distance, (self.height - 15) * 128].min
     else
@@ -165,9 +165,7 @@ class Game_Map
   end
   # Scrolls the map left
   # @param distance [Integer] distance in -x to scroll
-  # @param is_priority [Boolean] used if there is a prioratary scroll running
-  def scroll_left(distance, is_priority = false)
-    return if @scroll_x_priority && !is_priority
+  def scroll_left(distance)
     unless CenterPlayer
       @display_x = [@display_x - distance, 0].max
     else
@@ -176,9 +174,7 @@ class Game_Map
   end
   # Scrolls the map right
   # @param distance [Integer] distance in x to scroll
-  # @param is_priority [Boolean] used if there is a prioratary scroll running
-  def scroll_right(distance, is_priority = false)
-    return if @scroll_x_priority && !is_priority
+  def scroll_right(distance)
     unless CenterPlayer
       @display_x = [@display_x + distance, (self.width - 20) * 128].min
     else
@@ -187,9 +183,7 @@ class Game_Map
   end
   # Scrolls the map up
   # @param distance [Integer] distance in -y to scroll
-  # @param is_priority [Boolean] used if there is a prioratary scroll running
-  def scroll_up(distance, is_priority = false)
-    return if @scroll_y_priority && !is_priority
+  def scroll_up(distance)
     unless CenterPlayer
       @display_y = [@display_y - distance, 0].max
     else
@@ -328,14 +322,10 @@ class Game_Map
   # @param direction [Integer] the direction to scroll
   # @param distance [Integer] the distance to scroll
   # @param speed [Integer] the speed of the scroll processing
-  # @param x_priority [Boolean] true if the scroll is prioritary in x axis, be careful using this
-  # @param y_priority [Boolean] true if the scroll is prioritary in y axis, be careful using this
-  def start_scroll(direction, distance, speed, x_priority = false, y_priority = false)
+  def start_scroll(direction, distance, speed)
     @scroll_direction = direction
     @scroll_rest = distance * 128
     @scroll_speed = speed
-    @scroll_x_priority = x_priority
-    @scroll_y_priority = y_priority
   end
   # is the map scrolling ?
   # @return [Boolean]
@@ -376,17 +366,16 @@ class Game_Map
       # スクロールを実行
       case @scroll_direction
       when 2  # 下
-        scroll_down(distance, @scroll_y_priority)
+        scroll_down(distance)
       when 4  # 左
-        scroll_left(distance, @scroll_x_priority)
+        scroll_left(distance)
       when 6  # 右
-        scroll_right(distance, @scroll_x_priority)
+        scroll_right(distance)
       when 8  # 上
-        scroll_up(distance, @scroll_y_priority)
+        scroll_up(distance)
       end
       # スクロールした距離を減算
       @scroll_rest -= distance
-      @scroll_y_priority = @scroll_x_priority = nil unless scrolling?
     end
     #>Partie édition des SystemTag
 #    return if Yuki::SystemTag.running?
