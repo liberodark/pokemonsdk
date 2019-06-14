@@ -7,8 +7,8 @@ module BattleEngine
   #s_lock_on
   # Verrouillage
   #===
-  def s_lock_on(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_lock_on(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     #_mp([:msg, _parse_with_pokemon(19, xxx, launcher, PKNICK[1] => target.given_name)])
     _mp([:apply_effect, launcher, :apply_lock_on, target])
   end
@@ -18,14 +18,14 @@ module BattleEngine
   # Cadeau
   #===
   Present_Powers = [40, 40, 40, 40, 80, 80, 80, 120]
-  def s_present(launcher, target, skill)
+  def s_present(launcher, target, skill, msg_push = true)
     v = rand(100)
     if(v < 80)
       skill.power2 = Present_Powers[v / 10]
       s_basic(launcher, target, skill)
       skill.power2 = nil
     else
-      return unless __s_beg_step(launcher, target, skill)
+      return unless __s_beg_step(launcher, target, skill, msg_push)
       _mp([:hp_up, target, 80])
     end
   end
@@ -35,7 +35,7 @@ module BattleEngine
   # Atout
   #===
   TrumpCard_Powers = [0,200,80,60,50]
-  def s_trump_card(launcher, target, skill)
+  def s_trump_card(launcher, target, skill, msg_push = true)
     if(skill.pp < 5)
       skill.power2 = TrumpCard_Powers[skill.pp]
     else
@@ -49,8 +49,8 @@ module BattleEngine
   #s_torment
   # Tourmente
   #===
-  def s_torment(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_torment(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     unless target.battle_effect.has_torment_effect?
       _mp([:msg, _parse_with_pokemon(19, 577, target)])
@@ -64,7 +64,7 @@ module BattleEngine
   #s_memento
   # Souvenir
   #===
-  def s_memento(launcher, target, skill)
+  def s_memento(launcher, target, skill, msg_push = true)
     if s_ohko(launcher, launcher, skill)
       _mp([:change_atk, target, -2])
       _mp([:change_ats, target, -2])
@@ -75,7 +75,7 @@ module BattleEngine
   #s_facade
   # Façade
   #===
-  def s_facade(launcher, target, skill)
+  def s_facade(launcher, target, skill, msg_push = true)
     skill.power2 = 140 if launcher.poisoned? or launcher.paralyzed? #or launcher.burn?
     s_basic(launcher, target, skill)
     skill.power2 = nil
@@ -85,7 +85,7 @@ module BattleEngine
   #s_smelling_salt
   # Stimulant
   #===
-  def s_smelling_salt(launcher, target, skill)
+  def s_smelling_salt(launcher, target, skill, msg_push = true)
     skill.power2 = 2 * skill.power if target.paralyzed?
     s_basic(launcher, target, skill)
     _mp([:status_cure, target]) if target.paralyzed?
@@ -96,7 +96,7 @@ module BattleEngine
   #s_wakeup_stap
   # Réveil Forcé
   #===
-  def s_wakeup_stap(launcher, target, skill)
+  def s_wakeup_stap(launcher, target, skill, msg_push = true)
     skill.power2 = 2 * skill.power if target.asleep?
     s_basic(launcher, target, skill)
     _mp([:status_cure, target]) if target.asleep?
@@ -107,8 +107,8 @@ module BattleEngine
   #s_helping_hand
   # Coup d’Main
   #===
-  def s_helping_hand(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_helping_hand(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     if(launcher != target and !target.battle_effect.has_helping_hand_effect?)
       _mp([:apply_effect, target, :apply_helping_hand])
     else
@@ -120,8 +120,8 @@ module BattleEngine
   #s_wish
   # Vœu
   #===
-  def s_wish(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_wish(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(launcher, skill)
     unless(target.battle_effect.has_wish_effect?)
       #_mp([:msg, _parse_with_pokemon(19, xxx, target)])
@@ -136,8 +136,8 @@ module BattleEngine
   # Racines
   #===
   #< Considérer les switch et les attaques qui affecteront
-  def s_ingrain(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_ingrain(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(launcher, skill)
     unless(target.battle_effect.has_ingrain_effect?)
       if target.battle_effect.has_telekinesis_effect?
@@ -155,8 +155,8 @@ module BattleEngine
   #s_aqua_ring
   # Anneau Hydro
   #===
-  def s_aqua_ring(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_aqua_ring(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(launcher, skill)
     unless(target.battle_effect.has_aqua_ring_effect?)
       _mp([:msg, _parse_with_pokemon(19, 601, target)])
@@ -170,8 +170,8 @@ module BattleEngine
   #>s_yawn
   # Baillement
   #===
-  def s_yawn(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_yawn(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     unless(target.battle_effect.has_yawn_effect? or target.battle_effect.has_safe_guard_effect?)
       #_mp([:msg, _parse_with_pokemon(19, xxx, target)])
@@ -189,8 +189,8 @@ module BattleEngine
   #>s_endeavor
   # Effort
   #===
-  def s_endeavor(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_endeavor(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     if(target.hp > launcher.hp)
       _mp([:hp_down, target, target.hp - launcher.hp])
     else
@@ -202,8 +202,8 @@ module BattleEngine
   #>s_grudge
   # Rancune
   #===
-  def s_grudge(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_grudge(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     unless(target.battle_effect.has_grudge_effect?)
       _mp([:msg, _parse_with_pokemon(19, 632, target)])
       _mp([:apply_effect, target, :apply_grudge])
@@ -216,8 +216,8 @@ module BattleEngine
   #>s_snatch
   # Saisie
   #===
-  def s_snatch(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_snatch(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     be = launcher.battle_effect
     unless(be.has_snatch_effect? and be.get_snatch_target == target)
       _mp([:msg, _parse_with_pokemon(19, 751, launcher)])
@@ -231,8 +231,8 @@ module BattleEngine
   #>s_gravity
   # Gravité
   #===
-  def s_gravity(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_gravity(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     return if @_State[:pp] == 0
     if(@_State[:gravity] <= 0)
       _mp([:set_state, :gravity, 5])
@@ -255,8 +255,8 @@ module BattleEngine
   #>s_roost
   # Atterrissage
   #===
-  def s_roost(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_roost(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(launcher, skill)
     if(target.hp < target.max_hp and !_is_grounded(target))
       _mp([:set_type, target, 1, 1]) if target.type1 == 10
@@ -274,8 +274,8 @@ module BattleEngine
   #===
   #< Attention aux attaques qui se relancent (faut relancer blabla dodo !)
   Sleep_Talk_NoMove = [214, 274, 448, 253, 130, 13, 76, 118, 119, 264, 382, 117, 383, 143, 291, 340, 467, 91, 19]
-  def s_sleep_talk(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_sleep_talk(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     target = launcher.battle_effect.last_attacking
     target = _random_target_selection(launcher, target) unless target and target != launcher
     if(launcher != target and launcher.asleep?)
@@ -293,7 +293,7 @@ module BattleEngine
   # Attaque Jugement
   #===
   JudgementPlates = [298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 644]
-  def s_judgment(launcher, target, skill)
+  def s_judgment(launcher, target, skill, msg_push = true)
     if(JudgementPlates.include?(@_State[:launcher_item]))
       imisc = GameData::Item.misc_data(@_State[:launcher_item])
       skill.type2 = imisc.powering_skill_type1 if imisc and imisc.powering_skill_type1
@@ -306,7 +306,7 @@ module BattleEngine
   #>s_venoshock
   # Choc Venin
   #===
-  def s_venoshock(launcher, target, skill)
+  def s_venoshock(launcher, target, skill, msg_push = true)
     if target.poisoned? or target.toxic?
       skill.power2 = skill.power * 2
     end
@@ -318,11 +318,11 @@ module BattleEngine
   #>s_venom_drench
   # Choc Venin
   #===
-  def s_venom_drench(launcher, target, skill)
+  def s_venom_drench(launcher, target, skill, msg_push = true)
     if target.poisoned? or target.toxic?
 	  return s_basic(launcher, target, skill)
     end
-    __s_beg_step(launcher, target, skill)
+    __s_beg_step(launcher, target, skill, msg_push)
     _mp(MSG_Fail)
   end
 
@@ -330,7 +330,7 @@ module BattleEngine
   #>s_hex
   # Châtiment
   #===
-  def s_hex(launcher, target, skill)
+  def s_hex(launcher, target, skill, msg_push = true)
     if target.status != 0
       skill.power2 = skill.power * 2
     end
@@ -342,11 +342,11 @@ module BattleEngine
   #>s_fake_out
   # Bluff
   #===
-  def s_fake_out(launcher, target, skill)
+  def s_fake_out(launcher, target, skill, msg_push = true)
     if(launcher.battle_effect.nb_of_turn_here == 1)
       s_status(launcher, target, skill)
     else
-      __s_beg_step(launcher, target, skill)
+      __s_beg_step(launcher, target, skill, msg_push)
       _mp(MSG_Fail)
     end
   end
@@ -355,7 +355,7 @@ module BattleEngine
   #>s_incinerate
   # Calcination
   #===
-  def s_incinerate(launcher, target, skill)
+  def s_incinerate(launcher, target, skill, msg_push = true)
     return if s_basic(launcher, target, skill)
 	data = ::GameData::Item.misc_data(target.battle_item)
     if(data and data.berry) # TODO Joyaux
@@ -368,7 +368,7 @@ module BattleEngine
   #>s_secret_power
   # Force Cachée
   #===
-  def s_secret_power(launcher, target, skill)
+  def s_secret_power(launcher, target, skill, msg_push = true)
     return if s_basic(launcher, target, skill)
     return if rand(100) > skill.effect_chance.to_i
     if($env.very_tall_grass? or $env.tall_grass?)
@@ -390,8 +390,8 @@ module BattleEngine
   #>s_camouflage
   # Camouflage
   #===
-  def s_secret_power(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_secret_power(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
     if($env.very_tall_grass? or $env.tall_grass?)
       type = 5
@@ -414,12 +414,12 @@ module BattleEngine
   #>s_sucker_punch
   # Coup bas
   #===
-  def s_sucker_punch(launcher, target, skill)
+  def s_sucker_punch(launcher, target, skill, msg_push = true)
     skill_id = target.prepared_skill
     if(_attacking_before?(launcher, target) and skill_id != 0 and $game_data_skill[skill_id].atk_class != 3)
       s_basic(launcher, target, skill)
     else
-      return unless __s_beg_step(launcher, target, skill)
+      return unless __s_beg_step(launcher, target, skill, msg_push)
       _mp(MSG_Fail)
     end
   end
@@ -428,7 +428,7 @@ module BattleEngine
   #>s_pursuit
   # Poursuite
   #===
-  def s_pursuit(launcher, target, skill)
+  def s_pursuit(launcher, target, skill, msg_push = true)
     if(_attacking_before?(launcher, target) and target.attack_order != 255 and target.prepared_skill == 0)
       skill.power2 = skill.power * 2
     end
@@ -440,8 +440,8 @@ module BattleEngine
   #>s_splash
   # Attaques sans effet
   #===
-  def s_splash(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_splash(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     return _msgp(18, 70) if skill.id == 150 # Trempette
     if skill.id == 606 # Célébration
       trainer = get_enemies!(launcher).compact[0].trainer_name
@@ -453,11 +453,11 @@ module BattleEngine
   #>s_feint
   # Ruse
   #===
-  def s_feint(launcher, target, skill)
+  def s_feint(launcher, target, skill, msg_push = true)
     if(target.battle_effect.has_protect_effect?)
       s_basic(launcher, target, skill)
     else
-      __s_beg_step(launcher, target, skill)
+      __s_beg_step(launcher, target, skill, msg_push)
       _mp(MSG_Fail)
     end
   end
@@ -465,11 +465,11 @@ module BattleEngine
   #>s_captivate
   # Séducition
   #===
-  def s_captivate(launcher, target, skill)
+  def s_captivate(launcher, target, skill, msg_push = true)
     if(target.gender * launcher.gender == 2)
       s_stat(launcher, target, skill)
     else
-      return unless __s_beg_step(launcher, target, skill)
+      return unless __s_beg_step(launcher, target, skill, msg_push)
       _mp(MSG_Fail)
     end
   end
@@ -478,7 +478,7 @@ module BattleEngine
   #>s_focus_punch
   # Mitra-Poing
   #===
-  def s_focus_punch(launcher, target, skill)
+  def s_focus_punch(launcher, target, skill, msg_push = true)
     be = launcher.battle_effect
     if be.has_focus_punch_effect?
       unless(be.took_damage)
@@ -496,7 +496,7 @@ module BattleEngine
   #>s_last_resort
   # Dernier recours
   #===
-  def s_last_resort(launcher, target, skill)
+  def s_last_resort(launcher, target, skill, msg_push = true)
     if(launcher.skills_set.size > 1)
       i = nil
       count = 1
@@ -509,7 +509,7 @@ module BattleEngine
         return s_basic(launcher, target, skill)
       end
     end
-    return unless __s_beg_step(launcher, target, skill)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     _mp(MSG_Fail)
   end
 
@@ -517,8 +517,8 @@ module BattleEngine
   #>s_me_first
   # Moi d’Abord
   #===
-  def s_me_first(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_me_first(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     if(_attacking_before?(launcher, target) and target.prepared_skill > 0)
       skill = ::PFM::Skill.new(target.prepared_skill)
       if(!skill.status?)
@@ -533,8 +533,8 @@ module BattleEngine
   #>s_miracle_eye
   # Œil Miracle
   #===
-  def s_miracle_eye(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_miracle_eye(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     if(target.battle_effect.has_miracle_eye_effect?)
       _mp(MSG_Fail)
     else
@@ -548,8 +548,8 @@ module BattleEngine
   # Assistance
   #===
   NoAssist_Skill = [182, 495, 448, 214, 270, 18, 197, 525, 621, 166, 46, 343, 168, 165, 118, 119, 164, 382, 415, 383, 194, 509, 277, 467, 68, 364, 289, 203, 271, 243, 274]
-  def s_assist(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_assist(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     allies = (@_Actors.include?(launcher) ? @_Actors : @_Enemies)
     if allies.size > 1
       skill_set = []
@@ -569,8 +569,8 @@ module BattleEngine
   #>s_imprison
   # Possessif
   #===
-  def s_imprison(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_imprison(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
     unless target.battle_effect.has_imprison_effect? or target == launcher
       common = false
@@ -596,8 +596,8 @@ module BattleEngine
   #>s_beat_up
   # Baston
   #===
-  def s_beat_up(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_beat_up(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     result = true
     if(::GameData::Flag_4G)
       skill.power2 = 10
@@ -624,8 +624,8 @@ module BattleEngine
   #> s_water_pledge
   # Attaque Aire d'eau
   #===
-  def s_water_pledge(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_water_pledge(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     last_damaging = target.battle_effect.last_damaging_skill
     if(last_damaging and (last_damaging.id == 520 or last_damaging.id == 519)) #> Aire d'herbe / Aire de feu
       skill.power2 = 160
@@ -654,8 +654,8 @@ module BattleEngine
   #> s_fire_pledge
   # Attaque Aire de feu
   #===
-  def s_fire_pledge(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_fire_pledge(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     last_damaging = target.battle_effect.last_damaging_skill
     if(last_damaging and (last_damaging.id == 520 or last_damaging.id == 518)) #> Aire d'herbe / Aire d'eau
       skill.power2 = 160
@@ -684,8 +684,8 @@ module BattleEngine
   #> s_grass_pledge
   # Attaque Aire d'herbe
   #===
-  def s_grass_pledge(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_grass_pledge(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     last_damaging = target.battle_effect.last_damaging_skill
     if(last_damaging and (last_damaging.id == 519 or last_damaging.id == 518)) #> Aire d'herbe / Aire d'eau
       skill.power2 = 160
@@ -714,8 +714,8 @@ module BattleEngine
   #> s_smack_down
   # Attaque Anti Air
   #===
-  def s_smack_down(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_smack_down(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     if(oor = target.battle_effect.get_out_of_reach and (oor == 2 or oor == 4))
       _msgp(19,1134,target)
       _message_stack_push([:apply_out_of_reach, launcher, 0])
@@ -737,8 +737,8 @@ module BattleEngine
   #>s_after_you
   # Après Vous
   #===
-  def s_after_you(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_after_you(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     if _attacking_before?(launcher, target) or (target.attack_order - launcher.attack_order) == 1
       _mp(MSG_Fail)
     else
@@ -753,8 +753,8 @@ module BattleEngine
   Psycho_Shift = [[false, true, true, true, true, true, false, false, true],
   [nil, :can_be_poisoned?, :can_be_paralyzed?, :can_be_burn?, :can_be_asleep?, :can_be_frozen?, nil, nil, :can_be_poisoned?],
   [nil, :status_poison, :status_paralyze, :status_burn, :status_sleep, :status_frozen, nil, nil, :status_toxic]]
-  def s_psycho_shift(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_psycho_shift(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     if(Psycho_Shift[0][launcher.status] and launcher.status != target.status)
       status_check = Psycho_Shift[1][launcher.status]
       status = target.status
@@ -789,7 +789,7 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_geomancy(launcher, target, skill)
+  def s_geomancy(launcher, target, skill, msg_push = true)
     #>Si il n'a pas fait le tour d'attente / Herbe Pouvoir
     unless(launcher.battle_effect.has_forced_attack? or _has_item(launcher, 271))
       id_txt = GameData::Skill.get_2turns_announce(skill.db_symbol)
@@ -810,8 +810,8 @@ module BattleEngine
   # Magné-Contrôle
   #===
   MinusPlus = [96, 97]
-  def s_magnetic_flux(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_magnetic_flux(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     allies = get_allies!(launcher)
     allies.each do |target|
       if MinusPlus.include?(target.ability) and Abilities.has_ability_usable(target, target.ability)

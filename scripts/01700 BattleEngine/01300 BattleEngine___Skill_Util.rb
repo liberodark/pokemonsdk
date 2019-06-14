@@ -214,9 +214,10 @@ module BattleEngine
   #S : bool : Si l'attaque peut continuer
   #===
   On_Launcher_Atk = [:user, :all_pokemon, :user_or_adjacent_ally, :all_ally, :none]#[:user, :one_ally, :all_ally, :field, :field_all, :none]
-  def __s_beg_step(launcher, target, skill)
+  def __s_beg_step(launcher, target, skill, msg_push = true)
     #>Ajout de machin utilise
-    _message_stack_push([:use_skill_msg, launcher, target, skill]) if @_State[:pp] > 0
+    _message_stack_push([:use_skill_msg, launcher, target, skill]) if msg_push
+
     #>Vérification du cas où on attaquais l'allié mais qu'il est KO (donc on se la prend)
     if(launcher == target and !On_Launcher_Atk.include?(skill.target))
       unless(skill.id == 174 and !launcher.type_ghost?) #> Malédiction
@@ -224,10 +225,12 @@ module BattleEngine
         return false
       end
     end
+
     #>Vérification de la possibilité d'attaque (sonore + Anti Bruit)
     if(skill.sound_attack? and Abilities.has_ability_usable(target, 52))
       return false if skill.id != 215 #>Glas de soin passe au travers
     end
+
     #>Les attaques sur les alliés ne ratent pas (sauf cas de précision à vérifier)
     unless On_Launcher_Atk.include?(skill.target)
       #>Vérification du blocage (abris)
