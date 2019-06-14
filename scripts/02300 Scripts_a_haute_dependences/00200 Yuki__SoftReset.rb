@@ -30,6 +30,7 @@ unless PARGV[:worldmap] or PARGV[:"animation-editor"] or PARGV[:test] or PARGV[:
         ObjectSpace.each_object(LiteRGSS::Sprite) { |s| s.dispose unless s.disposed? }
         ObjectSpace.each_object(LiteRGSS::Text) { |t| t.dispose unless t.disposed? }
         ObjectSpace.each_object(LiteRGSS::Bitmap) { |b| b.dispose unless b.disposed? }
+        Pathfinding.debug = false
         GC.start
         # Reloading required ressources
         Graphics.init_sprite

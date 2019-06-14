@@ -208,13 +208,22 @@ module Yuki
     # Smart disable the following system (keep it active when smart_enable is called)
     def smart_disable
       return unless $game_switches[Sw::FM_Enabled]
+      set_player_follower_particles(false)
       $game_switches[Sw::FM_WasEnabled] = $game_switches[Sw::FM_Enabled]
       $game_switches[Sw::FM_Enabled] = false
     end
 
     # Smart disable the following system (keep it active when smart_enable is called)
     def smart_enable
+      set_player_follower_particles(true)
       $game_switches[Sw::FM_Enabled] = $game_switches[Sw::FM_WasEnabled]
+    end
+
+    # Enable / Disable the particles for the player followers
+    def set_player_follower_particles(value)
+      each_follower do |follower|
+        follower.particles_disabled = !value
+      end
     end
   end
 end
