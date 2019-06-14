@@ -393,15 +393,27 @@ if Object.const_defined?(:FMOD)
         sounds_to_delete = []
         @fading_sounds.each do |sound, channel|
           additionnal_sound = nil if additionnal_sound == sound
-          next unless channel.getDSPClock.last >= channel.instance_variable_get(:@stop_time).to_i
+          next unless channel_stop_time_exceeded(channel)
           sounds_to_delete << sound
           channel.stop
           next if sound_guardian.include?(sound)
           sound.release
+        rescue FMOD::Error
+          next # Next iteration if channel.stop failed
         end
         sounds_to_delete.each { |sound| @fading_sounds.delete(sound) }
       end
       additionnal_sound&.release
+    end
+
+    # Return if the channel time is higher than the stop time
+    # @note will return true if the channel handle is invalid
+    # @param channel [FMOD::Channel]
+    # @return [Boolean]
+    def channel_stop_time_exceeded(channel)
+      return channel.getDSPClock.last >= channel.instance_variable_get(:@stop_time).to_i
+    rescue FMOD::Error
+      return true
     end
 
     # Function that detects if the previous playing sound is the same as the next one
