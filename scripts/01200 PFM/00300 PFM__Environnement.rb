@@ -162,7 +162,7 @@ module PFM
       $game_switches[Yuki::Sw::Env_CanDig] = (!data.warp_disallowed && !data.fly_allowed)
       return unless data.forced_weather
       if data.forced_weather == 0
-        $game_screen.weather(0, 0, 40)
+        $game_screen.weather(0, 0, $game_switches[Yuki::Sw::Env_CanFly] ? 40 : 1)
       else
         $game_screen.weather(0, 9, 40, psdk_weather: data.forced_weather)
       end
