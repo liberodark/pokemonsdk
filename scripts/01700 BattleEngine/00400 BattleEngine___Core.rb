@@ -47,52 +47,67 @@ module BattleEngine
   #S : Aucune
   #V : 
   #===
-  def use_skill(launcher, target, skill, display_atk=true)
+  def use_skill(launcher, targets, skill)
     #===
     #> Indication des données pour l'interpreter
     #===
-    _message_stack_push([:parametre, launcher, (target ? target : launcher), skill])
+    #_message_stack_push([:parametre, launcher, (target ? target : launcher), skill]) #Inutilisé ?
+    
     #===
     #> Traitement du cas où l'attaque vient tout juste d'être lancée
     #===
-    if display_atk
-      @_State[:pp] = 1
-      @_State[:ext_info] = nil
-      target = Abilities.target_attrating(launcher, target, skill) if skill.is_one_target?
-      target = _follow_me_check(launcher, target, skill) #> Par Ici / Poudre Fureur
-    else
-      @_State[:pp] = 0
+    @_State[:ext_info] = nil
+    targets[0] = Abilities.target_attrating(launcher, targets[0], skill) if skill.is_one_target?
+    targets[0] = _follow_me_check(launcher, targets[0], skill) if skill.is_one_target? #> Par Ici / Poudre Fureur
+
+    msg_push = true # Affiche <pkmn> utilise <attaque> si true
+    targets.each do |target|
+      if (target and !target.dead?)
+        if BattleEngine.private_method_defined?(skill.symbol)
+          if (skill.symbol == :s_magnitude) # Ampleur
+            if skill.power2 == nil
+              #>Vérification
+              rate = rand(100)
+              R_Magnitude.size.times do |i|
+                if rate < R_Magnitude[i]
+                  skill.power2 = i
+                  break
+                end
+              end
+            end
+          end
+          BattleEngine.send(skill.symbol, launcher, target, skill, msg_push)
+        else
+          s_basic(launcher, target, skill, msg_push)
+        end
+
+        _State_local_update_target(target)
+
+        #>Colérique
+        _mp([:change_atk, target, 2]) if(@_State[:last_critical_hit] > 1 and @_State[:target_ability] == 31)
+      end
+
+      msg_push = false
     end
-    _State_local_update(launcher, target)
-    #===
-    #> Appel de la fonction de l'attaque
-    #===
-    if BattleEngine.private_method_defined?(skill.symbol)
-      BattleEngine.send(skill.symbol, launcher, target, skill)
-#      _message_stack_push([:no_more_msg])
-    else
-      s_basic(launcher, target, skill)
-#      _message_stack_push([:no_more_msg])
-    end
+
+    skill.power2 = nil # Ampleur
 
     #>Fin de la méthode
     #>Perte des PP
-    if(@_State[:pp]>0)
-      skill.pp-=@_State[:pp]
-      skill.pp-=1 if Abilities::enemy_has_ability_usable(launcher, 72) #> Pression
-      if(skill.pp <= 0 and launcher.battle_effect.has_encore_effect? and !@IA_flag)
-        launcher.battle_effect.apply_encore(nil)
-      elsif(skill.pp <= 0 and @_State[:launcher_item] == 154) #> Baie Mepo
-        _mp([:berry_use, launcher, true])
-        _mp([:set_pp, 10])
-        _msgp(19, 917, launcher, ITEM2[1] => launcher.item_name, MOVE[2] => skill.name)
-      end
-
-      #> Enregistrement de l'attaque (pour photocopie)
-      @_State[:last_skill] = skill if skill.id != 383
+    _State_local_update_launcher(launcher)
+    skill.pp-=1
+    skill.pp-=1 if Abilities::enemy_has_ability_usable(launcher, 72) #> Pression
+    if(skill.pp <= 0 and launcher.battle_effect.has_encore_effect? and !@IA_flag)
+      launcher.battle_effect.apply_encore(nil)
+    elsif(skill.pp <= 0 and @_State[:launcher_item] == 154) #> Baie Mepo
+      _mp([:berry_use, launcher, true])
+      _mp([:set_pp, 10])
+      _msgp(19, 917, launcher, ITEM2[1] => launcher.item_name, MOVE[2] => skill.name)
     end
-    #>Colérique
-    _mp([:change_atk, target, 2]) if(@_State[:last_critical_hit] > 1 and @_State[:target_ability] == 31)
+
+    #> Enregistrement de l'attaque (pour photocopie)
+    @_State[:last_skill] = skill if skill.id != 383
+
     #>Suppression du verrouillage
     _mp([:apply_effect, launcher, :apply_lock_on, nil]) if skill.id != 199 and launcher.battle_effect.has_lock_on_effect?
   end
@@ -237,13 +252,18 @@ module BattleEngine
   #===
   #>Mise à jour des infos relative au lanceur et à la cible
   #===
-  def _State_local_update(launcher, target)
+  def _State_local_update_launcher(launcher)
     st = @_State
     st[:launcher_item] = _has_item(launcher, launcher.battle_item) ? launcher.battle_item : 0
-    st[:target_item] = _has_item(target, target.battle_item) ? target.battle_item : 0
     st[:launcher_ability] = Abilities.has_ability_usable(launcher, launcher.ability) ? -1 : launcher.ability
+  end
+
+  def _State_local_update_target(target)
+    st = @_State
+    st[:target_item] = _has_item(target, target.battle_item) ? target.battle_item : 0
     st[:target_ability] = Abilities.has_ability_usable(target, target.ability) ? -1 : target.ability
   end
+
   #===
   #>Gestion de l'IA
   #===

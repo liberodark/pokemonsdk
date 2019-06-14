@@ -139,6 +139,8 @@ module BattleEngine
     #===
     def hp_down(target, hp, extra_info=0)
       return if @ignore or target.hp==0
+      @target = target
+      
       be = target.battle_effect
       #>Vérification de clonage
       if(@skill and !@skill.sound_attack? and be.has_substitute_effect?)

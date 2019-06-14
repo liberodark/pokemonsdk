@@ -9,8 +9,8 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_attract(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_attract(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     _message_stack_push([:attract_effect, target])
   end
   #===
@@ -19,8 +19,8 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_powder(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_powder(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     _message_stack_push([:powder_effect, target])
   end
   #===
@@ -29,8 +29,8 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_uproar(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_uproar(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     skill.type2 = 0 if(target.type_ghost?)
     hp=_damage_calculation(launcher, target, skill).to_i
     skill.type2 = nil
@@ -46,8 +46,8 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_round(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_round(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     #>Vérifier si l'attaque a été utilisé
     used = false
     get_ally(launcher).each do |i|
@@ -66,8 +66,8 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_echo(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_echo(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     #>Vérifier si l'attaque a été utilisé (Un peu confus sur les conditions d'augmentation...)
     used = launcher.last_skill == skill.id
     get_battlers.each do |i|
@@ -86,8 +86,8 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_heal_bell(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_heal_bell(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
     _message_stack_push([:status_cure, target])
   end
@@ -97,8 +97,8 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_roar(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_roar(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     #>Combat de sauvage
     unless $game_temp.trainer_battle
@@ -145,8 +145,8 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_perish_song(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_perish_song(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     if(@_State[:pp] > 0)
       i = nil
       #> Vérification de la possibilité de lancer perish_song
@@ -173,7 +173,7 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_snore(launcher, target, skill)
+  def s_snore(launcher, target, skill, msg_push = true)
     if(launcher.asleep?)
       s_basic(launcher, target, skill)
     else
@@ -187,7 +187,7 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_payday(launcher, target, skill)
+  def s_payday(launcher, target, skill, msg_push = true)
     if s_basic(launcher, target, skill)
       _message_stack_push([:jackpot, launcher])
     end
@@ -198,7 +198,7 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_bind(launcher, target, skill)
+  def s_bind(launcher, target, skill, msg_push = true)
     if s_basic(launcher, target, skill)
       #>Accro Griffe
       if(_has_item(launcher, 286))
@@ -215,9 +215,9 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_thrash(launcher, target, skill)
+  def s_thrash(launcher, target, skill, msg_push = true)
     target = _random_target_selection(launcher, target)
-    return unless __s_beg_step(launcher, target, skill)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     return _mp(MSG_Fail) if launcher == target
     hp=_damage_calculation(launcher, target, skill).to_i
     __s_hp_down_check(hp, target, true, false)
@@ -234,8 +234,8 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_absorb(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_absorb(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
 
     hp=_damage_calculation(launcher, target, skill).to_i
     hp = target.max_hp if hp > target.max_hp
@@ -267,8 +267,8 @@ module BattleEngine
   #---
   #E : <BE_Model1>
   #===
-  def s_dream_eater(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_dream_eater(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
 
     unless(target.asleep?)
       _message_stack_push(MSG_Fail)
@@ -295,8 +295,8 @@ module BattleEngine
   #>s_growth
   # Définition de l'attaque croissance
   #===
-  def s_growth(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_growth(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if($env.sunny?)
       nb = 2
     else
@@ -309,8 +309,8 @@ module BattleEngine
   #>s_leech_seed
   # Définition de l'attaque vampigraine
   #===
-  def s_leech_seed(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_leech_seed(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(target.battle_effect.has_leech_seed_effect? or target.type_grass?) #> Immunité
       _message_stack_push(MSG_Fail)
     else
@@ -321,9 +321,9 @@ module BattleEngine
   #>s_future_sight
   # Définition de Prescience / Carnareket
   #===
-  def s_future_sight(launcher, target, skill)
+  def s_future_sight(launcher, target, skill, msg_push = true)
     skill.type2 = 0
-    fail = !__s_beg_step(launcher, target, skill)
+    fail = !__s_beg_step(launcher, target, skill, msg_push)
     #> "Future Sight cannot be used on a target multiple times; it must complete before it may be used on a target again"
     if target.battle_effect.is_locked_by_future_skill? or launcher.battle_effect.has_future_skill?
       return _mp(MSG_Fail)
@@ -342,9 +342,9 @@ module BattleEngine
   #>s_spike
   # Définition de picots
   #===
-  def s_spike(launcher, target, skill)
+  def s_spike(launcher, target, skill, msg_push = true)
     return false if @_State[:pp] <= 0
-    return false unless __s_beg_step(launcher, target, skill)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(ability_user = Abilities.enemy_has_ability_usable(launcher, 17)) #> Garde Magik
       _mp([:ability_display, ability_user, proc {ability_user.hp > 0}])
       _msgp(19, 466, ability_user, "[VAR MOVE(0001)]"=>skill.name)
@@ -363,9 +363,9 @@ module BattleEngine
   #>s_toxic_spike
   # Définition de Pics Toxik
   #===
-  def s_toxic_spike(launcher, target, skill)
+  def s_toxic_spike(launcher, target, skill, msg_push = true)
 	return false if @_State[:pp] <= 0
-    return false unless __s_beg_step(launcher, target, skill)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(ability_user = Abilities.enemy_has_ability_usable(launcher, 17)) #> Garde Magik
       _mp([:ability_display, ability_user, proc {ability_user.hp > 0}])
       _msgp(19, 466, ability_user, "[VAR MOVE(0001)]"=>skill.name)
@@ -384,9 +384,9 @@ module BattleEngine
   #>s_stealth_rock
   # Définition de Piège de roc
   #===
-  def s_stealth_rock(launcher, target, skill)
+  def s_stealth_rock(launcher, target, skill, msg_push = true)
     return false if @_State[:pp] <= 0
-    return false unless __s_beg_step(launcher, target, skill)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(ability_user = Abilities.enemy_has_ability_usable(launcher, 17)) #> Garde Magik
       _mp([:ability_display, ability_user, proc {ability_user.hp > 0}])
       _msgp(19, 466, ability_user, "[VAR MOVE(0001)]"=>skill.name)
@@ -405,9 +405,9 @@ module BattleEngine
   #>s_sticky_web
   # Définition de Toile Gluante
   #===
-  def s_sticky_web(launcher, target, skill)
+  def s_sticky_web(launcher, target, skill, msg_push = true)
     return false if @_State[:pp] <= 0
-    return false unless __s_beg_step(launcher, target, skill)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(ability_user = Abilities.enemy_has_ability_usable(launcher, 17)) #> Garde Magik
       _mp([:ability_display, ability_user, proc {ability_user.hp > 0}])
       _msgp(19, 466, ability_user, "[VAR MOVE(0001)]"=>skill.name)
@@ -426,8 +426,8 @@ module BattleEngine
   #>s_minimize
   # Défition de l'attaque lilliput
   #===
-  def s_minimize(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_minimize(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if __s_stat_us_step(launcher, launcher, skill, nil, 100)
       _message_stack_push([:apply_effect, target, :apply_minimize])
     else
@@ -438,8 +438,8 @@ module BattleEngine
   #>s_mist
   # Définition de brume
   #===
-  def s_mist(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_mist(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(launcher == target) #>Sinon faire avec state pp == 1
       _message_stack_push([:msg, _parse(18, target.position < 0 ? 143 : 142)])
     end
@@ -449,8 +449,8 @@ module BattleEngine
   #>s_rest
   # Définition de repos
   #===
-  def s_rest(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_rest(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     #> Insomia / Esprit Vital
     if(launcher.max_hp == launcher.hp or Abilities.has_ability_usable(launcher, 49) or
       Abilities.has_ability_usable(launcher, 30))
@@ -467,8 +467,8 @@ module BattleEngine
   #>s_explosion
   # Définition de explosion
   #===
-  def s_explosion(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_explosion(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if Abilities.has_ability_usable(launcher, 28)
       if @_State[:pp] > 0
         _mp([:ability_display, target])
@@ -488,7 +488,7 @@ module BattleEngine
   #>s_mirror_move
   # Définition de l'attaque Mimique
   #===
-  def s_mirror_move(launcher, target, skill)
+  def s_mirror_move(launcher, target, skill, msg_push = true)
     return if skill.id == 119 and @_State[:pp] != 1
     #>Récupération de la cible potentielle
     if skill.id == 383 #>Photocopie
@@ -500,7 +500,7 @@ module BattleEngine
       target = launcher.battle_effect.last_attacking
       target = launcher unless target
     end
-    return false unless __s_beg_step(launcher, target, skill)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     #>Echec si pas de cible
     if(target == launcher)
       _mp(MSG_Fail)
@@ -525,9 +525,9 @@ module BattleEngine
   # Définition de l'attaque Métronome
   #===
   Mirror_noMove = [555, 182, 511, 495, 274, 448, 214, 547, 102, 270, 557, 197, 553, 554, 267, 469, 166, 343, 168, 548, 165, 118, 119, 264, 382, 144, 266, 415, 516, 383, 476, 501, 194, 277, 68, 173, 364, 289, 546, 203, 271]
-  def s_metronome(launcher, target, skill)
+  def s_metronome(launcher, target, skill, msg_push = true)
     target = _random_target_selection(launcher, target)
-    return false unless __s_beg_step(launcher, target, skill)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(skill.id == 267) #> Force-Nature
       if($env.very_tall_grass?)
         id = 75
@@ -560,8 +560,8 @@ module BattleEngine
   #>s_heal_weather
   # Définition des attaques qui heal en fonction de la météo : Aurore / Rayon Lune / Synthèse
   #===
-  def s_heal_weather(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_heal_weather(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
     if(target.battle_effect.has_heal_block_effect?)
       _mp([:msg, _parse_with_pokemon(19,890, target)])
@@ -584,8 +584,8 @@ module BattleEngine
   #>s_heal
   # Définition des attaques qui soignent le demi des hp
   #===
-  def s_heal(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_heal(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
     if(target.battle_effect.has_heal_block_effect?)
       _mp([:msg, _parse_with_pokemon(19,890, target)])
@@ -603,7 +603,7 @@ module BattleEngine
   # Ball'Météo
   #===
   MeteoType = [1, 3, 2, 13, 6, 1]
-  def s_weather_ball(launcher, target, skill)
+  def s_weather_ball(launcher, target, skill, msg_push = true)
     skill.power2 = skill.power * 2 if $env.fog? or $env.sandstorm?
     unless @_State[:air_lock]
       skill.type2 = MeteoType[$env.current_weather].to_i
@@ -616,12 +616,12 @@ module BattleEngine
   #>s_captivate
   # Séduction
   #===
-  def s_captivate(launcher, target, skill)
+  def s_captivate(launcher, target, skill, msg_push = true)
     #>Benêt
     if((target.gender * @launcher.gender == 2) and !Abilities.has_ability_usable(target, 39))
       s_stat(launcher, target, skill)
     else
-      return false unless __s_beg_step(launcher, target, skill)
+      return false unless __s_beg_step(launcher, target, skill, msg_push)
       _message_stack_push(MSG_Fail)
     end
   end
@@ -629,8 +629,8 @@ module BattleEngine
   #>s_add_type
   # Attaque du genre Halloween avec supplément de détrempage
   #===
-  def s_add_type(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_add_type(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     #>Cas de détrempage
     if(skill.id == 487)
       if(target.type_water? and target.type2 == 0)
@@ -650,8 +650,8 @@ module BattleEngine
   #>s_role_play
   # Imitation
   #===
-  def s_role_play(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_role_play(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     #Garde magik / Multi-type
     unless(Abilities.has_ability_usable(target, 17) or Abilities.has_ability_usable(target, 122))
       _message_stack_push([:msg, ::PFM::Text.parse_with_pokemons(19, 619, launcher, target, ::PFM::Text::ABILITY[2] => target.ability_name)])
@@ -664,8 +664,8 @@ module BattleEngine
   #>s_worry_seed
   # Souci Graine
   #===
-  def s_worry_seed(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_worry_seed(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     unless(Abilities.has_ability_usable(target, 17) or Abilities.has_ability_usable(target, 122))
       _message_stack_push([:msg, _parse_with_pokemon(19, 405, launcher, PKNICK[0] => target.given_name, ::PFM::Text::ABILITY[1] => ::GameData::Abilities.name(49))])
@@ -678,8 +678,8 @@ module BattleEngine
   #>s_haze
   # Buée noire
   #===
-  def s_haze(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_haze(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if skill.id == 499 # Bain de Smog
       hp = _damage_calculation(launcher, target, skill).to_i
       return false if __s_hp_down_check(hp, target)
@@ -691,8 +691,8 @@ module BattleEngine
   #>s_nightmare
   # Cauchemard
   #===
-  def s_nightmare(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_nightmare(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(target.asleep?)
       _message_stack_push([:apply_effect, target, :apply_nightmare])
       _message_stack_push([:msg, _parse_with_pokemon(19, 321, target)])
@@ -704,8 +704,8 @@ module BattleEngine
   #>s_weather
   # Attaque déclanchant une météo
   #===
-  def s_weather(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_weather(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     #>Petite sécurité pour empêcher au système de réussir deux s_weather identiques conjoint
     st = @_State[:air_lock]
     @_State[:air_lock] = false
@@ -725,8 +725,8 @@ module BattleEngine
   #>s_rototillier
   # Attaque fertilisation
   #===
-  def s_rotillier(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_rotillier(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(target.type_grass?)
       _message_stack_push([:change_atk, target, 1])
       _message_stack_push([:change_ats, target, 1])
@@ -736,8 +736,8 @@ module BattleEngine
   #>s_focus_energy
   # Puissance
   #===
-  def s_focus_energy(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_focus_energy(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
     _message_stack_push([:msg, _parse_with_pokemon(19, 616, target)])
     _message_stack_push([:apply_effect, target, :apply_focus_energy])
@@ -746,8 +746,8 @@ module BattleEngine
   #>s_curse
   # Malédiction / Cognobidon
   #===
-  def s_curse(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_curse(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(skill.id == 187)
       target = _snatch_check(target, skill)
       _message_stack_push([:hp_down, launcher, launcher.max_hp / 2])
@@ -770,8 +770,8 @@ module BattleEngine
   #>s_psych_up
   # Boost
   #===
-  def s_psych_up(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_psych_up(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     _message_stack_push([:msg,_parse_with_pokemon(19, 1053, launcher, PKNICK[1] => target.given_name)])
     launcher = _snatch_check(launcher, skill)
     _message_stack_push([:apply_effect, target, :apply_no_stat_change])
@@ -791,8 +791,8 @@ module BattleEngine
   #>s_topsy_turvy
   # Renversement
   #===
-  def s_topsy_turvy(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_topsy_turvy(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     _message_stack_push([:msg,_parse_with_pokemon(19, 1077, target)])
     #unless(launcher.battle_effect.has_no_stat_change_effect?) #>Vérifier si c'est bloqué
@@ -809,8 +809,8 @@ module BattleEngine
   # Attaques ayant des implications sur les statistiques
   #===
   AcuperssionStat = [:change_atk, :change_ats, :change_dfe, :change_dfs, :change_eva, :change_acc, :change_spd]
-  def s_stat_edit(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_stat_edit(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     id = skill.id
     if(id == 579) #>Garde florale
       get_battlers.each do |i|
@@ -871,8 +871,8 @@ module BattleEngine
   Entrainment = [122, 90, 175, 148, 112, 69, 149, 160]
   SkillSwap = [122, 91] #>Multi-Type, Garde Mystik
   GastroAcid = [122] #>Tous les talents ayant aucun effet en combat pendant les tours. (Début de tour exclu !)
-  def s_ability(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_ability(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     id = skill.id
     target = _magic_coat(launcher, target, skill)
     if(id == 493) #Rayon simple
@@ -911,8 +911,8 @@ module BattleEngine
   #>s_reflect
   # Protection et Mur Lumière
   #===
-  def s_reflect(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_reflect(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     return if launcher != target #>Pour appliquer à tout l'équipe et gérer saisie
     nb_turn = _has_item(launcher, 269) ? 8 : 5 #> Lumargile
     target = _snatch_check(launcher, skill) #>Actuellement je ne vérifie que le lanceur car je ne sais pas comment ça agit en 2v2 quand c'est pas le lanceur sous saisie :<
@@ -938,8 +938,8 @@ module BattleEngine
   #>s_safe_guard
   # Rune Protect
   #===
-  def s_safe_guard(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_safe_guard(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
     _mp([:apply_affect, target, :apply_safe_guard])
   end
@@ -947,8 +947,8 @@ module BattleEngine
   #>s_magic_coat
   # Reflet Magik
   #===
-  def s_magic_coat(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_magic_coat(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     _mp([:msg, _parse_with_pokemon(19, 761, launcher)])
     _mp([:apply_effect, launcher, :apply_magic_coat])
   end
@@ -956,7 +956,7 @@ module BattleEngine
   #>s_brick_break
   # Casse-Brique
   #===
-  def s_brick_break(launcher, target, skill)
+  def s_brick_break(launcher, target, skill, msg_push = true)
     skill.type2 = 0 if target.type_spectre?
     result = s_basic(launcher, target, skill)
     skill.type2 = nil
@@ -976,8 +976,8 @@ module BattleEngine
   #>s_tailwind
   # Vent arrière
   #===
-  def s_tailwind(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_tailwind(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     return if launcher != target #>Pour appliquer à tout l'équipe et gérer saisie
     target = _snatch_check(launcher, skill) #>Actuellement je ne vérifie que le lanceur car je ne sais pas comment ça agit en 2v2 quand c'est pas le lanceur sous saisie :<
     _mp([:msg, _parse(18, target.position < 0 ? 147 : 146)])
@@ -987,8 +987,8 @@ module BattleEngine
   #>s_lucky_chant
   # Air Veinard
   #===
-  def s_lucky_chant(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_lucky_chant(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     return if launcher != target #>Pour appliquer à tout l'équipe et gérer saisie
     target = _snatch_check(launcher, skill) #>Actuellement je ne vérifie que le lanceur car je ne sais pas comment ça agit en 2v2 quand c'est pas le lanceur sous saisie :<
     _mp([:msg, _parse(18, target.position < 0 ? 151 : 150)])
@@ -998,8 +998,8 @@ module BattleEngine
   #>s_heal_block
   # Anti-Soin
   #===
-  def s_heal_block(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_heal_block(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     _mp([:apply_effect, target, :apply_heal_block])
   end
@@ -1007,8 +1007,8 @@ module BattleEngine
   #>s_magnet_rise
   # Vol Magnetique
   #===
-  def s_magnet_rise(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_magnet_rise(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
     _mp([:msg, _parse_with_pokemon(19, 658, target)])
     _mp([:apply_effect, target, :apply_magnet_rise])
@@ -1017,8 +1017,8 @@ module BattleEngine
   #>s_protect
   # Abri and co
   #===
-  def s_protect(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_protect(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     #>Tatamigaeshi
     if(skill.id == 561 and launcher.battle_effect.nb_of_turn_here > 1)
       _mp(MSG_Fail) if target == launcher
@@ -1037,8 +1037,8 @@ module BattleEngine
   #>s_thing_sport
   # Lance-Boue / Tourniquet
   #===
-  def s_thing_sport(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_thing_sport(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     return false if launcher != target
     #>Tourniquet
     if(skill.id == 346)
@@ -1053,8 +1053,8 @@ module BattleEngine
   #>s_foresight
   # Flair / Clairevoyance
   #===
-  def s_foresight(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_foresight(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     _mp([:stat_set, target, 5, 0]) #>Reset de l'esquive
     _mp([:apply_effect, target, :apply_foresight])
@@ -1063,7 +1063,7 @@ module BattleEngine
   #>s_u_turn
   # Demi-Tour / Change Eclair / Relais
   #===
-  def s_u_turn(launcher, target, skill)
+  def s_u_turn(launcher, target, skill, msg_push = true)
     return unless skill.id == 226 or s_basic(launcher, target, skill)
     unless(launcher.position < 0 and !$game_temp.trainer_battle)
       _mp([:switch_pokemon, launcher, nil])
@@ -1073,7 +1073,7 @@ module BattleEngine
   #>s_dragon_tail
   # Projection / Draco-Queue
   #===
-  def s_dragon_tail(launcher, target, skill)
+  def s_dragon_tail(launcher, target, skill, msg_push = true)
     return unless s_basic(launcher, target, skill)
     unless(launcher.position >= 0 and !$game_temp.trainer_battle)
       party = (target.position < 0 ? $scene.enemy_party : $pokemon_party)
@@ -1098,8 +1098,8 @@ module BattleEngine
   #>s_sketch
   # Gribouille
   #===
-  def s_sketch(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_sketch(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     ls = target.last_skill
     #>Babil / Lutte, Moiteur + Explosion/Destruction
     if(ls <= 0 or ls == skill.id or ls == 448 or ls == 165 or (!Abilities.has_ability_usable(target, 28) and (ls == 153 or ls == 120)))
@@ -1113,8 +1113,8 @@ module BattleEngine
   #>s_disable
   # Entrave
   #===
-  def s_disable(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_disable(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     ls = target.last_skill
     if(ls > 0 and !target.battle_effect.has_disable_effect?)
@@ -1128,8 +1128,8 @@ module BattleEngine
   #>s_mimic
   # Copie
   #===
-  def s_mimic(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_mimic(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     ls = target.last_skill
     if(ls > 0 and ls != 165 and ls != skill.id)
       _mp([:msg, _parse_with_pokemon(19, 688, launcher, MOVE[1] => ::GameData::Skill.name(ls))])
@@ -1142,8 +1142,8 @@ module BattleEngine
   #>s_encore
   # Encore
   #===
-  def s_encore(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_encore(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     ls = target.last_skill
     if(ls > 0 and ls != skill.id and ls != 165)
@@ -1157,8 +1157,8 @@ module BattleEngine
   #>s_spite
   # Dépit
   #===
-  def s_spite(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_spite(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     ls = target.last_skill
     skill = target.find_skill(ls)
@@ -1174,9 +1174,9 @@ module BattleEngine
   #>s_cantflee
   # Verrou Enchanté / Barrage / Regard Noir / Toile / Myria-Vagues
   #===
-  def s_cantflee(launcher, target, skill)
+  def s_cantflee(launcher, target, skill, msg_push = true)
     if(skill.id != 615) #> Myria-Vagues
-      return false unless __s_beg_step(launcher, target, skill)
+      return false unless __s_beg_step(launcher, target, skill, msg_push)
     else
       return false unless s_basic(launcher, target, skill)
     end
@@ -1196,8 +1196,8 @@ module BattleEngine
   #>s_teleport
   # Téléport
   #===
-  def s_teleport(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_teleport(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     if($game_temp.trainer_battle)
       _mp(MSG_Fail)
     else
@@ -1209,8 +1209,8 @@ module BattleEngine
   #>s_trick
   # Tourmagik / Passe-Passe
   #===
-  def s_trick(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_trick(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     li = launcher.battle_item
     ti = target.battle_item
     #>Les mega Gemme devront spéficier un utilisateur !
@@ -1233,8 +1233,8 @@ module BattleEngine
   #>s_embargo
   # Embargo
   #===
-  def s_embargo(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_embargo(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     _mp([:msg, _parse_with_pokemon(19, 727, target)])
     _mp([:apply_effect, target, :apply_embargo])
@@ -1243,7 +1243,7 @@ module BattleEngine
   #>s_thief
   # Larcin / Larcin
   #===
-  def s_thief(launcher, target, skill)
+  def s_thief(launcher, target, skill, msg_push = true)
     return false unless s_basic(launcher, target, skill)
     ti = target.battle_item
     #>Les mega Gemme devront spéficier un utilisateur !
@@ -1265,7 +1265,7 @@ module BattleEngine
   #>s_knock_off
   # Sabotage
   #===
-  def s_knock_off(launcher, target, skill)
+  def s_knock_off(launcher, target, skill, msg_push = true)
     return false unless s_basic(launcher, target, skill)
     ti = target.battle_item
     #>Les mega Gemme devront spéficier un utilisateur !
@@ -1285,7 +1285,7 @@ module BattleEngine
   # Recyclage 
   #Note: J'ai fait récupérer l'objet ancienne porté par la cible de saisie, est-ce que ça risque pas d'être "mauvais" ?
   #===
-  def s_recycle(launcher, target, skill)
+  def s_recycle(launcher, target, skill, msg_push = true)
     return false unless s_basic(launcher, target, skill)
     ti = target.battle_item
     ie = target.battle_effect.item_held
@@ -1301,7 +1301,7 @@ module BattleEngine
   #>s_pluck
   # Picore / Piqûre
   #===
-  def s_pluck(launcher, target, skill)
+  def s_pluck(launcher, target, skill, msg_push = true)
     return false unless s_basic(launcher, target, skill)
     ti = target.battle_item
     if(ti > 0)
@@ -1317,7 +1317,7 @@ module BattleEngine
   #>s_autotomize
   # Allègement
   #===
-  def s_autotomize(launcher, target, skill)
+  def s_autotomize(launcher, target, skill, msg_push = true)
     return false unless s_stat(launcher, target, skill)
     target = _snatch_check(target, skill)
     _mp([:apply_effect, target, :apply_autotomize])
@@ -1326,8 +1326,8 @@ module BattleEngine
   #>s_trick_room
   # Distorsion
   #===
-  def s_trick_room(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_trick_room(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     return if @_State[:pp] == 0
     sym = :trick_room
     if(@_State[sym] > 0)
@@ -1342,8 +1342,8 @@ module BattleEngine
   #>s_wonder_room
   # Zone Magique / Etrange
   #===
-  def s_wonder_room(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_wonder_room(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     return if @_State[:pp] <= 0
     if skill.id == 472 # Zone Etrange
       sym = :wonder_room
@@ -1364,8 +1364,8 @@ module BattleEngine
   #>s_taunt
   # Provoc
   #===
-  def s_taunt(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_taunt(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     _message_stack_push([:apply_effect, target, :apply_taunt, 2])
     _message_stack_push([:msg, _parse_with_pokemon(19, 568, target)])
@@ -1374,8 +1374,8 @@ module BattleEngine
   #>s_follow_me
   # Par Ici, Poudre Fureur
   #===
-  def s_follow_me(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_follow_me(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     sym = target.position < 0 ? :enn_follow_me : :act_follow_me
     _message_stack_push([:set_state, sym, launcher])
     _message_stack_push([:msg, _parse_with_pokemon(19, 670, launcher)])
@@ -1384,8 +1384,8 @@ module BattleEngine
   #>s_substitute
   # Clonage
   #===
-  def s_substitute(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_substitute(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     hp = launcher.max_hp/4
     if(launcher.battle_effect.has_substitute_effect?)
       _mp([:msg, _parse_with_pokemon(19, 788, launcher)])
@@ -1403,7 +1403,7 @@ module BattleEngine
   #>s_rapid_spin
   # Tour Rapide
   #===
-  def s_rapid_spin(launcher, target, skill)
+  def s_rapid_spin(launcher, target, skill, msg_push = true)
     return false unless s_basic(launcher, target, skill)
     _mp([:entry_hazards_remove, launcher])
     _mp([:apply_effect, launcher, :apply_leech_seed, false])
@@ -1414,7 +1414,7 @@ module BattleEngine
   #>s_defog
   # Anti-Brume
   #===
-  def s_defog(launcher, target, skill)
+  def s_defog(launcher, target, skill, msg_push = true)
     be = target.battle_effect
     _mp([:entry_hazards_remove, target])
     sym = target.position < 0 ? :enn_light_screen : :act_light_screen
@@ -1443,7 +1443,7 @@ module BattleEngine
   #>s_rage
   # Frénésie
   #===
-  def s_rage(launcher, target, skill)
+  def s_rage(launcher, target, skill, msg_push = true)
     return false unless s_basic(launcher, target, skill)
     _mp([:apply_effect, launcher, :apply_rage])
   end
@@ -1451,8 +1451,8 @@ module BattleEngine
   #>s_pain_split
   # Balance
   #===
-  def s_pain_split(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_pain_split(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     total_hp = (launcher.hp + target.hp) / 2
     _mp([:hp_up, launcher, total_hp - launcher.hp]) #>Vérifier les valeurs négatives
     _mp([:hp_up, target, total_hp - target.hp]) #>Vérifier les valeurs négatives
@@ -1461,8 +1461,8 @@ module BattleEngine
   #>s_stockpile
   # Stockage
   #===
-  def s_stockpile(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_stockpile(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     stockpile_counter = launcher.battle_effect.stockpile
     if(stockpile_counter < 3)
       stockpile_counter += 1
@@ -1476,7 +1476,7 @@ module BattleEngine
   #>s_split_up
   # Relâche
   #===
-  def s_split_up(launcher, target, skill)
+  def s_split_up(launcher, target, skill, msg_push = true)
     stockpile_counter = launcher.battle_effect.stockpile
     if(stockpile_counter > 0)
       skill.power2 = stockpile_counter*100
@@ -1492,8 +1492,8 @@ module BattleEngine
   #>s_swallow
   # Avale
   #===
-  def s_swallow(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_swallow(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     stockpile_counter = launcher.battle_effect.stockpile
     target = _snatch_check(target, skill)
     if(stockpile_counter > 0 and target.hp != target.max_hp)
@@ -1508,8 +1508,8 @@ module BattleEngine
   #>s_charge
   # Chargeur
   #===
-  def s_charge(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_charge(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     __s_stat_us_step(launcher, launcher, skill, nil, 100)
     _mp([:apply_effect, launcher, :apply_charge])
   end
@@ -1517,8 +1517,8 @@ module BattleEngine
   #>s_transform
   # Morphing
   #===
-  def s_transform(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_transform(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     _mp([:morph, launcher, target])
     _mp([:switch_form, launcher])
     _mp([:msg, ::PFM::Text.parse_with_pokemons(19, 644, launcher, target)])
@@ -1527,8 +1527,8 @@ module BattleEngine
   #>s_conversion
   # Conversion
   #===
-  def s_conversion(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_conversion(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     type = launcher.skills_set[0].type
     if type == launcher.type1
       _mp(MSG_Fail)
@@ -1543,8 +1543,8 @@ module BattleEngine
   #>s_conversion2
   # Conversion 2
   #===
-  def s_conversion2(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_conversion2(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     id_skill = target.last_skill
     if id_skill != 0
       type = $game_data_skill[id_skill].type
@@ -1563,8 +1563,8 @@ module BattleEngine
   #>s_mind_reader
   # Lire-Esprit
   #===
-  def s_mind_reader(launcher, target, skill)
-    return false unless __s_beg_step(launcher, target, skill)
+  def s_mind_reader(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
     _mp([:apply_effect, launcher, :apply_mind_reader, target])
     _mp([:msg, ::PFM::Text.parse_with_pokemons(19, 651, launcher, target)])
   end
@@ -1572,8 +1572,8 @@ module BattleEngine
   # s_defog
   # Anti-Brume
   #===
-  def s_defog(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_defog(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     # Retrait des Entry Hazards
     _State_remove(:enn_spikes, 157)
     _State_remove(:act_spikes, 156)
@@ -1598,8 +1598,8 @@ module BattleEngine
   #>s_telekinesis
   # Lévikinésie
   #===
-  def s_telekinesis(launcher, target, skill)
-    return unless __s_beg_step(launcher, target, skill)
+  def s_telekinesis(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
     if @_State[:gravity] > 0 or target.has_ingrain_effect? or _has_item(target, 278) # Gravité, Racines, Balle Fer 
       _mp([:msg_fail])
     else
