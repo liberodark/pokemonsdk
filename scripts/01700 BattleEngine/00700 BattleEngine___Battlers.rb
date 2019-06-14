@@ -18,25 +18,26 @@ module BattleEngine
   #===
   #>Récupération des alliés
   #===
+
   def get_ally(pkmn)
-    arr=(@_Enemies.include?(pkmn) ? @_Enemies : @_Actors)
+    arr=(pkmn&.position.to_i < 0 ? @_Enemies : @_Actors)
     arr2=Array.new
     $game_temp.vs_type.times do |i|
-      arr2<<arr[i] if arr[i]!=pkmn
+      arr2<<arr[i] if arr[i]&.position != pkmn&.position
     end
     return arr2
   end
   #===
-  #>Récupération des enemis
+  #>Récupération des ennemis
   #===
   def get_enemies!(pkmn)
-    return (@_Actors.include?(pkmn) ? @_Enemies : @_Actors)[0, $game_temp.vs_type]
+    return (pkmn&.position.to_i < 0 ? @_Actors : @_Enemies)[0, $game_temp.vs_type]
   end
   #===
   #>Récupération des alliés (pokemon inclu)
   #===
   def get_ally!(pkmn)
-    return (@_Enemies.include?(pkmn) ? @_Enemies : @_Actors)[0, $game_temp.vs_type]
+    return (pkmn&.position.to_i < 0 ? @_Enemies : @_Actors)[0, $game_temp.vs_type]
   end
   #===
   #>Récupération des Pokémons sur le terrain

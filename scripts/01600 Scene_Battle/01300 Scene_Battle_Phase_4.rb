@@ -218,6 +218,7 @@ class Scene_Battle
     #> Liste des cibles
     else
       target = action[2]
+
       #> Correction des cibles
       if target
         target.each_index do |i|
@@ -226,6 +227,7 @@ class Scene_Battle
         end
       end
     end
+    
     #<Mise à jour de l'état du BattleEngine
     BattleEngine::_State_sub_update
     #<Récupération de l'attaquant
@@ -247,7 +249,8 @@ class Scene_Battle
     else
       @_skill = PFM::Skill.new(BattleEngine::ID_Struggle)
     end
-    #> On vérifie les cibles et on rechoisi en cas de problème
+
+    #> On vérifie les cibles et on rechoisit en cas de problème
     return if target.size == 0
     alive_target = 0
     target.each do |i|
@@ -256,6 +259,7 @@ class Scene_Battle
     if alive_target == 0
       target = util_targetselection_automatic(@_launcher, @_skill)
     end
+    
     #> Recheck de la cible
     #<petite partie concernant le tour de repos
     reload_state = @_launcher.battle_effect.must_reload
@@ -292,20 +296,20 @@ class Scene_Battle
     mind_reader = @_launcher.battle_effect.has_mind_reader_effect?
     #> Variable indiquant l'affichage ou non de l'attaque
     display_atk = true
+
     #> Application de l'attaque sur toute les cibles
-    target.each do |i|
-      if i and !i.dead?
-        BattleEngine::use_skill(@_launcher,@_target = i,@_skill,display_atk)
-        display_atk = false
-      end
-    end
+    BattleEngine::use_skill(@_launcher, target, @_skill)
+
     @_launcher.last_skill = @_skill.id
+
     #Interpretation du BattleEngine
     phase4_message_display
     @_launcher.battle_effect.set_reload_state(false) if reload_state
+
     #Lire-Esprit
     @_launcher.battle_effect.apply_mind_reader(nil) if mind_reader
     @_launcher=nil if @actions[@phase4_step] == action #> Métronome & co
+
     #Refresh forcé des barres
     @actor_bars.each { |i| i.refresh }
     @enemy_bars.each { |i| i.refresh }

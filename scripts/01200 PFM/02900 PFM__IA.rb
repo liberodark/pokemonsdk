@@ -175,6 +175,7 @@ module PFM
         return if check_item_heal(get_pokemon(pokemon))
       end
       return if result[:value] <= 0 and try_switch(pokemon)
+
       result = ia_results[rand(ia_results.size).to_i] if result[:value] <= 0
       if(result[:skill])
         if result[:skill_data].is_no_choice_skill? #> Pas de choix de cible
@@ -208,6 +209,7 @@ module PFM
       #> Récupération des combattants
       @enemies = ::BattleEngine.get_enemies
       @actors = ::BattleEngine.get_actors
+
       launcher = get_pokemon(launcher)
       target = get_pokemon(target)
       @IA_Info.clear
@@ -223,7 +225,7 @@ module PFM
       heuristic[:skill_data] = skill
       heuristic[:target] = -target.position-1
       heuristic[:faster] = launcher.spd >= target.spd
-      BattleEngine::use_skill(launcher, target, skill) unless special_skill(launcher, target, skill)
+      BattleEngine::use_skill(launcher, [target], skill) unless special_skill(launcher, target, skill)
       enemy = target.position >= 0 
       enemy = true if seviper_zangoose_detect(launcher, target)
       if @IA_Info[:damage] > 0
