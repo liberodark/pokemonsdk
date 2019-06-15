@@ -143,6 +143,7 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
       instance_variable_set(ivar_name, arr[index])
     end
     $game_player.instance_variable_set(:@follower, arr.last)
+    @events_info = nil
   end
 
   private
