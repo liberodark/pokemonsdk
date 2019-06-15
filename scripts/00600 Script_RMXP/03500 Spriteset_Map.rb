@@ -219,26 +219,22 @@ class Spriteset_Map
     if @panorama_name != $game_map.panorama_name # or @panorama_hue != $game_map.panorama_hue
       @panorama_name = $game_map.panorama_name
       @panorama_hue = $game_map.panorama_hue
-      if @panorama.bitmap != nil
+      unless @panorama.bitmap.nil?
         @panorama.bitmap.dispose
         @panorama.bitmap = nil
       end
-      unless @panorama_name.empty? # if @panorama_name != ""
-        @panorama.bitmap = RPG::Cache.panorama(@panorama_name, @panorama_hue)
-      end
+      @panorama.bitmap = RPG::Cache.panorama(@panorama_name, @panorama_hue) unless @panorama_name.empty? # if @panorama_name != ""
       Graphics.frame_reset
     end
 
     if @fog_name != $game_map.fog_name # or @fog_hue != $game_map.fog_hue
       @fog_name = $game_map.fog_name
       @fog_hue = $game_map.fog_hue
-      if @fog.bitmap != nil
+      unless @fog.bitmap.nil?
         @fog.bitmap.dispose
         @fog.bitmap = nil
       end
-      unless @fog_name.empty? # if @fog_name != ""
-        @fog.bitmap = RPG::Cache.fog(@fog_name, @fog_hue)
-      end
+      @fog.bitmap = RPG::Cache.fog(@fog_name, @fog_hue) unless @fog_name.empty? # if @fog_name != ""
       Graphics.frame_reset
     end
 
@@ -248,10 +244,10 @@ class Spriteset_Map
     @fog.zoom_x = $game_map.fog_zoom / 100.0
     @fog.zoom_y = $game_map.fog_zoom / 100.0
     @fog.opacity = $game_map.fog_opacity.to_i
-    # @fog.blend_type = $game_map.fog_blend_type
+    @fog.blend_type = $game_map.fog_blend_type
     @fog.ox = ($game_map.display_x / 4 + $game_map.fog_ox) / 2
     @fog.oy = ($game_map.display_y / 4 + $game_map.fog_oy) / 2
-    # @fog.tone = $game_map.fog_tone
+    @fog.tone = $game_map.fog_tone
   end
 
   # create the zone panel of the current zone
