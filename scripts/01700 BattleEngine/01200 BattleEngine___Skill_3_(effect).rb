@@ -147,7 +147,7 @@ module BattleEngine
   #===
   def s_perish_song(launcher, target, skill, msg_push = true)
     return unless __s_beg_step(launcher, target, skill, msg_push)
-    if(@_State[:pp] > 0)
+    if msg_push
       i = nil
       #> Vérification de la possibilité de lancer perish_song
       @_State[:can_perish_song] = !get_battlers.any? do |i|
@@ -343,7 +343,6 @@ module BattleEngine
   # Définition de picots
   #===
   def s_spike(launcher, target, skill, msg_push = true)
-    return false if @_State[:pp] <= 0
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(ability_user = Abilities.enemy_has_ability_usable(launcher, 17)) #> Garde Magik
       _mp([:ability_display, ability_user, proc {ability_user.hp > 0}])
@@ -364,7 +363,6 @@ module BattleEngine
   # Définition de Pics Toxik
   #===
   def s_toxic_spike(launcher, target, skill, msg_push = true)
-	return false if @_State[:pp] <= 0
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(ability_user = Abilities.enemy_has_ability_usable(launcher, 17)) #> Garde Magik
       _mp([:ability_display, ability_user, proc {ability_user.hp > 0}])
@@ -385,7 +383,6 @@ module BattleEngine
   # Définition de Piège de roc
   #===
   def s_stealth_rock(launcher, target, skill, msg_push = true)
-    return false if @_State[:pp] <= 0
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(ability_user = Abilities.enemy_has_ability_usable(launcher, 17)) #> Garde Magik
       _mp([:ability_display, ability_user, proc {ability_user.hp > 0}])
@@ -406,7 +403,6 @@ module BattleEngine
   # Définition de Toile Gluante
   #===
   def s_sticky_web(launcher, target, skill, msg_push = true)
-    return false if @_State[:pp] <= 0
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(ability_user = Abilities.enemy_has_ability_usable(launcher, 17)) #> Garde Magik
       _mp([:ability_display, ability_user, proc {ability_user.hp > 0}])
@@ -470,7 +466,7 @@ module BattleEngine
   def s_explosion(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     if Abilities.has_ability_usable(launcher, 28)
-      if @_State[:pp] > 0
+      if msg_push
         _mp([:ability_display, target])
         _mp(MSG_Fail)
       end
@@ -479,7 +475,7 @@ module BattleEngine
     if(Abilities.has_ability_usable(target, 28)) #>Moiteur
       _mp([:ability_display, target])
     else
-      _message_stack_push([:hp_down, launcher, launcher.max_hp]) if @_State[:pp] > 0
+      _message_stack_push([:hp_down, launcher, launcher.max_hp]) if msg_push
       hp=_damage_calculation(launcher, target, skill).to_i
       __s_hp_down_check(hp, target)
     end
@@ -489,7 +485,7 @@ module BattleEngine
   # Définition de l'attaque Mimique
   #===
   def s_mirror_move(launcher, target, skill, msg_push = true)
-    return if skill.id == 119 and @_State[:pp] != 1
+    return if skill.id == 119
     #>Récupération de la cible potentielle
     if skill.id == 383 #>Photocopie
       #>Photocopie buggué en 2v2 !
@@ -1186,7 +1182,7 @@ module BattleEngine
       #>Message ?
 
       _mp([:apply_effect,target, :apply_cant_flee, launcher])
-      _mp([:apply_effect,launcher, :apply_cant_flee, launcher]) if(@_State[:pp] != 0)
+      _mp([:apply_effect,launcher, :apply_cant_flee, launcher]) if msg_push
     else
       _mp([:msg, _parse_with_pokemon(19, 875, target)])
       _mp([:apply_effect,target, :apply_cant_flee, launcher])
@@ -1328,7 +1324,7 @@ module BattleEngine
   #===
   def s_trick_room(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
-    return if @_State[:pp] == 0
+    return unless msg_push
     sym = :trick_room
     if(@_State[sym] > 0)
       _mp([:msg, _parse(18, 122)])
@@ -1344,7 +1340,7 @@ module BattleEngine
   #===
   def s_wonder_room(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
-    return if @_State[:pp] <= 0
+    return unless msg_push
     if skill.id == 472 # Zone Etrange
       sym = :wonder_room
       add = 0
@@ -1483,7 +1479,7 @@ module BattleEngine
       s_basic(launcher, target, skill)
       skill.power2 = nil
     else
-      _message_stack_push([:use_skill_msg, launcher, target, skill]) if @_State[:pp] > 0
+      _message_stack_push([:use_skill_msg, launcher, target, skill]) if msg_push
       _mp(MSG_Fail)
     end
     _mp([:apply_effect, launcher, :stockpile=, 0])
@@ -1600,7 +1596,7 @@ module BattleEngine
   #===
   def s_telekinesis(launcher, target, skill, msg_push = true)
     return unless __s_beg_step(launcher, target, skill, msg_push)
-    if @_State[:gravity] > 0 or target.has_ingrain_effect? or _has_item(target, 278) # Gravité, Racines, Balle Fer 
+    if @_State[:gravity] > 0 or target.battle_effect.has_ingrain_effect? or _has_item(target, 278) # Gravité, Racines, Balle Fer 
       _mp([:msg_fail])
     else
       _mp([:apply_effect, target, :apply_telekinesis])

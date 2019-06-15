@@ -43,7 +43,6 @@ module BattleEngine
   #  Méthode permettant d'executer une attaque, les resultats des calculs seront intégrés au stack
   #---
   #E : <BE_Model1>
-  #    display_atk : true/false   Indique si l'attaque vient d'être lancée (quand ça a plusieurs cibles)
   #S : Aucune
   #V : 
   #===
@@ -95,8 +94,14 @@ module BattleEngine
     #>Fin de la méthode
     #>Perte des PP
     _State_local_update_launcher(launcher)
-    skill.pp-=1
-    skill.pp-=1 if Abilities::enemy_has_ability_usable(launcher, 72) #> Pression
+
+    #> Empêcher la perte de PP sur les répétitions
+    counter = launcher.battle_effect.get_forced_attack_counter
+    if(counter == 0 and !@IA_flag)
+      skill.pp-=1
+      skill.pp-=1 if Abilities::enemy_has_ability_usable(launcher, 72) #> Pression
+    end
+
     if(skill.pp <= 0 and launcher.battle_effect.has_encore_effect? and !@IA_flag)
       launcher.battle_effect.apply_encore(nil)
     elsif(skill.pp <= 0 and @_State[:launcher_item] == 154) #> Baie Mepo

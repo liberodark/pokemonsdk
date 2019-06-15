@@ -49,6 +49,7 @@ class Scene_Battle
     #Si la phase arrive à son terme
     if @phase4_step>=@actions.size
       end_turn_actions
+
       #"Netoyage" des effets
       clean_effect($actors)
       clean_effect(@enemy_party.actors)
