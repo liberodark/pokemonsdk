@@ -404,7 +404,6 @@ module BattleEngine
       $scene.phase4_attack([0, 5, -target.position-1, launcher])
     end
     #>Restauration de l'état
-    @_State[:pp] = 1
     launcher.skills_set[5] = nil
     launcher.skills_set.compact!
   end

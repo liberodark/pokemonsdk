@@ -233,7 +233,7 @@ module BattleEngine
   #===
   def s_gravity(launcher, target, skill, msg_push = true)
     return unless __s_beg_step(launcher, target, skill, msg_push)
-    return if @_State[:pp] == 0
+
     if(@_State[:gravity] <= 0)
       _mp([:set_state, :gravity, 5])
       _mp([:msg, _parse(18,123)])
@@ -795,7 +795,6 @@ module BattleEngine
       id_txt = GameData::Skill.get_2turns_announce(skill.db_symbol)
       _message_stack_push([:msg, _parse_with_pokemon(19, id_txt, launcher)]) if id_txt
       _message_stack_push([:force_attack, launcher, target, skill, 2])
-      @_State[:pp] = 0
       return
     end
     #> Herbe Pouvoir

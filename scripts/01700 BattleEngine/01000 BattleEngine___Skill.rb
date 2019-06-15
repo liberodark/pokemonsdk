@@ -246,7 +246,6 @@ module BattleEngine
       id_txt = GameData::Skill.get_2turns_announce(skill.db_symbol)
       _message_stack_push([:msg, _parse_with_pokemon(19, id_txt, launcher)]) if id_txt
       _message_stack_push([:force_attack, launcher, target, skill, 2])
-      @_State[:pp] = 0
       return
     end
     #> Herbe Pouvoir
@@ -267,7 +266,6 @@ module BattleEngine
   #===
   def s_reload(launcher, target, skill, msg_push = true)
     if(launcher.battle_effect.must_reload)
-      @_State[:pp] = 0
       _message_stack_push([:msg, _parse_with_pokemon(19, 851, launcher)])
     else
       s_basic(launcher, target, skill)
@@ -706,8 +704,6 @@ module BattleEngine
     #>Infliger les dégas
     hp=_damage_calculation(launcher, target, skill).to_i
     __s_hp_down_check(hp, target)
-
-    _State_local_update_target(target)
   end
 
   #===
@@ -741,10 +737,6 @@ module BattleEngine
         _mp([:status_confuse, launcher, true, 360])
       end
       @_State[:ext_info] = true
-    end
-    #> Empêcher la perte de PP sur les répétitions
-    if(counter != 0)
-      @_State[:pp] = 0
     end
   end
   #===
@@ -798,11 +790,6 @@ module BattleEngine
   # Patience
   #===
   def s_bide(launcher, target, skill, msg_push = true)
-    counter = launcher.battle_effect.get_forced_attack_counter
-    #> Empêcher la perte de PP sur les répétitions
-    if(counter != 0)
-      @_State[:pp] = 0
-    end
     #> Patience inactive
     if(counter == 0)
       _message_stack_push([:use_skill_msg, launcher, target, skill])
