@@ -279,6 +279,10 @@ module UI
         @voltorb_counter.set_rect_div(0, 0, 10, 1)
       end
 
+      def voltorb_count
+        return @counter[0]
+      end
+
       def add_tile(tile)
         @tiles.push tile
       end
@@ -299,6 +303,7 @@ module UI
         @coin_counter_1.set_rect_div(counter[1] / 10, 0, 10, 1)
         @coin_counter_2.set_rect_div(counter[1] - (counter[1] / 10) * 10, 0, 10, 1)
         @voltorb_counter.set_rect_div(counter[0], 0, 10, 1)
+        @counter = counter
       end
     end
 
@@ -328,12 +333,18 @@ module UI
         @sprite.oy += @sprite.src_rect.height / 4
         @sprite.visible = true
       end
-
+ 
       def update_animation
         case @animation
         when :voltorb
           case @counter
-          when 6, 12, 18, 24, 30, 36
+          when 1
+            $game_system.bgm_memorize
+            $game_system.bgm_fade(0.5)
+          when 12
+            Audio.se_play('Audio/SE/voltorbflip/volt_boom', 120)
+            @sprite.set_rect_div(@counter / 6, 0, 8, 1)
+          when 6, 18, 24, 30, 36
             @sprite.set_rect_div(@counter / 6, 0, 8, 1)
           when 42
             @sprite.visible = false
@@ -344,6 +355,8 @@ module UI
 
         when 1, 2, 3
           case @counter
+          when 0
+            Audio.se_play('Audio/SE/voltorbflip/volt_card_play', 120)
           when 6, 12, 18
             @sprite.set_rect_div(@counter / 6, 0, 4, 1)
           when 24
