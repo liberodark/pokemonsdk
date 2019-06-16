@@ -402,6 +402,19 @@ module GamePlay
       end
     end
 
+    # Check if the $game_variables[6]'s value is between 1 and 6
+    # If not, call action_B to exit to map
+    # return Boolean
+    def check_select_mon_var
+      if $game_variables[6] > 6 || $game_variables[6] < 1
+        display_message("Wrong number of Pokemon to select. Number must be between 1 and 6.")
+        action_B
+        true
+      else
+        false
+      end
+    end
+
     # Show the choice when the party is in mode :map
     def show_map_mode_choice
       show_black_frame

@@ -7,7 +7,7 @@ module BattleEngine
     #===
     #>Appliquer l'amour (attraction) (j'ai mis 5 tours mais aucune idée '^')
     #===
-    def attract_effect(target, nb_turn = 5)
+    def attract_effect(launcher, target, nb_turn = 5)
       return if @ignore or target.hp==0
       be = target.battle_effect
       if(be.has_attract_effect? and nb_turn > 0)
@@ -16,12 +16,12 @@ module BattleEngine
         msg_fail
         set_item(target, 0, true)
       #> Benêt
-      elsif(((target.gender * @launcher.gender) == 2 and !Abilities.has_ability_usable(target, 39)) or nb_turn == 0)
+      elsif(((target.gender * launcher.gender) == 2 and !Abilities.has_ability_usable(target, 39)) or nb_turn == 0)
         #m * m = 1, f * f = 4, m * f = 2, i * m = 0, i * f = 0, i * i = 0
-        be.apply_attract(@launcher, nb_turn)
+        be.apply_attract(launcher, nb_turn)
         #> Nœud Destin
         if nb_turn > 0 and BattleEngine._has_item(target, 280)
-          @launcher.battle_effect.apply_attract(target, nb_turn)
+          launcher.battle_effect.apply_attract(target, nb_turn)
         end
       else
         msg_fail

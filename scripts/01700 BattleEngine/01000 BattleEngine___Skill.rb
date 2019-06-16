@@ -512,7 +512,7 @@ module BattleEngine
           _message_stack_push([:status_paralyze, target, true])
         when 219 #>Herbe Mental
           #>Message 19, 941
-          _message_stack_push([:attract_effect, target, 0])
+          _message_stack_push([:attract_effect, launcher, target, 0])
           _mp([:set_item, target, 0, true])
         when 214 #>Herbe Blanche
           #>Message 19, 195 (ou 228 ?)
