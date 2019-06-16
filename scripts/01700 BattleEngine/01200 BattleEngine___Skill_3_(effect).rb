@@ -11,7 +11,7 @@ module BattleEngine
   #===
   def s_attract(launcher, target, skill, msg_push = true)
     return unless __s_beg_step(launcher, target, skill, msg_push)
-    _message_stack_push([:attract_effect, target])
+    _message_stack_push([:attract_effect, launcher, target])
   end
   #===
   #>s_powder
