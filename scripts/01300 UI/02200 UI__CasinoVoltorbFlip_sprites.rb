@@ -321,7 +321,7 @@ module UI
           @sprite.ox = 4
           @sprite.oy = 5
         else
-          @sprite.set_bitmap('voltrobflip_number', :animation)
+          @sprite.set_bitmap('voltorbflip_number', :animation)
           @sprite.set_rect_div(0, 0, 4, 1)
           @sprite.ox = 1
           @sprite.oy = 2
