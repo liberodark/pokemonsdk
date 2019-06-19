@@ -161,7 +161,7 @@ module UI
 
         @markers = []
         4.times do |i|
-          @markers.push (s = push(-3, -3, 'voltorbflip/markers'))
+          @markers.push((s = push(-3, -3, 'voltorbflip/markers')))
           s.set_rect_div(2 + i, 0, 6, 1)
           s.visible = false
         end

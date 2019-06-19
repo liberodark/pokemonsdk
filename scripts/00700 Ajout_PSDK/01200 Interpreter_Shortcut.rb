@@ -197,6 +197,11 @@ class Interpreter
     get_character(@event_id).find_path(*args)
   end
 
+  # Shortcut for get_character(@event_id).stop_path
+  def stop_path
+    get_character(@event_id).stop_path
+  end
+
   # Shortcut defining the pathfinding request and wait for the end of the path following
   # @param x [Integer] x coords to reach
   # @param y [Integer] y coords to reach
@@ -220,6 +225,7 @@ class Interpreter
   def animate_from_charset(*args)
     return get_character(@event_id).animate_from_charset(*args)
   end
+  
   # Shortcut for wait_character_move_completion(0)
   # Wait for the end of the player movement
   def wait_for_player

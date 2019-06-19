@@ -395,6 +395,8 @@ module GamePlay
       display_fly_zones
       display_roaming_pokemons
       display_pokemon_zones
+      # Update location display
+      update_infobox
     end
 
     # Set the pokemon to display
