@@ -134,8 +134,7 @@ class Game_Event < Game_Character
   end
   
   def find_path(*args)
-    return unless Yuki::MapLinker.from_center_map?(self)
-    super(*args)
+    super(*args) if Yuki::MapLinker.from_center_map?(self)
   end
 
   private

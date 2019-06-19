@@ -90,12 +90,17 @@ module GameData
     rescue StandardError, LoadError
       # Convert PSDK 24.27 system to PSDK 24.28+ system
       old_data = $game_data_map
+      old_data[0] = [nil] unless old_data[0]
       width = old_data.length
       height = old_data[0].length
       data = Table.new(width, height)
-      0.upto(width - 1) do |x| 
+      0.upto(width - 1) do |x|
         0.upto(height - 1) do |y|
-          data[x, y] = (old_data[x][y] || -1)
+          if old_data[x]
+            data[x + 1, y + 1] = (old_data[x][y] || -1)
+          else
+            data[x + 1, y + 1] = -1
+          end
         end
       end
       wm = GameData::WorldMap.new('world_map', 0, nil)

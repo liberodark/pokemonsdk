@@ -31,9 +31,9 @@ module Yuki
       puts "list_worldmap : list all the world maps"
       puts "list_worldmap(\"name\") : list the world maps that match name"
       puts "select_worldmap(id) : select the world map to edit"
-      puts "add_worldmap(\"image name\", text_id, [file_id) : add the world map with the image filename without extension \n\tand the given name text id in file_id (by default ruby host)"
+      puts "add_worldmap(\"image name\", text_id, [file_id]) : add the world map with the image filename without extension \n\tand the given name text id in file_id (by default ruby host)"
       puts "delete_worldmap(id) : delete the worldmap and its data, be sure before use this"
-      puts "set_worldmap_name(id, new_text_id, [new_file_id) : change the name of the worldmap to the given text id and \n\tthe given file id (by default, file is ruby host)"
+      puts "set_worldmap_name(id, new_text_id, [new_file_id]) : change the name of the worldmap to the given text id and \n\tthe given file id (by default, file is ruby host)"
       puts "set_worldmap_image(id, \"new_image\") : change the file displayed for the world map"
       cc 7
     end
@@ -148,6 +148,7 @@ module Yuki
       name = $game_data_worldmap.last.name
       puts "World map added : #{name.downcase}"
       select_worldmap($game_data_worldmap.length - 1)
+      clear_map
     end
     # Delete world map
     # @param id [Integer] the id of the map to delete

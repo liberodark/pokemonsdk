@@ -214,7 +214,7 @@ module GamePlay
           Audio.se_play('Audio/SE/voltorbflip/volt_extra_pay')
           display_message(_ext(9000, 140)) # "Gagné !")
           display_message(_ext(9000, 141)) # "Toutes les cartes de 2 et ou 3 points ont été retournées...")
-          display_message(_ext(9000, 142) % @coin_case) # "Vous gagnez #{@coin_gain} jetons !")
+          display_message(_ext(9000, 142) % @coin_gain) # "Vous gagnez #{@coin_gain} jetons !")
           @state += 1
         when 201 # Increase score
           @coin_case_increase = get_increment(@coin_case, @coin_case + @coin_gain)
@@ -434,7 +434,7 @@ module GamePlay
           x = (index / 5)
           y = index - 5 * x
           h_counter = @board_counters[x]
-          v_counter = @board_counters[y]
+          v_counter = @board_counters[5 + y]
           if h_counter.voltorb_count + v_counter.voltorb_count >= 5
             @state = 400 # Suspens
           else
