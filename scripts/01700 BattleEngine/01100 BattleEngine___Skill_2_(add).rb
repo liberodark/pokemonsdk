@@ -262,7 +262,7 @@ module BattleEngine
       _mp([:set_type, target, 1, 1]) if target.type1 == 10
       _mp([:set_type, target, 1, 2]) if target.type2 == 10
       _mp([:set_type, target, 1, 3]) if target.type3 == 10
-      _mp([:hp_up, target.max_hp / 2]) #> Faire le "jusqu'à" plutôt que max/2
+      _mp([:hp_up, target, target.max_hp / 2]) #> Faire le "jusqu'à" plutôt que max/2
     else
       _mp(MSG_Fail)
     end

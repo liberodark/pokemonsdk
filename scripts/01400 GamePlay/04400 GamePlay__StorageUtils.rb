@@ -348,12 +348,14 @@ module GamePlay
       else # Pokémon de la boîte
         pokemon = $storage.info(index - 1)
       end
+
       return @info_pokemon.visible = false if pokemon == nil
-      @info_pokemon.visible = true unless @info_pokemon.visible
+
       @info_pokemon.data = pokemon
       if pokemon.egg?
-        hide_info_pokemon_egg
+        hide_info_pokemon_egg # Masque les informations non-visibles pour les oeufs
       else
+        show_info_pokemon # Réaffiche les informations masqués (au cas où le précédent était un oeuf)
         skills = pokemon.skills_set
         @info_pokemon_skills.each_with_index do |text, i|
           text.text = (skills[i] ? skills[i].name : nil.to_s)
@@ -362,9 +364,15 @@ module GamePlay
     end
 
     def hide_info_pokemon_egg
-      @info_pokemon.visible = false
-      @info_pokemon.stack.first.visible = true
-      @info_pokemon.stack[2].visible = true
+      @info_pokemon.stack.each_with_index do |stack, i|
+        stack.visible = false unless (i == 0 or i == 2)
+      end
+    end
+
+    def show_info_pokemon
+      @info_pokemon.stack.each do |stack|
+        stack.visible = true
+      end
     end
 
     def draw_init
