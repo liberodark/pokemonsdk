@@ -259,7 +259,7 @@ module GamePlay
       text.add_text(x, 80, 100, 16,texts[26],0)
       text.add_text(x, 96, 100, 16,texts[22],0)
       text.add_text(x, 112, 100, 16,texts[24],0)
-      text.add_text(x, 128, 52, 16,_ext(9000, 46),0)
+      text.add_text(x, 128, 52, 16,_ext(9000, 44),0)
       x += 100
       text.add_text(x, 48, 54, 16, pokemon.atk_basis.to_s, 2)
       text.add_text(x, 64, 54, 16, pokemon.dfe_basis.to_s, 2)
