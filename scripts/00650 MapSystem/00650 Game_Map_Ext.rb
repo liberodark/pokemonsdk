@@ -215,6 +215,7 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
       event.clear_starting
       event.check_event_trigger_auto
     end
+    $game_player.check_event_trigger_here([1, 2])
     @events_info = nil
   end
 end
