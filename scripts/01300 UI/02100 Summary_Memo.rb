@@ -30,6 +30,13 @@ module UI
       end
     end
 
+    # Change the visibility of the ui
+    # @param value [Boolean] new visibility
+    def visible=(value)
+      super
+      @invisible_if_egg.each { |sprite| sprite.visible = false } if @data&.egg?
+    end
+
     # Initialize the Memo part
     def init_memo
       texts = _get_file(27)
