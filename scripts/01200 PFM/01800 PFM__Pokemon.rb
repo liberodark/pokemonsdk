@@ -204,14 +204,8 @@ module PFM
       @captured_level = level
       @trainer_id = $trainer.id
       @trainer_name = $trainer.name
-      # génération du code
+      # Code generation
       code_generation(force_shiny, no_shiny)
-      # >Génération du genre
-      @gender = if $game_data_pokemon[id][0].female_rate >= 0
-                  (rand(100) < $game_data_pokemon[id][0].female_rate ? 2 : 1)
-                else
-                  0
-                end
 
       @id = id
       form = form_generation(form)
@@ -228,6 +222,7 @@ module PFM
       @ev_ats = 0
       @ev_dfs = 0
       @form = form
+      @gender = gender_generation
       @status = 0
       @status_count = 0
       @battle_stage = Array.new(7, 0)
@@ -616,6 +611,18 @@ module PFM
     # @return [String]
     def id_text3
       sprintf("%03d", $pokedex.national? ? @id : ::GameData::Pokemon.id_bis(@id)).to_pokemon_number
+    end
+
+    private
+
+    # Generate the gender of the Pokemon
+    # @return [Integer] 1 if it's a male, 0 if it's a ungendered, 2 if it's a female
+    def gender_generation
+      data = get_data
+      if data.female_rate >= 0
+        return rand(100) < data.female_rate ? 2 : 1
+      end
+      return 0
     end
   end
 end
