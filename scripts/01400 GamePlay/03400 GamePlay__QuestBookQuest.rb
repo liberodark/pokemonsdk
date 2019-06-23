@@ -187,7 +187,7 @@ module GamePlay
     end
     # Adjust the viewport position
     def adjust_viewport
-      return if @objective_max < 5
+      return if @objective_max < 4
       if @objective_index >= 3
         @viewport2.oy = (@objective_index - 3) * 16
       elsif @objective_index < 4
