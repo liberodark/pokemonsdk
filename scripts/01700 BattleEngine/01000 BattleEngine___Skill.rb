@@ -790,6 +790,8 @@ module BattleEngine
   # Patience
   #===
   def s_bide(launcher, target, skill, msg_push = true)
+    counter = launcher.battle_effect.get_forced_attack_counter
+    
     #> Patience inactive
     if(counter == 0)
       _message_stack_push([:use_skill_msg, launcher, target, skill])
@@ -799,7 +801,7 @@ module BattleEngine
     elsif(counter == 1)
       _mp([:apply_effect, launcher, :apply_forced_attack, 0, 0, target])
       _mp([:msg, _parse_with_pokemon(19, 748, launcher)])
-      return false unless __s_beg_step(launcher, target, skill, msg_push)
+      return false unless __s_beg_step(launcher, target, skill, false)
       hp = launcher.battle_effect.get_bide_power * 2
       if(hp > 0)
         _mp([:hp_down, target, hp])
