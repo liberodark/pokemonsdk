@@ -235,5 +235,14 @@ class Interpreter
     Graphics.transition
     @wait_count = 2
   end
+
+  # Show the Pokemon dex info
+  # @param pokemon_id [Integer, Symbol] ID of the Pokemon in the dex
+  def show_pokemon(pokemon_id)
+    pokemon_id = GameData::Pokemon.get_id(pokemon_id) if pokemon_id.is_a?(Symbol)
+    GamePlay::Dex.new(pokemon_id).main
+    Graphics.transition
+    @wait_count = 2
+  end
   # TODO : Faire le reste
 end

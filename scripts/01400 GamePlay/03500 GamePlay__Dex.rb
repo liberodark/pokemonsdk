@@ -124,7 +124,12 @@ module GamePlay
       @ctrl.each { |sp| sp.set_state(state) }
       @frame.set_bitmap(state == 1 ? 'frameinfos' : 'frame', :pokedex)
       @pokeface.data = @pokemon if (@pokeface.visible = state != 2)
-      @arrow.visible = @seen_got.visible = state == 0
+      # In show pokemon info mode, those sprites doesn't exist
+      if @arrow
+        @arrow.visible = @seen_got.visible = state == 0
+        @pokemon_worldmap.set_pokemon(@pokemon) if (@pokemon_worldmap.visible = state == 2)
+        update_list(state == 0)
+      end
       @pokemon_info.visible = @pokemon_descr.visible = state == 1
       if @pokemon_descr.visible
         if $pokedex.has_captured?(@pokemon.id)
@@ -134,8 +139,6 @@ module GamePlay
         end
         @pokemon_info.data = @pokemon
       end
-      @pokemon_worldmap.set_pokemon(@pokemon) if (@pokemon_worldmap.visible = state == 2)
-      update_list(state == 0)
     end
 
     # Update the button list

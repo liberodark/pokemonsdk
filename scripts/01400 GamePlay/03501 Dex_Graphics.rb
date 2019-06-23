@@ -11,10 +11,10 @@ module GamePlay
         create_list
         create_arrow
         create_scroll_bar
-        create_face
         create_progression
         create_worldmap
       end
+      create_face
       create_info
       create_ctrls
     end
@@ -32,7 +32,7 @@ module GamePlay
 
     # Update the arrow animation
     def update_arrow
-      return unless @arrow.visible
+      return unless @arrow&.visible
       return if Graphics.frame_count % 15 != 0
       @arrow.x += @arrow_direction
       @arrow_direction = 1 if @arrow.x <= 127
