@@ -1,11 +1,11 @@
-#encoding: utf-8
-
 module UI
   # Class that display a bar on screen using the whole texture to display the bar component
   class Bar
     # Returns the rate of the bar
     # @return [Numeric] 0 ~ 1
     attr_reader :rate
+    # Return the data source to get the rate info through data=
+    attr_accessor :data_source
     # Create a new bar
     # @param viewport [LiteRGSS::Viewport] the viewport in which the bar is shown
     # @param x [Integer] the x position of the bar
@@ -28,7 +28,9 @@ module UI
       @bar.x = (@background.x = x) + bx
       @bar.y = (@background.y = y) + by
       @rate = 0
+      @data_source = nil
     end
+
     # Change the rate of the bar
     # @param value [Numeric] 0 ~ 1
     def rate=(value)
@@ -41,38 +43,45 @@ module UI
       w = 1 if w == 0 and value != 0
       @bar.src_rect.set(nil, @background.src_rect.height + @bh * state, w, nil)
     end
+
     # Change the visible state of the bar
     # @param value [Boolean]
     def visible=(value)
       @bar.visible = @background.visible = value
     end
+
     # Returns the visible state of the bar
     # @return [Boolean]
     def visible
       return @bar.visible
     end
+
     # Returns the x position of the bar
     # @return [Integer]
     def x
       return @background.x
     end
+
     # Returns the y position of the bar
     # @return [Integer]
     def y
       return @background.y
     end
+
     # Change the x position of the bar
     # @param value [Integer]
     def x=(value)
       @background.x = value
       @bar.x = value + @bx
     end
+
     # Change the y position of the bar
     # @param value [Integer]
     def y=(value)
       @background.y = value
       @bar.y = value + @by
     end
+
     # Change the position of the bar
     # @param x [Integer]
     # @param y [Integer]
@@ -80,21 +89,31 @@ module UI
       @background.set_position(x, y)
       @bar.set_position(x + @bx, y + @by)
     end
+
     # Returns the z position of the bar
     # @return [Integer]
     def z
       return @background.z
     end
+
     # Change the z position of the bar
     # @param value [Numeric]
     def z=(value)
       @background.z = value
       @bar.z = value
     end
+
     # Dispose the bar
     def dispose
       @background.dispose
       @bar.dispose
+    end
+
+    # Change the data value (for SpriteStack usage)
+    # @param data [Object] the data where we'll call the @data_source to get the actual rate
+    def data=(data)
+      return unless @data_source
+      self.rate = data.send(*@data_source) if (self.visible = data)
     end
   end
 end

@@ -1,10 +1,10 @@
-#encoding: utf-8
-
 # Module that holds every UI object
 module UI
   # Class that helps to define a single object constitued of various sprites.
   # With this class you can move the sprites as a single sprite, change the data that generate the sprites and some other cool stuff
   class SpriteStack
+    # Constant specifiying the sprite will have no image during initialization
+    NO_INITIAL_IMAGE = nil
     # X coordinate of the sprite stack
     # @return [Numeric]
     attr_reader :x
@@ -40,20 +40,13 @@ module UI
     # @return [type.new(@viewport, *args)] the pushed sprite
     def push(x, y, bmp, *args, rect: nil, type: LiteRGSS::Sprite, ox: 0, oy: 0)
       sprite = type.new(@viewport, *args)
-      sprite.set_position(@x + x,@y + y).set_origin(ox, oy)
+      sprite.set_position(@x + x, @y + y).set_origin(ox, oy)
       sprite.set_bitmap(bmp, @default_cache) if bmp
       sprite.src_rect.set(*rect) if rect.is_a?(Array)
       sprite.src_rect = rect if rect.is_a?(LiteRGSS::Rect)
       return push_sprite(sprite)
     end
-
-    # Push a sprite object to the stack
-    # @param sprite [LiteRGSS::Sprite, LiteRGSS::Text]
-    # @return [sprite]
-    def push_sprite(sprite)
-      @stack << sprite
-      return sprite
-    end
+    alias add_sprite push
 
     # Add a text inside the stack, the offset x/y will be adjusted
     # @param x [Integer] the x coordinate of the text surface
@@ -72,6 +65,69 @@ module UI
       @stack << text
       return text
     end
+
+    # Push a background image
+    # @param filename [String] name of the image in the cache
+    # @param rect [Array, nil] the src_rect.set arguments if required
+    # @param type [Class] the class to use to generate the sprite
+    def add_background(filename, type: LiteRGSS::Sprite, rect: nil)
+      sprite = type.new(@viewport)
+      sprite.set_position(@x, @y)
+      sprite.set_bitmap(filename, @default_cache)
+      sprite.src_rect.set(*rect) if rect.is_a?(Array)
+      sprite.src_rect = rect if rect.is_a?(LiteRGSS::Rect)
+      return push_sprite(sprite)
+    end
+    alias add_foreground add_background
+
+    # Push a sprite object to the stack
+    # @param sprite [LiteRGSS::Sprite, LiteRGSS::Text]
+    # @return [sprite]
+    def push_sprite(sprite)
+      @stack << sprite
+      return sprite
+    end
+    alias add_custom_sprite push_sprite
+
+    # Execute push operations with an alternative cache
+    #
+    # Example :
+    #   with_cache(:pokedex) { add_background('win_sprite') }
+    # @param cache [Symbol] function of RPG::Cache used to load images
+    def with_cache(cache)
+      last_cache = @default_cache
+      @default_cache = cache
+      yield
+    ensure
+      @default_cache = last_cache
+    end
+
+    # Execute add_text operation with an alternative font
+    #
+    # Example :
+    #   with_font(2) { add_text(0, 0, 320, 32, 'Big Text', 1) }
+    # @param font_id [Integer] id of the font
+    def with_font(font_id)
+      last_font = @font_id
+      @font_id = font_id
+      yield
+    ensure
+      @font_id = last_font
+    end
+
+    # Return an element of the stack
+    # @param index [Integer] index of the element in the stack
+    # @return [LiteRGSS::Sprite, LiteRGSS::Text]
+    def [](index)
+      @stack[index]
+    end
+
+    # Return the size of the stack
+    # @return [Integer]
+    def size
+      @stack.size
+    end
+    alias length size
 
     # Change the x coordinate of the sprite stack
     # @param value [Numeric] the new value
@@ -162,6 +218,7 @@ module UI
     # yield a block on each sprite
     # @param block [Proc]
     def each(&block)
+      return @stack.each unless block
       @stack.each(&block)
     end
 
