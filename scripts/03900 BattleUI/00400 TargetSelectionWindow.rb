@@ -126,7 +126,71 @@ module BattleUI
 
     # Load the background that helps to know which Pokemon can be aimed (and how)
     def load_background
-      push(0, 0, "battle/target_selection_#{@move.target}_#{@row_size}v#{@row_size}")
+      # @type [Array<Sprite>] List of sprite that should have their opacity waving
+      @animated_sprites = []
+      random = @move.target == :random_foe
+      if @move.no_choice_skill? && !random
+        load_linked_background
+      else
+        image = 'battle/target_selector_helper'
+        rect = random ? [0, 0, DELTA_X, DELTA_Y] : [DELTA_X, 0, DELTA_X, DELTA_Y]
+        @mons.each_with_index do |mon, index|
+          next unless @targets.include?(mon)
+          sprite = push((index % @row_size) * DELTA_X, (index / @row_size) * DELTA_Y, image, rect: rect)
+          @animated_sprites << sprite if random
+        end
+      end
+    end
+
+    # Load the background for moves that hits multiple target
+    def load_linked_background
+      image = 'battle/target_selector_helper'
+      @mons.each_with_index do |mon, index|
+        next unless @targets.include?(mon)
+        rect = resolve_rect(index)
+        @animated_sprites << push((index % @row_size) * DELTA_X, (index / @row_size) * DELTA_Y, image, rect: rect)
+      end
+    end
+
+    # Function that will find the best rect to show the right part of the target_selector_helper image
+    # @param index [Integer] index of the mon in the @mons array
+    # @return [Array<Integer>] the sprite src_rect
+    def resolve_rect(index)
+      is_top_mon = index < @row_size
+      is_middle_mon = (index % @row_size).between?(1, @row_size - 2)
+      is_left_mon = (index % @row_size) == 0
+      return resolve_rect_left(index, is_top_mon) if is_left_mon
+      return resolve_rect_middle(index, is_top_mon) if is_middle_mon
+      return resolve_rect_right(index, is_top_mon)
+    end
+
+    # TODO : Voir plutot une approche matricielle
+
+    # Function that will resolve the src_rect of the target_selector_helper when the mon is on left position
+    # @param index [Integer] index of the mon in the @mons array
+    # @param is_top_mon [Boolean] info telling us if the Pokemon is in top row or not
+    def resolve_rect_left(index, is_top_mon)
+      mons = @mons
+      targets = @targets
+      has_right_link = (tmp_mon = mons[index + 1]) && targets.include?(tmp_mon)
+      if is_top_mon
+        has_bottom_link = (tmp_mon = mons[index + @row_size]) && targets.include?(tmp_mon)
+        if has_bottom_link && has_right_link
+          has_bottom_right_link = (tmp_mon = mons[index + @row_size + 1]) && targets.include?(tmp_mon)
+          return [0, DELTA_Y * 2, DELTA_X, DELTA_Y] if has_bottom_right_link
+          return [0, DELTA_Y * 4, DELTA_X, DELTA_Y]
+        end
+        return [0, DELTA_Y * 1, DELTA_X, DELTA_Y] if has_right_link
+        return [DELTA_X * 1, 0, DELTA_X, DELTA_Y]
+      elsif has_right_link
+        has_top_link = (tmp_mon = mons[index - @row_size]) && targets.include?(tmp_mon)
+        return [0, DELTA_Y * 3, DELTA_X, DELTA_Y] if has_top_link
+        return [0, DELTA_Y * 1, DELTA_X, DELTA_Y]
+      else
+        has_top_link = (tmp_mon = mons[index - @row_size]) && targets.include?(tmp_mon)
+        return [0, DELTA_Y * 5, DELTA_X, DELTA_Y] if has_top_link
+        return [DELTA_X * 1, 0, DELTA_X, DELTA_Y]
+      end
     end
   end
 end

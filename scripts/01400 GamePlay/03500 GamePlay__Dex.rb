@@ -1,60 +1,47 @@
-#encoding: utf-8
-
 module GamePlay
   # Class that shows the Pokedex
   class Dex < Base
     # Text format for the name
-    NameStr="%03d - %s"
-    # Text format for the weight
-    WeightStr="Poids : %.2f Kg"
-    # Text format for the height
-    HeightStr="Taille : %.2f m"
+    NAME_FORMAT = '%03d - %s'
+    # Include UI classes
     include UI
     # Create a new Pokedex interface
     # @param page_id [Integer, false] id of the page to show
     def initialize(page_id = false)
+      # We call initialize from GamePlay::Base without arguments to take the default
       super()
-      @viewport = Viewport.create(:main, 50000)
-      @background = Sprite.new(@viewport).set_bitmap("Fond", :pokedex)
-      # Liste
-      @list = Array.new(6) { |i| DexButton.new(@viewport, i) }
-      @pokemonlist = PFM::Pokemon.new(0, 1)
-      @arrow = Sprite.new(@viewport).set_bitmap("Arrow", :pokedex).set_position(127, 0)
-      @arrowd = 1
-      # Scrool
-      @scrollbar = Sprite.new(@viewport).set_bitmap("Scroll", :pokedex)
-        .set_position(309, 36)
-      @scrollbut = Sprite.new(@viewport).set_bitmap("But_Scroll", :pokedex)
-        .set_position(308, 41)
-      # Frame
-      @frame = Sprite.new(@viewport)
-      @pokeface = DexWinSprite.new(@viewport)
-      # Num generation
-      @seen_got = DexSeenGot.new(@viewport)
-      # Info
-      @pokemon_info = DexWinInfo.new(@viewport)
-      @pokemon_descr = Text.new(0, @viewport, 11, 153, 298, 16, nil.to_s).load_color(10)
-      # Lieu
-      @pokemon_worldmap = GamePlay::WorldMap.new(:pokedex, $env.get_worldmap)
-      @state = page_id ? 1 : 0
-      @page_id = page_id
-      @ctrl = Array.new(4) { |i| DexCTRLButton.new(@viewport, i) }
-      generate_selected_pokemon_array(page_id)
-      generate_pokemon_object
-      change_state(@state)
-      Mouse.wheel = 0
-    end
 
-    # Update the background animation
-    def update_background_animation
-      @background.set_origin((@background.ox - 0.5) % 16, (@background.oy - 0.5) % 16)
+      # Pokemon used to generate the list sprites (icon & name)
+      @pokemonlist = PFM::Pokemon.new(0, 1)
+      # Information telling in which direction (in x) the arrow goes
+      @arrow_direction = 1
+      # Current state
+      @state = page_id ? 1 : 0
+      # Current page id
+      @page_id = page_id
+      # Create the graphics shown by the Dex
+      create_graphics
+      # Generation of the Pokemon we can see (& adjust page id)
+      generate_selected_pokemon_array(page_id)
+      # Generation of the Pokemon object used to show the Pokemon info
+      generate_pokemon_object
+      # We update the state
+      change_state(@state)
+      # We reset the mousewell to prevent issue with scrolling
+      Mouse.wheel = 0
     end
 
     # Update the interface
     def update
-      update_background_animation
-      update_arrow if @arrow.visible
+      update_graphics
       return unless super
+      update_inputs
+    end
+
+    private
+
+    # Update the UI inputs
+    def update_inputs
       update_mouse_ctrl
       return action_A if Input.trigger?(:A)
       return action_X if Input.trigger?(:X)
@@ -74,20 +61,10 @@ module GamePlay
         end
       elsif @state == 1 # Description
         max_index = @selected_pokemons.size - 1
-        if index_changed(:@index, :UP, :DOWN, max_index)
-          update_index_descr
-        end
+        update_index_descr if index_changed(:@index, :UP, :DOWN, max_index)
       elsif @state == 2
         @pokemon_worldmap.update
       end
-    end
-
-    # Update the arrow animation
-    def update_arrow
-      return if Graphics.frame_count % 15 != 0
-      @arrow.x += @arrowd
-      @arrowd = 1 if @arrow.x <= 127
-      @arrowd = -1 if @arrow.x >= 129
     end
 
     # Update the index when changed
@@ -113,16 +90,16 @@ module GamePlay
     # Action triggered when B is pressed
     def action_B
       $game_system.se_play($data_system.decision_se)
-      return @running = false if @state == 0 or @page_id
+      return @running = false if @state == 0 || @page_id
       change_state(@state - 1) if @state > 0
     end
 
     # Action triggered when X is pressed
     def action_X
       @pokemon_worldmap.on_toggle_zoom if @state == 2
-      return if @state > 1 
+      return if @state > 1
       return $game_system.se_play($data_system.buzzer_se) if @page_id
-      return $game_system.se_play($data_system.buzzer_se) #Non programmé
+      return $game_system.se_play($data_system.buzzer_se) # Non programme
     end
 
     # Action triggered when Y is pressed
@@ -134,7 +111,7 @@ module GamePlay
     end
 
     # Array of actions to do according to the pressed button
-    Actions = [:action_A, :action_X, :action_Y, :action_B]
+    Actions = %i[action_A action_X action_Y action_B]
     # Update the mouse interaction with the ctrl buttons
     def update_mouse_ctrl
       update_mouse_ctrl_buttons(@ctrl, Actions)
@@ -145,22 +122,19 @@ module GamePlay
     def change_state(state)
       @state = state
       @ctrl.each { |sp| sp.set_state(state) }
-      @frame.set_bitmap(state == 1 ? "FrameInfos" : "Frame", :pokedex)
-      @pokeface.data = @pokemon if ( @pokeface.visible = state != 2 )
+      @frame.set_bitmap(state == 1 ? 'frameinfos' : 'frame', :pokedex)
+      @pokeface.data = @pokemon if (@pokeface.visible = state != 2)
       @arrow.visible = @seen_got.visible = state == 0
       @pokemon_info.visible = @pokemon_descr.visible = state == 1
       if @pokemon_descr.visible
-          if $pokedex.has_captured?(@pokemon.id)
-              @pokemon_descr.multiline_text = ::GameData::Pokemon.descr(@pokemon.id)
-              @pokemon_info.data = @pokemon
-          else
-              @pokemon_descr.multiline_text = ""
-              @pokemon_info.data = @pokemon
-          end
+        if $pokedex.has_captured?(@pokemon.id)
+          @pokemon_descr.multiline_text = ::GameData::Pokemon.descr(@pokemon.id)
+        else
+          @pokemon_descr.multiline_text = ''
+        end
+        @pokemon_info.data = @pokemon
       end
-      if(@pokemon_worldmap.visible = state == 2)
-        @pokemon_worldmap.set_pokemon @pokemon
-      end
+      @pokemon_worldmap.set_pokemon(@pokemon) if (@pokemon_worldmap.visible = state == 2)
       update_list(state == 0)
     end
 
@@ -168,18 +142,14 @@ module GamePlay
     # @param visible [Boolean]
     def update_list(visible)
       @scrollbar.visible = @scrollbut.visible = visible
-      if @selected_pokemons.size > 1
-        @scrollbut.y = 41 + 150 * @index / (@selected_pokemons.size - 1)
-      end
+      @scrollbut.y = 41 + 150 * @index / (@selected_pokemons.size - 1) if @selected_pokemons.size > 1
       base_index = calc_base_index
       @list.each_with_index do |el, i|
-        next unless el.visible = visible
+        next unless (el.visible = visible)
         pos = base_index + i
         id = @selected_pokemons[pos]
-        next(el.visible = false) unless id and pos >= 0
-        if el.selected = (pos == @index)
-          @arrow.y = el.y + 11
-        end
+        next(el.visible = false) unless id && pos >= 0
+        @arrow.y = el.y + 11 if (el.selected = (pos == @index))
         @pokemonlist.id = id
         el.data = @pokemonlist
       end
@@ -229,26 +199,45 @@ module GamePlay
 
     # Generate the Pokemon Object
     def generate_pokemon_object
-      @pokemon = PFM::Pokemon.new(@selected_pokemons[@index].to_i,1)
-      # Return the formated name for Pokedex
-      # @return [String]
-      def @pokemon.pokedex_name
-        sprintf(GamePlay::Dex::NameStr, $pokedex.national? ? self.id : ::GameData::Pokemon.id_bis(self.id), self.name)
-      end
-      # Return the formated Specie for Pokedex
-      # @return [String]
-      def @pokemon.pokedex_species
-        ::GameData::Pokemon.species(self.id)
-      end
-      # Return the formated weight for Pokedex
-      # @return [String]
-      def @pokemon.pokedex_weight
-        format(_ext(9000, 70), self.weight)
-      end
-      # Return the formated height for Pokedex
-      # @return [String]
-      def @pokemon.pokedex_height
-        format(_ext(9000, 71), self.height)
+      @pokemon = PFM::Pokemon.new(@selected_pokemons[@index].to_i, 1)
+      @pokemon.instance_eval do
+        # Return the formated name for Pokedex
+        # @return [String]
+        def pokedex_name
+          id_value = $pokedex.national? ? id : ::GameData::Pokemon.id_bis(id)
+          format(GamePlay::Dex::NAME_FORMAT, id_value, name)
+        end
+
+        # Return the formated Specie for Pokedex
+        # @return [String]
+        def pokedex_species
+          GameData::Pokemon.species(id)
+        end
+
+        # Return the formated weight for Pokedex
+        # @return [String]
+        def pokedex_weight
+          # @type [String]
+          text = _ext(9000, 70)
+          using_retard_unit = !text.downcase.end_with?('kg')
+          format(text, using_retard_unit ? (weight * 2.20462).ceil(2) : weight)
+        end
+
+        # Return the formated height for Pokedex
+        # @return [String]
+        def pokedex_height
+          # @type [String]
+          text = _ext(9000, 70)
+          using_retard_unit = !text.downcase.end_with?('m')
+          if using_retard_unit
+            inches = (height * 39.3701).to_i
+            feet = inches / 12
+            inches -= feet * 12
+            format(_ext(9000, 71), feet, inches)
+          else
+            return format(_ext(9000, 71), height)
+          end
+        end
       end
     end
 

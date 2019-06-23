@@ -270,6 +270,7 @@ pokemonsdk/scripts/01400 GamePlay/03200 GamePlay__QuestBookMenu.rb
 pokemonsdk/scripts/01400 GamePlay/03300 GamePlay__QuestBookList.rb
 pokemonsdk/scripts/01400 GamePlay/03400 GamePlay__QuestBookQuest.rb
 pokemonsdk/scripts/01400 GamePlay/03500 GamePlay__Dex.rb
+pokemonsdk/scripts/01400 GamePlay/03501 Dex_Graphics.rb
 pokemonsdk/scripts/01400 GamePlay/03700 GamePlay__Storage.rb
 pokemonsdk/scripts/01400 GamePlay/03800 GamePlay__StorageDrop.rb
 pokemonsdk/scripts/01400 GamePlay/03900 GamePlay__StorageItems.rb

@@ -12,12 +12,12 @@ module UI
       seen_text = add_text(2, 0, 79, 26, _ext(9000, 20), color: 10)
       seen_text.bold = true
       # Show the number of Pokemon Seen
-      add_text(0, 0, 79, 26, :pokemon_seen, 2, type: SymText, color: 10)
+      add_text(seen_text.real_width + 4, 0, 79, 26, :pokemon_seen, 0, type: SymText, color: 10)
       # Show the "Got: " text
       got_text = add_text(2, 28, 79, 26, _ext(9000, 21), color: 10)
       got_text.bold = true
       # Show the number of Pokemon Got
-      add_text(0, 28, 79, 26, :pokemon_captured, 2, type: SymText, color: 10)
+      add_text(got_text.real_width + 4, 28, 79, 26, :pokemon_captured, 0, type: SymText, color: 10)
 
       # Define the Pokedex as text source
       self.data = $pokedex
