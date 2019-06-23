@@ -48,11 +48,6 @@ module BattleEngine
   #===
   def use_skill(launcher, targets, skill)
     #===
-    #> Indication des données pour l'interpreter
-    #===
-    #_message_stack_push([:parametre, launcher, (target ? target : launcher), skill]) #Inutilisé ?
-    
-    #===
     #> Traitement du cas où l'attaque vient tout juste d'être lancée
     #===
     @_State[:ext_info] = nil
@@ -62,6 +57,10 @@ module BattleEngine
     msg_push = true # Affiche <pkmn> utilise <attaque> si true
     targets.each do |target|
       if (target and !target.dead?)
+        #===
+        #> Indication des données pour l'interpreter
+        #===
+        _message_stack_push([:parametre, launcher, (target ? target : launcher), skill])
         if BattleEngine.private_method_defined?(skill.symbol)
           if (skill.symbol == :s_magnitude) # Ampleur
             if skill.power2 == nil
