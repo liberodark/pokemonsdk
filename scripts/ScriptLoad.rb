@@ -1,20 +1,20 @@
 module ScriptLoader
   # Path of the scripts of PSDK
-  VSCODE_SCRIPT_PATH = PSDK_PATH.gsub('\\','/') + '/scripts'
+  VSCODE_SCRIPT_PATH = PSDK_PATH.tr('\\', '/') + '/scripts'
   # Path of the scripts of the Project
   PROJECT_SCRIPT_PATH = 'scripts'
   # Path to the script index
   SCRIPT_INDEX_PATH = File.join(VSCODE_SCRIPT_PATH, 'script_index.txt')
   # Path to the deflate scripts
   DEFLATE_SCRIPT_PATH = File.join(VSCODE_SCRIPT_PATH, 'mega_script.deflate')
-  
+
   module_function
-  
+
   # Start the script loading sequence
   def start
     unpack_scripts if File.exist?(DEFLATE_SCRIPT_PATH)
     # Load PSDK Scripts
-    if File.exist?(SCRIPT_INDEX_PATH)
+    if File.exist?(index_filename)
       load_script_from_index
     else
       File.open(SCRIPT_INDEX_PATH, 'w') do |file|
@@ -22,14 +22,14 @@ module ScriptLoader
       end
     end
     # Load Project Scripts
-    load_vscode_scripts(PROJECT_SCRIPT_PATH)
+    load_vscode_scripts(PROJECT_SCRIPT_PATH) if index_filename == SCRIPT_INDEX_PATH
   end
 
   # Load all VSCODE like script from a path and its first level sub paths
   # @param path [String]
   # @param file [File, nil] file used to store the script name
   def load_vscode_scripts(path, file = nil)
-    puts format('Loading %s...', path)
+    puts format('Loading %<path>s...', path: path)
     load_scripts(path, file)
     Dir[File.join(path, '*/')].sort.each { |pathname| load_scripts(pathname, file) }
   end
@@ -41,25 +41,25 @@ module ScriptLoader
   def load_scripts(path, file = nil)
     Dir[File.join(path, '*.rb')].sort.each do |filename|
       next unless File.basename(filename) =~ /^[0-9]{5}[ _].*/
-      file.puts(filename) if file
+      file&.puts(filename)
       require(filename)
     end
   rescue StandardError
-    if Object.const_defined?(:Yuki) and Yuki.const_defined?(:EXC)
+    if Object.const_defined?(:Yuki) && Yuki.const_defined?(:EXC)
       Yuki::EXC.run($!)
     else
       raise
     end
   end
-  
+
   # Load the PSDK scripts from the index
   def load_script_from_index
-    lines = File.readlines(SCRIPT_INDEX_PATH)
+    lines = File.readlines(index_filename)
     lines.each do |filename|
       require(filename.chomp)
     end
   end
-  
+
   def mkdir(*args)
     curr = args.shift
     Dir.mkdir(curr) unless Dir.exist?(curr)
@@ -78,6 +78,23 @@ module ScriptLoader
       File.write(filename, contents)
     end
     File.delete(DEFLATE_SCRIPT_PATH)
+  end
+
+  # Return the script index filename (taken according to the context)
+  # @return [String]
+  def index_filename
+    return @index_filename if @index_filename
+    if !ARGV.grep(/\-\-util[ =]update/).empty?
+      @index_filename = File.join(VSCODE_SCRIPT_PATH, 'script_update_index.txt')
+      # Prevent RMXP Scripts from loading
+      Kernel.define_method(:eval) { |*args| }
+    elsif !(matches = ARGV.grep(/\-\-script_context[ =].+\.txt$/)).empty?
+      @index_filename = File.join(VSCODE_SCRIPT_PATH, matches.first.match(/\-\-script_context[ =](.*)/).captures.first)
+    else
+      @index_filename = SCRIPT_INDEX_PATH
+    end
+    puts "Script Index : #{@index_filename}"
+    return @index_filename
   end
 end
 
