@@ -43,18 +43,14 @@ module GamePlay
     # Size of a tile in the WorldMap (Used outside of the script !)
     # @return [Integer]
     TileSize = 8
+    # The height of the display zone on the map window
+    # @return [Integer]
+    UI_MAP_HEIGHT = 168
+    # The width of the display zone on the map window
+    # @return [Integer]
+    UI_MAP_WIDTH = 256
     # Indicate if the zoom is usable in world map
     ZoomEnabled = true
-    # Zoom on the player sprite
-    MarkerZoom = 2.0
-    # Player sprite offset x
-    PlayerOffsetX = 0
-    # Playser sprite offset y
-    PlayerOffsetY = -8
-    # Sprite pokemon offset x
-    RoamingPokemonOffsetX = 5
-    # Sprite pokemon offset y
-    RoamingPokemonOffsetY = 0
     # Proc to define the zones color
     # @param counter [Integer] goes from 0 to 100 frame then goes back to 0
     PROC_ZONE_COLOR = proc do |counter|
@@ -80,6 +76,7 @@ module GamePlay
       $wild_battle.on_map_viewed if @mode == :view
       # Initialize attributes
       @map_display_ox = @map_display_oy = 0
+      @map_display_ox_offset = @map_display_oy_offset = 0
       @worldmap_zoom = 1
       @cursor_animation_counter = 0
       @cursor_move_count = false
@@ -116,6 +113,9 @@ module GamePlay
 
     # Delete zones and markers sprite
     def dispose_zone_and_marker
+      # Clear custom icons
+      @marker_custom_icons.each(&:dispose)
+      @marker_custom_icons.clear
       # Clear roaming pokemon
       @marker_roaming_pokemons.each(&:dispose)
       @marker_roaming_pokemons.clear
@@ -148,9 +148,7 @@ module GamePlay
       @cursor = Sprite.new(@viewport_map_cursor).set_bitmap('worldmap/cursor', :interface).set_rect_div(0, 0, 1, 2)
 
       # Player marker
-      @marker_player = Sprite::WithColor.new(@viewport_map_markers)
-                                        .set_bitmap($game_player.character_name, :character).set_rect_div(0, 0, 4, 4)
-      @marker_player.zoom = 1 / MarkerZoom
+      init_player_sprite
 
       # Interface
       @ui_frame = Sprite.new(@viewport_ui).set_bitmap('worldmap/frame', :interface)
@@ -164,8 +162,22 @@ module GamePlay
       @marker_zones = []
       @marker_zones_bitmap = RPG::Cache.interface('worldmap/zones')
 
+      # Custom icons
+      @marker_custom_icons = []
+
       # Roaming pokemon markers
       @marker_roaming_pokemons = []
+    end
+
+    # Init the player marker
+    def init_player_sprite
+      @marker_player = Sprite::WithColor.new(@viewport_map_markers)
+      player_icon = 'worldmap/player_icons/' \
+                    "#{$game_player.charset_base}_#{$game_switches[Yuki::Sw::Gender] ? 'f' : 'm'}"
+      player_icon = 'worldmap/player_icons/default' unless RPG::Cache.interface_exist?(player_icon)
+      @marker_player.set_bitmap(player_icon, :interface)
+      @marker_player.ox = @marker_player.src_rect.width / 2 - TileSize / 2
+      @marker_player.oy = @marker_player.src_rect.height / 2 - TileSize / 2
     end
 
     # Initialize the cursor and the player positions
@@ -188,8 +200,8 @@ module GamePlay
       # Set the coords
       @cursor.x = BitmapOffset + @map_worldmap.x + TileSize * @x
       @cursor.y = BitmapOffset + @map_worldmap.y + TileSize * @y
-      @marker_player.x = @cursor.x + PlayerOffsetX - @marker_player.src_rect.width / 8
-      @marker_player.y = @cursor.y + PlayerOffsetY
+      @marker_player.x = @cursor.x
+      @marker_player.y = @cursor.y
       # Update the display map
       update_display_origin
     end
@@ -303,8 +315,8 @@ module GamePlay
 
     # Update the map position
     def update_display_position
-      @viewport_map.ox = @viewport_map_cursor.ox = @viewport_map_zones.ox = @viewport_map_markers.ox = @map_display_ox
-      @viewport_map.oy = @viewport_map_cursor.oy = @viewport_map_zones.oy = @viewport_map_markers.oy = @map_display_oy
+      @viewport_map.ox = @viewport_map_cursor.ox = @viewport_map_zones.ox = @viewport_map_markers.ox = @map_display_ox + @map_display_ox_offset
+      @viewport_map.oy = @viewport_map_cursor.oy = @viewport_map_zones.oy = @viewport_map_markers.oy = @map_display_oy + @map_display_oy_offset
     end
 
     # Update the cursor position using Input.dir8
@@ -340,7 +352,8 @@ module GamePlay
     # Change the zoom to 0.5 or 1
     def on_toggle_zoom
       # Set the zoom value
-      @viewport_map.zoom = @viewport_map_cursor.zoom = @viewport_map_zones.zoom = @viewport_map_markers.zoom = @zoom = (@zoom == 0.5 ? 1 : 0.5)
+      @viewport_map.zoom = @viewport_map_cursor.zoom = @viewport_map_zones.zoom = 
+        @viewport_map_markers.zoom = @zoom = (@zoom == 0.5 ? 1 : 0.5)
       # Correct map display
       @viewport_map.ox *= @zoom
       @viewport_map.oy *= @zoom
@@ -392,6 +405,7 @@ module GamePlay
       # Update the worldmap
       @worldmap_id = id
       @map_worldmap.set_bitmap('worldmap/worldmaps/' + $game_data_worldmap[@worldmap_id].image, :interface)
+      recenter_map
       @ui_infobox.set_region $game_data_worldmap[@worldmap_id].name
       # Update player
       set_bounds
@@ -401,8 +415,20 @@ module GamePlay
       display_fly_zones
       display_roaming_pokemons
       display_pokemon_zones
+      display_custom_icons
       # Update location display
       update_infobox
+    end
+
+    # Reset the map display coords
+    def recenter_map
+      @map_display_ox = @map_display_oy = @map_display_oy_offset = @map_display_ox_offset = 0
+      if (map_height = @map_worldmap.src_rect.height) < UI_MAP_HEIGHT
+        @map_display_oy_offset = - (UI_MAP_HEIGHT - map_height) / 2
+      end
+      if (map_width = @map_worldmap.src_rect.width) < UI_MAP_WIDTH
+        @map_display_ox_offset = - (UI_MAP_WIDTH - map_width) / 2
+      end
     end
 
     # Set the pokemon to display
@@ -420,6 +446,48 @@ module GamePlay
       set_worldmap(wm_id)
       # Display the unkown zone alert
       @ui_unknown_zone.visible = @marker_zones.empty?
+    end
+
+    # Display the customs icons
+    def display_custom_icons
+      return unless (icons_data = $env.worldmap_custom_markers[@worldmap_id])
+
+      icons_data.each do |icon|
+        file = 'worldmap/icons/' + icon[0]
+        next unless RPG::Cache.interface_exist?(file)
+
+        # Initialize the sprite
+        sprite = Sprite.new(@viewport_map_markers)
+        sprite.set_bitmap(file, :interface)
+        # Set the sprite
+        process_icon_origin_mode(sprite, icon[3], icon[4])
+        sx = BitmapOffset + @map_worldmap.x + TileSize * icon[1]
+        sy = BitmapOffset + @map_worldmap.y + TileSize * icon[2]
+        @marker_custom_icons.push sprite.set_position(sx, sy)
+      end
+    end
+
+    # Define the sprite origin with the given parameters
+    # @param sprite [Sprite] the sprite to modify
+    # @param ox_mode [Symbol]
+    # @param oy_mode [Symbol]
+    def process_icon_origin_mode(sprite, ox_mode, oy_mode)
+      case ox_mode
+      when :center
+        sprite.ox = sprite.src_rect.width / 2 - TileSize / 2
+      when :left
+        sprite.ox = 0
+      when :right
+        sprite.ox = sprite.src_rect.width - TileSize
+      end
+      case oy_mode
+      when :center
+        sprite.oy = sprite.src_rect.height / 2 - TileSize / 2
+      when :down
+        sprite.oy = sprite.src_rect.height - TileSize
+      when :up
+        sprite.oy = 0
+      end
     end
 
     # Display the available fly zones
@@ -472,16 +540,19 @@ module GamePlay
       # Display pokemons
       # No more than one pokemon by case
       coords_by_pkm.keys.each do |infos|
-        # Initialize
-        sprite = UI::PokemonIconSprite.new(@viewport_map_markers)
-        sprite.data = infos.pokemon
-        sprite.zoom = 1 / MarkerZoom
+        # Look for the image, next if no icon matching
+        pkm_icon = 'worldmap/pokemons_icons/' + infos.pokemon.character_name
+        next unless RPG::Cache.interface_exist?(pkm_icon)
+
+        # Initialize the sprite
+        sprite = Sprite.new(@viewport_map_markers)
+        sprite.set_bitmap(pkm_icon, :interface)
+        sprite.ox = sprite.src_rect.width / 2 - TileSize / 2
+        sprite.oy = sprite.src_rect.height / 2 - TileSize / 2
         coords = coords_by_pkm[infos].sample
-        x = coords[0]
-        y = coords[1]
         # Set the sprite
-        sx = BitmapOffset + @map_worldmap.x + TileSize * x + RoamingPokemonOffsetX
-        sy = BitmapOffset + @map_worldmap.y + TileSize * y + RoamingPokemonOffsetY
+        sx = BitmapOffset + @map_worldmap.x + TileSize * coords[0]
+        sy = BitmapOffset + @map_worldmap.y + TileSize * coords[1]
         @marker_roaming_pokemons.push sprite.set_position(sx, sy)
       end
     end
