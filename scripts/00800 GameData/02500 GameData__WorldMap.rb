@@ -41,11 +41,9 @@ module GameData
       if @data
         0.upto([n_data.xsize, @data.xsize].min) do |x|
           0.upto([n_data.ysize, @data.ysize].min) do |y|
-            begin
-              n_data[x, y] = @data[x, y]
-            rescue Exception
-              n_data[x, y] = -1
-            end
+            n_data[x, y] = @data[x, y]
+          rescue StandardError
+            n_data[x, y] = -1
           end
         end
       end
@@ -70,7 +68,7 @@ module GameData
       0.upto(@data.xsize - 1) do |x|
         0.upto(@data.ysize - 1) do |y|
           next if @data[x, y] < 0
-          
+
           result.push @data[x, y] unless result.include?(@data[x, y])
         end
       end
@@ -82,7 +80,7 @@ module GameData
     def self.each_id(&block)
       $game_data_worldmap.size.times(&block)
     end
-    
+
     # Load the data from Data/PSDK/WorldMaps.rxdata
     # @return [Array]
     def self.load

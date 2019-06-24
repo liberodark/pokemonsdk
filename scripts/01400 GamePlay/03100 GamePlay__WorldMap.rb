@@ -49,7 +49,7 @@ module GamePlay
     MarkerZoom = 2.0
     # Player sprite offset x
     PlayerOffsetX = 0
-    #Playser sprite offset y
+    # Playser sprite offset y
     PlayerOffsetY = -8
     # Sprite pokemon offset x
     RoamingPokemonOffsetX = 5
@@ -113,7 +113,7 @@ module GamePlay
       super
       @__last_scene.sprite_set_visible = true if @__last_scene.class == ::Scene_Map
     end
-    
+
     # Delete zones and markers sprite
     def dispose_zone_and_marker
       # Clear roaming pokemon
@@ -137,22 +137,23 @@ module GamePlay
       @viewport_ui = Viewport.create(:main, ViewportsBaseZ + 5000)
 
       # Backgrounds
-      @bg_background = Sprite.new(@viewport_background).set_bitmap('fond', :pokedex)
-      @bg_frame = Sprite.new(@viewport_background).set_bitmap('map_background', :pokedex)
+      @bg_background = Sprite.new(@viewport_background).set_bitmap('worldmap/background_animated', :interface)
+      @bg_frame = Sprite.new(@viewport_background).set_bitmap('worldmap/background_map', :interface)
 
       # Map
-      @map_worldmap = Sprite.new(@viewport_map).set_bitmap($game_data_worldmap[@worldmap_id].image, :interface)
+      @map_worldmap = Sprite.new(@viewport_map).set_bitmap('worldmap/worldmaps/' +
+        $game_data_worldmap[@worldmap_id].image, :interface)
 
       # Cursor
-      @cursor = Sprite.new(@viewport_map_cursor).set_bitmap('WM_cursor', :interface).set_rect_div(0, 0, 1, 2)
+      @cursor = Sprite.new(@viewport_map_cursor).set_bitmap('worldmap/cursor', :interface).set_rect_div(0, 0, 1, 2)
 
       # Player marker
       @marker_player = Sprite::WithColor.new(@viewport_map_markers)
-        .set_bitmap($game_player.character_name, :character).set_rect_div(0, 0, 4, 4)
+                                        .set_bitmap($game_player.character_name, :character).set_rect_div(0, 0, 4, 4)
       @marker_player.zoom = 1 / MarkerZoom
 
       # Interface
-      @ui_frame = Sprite.new(@viewport_ui).set_bitmap('map_frame', :pokedex)
+      @ui_frame = Sprite.new(@viewport_ui).set_bitmap('worldmap/frame', :interface)
       @ui_infobox = UI::DexWinMap.new(@viewport_ui)
       @ui_infobox.data = @pokemon
       @ui_unknown_zone = UI::Window.new(@viewport_ui, UnknownZoneX, UnknownZoneY, UnknownZoneWidth, UnknownZoneHeight)
@@ -161,7 +162,7 @@ module GamePlay
 
       # Zone display
       @marker_zones = []
-      @marker_zones_bitmap = RPG::Cache.pokedex('zones')
+      @marker_zones_bitmap = RPG::Cache.interface('worldmap/zones')
 
       # Roaming pokemon markers
       @marker_roaming_pokemons = []
@@ -269,8 +270,10 @@ module GamePlay
       return unless @cursor_move_count
 
       # Update cursor position
-      @cursor.x = BitmapOffset + @map_worldmap.x + TileSize * @last_x + (@x - @last_x) * @cursor_move_count * TileSize / CursorMoveDuration
-      @cursor.y = BitmapOffset + @map_worldmap.y + TileSize * @last_y + (@y - @last_y) * @cursor_move_count * TileSize / CursorMoveDuration
+      @cursor.x = BitmapOffset + @map_worldmap.x + TileSize * @last_x + (@x - @last_x) *
+                  @cursor_move_count * TileSize / CursorMoveDuration
+      @cursor.y = BitmapOffset + @map_worldmap.y + TileSize * @last_y + (@y - @last_y) *
+                  @cursor_move_count * TileSize / CursorMoveDuration
       # Update display coords
       update_display_origin
       # Update counter
@@ -299,7 +302,7 @@ module GamePlay
       @viewport_map.ox = @viewport_map_cursor.ox = @viewport_map_zones.ox = @viewport_map_markers.ox = @map_display_ox
       @viewport_map.oy = @viewport_map_cursor.oy = @viewport_map_zones.oy = @viewport_map_markers.oy = @map_display_oy
     end
-    
+
     # Update the cursor position using Input.dir8
     def update_cursor_position_dir8
       case (dir8 = Input.dir8)
@@ -329,12 +332,11 @@ module GamePlay
         @ui_infobox.set_location '...'
       end
     end
-    
+
     # Change the zoom to 0.5 or 1
     def on_toggle_zoom
       # Set the zoom value
-      @viewport_map.zoom = @viewport_map_cursor.zoom = @viewport_map_zones.zoom = 
-          @viewport_map_markers.zoom = @zoom = (@zoom == 0.5 ? 1 : 0.5)
+      @viewport_map.zoom = @viewport_map_cursor.zoom = @viewport_map_zones.zoom = @viewport_map_markers.zoom = @zoom = (@zoom == 0.5 ? 1 : 0.5)
       # Correct map display
       @viewport_map.ox *= @zoom
       @viewport_map.oy *= @zoom
@@ -359,7 +361,7 @@ module GamePlay
         return_to_scene(Scene_Map)
       end
     end
-    
+
     # Load the next worldmap
     def on_next_worldmap
       old_worldmap_id = @worldmap_id
@@ -373,19 +375,19 @@ module GamePlay
         end
       end
     end
-    
+
     # Method retreiving the boundaries of the worldmap
     def set_bounds
       @x_max = (@map_worldmap.width - 2 * BitmapOffset) / TileSize
       @y_max = (@map_worldmap.height - 2 * BitmapOffset) / TileSize
     end
-    
+
     # Change the display worldmap
     # @param id [Integer] the worldmap id to display
     def set_worldmap(id)
       # Update the worldmap
       @worldmap_id = id
-      @map_worldmap.set_bitmap($game_data_worldmap[@worldmap_id].image, :interface)
+      @map_worldmap.set_bitmap('worldmap/worldmaps/' + $game_data_worldmap[@worldmap_id].image, :interface)
       @ui_infobox.set_region $game_data_worldmap[@worldmap_id].name
       # Update player
       set_bounds
@@ -471,7 +473,8 @@ module GamePlay
         sprite.data = infos.pokemon
         sprite.zoom = 1 / MarkerZoom
         coords = coords_by_pkm[infos].sample
-        x, y = coords[0], coords[1]
+        x = coords[0]
+        y = coords[1]
         # Set the sprite
         sx = BitmapOffset + @map_worldmap.x + TileSize * x + RoamingPokemonOffsetX
         sy = BitmapOffset + @map_worldmap.y + TileSize * y + RoamingPokemonOffsetY
@@ -496,7 +499,8 @@ module GamePlay
 
           sx = BitmapOffset + @map_worldmap.x + TileSize * x
           sy = BitmapOffset + @map_worldmap.y + TileSize * y
-          @marker_zones.push(s = Sprite::WithColor.new(@viewport_map_zones).set_bitmap(@marker_zones_bitmap).set_position(sx, sy))
+          @marker_zones.push(s = Sprite::WithColor.new(@viewport_map_zones)
+            .set_bitmap(@marker_zones_bitmap).set_position(sx, sy))
           set_zone_rect(tab, x, y, s)
         end
       end
@@ -516,28 +520,28 @@ module GamePlay
         code |= ((tile || 0) << index)
       end
       case code # :down, :left, :right, :up
-      when 0b0000; sprite.set_rect_div(0, 0, 5, 5)
+      when 0b0000 then sprite.set_rect_div(0, 0, 5, 5)
       # End
-      when 0b1000; sprite.set_rect_div(0, 3, 5, 5)
-      when 0b0100; sprite.set_rect_div(0, 4, 5, 5)
-      when 0b0010; sprite.set_rect_div(2, 4, 5, 5)
-      when 0b0001; sprite.set_rect_div(0, 1, 5, 5)
+      when 0b1000 then sprite.set_rect_div(0, 3, 5, 5)
+      when 0b0100 then sprite.set_rect_div(0, 4, 5, 5)
+      when 0b0010 then sprite.set_rect_div(2, 4, 5, 5)
+      when 0b0001 then sprite.set_rect_div(0, 1, 5, 5)
       # Line
-      when 0b0110; sprite.set_rect_div(1, 4, 5, 5)
-      when 0b1001; sprite.set_rect_div(0, 2, 5, 5)
+      when 0b0110 then sprite.set_rect_div(1, 4, 5, 5)
+      when 0b1001 then sprite.set_rect_div(0, 2, 5, 5)
       # Angles
-      when 0b1100; sprite.set_rect_div(1, 3, 5, 5)
-      when 0b1010; sprite.set_rect_div(2, 3, 5, 5)
-      when 0b0101; sprite.set_rect_div(1, 2, 5, 5)
-      when 0b0011; sprite.set_rect_div(2, 2, 5, 5)
+      when 0b1100 then sprite.set_rect_div(1, 3, 5, 5)
+      when 0b1010 then sprite.set_rect_div(2, 3, 5, 5)
+      when 0b0101 then sprite.set_rect_div(1, 2, 5, 5)
+      when 0b0011 then sprite.set_rect_div(2, 2, 5, 5)
       # Edges
-      when 0b1110; sprite.set_rect_div(2, 0, 5, 5)
-      when 0b1101; sprite.set_rect_div(1, 1, 5, 5)
-      when 0b1011; sprite.set_rect_div(2, 1, 5, 5)
-      when 0b0111; sprite.set_rect_div(1, 0, 5, 5)
+      when 0b1110 then sprite.set_rect_div(2, 0, 5, 5)
+      when 0b1101 then sprite.set_rect_div(1, 1, 5, 5)
+      when 0b1011 then sprite.set_rect_div(2, 1, 5, 5)
+      when 0b0111 then sprite.set_rect_div(1, 0, 5, 5)
       # Cross
-      else; sprite.set_rect_div(4, 0, 5, 5)
-      end 
+      else sprite.set_rect_div(4, 0, 5, 5)
+      end
     end
 
     # Search the pokemon encounter zone, return i
@@ -569,7 +573,7 @@ module GamePlay
           zone.groups.each do |group|
             group.each do |pkm|
               next unless pkm.is_a?(Hash) # No hash = not a pokemon
-              next unless pkm[:id] == @pokemon.id  # Not the pokemon we are looking for
+              next unless pkm[:id] == @pokemon.id # Not the pokemon we are looking for
 
               pkm_zones[x, y] = 1 # Set the zone ok
             end
