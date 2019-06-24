@@ -12,6 +12,9 @@ module PFM
     # Last visited map ID
     # @return [Integer]
     attr_reader :last_map_id
+    # Return the modified worldmap position or nil
+    # @return [Array, nil]
+    attr_reader :modified_worldmap_position
     # Create a new Environnement object
     def initialize
       @weather = 0
@@ -238,10 +241,13 @@ module PFM
     # @param zone [Integer] <default : current zone>
     # @return [Integer]
     def get_worldmap(zone = @zone)
-      if zone.is_a?(GameData::Map)
+      if @modified_worldmap_position && @modified_worldmap_position[2]
+        return @modified_worldmap_position[2]
+      elsif zone.is_a?(GameData::Map)
         return zone.worldmap_id
+      else
+        return $game_data_zone[zone]&.worldmap_id
       end
-      return $game_data_zone[zone]&.worldmap_id
     end
 
     # Test if the given world map has been visited
@@ -430,6 +436,19 @@ module PFM
       return false unless (deleted_events = @deleted_events)
       return false unless deleted_events[map_id]
       return deleted_events[map_id][event_id]
+    end
+
+    # Overwrite the zone worldmap position
+    # @param new_x [Integer] the new x coords on the worldmap
+    # @param new_y [Integer] the new y coords on the worldmap
+    # @param new_worldmap_id [Integer, nil] the new worldmap id
+    def set_worldmap_position(new_x, new_y, new_worldmap_id = nil)
+      @modified_worldmap_position = [new_x, new_y, new_worldmap_id]
+    end
+
+    # Reset the modified worldmap position
+    def reset_worldmap_position
+      @modified_worldmap_position = nil
     end
   end
 end
