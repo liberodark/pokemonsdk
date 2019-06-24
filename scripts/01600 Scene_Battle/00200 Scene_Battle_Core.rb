@@ -23,7 +23,9 @@ class Scene_Battle
     #> Prevent a bug from Scene_Map with common events
     $game_temp.common_event_id = 0
     # Load the animations if not loaded
-    $data_animations    = load_data("Data/Animations.rxdata") unless $data_animations
+    $data_animations ||= load_data('Data/Animations.rxdata')
+    # Animation fix because of RMXP Garbage
+    Sprite_Character.fix_rmxp_animations
 #    RPG::Cache.load_data_14 #>Chargement des battle_back
 #    RPG::Cache.load_data_15 #>Chargement des battlers
     # Initialisation des données de combat

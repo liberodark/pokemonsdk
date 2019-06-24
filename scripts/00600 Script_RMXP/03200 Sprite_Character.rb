@@ -139,6 +139,7 @@ class Sprite_Character < RPG::Sprite
   # Load the animation when there's one on the character
   def update_load_animation
     $data_animations ||= load_data('Data/Animations.rxdata')
+    Sprite_Character.fix_rmxp_animations
     animation = $data_animations[@character.animation_id]
     animation(animation, true)
     @character.animation_id = 0
@@ -188,5 +189,18 @@ class Sprite_Character < RPG::Sprite
   def dispose_shadow
     @shadow&.dispose
     @shadow = nil
+  end
+
+  # Fix the animation file
+  def self.fix_rmxp_animations
+    if File.exist?('Data/Animations.rxdata')
+      if !File.exist?('Data/Animations.psdk') ||
+         File.size('Data/Animations.rxdata') != File.size('Data/Animations.psdk')
+        save_data($data_animations, 'Data/Animations.rxdata')
+        log_info('Re-Saving animations, it\'ll take 2 second...')
+        sleep(2)
+        save_data($data_animations, 'Data/Animations.psdk')
+      end
+    end
   end
 end
