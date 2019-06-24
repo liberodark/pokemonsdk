@@ -12,6 +12,9 @@ module PFM
     # Last visited map ID
     # @return [Integer]
     attr_reader :last_map_id
+    # Custom markers on worldmap
+    # @return [Array]
+    attr_reader :worldmap_custom_markers
     # Return the modified worldmap position or nil
     # @return [Array, nil]
     attr_reader :modified_worldmap_position
@@ -31,6 +34,7 @@ module PFM
       @deleted_events = {}
       # Worldmap where the player currently is
       @worldmap = 0
+      @worldmap_custom_markers = []
     end
 
     # Apply a new weather to the current environment
@@ -436,6 +440,30 @@ module PFM
       return false unless (deleted_events = @deleted_events)
       return false unless deleted_events[map_id]
       return deleted_events[map_id][event_id]
+    end
+
+    # Add the custom marker to the worldmap
+    # @param filename [String] the name of the icon in the interface/worldmap/icons directory
+    # @param worldmap_id [Integer] the id of the worldmap
+    # @param x [Integer] coord x on the worldmap
+    # @param y [Integer] coord y on the wolrdmap
+    # @param ox_mode [Symbol, :center] :center (the icon will be centered on the tile center), :base
+    # @param oy_mode [Symbol, :center] :center (the icon will be centered on the tile center), :base
+    def add_worldmap_custom_icon(filename, worldmap_id, x, y, ox_mode = :center, oy_mode = :center)
+      @worldmap_custom_markers ||= []
+      @worldmap_custom_markers[worldmap_id] ||= []
+      @worldmap_custom_markers[worldmap_id].push [filename, x, y, ox_mode, oy_mode]
+    end
+
+    # Remove all custom worldmap icons on the coords
+    # @param filename [String] the name of the icon in the interface/worldmap/icons directory
+    # @param worldmap_id [Integer] the id of the worldmap
+    # @param x [Integer] coord x on the worldmap
+    # @param y [Integer] coord y on the wolrdmap
+    def remove_worldmap_custom_icon(filename, worldmap_id, x, y)
+      return unless @worldmap_custom_markers[worldmap_id]
+
+      @worldmap_custom_markers[worldmap_id].delete_if { |i| i[0] == filename && i[1] == x && i[2] == y }
     end
 
     # Overwrite the zone worldmap position
