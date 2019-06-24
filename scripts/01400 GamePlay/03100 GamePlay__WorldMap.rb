@@ -174,6 +174,10 @@ module GamePlay
       if @worldmap_id != $env.get_worldmap
         @x = @y = 0
         @marker_player.visible = false
+      elsif (modified_coords = $env.modified_worldmap_position)
+        @x = modified_coords[0]
+        @y = modified_coords[1]
+        @marker_player.visible = true
       else
         zone_id = $env.master_zone >= 0 ? $env.master_zone : $env.get_current_zone
         @x, @y = $env.get_zone_pos(zone_id)
