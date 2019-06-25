@@ -152,7 +152,7 @@ module GamePlay
 
       # Interface
       @ui_frame = Sprite.new(@viewport_ui).set_bitmap('worldmap/frame', :interface)
-      @ui_infobox = UI::DexWinMap.new(@viewport_ui)
+      @ui_infobox = UI::DexWinMap.new(@viewport_ui, @mode != :view_wall)
       @ui_infobox.data = @pokemon
       @ui_unknown_zone = UI::Window.new(@viewport_ui, UnknownZoneX, UnknownZoneY, UnknownZoneWidth, UnknownZoneHeight)
       @ui_unknown_zone.add_text(0, 0, 170, 13, _ext(9000, 31), 1)
@@ -274,11 +274,15 @@ module GamePlay
 
     # Update the buttons triggered
     def update_button_input
-      on_toggle_zoom if ZoomEnabled && Input.trigger?(:X)
-      on_next_worldmap if Input.trigger?(:Y)
-      return on_fly_attempt if @mode == :fly && Input.trigger?(:A)
       # Quit map if B triggered
       return @running = false if Input.trigger?(:B)
+      # Toggle zoom if allowed
+      on_toggle_zoom if ZoomEnabled && Input.trigger?(:X)
+      # No more input if wall view
+      return if @mode == :view_wall
+      # Load the next worldmap
+      on_next_worldmap if Input.trigger?(:Y)
+      return on_fly_attempt if @mode == :fly && Input.trigger?(:A)
     end
 
     # Update the cursor movement
@@ -450,6 +454,7 @@ module GamePlay
 
     # Display the customs icons
     def display_custom_icons
+      return unless @mode == :view
       return unless (icons_data = $env.worldmap_custom_markers[@worldmap_id])
 
       icons_data.each do |icon|
