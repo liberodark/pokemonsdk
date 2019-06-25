@@ -39,6 +39,19 @@ module Pathfinding
     GameData::SystemTags::TGrass => 20
   }
   TAGS_WEIGHT.default = 10 # Grass, ...
+  # module that contains the tags weight for path calculation
+  module TagsWeight
+    include GameData::SystemTags
+
+    # Default tags weight
+    DEFAULT = Pathfinding::TAGS_WEIGHT
+
+    # Test tage weight
+    WILD_POKEMON = Hash.new(10)
+    WILD_POKEMON[TGrass] = 2
+    WILD_POKEMON[Road] = 100
+    WILD_POKEMON[TSand] = 100
+  end
 
   # Default save state
   DEFAULT_SAVE = []
@@ -68,10 +81,11 @@ module Pathfinding
   # @param character [Game_Character] the character looking for a path
   # @param target [Game_Character, Array<Integer>] character or coords to reach
   # @param tries [Integer] the number of tries before giving up the path research. :infinity for infinite try count.
+  # @param tags [Symbol] the name of the Pathfinding::TagsWeight constant to use to calcultate the node weight
   # @return [Boolean] if the request is successfully submitted
-  def self.add_request(character, target, tries)
+  def self.add_request(character, target, tries, tags)
     remove_request(character)
-    @requests.push Request.new(character, Target.get(*target), tries)
+    @requests.push Request.new(character, Target.get(*target), tries, tags)
     return true
   end
 
@@ -100,10 +114,9 @@ module Pathfinding
 
   # Update the pathfinding system
   def self.update
-    update_stats = [Time.new, 0, 0, 0, 0]
-
     debug_update
     return if @requests.empty?
+
     # Initialize
     request_id = @last_request_id # Get the last updates where it's stop
     operation_counter = 0         # Count the amount of operation in this update
@@ -113,9 +126,7 @@ module Pathfinding
     while operation_counter < @operation_per_frame
       # Update the request and calculate the new operation counter
       operation_counter += (current_request = @requests[request_id]).update(operation_counter, first_update)
-      update_stats = current_request.get_update_stats(update_stats)
-
-      need_update ||= current_request.need_update # Need update to true if the request needs update and keep its value if not
+      need_update ||= current_request.need_update # Need update to true if the request needs update
       current_request.character.stop_path if current_request.finished? # Delete the finished requests
 
       # When end of the requests list
@@ -128,10 +139,6 @@ module Pathfinding
       need_update = false       # No first update, reset the need_update to false, it will be turned to true if update is needed
     end
     @last_request_id = request_id # Save the last update position
-
-    update_stats[0] = Time.new - update_stats[0]
-
-    # pc "Update Stats duration=#{update_stats[0]} nodes=#{update_stats[1]} watch=#{update_stats[2]} wait=#{update_stats[3]} reload=#{update_stats[4]}"
   end
 
   # Create an savable array of the current requests
@@ -145,10 +152,10 @@ module Pathfinding
     return unless Game_Map::PATH_FINDING_ENABLED
 
     data = $pokemon_party.pathfinding_requests
-    @requests = data.collect { |d| Request.load(d)}
+    @requests = data.collect { |d| Request.load(d) }
     @requests.delete(nil) # Prevent loading error
   end
-  
+
   @debug = false
   def self.debug=(value)
     @debug = value
@@ -173,16 +180,16 @@ module Pathfinding
     return unless @debug
 
     if from.nil?
-      @debug_sprites.values.flatten.each { |s| 
+      @debug_sprites.values.flatten.each do |s|
         s.visible = false
         @debug_sprites_pool.push s
-      }
+      end
       @debug_sprites.clear
     elsif @debug_sprites.key?(from)
-      @debug_sprites[from].each{ |s|
+      @debug_sprites[from].each do |s|
         s.visible = false
         @debug_sprites_pool.push s
-      }
+      end
       @debug_sprites.delete(from)
     end
   end
@@ -190,7 +197,7 @@ module Pathfinding
   # Update the pathfinding display debug
   def self.debug_update
     return unless @debug
-    
+
     @debug_viewport.ox = $game_map.display_x / 8 - 24
     @debug_viewport.oy = $game_map.display_y / 8 - 16
   end
@@ -212,7 +219,9 @@ module Pathfinding
     path.each_with_index do |dir, index|
       code = [dir - 1, 0, 4, 3]
       code = [dir - 1, 1, 4, 3] if index == 0
-      sprites.push s = (@debug_sprites_pool.pop || Sprite.new(@debug_viewport).set_bitmap(@debug_bitmap)).set_rect_div(*code).set_position(x * 16 - 24, y * 16 - 16)
+      sprites.push s = (@debug_sprites_pool.pop ||
+        Sprite.new(@debug_viewport).set_bitmap(@debug_bitmap))
+        .set_rect_div(*code).set_position(x * 16 - 24, y * 16 - 16)
       s.visible = true
 
       cursor.sim_move?(x, y, z, dir)
@@ -221,7 +230,9 @@ module Pathfinding
       z = cursor.z
     end
     # Place en marker and store
-    sprites.push s = (@debug_sprites_pool.pop || Sprite.new(@debug_viewport).set_bitmap(@debug_bitmap)).set_rect_div(0, 2, 4, 3).set_position(x * 16 - 24, y * 16 - 16)
+    sprites.push s = (@debug_sprites_pool.pop ||
+      Sprite.new(@debug_viewport).set_bitmap(@debug_bitmap))
+      .set_rect_div(0, 2, 4, 3).set_position(x * 16 - 24, y * 16 - 16)
     s.visible = true
     @debug_sprites[from.id] = sprites
   end
@@ -254,7 +265,8 @@ module Pathfinding
     # @param character [Game_Character] the character to give a path
     # @param target [Target] the target data
     # @param tries [Integer, Symbol] the amount of tries allowed before fail, use :infinity to have unlimited tries
-    def initialize(character, target, tries)
+    # @param tags [Symbol] the name of the Pathfinding::TagsWeight constant to use to calcultate the node weight
+    def initialize(character, target, tries, tags)
       @character = character
       @target = target
       @state = :search
@@ -264,6 +276,9 @@ module Pathfinding
       @character.force_move_route(WAITING_ROUTE)
       @remaining_tries = @original_remaining_tries = tries
       @need_update = true
+      @tags = tags
+      @tags_weight = (Pathfinding::TagsWeight.const_defined?(tags) ?
+        Pathfinding::TagsWeight.const_get(tags) : Pathfinding::TagsWeight::DEFAULT)
       Pathfinding.debug_clear(character.id)
     end
 
@@ -302,7 +317,6 @@ module Pathfinding
     # @param is_first_update [Boolean] indicate if it's the first update of the frame
     # @return [Integer]
     def update(operation_counter, is_first_update)
-      @update_stats = [0, 0, 0, 0]
       @need_update ||= is_first_update # Need update forced to true if it's the first update
       case @state
       when :search then return update_search(operation_counter)
@@ -335,7 +349,6 @@ module Pathfinding
         result = calculate_node
         nodes += 1
       end
-      @update_stats[0] = nodes
       # Process the result
       process_result(result)
       return nodes + 1
@@ -383,7 +396,6 @@ module Pathfinding
           @character.stop_path
         end
       end
-      @update_stats[1] += 1
       # Return default cost of a watch update
       @need_update = false
       return COST_WATCH
@@ -398,8 +410,6 @@ module Pathfinding
       @retry_countdown -= 1
       @state = :reload if @retry_countdown <= 0
       @need_update = false
-      
-        @update_stats[2] += 1
       return COST_WAIT
     end
 
@@ -414,8 +424,6 @@ module Pathfinding
       @closed.resize(0, 0, 0) # Clear the table
       @closed.resize($game_map.width, $game_map.height, 7)
       @state = :search
-      
-        @update_stats[3] += 1
       return COST_RELOAD
     end
 
@@ -459,6 +467,7 @@ module Pathfinding
       target = @target
       cursor = @cursor
       game_map = $game_map
+      tags_weight = @tags_weight
 
       # Get next node
       node = open.shift
@@ -482,15 +491,15 @@ module Pathfinding
         # Cost calculation : start with last node cost
         # Add the weight of the tag
         # Retreive the straight direction (we prefer straight lines)
-        cost = node.first + TAGS_WEIGHT[game_map.system_tag(kx, ky)] - ((node[5] & 0xF) == direction ? 1 : 0)
+        cost = node.first + tags_weight[game_map.system_tag(kx, ky)] - ((node[5] & 0xF) == direction ? 1 : 0)
         backtrace_move = direction | node[1] << 4 | node[2] << 14 | node[3] << 24
         # Sort and insert the new node
         unless open.empty?
-            index = 0
-            index += 1 while index < open.length and open[index].first < cost
-            open.insert(index, [cost, kx, ky, kz, cursor.state, backtrace_move])
+          index = 0
+          index += 1 while index < open.length and open[index].first < cost
+          open.insert(index, [cost, kx, ky, kz, cursor.state, backtrace_move])
         else
-            open[0] = [cost, kx, ky, kz, cursor.state, backtrace_move]
+          open[0] = [cost, kx, ky, kz, cursor.state, backtrace_move]
         end
       end
       # Target not found
@@ -520,7 +529,7 @@ module Pathfinding
     # Gather the data ready to be saved
     # @return [Array<Object>]
     def save
-      return [@character.id, @target.save, @original_remaining_tries]
+      return [@character.id, @target.save, @original_remaining_tries, @tags]
     end
 
     # (Class method) Load the requests from the given argument
@@ -529,12 +538,10 @@ module Pathfinding
       character = $game_map.events[data[0]]
       target    = Target.load(data[1])
       tries     = data[2]
+      tags      = data[3] || :DEFAULT
       return nil unless character && target && tries # Prevent loading error : when map change
-      return Request.new(character, target, tries)
-    end
 
-    def get_update_stats(stats)
-      return [stats[0], stats[1] + @update_stats[0], stats[2] + @update_stats[1], stats[3] + @update_stats[2], stats[4] + @update_stats[3]]
+      return Request.new(character, target, tries, tags)
     end
   end
 end

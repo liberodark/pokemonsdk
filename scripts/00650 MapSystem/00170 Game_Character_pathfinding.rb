@@ -14,11 +14,11 @@ class Game_Character
   EMPTY_MOVE_ROUTE.repeat = false
 
   # Request a path to the target and follow it as soon as it found
-  def find_path(to:, radius: 0, tries: Pathfinding::TRY_COUNT, type: nil)
+  def find_path(to:, radius: 0, tries: Pathfinding::TRY_COUNT, type: nil, tags: :DEFAULT)
     # Wrap data to match
     type ||= (to.is_a?(Array) ? :Coords : :Character)
     # Create the request
-    Pathfinding.add_request(self, [type, to, radius], tries)
+    Pathfinding.add_request(self, [type, to, radius], tries, tags)
     # Increase the move_route index to make this method looks like a normal move command
     @original_move_route_index += 1
   end
