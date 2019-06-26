@@ -95,6 +95,7 @@ module Scheduler
   end
 
   add_proc(:on_scene_switch, ::Scene_Title, 'Correction des formes', 1000) do
+    next unless $scene.is_a?(Scene_Map)
     puts('Correction des formes des Pokémon')
     block = proc { |pokemon| pokemon&.form_calibrate(:load) }
     $actors.each(&block)
