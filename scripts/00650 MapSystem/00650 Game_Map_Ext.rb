@@ -207,6 +207,7 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
     $game_player.z = @events_info[:player]
     @events_info.each do |id, info|
       next unless (event = @events[id])
+      next unless event.original_map == @map_id
       event.moveto(info[0], info[1])
       event.z = info[2]
       event.direction = info[3]
