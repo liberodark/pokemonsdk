@@ -236,20 +236,22 @@ class Interpreter_RMXP
     end
   end
   # Command that retreive a Game_Character object
-  # @param parameter [Integer] > 0 : id of the event, 0 : current event, -1 : player or follower
+  # @param parameter [Integer, Symbol] > 0 : id of the event, 0 : current event, -1 : player or follower, Symbol : alias
   # @return [Game_Event, Game_Player, Game_Character]
   def get_character(parameter)
+    # Get the character from alias if the parameter is a Symbol
+    parameter = $game_map.events_sym_to_id[parameter] if parameter.is_a?(Symbol)
     # パラメータで分岐
     case parameter
-    when -1  # プレイヤー
-      if($game_variables[Yuki::Var::FM_Sel_Foll]>0)
-        return Yuki::FollowMe.get_follower($game_variables[Yuki::Var::FM_Sel_Foll]-1)
+    when -1 # プレイヤー
+      if $game_variables[Yuki::Var::FM_Sel_Foll] > 0
+        return Yuki::FollowMe.get_follower($game_variables[Yuki::Var::FM_Sel_Foll] - 1)
       end
       return $game_player
     when 0  # このイベント
       events = $game_map.events
       return events == nil ? nil : events[@event_id]
-    else  # 特定のイベント
+    else # 特定のイベント
       events = $game_map.events
       return events == nil ? nil : events[parameter]
     end

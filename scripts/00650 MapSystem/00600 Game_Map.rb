@@ -24,6 +24,9 @@ class Game_Map
   attr_reader   :terrain_tags             # 地形タグ テーブル
   # @return [Hash{Integer => Game_Event}] all the living events
   attr_reader   :events
+  # Return the hash of symbol associate to event id
+  # @return [Hash<Symbol, Integer>]
+  attr_accessor :events_sym_to_id
   attr_reader   :fog_ox                   # フォグ 原点 X 座標
   attr_reader   :fog_oy                   # フォグ 原点 Y 座標
   attr_reader   :fog_tone                 # フォグ 色調
@@ -72,10 +75,15 @@ class Game_Map
     # マップイベントのデータを設定
     env = $env
     @events = {}
+    @events_sym_to_id = {player: -1}
     @map.events.each do |i, event|
       next if env.get_event_delete_state(i)
       event.name.force_encoding(Encoding::UTF_8) # £EncodingPatch
-      @events[i] = Game_Event.new(@map_id, event)
+      e = @events[i] = Game_Event.new(@map_id, event)
+      if e.sym_alias
+        log_error("Alias #{e.sym_alias} appear multiple time in the map #{@map_id}.\n\tPlease use uniq aliases.") if @events_sym_to_id.key?(e.sym_alias)
+        @events_sym_to_id[e.sym_alias] = i
+      end
     end
     load_events
     Yuki::ElapsedTime.show(:map_loading, 'Loading events took')

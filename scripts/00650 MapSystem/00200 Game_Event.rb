@@ -14,6 +14,8 @@ class Game_Event < Game_Character
   OFFSET_Y_TAG = /\[offset_y=([0-9\-]+)\]/
   # Tag that forbid the creation of a Sprite_Character for this event
   NO_SPRITE_TAG = '[sprite=off]'
+  # Tag that give the event an symbol alias
+  SYMBOL_ALIAS_TAG = /\[alias=([a-z\-0-9\-_]+)\]/
   # @return [Integer, nil] Type of trigger for the event (0: Action key, 1: Player contact, 2: Event contact, 3: Autorun, 4: Parallel process)
   attr_reader :trigger
   # @return [Array<RPG::EventCommand>] list of commands that should be executed
@@ -30,6 +32,8 @@ class Game_Event < Game_Character
   attr_reader :original_id
   # @return [Integer] Original map id of the event
   attr_reader :original_map
+  # @return [Symbol, nil] The symbol alias of the event
+  attr_reader :sym_alias
   # Initialize the Game_Event with its map_id and its RPG::Event data
   # @param map_id [Integer] id of the map where the event is instanciated
   # @param event [RPG::Event] data of the event
@@ -56,6 +60,7 @@ class Game_Event < Game_Character
     name.sub(OFFSET_Y_TAG) { @offset_screen_y = $1.to_i }
     @surfing = name.include?(SURFING_TAG)
     @invisible_event = (name == INVISIBLE_EVENT_NAME || name.include?(INVISIBLE_EVENT_TAG))
+    name.sub(SYMBOL_ALIAS_TAG) { @sym_alias = $1.to_sym }
   end
 
   # Tell if the event can have a sprite or not
