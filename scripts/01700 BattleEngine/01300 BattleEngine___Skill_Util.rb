@@ -398,7 +398,8 @@ module BattleEngine
     launcher.skills_set[5] = skill.clone
     launcher.skills_set[5].pp += 1
     if @IA_flag
-      use_skill(launcher, target, skill, false)
+      target = [target] unless target.is_a?(Array)
+      use_skill(launcher, target, skill)
     else
       #>Utilisation
       $scene.phase4_attack([0, 5, -target.position-1, launcher])
