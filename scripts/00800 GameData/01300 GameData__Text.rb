@@ -5,7 +5,9 @@ module GameData
   # @author Nuri Yuri
   module Text
     # List of lang id available in the game
-    Available_Langs = %w[en fr it de es ko kana].freeze
+    Available_Langs = %w[en fr it de es ko kana]
+    # Base index of pokemon text in csv files
+    CSV_BASE = 100_000
     # List of texts in the current language
     # @type [Array<Array<String>>]
     @texts = []
@@ -26,7 +28,6 @@ module GameData
         lang = Available_Langs.first
         log_info "Fallback language code : #{lang}"
       end
-      @texts = Marshal.load(Zlib::Inflate.inflate(load_data("Data/Text/#{lang}.dat")))
       @lang = lang
       @dialogs.clear
     end
@@ -42,23 +43,19 @@ module GameData
     # @param text_id [Integer] ID of the text in the file
     # @return [String] the text
     def get(file_id, text_id)
-      if (file = @texts[file_id])
-        if (text = file[text_id])
-          return text
-        end
-        return log_error("Unable to find text #{text_id} in file #{file_id}.")
-      end
-      return log_error("Text file #{file_id} doesn't exist.")
+      get_dialog_message(CSV_BASE + file_id, text_id)
     end
 
     # Get a list of text from the text database
     # @param file_id [Integer] ID of the text file
     # @return [Array<String>] the list of text contained in the file.
     def get_file(file_id)
-      if (file = @texts[file_id])
-        return file
+      file_id += CSV_BASE
+      return @dialogs[file_id] if @dialogs.key?(file_id)
+      unless try2get_marshalized_dialog(file_id) || try2get_csv_dialog(file_id)
+        return log_error("Text file #{file_id - CSV_BASE} doesn't exist.")
       end
-      return log_error("File #{file_id} doesn't exist.")
+      return @dialogs[file_id]
     end
 
     # Get a dialog message
@@ -80,15 +77,17 @@ module GameData
       # Return the result after the text was loaded
       return get_dialog_message(file_id, text_id)
     end
+
     alias get_external get_dialog_message
-    module_function(:get_external)
+    module_function :get_external
 
     # Try to load a preprocessed dialog file (Marshal)
     # @param file_id [Integer] id of the dialog file
     # @return [Boolean] if the operation was a success
     def try2get_marshalized_dialog(file_id)
-      if File.exist?(filename = format('Data/Text/Dialogs/%d.%s.dat', file_id, @lang))
+      if File.exist?(filename = format('Data/Text/Dialogs/%<id>d.%<lang>s.dat', id: file_id, lang: @lang))
         @dialogs[file_id] = load_data(filename)
+        log_info("Marshal text #{filename} was loaded") if debug?
         return true
       end
       return false
@@ -110,6 +109,7 @@ module GameData
           end
         end
         @dialogs[file_id] = build_dialog_from_csv_rows(rows, lang_index)
+        log_info("CSV text #{filemane} was loaded") if debug?
         return true
       end
       return false
@@ -122,6 +122,26 @@ module GameData
     def build_dialog_from_csv_rows(rows, lang_index)
       return Array.new(rows.size - 1) do |i|
         rows[i + 1][lang_index].to_s.gsub('\nl', "\n")
+      end
+    end
+
+    # Marshalize the dialogs
+    def compile
+      Dir.chdir('Data/Text/Dialogs') do
+        Dir['*.csv'].grep(/^[0-9]+\.csv$/).each { |filename| compile_csv(filename) }
+      end
+    end
+
+    # Compile a single csv file
+    # @param filename [String] name of the csv file
+    def compile_csv(filename)
+      file_id = filename.to_i
+      rows = CSV.read(filename)
+      rows.first.each_with_index do |lang, lang_index|
+        next unless Available_Langs.include?(lang = lang.strip.downcase)
+        arr = build_dialog_from_csv_rows(rows, lang_index)
+        output_filename = format('%<id>d.%<lang>s.dat', id: file_id, lang: lang)
+        save_data(arr, output_filename)
       end
     end
   end

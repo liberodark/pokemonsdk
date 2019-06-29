@@ -37,13 +37,13 @@ module GamePlay
 
     # Function processing the Save interface
     def main_process
-      save_question = _get(26, 15)
-      yes = _get(25, 20)
-      no = _get(25, 21)
+      save_question = text_get(26, 15)
+      yes = text_get(25, 20)
+      no = text_get(25, 21)
       # Dont save the game if the player don't answer yes (0), make no (1) the default option
       return unless display_message(save_question, 1, yes, no) == 0
       save_game
-      saved_message = _parse(26, 17, TRNAME[0] => $trainer.name)
+      saved_message = parse_text(26, 17, TRNAME[0] => $trainer.name)
       display_message(saved_message)
     end
 
@@ -74,15 +74,15 @@ module GamePlay
       if pokemon_party
         win.add_text(0, 0, width, 16, retreive_zone_name(pokemon_party), 0).load_color(3)
         # Show the continue text
-        win.add_text(0, 16, width, 16, _get(25, 0), 0) if self.class != Save
+        win.add_text(0, 16, width, 16, text_get(25, 0), 0) if self.class != Save
         # Show the badge part
-        win.add_text(0, 32, width, 16, _get(25, 1), 0)
+        win.add_text(0, 32, width, 16, text_get(25, 1), 0)
         win.add_text(0, 32, width, 16, pokemon_party.trainer.badge_counter, 2).load_color(1)
         # Show the Pokedex part
-        win.add_text(0, 48, width, 16, _get(25, 3), 0)
+        win.add_text(0, 48, width, 16, text_get(25, 3), 0)
         win.add_text(0, 48, width, 16, pokemon_party.pokedex.pokemon_seen, 2).load_color(1)
         # Show the game time part
-        win.add_text(0, 64, width, 16, _get(25, 5), 0)
+        win.add_text(0, 64, width, 16, text_get(25, 5), 0)
         win.add_text(0, 64, width, 16, retreive_play_time(pokemon_party), 2).load_color(1)
         # Show player name
         win.add_text(0, 16, width, 16, pokemon_party.trainer.name, 2)

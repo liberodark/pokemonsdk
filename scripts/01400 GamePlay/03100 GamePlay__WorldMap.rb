@@ -155,7 +155,7 @@ module GamePlay
       @ui_infobox = UI::DexWinMap.new(@viewport_ui, @mode != :view_wall)
       @ui_infobox.data = @pokemon
       @ui_unknown_zone = UI::Window.new(@viewport_ui, UnknownZoneX, UnknownZoneY, UnknownZoneWidth, UnknownZoneHeight)
-      @ui_unknown_zone.add_text(0, 0, 170, 13, _ext(9000, 31), 1)
+      @ui_unknown_zone.add_text(0, 0, 170, 13, ext_text(9000, 31), 1)
       @ui_unknown_zone.visible = false
 
       # Zone display

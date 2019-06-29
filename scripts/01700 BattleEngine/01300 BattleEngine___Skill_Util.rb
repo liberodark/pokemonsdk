@@ -78,7 +78,7 @@ module BattleEngine
   def _status_attempt(launcher, target, skill)
     target = _magic_coat(launcher, target, skill)
     if(target.battle_effect.has_safe_guard_effect?) #>Rune Protect
-      _mp([:msg, _parse_with_pokemon(19,842, target)])
+      _mp([:msg, parse_text_with_pokemon(19,842, target)])
       return false
     end
     case skill.status_effect
@@ -112,7 +112,7 @@ module BattleEngine
   def _stat_change_attempt(launcher, target, skill)
     did_something = false
     if(target.battle_effect.has_mist_effect? and get_enemies!(launcher).include?(target))
-      _message_stack_push([:msg, _parse_with_pokemon(19, 845, launcher)])
+      _message_stack_push([:msg, parse_text_with_pokemon(19, 845, launcher)])
       return false
     end
     bs = skill.battle_stage_mod
@@ -171,7 +171,7 @@ module BattleEngine
   def _target_protected(launcher, target, skill)
     if(skill.blocable?)
       if(target.battle_effect.has_protect_effect?)
-        _message_stack_push([:msg, _parse_with_pokemon(19, 523, target)])
+        _message_stack_push([:msg, parse_text_with_pokemon(19, 523, target)])
         _mp([:change_atk, launcher, -2]) if(target.last_skill == 588 and skill.direct?) #>Si pb changer contact? par direct? (Bouclier Royal)
         _mp([:hp_down, launcher, launcher.max_hp/8]) if(target.last_skill == 596 and skill.direct?) #> Pico-Défense
         return true if(target.last_skill != 501 or skill.priority > 7) #> Prévention (A vérifier :d)
@@ -361,16 +361,16 @@ module BattleEngine
     be = launcher.battle_effect
     #>Entrave
     if(be.has_disable_effect? and id == be.disable_skill_id)
-      _mp([:msg, _parse_with_pokemon(19, 595, launcher, MOVE[1] => skill.name)]) if msg
+      _mp([:msg, parse_text_with_pokemon(19, 595, launcher, MOVE[1] => skill.name)]) if msg
       return true
     elsif(skill.status? and be.has_taunt_effect?) #> Provoc
-      _mp([:msg, _parse_with_pokemon(19, 571, launcher, MOVE[1] => skill.name)]) if msg
+      _mp([:msg, parse_text_with_pokemon(19, 571, launcher, MOVE[1] => skill.name)]) if msg
       return true
     elsif(be.has_torment_effect? and skill.id == launcher.last_skill) #> Tourmente
-      _mp([:msg, _parse_with_pokemon(19, 580, launcher)]) if msg
+      _mp([:msg, parse_text_with_pokemon(19, 580, launcher)]) if msg
       return true
     elsif(be.has_imprison_effect? and be.is_skill_imprisonned?(skill)) #> Possessif
-      _mp([:msg, _parse_with_pokemon(19, 589, launcher, MOVE[1] => skill.name)]) if msg
+      _mp([:msg, parse_text_with_pokemon(19, 589, launcher, MOVE[1] => skill.name)]) if msg
       return true
     end
     return false

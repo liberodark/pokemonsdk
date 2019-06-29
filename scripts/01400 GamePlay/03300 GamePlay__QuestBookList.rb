@@ -19,7 +19,7 @@ module GamePlay
       @quests_name.each_with_index do |name, i|
         add_text(1, i * 23, 160, 23, name).load_color($quests.finished?(@quests_id[i]) ? 11 : 9)
       end
-      add_text(0, @quests_name.size * 23, 160, 23, _ext(9000, 51), 1).load_color(9)
+      add_text(0, @quests_name.size * 23, 160, 23, ext_text(9000, 51), 1).load_color(9)
       # Showing the selector
       @index = 0
       @selector = Sprite.new(@viewport2)
@@ -65,7 +65,7 @@ module GamePlay
       when :failed
         @quests_id = $quests.failed_quests.keys
       end
-      @quests_name = @quests_id.collect { |id| _get(45, id) }
+      @quests_name = @quests_id.collect { |id| text_get(45, id) }
     end
 
     # Change the viewport visibility of the scene

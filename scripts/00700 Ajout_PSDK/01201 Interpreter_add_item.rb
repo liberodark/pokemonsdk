@@ -16,7 +16,7 @@ class Interpreter
       add_item_no_space(item_id, no_space_text_id, color)
     else
       item_text, socket = add_item_show_message_got(item_id, text_id, color)
-      str = _parse(
+      str = parse_text(
         41, 9,
         PFM::Text::ITEM2[1] => item_text,
         PFM::Text::TRNAME[0] => $trainer.name,
@@ -58,7 +58,7 @@ class Interpreter
   def add_item_no_space(item_id, no_space_text_id, color)
     item_text = "\\c[#{color}]#{GameData::Item.name(item_id)}\\c[0]"
     text = PFM::Text
-    str = _parse(
+    str = parse_text(
       41, no_space_text_id,
       text::ITEM2[1] => item_text,
       text::TRNAME[0] => $trainer.name
@@ -77,7 +77,7 @@ class Interpreter
     text = PFM::Text
     if misc_data&.skill_learn
       text_id = text_id <= 3 ? 3 : 6
-      str = _parse(
+      str = parse_text(
         41, text_id,
         text::ITEM2[1] => item_text,
         text::TRNAME[0] => $trainer.name,
@@ -85,7 +85,7 @@ class Interpreter
       )
       p str
     else
-      str = _parse(
+      str = parse_text(
         41, text_id,
         text::ITEM2[1] => item_text,
         text::TRNAME[0] => $trainer.name

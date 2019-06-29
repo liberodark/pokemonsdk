@@ -12,7 +12,7 @@ module GamePlay
       @utils = StorageUtils.new
       @index = 1
       @utils.draw_selector(@index)
-      @arr = [_ext(9000, 90), _get(33, 41), _get(33, 82)]
+      @arr = [ext_text(9000, 90), text_get(33, 41), text_get(33, 82)]
       @running = true
     end
 
@@ -33,7 +33,7 @@ module GamePlay
       @utils.update
       return if $game_temp.message_text
       if Input.trigger?(:B)
-        c = @utils.display_message(_ext(9000, 87), 2, _get(33, 83), _get(33, 84))
+        c = @utils.display_message(ext_text(9000, 87), 2, text_get(33, 83), text_get(33, 84))
         @return_data = nil
         @running = false if (c == 0)
       end

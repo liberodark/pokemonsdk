@@ -12,19 +12,19 @@ module GameData
     def get_socket_name(socket)
       case socket
       when 1
-        return _get(15, 0)
+        return text_get(15, 0)
       when 2
         return "Pokéball"
       when 3
-        return _get(15, 2)
+        return text_get(15, 2)
       when 4
-        return _get(15, 3)
+        return text_get(15, 3)
       when 5
-        return _get(15, 4)
+        return text_get(15, 4)
       when 6
-        return _get(15, 1)
+        return text_get(15, 1)
       end
-      return _get(15, 0)
+      return text_get(15, 0)
     end
   end
 end

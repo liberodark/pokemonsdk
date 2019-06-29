@@ -36,7 +36,7 @@ module UI
       end
 
       def level=(value)
-        @level.text = _ext(9000, 145) % value # "N#{value}"
+        @level.text = ext_text(9000, 145) % value # "N#{value}"
       end
     end
 

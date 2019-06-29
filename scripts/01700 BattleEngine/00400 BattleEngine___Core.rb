@@ -128,7 +128,7 @@ module BattleEngine
   #===
   def _State_decrease(symbol, text_id)
     if @_State[symbol] > 0
-      _mp([:msgf, _parse(18, text_id)]) if((@_State[symbol] -= 1) <= 0)
+      _mp([:msgf, parse_text(18, text_id)]) if((@_State[symbol] -= 1) <= 0)
     end
   end
   #===
@@ -139,10 +139,10 @@ module BattleEngine
     value = @_State[symbol]
     if value.is_a?(Integer) and value > 0
       @_State[symbol] = 0
-      _mp([:msgf, _parse(18, text_id)])
+      _mp([:msgf, parse_text(18, text_id)])
     elsif value == true
       @_State[symbol] = false
-      _mp([:msgf, _parse(18, text_id)])
+      _mp([:msgf, parse_text(18, text_id)])
     end
   end
   #===

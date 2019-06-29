@@ -7,7 +7,7 @@ module GamePlay
       super()
       @goods = pokemon_ids
       @item_names = Array.new(pokemon_ids.size) { |i| ::GameData::Pokemon.name(pokemon_ids[i]) }
-      @item_prices = Array.new(@goods.size) { |i| _parse(22,159, NUM7R => pokemon_prices[i].to_s) }
+      @item_prices = Array.new(@goods.size) { |i| parse_text(22,159, NUM7R => pokemon_prices[i].to_s) }
       @pokemon_prices = pokemon_prices
       @pokemon_levels = pokemon_levels
       draw_item_list
@@ -17,12 +17,12 @@ module GamePlay
     def buy_item(item_id)
       price = @pokemon_prices[index = @goods.index(item_id).to_i]
       if(price == 0 or price > $pokemon_party.money)
-        display_message(_parse(11, 24))
+        display_message(parse_text(11, 24))
         return
       else
-        c = display_message(_parse(11,25, ITEM2[0] => ::GameData::Pokemon.name(item_id),
+        c = display_message(parse_text(11,25, ITEM2[0] => ::GameData::Pokemon.name(item_id),
           NUM2[1] => "1", NUM7R => price.to_s), 1,
-          _get(11,27), _get(11,28))
+          text_get(11,27), text_get(11,28))
         return if(c != 0)
         if (level = @pokemon_levels[index]).is_a?(Hash)
           pokemon = PFM::Pokemon.generate_from_hash(level)
@@ -32,7 +32,7 @@ module GamePlay
         $pokemon_party.add_pokemon(pokemon)
         $pokemon_party.lose_money(price)
         draw_gold_window
-        display_message(_get(11,29))
+        display_message(text_get(11,29))
         #> Jouer le bruit du shop
       end
     end

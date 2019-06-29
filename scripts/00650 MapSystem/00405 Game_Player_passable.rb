@@ -5,7 +5,7 @@ class Game_Player
   # @param d [Integer] direction : 2, 4, 6, 8, 0. 0 = current position
   # @return [Boolean] if the front/current tile is passable
   def passable?(x, y, d)
-    if $TEST and Input::Keyboard.press?(Input::Keyboard::LControl)# or Yuki::SystemTag.running?
+    if debug? && Input::Keyboard.press?(Input::Keyboard::LControl) # or Yuki::SystemTag.running?
       # 通行可
       return false if x == 0 and d == 4
       return false if y == 0 and d == 8

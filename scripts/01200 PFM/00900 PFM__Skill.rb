@@ -106,7 +106,7 @@ module PFM
     def power_text
       power = $game_data_skill[@id].power
       if power == 0
-        return _get(11,12)
+        return text_get(11,12)
       end
       return power.to_s
     end
@@ -135,7 +135,7 @@ module PFM
     def accuracy_text
       acc = $game_data_skill[@id].accuracy
       if acc == 0
-        return _get(11,12)
+        return text_get(11,12)
       end
       return acc.to_s
     end

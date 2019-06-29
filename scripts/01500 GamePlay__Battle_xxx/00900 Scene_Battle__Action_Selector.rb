@@ -17,10 +17,10 @@ class Scene_Battle
       @select_sprite = push(0, 0, "choice_select")
       @select_sprite.z = z = 10006
       push(281, 115, nil, type: UI::PokemonIconSprite).z = z
-      add_text(256, 28, 64, 135, _get(32,0), 1, 1, color: 9).z = z
-      add_text(0, 49, 62, 18, _get(32,2), 1, 1, color: 9).z = z
-      add_text(0, 117, 62, 18, _get(32,1), 1, 1, color: 9).z = z
-      add_text(109, 158, 102, 34,_get(32,3), 1, 1, color: 9).z = z
+      add_text(256, 28, 64, 135, text_get(32,0), 1, 1, color: 9).z = z
+      add_text(0, 49, 62, 18, text_get(32,2), 1, 1, color: 9).z = z
+      add_text(0, 117, 62, 18, text_get(32,1), 1, 1, color: 9).z = z
+      add_text(109, 158, 102, 34,text_get(32,3), 1, 1, color: 9).z = z
       self.visible = false
       self.pos_selector(0)
     end

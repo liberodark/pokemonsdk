@@ -112,7 +112,7 @@ module GamePlay
 
     def draw_digits
       if $game_temp.shop_calling
-        @texts.last.text = _parse(11, 9, /\[VAR NUM7[^\]]*\]/ => (@number*$game_temp.shop_calling).to_s)
+        @texts.last.text = parse_text(11, 9, /\[VAR NUM7[^\]]*\]/ => (@number*$game_temp.shop_calling).to_s)
         offset = 1
       else
         offset = 0

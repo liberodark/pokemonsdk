@@ -60,7 +60,7 @@ module GamePlay
       # Initialize the texts
       def create_texts
         @ui_texts = UI::VoltorbFlip::Texts.new(@viewport)
-        @ui_texts.title = _ext(9000, 123) # 'voltorbataille'
+        @ui_texts.title = ext_text(9000, 123) # 'voltorbataille'
         update_coin
       end
 
@@ -137,11 +137,11 @@ module GamePlay
         case @state
         when 0 # Intro
           @black.visible = true
-          @player_choice = display_message(_ext(9000, 124)) # 'Bienvenue au Voltbataille')
+          @player_choice = display_message(ext_text(9000, 124)) # 'Bienvenue au Voltbataille')
           @state += 1
         when 1 # New Game invite
           @black.visible = true
-          @player_choice = display_message(_ext(9000, 125) % @level, 1, _ext(9000, 126), _ext(9000, 127), _ext(9000, 128))
+          @player_choice = display_message(ext_text(9000, 125) % @level, 1, ext_text(9000, 126), ext_text(9000, 127), ext_text(9000, 128))
           # "Jouer à Voltorbataille niveau #{@level} ?", 1, 'Jouer', 'Infos', 'Partir')
           if @player_choice == 0
             @state += 1
@@ -159,14 +159,14 @@ module GamePlay
           @black.visible = false
           @state = 100 # Play
         when 10 # Infos
-          @player_choice = display_message(_ext(9000, 129), 1, _ext(9000, 130), _ext(9000, 131), _ext(9000, 132), _ext(9000, 133))
+          @player_choice = display_message(ext_text(9000, 129), 1, ext_text(9000, 130), ext_text(9000, 131), ext_text(9000, 132), ext_text(9000, 133))
           # "Que voulez-vous savoir ?", 1, 'Règles', 'Indices', 'Le mémo', 'Retour')
           if @player_choice == 0
-            display_message(_ext(9000, 134)) # "### A ECRIRE ###")
+            display_message(ext_text(9000, 134)) # "### A ECRIRE ###")
           elsif @player_choice == 1
-            display_message(_ext(9000, 135)) # "### A ECRIRE ###")
+            display_message(ext_text(9000, 135)) # "### A ECRIRE ###")
           elsif @player_choice == 2
-            display_message(_ext(9000, 136)) # "### A ECRIRE ###")
+            display_message(ext_text(9000, 136)) # "### A ECRIRE ###")
           else
             @state = 1
           end
@@ -183,10 +183,10 @@ module GamePlay
             return true
           end
         when 110 # Quit or B button
-          @player_choice = display_message(_ext(9000, 137) % @coin_gain, 1, _ext(9000, 95), _ext(9000, 96))
+          @player_choice = display_message(ext_text(9000, 137) % @coin_gain, 1, ext_text(9000, 95), ext_text(9000, 96))
           # "Choisir 'Quitter' maintenant vous permet d'empocher #{@coin_gain} jetons.\nQuitter maintenant ?", 1, 'Oui', 'Non')
           if @player_choice == 0
-            display_message(_ext(9000, 138) % @coin_gain) # "Vous empochez #{@coin_gain} jetons !")
+            display_message(ext_text(9000, 138) % @coin_gain) # "Vous empochez #{@coin_gain} jetons !")
             @coin_case_increase = get_increment(@coin_case, @coin_case + @coin_gain)
             @state += 1
           else
@@ -201,7 +201,7 @@ module GamePlay
           @last_level = @level
           @level = 1
           if @last_level > @level
-            display_message(_ext(9000, 139) % @level) # "Le jeu est descendu au niveau #{@level}.")
+            display_message(ext_text(9000, 139) % @level) # "Le jeu est descendu au niveau #{@level}.")
           end
           @state = 1
         end
@@ -212,9 +212,9 @@ module GamePlay
         case @state
         when 200 # WIN
           Audio.se_play('Audio/SE/voltorbflip/volt_extra_pay')
-          display_message(_ext(9000, 140)) # "Gagné !")
-          display_message(_ext(9000, 141)) # "Toutes les cartes de 2 et ou 3 points ont été retournées...")
-          display_message(_ext(9000, 142) % @coin_gain) # "Vous gagnez #{@coin_gain} jetons !")
+          display_message(ext_text(9000, 140)) # "Gagné !")
+          display_message(ext_text(9000, 141)) # "Toutes les cartes de 2 et ou 3 points ont été retournées...")
+          display_message(ext_text(9000, 142) % @coin_gain) # "Vous gagnez #{@coin_gain} jetons !")
           @state += 1
         when 201 # Increase score
           @coin_case_increase = get_increment(@coin_case, @coin_case + @coin_gain)
@@ -231,7 +231,7 @@ module GamePlay
           @last_level = @level
           @level = [@level + 1, 5].min
           if @last_level < @level
-            display_message(_ext(9000, 143) % @level) # "Le jeu est monté niveau #{@level}, les gains sont plus importants.")
+            display_message(ext_text(9000, 143) % @level) # "Le jeu est monté niveau #{@level}, les gains sont plus importants.")
           end
           @state = 1 # New Game invite
         end
@@ -260,9 +260,9 @@ module GamePlay
         when 304
           @state += 1 unless (@counter += 1) < 120
         when 305
-          display_message(_ext(9000, 144)) # "Vous perdez tous les jetons de la manche...")
+          display_message(ext_text(9000, 144)) # "Vous perdez tous les jetons de la manche...")
           if @last_level > @level
-            display_message(_ext(9000, 139) % @level) # "Le jeu est descendu au niveau #{@level}.")
+            display_message(ext_text(9000, 139) % @level) # "Le jeu est descendu au niveau #{@level}.")
           end
           $game_system.bgm_restore
           @state = 1

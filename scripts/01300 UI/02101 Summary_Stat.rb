@@ -11,7 +11,7 @@ module UI
       super(viewport, 0, 0, default_cache: :interface)
       push(0, 0, 'summary/stats')
       init_stats
-      ability_text = add_text(13, 138, 100, 16, _get(33, 142) + ': ')
+      ability_text = add_text(13, 138, 100, 16, text_get(33, 142) + ': ')
       @ability_name = add_text(13 + ability_text.real_width, 138, 294, 16, :ability_name, type: SymText, color: 1)
       @ability_descr = add_text(13, 138 + 16, 294, 16, :ability_descr, type: SymMultilineText)
     end
@@ -32,7 +32,7 @@ module UI
 
     # Init the stat texts
     def init_stats
-      texts = _get_file(27)
+      texts = text_file_get(27)
       # --- Static part ---
       @nature_text = add_text(114, 19, 60, 16, '') # Nature
       @stat_name_texts = []

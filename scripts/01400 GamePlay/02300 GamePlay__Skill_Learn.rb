@@ -95,15 +95,15 @@ module GamePlay
       @message_window.visible = true if $game_temp.in_battle
       if (@pokemon.skills_set.size < 4)
         @pokemon.learn_skill(@skill_learn.id)
-        display_message(_parse(22, 106, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
+        display_message(parse_text(22, 106, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
           ::PFM::Text::MOVE[1] => @skill_learn.name))
         @learnt = true
         @running = false
       else
-        c = display_message(_parse(22, 99, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
-          ::PFM::Text::MOVE[1] => @skill_learn.name), 1, _get(23, 85), _get(23, 86))
+        c = display_message(parse_text(22, 99, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
+          ::PFM::Text::MOVE[1] => @skill_learn.name), 1, text_get(23, 85), text_get(23, 86))
         if (c == 0)
-          display_message_and_wait(_parse(22, 100))
+          display_message_and_wait(parse_text(22, 100))
           #@message_window.visible = false if $game_temp.in_battle
           if (@viewport.visible == false)
             Graphics.freeze
@@ -121,10 +121,10 @@ module GamePlay
     end
 
     def message_end
-      c = display_message(_parse(22, 102, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
-          ::PFM::Text::MOVE[1] => @skill_learn.name), 1, _get(23, 85), _get(23, 86))
+      c = display_message(parse_text(22, 102, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
+          ::PFM::Text::MOVE[1] => @skill_learn.name), 1, text_get(23, 85), text_get(23, 86))
       if (c == 0)
-        display_message_and_wait(_parse(22, 103, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
+        display_message_and_wait(parse_text(22, 103, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
           ::PFM::Text::MOVE[1] => @skill_learn.name))
         @running = false
       elsif (c == 1)
@@ -135,7 +135,7 @@ module GamePlay
     def forget
       old_skill = @skills[@skill_select]
       @pokemon.replace_skill_index(@skill_select, @skill_learn.id)
-      display_message_and_wait(_parse(22, 101, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
+      display_message_and_wait(parse_text(22, 101, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
         ::PFM::Text::MOVE[1] => old_skill.name, ::PFM::Text::MOVE[2] => @skill_learn.name))
       @learnt = true
       @running = false
@@ -212,7 +212,7 @@ module GamePlay
       stack = SpriteStack.new(@viewport, x, y)
       stack.push(9, 24, nil, type: TypeSprite)
       stack.add_text(25, 6, 85, 16, :name, 1, type: SymText, color: 8)
-      stack.add_text(70, 23, 20, 16, _get(24, 27), color: 8)
+      stack.add_text(70, 23, 20, 16, text_get(24, 27), color: 8)
       stack.add_text(81, 23, 40, 16, :pp_text, 1, type: SymText, color: 8)
       stack.visible = false
       return stack
@@ -229,9 +229,9 @@ module GamePlay
       stack = @skill_descr_selected = SpriteStack.new(@viewport, 41, 75)
       stack.push(132, 90, nil, type: TypeSprite)
       stack.add_text(10, 89, 85, 16, :name, type: SymText, color: 8)
-      stack.add_text(180, 89, 20, 16, _get(24, 27), color: 8)
+      stack.add_text(180, 89, 20, 16, text_get(24, 27), color: 8)
       stack.add_text(193, 89, 40, 16, :pp_text, type: SymText, color: 8)
-      stack.add_text(76, 139, 60, 16, _get(24, 36), color: 8)
+      stack.add_text(76, 139, 60, 16, text_get(24, 36), color: 8)
       stack.visible = false
       stack = @skill_descr = SpriteStack.new(@viewport, 82, 12)
       stack.push(31, 21, nil, type: CategorySprite)

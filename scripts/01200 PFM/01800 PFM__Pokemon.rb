@@ -323,7 +323,7 @@ module PFM
     # Return the text of the nature
     # @return [String]
     def nature_text
-      return _get(8, nature.first)
+      return text_get(8, nature.first)
     end
     # Return the primitive data of the Pokemon
     # @return [GameData::Pokemon]
@@ -585,7 +585,7 @@ module PFM
     # Return the level text with "Level: " inside
     # @return [String]
     def level_text2
-      "#{_get(27, 29)}#@level"
+      "#{text_get(27, 29)}#@level"
     end
     # Returns the HP text
     # @return [String]

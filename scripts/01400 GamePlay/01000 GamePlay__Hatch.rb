@@ -74,12 +74,12 @@ module GamePlay
       if @counter == 0
         @message_window.auto_skip = true
         @message_window.stay_visible = true
-        display_message(_get(36, 37))
+        display_message(text_get(36, 37))
       elsif @counter == POKEMON_ALPHA_DOWN_END
         @message_window.auto_skip = false
         Audio.bgm_play(Evolve::EvolvedMusic)
         PFM::Text.set_pkname(@pokemon, 0)
-        display_message(_get(36, 38))
+        display_message(text_get(36, 38))
       elsif @counter > POKEMON_ALPHA_DOWN_END
         show_rename_choice
         Audio.bgm_stop
@@ -93,7 +93,7 @@ module GamePlay
     # Show the rename choice
     def show_rename_choice
       PFM::Text.set_pkname(@pokemon, 0)
-      choice = display_message(_get(36, 39), 1, _get(11, 27), _get(11, 28))
+      choice = display_message(text_get(36, 39), 1, text_get(11, 27), text_get(11, 28))
       return unless choice == 0 # No
       Graphics.freeze
       @pokemon.given_name = Scene_NameInput.new(@pokemon.given_name, 10, @pokemon).main.return_name

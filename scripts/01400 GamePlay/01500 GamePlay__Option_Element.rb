@@ -134,7 +134,7 @@ module GamePlay
     def fetch_text(id)
       text = TextData.fetch(id, TextError)
       if text.class == Array
-        return _ext(9000, text.last) if text.first == 9000
+        return ext_text(9000, text.last) if text.first == 9000
         return GameData::Text.get(*text)
       end
       text

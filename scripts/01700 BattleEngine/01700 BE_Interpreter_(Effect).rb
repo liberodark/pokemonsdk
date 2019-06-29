@@ -50,7 +50,7 @@ module BattleEngine
       return if @ignore or target.hp==0
       be = target.battle_effect
       be.apply_powder
-      msg(_parse_with_pokemon(19, 1210, target))
+      msg(parse_text_with_pokemon(19, 1210, target))
     end
     #===
     #>Forcer une attaque penden n tours
@@ -92,7 +92,7 @@ module BattleEngine
         @scene.money += target.level*n
         #>Délire à piece rune non fait !
       end
-      msg(_parse(18, 128))
+      msg(parse_text(18, 128))
     end
     #===
     #>Etreinte
@@ -108,7 +108,7 @@ module BattleEngine
     #===
     def leech_seed(target, launcher)
       return if @ignore or target.hp==0
-      msg(_parse_with_pokemon(19, 607, target))
+      msg(parse_text_with_pokemon(19, 607, target))
       target.battle_effect.apply_leech_seed(launcher)
     end
     #===

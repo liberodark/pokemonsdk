@@ -238,13 +238,13 @@ module PFM
       if @signal[:start].size > 0
         #> Afficher l'interface de démarrage de quête avec la liste @signal[:start]
         @signal[:start].each do |quest_id|
-#          Yuki.send_notification("Nouvelle quête !", _get(45, quest_id))
+#          Yuki.send_notification("Nouvelle quête !", text_get(45, quest_id))
         end
       end
       if @signal[:finish].size > 0
         #> Pareil mais fin de quête avec @signal[:finish]
         @signal[:finish].each do |quest_id|
-#          Yuki.send_notification("Quête terminée !", _get(45, quest_id))
+#          Yuki.send_notification("Quête terminée !", text_get(45, quest_id))
             if @active_quests.fetch(quest_id, nil)
                  @finished_quests[quest_id] = @active_quests.delete(quest_id)
             end

@@ -18,7 +18,7 @@ module GamePlay
       super(viewport)
       set_bitmap(Files[pokemon.position < 0 ? 1 : 0], :interface)
       #> Text generation
-      text = _parse(18, 107, 
+      text = parse_text(18, 107, 
         PFM::Text::PKNICK[0] => pokemon.given_name, 
         PFM::Text::ABILITY[1] => pokemon.ability_name)
       align = pokemon.position < 0 ? 2 : 0

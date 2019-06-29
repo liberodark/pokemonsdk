@@ -14,11 +14,11 @@ module GamePlay
       # Showing the background
       Sprite.new(@viewport).set_bitmap(isf ? "quest/quest_bg_1" : "quest/quest_bg_1_2", :interface)
       # Showing the texts
-      add_text(0, isf ? 39 : 53, 320, 23, _ext(9000, 48), 1, 1).load_color(9) # "Quêtes principales"
-      add_text(0, isf ? 84 : 106, 320, 23, _ext(9000, 49), 1, 1).load_color(9) # "Quêtes secondaires"
+      add_text(0, isf ? 39 : 53, 320, 23, ext_text(9000, 48), 1, 1).load_color(9) # "Quêtes principales"
+      add_text(0, isf ? 84 : 106, 320, 23, ext_text(9000, 49), 1, 1).load_color(9) # "Quêtes secondaires"
       # "Quêtes échouées"
-      add_text(0, 129, 320, 23, _ext(9000, 50), 1, 1).load_color(9) if isf # If set after "quitter", there will be error with index
-      add_text(0, isf ? 174 : 159, 320, 23, _ext(9000, 26), 1, 1).load_color(9)
+      add_text(0, 129, 320, 23, ext_text(9000, 50), 1, 1).load_color(9) if isf # If set after "quitter", there will be error with index
+      add_text(0, isf ? 174 : 159, 320, 23, ext_text(9000, 26), 1, 1).load_color(9)
       # Showing the selector
       @index = 0
       @selector = Sprite.new(@viewport)

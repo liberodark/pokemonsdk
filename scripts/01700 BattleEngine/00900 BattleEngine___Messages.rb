@@ -77,6 +77,6 @@ module BattleEngine
   # Push d'un message textuel dans le stack
   #===
   def _msgp(file, id, pkmn = nil, additionnal_var = nil)
-    _mp([:msg, _parse_with_pokemon(file, id, pkmn, additionnal_var)])
+    _mp([:msg, parse_text_with_pokemon(file, id, pkmn, additionnal_var)])
   end
 end

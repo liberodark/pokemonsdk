@@ -58,13 +58,13 @@ class Scene_Battle
     Audio.se_play(@enemies[0].cry)
     if($game_temp.vs_type == 1 or @enemies.size == 1)
       animation_shiny(animator.get_sprite(0), true) if @enemies[0].shiny
-      display_message(_parse(18,1, PKNAME[0] => @enemies[0].name))
+      display_message(parse_text(18,1, PKNAME[0] => @enemies[0].name))
     else
       Audio.se_play(@enemies[1].cry)
       animation_shiny(animator.get_sprite(0), true) if @enemies[0].shiny
       animation_shiny(animator.get_sprite(1), true) if @enemies[1].shiny
-      display_message(_parse(18,1, PKNAME[0] => @enemies[0].name)+"\n"+
-      _parse(18,1, PKNAME[0] => @enemies[1].name))
+      display_message(parse_text(18,1, PKNAME[0] => @enemies[0].name)+"\n"+
+      parse_text(18,1, PKNAME[0] => @enemies[1].name))
     end
     animator.unlock
     Graphics.update while(animator.update)
@@ -95,21 +95,21 @@ class Scene_Battle
     @e_remaining_pk.move_to(320,0,30)
     first_name = sprintf(TrainerName_Format, ::GameData::Trainer.class_name(@trainer_class),@trainer_names[0]) #> Formatage du nom des dresseurs pour la compréhension
     if($game_temp.vs_type == 1 or @enemies.size == 1)
-      display_message(_parse(18,9, BattleEngine::TRNAME[0] => first_name))
+      display_message(parse_text(18,9, BattleEngine::TRNAME[0] => first_name))
       animator.unlock
       @message_window.blocking = false
-      display_message(_parse(18,18, BattleEngine::TRNAME[0] => @trainer_names[0],
+      display_message(parse_text(18,18, BattleEngine::TRNAME[0] => @trainer_names[0],
       BattleEngine::PKNICK[1] => @enemies[0].given_name))
     else
-      display_message(_parse(18,11, BattleEngine::TRNAME[0] => first_name,
+      display_message(parse_text(18,11, BattleEngine::TRNAME[0] => first_name,
       BattleEngine::TRNAME[1] => @trainer_names[1]))
       animator.unlock
       @message_window.blocking = false
       #>A faire !
       if($game_temp.vs_enemies == 1)
-        display_message(_parse(18,18, BattleEngine::TRNAME[0] => @trainer_names[0],
+        display_message(parse_text(18,18, BattleEngine::TRNAME[0] => @trainer_names[0],
       BattleEngine::PKNICK[1] => @enemies[0].given_name))
-        display_message(_parse(18,18, BattleEngine::TRNAME[0] => @trainer_names[1],
+        display_message(parse_text(18,18, BattleEngine::TRNAME[0] => @trainer_names[1],
       BattleEngine::PKNICK[1] => @enemies[1].given_name))
       else
 
@@ -200,7 +200,7 @@ class Scene_Battle
     while(message = BattleEngine._message_check(:critical_hit, :efficient_msg, :unefficient_msg, :parametre))
       BattleEngine::BE_Interpreter.send(*message)
     end
-    display_message(_parse_with_pokemon(19, 0, pokemon, 
+    display_message(parse_text_with_pokemon(19, 0, pokemon, 
     BattleEngine::PKNICK[0] => pokemon.given_name))
     pokemon.status=0
     @_EXP_GIVE.push(pokemon)
@@ -211,7 +211,7 @@ class Scene_Battle
   #> Animation de la cap spé
   #===
   def ability_display(pokemon)
-    #display_message(_parse(18,107,PFM::Text::PKNICK[0] => pokemon.given_name, PFM::Text::ABILITY[1] => pokemon.ability_name))
+    #display_message(parse_text(18,107,PFM::Text::PKNICK[0] => pokemon.given_name, PFM::Text::ABILITY[1] => pokemon.ability_name))
     GamePlay::BattleAbilityDisplayer.new(@viewport, pokemon, @stuff_to_update)
   end
 

@@ -54,9 +54,9 @@ module GamePlay
     def show_quest
       quest = GameData::Quest.quest(@id)
       return unless quest
-      @quest_name.text = _get(45, @id)
+      @quest_name.text = text_get(45, @id)
       @quest_name.load_color($quests.finished?(@id) ? 11 : ($quests.failed?(@id) ? 12 : 9))
-      @quest_descr.multiline_text = _get(46, @id)
+      @quest_descr.multiline_text = text_get(46, @id)
       @objective_stack.dispose
       show_objective(quest)
       color = $quests.earnings_got?(@id) ? 12 : 18
@@ -77,7 +77,7 @@ module GamePlay
       if earning[:money]
         text.text = "#{earning[:money]}$"
       elsif earning[:item]
-        text.text = "#{earning[:item_amount]} #{_get(12, earning[:item])}"
+        text.text = "#{earning[:item_amount]} #{text_get(12, earning[:item])}"
       end
       text.visible = true
     end
@@ -99,51 +99,51 @@ module GamePlay
         case type
         when :items
           undone = (nb = quest[:items][index_in_table]) < (amount = quest_data.item_amount[index_in_table])
-          text = format(_ext(9000, 52), 
+          text = format(ext_text(9000, 52), 
             amount: amount, 
-            item_name: _get(12, quest_data.items[index_in_table]),
+            item_name: text_get(12, quest_data.items[index_in_table]),
             found: nb)
         when :speak_to
           undone = !quest[:spoken][index_in_table]
-          text = format(_ext(9000, 53), name: quest_data.speak_to[index_in_table])
+          text = format(ext_text(9000, 53), name: quest_data.speak_to[index_in_table])
         when :see_pokemon
           undone = quest[:pokemon_seen][index_in_table]
-          text = format(_ext(9000, 54), name: _get(0, quest_data.see_pokemon[index_in_table]))
+          text = format(ext_text(9000, 54), name: text_get(0, quest_data.see_pokemon[index_in_table]))
         when :beat_pokemon
           undone = (nb = quest[:pokemon_beaten][index_in_table]) < (amount = quest_data.beat_pokemon_amount[index_in_table])
-          text = format(_ext(9000, 55), 
+          text = format(ext_text(9000, 55), 
             amount: amount, 
-            name: _get(0, quest_data.beat_pokemon[index_in_table]),
+            name: text_get(0, quest_data.beat_pokemon[index_in_table]),
             found: nb)
         when :catch_pokemon
           undone = (nb = quest[:pokemon_catch][index_in_table]) < (amount = quest_data.catch_pokemon_amount[index_in_table])
-          text = format(_ext(9000, 56), 
+          text = format(ext_text(9000, 56), 
             amount: amount, 
             name: _convert_catch(quest_data.catch_pokemon[index_in_table]),
             found: nb)
         when :beat_npc
           undone = (nb = quest[:npc_beaten][index_in_table]) < (amount = quest_data.beat_npc_amount[index_in_table])
           if amount > 1
-            text = format(_ext(9000, 57), 
+            text = format(ext_text(9000, 57), 
               amount: amount, 
               name: quest_data.beat_npc[index_in_table],
               found: nb)
           else
-            text = format(_ext(9000, 58), name: quest_data.beat_npc[index_in_table])
+            text = format(ext_text(9000, 58), name: quest_data.beat_npc[index_in_table])
           end
         when :get_egg_amount
           undone = (nb = quest[:egg_counter]) < (amount = quest_data.get_egg_amount)
           if amount > 1
-            text = format(_ext(9000, 59), amount: amount, found: nb)
+            text = format(ext_text(9000, 59), amount: amount, found: nb)
           else
-            text = _ext(9000, 60)
+            text = ext_text(9000, 60)
           end
         when :hatch_egg_amount
           undone = (nb = quest[:egg_hatched]) < (amount = quest_data.hatch_egg_amount)
           if amount > 1
-            text = format(_ext(9000, 61), amount: amount, found: nb)
+            text = format(ext_text(9000, 61), amount: amount, found: nb)
           else
-            text = _ext(9000, 62)
+            text = ext_text(9000, 62)
           end
         else
           next
@@ -163,25 +163,25 @@ module GamePlay
     # @return [String]
     def _convert_catch(data)
       if data.is_a?(Integer)
-        return _get(0, data)
+        return text_get(0, data)
       end
       str = "Pokémon"
       if id = data[:type]
-        str << format(_ext(9000, 63), $game_data_types[id].name) # " de type #{$game_data_types[id].name}"
+        str << format(ext_text(9000, 63), $game_data_types[id].name) # " de type #{$game_data_types[id].name}"
       end
       if id = data[:nature]
-        str << format(_ext(9000, 64), _get(8, id)) # " ayant la nature #{_get(8, id)}"
+        str << format(ext_text(9000, 64), text_get(8, id)) # " ayant la nature #{text_get(8, id)}"
       end
       if id = data[:min_level]
-        str << format(_ext(9000, 66), id) # " de niveau #{id} minimum"
+        str << format(ext_text(9000, 66), id) # " de niveau #{id} minimum"
         if id = data[:max_level]
-          str << format(_ext(9000, 67), id) # " et de niveau #{id} maximum"
+          str << format(ext_text(9000, 67), id) # " et de niveau #{id} maximum"
         end
       elsif id = data[:max_level]
-        str << format(_ext(9000, 68), id) # " de niveau #{id} maximum"
+        str << format(ext_text(9000, 68), id) # " de niveau #{id} maximum"
       end
       if id = data[:level]
-        str << format(_ext(9000, 65), id) # " au niveau #{id}"
+        str << format(ext_text(9000, 65), id) # " au niveau #{id}"
       end
       return str
     end

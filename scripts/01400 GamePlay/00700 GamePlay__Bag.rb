@@ -17,12 +17,12 @@ module GamePlay
     Socket_Names=[nil.to_s,"Objets","Pokéball","CT/CS","Baies","Objets Rare","Médicaments", "Cristaux Z", "Motism'Aura"]
     SOCKET_NAMES = [
       nil.to_s,
-      [:_get, 15, 0], # Items
-      [:_get, 12, 4], # Pokéball
-      [:_get, 15, 2], # CT / CS
-      [:_get, 15, 3], # Berries
-      [:_get, 15, 4], # Key Items
-      [:_get, 15, 1] # Medicine
+      [:text_get, 15, 0], # Items
+      [:text_get, 12, 4], # Pokéball
+      [:text_get, 15, 2], # CT / CS
+      [:text_get, 15, 3], # Berries
+      [:text_get, 15, 4], # Key Items
+      [:text_get, 15, 1] # Medicine
     ]
     Bag_IMG=["bag","bag_girl"]
     LineJump="\n"
@@ -131,7 +131,7 @@ module GamePlay
       end
       case @mode
       when :menu
-        choix=_bag_window(_get(22,0),_get(22,3),_get(22,177),_get(22,81),_get(22,84),_get(22,1))
+        choix=_bag_window(text_get(22,0),text_get(22,3),text_get(22,177),text_get(22,81),text_get(22,84),text_get(22,1))
         if(choix==0)
           return _use_item
         elsif(choix==1)
@@ -154,11 +154,11 @@ module GamePlay
           return _throw_item
         end
       when :map,:berry
-        return _close_bag if(_bag_window(_get(22,0))==0)
+        return _close_bag if(_bag_window(text_get(22,0))==0)
       when :hold
-        return _close_bag if(_bag_window(_get(22,3))==0)
+        return _close_bag if(_bag_window(text_get(22,3))==0)
       when :shop
-        if(_bag_window(_get(11,1))==0)
+        if(_bag_window(text_get(11,1))==0)
           sell_item
         end
       end
@@ -206,7 +206,7 @@ module GamePlay
         @quantity_text[cnt].visible = false
         @name_text[cnt].visible = i <= size
         if i >= size
-          @name_text[cnt].text = _get(22, 7) if i == size
+          @name_text[cnt].text = text_get(22, 7) if i == size
           next
         end
         @name_text[cnt].text = @item_names[i]
@@ -275,14 +275,14 @@ module GamePlay
     #>Fenêtre d'action du sac
     #===
     def _bag_window(*args)
-      window=Window_Choice.new(105,args+[_get(22,7)])
+      window=Window_Choice.new(105,args+[text_get(22,7)])
       window.z=@viewport.z+1
       window.x=213
       window.y=238-window.height
       Graphics.sort_z
-      give = _get(22,3)
-      throw = _get(22,1)
-      use = _get(22,0)
+      give = text_get(22,3)
+      throw = text_get(22,1)
+      use = text_get(22,0)
       item_id=@item_ids[@index]
       disabled=[]
       args.each_index do |i|
@@ -342,12 +342,12 @@ module GamePlay
       $game_temp.num_input_variable_id = ::Yuki::Var::EnteredNumber
       $game_temp.num_input_digits_max = $bag.item_quantity(@return_data).to_s.size
       $game_temp.num_input_start = $bag.item_quantity(@return_data)
-      display_message(_parse(22, 38, ::PFM::Text::ITEM2[0] => GameData::Item.name(@return_data)))
+      display_message(parse_text(22, 38, ::PFM::Text::ITEM2[0] => GameData::Item.name(@return_data)))
       value = $game_variables[::Yuki::Var::EnteredNumber]
       if(value > 0)
         _calibrate_item_list
         _draw_stuff
-        display_message(_parse(22, 39, ::PFM::Text::ITEM2[0] => GameData::Item.name(@return_data),
+        display_message(parse_text(22, 39, ::PFM::Text::ITEM2[0] => GameData::Item.name(@return_data),
           ::PFM::Text::NUM3[1] => value.to_s))
         $bag.remove_item(@return_data, value)
       end
@@ -362,12 +362,12 @@ module GamePlay
         $game_temp.num_input_digits_max = $bag.item_quantity(@return_data).to_s.size
         $game_temp.num_input_start = $bag.item_quantity(@return_data)
         $game_temp.shop_calling = price
-        display_message(_parse(22,170, ITEM2[0] => ::GameData::Item.name(@return_data)))
+        display_message(parse_text(22,170, ITEM2[0] => ::GameData::Item.name(@return_data)))
         $game_temp.shop_calling = false
         value = $game_variables[::Yuki::Var::EnteredNumber]
         if(value > 0)
-          c = display_message(_parse(22,171, NUM7R => (value * price).to_s),
-          1, _get(11,27), _get(11,28))
+          c = display_message(parse_text(22,171, NUM7R => (value * price).to_s),
+          1, text_get(11,27), text_get(11,28))
           return if(c != 0)
         else
           return
@@ -376,10 +376,10 @@ module GamePlay
         $pokemon_party.add_money(value * price)
         _calibrate_item_list
         _draw_stuff
-        display_message(_parse(22,172, NUM7R => (value * price).to_s))
+        display_message(parse_text(22,172, NUM7R => (value * price).to_s))
       else
         ::PFM::Text.set_plural(false)
-        display_message(_parse(22,174, ITEM2[0] => ::GameData::Item.name(@return_data)))
+        display_message(parse_text(22,174, ITEM2[0] => ::GameData::Item.name(@return_data)))
       end
     end
     #===

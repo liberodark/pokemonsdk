@@ -125,7 +125,7 @@ class Scene_Battle
       phase4_message_display
     elsif(extend_data[:ball_data])
       if($game_temp.trainer_battle)
-        display_message(_parse(18,69))
+        display_message(parse_text(18,69))
       else
         phase4_try_to_catch_pokemon(extend_data[:ball_data], item_id)
       end
@@ -183,15 +183,15 @@ class Scene_Battle
     if(last_pokemon.hp>0)
       last_pokemon
       action
-      display_message(_parse(18, msg1, hash1)) unless @_NoChoice[last_pokemon]
+      display_message(parse_text(18, msg1, hash1)) unless @_NoChoice[last_pokemon]
       gr_callback_pokemon(last_pokemon)
     end
     next_pokemon.position = last_pokemon.position
     #>Variation du message
     if(@_NoChoice[last_pokemon])
-      display_message(_parse_with_pokemon(19, 848, next_pokemon))
+      display_message(parse_text_with_pokemon(19, 848, next_pokemon))
     else
-      display_message(_parse(18, msg2, hash2))
+      display_message(parse_text(18, msg2, hash2))
     end
     last_pokemon.position=nil
     last_pokemon.battle_effect.switch_with(next_pokemon)
@@ -241,7 +241,7 @@ class Scene_Battle
     if(action[1])
       @_skill = action[3].ss(action[1])
       if(@_launcher.battle_effect.has_taunt_effect? and @_skill.status?)
-        display_message(_parse_with_pokemon(19, 571, action[3], 
+        display_message(parse_text_with_pokemon(19, 571, action[3], 
         BattleEngine::MOVE[1] => @_skill.name))
         return
       end

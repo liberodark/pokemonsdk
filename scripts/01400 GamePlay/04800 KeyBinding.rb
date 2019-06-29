@@ -55,7 +55,7 @@ module GamePlay
       if Input.trigger?(:B)
         @ui.key_index = -1
       elsif Input.trigger?(:A)
-        return display_message(_ext(8998, 28)) if @ui.key_index == 4 && !Input.joy_connected?(Input.main_joy)
+        return display_message(ext_text(8998, 28)) if @ui.key_index == 4 && !Input.joy_connected?(Input.main_joy)
         @ui.blinking = true
         @cool_down = 10
       elsif Input.trigger?(:LEFT)
@@ -81,7 +81,7 @@ module GamePlay
       else
         unless Input.joy_connected?(Input.main_joy)
           @ui.blinking = false
-          return display_message(_ext(8998, 28))
+          return display_message(ext_text(8998, 28))
         end
         0.upto(Input.joy_button_count(Input.main_joy)) do |key_value|
           if Input.joy_button_press?(Input.main_joy, key_value)
@@ -95,7 +95,7 @@ module GamePlay
     # @param key_value [Integer] the value of the key in Keyboard
     def validate_key(key_value)
       if key_value == Keyboard::Escape
-        ch = display_message_and_wait(_ext(8998, 31), 1, _ext(8998, 32), _ext(8998, 33))
+        ch = display_message_and_wait(ext_text(8998, 31), 1, ext_text(8998, 32), ext_text(8998, 33))
         return if ch == 0
       end
       Input::Keys[@ui.current_key][@ui.current_key_index] = key_value

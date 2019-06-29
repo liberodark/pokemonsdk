@@ -97,7 +97,7 @@ module PFM
       format_str = '%d (+%d)'
       6.times do |i|
         start_y += 16
-        texts.add_text(0, start_y, width, 16, _get(22, 121 + i))
+        texts.add_text(0, start_y, width, 16, text_get(22, 121 + i))
         texts.add_text(0, start_y, width, 16, format(format_str, list1[i], list1[i] - list0[i]), 2, color: 1)
       end
       window.unlock

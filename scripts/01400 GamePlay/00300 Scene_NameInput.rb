@@ -85,10 +85,10 @@ class Scene_NameInput
   private
   # Function that ajust the char text array
   def adjust_char_texts
-    Chars_Min[0][-1] = Chars_Maj[0][-1] = _ext(9000, 22)
-    Chars_Min[-1][0] = Chars_Maj[-1][0] = _ext(9000, 23)
-    Chars_Min[-1][1] = Chars_Maj[-1][1] = _ext(9000, 24)
-    Chars_Min[1][-1] = Chars_Maj[1][-1] = _ext(9000, 25)
+    Chars_Min[0][-1] = Chars_Maj[0][-1] = ext_text(9000, 22)
+    Chars_Min[-1][0] = Chars_Maj[-1][0] = ext_text(9000, 23)
+    Chars_Min[-1][1] = Chars_Maj[-1][1] = ext_text(9000, 24)
+    Chars_Min[1][-1] = Chars_Maj[1][-1] = ext_text(9000, 25)
   end
   # Update the scene processing
   def update
@@ -295,10 +295,10 @@ class Scene_NameInput
     end
     # Function that ajust the char text array
     def adjust_char_texts
-      Chars_Num[0][-1] = _ext(9000, 22)
-      Chars_Num[-1][0] = _ext(9000, 23)
-      Chars_Num[-1][1] = _ext(9000, 24)
-      Chars_Num[1][-1] = _ext(9000, 25)
+      Chars_Num[0][-1] = ext_text(9000, 22)
+      Chars_Num[-1][0] = ext_text(9000, 23)
+      Chars_Num[-1][1] = ext_text(9000, 24)
+      Chars_Num[1][-1] = ext_text(9000, 25)
     end
     # Add the CTRL+V / right click interaction
     def update

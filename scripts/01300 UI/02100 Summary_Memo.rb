@@ -39,7 +39,7 @@ module UI
 
     # Initialize the Memo part
     def init_memo
-      texts = _get_file(27)
+      texts = text_file_get(27)
       # --- Static part ---
       add_text(114, 19, 60, 16, texts[2]) # Nom
       no_egg add_text(114, 19 + 16, 60, 16, texts[0]) # NoPokedex
@@ -49,7 +49,7 @@ module UI
       no_egg add_text(114 + 97, 19 + 48, 60, 16, texts[9]) # Numero id
       no_egg add_text(114, 19 + 64, 120, 16, texts[10]) # Pt exp
       no_egg add_text(114, 19 + 80, 120, 16, texts[12]) # Next lvl
-      no_egg add_text(114, 19 + 96, 95, 16, _get(23, 7)) # Objet
+      no_egg add_text(114, 19 + 96, 95, 16, text_get(23, 7)) # Objet
       # --- Data part ---
       add_text(114, 19, 194, 16, :name, 2, type: SymText, color: 1)
       no_egg add_text(114, 19 + 16, 95, 16, :id_text, 2, type: SymText, color: 1)
@@ -77,7 +77,7 @@ module UI
         '[VAR NUM2(0000)]' => time.strftime('%y'),
         '[VAR LOCATION(0004)]' => pokemon.captured_zone_name
       }
-      text = _parse(28, 25, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
+      text = parse_text(28, 25, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
       text.gsub!('Level', "\nLevel") if $options.language == 'en'
       @text_info.multiline_text = text
     end
@@ -86,13 +86,13 @@ module UI
     # @param pokemon [PFM::Pokemon]
     def load_egg_text_info(pokemon)
       if pokemon.step_remaining > 10_240
-        text = _get(28, 89)
+        text = text_get(28, 89)
       elsif pokemon.step_remaining > 2_560
-        text = _get(28, 88)
+        text = text_get(28, 88)
       elsif pokemon.step_remaining > 1_280
-        text = _get(28, 87)
+        text = text_get(28, 87)
       else
-        text = _get(28, 86)
+        text = text_get(28, 86)
       end
       @text_info.multiline_text = text.gsub(/([^.]\.|\?|\!) /) { "#{$1} \n" }
     end

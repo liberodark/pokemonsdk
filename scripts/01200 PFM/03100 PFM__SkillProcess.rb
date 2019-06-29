@@ -13,7 +13,7 @@ module PFM
       $actors[$scene.return_data].hp -= heal_hp
       pkmn.hp += heal_hp
     else
-      $scene.display_message($scene._parse(22, 108))
+      $scene.display_message($scene.parse_text(22, 108))
     end
   end
   SkillProcess[230] = proc do |pkmn, skill, *test| #Doux Parfum

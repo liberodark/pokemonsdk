@@ -23,7 +23,7 @@ module BattleEngine
     did_something |= __s_stat_us_step(launcher, target, skill)
 
     unless did_something
-      _message_stack_push([:msg, _parse(18, 74)])
+      _message_stack_push([:msg, parse_text(18, 74)])
       #Prévenir que ça n'a aucun effet
     end
     return did_something
@@ -55,7 +55,7 @@ module BattleEngine
     #>Vérification de la précision
     unless(launcher.level >= target.level and 
       _rand_check(launcher.level - target.level + 30, 100))
-      _message_stack_push([:msg, _parse(18, 74)])
+      _message_stack_push([:msg, parse_text(18, 74)])
       return
     end
     return if _target_protected(launcher, target, skill)
@@ -85,7 +85,7 @@ module BattleEngine
     end
 
     unless did_something
-      _message_stack_push([:msg, _parse(18, 70)])
+      _message_stack_push([:msg, parse_text(18, 70)])
       #Prévenir que ça n'a aucun effet
     end
   end
@@ -110,7 +110,7 @@ module BattleEngine
       did_something |= __s_stat_us_step(launcher, target, skill, 100)
     end
     unless did_something
-      _message_stack_push([:msg, _parse(18, 70)])
+      _message_stack_push([:msg, parse_text(18, 70)])
       #Prévenir que ça n'a aucun effet
     end
 
@@ -135,7 +135,7 @@ module BattleEngine
     did_something |= __s_stat_us_step(launcher, launcher, skill, nil, 100)
 
     unless did_something
-      _message_stack_push([:msg, _parse(18, 70)])
+      _message_stack_push([:msg, parse_text(18, 70)])
       #Prévenir que ça n'a aucun effet
     end
   end
@@ -159,7 +159,7 @@ module BattleEngine
     did_something |= __s_stat_us_step(launcher, launcher, skill, 100, nil)
 
     unless did_something
-      _message_stack_push([:msg, _parse(18, 70)])
+      _message_stack_push([:msg, parse_text(18, 70)])
       #Prévenir que ça n'a aucun effet
     end
   end
@@ -213,14 +213,14 @@ module BattleEngine
           break
         end
       end
-      _message_stack_push([:msg, _parse(18, 33, {NUMB[1] => hits.to_s})])
+      _message_stack_push([:msg, parse_text(18, 33, {NUMB[1] => hits.to_s})])
       _skill_efficiency_push
     end
 
     did_something |= __s_stat_us_step(launcher, target, skill)
 
     unless did_something
-      _message_stack_push([:msg, _parse(18, 74)])
+      _message_stack_push([:msg, parse_text(18, 74)])
       #Prévenir que ça n'a aucun effet
     end
   end
@@ -244,7 +244,7 @@ module BattleEngine
       oor = GameData::Skill.get_out_of_reach_type(skill.db_symbol)
       _message_stack_push([:apply_out_of_reach, launcher, oor]) if(oor)
       id_txt = GameData::Skill.get_2turns_announce(skill.db_symbol)
-      _message_stack_push([:msg, _parse_with_pokemon(19, id_txt, launcher)]) if id_txt
+      _message_stack_push([:msg, parse_text_with_pokemon(19, id_txt, launcher)]) if id_txt
       _message_stack_push([:force_attack, launcher, target, skill, 2])
       return
     end
@@ -266,7 +266,7 @@ module BattleEngine
   #===
   def s_reload(launcher, target, skill, msg_push = true)
     if(launcher.battle_effect.must_reload)
-      _message_stack_push([:msg, _parse_with_pokemon(19, 851, launcher)])
+      _message_stack_push([:msg, parse_text_with_pokemon(19, 851, launcher)])
     else
       s_basic(launcher, target, skill)
       _message_stack_push([:set_reload_state, launcher])
@@ -299,7 +299,7 @@ module BattleEngine
     hp=1 if hp == 0
     _message_stack_push([:hp_down, target, hp])
     _skill_critical_push
-    _message_stack_push([:msg, _parse_with_pokemon(19, 378, launcher)])
+    _message_stack_push([:msg, parse_text_with_pokemon(19, 378, launcher)])
     _message_stack_push([:hp_down, launcher, (launcher.max_hp+3)/4])
 
   end
@@ -350,7 +350,7 @@ module BattleEngine
     failed = !s_basic(launcher, target, skill)
     skill.power2 = nil
     if(failed)
-      _message_stack_push([:msg, _parse_with_pokemon(19, 908, launcher)])
+      _message_stack_push([:msg, parse_text_with_pokemon(19, 908, launcher)])
       _message_stack_push([:hp_down, launcher, launcher.max_hp / 2])
     end
   end
@@ -429,7 +429,7 @@ module BattleEngine
         n = Recoil_3.include?(skill.id) ? 3 : 4
         n = 2 if skill.id == 457 or skill.id == 617 #>Fracass'Tête / Lumière du Néant
         _message_stack_push([:hp_down, launcher, hp / n])
-        _message_stack_push([:msg, _parse_with_pokemon(19, 378, launcher)])
+        _message_stack_push([:msg, parse_text_with_pokemon(19, 378, launcher)])
       end
       did_something = true
     end
@@ -580,7 +580,7 @@ module BattleEngine
   #===
   def s_destiny_bond(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
-    _message_stack_push([:msg, _parse_with_pokemon(19, 626, launcher)])
+    _message_stack_push([:msg, parse_text_with_pokemon(19, 626, launcher)])
   end
   #===
   #>s_false_swipe
@@ -697,7 +697,7 @@ module BattleEngine
     if msg_push
       i = skill.power2
       skill.power2 = P_Magnitude[i]
-      _mp([:msg, _parse(18, 108+i)])
+      _mp([:msg, parse_text(18, 108+i)])
       msg_push = false
     end
     
@@ -795,12 +795,12 @@ module BattleEngine
     #> Patience inactive
     if(counter == 0)
       _message_stack_push([:use_skill_msg, launcher, target, skill])
-      _mp([:msg, _parse_with_pokemon(19, 745, launcher)])
+      _mp([:msg, parse_text_with_pokemon(19, 745, launcher)])
       _mp([:apply_effect, launcher, :apply_bide])
       _mp([:apply_effect, launcher, :apply_forced_attack, skill.id, rand(2)+3, target])
     elsif(counter == 1)
       _mp([:apply_effect, launcher, :apply_forced_attack, 0, 0, target])
-      _mp([:msg, _parse_with_pokemon(19, 748, launcher)])
+      _mp([:msg, parse_text_with_pokemon(19, 748, launcher)])
       return false unless __s_beg_step(launcher, target, skill, false)
       hp = launcher.battle_effect.get_bide_power * 2
       if(hp > 0)

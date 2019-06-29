@@ -9,7 +9,7 @@ module BattleEngine
   #===
   def s_lock_on(launcher, target, skill, msg_push = true)
     return unless __s_beg_step(launcher, target, skill, msg_push)
-    #_mp([:msg, _parse_with_pokemon(19, xxx, launcher, PKNICK[1] => target.given_name)])
+    #_mp([:msg, parse_text_with_pokemon(19, xxx, launcher, PKNICK[1] => target.given_name)])
     _mp([:apply_effect, launcher, :apply_lock_on, target])
   end
 
@@ -53,7 +53,7 @@ module BattleEngine
     return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     unless target.battle_effect.has_torment_effect?
-      _mp([:msg, _parse_with_pokemon(19, 577, target)])
+      _mp([:msg, parse_text_with_pokemon(19, 577, target)])
       _mp([:apply_effect, target, :apply_torment])
     else
       _mp([:msg_fail])
@@ -124,7 +124,7 @@ module BattleEngine
     return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(launcher, skill)
     unless(target.battle_effect.has_wish_effect?)
-      #_mp([:msg, _parse_with_pokemon(19, xxx, target)])
+      #_mp([:msg, parse_text_with_pokemon(19, xxx, target)])
       _mp([:apply_effect, target, :apply_wish, target])
     else
       _mp([:msg_fail])
@@ -144,7 +144,7 @@ module BattleEngine
         _msgp(19, 1149, target)
         _mp([:apply_effect, target, :apply_telekinesis, 0])
       end
-      _mp([:msg, _parse_with_pokemon(19, 736, target)])
+      _mp([:msg, parse_text_with_pokemon(19, 736, target)])
       _mp([:apply_effect, target, :apply_ingrain])
     else
       _mp([:msg_fail])
@@ -159,7 +159,7 @@ module BattleEngine
     return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(launcher, skill)
     unless(target.battle_effect.has_aqua_ring_effect?)
-      _mp([:msg, _parse_with_pokemon(19, 601, target)])
+      _mp([:msg, parse_text_with_pokemon(19, 601, target)])
       _mp([:apply_effect, target, :apply_aqua_ring])
     else
       _mp([:msg_fail])
@@ -174,7 +174,7 @@ module BattleEngine
     return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     unless(target.battle_effect.has_yawn_effect? or target.battle_effect.has_safe_guard_effect?)
-      #_mp([:msg, _parse_with_pokemon(19, xxx, target)])
+      #_mp([:msg, parse_text_with_pokemon(19, xxx, target)])
       _mp([:apply_effect, target, :apply_yawn])
     else
       if(target.battle_effect.has_safe_guard_effect?) #> Rune protect
@@ -205,7 +205,7 @@ module BattleEngine
   def s_grudge(launcher, target, skill, msg_push = true)
     return unless __s_beg_step(launcher, target, skill, msg_push)
     unless(target.battle_effect.has_grudge_effect?)
-      _mp([:msg, _parse_with_pokemon(19, 632, target)])
+      _mp([:msg, parse_text_with_pokemon(19, 632, target)])
       _mp([:apply_effect, target, :apply_grudge])
     else
       _mp([:msg_fail])
@@ -220,7 +220,7 @@ module BattleEngine
     return unless __s_beg_step(launcher, target, skill, msg_push)
     be = launcher.battle_effect
     unless(be.has_snatch_effect? and be.get_snatch_target == target)
-      _mp([:msg, _parse_with_pokemon(19, 751, launcher)])
+      _mp([:msg, parse_text_with_pokemon(19, 751, launcher)])
       _mp([:apply_effect, launcher, :apply_snatch, target])
     else
       _mp([:msg_fail])
@@ -236,10 +236,10 @@ module BattleEngine
 
     if(@_State[:gravity] <= 0)
       _mp([:set_state, :gravity, 5])
-      _mp([:msg, _parse(18,123)])
+      _mp([:msg, parse_text(18,123)])
       get_battlers.each do |i|
         unless !i or _is_grounded(i) or i.dead?
-          _mp([:msg, _parse_with_pokemon(19, 1089, i)])
+          _mp([:msg, parse_text_with_pokemon(19, 1089, i)])
           if i.battle_effect.has_telekinesis_effect?
             _msgp(19, 1149, i)
             _mp([:apply_effect, i, :apply_telekinesis, 0])
@@ -793,7 +793,7 @@ module BattleEngine
     #>Si il n'a pas fait le tour d'attente / Herbe Pouvoir
     unless(launcher.battle_effect.has_forced_attack? or _has_item(launcher, 271))
       id_txt = GameData::Skill.get_2turns_announce(skill.db_symbol)
-      _message_stack_push([:msg, _parse_with_pokemon(19, id_txt, launcher)]) if id_txt
+      _message_stack_push([:msg, parse_text_with_pokemon(19, id_txt, launcher)]) if id_txt
       _message_stack_push([:force_attack, launcher, target, skill, 2])
       return
     end

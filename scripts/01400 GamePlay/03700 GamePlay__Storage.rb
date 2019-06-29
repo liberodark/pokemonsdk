@@ -36,14 +36,14 @@ module GamePlay
       if (@mode == :trade)
         # traitement spécifique si échange   
       else
-        display_message(format(_ext(9000, 83), $pokemon_party.trainer.name))
+        display_message(format(ext_text(9000, 83), $pokemon_party.trainer.name))
         choisir_pc
       end
     end
 
     def choisir_pc
-      start = Array.new(3) { |i| _ext(9000, 73 + i) }
-      c = display_message(_ext(9000, 84), 1, *start)
+      start = Array.new(3) { |i| ext_text(9000, 73 + i) }
+      c = display_message(ext_text(9000, 84), 1, *start)
       case c
       when 0 # PC de Stockage
         storage_pc
@@ -55,8 +55,8 @@ module GamePlay
     end
 
     def storage_pc
-      storage = Array.new(5) { |i| _ext(9000, 77 + i) }
-      c = display_message(_ext(9000, 85), 1, *storage)
+      storage = Array.new(5) { |i| ext_text(9000, 77 + i) }
+      c = display_message(ext_text(9000, 85), 1, *storage)
       while $game_temp.message_window_showing && @running
         @message_window.update
         Graphics.update
@@ -77,7 +77,7 @@ module GamePlay
     end
 
     def professor_pc
-      display_message(_ext(9000, 86))
+      display_message(ext_text(9000, 86))
       choisir_pc
     end
 

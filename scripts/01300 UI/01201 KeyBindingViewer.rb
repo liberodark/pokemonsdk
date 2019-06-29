@@ -112,9 +112,9 @@ module UI
 
     # Create the top line
     def create_top_line
-      add_text(FT_X, 5, 100, 16, _ext(8998, 0), color: 9)
-      add_text(ST_X, 5, 100, 16, _ext(8998, 1), color: 9)
-      add_text(LT_X, 5, 100, 16, _ext(8998, 2), color: 9)
+      add_text(FT_X, 5, 100, 16, ext_text(8998, 0), color: 9)
+      add_text(ST_X, 5, 100, 16, ext_text(8998, 1), color: 9)
+      add_text(LT_X, 5, 100, 16, ext_text(8998, 2), color: 9)
     end
 
     # Create all the key texts & button
@@ -131,8 +131,8 @@ module UI
     # @param psdk_text_id [Integer] id of the text telling the name of the key
     # @param descr_text_id [Integer] id of the text telling what the key does
     def create_key(index, name, psdk_text_id, descr_text_id)
-      add_text(FT_X, FKT_Y + 16 * index, 100, 16, _ext(8998, psdk_text_id))
-      add_text(ST_X, FKT_Y + 16 * index, 100, 16, _ext(8998, descr_text_id))
+      add_text(FT_X, FKT_Y + 16 * index, 100, 16, ext_text(8998, psdk_text_id))
+      add_text(ST_X, FKT_Y + 16 * index, 100, 16, ext_text(8998, descr_text_id))
       4.times do |i|
         @buttons << push(LT_X + i * 16, FKT_Y + 16 * index, nil, name, i, type: KeyBinding)
       end

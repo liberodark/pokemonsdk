@@ -78,9 +78,9 @@ module GamePlay
     # Initialize the win_text according to the mode
     def init_win_text
       if @extend_data
-        @text_info.text = _get(23, @extend_data[:skill_message_id] || 34)
+        @text_info.text = text_get(23, @extend_data[:skill_message_id] || 34)
       else
-        @text_info.text = _ext(9000, 120)
+        @text_info.text = ext_text(9000, 120)
       end
     end
 

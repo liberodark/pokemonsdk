@@ -12,10 +12,10 @@ module Util
       extend_data = ::PFM::ItemDescriptor.actions(item_id)
       #> Vérification des messages
       if(extend_data[:chen])
-        display_message(_parse(22, 43))
+        display_message(parse_text(22, 43))
         return false
       elsif(extend_data[:no_effect])
-        display_message(_parse(22, 108))
+        display_message(parse_text(22, 108))
         return false
       end
       #> Si l'objet demande l'ouverture de l'interface de l'équipe
@@ -35,14 +35,14 @@ module Util
         if(extend_data[:use_before_telling])
           if(extend_data[:on_use].call != :unused)
             $bag.remove_item(item_id, 1) if GameData::Item.limited_use?(item_id)
-            display_message(_parse(22, 46, ::PFM::Text::TRNAME[0] => $trainer.name, 
+            display_message(parse_text(22, 46, ::PFM::Text::TRNAME[0] => $trainer.name, 
               ::PFM::Text::ITEM2[1] => GameData::Item.name(item_id))) if $scene == self
             return extend_data
           end
           return false
         end
         $bag.remove_item(item_id, 1) if GameData::Item.limited_use?(item_id)
-        display_message(_parse(22, 46, ::PFM::Text::TRNAME[0] => $trainer.name, 
+        display_message(parse_text(22, 46, ::PFM::Text::TRNAME[0] => $trainer.name, 
           ::PFM::Text::ITEM2[1] => GameData::Item.name(item_id)))
         extend_data[:on_use].call
       elsif(extend_data[:action_to_push] || extend_data[:ball_data])

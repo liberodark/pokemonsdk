@@ -112,7 +112,7 @@ if Object.const_defined?(:FMOD)
         @bgm_channel = nil
       end
     rescue FMOD::Error => e
-      puts e.message if $TEST
+      puts e.message if debug?
     end
 
     # plays a BGS and stop the current one
@@ -182,7 +182,7 @@ if Object.const_defined?(:FMOD)
         @bgs_channel = nil
       end
     rescue FMOD::Error => e
-      puts e.message if $TEST
+      puts e.message if debug?
     end
 
     # plays a ME and stop the current one, the BGM will be paused during the ME play
@@ -266,7 +266,7 @@ if Object.const_defined?(:FMOD)
         @me_channel = nil
       end
     rescue FMOD::Error => e
-      puts e.message if $TEST
+      puts e.message if debug?
     end
 
     # plays a SE if possible

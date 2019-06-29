@@ -50,7 +50,7 @@ module GamePlay
           @extend_data[:skill_selected] = @skill_selected = @uis[2].index
           @running = false
         else # You cannot use that on this skill
-          display_message(_parse(22, 108))
+          display_message(parse_text(22, 108))
         end
       else
         @skill_selected = @uis[2].index
