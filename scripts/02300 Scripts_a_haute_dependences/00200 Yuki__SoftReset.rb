@@ -44,6 +44,10 @@ unless PARGV[:worldmap] or PARGV[:"animation-editor"] or PARGV[:test] or PARGV[:
       def update
         return
       end
+
+      def display_message(*)
+        return
+      end
     end
   end
 end
