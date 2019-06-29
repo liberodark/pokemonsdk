@@ -85,10 +85,10 @@ module BattleUI
 
     # Create the texts of the Window
     def create_texts
-      add_text(TEXT_OX, 0, DELTA_X - TEXT_OX, DELTA_Y, _get(32, 0)) # Attack !
-      add_text(TEXT_OX + DELTA_X, 0, DELTA_X - TEXT_OX, DELTA_Y, _get(32, 1)) # Bag
-      add_text(TEXT_OX, DELTA_Y, DELTA_X - TEXT_OX, DELTA_Y, _get(32, 2)) # Pokemon
-      add_text(TEXT_OX + DELTA_X, DELTA_Y, DELTA_X - TEXT_OX, DELTA_Y, _get(32, 3)) # Flee
+      add_text(TEXT_OX, 0, DELTA_X - TEXT_OX, DELTA_Y, text_get(32, 0)) # Attack !
+      add_text(TEXT_OX + DELTA_X, 0, DELTA_X - TEXT_OX, DELTA_Y, text_get(32, 1)) # Bag
+      add_text(TEXT_OX, DELTA_Y, DELTA_X - TEXT_OX, DELTA_Y, text_get(32, 2)) # Pokemon
+      add_text(TEXT_OX + DELTA_X, DELTA_Y, DELTA_X - TEXT_OX, DELTA_Y, text_get(32, 3)) # Flee
     end
   end
 end

@@ -17,7 +17,7 @@ module Battle
       pokemon = @battle_scene.logic.battler(0, pokemon_index)
       (window = @battle_scene.message_window).wait_input = false
       window.width = @viewport.rect.width - @player_choice_ui.width
-      @battle_scene.display_message(_parse(18, 71, '[VAR 010C(0000)]' => pokemon.given_name))
+      @battle_scene.display_message(parse_text(18, 71, '[VAR 010C(0000)]' => pokemon.given_name))
     end
 
     private

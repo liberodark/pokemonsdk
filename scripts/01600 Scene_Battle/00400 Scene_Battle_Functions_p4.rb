@@ -120,7 +120,7 @@ class Scene_Battle
       next if get_exp==0
       base_exp=i.exp #Expérience de base
       i.add_bonus(pokemon.battle_list) #Distribution des EVs
-      text = _parse(18, ((i.item_holding == 216) ? 44 : 43),
+      text = parse_text(18, ((i.item_holding == 216) ? 44 : 43),
       "[VAR 010C(0000)]" => i.given_name,
       NUM7R => get_exp.to_s)
       display_message(text)
@@ -156,7 +156,7 @@ class Scene_Battle
         if i.exp >= exp_lvl
           list = i.level_up_stat_refresh
           status_bar_update(i) if j<$game_temp.vs_type
-          display_message(_parse(18, 62, '[VAR 010C(0000)]' => i.given_name,
+          display_message(parse_text(18, 62, '[VAR 010C(0000)]' => i.given_name,
           ::PFM::Text::NUM3[1] => (i.level).to_s))
           i.level_up_window_call(list[0],list[1],@message_window.z+5) if i.position>=0
           @message_window.update
@@ -349,7 +349,7 @@ class Scene_Battle
       start_phase5
     else
       gr_animate_pokebreak(pokemon)
-      display_message(_parse(18, 63 + rand(4)))
+      display_message(parse_text(18, 63 + rand(4)))
     end
   end
 
@@ -499,13 +499,13 @@ class Scene_Battle
         #Tentative de fuite en 1v1 wild
         unless($game_temp.trainer_battle or $game_temp.vs_type==2)
           #r=display_message("Voulez-vous envoyer un autre Pokémon ?\n",false,1,"Oui","Non")
-          r=display_message(_get(18, 80),true,1,_get(20, 55),_get(20, 56))
+          r=display_message(text_get(18, 80),true,1,text_get(20, 55),text_get(20, 56))
           if(r == 0)
             if(update_phase2_escape(true))
               $game_system.se_play($data_system.escape_se)
               return battle_end(1)
             else
-              display_message(_get(18, 77)) #"Impossible de fuire.")
+              display_message(text_get(18, 77)) #"Impossible de fuire.")
             end
           end
         end

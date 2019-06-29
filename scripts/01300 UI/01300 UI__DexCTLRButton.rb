@@ -43,7 +43,7 @@ module UI
     # @param id [Integer] id of the text
     # @return [String]
     def get_text(state_id, id)
-      _ext(9000, TEXT_INDEXES[state_id] + id)
+      ext_text(9000, TEXT_INDEXES[state_id] + id)
     end
 
     private

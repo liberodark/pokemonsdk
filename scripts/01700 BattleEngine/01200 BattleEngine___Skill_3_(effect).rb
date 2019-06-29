@@ -106,11 +106,11 @@ module BattleEngine
       #>Si non sauvage
       if(launcher.position >= 0)
         if(Abilities.has_ability_usable(target, 84)) #>Ventouse
-          _mp([:msg, _parse_with_pokemon(19,454,target)])
+          _mp([:msg, parse_text_with_pokemon(19,454,target)])
         elsif(target.battle_effect.has_ingrain_effect?) #>Racines
-          _mp([:msg, _parse_with_pokemon(19,742,target)])
+          _mp([:msg, parse_text_with_pokemon(19,742,target)])
         elsif(launcher.level > target.level)
-          _mp([:msg, _parse_with_pokemon(19, 767, launcher)])
+          _mp([:msg, parse_text_with_pokemon(19, 767, launcher)])
           _message_stack_push([:roar, target])
         else
           _message_stack_push([:msg_fail, target])
@@ -128,9 +128,9 @@ module BattleEngine
           n_party<<party[i] if party[i].hp > 0
         end
         if(Abilities.has_ability_usable(target, 84)) #>Ventouse
-          _mp([:msg, _parse_with_pokemon(19,454,target)])
+          _mp([:msg, parse_text_with_pokemon(19,454,target)])
         elsif(false) #>Racines
-          _mp([:msg, _parse_with_pokemon(19,742,target)])
+          _mp([:msg, parse_text_with_pokemon(19,742,target)])
         else
           _mp([:switch_pokemon, target, n_party[rand(n_party.size)]]) if n_party.size > 0 #>Redondance
         end
@@ -160,7 +160,7 @@ module BattleEngine
         end
       end
       if(@_State[:can_perish_song])
-        _message_stack_push([:msg, _parse(18, 125)])
+        _message_stack_push([:msg, parse_text(18, 125)])
       else
         _mp(MSG_Fail)
       end
@@ -249,13 +249,13 @@ module BattleEngine
     #>Suintement
     if target.ability == 36
       _message_stack_push([:hp_down, launcher, hp/2])
-      _message_stack_push([:msg, _parse_with_pokemon(19, 457, launcher)])
+      _message_stack_push([:msg, parse_text_with_pokemon(19, 457, launcher)])
     elsif(!launcher.battle_effect.has_heal_block_effect?) #>Anti-Soin
       #>Vérifier le clone !
       _message_stack_push([:hp_up, launcher, hp/2])
-      _message_stack_push([:msg, _parse_with_pokemon(19, 905, target)])
+      _message_stack_push([:msg, parse_text_with_pokemon(19, 905, target)])
     else
-      _mp([:msg, _parse_with_pokemon(19,890, launcher)])
+      _mp([:msg, parse_text_with_pokemon(19,890, launcher)])
     end
 
     __s_stat_us_step(launcher, target, skill)
@@ -279,14 +279,14 @@ module BattleEngine
     return false if __s_hp_down_check(hp, target)
 
     if(launcher.battle_effect.has_heal_block_effect?)
-      BattleEngine::_message_stack_push([:msg, _parse_with_pokemon(19,890, launcher)])
+      BattleEngine::_message_stack_push([:msg, parse_text_with_pokemon(19,890, launcher)])
       return
     end
 
     hp = 2 if hp < 2 #>Pour récupérer 1 hp si ça a fait moins de 2 hp de dégats
     #>Vérifier le clone !
     _message_stack_push([:hp_up, launcher, hp/2])
-    _message_stack_push([:msg, _parse_with_pokemon(19, 905, target)])
+    _message_stack_push([:msg, parse_text_with_pokemon(19, 905, target)])
 
     __s_stat_us_step(launcher, target, skill)
     return true
@@ -332,9 +332,9 @@ module BattleEngine
     hp*=0 if fail
     skill.type2 = nil
     if(skill.id == 248) #Préscience
-      _message_stack_push([:msg, _parse_with_pokemon(19, 1080, launcher)])
+      _message_stack_push([:msg, parse_text_with_pokemon(19, 1080, launcher)])
     else
-      _message_stack_push([:msg, _parse_with_pokemon(19, 1083, launcher)])
+      _message_stack_push([:msg, parse_text_with_pokemon(19, 1083, launcher)])
     end
     _message_stack_push([:future_skill, target, hp, 3, skill.id])
   end
@@ -355,7 +355,7 @@ module BattleEngine
       _message_stack_push(MSG_Fail)
     else
       _mp([:set_state, symbol, @_State[symbol] + 1])
-      _message_stack_push([:msg, _parse(18, _is_enemy ? 155 : 154)])
+      _message_stack_push([:msg, parse_text(18, _is_enemy ? 155 : 154)])
     end
   end
   #===
@@ -375,7 +375,7 @@ module BattleEngine
       _message_stack_push(MSG_Fail)
     else
       _mp([:set_state, symbol, @_State[symbol] + 1])
-      _message_stack_push([:msg, _parse(18, _is_enemy ? 159 : 158)])
+      _message_stack_push([:msg, parse_text(18, _is_enemy ? 159 : 158)])
     end
   end
   #===
@@ -395,7 +395,7 @@ module BattleEngine
       _message_stack_push(MSG_Fail)
     else
       _mp([:set_state, symbol, true])
-      _message_stack_push([:msg, _parse(18, _is_enemy ? 163 : 162)])
+      _message_stack_push([:msg, parse_text(18, _is_enemy ? 163 : 162)])
     end
   end
   #===
@@ -415,7 +415,7 @@ module BattleEngine
       _message_stack_push(MSG_Fail)
     else
       _mp([:set_state, symbol, true])
-      _message_stack_push([:msg, _parse(18, _is_enemy ? 215 : 214)])
+      _message_stack_push([:msg, parse_text(18, _is_enemy ? 215 : 214)])
     end
   end
   #===
@@ -437,7 +437,7 @@ module BattleEngine
   def s_mist(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(launcher == target) #>Sinon faire avec state pp == 1
-      _message_stack_push([:msg, _parse(18, target.position < 0 ? 143 : 142)])
+      _message_stack_push([:msg, parse_text(18, target.position < 0 ? 143 : 142)])
     end
     _message_stack_push([:apply_effect, target, :apply_mist])
   end
@@ -452,7 +452,7 @@ module BattleEngine
       Abilities.has_ability_usable(launcher, 30))
       _message_stack_push(MSG_Fail)
     elsif(target.battle_effect.has_heal_block_effect?)
-      _mp([:msg, _parse_with_pokemon(19,893, launcher, MOVE[1] => skill.name)])
+      _mp([:msg, parse_text_with_pokemon(19,893, launcher, MOVE[1] => skill.name)])
     else
       _message_stack_push([:status_cure, launcher])
       _message_stack_push([:status_sleep, launcher, Abilities.has_ability_usable(launcher, 41) ? 1 : 3])
@@ -560,7 +560,7 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
     if(target.battle_effect.has_heal_block_effect?)
-      _mp([:msg, _parse_with_pokemon(19,890, target)])
+      _mp([:msg, parse_text_with_pokemon(19,890, target)])
       return
     elsif(target.hp == target.max_hp)
       _mp(MSG_Fail)
@@ -574,7 +574,7 @@ module BattleEngine
       hp = target.max_hp / 4
     end
     _message_stack_push([:hp_up, target, hp])
-    _message_stack_push([:msg, _parse_with_pokemon(19, 387, target)])
+    _message_stack_push([:msg, parse_text_with_pokemon(19, 387, target)])
   end
   #===
   #>s_heal
@@ -584,7 +584,7 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
     if(target.battle_effect.has_heal_block_effect?)
-      _mp([:msg, _parse_with_pokemon(19,890, target)])
+      _mp([:msg, parse_text_with_pokemon(19,890, target)])
       return
     elsif(target.hp == target.max_hp)
       _mp(MSG_Fail)
@@ -592,7 +592,7 @@ module BattleEngine
     end
     hp = target.max_hp / 2
     _message_stack_push([:hp_up, target, hp])
-    _message_stack_push([:msg, _parse_with_pokemon(19, 387, target)])
+    _message_stack_push([:msg, parse_text_with_pokemon(19, 387, target)])
   end
   #===
   #>s_weather_ball
@@ -664,7 +664,7 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     unless(Abilities.has_ability_usable(target, 17) or Abilities.has_ability_usable(target, 122))
-      _message_stack_push([:msg, _parse_with_pokemon(19, 405, launcher, PKNICK[0] => target.given_name, ::PFM::Text::ABILITY[1] => ::GameData::Abilities.name(49))])
+      _message_stack_push([:msg, parse_text_with_pokemon(19, 405, launcher, PKNICK[0] => target.given_name, ::PFM::Text::ABILITY[1] => ::GameData::Abilities.name(49))])
       _message_stack_push([:set_ability, target, 49])
     else
       _message_stack_push(MSG_Fail)
@@ -680,7 +680,7 @@ module BattleEngine
       hp = _damage_calculation(launcher, target, skill).to_i
       return false if __s_hp_down_check(hp, target)
     end
-    _message_stack_push([:msg, _parse_with_pokemon(19, 195, target)])
+    _message_stack_push([:msg, parse_text_with_pokemon(19, 195, target)])
     _message_stack_push([:stat_reset, target])
   end
   #===
@@ -691,7 +691,7 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     if(target.asleep?)
       _message_stack_push([:apply_effect, target, :apply_nightmare])
-      _message_stack_push([:msg, _parse_with_pokemon(19, 321, target)])
+      _message_stack_push([:msg, parse_text_with_pokemon(19, 321, target)])
     else
       _message_stack_push(MSG_Fail)
     end
@@ -735,7 +735,7 @@ module BattleEngine
   def s_focus_energy(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
-    _message_stack_push([:msg, _parse_with_pokemon(19, 616, target)])
+    _message_stack_push([:msg, parse_text_with_pokemon(19, 616, target)])
     _message_stack_push([:apply_effect, target, :apply_focus_energy])
   end
   #===
@@ -768,7 +768,7 @@ module BattleEngine
   #===
   def s_psych_up(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
-    _message_stack_push([:msg,_parse_with_pokemon(19, 1053, launcher, PKNICK[1] => target.given_name)])
+    _message_stack_push([:msg,parse_text_with_pokemon(19, 1053, launcher, PKNICK[1] => target.given_name)])
     launcher = _snatch_check(launcher, skill)
     _message_stack_push([:apply_effect, target, :apply_no_stat_change])
     unless(launcher.battle_effect.has_no_stat_change_effect?)
@@ -790,7 +790,7 @@ module BattleEngine
   def s_topsy_turvy(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
-    _message_stack_push([:msg,_parse_with_pokemon(19, 1077, target)])
+    _message_stack_push([:msg,parse_text_with_pokemon(19, 1077, target)])
     #unless(launcher.battle_effect.has_no_stat_change_effect?) #>Vérifier si c'est bloqué
       bs = target.battle_stage
       bs.each_index do |i|
@@ -813,7 +813,7 @@ module BattleEngine
         _message_stack_push([:change_dfe, i, 1]) if i.type_grass?
       end
     elsif(id == 384) #>Permuforce
-      _message_stack_push([:msg, _parse_with_pokemon(19, 676, launcher)])
+      _message_stack_push([:msg, parse_text_with_pokemon(19, 676, launcher)])
       atk = launcher.atk_stage
       ats = launcher.ats_stage
       _message_stack_push([:stat_set, launcher, 0, target.atk_stage])
@@ -821,7 +821,7 @@ module BattleEngine
       _message_stack_push([:stat_set, target, 0, atk])
       _message_stack_push([:stat_set, target, 3, ats])
     elsif(id == 385) #>Permugarde
-      _message_stack_push([:msg, _parse_with_pokemon(19, 679, launcher)])
+      _message_stack_push([:msg, parse_text_with_pokemon(19, 679, launcher)])
       dfe = launcher.dfe_stage
       dfs = launcher.dfs_stage
       _message_stack_push([:stat_set, launcher, 1, target.dfe_stage])
@@ -831,7 +831,7 @@ module BattleEngine
     elsif(id == 367) #Acupression
       _message_stack_push([AcuperssionStat[rand(6)], target, 2])
     elsif(id == 391) #Permucoeur
-      _message_stack_push([:msg,_parse_with_pokemon(19, 673, launcher)])
+      _message_stack_push([:msg,parse_text_with_pokemon(19, 673, launcher)])
       bs1 = launcher.battle_stage.clone
       bs2 = target.battle_stage
       bs2.each_index do |i|
@@ -839,7 +839,7 @@ module BattleEngine
         _message_stack_push([:stat_set, target, i, bs1[i]])
       end
     elsif(id == 470) #Partage garde
-      _message_stack_push([:msg,_parse_with_pokemon(19, 1105, launcher)])
+      _message_stack_push([:msg,parse_text_with_pokemon(19, 1105, launcher)])
       dfe = (launcher.dfe_basis + target.dfe_basis) / 2
       _message_stack_push([:set_be_value, launcher, :dfe=, dfe])
       _message_stack_push([:set_be_value, target, :dfe=, dfe])
@@ -847,7 +847,7 @@ module BattleEngine
       _message_stack_push([:set_be_value, launcher, :dfs=, dfs])
       _message_stack_push([:set_be_value, target, :dfs=, dfs])
     elsif(id == 471) #Partage force
-      _message_stack_push([:msg,_parse_with_pokemon(19, 1102, launcher)])
+      _message_stack_push([:msg,parse_text_with_pokemon(19, 1102, launcher)])
       atk = (launcher.atk_basis + target.atk_basis) / 2
       _message_stack_push([:set_be_value, launcher, :atk=, atk])
       _message_stack_push([:set_be_value, target, :atk=, atk])
@@ -873,21 +873,21 @@ module BattleEngine
     target = _magic_coat(launcher, target, skill)
     if(id == 493) #Rayon simple
       unless(SimpleBeam.include?(target.ability))
-        _mp([:msg, _parse_with_pokemon(19,405, target, ABILITY[1] => ::GameData::Abilities.name(99))])
+        _mp([:msg, parse_text_with_pokemon(19,405, target, ABILITY[1] => ::GameData::Abilities.name(99))])
         _mp([:set_ability, target, 99]) #>Simple
       else
         _mp(MSG_Fail)
       end
     elsif(id == 494) #Ten-danse
       unless(Entrainment.include?(target.ability) and launcher.ability != target.ability)
-        _mp([:msg, _parse_with_pokemon(19,405, target, ABILITY[1] => launcher.ability_name)])
+        _mp([:msg, parse_text_with_pokemon(19,405, target, ABILITY[1] => launcher.ability_name)])
         _mp([:set_ability, target, launcher.ability])
       else
         _mp(MSG_Fail)
       end
     elsif(id == 285) #Echange
       unless(SkillSwap.include?(target.ability) and launcher.ability != target.ability)
-        _mp([:msg, _parse_with_pokemon(19,508, launcher)])
+        _mp([:msg, parse_text_with_pokemon(19,508, launcher)])
         ability = launcher.ability
         _mp([:set_ability, launcher, target.ability])
         _mp([:set_ability, target, ability])
@@ -896,7 +896,7 @@ module BattleEngine
       end
     elsif(id == 380) #Suc Digestif
       unless(GastroAcid.include?(target.ability) or target.battle_effect.has_no_ability_effect?)
-        _mp([:msg, _parse_with_pokemon(19,565, target)])
+        _mp([:msg, parse_text_with_pokemon(19,565, target)])
         _mp([:apply_effect, target, :apply_no_ability])
       else
         _mp(MSG_Fail)
@@ -915,7 +915,7 @@ module BattleEngine
     if(skill.id == 113) #>Mur Lumière
       sym = target.position < 0 ? :enn_light_screen : :act_light_screen
       unless(@_State[sym] > 0)
-        _mp([:msg, _parse(18, target.position < 0 ? 135 : 134)])
+        _mp([:msg, parse_text(18, target.position < 0 ? 135 : 134)])
         _mp([:set_state, sym, nb_turn])
       else
         _mp(MSG_Fail)
@@ -923,7 +923,7 @@ module BattleEngine
     else #>Protection
       sym = target.position < 0 ? :enn_reflect : :act_reflect
       unless(@_State[sym] > 0)
-        _mp([:msg, _parse(18, target.position < 0 ? 131 : 130)])
+        _mp([:msg, parse_text(18, target.position < 0 ? 131 : 130)])
         _mp([:set_state, sym, nb_turn])
       else
         _mp(MSG_Fail)
@@ -945,7 +945,7 @@ module BattleEngine
   #===
   def s_magic_coat(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
-    _mp([:msg, _parse_with_pokemon(19, 761, launcher)])
+    _mp([:msg, parse_text_with_pokemon(19, 761, launcher)])
     _mp([:apply_effect, launcher, :apply_magic_coat])
   end
   #===
@@ -959,12 +959,12 @@ module BattleEngine
     return false unless result
     sym = target.position < 0 ? :enn_light_screen : :act_light_screen
     if(@_State[sym] > 0)
-      _mp([:msg, _parse(18, target.position < 0 ? 137 : 136)])
+      _mp([:msg, parse_text(18, target.position < 0 ? 137 : 136)])
       _mp([:set_state, sym, 0])
     end
     sym = target.position < 0 ? :enn_reflect : :act_reflect
     if(@_State[sym] > 0)
-      _mp([:msg, _parse(18, target.position < 0 ? 133 : 132)])
+      _mp([:msg, parse_text(18, target.position < 0 ? 133 : 132)])
       _mp([:set_state, sym, 0])
     end
   end
@@ -976,7 +976,7 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     return if launcher != target #>Pour appliquer à tout l'équipe et gérer saisie
     target = _snatch_check(launcher, skill) #>Actuellement je ne vérifie que le lanceur car je ne sais pas comment ça agit en 2v2 quand c'est pas le lanceur sous saisie :<
-    _mp([:msg, _parse(18, target.position < 0 ? 147 : 146)])
+    _mp([:msg, parse_text(18, target.position < 0 ? 147 : 146)])
     _mp([:set_state, target.position < 0 ? :enn_tailwind : :act_tailwind, 4])
   end
   #===
@@ -987,7 +987,7 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     return if launcher != target #>Pour appliquer à tout l'équipe et gérer saisie
     target = _snatch_check(launcher, skill) #>Actuellement je ne vérifie que le lanceur car je ne sais pas comment ça agit en 2v2 quand c'est pas le lanceur sous saisie :<
-    _mp([:msg, _parse(18, target.position < 0 ? 151 : 150)])
+    _mp([:msg, parse_text(18, target.position < 0 ? 151 : 150)])
     _mp([:set_state, target.position < 0 ? :enn_lucky_chant : :act_lucky_chant, 5])
   end
   #===
@@ -1006,7 +1006,7 @@ module BattleEngine
   def s_magnet_rise(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
-    _mp([:msg, _parse_with_pokemon(19, 658, target)])
+    _mp([:msg, parse_text_with_pokemon(19, 658, target)])
     _mp([:apply_effect, target, :apply_magnet_rise])
   end
   #===
@@ -1038,10 +1038,10 @@ module BattleEngine
     return false if launcher != target
     #>Tourniquet
     if(skill.id == 346)
-      _mp([:msg, _parse(18,118)])
+      _mp([:msg, parse_text(18,118)])
       _mp([:set_state, :water_sport, 5])
     else
-      _mp([:msg, _parse(18,120)])
+      _mp([:msg, parse_text(18,120)])
       _mp([:set_state, :mud_sport, 5])
     end
   end
@@ -1080,9 +1080,9 @@ module BattleEngine
           n_party<<party[i] if party[i].hp > 0
         end
         if(Abilities.has_ability_usable(target, 84)) #>Ventouse
-          _mp([:msg, _parse_with_pokemon(19,454,target)])
+          _mp([:msg, parse_text_with_pokemon(19,454,target)])
         elsif(false) #>Racines
-          _mp([:msg, _parse_with_pokemon(19,742,target)])
+          _mp([:msg, parse_text_with_pokemon(19,742,target)])
         else
           _mp([:switch_pokemon, target, n_party[rand(n_party.size)]]) if n_party.size > 0 #>Redondance
         end
@@ -1101,7 +1101,7 @@ module BattleEngine
     if(ls <= 0 or ls == skill.id or ls == 448 or ls == 165 or (!Abilities.has_ability_usable(target, 28) and (ls == 153 or ls == 120)))
       _mp(MSG_Fail)
     else
-      _mp([:msg, _parse_with_pokemon(19, 691, launcher, MOVE[1] => ::GameData::Skill.name(ls))])
+      _mp([:msg, parse_text_with_pokemon(19, 691, launcher, MOVE[1] => ::GameData::Skill.name(ls))])
       _mp([:sketch, launcher, skill, ls])
     end
   end
@@ -1114,7 +1114,7 @@ module BattleEngine
     target = _magic_coat(launcher, target, skill)
     ls = target.last_skill
     if(ls > 0 and !target.battle_effect.has_disable_effect?)
-      _mp([:msg, _parse_with_pokemon(19, 592, launcher, MOVE[1] => ::GameData::Skill.name(ls))])
+      _mp([:msg, parse_text_with_pokemon(19, 592, launcher, MOVE[1] => ::GameData::Skill.name(ls))])
       _mp([:apply_effect, target, :apply_disable, ls])
     else
       _mp(MSG_Fail)
@@ -1128,7 +1128,7 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     ls = target.last_skill
     if(ls > 0 and ls != 165 and ls != skill.id)
-      _mp([:msg, _parse_with_pokemon(19, 688, launcher, MOVE[1] => ::GameData::Skill.name(ls))])
+      _mp([:msg, parse_text_with_pokemon(19, 688, launcher, MOVE[1] => ::GameData::Skill.name(ls))])
       _mp([:mimic, launcher, target, skill, ls])
     else
       _mp(MSG_Fail)
@@ -1143,7 +1143,7 @@ module BattleEngine
     target = _magic_coat(launcher, target, skill)
     ls = target.last_skill
     if(ls > 0 and ls != skill.id and ls != 165)
-      _mp([:msg, _parse_with_pokemon(19, 559, target, MOVE[1] => ::GameData::Skill.name(ls))])
+      _mp([:msg, parse_text_with_pokemon(19, 559, target, MOVE[1] => ::GameData::Skill.name(ls))])
       _mp([:apply_effect, target, :apply_encore, target.find_skill(ls)])
     else
       _mp(MSG_Fail)
@@ -1160,7 +1160,7 @@ module BattleEngine
     skill = target.find_skill(ls)
     pp = skill ? (skill.pp < 4 ? skill.pp : 4) : 0
     if(ls > 0 and ls != 165 and pp > 0)
-      _mp([:msg, _parse_with_pokemon(19, 641, target, MOVE[1] => ::GameData::Skill.name(ls), "[VAR NUM1(0002)]" => pp.to_s)])
+      _mp([:msg, parse_text_with_pokemon(19, 641, target, MOVE[1] => ::GameData::Skill.name(ls), "[VAR NUM1(0002)]" => pp.to_s)])
       _mp([:pp_down, target, skill, pp])
     else
       _mp(MSG_Fail)
@@ -1184,7 +1184,7 @@ module BattleEngine
       _mp([:apply_effect,target, :apply_cant_flee, launcher])
       _mp([:apply_effect,launcher, :apply_cant_flee, launcher]) if msg_push
     else
-      _mp([:msg, _parse_with_pokemon(19, 875, target)])
+      _mp([:msg, parse_text_with_pokemon(19, 875, target)])
       _mp([:apply_effect,target, :apply_cant_flee, launcher])
     end
   end
@@ -1197,7 +1197,7 @@ module BattleEngine
     if($game_temp.trainer_battle)
       _mp(MSG_Fail)
     else
-      _mp([:msg, _parse_with_pokemon(19, 767, launcher)])
+      _mp([:msg, parse_text_with_pokemon(19, 767, launcher)])
       _mp([:roar, launcher])
     end
   end
@@ -1216,7 +1216,7 @@ module BattleEngine
       if(data and data.need_user_id != target.id and !Abilities.has_abilities(target, 45, 122))
         data = ::GameData::Item.misc_data(li)
         if(data and data.need_user_id != launcher.id)
-          _mp([:msg, _parse_with_pokemon(19, 682, launcher)])
+          _mp([:msg, parse_text_with_pokemon(19, 682, launcher)])
           _mp([:set_item, target, li])
           _mp([:set_item, launcher, ti])
           return true
@@ -1232,7 +1232,7 @@ module BattleEngine
   def s_embargo(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
-    _mp([:msg, _parse_with_pokemon(19, 727, target)])
+    _mp([:msg, parse_text_with_pokemon(19, 727, target)])
     _mp([:apply_effect, target, :apply_embargo])
   end
   #===
@@ -1253,7 +1253,7 @@ module BattleEngine
           _mp([:set_item, launcher, ti, launcher.item_holding == 0])
         end
       else
-        _mp([:msg, _parse_with_pokemon(19, 493, target)])
+        _mp([:msg, parse_text_with_pokemon(19, 493, target)])
       end
     end
   end
@@ -1288,7 +1288,7 @@ module BattleEngine
     if(ti == 0 and ie != 0 and !@_State[:knock_off].include?(target))
       target = _snatch_check(target, skill)
       _mp([:set_item, target, ie])
-      _mp([:msg, _parse_with_pokemon(19, 490, target, ITEM2[1] => ::GameData::Item.name(ie))])
+      _mp([:msg, parse_text_with_pokemon(19, 490, target, ITEM2[1] => ::GameData::Item.name(ie))])
     else
       _mp(MSG_Fail)
     end
@@ -1303,7 +1303,7 @@ module BattleEngine
     if(ti > 0)
       data = ::GameData::Item.misc_data(ti)
       if(data and data.berry)
-        _mp([:msg, _parse_with_pokemon(19, 776, launcher, ITEM2[1] => ::GameData::Item.name(ti))])
+        _mp([:msg, parse_text_with_pokemon(19, 776, launcher, ITEM2[1] => ::GameData::Item.name(ti))])
         #>Faire utiliser l'objet !!!!
         _mp([:set_item, target, -1])
       end
@@ -1327,10 +1327,10 @@ module BattleEngine
     return unless msg_push
     sym = :trick_room
     if(@_State[sym] > 0)
-      _mp([:msg, _parse(18, 122)])
+      _mp([:msg, parse_text(18, 122)])
       _mp([:set_state, sym, 0])
     else
-      _mp([:msg, _parse_with_pokemon(19, 860, launcher)])
+      _mp([:msg, parse_text_with_pokemon(19, 860, launcher)])
       _mp([:set_state, sym, 5])
     end
   end
@@ -1349,10 +1349,10 @@ module BattleEngine
       add = 2
     end
     if(@_State[sym] > 0)
-      _mp([:msg, _parse(18, 185 + add)])
+      _mp([:msg, parse_text(18, 185 + add)])
       _mp([:set_state, sym, 0])
     else
-      _mp([:msg, _parse(18, 184 + add)])
+      _mp([:msg, parse_text(18, 184 + add)])
       _mp([:set_state, sym, 5])
     end
   end
@@ -1364,7 +1364,7 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     _message_stack_push([:apply_effect, target, :apply_taunt, 2])
-    _message_stack_push([:msg, _parse_with_pokemon(19, 568, target)])
+    _message_stack_push([:msg, parse_text_with_pokemon(19, 568, target)])
   end
   #===
   #>s_follow_me
@@ -1374,7 +1374,7 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     sym = target.position < 0 ? :enn_follow_me : :act_follow_me
     _message_stack_push([:set_state, sym, launcher])
-    _message_stack_push([:msg, _parse_with_pokemon(19, 670, launcher)])
+    _message_stack_push([:msg, parse_text_with_pokemon(19, 670, launcher)])
   end
   #===
   #>s_substitute
@@ -1384,15 +1384,15 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     hp = launcher.max_hp/4
     if(launcher.battle_effect.has_substitute_effect?)
-      _mp([:msg, _parse_with_pokemon(19, 788, launcher)])
+      _mp([:msg, parse_text_with_pokemon(19, 788, launcher)])
     elsif(launcher.hp > hp)
       _mp([:hp_down, launcher, hp])
-      _mp([:msg, _parse_with_pokemon(19, 785, launcher)])
+      _mp([:msg, parse_text_with_pokemon(19, 785, launcher)])
       target = _snatch_check(target, skill)
       _mp([:apply_effect, launcher, :apply_substitute, hp])
       _mp([:switch_form, launcher])
     else
-      _mp([:msg, _parse(18,129)])
+      _mp([:msg, parse_text(18,129)])
     end
   end
   #===
@@ -1415,12 +1415,12 @@ module BattleEngine
     _mp([:entry_hazards_remove, target])
     sym = target.position < 0 ? :enn_light_screen : :act_light_screen
     if(@_State[sym] > 0)
-      _mp([:msg, _parse(18, target.position < 0 ? 137 : 136)])
+      _mp([:msg, parse_text(18, target.position < 0 ? 137 : 136)])
       _mp([:set_state, sym, 0])
     end
     sym = target.position < 0 ? :enn_reflect : :act_reflect
     if(@_State[sym] > 0)
-      _mp([:msg, _parse(18, target.position < 0 ? 133 : 132)])
+      _mp([:msg, parse_text(18, target.position < 0 ? 133 : 132)])
       _mp([:set_state, sym, 0])
     end
     if(be.has_mist_effect?)
@@ -1462,7 +1462,7 @@ module BattleEngine
     stockpile_counter = launcher.battle_effect.stockpile
     if(stockpile_counter < 3)
       stockpile_counter += 1
-      _mp([:msg, _parse_with_pokemon(19, 721, launcher, "[VAR NUM1(0001)]" => stockpile_counter.to_s)])
+      _mp([:msg, parse_text_with_pokemon(19, 721, launcher, "[VAR NUM1(0001)]" => stockpile_counter.to_s)])
       _mp([:apply_effect, launcher, :stockpile=, stockpile_counter])
     else
       _mp(MSG_Fail)
@@ -1531,7 +1531,7 @@ module BattleEngine
     else
       target = _snatch_check(target, skill)
       _mp([:set_type, target, type, 1])
-      _mp([:msg, _parse_with_pokemon(19,899,target, 
+      _mp([:msg, parse_text_with_pokemon(19,899,target, 
       '[VAR TYPE(0001)]' => $game_data_types[type].name)])
     end
   end
@@ -1551,7 +1551,7 @@ module BattleEngine
       _mp(MSG_Fail)
     else
       _mp([:set_type, launcher, type, 1])
-      _mp([:msg, _parse_with_pokemon(19,899,launcher, 
+      _mp([:msg, parse_text_with_pokemon(19,899,launcher, 
       '[VAR TYPE(0001)]' => $game_data_types[type].name)])
     end
   end
@@ -1600,7 +1600,7 @@ module BattleEngine
       _mp([:msg_fail])
     else
       _mp([:apply_effect, target, :apply_telekinesis])
-      _mp([:msg, _parse_with_pokemon(19, 1146, target)])
+      _mp([:msg, parse_text_with_pokemon(19, 1146, target)])
     end
   end
 end

@@ -27,9 +27,9 @@ module BattleEngine
       getter = pkmn.battle_effect.get_snatch_target
       if(getter.position < 0)
         add = $game_temp.trainer_battle ? 3 : 5
-        _message_stack_push([:msg, _parse(19, 754 + add + (pkmn.position < 0 ? 1 : 0), PKNICK[0] => getter.given_name, PKNICK[1] => pkmn.given_name)])
+        _message_stack_push([:msg, parse_text(19, 754 + add + (pkmn.position < 0 ? 1 : 0), PKNICK[0] => getter.given_name, PKNICK[1] => pkmn.given_name)])
       else
-        _message_stack_push([:msg, _parse_with_pokemon(19, 754, pkmn, PKNICK[0] => getter.given_name, PKNICK[1] => pkmn.given_name)])
+        _message_stack_push([:msg, parse_text_with_pokemon(19, 754, pkmn, PKNICK[0] => getter.given_name, PKNICK[1] => pkmn.given_name)])
       end
       return 
     end
@@ -41,7 +41,7 @@ module BattleEngine
   def _magic_coat(launcher, target, skill)
     return launcher if target == launcher
     if (skill.magic_coat_affected and  target.battle_effect.has_magic_coat_effect?) or Abilities.has_ability_usable(target, 155) #>Miroir Magik
-      _message_stack_push([:msg, _parse_with_pokemon(19, 764, target, PKNICK[0] => target.given_name, ::PFM::Text::MOVE[1] => skill.name)])
+      _message_stack_push([:msg, parse_text_with_pokemon(19, 764, target, PKNICK[0] => target.given_name, ::PFM::Text::MOVE[1] => skill.name)])
       return launcher
     end
     return target

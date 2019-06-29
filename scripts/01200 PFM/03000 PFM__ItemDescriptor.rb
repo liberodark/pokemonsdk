@@ -106,7 +106,7 @@ module PFM
               next unless j
               j.pp = j.ppmax
             end
-            $scene.display_message(_parse(22, 115, be::PKNICK[0] => pkmn.given_name))
+            $scene.display_message(parse_text(22, 115, be::PKNICK[0] => pkmn.given_name))
           end
         end
         return hash
@@ -118,7 +118,7 @@ module PFM
             $scene.return_to_scene(::Scene_Map)
             $game_system.map_interpreter.launch_common_event(1)
           else
-            $scene.display_message(_get(39, 7).clone)
+            $scene.display_message(text_get(39, 7).clone)
           end
         end
         return hash
@@ -174,16 +174,16 @@ module PFM
               status = pkmn.status
               if(states = heal_data.states and states.include?(status))
                 pkmn.status = 0
-                $scene.display_message(_parse(22, BagStatesHeal[status], be::PKNICK[0] => pkmn.given_name))
+                $scene.display_message(parse_text(22, BagStatesHeal[status], be::PKNICK[0] => pkmn.given_name))
                 next if(pkmn.hp == pkmn.max_hp)
               end
               hp = hp.class == Float ? (pkmn.max_hp * hp).round : hp
               base_hp = pkmn.hp
               pkmn.hp += hp
               if(base_hp == 0)
-                $scene.display_message(_parse(22, 115, be::PKNICK[0] => pkmn.given_name))
+                $scene.display_message(parse_text(22, 115, be::PKNICK[0] => pkmn.given_name))
               else
-                $scene.display_message(_parse(22, 109, be::PKNICK[0] => pkmn.given_name,
+                $scene.display_message(parse_text(22, 109, be::PKNICK[0] => pkmn.given_name,
                 be::NUM3[1] => (pkmn.hp - base_hp).to_s))
               end
               berry_check_bonus(item.misc_data, pkmn)
@@ -217,7 +217,7 @@ module PFM
             hash[:on_pokemon_use] = proc do |pkmn|
               status = pkmn.status
               pkmn.status = 0
-              $scene.display_message(_parse(22, BagStatesHeal[status], be::PKNICK[0] => pkmn.given_name))
+              $scene.display_message(parse_text(22, BagStatesHeal[status], be::PKNICK[0] => pkmn.given_name))
               pkmn.loyalty += heal_data.loyalty if heal_data.loyalty
               berry_check_bonus(item.misc_data, pkmn)
             end
@@ -250,9 +250,9 @@ module PFM
           end
           hash[:on_pokemon_use] = proc do |pkmn|
             pkmn.ev_check(boost, true)
-            $scene.display_message(_parse(22, 118, 
+            $scene.display_message(parse_text(22, 118, 
               be::PKNICK[0] => pkmn.given_name,
-              '[VAR EVSTAT(0001)]' => _get(22, EVStat[boost%10])))
+              '[VAR EVSTAT(0001)]' => text_get(22, EVStat[boost%10])))
             pkmn.loyalty += heal_data.loyalty if heal_data.loyalty
           end
         #> Sinon ajout de PP (Toutes les attaques)
@@ -287,7 +287,7 @@ module PFM
               pkmn.skills_set.each do |skill|
                 skill.pp += pp if skill
               end
-              $scene.display_message(_parse(22, 114, be::PKNICK[0] => pkmn.given_name))
+              $scene.display_message(parse_text(22, 114, be::PKNICK[0] => pkmn.given_name))
               pkmn.loyalty += heal_data.loyalty if heal_data.loyalty
               berry_check_bonus(item.misc_data, pkmn)
             end
@@ -329,7 +329,7 @@ module PFM
           else
             hash[:on_skill_use] = proc do |pkmn, skill|
               skill.pp += pp
-              $scene.display_message(_parse(22, 114, be::MOVE[0] => skill.name))
+              $scene.display_message(parse_text(22, 114, be::MOVE[0] => skill.name))
               pkmn.loyalty += heal_data.loyalty if heal_data.loyalty
               berry_check_bonus(item.misc_data, pkmn)
             end
@@ -367,7 +367,7 @@ module PFM
               skill.ppmax += $game_data_skill[skill.id].pp_max * 1 / 5
             end
             skill.pp += 99
-            $scene.display_message(_parse(22, 117, be::MOVE[0] => skill.name))
+            $scene.display_message(parse_text(22, 117, be::MOVE[0] => skill.name))
             pkmn.loyalty += heal_data.loyalty if heal_data.loyalty
             # berry_check_bonus(item.misc_data, pkmn)
           end
@@ -385,7 +385,7 @@ module PFM
             level.times do |i|
               if(pkmn.level_up)
                 list = pkmn.level_up_stat_refresh
-                $scene.display_message(_parse(22, 128, 
+                $scene.display_message(parse_text(22, 128, 
                   be::PKNICK[0] => pkmn.given_name, be::NUM3[1] => pkmn.level.to_s))
                 pkmn.level_up_window_call(list[0],list[1],40005)
                 if $scene.message_window
@@ -437,7 +437,7 @@ module PFM
               $game_temp.common_event_id = misc_data.event_id
               $game_temp.in_battle ? $scene._close_bag : $scene.return_to_scene(Scene_Map)
             else
-              $scene.display_message(_parse(22, 43))
+              $scene.display_message(parse_text(22, 43))
               next(:unused)
             end
           end
@@ -446,7 +446,7 @@ module PFM
           hash[:use_before_telling] = true
           hash[:on_use] = proc do
             if($pokemon_party.get_repel_count > 0)
-              $scene.display_message(_parse(22, 47))
+              $scene.display_message(parse_text(22, 47))
               next(:unused)
             else
               $pokemon_party.set_repel_count(repel_count)

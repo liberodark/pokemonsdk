@@ -1,0 +1,5 @@
+pokemonsdk/scripts/00100 Yuki__EXC.rb
+pokemonsdk/scripts/00200 PSDK_Version.rb
+pokemonsdk/scripts/00400 Console.rb
+pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/00100 Various_Patch.rb
+pokemonsdk/scripts/00800 GameData/01300 GameData__Text.rb

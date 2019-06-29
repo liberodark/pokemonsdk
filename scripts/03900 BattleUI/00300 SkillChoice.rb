@@ -161,7 +161,7 @@ module BattleUI
       private
 
       def create_stack
-        add_text(0, 0, 40, 16, _get(27, 32))
+        add_text(0, 0, 40, 16, text_get(27, 32))
         add_text(0, 0, 64, 16, :pp_text, 2, type: UI::SymText)
         push(0, 16, nil, type: UI::TypeSprite)
         push(33, 16, nil, type: UI::CategorySprite)

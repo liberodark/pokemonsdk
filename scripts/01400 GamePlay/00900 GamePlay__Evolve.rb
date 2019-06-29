@@ -49,11 +49,11 @@ module GamePlay
         Audio.bgm_play(EvolveMusic)
         @message_window.auto_skip = true
         @message_window.stay_visible = true
-        display_message(_parse(31, 0, ::PFM::Text::PKNICK[0] => @pokemon.given_name))
+        display_message(parse_text(31, 0, ::PFM::Text::PKNICK[0] => @pokemon.given_name))
       elsif @counter >= LastStep
         @message_window.stay_visible = false
         Audio.bgm_play(EvolvedMusic)
-        display_message(_parse(31, 2, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
+        display_message(parse_text(31, 2, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
         ::PFM::Text::PKNAME[1] => @clone.name))
         while $game_temp.message_window_showing
           @message_window.update
@@ -82,7 +82,7 @@ module GamePlay
         if(@counter < SecondStep and (!@forced and Input.trigger?(:B)))
           release_animation
           @message_window.stay_visible = false
-          display_message(_parse(31, 1, ::PFM::Text::PKNICK[0] => @pokemon.given_name))
+          display_message(parse_text(31, 1, ::PFM::Text::PKNICK[0] => @pokemon.given_name))
           @running = false
           $game_system.bgm_restore2
           return

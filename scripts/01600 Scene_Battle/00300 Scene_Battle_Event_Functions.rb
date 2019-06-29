@@ -24,8 +24,8 @@ class Scene_Battle
     $game_temp.trainer_battle = true
     @actors = $actors.clone
     __sort_actors
-    @victory_phrase = _get(47, id)
-    @defeat_phrase = _get(48, id)
+    @victory_phrase = text_get(47, id)
+    @defeat_phrase = text_get(48, id)
     @trainer_names = data.internal_names
     @troop_id = data.special_group if data.special_group and data.special_group > 5
     #> Configuration des Pokémon du dresseur

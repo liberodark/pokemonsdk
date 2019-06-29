@@ -28,7 +28,7 @@ class Scene_Battle
       @actor_actions.push([0, @actors[index].find_last_skill_position, 0,@actors[index]])
       return update_phase2_next_act
     end
-    display_message(_parse(18, 71, '[VAR 010C(0000)]' => @actors[index].given_name),false) if @Actions_To_DO.size==0
+    display_message(parse_text(18, 71, '[VAR 010C(0000)]' => @actors[index].given_name),false) if @Actions_To_DO.size==0
     @action_selector.pokemon = @actors[index]
     @action_selector.visible = true
     0 while get_action
@@ -96,7 +96,7 @@ class Scene_Battle
         BattleEngine::Abilities.has_ability_usable(@actors[i],9))
         return true if auto_return
         $game_system.se_play($data_system.escape_se)
-        display_message(_get(18,75))
+        display_message(text_get(18,75))
         battle_end(1)
         return
       end
@@ -106,10 +106,10 @@ class Scene_Battle
     #Si c'est un succès on lance la fin du combat avec l'argument fuite
     if success
       $game_system.se_play($data_system.escape_se)
-      display_message(_get(18,75))
+      display_message(text_get(18,75))
       battle_end(1)
     else
-      display_message(_get(18,76))
+      display_message(text_get(18,76))
       launch_phase_event(4,false)
       @to_start=:start_phase4
     end

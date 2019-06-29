@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 # The title screen scene
 class Scene_Title
   # @return [Integer] ID of the map to display as intro movie (0 = no intro)
@@ -11,7 +9,7 @@ class Scene_Title
   # Entry point of the scene. If player hit X + B + UP the GamePlay::Load scene will ask the save deletion.
   def main
     data_load
-    title_animation unless $TEST && ARGV.include?('skip_title')
+    title_animation unless debug? && ARGV.include?('skip_title')
     if $scene == self
       Yuki::MapLinker.reset
       GamePlay::Load.new(#> Suppression de sauvegarde : X+B+Haut

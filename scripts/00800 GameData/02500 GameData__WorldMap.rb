@@ -18,7 +18,7 @@ module GameData
     # @return [String]
     def name
       #                                 from Ruby Host                        from csv
-      return (@name_file_id.nil? ? GameData::Text.get(9, @name_id) : _ext(@name_file_id, @name_id))
+      return (@name_file_id.nil? ? GameData::Text.get(9, @name_id) : ext_text(@name_file_id, @name_id))
     end
 
     # Create a new GameData::WorldMap

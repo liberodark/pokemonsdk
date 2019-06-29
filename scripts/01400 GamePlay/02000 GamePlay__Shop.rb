@@ -25,7 +25,7 @@ module GamePlay
     def load_items
       @goods = Array.new($game_temp.shop_goods.size) { |i| $game_temp.shop_goods[i][1] }
       @item_names = Array.new(@goods.size) { |i| ::GameData::Item.name(@goods[i]) }
-      @item_prices = Array.new(@goods.size) { |i| _parse(22, 159, NUM7R => ::GameData::Item.price(@goods[i]).to_s) }
+      @item_prices = Array.new(@goods.size) { |i| parse_text(22, 159, NUM7R => ::GameData::Item.price(@goods[i]).to_s) }
     end
 
     # Update the scene
@@ -68,10 +68,10 @@ module GamePlay
         $pokemon_party.lose_money(price * quantity)
         draw_gold_window
         Audio.se_play(BUY_SE)
-        display_message(_get(11, 29))
+        display_message(text_get(11, 29))
         buy_item_special_offer(item_id, quantity)
       else
-        display_message(_parse(11, 24))
+        display_message(parse_text(11, 24))
       end
     end
 
@@ -92,7 +92,7 @@ module GamePlay
         max -= $bag.item_quantity(item_id)
         if max <= 0
           # Not enough space
-          display_message(_parse(11, 31))
+          display_message(parse_text(11, 31))
           return true
         end
         max_amount = max if max < max_amount
@@ -102,7 +102,7 @@ module GamePlay
       $game_temp.num_input_start = max_amount
       $game_temp.shop_calling = price
       # How much ?
-      display_message(_parse(11, 23, ITEM2[0] => ::GameData::Item.name(item_id)))
+      display_message(parse_text(11, 23, ITEM2[0] => ::GameData::Item.name(item_id)))
       return false
     end
 
@@ -113,11 +113,11 @@ module GamePlay
     # @return [Boolean] if the buy_item procedure should immediately exit
     def confirm_buy(price, item_id, quantity)
       if quantity > 0
-        message = _parse(11, 25,
+        message = parse_text(11, 25,
                          ITEM2[0] => ::GameData::Item.name(item_id),
                          NUM2[1] => quantity.to_s, NUM7R => (quantity * price).to_s)
         # Would you like to buy x item for $y ? Yes / No
-        c = display_message(message, 1, _get(11, 27), _get(11, 28))
+        c = display_message(message, 1, text_get(11, 27), text_get(11, 28))
         return c != 0
       end
       return true
@@ -129,7 +129,7 @@ module GamePlay
     def buy_item_special_offer(item_id, quantity)
       if item_id == 4 && quantity >= 10
         # Honnor ball gift
-        display_message(_get(11, 32))
+        display_message(text_get(11, 32))
         $bag.add_item(12, 1)
       end
     end
@@ -166,7 +166,7 @@ module GamePlay
         @price_text[cnt].visible = @name_text[cnt].visible = (i < size)
         if i >= size
           if i == size
-            @name_text[cnt].text = _get(22, 7)
+            @name_text[cnt].text = text_get(22, 7)
             @name_text[cnt].visible = true
           end
           next
@@ -227,13 +227,13 @@ module GamePlay
       @gold_window.windowskin = RPG::Cache.windowskin(current_windowskin)
       @gold_window.unlock
       stack = UI::SpriteStack.new(@gold_window)
-      stack.add_text(0, 0, 64, 16, _get(11, 6))
-      @money_text = stack.add_text(0, 16, 62, 16, _parse(11, 9, NUM7R => $pokemon_party.money.to_s), 2)
+      stack.add_text(0, 0, 64, 16, text_get(11, 6))
+      @money_text = stack.add_text(0, 16, 62, 16, parse_text(11, 9, NUM7R => $pokemon_party.money.to_s), 2)
     end
 
     # Update the money of the Gold Window
     def draw_gold_window
-      @money_text.text = _parse(11, 9, NUM7R => $pokemon_party.money.to_s)
+      @money_text.text = parse_text(11, 9, NUM7R => $pokemon_party.money.to_s)
     end
 
     # Retreive the current windowskin

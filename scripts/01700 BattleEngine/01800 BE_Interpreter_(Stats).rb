@@ -68,7 +68,7 @@ def change_{d1}(target, power)
     power = (power > 0 ? 4 : 5)
   end
   _mp([:animation_on, target, AnimIDS[:{d1}] + (power < 0 ? 1 : 0)])
-  msg(_parse_with_pokemon(19, Pos_{d1}[power], target))
+  msg(parse_text_with_pokemon(19, Pos_{d1}[power], target))
 end"
     module_eval(eval_data.gsub("{d1}","atk"))
     module_eval(eval_data.gsub("{d1}","dfe"))

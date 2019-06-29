@@ -60,7 +60,7 @@ module UI
 
     # Init the texts of the UI
     def init_texts
-      texts = _get_file(27)
+      texts = text_file_get(27)
       add_text(114, 19, 60, 16, texts[3]) # Type
       add_text(114, 19 + 16, 60, 16, texts[36]) # Category
       add_text(114 + 97, 19, 60, 16, texts[37]) # Power
@@ -145,7 +145,7 @@ module UI
       @selector = push(-8, 0, selector_name, type: Sprite::WithColor)
       push(0, 2, nil, type: TypeSprite)
       add_text(34, 0, 110, 16, :name, type: SymText)
-      @pp_text = add_text(34, 16, 110, 16, _get(27, 32)) # PP
+      @pp_text = add_text(34, 16, 110, 16, text_get(27, 32)) # PP
       add_text(34, 16, 100, 16, pp_method, 1, type: SymText, color: 1)
       @selected = false
       self.moving = false

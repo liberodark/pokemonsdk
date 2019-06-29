@@ -44,15 +44,15 @@ module GamePlay
       end
 
       choices
-        .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-        .register_choice(_get(23, 8), on_validate: method(:action_move_current_pokemon), disable_detect: proc { @party.size <= 1 }) # Move
+        .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
+        .register_choice(text_get(23, 8), on_validate: method(:action_move_current_pokemon), disable_detect: proc { @party.size <= 1 }) # Move
       unless pokemon.egg?
         choices
-          .register_choice(_get(23, 146), on_validate: method(:give_item)) # Give
-          .register_choice(_get(23, 147), on_validate: method(:take_item), disable_detect: method(:current_pokemon_has_no_item)) # Take
+          .register_choice(text_get(23, 146), on_validate: method(:give_item)) # Give
+          .register_choice(text_get(23, 147), on_validate: method(:take_item), disable_detect: method(:current_pokemon_has_no_item)) # Take
       end
-      # choices.register_choice(_get(23, 138), on_validate: method(:hide_win_text)) # Cancel
-      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+      # choices.register_choice(text_get(23, 138), on_validate: method(:hide_win_text)) # Cancel
+      show_win_text(parse_text(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_win_text if choice == 999
@@ -99,10 +99,10 @@ module GamePlay
           elsif type == :choice
             @mode = :choice
             @return_data = @index
-            show_win_text(_get(23, 17))
+            show_win_text(text_get(23, 17))
             return
           elsif type == :block
-            display_message(_parse(22, 108))
+            display_message(parse_text(22, 108))
             hide_win_text
             return
           end
@@ -154,9 +154,9 @@ module GamePlay
     # @param pokemon [PFM::Pokemon] Pokemong getting the item
     def give_item_message(item1, item2, pokemon)
       if item1 != 0 and item1 != item2
-        display_message(_parse(22, 91, ::PFM::Text::ITEM2[0] => pokemon.item_name, ::PFM::Text::ITEM2[1] => ::GameData::Item.name(item2)))
+        display_message(parse_text(22, 91, ::PFM::Text::ITEM2[0] => pokemon.item_name, ::PFM::Text::ITEM2[1] => ::GameData::Item.name(item2)))
       elsif item1 != item2
-        display_message(_parse(22, 90, ::PFM::Text::ITEM2[0] => ::GameData::Item.name(item2)))
+        display_message(parse_text(22, 90, ::PFM::Text::ITEM2[0] => ::GameData::Item.name(item2)))
       end
     end
     # Update the bag and pokemon state when giving an item
@@ -179,7 +179,7 @@ module GamePlay
       pokemon.item_holding = 0
       @team_buttons[@index].data = pokemon
       @team_buttons[@index].refresh
-      display_message(_parse(23, 78, ::PFM::Text::PKNICK[0] => pokemon.given_name, ::PFM::Text::ITEM2[1] => ::GameData::Item.name(item)))
+      display_message(parse_text(23, 78, ::PFM::Text::PKNICK[0] => pokemon.given_name, ::PFM::Text::ITEM2[1] => ::GameData::Item.name(item)))
       return hide_win_text unless pokemon.form_calibrate # Form ajustment
       @team_buttons[@index].refresh
       form_change_message(pokemon)
@@ -191,7 +191,7 @@ module GamePlay
     # @param pokemon [PFM::Pokemon] Pokemon that change form
     def form_change_message(pokemon)
       @team_buttons[@index].data = pokemon
-      display_message(_parse(22, 157, ::PFM::Text::PKNAME[0] => pokemon.given_name))
+      display_message(parse_text(22, 157, ::PFM::Text::PKNAME[0] => pokemon.given_name))
     end
 
     # Method telling if the Pokemon has no item or not
@@ -207,9 +207,9 @@ module GamePlay
       pokemon = @party[@index]
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       choices
-        .register_choice(_get(20, 26), on_validate: method(:on_send_pokemon)) # Send
-        .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+        .register_choice(text_get(20, 26), on_validate: method(:on_send_pokemon)) # Send
+        .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
+      show_win_text(parse_text(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
@@ -220,11 +220,11 @@ module GamePlay
       # @type [PFM::Pokemon]
       pokemon = @party[@index]
       if pokemon.egg?
-        display_message(_parse(20, 34))
+        display_message(parse_text(20, 34))
       elsif pokemon.dead?
-        display_message(_parse(20, 33, ::PFM::Text::PKNICK[1] => pokemon.given_name))
+        display_message(parse_text(20, 33, ::PFM::Text::PKNICK[1] => pokemon.given_name))
       elsif @index < $game_temp.vs_type
-        display_message(_parse(20, 32, ::PFM::Text::PKNICK[1] => pokemon.given_name))
+        display_message(parse_text(20, 32, ::PFM::Text::PKNICK[1] => pokemon.given_name))
       else
         @return_data = @index
         @running = false
@@ -238,14 +238,14 @@ module GamePlay
       pokemon = @party[@index]
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       choices
-        .register_choice(_get(23, 209), on_validate: method(:on_skill_choice)) # Select
-        .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-        .register_choice(_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
-      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+        .register_choice(text_get(23, 209), on_validate: method(:on_skill_choice)) # Select
+        .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
+        .register_choice(text_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
+      show_win_text(parse_text(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
-      show_win_text(_get(23, 17)) if choice != 0
+      show_win_text(text_get(23, 17)) if choice != 0
     end
 
     # Event that triggers when the player choose on which pokemon to apply the move
@@ -266,14 +266,14 @@ module GamePlay
       pokemon = @party[@index]
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       choices
-        .register_choice(_get(23, 209), on_validate: method(:on_item_use_choice)) # Select
-        .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-        .register_choice(_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
-      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+        .register_choice(text_get(23, 209), on_validate: method(:on_item_use_choice)) # Select
+        .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
+        .register_choice(text_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
+      show_win_text(parse_text(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
-      show_win_text(_get(23, 24)) if choice != 0
+      show_win_text(text_get(23, 24)) if choice != 0
     end
 
     # Event that triggers when the player choose on which pokemon to use the item
@@ -301,7 +301,7 @@ module GamePlay
           @running = false
         end
       else
-        display_message(_parse(22, 108))
+        display_message(parse_text(22, 108))
       end
     end
 
@@ -312,14 +312,14 @@ module GamePlay
       pokemon = @party[@index]
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       choices
-        .register_choice(_get(23, 146), on_validate: method(:on_item_give_choice)) # Select
-        .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-        .register_choice(_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
-      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+        .register_choice(text_get(23, 146), on_validate: method(:on_item_give_choice)) # Select
+        .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
+        .register_choice(text_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
+      show_win_text(parse_text(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
-      show_win_text(_get(23, 23)) if choice != 0
+      show_win_text(text_get(23, 23)) if choice != 0
     end
 
     # Event that triggers when the player choose on which pokemon to give the item
@@ -338,28 +338,28 @@ module GamePlay
       if extend_data.kind_of?(Array)
         if !@temp_team.include?(pokemon) && !extend_data.include?(pokemon.id)
           choices
-            .register_choice(_get(23, 140), on_validate: method(:on_select)) # Enter
+            .register_choice(text_get(23, 140), on_validate: method(:on_select)) # Enter
         elsif @temp_team.include?(pokemon) && !extend_data.include?(pokemon.id)
           choices
-            .register_choice(_get(23, 141), on_validate: method(:on_select)) # Withdraw
+            .register_choice(text_get(23, 141), on_validate: method(:on_select)) # Withdraw
         end
       else
         unless @temp_team.include?(pokemon)
           choices
-            .register_choice(_get(23, 140), on_validate: method(:on_select)) # Enter
+            .register_choice(text_get(23, 140), on_validate: method(:on_select)) # Enter
         else
           choices
-            .register_choice(_get(23, 141), on_validate: method(:on_select)) # Withdraw
+            .register_choice(text_get(23, 141), on_validate: method(:on_select)) # Withdraw
         end
       end
       choices
-        .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-        .register_choice(_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
-      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+        .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
+        .register_choice(text_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
+      show_win_text(parse_text(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
-      show_win_text(_get(23, 110)) if choice != 0
+      show_win_text(text_get(23, 110)) if choice != 0
     end
 	
     # Event that triggers when a Pokemon is selected in :select mode
@@ -386,7 +386,7 @@ module GamePlay
       if caller == :button
         if @temp_team.size + 1 > $game_variables[Yuki::Var::Max_Pokemon_Select]
           v = 115 + $game_variables[Yuki::Var::Max_Pokemon_Select]
-          display_message(_get(23, v))
+          display_message(text_get(23, v))
           return false
         else
           return true
@@ -394,7 +394,7 @@ module GamePlay
       else 
         if @temp_team.size < $game_variables[Yuki::Var::Max_Pokemon_Select]
           v = 109 + $game_variables[Yuki::Var::Max_Pokemon_Select]
-          display_message(_get(23, v))
+          display_message(text_get(23, v))
           return false
         else
           return true
@@ -422,14 +422,14 @@ module GamePlay
       pokemon = @party[@index]
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       choices
-        .register_choice(_get(23, 209), on_validate: method(:on_map_choice)) # Select
-        .register_choice(_get(23, 4), on_validate: method(:launch_summary)) # Summary
-        .register_choice(_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
-      show_win_text(_parse(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
+        .register_choice(text_get(23, 209), on_validate: method(:on_map_choice)) # Select
+        .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
+        .register_choice(text_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
+      show_win_text(parse_text(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
       choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
-      show_win_text(_get(23, 17)) if choice != 0
+      show_win_text(text_get(23, 17)) if choice != 0
     end
 
     # Event that triggers when the player has choosen a Pokemon
@@ -459,14 +459,14 @@ module GamePlay
       pokemon.item_holding = @team_buttons[@index].data.item_holding
       if pokemon.form_calibrate # Form adjustment
         @team_buttons[@move].refresh
-        display_message(_parse(22, 157, ::PFM::Text::PKNAME[0] => pokemon.given_name))
+        display_message(parse_text(22, 157, ::PFM::Text::PKNAME[0] => pokemon.given_name))
       end
       @team_buttons[@move].refresh
       pokemon = @team_buttons[@index].data
       pokemon.item_holding = tmp
       if pokemon.form_calibrate # Form adjustment
         @team_buttons[@index].refresh
-        display_message(_parse(22, 157, ::PFM::Text::PKNAME[0] => pokemon.given_name))
+        display_message(parse_text(22, 157, ::PFM::Text::PKNAME[0] => pokemon.given_name))
       end
       @team_buttons[@index].refresh
       @team_buttons[@move].selected = false

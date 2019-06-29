@@ -129,17 +129,17 @@ module GamePlay
     def init_win_text
       case @mode
       when :map, :battle
-        return @text_info.text = _get(23, 17)
+        return @text_info.text = text_get(23, 17)
       when :hold
-        return @text_info.text = _get(23, 23)
+        return @text_info.text = text_get(23, 23)
       when :item
         if @extend_data
           extend_data_button_update
-          return @text_info.text = _get(23, 24)
+          return @text_info.text = text_get(23, 24)
         end
       when :select
         select_pokemon_button_update
-        return @text_info.text = _get(23, 17)
+        return @text_info.text = text_get(23, 17)
       end
       @win_text.visible = false
     end
@@ -158,7 +158,7 @@ module GamePlay
             c = (v ? 1 : 2)
             v = (v ? 140 : 141)
           end
-          btn.item_text.load_color(c).text = _parse(22, v)
+          btn.item_text.load_color(c).text = parse_text(22, v)
         end
       end
     end
@@ -181,7 +181,7 @@ module GamePlay
         else
           v = 153
         end
-        btn.item_text.load_color(c).text = fix_number(_parse(23, v))
+        btn.item_text.load_color(c).text = fix_number(parse_text(23, v))
       end
     end
 

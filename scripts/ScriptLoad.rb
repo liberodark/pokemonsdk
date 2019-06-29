@@ -90,6 +90,8 @@ module ScriptLoader
       Kernel.define_method(:eval) { |*args| }
     elsif !(matches = ARGV.grep(/\-\-script_context[ =].+\.txt$/)).empty?
       @index_filename = File.join(VSCODE_SCRIPT_PATH, matches.first.match(/\-\-script_context[ =](.*)/).captures.first)
+      # We also don't want custom script in that context
+      Kernel.define_method(:eval) { |*args| }
     else
       @index_filename = SCRIPT_INDEX_PATH
     end

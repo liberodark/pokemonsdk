@@ -40,13 +40,13 @@ module Battle
 
     # Return the name of the skill
     def name
-      _get(6, @id)
+      text_get(6, @id)
     end
 
     # Return the skill description
     # @return [String]
     def description
-      _get(7, @id)
+      text_get(7, @id)
     end
 
     # Return the text of the PP of the skill
@@ -65,7 +65,7 @@ module Battle
     # @return [String]
     def power_text
       power = $game_data_skill[@id].power
-      return _get(11,12) if power == 0
+      return text_get(11,12) if power == 0
       return power.to_s
     end
 
@@ -84,7 +84,7 @@ module Battle
     # @return [String]
     def accuracy_text
       acc = $game_data_skill[@id].accuracy
-      return _get(11, 12) if acc == 0
+      return text_get(11, 12) if acc == 0
       return acc.to_s
     end
 

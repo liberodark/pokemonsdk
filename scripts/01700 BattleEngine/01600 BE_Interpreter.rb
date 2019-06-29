@@ -61,9 +61,9 @@ module BattleEngine
     #===
     def msg_fail(target = nil)
       unless target
-        msg(_parse(18, 74))
+        msg(parse_text(18, 74))
       else
-        msg(_parse_with_pokemon(19,24,target))
+        msg(parse_text_with_pokemon(19,24,target))
       end
       BattleEngine.state[:last_skill] = nil
     end
@@ -78,14 +78,14 @@ module BattleEngine
     #===
     def critical_hit
       return if @ignore
-      msg(_parse(18, 84))
+      msg(parse_text(18, 84))
     end
     #===
     #>Affichage de "machin attaque truc"
     #===
     def use_skill_msg(launcher, target, skill)
       return if @ignore or target.hp==0
-      msg(_parse_with_pokemon(21, skill.id*3, launcher, PKNAME[0] => launcher.given_name))#name))
+      msg(parse_text_with_pokemon(21, skill.id*3, launcher, PKNAME[0] => launcher.given_name))#name))
       @scene.animation(launcher, target, skill)
     end
 
@@ -94,7 +94,7 @@ module BattleEngine
     #===
     def efficient_msg
       return if @ignore
-      msg(_parse(18, 81))
+      msg(parse_text(18, 81))
       if(BattleEngine._has_item(@target, 208)) #> Baie Enigma
         hp_up(@target, 10, 914, ITEM2[1] => @target.item_name)
       end
@@ -106,12 +106,12 @@ module BattleEngine
     end
     def unefficient_msg
       return if @ignore
-      msg(_parse(18, 82))
+      msg(parse_text(18, 82))
     end
     def useless_msg(target)
       return if @ignore or target.hp==0
       offset = __get_txt_offset(target)
-      msg(_parse(19, 210+offset))
+      msg(parse_text(19, 210+offset))
     end
     def efficiency_sound(mod)
       return if @ignore or mod == 0
@@ -128,11 +128,11 @@ module BattleEngine
     #===
     def launcher_fail_msg(launcher, target)
       return if @ignore or target.hp==0
-      msg(_parse_with_pokemon(19,24,target))
+      msg(parse_text_with_pokemon(19,24,target))
     end
     def target_evasion_msg(launcher, target)
       return if @ignore or target.hp==0
-      msg(_parse_with_pokemon(19,213,target))
+      msg(parse_text_with_pokemon(19,213,target))
     end
     #===
     #>Affichage de la perte de HP
@@ -148,10 +148,10 @@ module BattleEngine
         be.substitute_hp -= hp
         hp -= sub_hp
         if(hp > 0)
-          msg(_parse_with_pokemon(19, 794, target))
+          msg(parse_text_with_pokemon(19, 794, target))
           switch_form(target)
         else
-          msg(_parse_with_pokemon(19, 791, target))
+          msg(parse_text_with_pokemon(19, 791, target))
           be.last_damaging_skill = nil
           return
         end
@@ -213,7 +213,7 @@ module BattleEngine
             (@skill.special? and item_id == 212)) #> Baie Jaboca / Baie Pommo
             berry_use(target)
             hp_down_proto(@launcher, @launcher.max_hp/8)
-            msg(_parse_with_pokemon(19, 1044, @launcher, ITEM2[1] => target.item_name))
+            msg(parse_text_with_pokemon(19, 1044, @launcher, ITEM2[1] => target.item_name))
           elsif(@skill.physical? and item_id == 687) #> Baie Éka
             berry_use(target)
             _mp([::PFM::ItemDescriptor::Boost[4], target, 1])
@@ -236,7 +236,7 @@ module BattleEngine
         #>Vérification de destiny bond (Prélèvem. Destin)
         if(target.last_skill == 194 and @launcher and @launcher != target and target.hp <= 0)
           hp_down(@launcher, @launcher.hp, true)
-          msg(_parse_with_pokemon(19, 629, target))
+          msg(parse_text_with_pokemon(19, 629, target))
         end
         #>Vérification de Frénésie
         if(be.has_rage_effect?)
@@ -245,7 +245,7 @@ module BattleEngine
         #>Rancune
         if(be.has_grudge_effect? and target.dead?)
           pp_down(@launcher, @skill, @skill.pp)
-          msg(_parse_with_pokemon(19, 635, @launcher, MOVE[1] => @skill.name))
+          msg(parse_text_with_pokemon(19, 635, @launcher, MOVE[1] => @skill.name))
         end
         #>Grelot Coque
         if(BattleEngine._has_item(@launcher, 253))
@@ -283,7 +283,7 @@ module BattleEngine
     #===
     def hp_up(target, hp, msg = nil, *args)
       return if @ignore or target.hp==0
-      msg(_parse_with_pokemon(19, msg, target, *args)) if msg
+      msg(parse_text_with_pokemon(19, msg, target, *args)) if msg
       @scene.phase4_message_add_hp(target, hp)
     end
     #===
@@ -301,7 +301,7 @@ module BattleEngine
       #>Vérification de destiny bond (Prélèvem. Destin)
       if(!sacrifice and target.last_skill == 194 and @launcher and @launcher != target)
         hp_down(@launcher, @launcher.hp, true)
-        msg(_parse_with_pokemon(19, 629, target))
+        msg(parse_text_with_pokemon(19, 629, target))
       end
       Abilities.on_dammage_ability(@launcher, target, @skill) if @skill
     end
@@ -350,7 +350,7 @@ module BattleEngine
       #> Indiquer que les effets n'agiront pas
       if($env.current_weather != 0 and BattleEngine.state[:air_lock])
         @scene.ability_display(BattleEngine.state[:air_lock])
-        @scene.display_message(_parse(18,97))#"Les effets de la météo se dissipent.")
+        @scene.display_message(parse_text(18,97))#"Les effets de la météo se dissipent.")
       end
       #> Capacité spéciale Météo
       Abilities.on_weather_change

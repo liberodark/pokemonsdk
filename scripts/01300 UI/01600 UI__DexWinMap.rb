@@ -12,13 +12,13 @@ module UI
 
       @pkm_icon  = add_sprite(28, 123, NO_INITIAL_IMAGE, type: PokemonIconSprite)
       @item_icon = add_sprite(13, 106, NO_INITIAL_IMAGE)
-      @location  = add_text(10, 18, 132, 16, _ext(9000, 19), 1, color: 10)
+      @location  = add_text(10, 18, 132, 16, ext_text(9000, 19), 1, color: 10)
       @region    = add_text(150, 0, 150, 24, 'REGION', 2, color: 10)
       if display_controls
         add_sprite(40, 221, NO_INITIAL_IMAGE, :Y, type: KeyShortcut)
-        add_text(60, 221, 140, 16, _ext(9000, 32), color: 10) # Next worldmap
+        add_text(60, 221, 140, 16, ext_text(9000, 32), color: 10) # Next worldmap
         add_sprite(190, 221, NO_INITIAL_IMAGE, :X, type: KeyShortcut)
-        add_text(210, 221, 140, 16, _ext(9000, 33), color: 10) # Zoom
+        add_text(210, 221, 140, 16, ext_text(9000, 33), color: 10) # Zoom
       end
 
       # Set region text in bold

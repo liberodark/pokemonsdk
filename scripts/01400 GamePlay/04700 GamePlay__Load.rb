@@ -66,7 +66,7 @@ module GamePlay
       @new_window.z = 10_001
       @new_window.width = 200
       @new_window.height = 32
-      @new_window.add_text(0, 0, 200, 16, _ext(9000, 0))
+      @new_window.add_text(0, 0, 200, 16, ext_text(9000, 0))
       @new_window.opacity = 128
       @new_window.windowskin = RPG::Cache.windowskin(Windowskin)
       @new_window.visible = @save_window.visible && @pokemon_party
@@ -138,19 +138,19 @@ module GamePlay
       Graphics.update while Input.press?(:B)
       scene = $scene
       $scene = self
-      message = _get(25, 18)
-      oui = _get(25, 20)
-      non = _get(25, 21)
+      message = text_get(25, 18)
+      oui = text_get(25, 20)
+      non = text_get(25, 21)
       # Delete the game ?
       c = display_message(message, 1, non, oui)
       if c == 1
-        message = _get(25, 19)
+        message = text_get(25, 19)
         # Really ?
         c = display_message(message, 1, non, oui)
         if c == 1
           # Ok deleted!
           File.delete(@filename)
-          message = _get(25, 17)
+          message = text_get(25, 17)
           display_message(message)
         end
       end

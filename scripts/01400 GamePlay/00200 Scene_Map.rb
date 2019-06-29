@@ -384,14 +384,14 @@ class Scene_Map
 
   # Display the repel check sequence
   def display_repel_check
-    display_message(_parse(39, 0))
+    display_message(parse_text(39, 0))
   end
 
   # Display the end of poisoning sequence
   # @param pokemon [PFM::Pokemon] previously poisoned pokemon
   def display_poison_end(pokemon)
     PFM::Text.set_pknick(pokemon, 0)
-    display_message(_parse(22, 110))
+    display_message(parse_text(22, 110))
   end
 
   # Display the poisoning animation sequence

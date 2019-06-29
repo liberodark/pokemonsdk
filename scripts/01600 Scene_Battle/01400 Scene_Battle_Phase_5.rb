@@ -100,7 +100,7 @@ class Scene_Battle
     display_message($game_switches[Yuki::Sw::BT_Defeat] ? @victory_phrase : @defeat_phrase)
     if $game_switches[Yuki::Sw::BT_Victory]
       v = add_money($game_data_trainer[@trainer_class].base_money * @enemy_party.actors.last.level)
-      display_message(_parse(18, 60, TRNAME[0] => $trainer.name, NUMXR => v.to_s))
+      display_message(parse_text(18, 60, TRNAME[0] => $trainer.name, NUMXR => v.to_s))
     end
     @to_dispose << tmp_sprite
   end
@@ -121,11 +121,11 @@ class Scene_Battle
       end
       $quests.catch_pokemon(pkmn)
       $wild_battle.remove_roaming_pokemon(pkmn)
-      display_message(_parse(18, 67, PKNAME[0] => pkmn.name))
+      display_message(parse_text(18, 67, PKNAME[0] => pkmn.name))
       unless $pokedex.has_captured?(pkmn.id)
         $pokedex.mark_captured(pkmn.id)
         if $game_switches[::Yuki::Sw::Pokedex]
-          display_message(_parse(18, 68, PKNAME[0] => pkmn.name))
+          display_message(parse_text(18, 68, PKNAME[0] => pkmn.name))
           Graphics.freeze
           GamePlay::Dex.new(pkmn.id).main
           Graphics.transition
@@ -134,8 +134,8 @@ class Scene_Battle
       $pokedex.pokemon_captured_inc(pkmn.id)
       $game_system.battle_interpreter.add_pokemon(pkmn)
       #>Renommer
-      if(display_message(_parse(30, 0, PKNAME[0] => pkmn.name), true, 1, 
-        _get(25,20), _get(25,21)) == 0)
+      if(display_message(parse_text(30, 0, PKNAME[0] => pkmn.name), true, 1, 
+        text_get(25,20), text_get(25,21)) == 0)
         scene = ::Scene_NameInput.new(pkmn.name, 10, pkmn)
         scene.main
         pkmn.given_name = scene.return_name
@@ -143,13 +143,13 @@ class Scene_Battle
       end
       #>Stocké
       if($game_switches[Yuki::Sw::SYS_Stored])
-        display_message(_parse(30, 1, PKNICK[0] => pkmn.given_name, 
+        display_message(parse_text(30, 1, PKNICK[0] => pkmn.given_name, 
         '[VAR BOX(0001)]' => $storage.get_box_name($storage.current_box)))
       end
     end
     if @money > 0
       v = add_money(0)
-      display_message(_parse(18, 61, TRNAME[0] => $trainer.name, '[VAR NUM6(0001,E07F)]' => v.to_s))
+      display_message(parse_text(18, 61, TRNAME[0] => $trainer.name, '[VAR NUM6(0001,E07F)]' => v.to_s))
     end
   end
   #===

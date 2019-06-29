@@ -104,13 +104,13 @@ module GamePlay
     #>Fenêtre d'action du sac
     #===
     def _bag_window(*args)
-      window=Window_Choice.new(105,args+[_get(22,7)])
+      window=Window_Choice.new(105,args+[text_get(22,7)])
       window.z=@viewport.z+1
       window.x=213
       window.y=238-window.height
       item_id=@item_ids[@index]
       disabled=[]
-      use = _get(22,0)
+      use = text_get(22,0)
       args.each_index do |i|
         cmd=args[i]
         if((cmd==use and !GameData::Item.battle_usable?(item_id)))

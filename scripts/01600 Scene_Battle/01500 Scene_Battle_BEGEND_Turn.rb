@@ -93,7 +93,7 @@ class Scene_Battle
         if(i.battle_effect.get_future_skill_counter==1)
           dmg=i.battle_effect.get_future_damage
           skill_name = GameData::Skill.name(i.battle_effect.get_future_skill_id)
-          BattleEngine::_message_stack_push([:msgf, _parse_with_pokemon(19, 1086, i, MOVE[1] => skill_name)])
+          BattleEngine::_message_stack_push([:msgf, parse_text_with_pokemon(19, 1086, i, MOVE[1] => skill_name)])
           if(dmg <= 0)
             BattleEngine::_message_stack_push([:msg_fail])
           else
@@ -120,7 +120,7 @@ class Scene_Battle
     #===
     battlers.each do |i|
       if(i and !i.dead? and i.battle_effect.has_wish_effect?)
-        BattleEngine::_mp([:msg, _parse_with_pokemon(19, 700, i.battle_effect.get_wisher)])
+        BattleEngine::_mp([:msg, parse_text_with_pokemon(19, 700, i.battle_effect.get_wisher)])
         BattleEngine::_message_stack_push([:hp_up, i, i.max_hp / 2])
       end
     end
@@ -129,7 +129,7 @@ class Scene_Battle
     #===
     battlers.each do |i|
       if(i and !i.dead? and i.battle_effect.has_ingrain_effect?)
-        BattleEngine::_mp([:msg, _parse_with_pokemon(19, 739, i)])
+        BattleEngine::_mp([:msg, parse_text_with_pokemon(19, 739, i)])
         BattleEngine::_message_stack_push([:hp_up, i, i.max_hp / 16])
       end
     end
@@ -138,7 +138,7 @@ class Scene_Battle
     #===
     battlers.each do |i|
       if(i and !i.dead? and i.battle_effect.has_aqua_ring_effect?)
-        BattleEngine::_mp([:msg, _parse_with_pokemon(19, 604, i)])
+        BattleEngine::_mp([:msg, parse_text_with_pokemon(19, 604, i)])
         BattleEngine::_message_stack_push([:hp_up, i, i.max_hp / 16])
       end
     end
@@ -186,12 +186,12 @@ class Scene_Battle
       if(i and i.hp>0 and i.battle_effect.has_leech_seed_effect?)
         #> Garde Magik
         next if !i.battle_effect.has_no_ability_effect? and i.ability == 17
-        BattleEngine::_message_stack_push([:msgf, _parse_with_pokemon(19, 610, i)])
+        BattleEngine::_message_stack_push([:msgf, parse_text_with_pokemon(19, 610, i)])
         hp=(i.max_hp<8 ? 1 : i.max_hp/8)
         BattleEngine::_message_stack_push([:hp_down, i, hp, true])
         receiver=i.battle_effect.get_leech_seed_receiver
         if(receiver.battle_effect.has_heal_block_effect?)
-          BattleEngine::_message_stack_push([:msg, _parse_with_pokemon(19,890, receiver)])
+          BattleEngine::_message_stack_push([:msg, parse_text_with_pokemon(19,890, receiver)])
           next
         end
         #>Grosse Racine
@@ -218,7 +218,7 @@ class Scene_Battle
         #> Garde Magik
         next if !i.battle_effect.has_no_ability_effect? and i.ability == 17
         hp = i.battle_effect.get_bind_power(i)
-        BattleEngine::_message_stack_push([:msgf, _parse_with_pokemon(19, 1086, i, MOVE[1] => i.battle_effect.get_bind_skill_name)])
+        BattleEngine::_message_stack_push([:msgf, parse_text_with_pokemon(19, 1086, i, MOVE[1] => i.battle_effect.get_bind_skill_name)])
         BattleEngine::_message_stack_push([:hp_down, i, hp, true])
         phase4_message_display()
       end
@@ -232,7 +232,7 @@ class Scene_Battle
         next if !i.battle_effect.has_no_ability_effect? and i.ability == 17
         if(i.asleep?)
           hp=i.max_hp/4
-          BattleEngine::_message_stack_push([:msgf, _parse_with_pokemon(19, 324, i)])
+          BattleEngine::_message_stack_push([:msgf, parse_text_with_pokemon(19, 324, i)])
           BattleEngine::_message_stack_push([:hp_down, i, hp, true])
           phase4_message_display()
         else
@@ -248,7 +248,7 @@ class Scene_Battle
         #> Garde Magik
         next if !i.battle_effect.has_no_ability_effect? and i.ability == 17
         hp=i.max_hp/4
-        BattleEngine::_message_stack_push([:msgf, _parse_with_pokemon(19, 1077, i)])
+        BattleEngine::_message_stack_push([:msgf, parse_text_with_pokemon(19, 1077, i)])
         BattleEngine::_message_stack_push([:hp_down, i, hp, true])
         phase4_message_display()
       end
@@ -344,7 +344,7 @@ class Scene_Battle
     if(actors[old_pokemon].last_skill==461 or actors[old_pokemon].last_skill==361)
       BattleEngine::_message_stack_push([:hp_up, actors[current_pokemon], actors[current_pokemon].max_hp])
       BattleEngine::_message_stack_push([:status_cure, actors[current_pokemon]])
-      BattleEngine::_message_stack_push([:msgf, _parse_with_pokemon(19, actors[old_pokemon].last_skill==361 ? 697 : 694, actors[current_pokemon])])
+      BattleEngine::_message_stack_push([:msgf, parse_text_with_pokemon(19, actors[old_pokemon].last_skill==361 ? 697 : 694, actors[current_pokemon])])
     end
     #>Effet lors des switchs
     be=actors[old_pokemon].battle_effect

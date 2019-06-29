@@ -28,7 +28,7 @@ module GamePlay
         return $game_system.se_play($data_system.buzzer_se) if @team_buttons[@index].data.item_holding == 0
         @team_buttons[@move = @index].selected = true
         @intern_mode = :move_item
-        show_win_text(_get(23, 22))
+        show_win_text(text_get(23, 22))
       when :move_pokemon
         process_switch
       when :move_item
@@ -80,7 +80,7 @@ module GamePlay
       @running = false if @mode == :select && enough_pokemon? == true
       return if @mode != :menu 
       return $game_system.se_play($data_system.buzzer_se) if @intern_mode != :normal or @party.size <= 1
-      show_win_text(_get(23, 19))
+      show_win_text(text_get(23, 19))
       @intern_mode = :choose_move_pokemon
     end
 
@@ -88,7 +88,7 @@ module GamePlay
     def action_Y
       return if @mode != :menu
       return $game_system.se_play($data_system.buzzer_se) if @intern_mode != :normal or @party.size <= 1
-      show_win_text(_get(23, 20))
+      show_win_text(text_get(23, 20))
       @intern_mode = :choose_move_item
       show_item_name
     end
@@ -146,7 +146,7 @@ module GamePlay
       return if @party.size <= 1
       @team_buttons[@move = @index].selected = true
       @intern_mode = :move_pokemon
-      show_win_text(_get(23, 21))
+      show_win_text(text_get(23, 21))
     end
 
   end

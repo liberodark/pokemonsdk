@@ -40,7 +40,7 @@ module UI
       return self.visible = false if text_id == 1
       self.visible = true if @id > 0 && @id < 3
       @key.find_key(KEYS[id_state <= 2 ? 0 : 1][@id])
-      @stack.last.text = _ext(9000, text_id)
+      @stack.last.text = ext_text(9000, text_id)
       return self
     end
 

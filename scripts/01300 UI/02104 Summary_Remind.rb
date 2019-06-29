@@ -65,7 +65,7 @@ module UI
     def init_pokemon_info
       @name = add_text(11, 8, 100, 16, :given_name, type: SymText, color: 9)
       @gender = push(101, 10, nil, type: GenderSprite)
-      @level_text = add_text(11, 8 + 14, 60, 16, _get(27, 29), color: 9) # Level
+      @level_text = add_text(11, 8 + 14, 60, 16, text_get(27, 29), color: 9) # Level
       add_text(14 + @level_text.real_width, 8 + 14, 95, 16, :level_text, type: SymText, color: 11)
       push(94, 20, nil, type: PokemonIconSprite)
       init_stats
@@ -73,7 +73,7 @@ module UI
 
     # Init the stat texts
     def init_stats
-      texts = _get_file(27)
+      texts = text_file_get(27)
       @nature_text = add_text(114, 19, 60, 16, '') # Nature
       @stat_name_texts = []
       add_text(114, 19 + 16, 60, 16, texts[15]) # HP
