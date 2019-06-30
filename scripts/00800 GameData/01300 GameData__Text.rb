@@ -109,7 +109,7 @@ module GameData
           end
         end
         @dialogs[file_id] = build_dialog_from_csv_rows(rows, lang_index)
-        log_info("CSV text #{filemane} was loaded") if debug?
+        log_info("CSV text #{filename} was loaded") if debug?
         return true
       end
       return false
