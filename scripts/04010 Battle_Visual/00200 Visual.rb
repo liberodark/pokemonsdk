@@ -17,6 +17,9 @@ module Battle
     # @return [Array<BattleUI::GroundSprite>] the ground sprites
     attr_reader :grounds
 
+    # @return [Array] the element to dispose on #dispose
+    attr_reader :to_dispose
+
     # Create a new visual instance
     # @param battle_scene [Scene] scene that hold the logic object
     def initialize(battle_scene)
@@ -32,6 +35,8 @@ module Battle
       @animations = []
       # All the parallel animations (manually removed)
       @parallel_animations = {}
+      # All the thing to dispose on #dispose
+      @to_dispose = []
       # Is the visual locking the update of the battle
       @locking = false
       # Create all the sprites
@@ -53,6 +58,7 @@ module Battle
 
     # Dispose the visuals
     def dispose
+      @to_dispose.each(&:dispose)
       @animations.clear
       @parallel_animations.clear
       @viewport.dispose
