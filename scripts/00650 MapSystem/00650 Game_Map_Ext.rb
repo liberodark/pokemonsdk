@@ -194,8 +194,8 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
       # @type [RPG::Event]
       event_data = event.event
       index = event.instance_variable_get(:@move_route_index)
-      x = event.x - event_data.offset_x + ml_ox
-      y = event.y - event_data.offset_y + ml_oy
+      x = event.x - event_data.offset_x.to_i + ml_ox
+      y = event.y - event_data.offset_y.to_i + ml_oy
       @events_info[event.original_id] = [x, y, event.z, event.direction, index, event.__bridge]
     end
     @events_info[:player] = $game_player.z
