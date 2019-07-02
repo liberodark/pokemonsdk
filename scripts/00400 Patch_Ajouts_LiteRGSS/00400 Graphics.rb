@@ -42,7 +42,7 @@ module Graphics
       @mouse.x = Mouse.x
       @mouse.y = Mouse.y
     end
-    FMOD::System.update
+    Audio.update
     update_cmd_eval if @__cmd_to_eval
   rescue LiteRGSS::Error
     puts 'Graphics stopped but did not raised the `LiteRGSS::Graphics::ClosedWindowError` exception'

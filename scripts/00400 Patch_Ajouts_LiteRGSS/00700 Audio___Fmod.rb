@@ -473,6 +473,11 @@ if Object.const_defined?(:FMOD)
       return yield if mutex.locked? && mutex.owned?
       mutex.synchronize(&block)
     end
+
+    # Update the Audio
+    def update
+      FMOD::System.update
+    end
   end
 else
   module Audio
@@ -481,6 +486,12 @@ else
     module_function
 
     def bgm_play(*) end
+
+    def bgm_position
+      return 0
+    end
+
+    def bgm_position=(*) end
 
     def bgs_play(*) end
 
@@ -503,5 +514,7 @@ else
     def se_stop() end
 
     def __reset__() end
+
+    def update() end
   end
 end
