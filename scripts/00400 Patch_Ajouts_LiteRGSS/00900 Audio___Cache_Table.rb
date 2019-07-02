@@ -17,9 +17,7 @@ module Audio
     # @param args [Array<String>] complementary file to load (Yuki::MapLinker)
     def autoload_sounds(map_id, *args)
       table = Table[map_id]
-      if table
-        table.each { |filename| preload_sound(filename) }
-      end
+      table&.each { |filename| preload_sound(filename) }
       args.each { |filename| preload_sound(filename) }
       flush_sound
       load

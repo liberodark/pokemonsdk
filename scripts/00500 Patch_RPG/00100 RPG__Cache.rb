@@ -53,14 +53,12 @@ module RPG
       bitmap = cache_tab.fetch(filename, nil)
       if !bitmap || bitmap.disposed?
         bitmap = Bitmap.new(complete_filename) if File.exist?(complete_filename + '.png') || !file_data.exists?(filename.downcase)
-        if (!bitmap or bitmap.disposed?) && file_data
-          bitmap = load_image_from_file_data(filename, file_data)
-        end
+        bitmap = load_image_from_file_data(filename, file_data) if (!bitmap || bitmap.disposed?) && file_data
         bitmap ||= Bitmap.new(16, 16)
       end
       return bitmap
     rescue StandardError
-      print "\r#{Notification_title} #{complete_filename}\n"
+      log_error "#{Notification_title} #{complete_filename}"
       return bitmap = Bitmap.new("\x89PNG\r\n\x1A\n\x00\x00\x00\rIHDR\x00\x00\x00 \x00\x00\x00 \x02\x03\x00\x00\x00\x0E\x14\x92g\x00\x00\x00\tPLTE\x00\x00\x00\xFF\xFF\xFF\xFF\x00\x00\xCD^\xB7\x9C\x00\x00\x00>IDATx\x01\x85\xCF1\x0E\x00 \bCQ\x17\xEF\xE7\xD2\x85\xFB\xB1\xF4\x94&$Fm\a\xFE\xF4\x06B`x\x13\xD5z\xC0\xEA\a H \x04\x91\x02\xD2\x01E\x9E\xCD\x17\xD1\xC3/\xECg\xECSk\x03[\xAFg\x99\xE2\xED\xCFV\x00\x00\x00\x00IEND\xAEB`\x82", true)
     ensure
       cache_tab[filename] = bitmap
@@ -72,7 +70,7 @@ module RPG
     # @return [Bitmap] the image loaded from the virtual directory
     def load_image_from_file_data(filename, file_data)
       bitmap_data = file_data.read_data(filename.downcase)
-      if(bitmap_data)
+      if bitmap_data
         bitmap = Bitmap.new(bitmap_data, true)
 =begin
         bitmap_data = ::Marshal.load(bitmap_data)

@@ -197,5 +197,20 @@ module PFM
       # Remove the skill the pokemon actually has and return the array of PFM::Skills
       return (remindable_ids - skills).collect { |id| PFM::Skill.new(id) }
     end
+
+    # Load the skill from an Array
+    # @param skills [Array] the skills array (containing IDs or Symbols)
+    def load_skill_from_array(skills)
+      skills.each_with_index do |skill, j|
+        next if skill == 0
+        skill = GameData::Skill.get_id(skill) if skill.is_a?(Symbol)
+        if skill.is_a?(Integer)
+          replace_skill_index(j, skill)
+        elsif skill.class == String
+          log_error("#{skill} est irrecevable, vous devez spécifier un id ! PSDK_ERR n°000_001")
+        end
+      end
+      skills_set.compact!
+    end
   end
 end

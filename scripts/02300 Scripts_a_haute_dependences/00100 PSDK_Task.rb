@@ -80,7 +80,7 @@ module Scheduler
 
   add_proc(:on_scene_switch, ::Scene_Title, 'Correction des Pokémon', 1000) do
     if $scene.class != ::Scene_Title && $trainer.current_version.to_i <= 4864
-      puts('Conversion des Pokémon (skill_learnt / ribbons)')
+      log_info('Conversion des Pokémon (skill_learnt / ribbons)')
       block = proc do |pokemon|
         if pokemon
           pokemon.skill_learnt ||= []
@@ -96,7 +96,7 @@ module Scheduler
 
   add_proc(:on_scene_switch, ::Scene_Title, 'Correction des formes', 1000) do
     next unless $scene.is_a?(Scene_Map)
-    puts('Correction des formes des Pokémon')
+    log_info('Correction des formes des Pokémon')
     block = proc { |pokemon| pokemon&.form_calibrate(:load) }
     $actors.each(&block)
     $storage.each_pokemon(&block)
@@ -105,7 +105,7 @@ module Scheduler
 
   add_proc(:on_scene_switch, ::Scene_Title, 'Correction des quêtes', 1000) do
     if $scene.class != ::Scene_Title && $trainer.current_version.to_i <= 5635
-      puts('Conversion des quêtes')
+      log_info('Conversion des quêtes')
       $quests.__convert
     end
   end

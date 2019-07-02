@@ -1,7 +1,5 @@
 if Object.const_defined?(:FMOD)
   module Audio
-    # Constant adding commande to messages
-    COMMAND_TEXT = $RELEASE ? '' : 'Commande : '
     # Loading the Fmod Module
     FMOD::System.init(32, FMOD::INIT::NORMAL)
     # Time it takes to fade in (in ms)
@@ -63,10 +61,9 @@ if Object.const_defined?(:FMOD)
       @fading_sounds.delete(@bgm_sound) # Reused channel error prevention
     rescue FMOD::Error
       if File.exist?(filename)
-        cc 0x01
-        print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37m#{COMMAND_TEXT}")
+        log_error("Le fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}")
       else
-        print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
+        log_error("Le fichier #{filename} n'a pas été trouvé !")
       end
       bgm_stop
     ensure
@@ -153,9 +150,9 @@ if Object.const_defined?(:FMOD)
     rescue FMOD::Error
       if File.exist?(filename)
         cc 0x01
-        print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37m#{COMMAND_TEXT}")
+        log_error("Le fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}")
       else
-        print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
+        log_error("Le fichier #{filename} n'a pas été trouvé !")
       end
       bgs_stop
     ensure
@@ -231,9 +228,9 @@ if Object.const_defined?(:FMOD)
     rescue FMOD::Error
       if File.exist?(filename)
         cc 0x01
-        print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37m#{COMMAND_TEXT}")
+        log_error("Le fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}")
       else
-        print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
+        log_error("Le fichier #{filename} n'a pas été trouvé !")
       end
       me_stop
     ensure
@@ -291,14 +288,14 @@ if Object.const_defined?(:FMOD)
       channel.setPaused(false)
     rescue FMOD::Error
       if !File.exist?(filename)
-        print("\rLe fichier #{filename} n'a pas été trouvé !\n#{COMMAND_TEXT}")
+        log_error("Le fichier #{filename} n'a pas été trouvé !")
       elsif $!.hr == 46
         p @se_sounds
         se_stop
         retry
       else
         cc 0x01
-        print("\rLe fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}\n\e[37m#{COMMAND_TEXT}")
+        log_error("Le fichier #{file_name} n'a pas pu être lu...\nErreur : #{$!.message}")
       end
     end
 
@@ -343,7 +340,7 @@ if Object.const_defined?(:FMOD)
         end
       end
       return unless start && length
-      print "\rLOOP: #{start} -> #{start+length}\n#{COMMAND_TEXT}" unless $RELEASE
+      log_info "LOOP: #{start} -> #{start + length}" unless $RELEASE
       sound.setLoopPoints(start, FMOD::TIMEUNIT::PCM, start + length, FMOD::TIMEUNIT::PCM)
     end
 

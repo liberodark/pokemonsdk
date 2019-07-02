@@ -1,8 +1,6 @@
-#encoding: utf-8
-
 module PFM
   # The actor trainer data informations
-  # 
+  #
   # Main object stored in $trainer and $pokemon_party.trainer
   # @author Nuri Yuri
   class Trainer
@@ -41,8 +39,8 @@ module PFM
     attr_accessor :current_version
     # Create a new Trainer
     def initialize
-      @name_boy = ext_text(9000, 2) #"Palbolsky"
-      @name_girl = ext_text(9000, 3) #"Yuri"
+      @name_boy = ext_text(9000, 2) # "Palbolsky"
+      @name_girl = ext_text(9000, 3) # "Yuri"
       $game_switches[Yuki::Sw::Gender] = @playing_girl = false
       $game_variables[Yuki::Var::Player_ID] = @id_boy = rand(0x3FFFFFFF)
       @id_girl = (@id_boy ^ 0x28F4AB4C)
@@ -53,59 +51,64 @@ module PFM
       @game_version = Game_Version rescue 256
       @current_version = PSDK_Version rescue 0
       @time_counter = 0
-      self.load_time
+      load_time
     end
+
     # Return the name of the trainer
     # @return [String]
     def name
       return @playing_girl ? @name_girl : @name_boy
     end
+
     # Change the name of the trainer
     # @param value [String] the new value of the trainer name
     def name=(value)
-      if(@playing_girl)
-        @name_girl=value
+      if @playing_girl
+        @name_girl = value
       else
-        @name_boy=value
+        @name_boy = value
       end
       $game_actors[1].name = value
     end
+
     # Return the id of the trainer
     # @return [Integer]
     def id
       return @playing_girl ? @id_girl : @id_boy
     end
+
     # Redefine some variable RMXP uses with the right values
     def redefine_var
-      $game_variables[Yuki::Var::Player_ID] = self.id
-      $game_actors[1].name = self.name
-      #redéfinir les badges
+      $game_variables[Yuki::Var::Player_ID] = id
+      $game_actors[1].name = name
+      # redefinir les badges
     end
+
     # Load the time counter with the current time
     def load_time
       @time_counter = Time.new.to_i
     end
+
     # Return the time counter (current time - time counter)
     # @return [Integer]
     def time_counter
-      return Time.new.to_i-@time_counter
+      return Time.new.to_i - @time_counter
     end
+
     # Update the play time and reload the time counter
     # @return [Integer] the play time
     def update_play_time
-      @play_time+=self.time_counter
-      self.load_time
+      @play_time += time_counter
+      load_time
       return @play_time
     end
+
     # Return the number of badges the trainer got
     # @return [Integer]
     def badge_counter
-      counter=0
-      @badges.each do |i|
-        counter+=1 if i
-      end
-      return counter
+      @badges.count { |badge| badge == true }
     end
+
     # Set the got state of a badge
     # @param badge_num [1, 2, 3, 4, 5, 6, 7, 8] the badge
     # @param region [Integer] the region id (starting by 1)
@@ -113,46 +116,41 @@ module PFM
     def set_badge(badge_num, region = 1, value = true)
       region -= 1
       badge_num -= 1
-      if(region*8 >= @badges.size)
-        print("Le jeu ne prévoit pas de badge pour cette région.",
-        "PSDK_ERR n°000_006")
+      if (region * 8) >= @badges.size
+        log_error('Le jeu ne prévoit pas de badge pour cette région. PSDK_ERR n°000_006')
+      elsif badge_num < 0 || badge_num > 7
+        log_eror('Le numéro de badge indiqué est invalide, il doit être entre 1 et 8. PSDK_ERR n°000_007')
       else
-        if(badge_num < 0 or badge_num > 7)
-          print("Le numéro de badge indiqué est invalide, il doit être entre 1 et 8.",
-          "PSDK_ERR n°000_007")
-        else
-          @badges[(region * 8) + badge_num] = value 
-        end
+        @badges[(region * 8) + badge_num] = value
       end
     end
+
     # Has the player got the badge ?
     # @param badge_num [1, 2, 3, 4, 5, 6, 7, 8] the badge
     # @param region [Integer] the region id (starting by 1)
     # @return [Boolean]
-    def has_badge?(badge_num, region = 1)
+    def badge_obtained?(badge_num, region = 1)
       region -= 1
       badge_num -= 1
-      if(region*8 >= @badges.size)
-        print("Le jeu ne prévoit pas de badge pour cette région.",
-        "PSDK_ERR n°000_006")
-        return false
+      if (region * 8) >= @badges.size
+        log_error('Le jeu ne prévoit pas de badge pour cette région. PSDK_ERR n°000_006')
+      elsif badge_num < 0 || badge_num > 7
+        log_eror('Le numéro de badge indiqué est invalide, il doit être entre 1 et 8. PSDK_ERR n°000_007')
       else
-        if(badge_num < 0 or badge_num > 7)
-          print("Le numéro de badge indiqué est invalide, il doit être entre 1 et 8.",
-          "PSDK_ERR n°000_007")
-          return false
-        else
-          return @badges[(region * 8) + badge_num]
-        end
+        return @badges[(region * 8) + badge_num]
       end
+      return false
     end
+    alias has_badge? badge_obtained?
+
     # Set the gender of the trainer
     # @param playing_girl [Boolean] if the trainer will be a girl
-    def set_gender(playing_girl)
+    def define_gender(playing_girl)
       @playing_girl = playing_girl
       $game_switches[Yuki::Sw::Gender] = playing_girl
-      $game_variables[Yuki::Var::Player_ID] = self.id
-      $game_actors[1].name = self.name
+      $game_variables[Yuki::Var::Player_ID] = id
+      $game_actors[1].name = name
     end
+    alias set_gender define_gender
   end
 end

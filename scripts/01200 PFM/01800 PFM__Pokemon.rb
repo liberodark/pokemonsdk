@@ -28,6 +28,9 @@ module PFM
     # ID of the ability the Pokemon has in battle
     # @return [Integer]
     attr_accessor :ability_current
+    # Index of the ability in the Pokemon data
+    # @return [Integer, nil]
+    attr_accessor :ability_index
     # ID of the Pokemon's nature (in the database)
     # @return [Integer]
     attr_accessor :nature

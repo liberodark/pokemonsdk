@@ -193,7 +193,11 @@ module PFM
     end
     # Update the Pokemon Ability
     def update_ability
-      @ability_current = @ability = get_data.abilities[@ability_index.to_i]
+      if @ability_index
+        @ability_current = @ability = get_data.abilities[@ability_index.to_i]
+      else
+        @ability_current = @ability
+      end
     end
     # Check evolve condition to evolve in Hitmonlee (kicklee)
     # @return [Boolean] if the condition is valid

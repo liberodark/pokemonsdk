@@ -1,5 +1,26 @@
 # Ruby's Kernel module
 module Kernel
+  # Stack containing the log lines
+  @log_stack = []
+  # Logger
+  if STDOUT.tty? || !STDOUT.closed?
+    @logger = Thread.new do
+      loop do
+        sleep
+        @log_stack.each do |element|
+          send(*element)
+        end
+        @log_stack.clear
+      end
+    end
+  end
+
+  # Return the log stack
+  # @return [Array]
+  def log_stack
+    @log_stack
+  end
+
   # Debug print command, prints each args using puts
   # @param args [Array<Object>]
   def pc(*args)
@@ -28,6 +49,7 @@ module Kernel
   # @author Leikt
   def pcc(*args)
     return if $RELEASE
+    print "\r"
     cc args.pop if args.last.is_a?(Integer)
     pc(*args)
     cc 0x07
@@ -37,9 +59,10 @@ module Kernel
   # @param message [String]
   # @return [String] the message
   def log_error(message)
+    return if $RELEASE
     rc = binding.receiver
     rc = rc.is_a?(Module) ? rc : rc.class
-    pcc "[#{rc}] #{message}", 0x01
+    Kernel.log_stack << [:pcc, "[#{rc}] #{message}", 0x01]
     return message
   end
 
@@ -47,9 +70,10 @@ module Kernel
   # @param message [String]
   # @return [String] the message
   def log_info(message)
+    return if $RELEASE
     rc = binding.receiver
     rc = rc.is_a?(Module) ? rc : rc.class
-    pcc "[#{rc}] #{message}", 0x02
+    Kernel.log_stack << [:pcc, "[#{rc}] #{message}", 0x02]
     return message
   end
 
@@ -58,6 +82,17 @@ module Kernel
     return if $RELEASE
     0.upto(100) do |code|
       pcc "Text with code #{code}", code
+    end
+  end
+
+  # Wake the logger thread up
+  # @note The log stack is cleared if the logger does not exists
+  def wakeup_log
+    return ::Kernel.wakeup_log unless self == ::Kernel
+    if @logger
+      @logger.wakeup
+    else
+      @log_stack.clear
     end
   end
 

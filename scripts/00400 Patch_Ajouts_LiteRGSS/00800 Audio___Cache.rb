@@ -36,7 +36,7 @@ module Audio
           t = Time.new
           @sound_cache[filename] = File.open(filename, 'rb') { |f| f.read(f.size) }
           @sound_count[filename] = 5
-          print "\rAudio::Cache : #{filename} loaded in #{Time.new - t}s\n#{Audio::COMMAND_TEXT}" unless $RELEASE
+          log_info "\rAudio::Cache : #{filename} loaded in #{Time.new - t}s" unless $RELEASE
         end
       end
     end
@@ -59,7 +59,7 @@ module Audio
       Yuki::ElapsedTime.show(:audio_load_sound, 'Creating sound object took')
       return sound
     rescue Errno::ENOENT
-      print("\rFailed to load sound : #{filename}\n#{Audio::COMMAND_TEXT}")
+      log_error("Failed to load sound : #{filename}")
       return nil
     end
 
@@ -75,12 +75,10 @@ module Audio
     def flush_sound
       to_delete = []
       @sound_cache.each_key do |filename|
-        if (@sound_count[filename] -= 1) <= 0
-          to_delete << filename
-        end
+        to_delete << filename if (@sound_count[filename] -= 1) <= 0
       end
-      to_delete.reverse.each do |filename|
-        print "\rAudio::Cache : #{filename} released.\n#{Audio::COMMAND_TEXT}"
+      to_delete.reverse_each do |filename|
+        log_info "Audio::Cache : #{filename} released."
         @sound_count.delete(filename)
         @sound_cache.delete(filename)
       end
