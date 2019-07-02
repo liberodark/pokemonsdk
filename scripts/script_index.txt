@@ -234,10 +234,6 @@ pokemonsdk/scripts/01300 UI/02102 Summary_Skills.rb
 pokemonsdk/scripts/01300 UI/02103 Summary_Top.rb
 pokemonsdk/scripts/01300 UI/02104 Summary_Remind.rb
 pokemonsdk/scripts/01300 UI/02200 UI__CasinoVoltorbFlip_sprites.rb
-pokemonsdk/scripts/01350 GUI/00100 Button.rb
-pokemonsdk/scripts/01350 GUI/00101 CheckBox.rb
-pokemonsdk/scripts/01350 GUI/00102 Input.rb
-pokemonsdk/scripts/01350 GUI/00200 Manager.rb
 pokemonsdk/scripts/01400 GamePlay/00100 Scene_Title.rb
 pokemonsdk/scripts/01400 GamePlay/00200 Scene_Map.rb
 pokemonsdk/scripts/01400 GamePlay/00300 Scene_NameInput.rb
