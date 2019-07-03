@@ -52,7 +52,7 @@ module PFM
         pokemon.code_generation(hash[:shiny])
 
         # Set gender
-        pokemon.set_gender(hash.fetch(:gender, pokemon.gender))
+        pokemon.set_gender(hash[:gender] || pokemon.gender)
         # Set Moves
         pokemon.load_skill_from_array(moves) if moves
         # Set IV
@@ -72,18 +72,18 @@ module PFM
           pokemon.ability_index = nil
         end
         # Set Nature
-        pokemon.nature = hash.fetch(:nature, pokemon.nature_id)
+        pokemon.nature = hash[:nature] || pokemon.nature_id
         # Set trainer info
-        pokemon.trainer_id = hash.fetch(:trainer_id, pokemon.trainer_id)
-        pokemon.trainer_name = hash.fetch(:trainer_name, pokemon.trainer_name)
+        pokemon.trainer_id = hash[:trainer_id] || pokemon.trainer_id
+        pokemon.trainer_name = hash[:trainer_name] || pokemon.trainer_name
         # Set nickname
-        pokemon.given_name = hash.fetch(:given_name, pokemon.given_name)
+        pokemon.given_name = hash[:given_name] || pokemon.given_name
         # Set rareness
-        pokemon.rareness = hash.fetch(:rareness, pokemon.rareness)
+        pokemon.rareness = hash[:rareness] || pokemon.rareness
         # Set happiness
-        pokemon.loyalty = hash.fetch(:loyalty, pokemon.loyalty)
+        pokemon.loyalty = hash[:loyalty] || pokemon.loyalty
         # Set ball used to catch the Pokemon
-        pokemon.captured_with = hash.fetch(:ball, pokemon.captured_with)
+        pokemon.captured_with = hash[:ball] || pokemon.captured_with
 
         return pokemon
       end
