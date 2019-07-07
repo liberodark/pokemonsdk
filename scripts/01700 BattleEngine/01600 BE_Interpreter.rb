@@ -110,8 +110,7 @@ module BattleEngine
     end
     def useless_msg(target)
       return if @ignore or target.hp==0
-      offset = __get_txt_offset(target)
-      msg(parse_text(19, 210+offset))
+      msg(parse_text_with_pokemon(19, 210, target))
     end
     def efficiency_sound(mod)
       return if @ignore or mod == 0
