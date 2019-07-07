@@ -21,6 +21,7 @@ module Battle
       @battle_info = battle_info
       $game_temp.vs_type = battle_info.vs_type
       $game_temp.trainer_battle = battle_info.trainer_battle?
+      $game_temp.in_battle = true
       @logic = create_logic
       @visual = create_visual
       @AIs = Array.new(count_ai_battler) { create_ai }
@@ -58,6 +59,7 @@ module Battle
       # Force the next update to be called if a frame skip was requested
       while @skip_frame
         @skip_frame = false
+        log_debug("Calling #{@next_update} phase")
         send(@next_update)
       end
     end
@@ -95,6 +97,7 @@ module Battle
       @battle_info.parties.each do |bank|
         count += bank.size
       end
+      log_debug("Found #{count} AI")
       return count
     end
 

@@ -38,6 +38,11 @@ module Battle
       @effectiveness = 1
     end
 
+    def to_s
+      "<PM:#{name},#{@consecutive_use_count} pp=#{@pp}>"
+    end
+    alias inspect to_s
+
     # Return the name of the skill
     def name
       text_get(6, @id)

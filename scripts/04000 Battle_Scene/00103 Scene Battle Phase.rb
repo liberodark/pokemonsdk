@@ -4,6 +4,7 @@ module Battle
 
     # Method that add the actions of the player, sort them and let the main phase process
     def start_battle_phase
+      log_info('Starting battle phase')
       # Add player actions
       @logic.add_actions(@player_actions)
       @player_actions.clear
@@ -30,7 +31,9 @@ module Battle
 
     # Method that perform everything that needs to be performed at battle end (phrases etc...) and gives back the master to Scene_Map
     def battle_end
+      log_info('Exiting battle')
       # TODO : battle_end procedure
+      $game_temp.in_battle = false
       return_to_last_scene
     end
 

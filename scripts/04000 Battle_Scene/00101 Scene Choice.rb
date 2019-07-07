@@ -7,6 +7,7 @@ module Battle
       # If the method was called and the player cannot make another choice it's a bug so we end the battle
       return @next_update = :battle_end unless can_player_make_another_action_choice?
       choice = @visual.show_player_choice(@player_actions.size)
+      log_debug("Player action choice : #{choice}")
       case choice
       when :attack
         # The player choose to attack, at next update will be skill_choice
@@ -57,6 +58,7 @@ module Battle
       if launcher
         # The player made a choice we store the action and check if he can make other choices
         @player_actions << { type: :attack, launcher: launcher, skill: skill, target_bank: target_bank, target_position: target_position }
+        log_debug("Action : #{@player_actions.last}") if debug? # To prevent useless overhead outside debug
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else
         # If the player canceled we return to the player action
@@ -90,6 +92,7 @@ module Battle
       if item_id
         # The player made a choice we store the action and we check if he can make other choices
         @player_actions << { type: :item, item_id: item_id, target: target, bag: @logic.bags[0] }
+        log_debug("Action : #{@player_actions.last}") if debug? # To prevent useless overhead outside debug
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else
         # If the player canceled we return to the player action
@@ -102,9 +105,8 @@ module Battle
       pokemon_to_send = @visual.show_pokemon_choice
       if pokemon_to_send
         # The player made a choice we store the action and we check if he can make other choices
-        @player_actions << { type: :switch,
-                             who: @logic.battler(0, @player_actions.size),
-                             with: pokemon_to_send }
+        @player_actions << { type: :switch, who: @logic.battler(0, @player_actions.size), with: pokemon_to_send }
+        log_debug("Action : #{@player_actions.last}") if debug? # To prevent useless overhead outside debug
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else
         # If the player canceled we return to the player action

@@ -62,6 +62,11 @@ module PFM
       @position && !dead?
     end
 
+    def to_s
+      "<PB:#{@given_name},#{@bank},#{@position} lv=#{@level} hp=#{@hp_rate.round(3)} st=#{@status}>"
+    end
+    alias inspect to_s
+
     private
 
     # Copy the properties of the original pokemon

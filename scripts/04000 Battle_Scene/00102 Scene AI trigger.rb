@@ -7,6 +7,7 @@ module Battle
     def trigger_all_AI
       call_event(:trainer_dialog)
       @AIs.each_with_index do |ai, index|
+        log_debug("Triggering AI##{index}...")
         actions = call_event(:AI_force_action, ai, index)
         if actions
           @logic.add_actions(actions)

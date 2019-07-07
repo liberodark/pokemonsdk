@@ -7,10 +7,7 @@ module Kernel
     @logger = Thread.new do
       loop do
         sleep
-        @log_stack.each do |element|
-          send(*element)
-        end
-        @log_stack.clear
+        Kernel.process_log_stack
       end
     end
   end
@@ -19,6 +16,14 @@ module Kernel
   # @return [Array]
   def log_stack
     @log_stack
+  end
+
+  # Process the log stack
+  def process_log_stack
+    @log_stack.each do |element|
+      send(*element)
+    end
+    @log_stack.clear
   end
 
   # Debug print command, prints each args using puts
@@ -74,6 +79,20 @@ module Kernel
     rc = binding.receiver
     rc = rc.is_a?(Module) ? rc : rc.class
     Kernel.log_stack << [:pcc, "[#{rc}] #{message}", 0x02]
+    return message
+  end
+
+  # Display a debug message
+  # @param message [String]
+  # @return [String] the message
+  def log_debug(message)
+    return if $RELEASE
+    return unless debug?
+    rc = binding.receiver
+    rc = rc.is_a?(Module) ? rc : rc.class
+    # Immediate because of the debug purpose
+    Kernel.process_log_stack
+    pcc "[#{rc}] #{message}", 0x06
     return message
   end
 

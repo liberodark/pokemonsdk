@@ -47,7 +47,9 @@ module Battle
     # @return [Class]
     def battle_transition
       collection = $game_temp.trainer_battle ? TRAINER_TRANSITIONS : WILD_TRANSITIONS
-      collection[$game_variables[Yuki::Var::Trainer_Battle_ID]]
+      transition_class = collection[$game_variables[Yuki::Var::Trainer_Battle_ID]]
+      log_debug("Choosen transition class : #{transition_class}")
+      return transition_class
     end
 
     # List of Wild Transitions

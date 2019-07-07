@@ -97,6 +97,7 @@ module Battle
       return $game_temp.battleback_name unless $game_temp.battleback_name.to_s.empty?
       zone_type = $env.get_zone_type
       zone_type += 1 if zone_type > 0 || $env.grass?
+      log_debug("Background : ZoneType = #{zone_type} / BGName = #{BACKGROUND_NAMES[zone_type]}")
       return BACKGROUND_NAMES[zone_type].to_s
     end
 
