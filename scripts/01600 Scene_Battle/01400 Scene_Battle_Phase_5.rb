@@ -85,7 +85,7 @@ class Scene_Battle
     end
     width = tmp_sprite.bitmap.width
     tmp_sprite.x = 160 + width
-    tmp_sprite.z = 2000
+    tmp_sprite.z = 1000
     tmp_sprite.ox = tmp_sprite.bitmap.width/2
     tmp_sprite.opacity = 0
     Graphics.sort_z
