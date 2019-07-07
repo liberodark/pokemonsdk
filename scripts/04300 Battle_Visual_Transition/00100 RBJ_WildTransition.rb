@@ -110,6 +110,7 @@ module Battle
       # @param screenshot [Bitmap]
       def create_screenshot(screenshot)
         @sceenshot = Sprite.new(@viewport).set_bitmap(screenshot)
+        @sceenshot.set_origin(@viewport.rect.x, @viewport.rect.y)
         @sceenshot.zoom = Graphics.width / screenshot.width.to_f
       end
     end

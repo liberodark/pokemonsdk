@@ -25,7 +25,7 @@ module Battle
     # Begining of the show_player_choice
     # @param pokemon_index [Integer] Index of the Pokemon in the party
     def show_player_choice_begin(pokemon_index)
-      @viewport.rect.height = @viewport_sub.rect.y
+      @viewport.rect.height = @viewport_sub.rect.y - @viewport.rect.y
       @locking = true
       @player_choice_ui.reset
       @player_choice_ui.visible = true
