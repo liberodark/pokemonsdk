@@ -68,7 +68,7 @@ module GamePlay
         update_index
       elsif(trigger?(:A) or Mouse.trigger?(:left)) # Input.trigger?(:A))
         change_scene
-      elsif(trigger?(:B)) # Input.trigger?(:B))
+      elsif(trigger?(:B) || trigger?(:X)) # Input.trigger?(:B))
         @running = false
       end
     end
