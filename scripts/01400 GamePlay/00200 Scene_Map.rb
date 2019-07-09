@@ -202,16 +202,17 @@ class Scene_Map
     # 名前入力画面に切り替え
     Graphics.freeze
     window_message_close(false)
-    sprite_set_visible = false
+    self.sprite_set_visible = false
     actor = $game_actors[$game_temp.name_actor_id]
-    character = actor.character_name
-    name = Scene_NameInput.new(actor.name, $game_temp.name_max_char, character.size > 0 ? character : nil).main.return_name
-    if($game_temp.name_actor_id == 1)
-      $trainer.name = name
+    if $game_temp.name_actor_id == 1
+      character = $game_player.character_name
     else
-      actor.name = name
+      character = actor.character_name
     end
-    sprite_set_visible = true
+    name = Scene_NameInput.new(actor.name, $game_temp.name_max_char, character.empty? ? nil : character).main.return_name
+    $trainer.name = name if $game_temp.name_actor_id == 1
+    actor.name = name
+    self.sprite_set_visible = true
     Graphics.transition
   end
 
