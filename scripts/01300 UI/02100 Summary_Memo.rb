@@ -9,6 +9,9 @@ module UI
       @invisible_if_egg = []
       init_memo
       @text_info = add_text(13, 138, 294, 16, '')
+	  @exp_container = push(30,129,RPG::Cache.interface("exp_bar"))
+	  @exp_bar = push_sprite(create_exp_bar)
+	  @exp_bar.data_source = :exp_rate
     end
 
     # Set an object inivisible if the Pokemon is an egg
@@ -51,6 +54,7 @@ module UI
       no_egg add_text(114, 19 + 80, 120, 16, texts[12]) # Next lvl
       no_egg add_text(114, 19 + 96, 95, 16, text_get(23, 7)) # Objet
       # --- Data part ---
+	  with_font(20){no_egg add_text(11,125,56,13, "EXP")}
       add_text(114, 19, 194, 16, :name, 2, type: SymText, color: 1)
       no_egg add_text(114, 19 + 16, 95, 16, :id_text, 2, type: SymText, color: 1)
       @level_value = no_egg(add_text(114 + 97, 19 + 16, 95, 16, :level_text, 2, type: SymText, color: 1))
@@ -81,7 +85,12 @@ module UI
       text.gsub!('Level', "\nLevel") if $options.language == 'en'
       @text_info.multiline_text = text
     end
-
+	def create_exp_bar
+      bar = Bar.new(@viewport,31,130,RPG::Cache.interface("bar_exp"),93, 2, 0, 0, 1)
+      # Define the data source of the EXP Bar
+      bar.data_source = :exp_rate
+      return bar
+    end
     # Load the text info when it's an egg
     # @param pokemon [PFM::Pokemon]
     def load_egg_text_info(pokemon)
@@ -96,5 +105,6 @@ module UI
       end
       @text_info.multiline_text = text.gsub(/([^.]\.|\?|\!) /) { "#{$1} \n" }
     end
+		
   end
 end
