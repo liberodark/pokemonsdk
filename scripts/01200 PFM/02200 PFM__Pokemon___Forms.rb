@@ -154,7 +154,6 @@ module PFM
     FORM_CALIBRATE[:shaymin] = proc { @form = (item_db_symbol == :gracidea) && !($env.night? || $env.sunset?) ? 1 : 0 }
     FORM_CALIBRATE[:genesect] = proc { @form = GenesectModules.index(item_db_symbol).to_i }
     FORM_CALIBRATE[:silvally] = proc { @form = SilvallyROM.index(item_db_symbol).to_i }
-    FORM_CALIBRATE[:deerling] =
-      FORM_CALIBRATE[:sawsbuck] = proc { |reason| @form = current_deerling_form if reason == :load }
+	FORM_CALIBRATE[:deerling] = FORM_CALIBRATE[:sawsbuck] = proc { @form = current_deerling_form }
   end
 end

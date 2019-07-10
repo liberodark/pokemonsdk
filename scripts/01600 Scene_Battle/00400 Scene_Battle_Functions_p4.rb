@@ -499,8 +499,8 @@ class Scene_Battle
         #Tentative de fuite en 1v1 wild
         unless($game_temp.trainer_battle or $game_temp.vs_type==2)
           #r=display_message("Voulez-vous envoyer un autre Pokémon ?\n",false,1,"Oui","Non")
-          r=display_message(text_get(18, 80),true,1,text_get(20, 55),text_get(20, 56))
-          if(r == 0)
+          r=display_message(text_get(18, 80),true,1,text_get(20, 56),text_get(20, 55))
+          if(r == 1)
             if(update_phase2_escape(true))
               $game_system.se_play($data_system.escape_se)
               return battle_end(1)
