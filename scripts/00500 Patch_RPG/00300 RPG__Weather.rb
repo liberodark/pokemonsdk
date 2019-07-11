@@ -49,7 +49,7 @@ module RPG
     # Dispose the interface
     def dispose
       @sprites.each(&:dispose)
-      @snow_bitmap.dispose
+      @snow_bitmap&.dispose if SET_TYPE_PSDK_MANAGED[4]
     end
 
     # Update the ox
