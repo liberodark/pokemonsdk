@@ -15,8 +15,9 @@ class Game_Character
 
     return if @sliding
     return @wait_count -= 1 if @wait_count > 0 # or follower_sliding?
+    return move_type_path if @path # Needs to have priority over move_type_custom
     return move_type_custom if @move_route_forcing
-    return if @starting or lock?
+    return if @starting || lock?
     return unless @stop_count > @max_stop_count
 
     # Automatic movement
@@ -168,14 +169,14 @@ class Game_Character
     abs_sx = sx > 0 ? sx : -sx
     abs_sy = sy > 0 ? sy : -sy
     # 縦横あわせて 20 タイル以上離れている場合
-    if sx + sy >= 20
+    if abs_sx + abs_sy >= 20
       # ランダム
       move_random
       return
     end
     # 乱数 0～5 で分岐
     case rand(6)
-    when 0..3  # プレイヤーに近づく
+    when 0..3 # プレイヤーに近づく
       move_toward_player
     when 4  # ランダム
       move_random
@@ -189,20 +190,37 @@ class Game_Character
     return unless movable?
     while @move_route_index < @move_route.list.size
       command = @move_route.list[@move_route_index]
-      return move_type_custom_end if command.code == 0
-      # Real movements (including moved check)
-      return move_type_custom_move(command) if command.code <= 14
-      # Wait command
-      if command.code == 15
-        @wait_count = command.parameters[0] * 2 - 1
-        @move_route_index += 1
-        return
-      end
-      # Turn commands
-      return move_type_custom_turn(command) if command.code.between?(16, 26)
-      # Special commands
-      move_type_custom_special(command)
+      break if move_type_custon_exec_command(command)
     end
+  end
+
+  # Execute a move route command
+  # @param command [RPG::MoveCommand]
+  # @return [Boolean] if the loop calling the method should break
+  def move_type_custon_exec_command(command)
+    if command.code == 0
+      move_type_custom_end
+      return true
+    end
+    # Real movements (including moved check)
+    if command.code <= 14
+      move_type_custom_move(command)
+      return true
+    end
+    # Wait command
+    if command.code == 15
+      @wait_count = command.parameters[0] * 2 - 1
+      @move_route_index += 1
+      return true
+    end
+    # Turn commands
+    if command.code.between?(16, 26)
+      move_type_custom_turn(command)
+      return true
+    end
+    # Special commands
+    move_type_custom_special(command)
+    return false
   end
 
   # When the command is 0 we reached the end and we loop back if the repeat mode is on
@@ -259,7 +277,7 @@ class Game_Character
 
   # Update the move_route_index if the character moved or can skip undoable route
   def move_type_custom_move_update_index
-    return unless @move_route.skippable || moving? || jumping?
+    return unless @move_route&.skippable || moving? || jumping?
     @move_route_index += 1
   end
 
@@ -367,13 +385,12 @@ class Game_Character
 
   # Increase step prototype (sets @stop_count to 0)
   def increase_steps
-    # 停止カウントをクリア
     @stop_count = 0
   end
 
   def process_slope_y_modifier(y_modifier)
-      @y += y_modifier
-      @real_y = @y * 128
-      update_slope_offset_y
+    @y += y_modifier
+    @real_y = @y * 128
+    update_slope_offset_y
   end
 end

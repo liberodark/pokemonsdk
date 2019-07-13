@@ -273,7 +273,7 @@ module Pathfinding
       @cursor = Cursor.new(character)
       @open = [[0, character.x, character.y, character.z, @cursor.state, -1]]
       @closed = Table32.new($game_map.width, $game_map.height, 7)
-      @character.force_move_route(WAITING_ROUTE)
+      @character.path = :pending # @character.force_move_route(WAITING_ROUTE)
       @remaining_tries = @original_remaining_tries = tries
       @need_update = true
       @tags = tags
@@ -309,7 +309,7 @@ module Pathfinding
     # Indicate if the request is ended
     # @return [Boolean]
     def finished?
-      return !@character.move_route_forcing
+      return @character.path.nil?
     end
 
     # Update the requests and return the number of performed actions
@@ -418,7 +418,7 @@ module Pathfinding
       # Check first update
       return 1 unless is_first_update
 
-      @character.force_move_route(WAITING_ROUTE)
+      @character.path = :pending # @character.force_move_route(WAITING_ROUTE)
       @open.clear
       @open.push [0, character.x, character.y, character.z, @cursor.state, -1]
       @closed.resize(0, 0, 0) # Clear the table
@@ -431,14 +431,15 @@ module Pathfinding
     # @param path [Array<Integer>] The path, list of move direction
     def send_path(path)
       Pathfinding.debug_add(@character, @cursor, path)
-      @character.force_move_route(Pathfinding.path_to_route(path))
+      @character.define_path((path << 0).collect(&PRESET_COMMANDS))
+      # @character.force_move_route(Pathfinding.path_to_route(path))
     end
 
     # Detect if the character is stucked
     # @return [Boolean]
     def stucked?
       # Get the data
-      route = @character.move_route
+      route = @character.path
       route_index = @character.move_route_index
       x = @character.x
       y = @character.y
@@ -446,7 +447,7 @@ module Pathfinding
       b = @character.__bridge
 
       # Iterate commands to the last one, which is Lentgh - 2 (considering the empty command at end)
-      route.list[route_index..[route.list.length - 2, route_index + OBSTACLE_DETECTION_RANGE - 1].min]&.each do |command|
+      route[route_index..[route.length - 2, route_index + OBSTACLE_DETECTION_RANGE - 1].min]&.each do |command|
         return true unless @cursor.sim_move?(x, y, z, command.code, b)
 
         x = @cursor.x

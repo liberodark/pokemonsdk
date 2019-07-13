@@ -9,6 +9,9 @@ class Game_Character
   attr_accessor :sliding
   # The current surfing state
   attr_writer :surfing
+  # The current path
+  # @return [Array<RPG::MoveCommand>, :pending, nil]
+  attr_accessor :path
 
   EMPTY_MOVE_ROUTE = RPG::MoveRoute.new
   EMPTY_MOVE_ROUTE.repeat = false
@@ -20,12 +23,40 @@ class Game_Character
     # Create the request
     Pathfinding.add_request(self, [type, to, radius], tries, tags)
     # Increase the move_route index to make this method looks like a normal move command
-    @original_move_route_index += 1
+    # @original_move_route_index += 1 # <= Not usefull now
   end
 
   # Stop following the path if there is one and clear the agent
   def stop_path
-    force_move_route(EMPTY_MOVE_ROUTE)
+    # force_move_route(EMPTY_MOVE_ROUTE)
+    clear_path
     Pathfinding.remove_request(self)
+  end
+
+  # Movement induced by the Path Finding
+  def move_type_path
+    return if @path == :pending
+    return unless movable?
+    while (command = @path[@move_route_index])
+      @move_route_index += 1
+      break if move_type_custon_exec_command(command)
+    end
+  end
+
+  # Define the path from path_finding
+  # @param path [Array<RPG::MoveCommand>]
+  def define_path(path)
+    @move_route_index_path_finder ||= @move_route_index
+    @move_route_index = 0
+    @path = path
+  end
+
+  private
+
+  # Clear the path
+  def clear_path
+    @move_route_index = @move_route_index_path_finder if @move_route_index_path_finder
+    @move_route_index_path_finder = nil
+    @path = nil
   end
 end
