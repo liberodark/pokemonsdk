@@ -207,7 +207,7 @@ module GamePlay
       pokemon = @party[@index]
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       choices
-        .register_choice(text_get(20, 26), on_validate: method(:on_send_pokemon)) # Send
+        .register_choice(text_get(20, 25), on_validate: method(:on_send_pokemon)) # Send
         .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
       show_win_text(parse_text(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
@@ -421,8 +421,9 @@ module GamePlay
       # @type [PFM::Pokemon]
       pokemon = @party[@index]
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
+      # Text missing for choosing a Mon
       choices
-        .register_choice(text_get(23, 209), on_validate: method(:on_map_choice)) # Select
+        .register_choice(text_get(23, 0), on_validate: method(:on_map_choice)) # Select
         .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
         .register_choice(text_get(23, 1), on_validate: method(:hide_win_text)) # Cancel
       show_win_text(parse_text(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
