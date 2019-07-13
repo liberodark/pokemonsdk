@@ -234,6 +234,15 @@ pokemonsdk/scripts/01300 UI/02102 Summary_Skills.rb
 pokemonsdk/scripts/01300 UI/02103 Summary_Top.rb
 pokemonsdk/scripts/01300 UI/02104 Summary_Remind.rb
 pokemonsdk/scripts/01300 UI/02200 UI__CasinoVoltorbFlip_sprites.rb
+pokemonsdk/scripts/01300 UI/02300 UI__List.rb
+pokemonsdk/scripts/01300 UI/02305 UI__List__Content.rb
+pokemonsdk/scripts/01300 UI/02306 UI__List__Content__Horizontal.rb
+pokemonsdk/scripts/01300 UI/02307 UI__List__Content__Vertical.rb
+pokemonsdk/scripts/01300 UI/02310 UI__List__Item.rb
+pokemonsdk/scripts/01300 UI/02311 UI__List Items.rb
+pokemonsdk/scripts/01300 UI/02400 UI__ItemSprite.rb
+pokemonsdk/scripts/01300 UI/02500 UI__ScrollBar.rb
+pokemonsdk/scripts/01300 UI/02600 UI__TextInput.rb
 pokemonsdk/scripts/01400 GamePlay/00100 Scene_Title.rb
 pokemonsdk/scripts/01400 GamePlay/00200 Scene_Map.rb
 pokemonsdk/scripts/01400 GamePlay/00300 Scene_NameInput.rb
@@ -279,6 +288,7 @@ pokemonsdk/scripts/01400 GamePlay/04700 GamePlay__Load.rb
 pokemonsdk/scripts/01400 GamePlay/04800 KeyBinding.rb
 pokemonsdk/scripts/01400 GamePlay/04801 KeyBinding_LS.rb
 pokemonsdk/scripts/01400 GamePlay/04900 GamePlay__Casino__VoltorbFlip.rb
+pokemonsdk/scripts/01400 GamePlay/05000 GamePlay__UI_Test.rb
 pokemonsdk/scripts/01500 GamePlay__Battle_xxx/00100 GamePlay__BattleAbilityDisplayer.rb
 pokemonsdk/scripts/01500 GamePlay__Battle_xxx/00200 GamePlay__BattleBalls.rb
 pokemonsdk/scripts/01500 GamePlay__Battle_xxx/00300 GamePlay__BattleBar.rb
