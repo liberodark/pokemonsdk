@@ -119,6 +119,15 @@ module Scheduler
       end
     end
   end
+
+  add_proc(:on_scene_switch, ::Scene_Title, 'Custom worldmap marker correction', 1000) do
+    next unless $scene.is_a?(Scene_Map) && $trainer.current_version.to_i <= 6177
+    unless $env.worldmap_custom_markers.is_a?(Array)
+      log_debug('Fixing Worldmap markers')
+      $env.instance_variable_set(:@worldmap_custom_markers, [])
+    end
+  end
+
 =begin
   # Exemple de chargement de tileset automatique
   add_proc(:on_getting_tileset_name, :any, 'Changement de tileset map 9', 1000,
