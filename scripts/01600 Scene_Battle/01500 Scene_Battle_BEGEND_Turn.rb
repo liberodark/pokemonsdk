@@ -305,6 +305,7 @@ class Scene_Battle
     
     BattleEngine::_State_update
     phase4_message_display() if(BattleEngine::_message_stack_size>0)
+    BattleEngine.get_ally.each { |pokemon| pokemon&.battle_turns = 0 }
   end
 
   

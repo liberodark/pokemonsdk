@@ -169,7 +169,7 @@ class Scene_Battle
         #Mise à jour de l'exp donnée pour savoir si on arrête ou non la boucle
         given=i.exp-base_exp
       end
-      i.battle_turns=0
+      # i.battle_turns = 0
     end
   end
   #===
