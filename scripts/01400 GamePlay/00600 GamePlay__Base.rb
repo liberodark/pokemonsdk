@@ -228,6 +228,7 @@ module GamePlay
     # @param add_key [Symbol] name of the key that add 1 to the index
     # @param max [Integer] maximum value of the index
     # @param min [Integer] minmum value of the index
+    # @return [Boolean] if the index has changed
     def index_changed(varname, sub_key, add_key, max, min = 0)
       index = instance_variable_get(varname) - min
       mod = max - min + 1
@@ -246,6 +247,7 @@ module GamePlay
     # @param add_key [Symbol] name of the key that add 1 to the index
     # @param max [Integer] maximum value of the index
     # @param min [Integer] minmum value of the index
+    # @return [Boolean] if the index has changed
     def index_changed!(varname, sub_key, add_key, max, min = 0)
       index = instance_variable_get(varname) - min
       mod = max - min + 1
