@@ -30,6 +30,19 @@ module BattleEngine
     # les fonctions générés seront change_atk, change_dfe, change_spd, change_ats, change_dfs, change_acc, change_eva
     #===
     eval_data = "module_function
+def check_flora_stats(target)
+	if BattleEngine.get_ally(target)[0]
+		c = BattleEngine.get_ally(target)[0]
+	else
+		c = target
+	end
+	if ((Abilities.has_abilities(target, 165) && target.type_grass?) || (Abilities.has_abilities(c, 165) && target.type_grass?))
+	  _mp([:ability_display, target]) unless c.ability == 165
+	  _mp([:ability_display, c]) if c.ability == 165
+	  _msgp(19, 198, target)
+	 return true
+	end
+end
 def change_{d1}(target, power)
   return if @ignore or target.hp==0
   return if @no_secondary_effect
@@ -37,9 +50,17 @@ def change_{d1}(target, power)
   return if target.battle_effect.has_substitute_effect? and @launcher != target and @skill and @skill.id != 432
   if(power < 0 and target != @launcher)
     #> Corps Sain / Écran Fumée
+	return if check_flora_stats(target) == true
+	# Herbivore
+    if @skill && @skill.type_grass? && BattleEngine::Abilities.has_ability_usable(target, 156)
+	  _mp([:ability_display, target])
+	  _mp([:change_atk, target, 1])
+	  #_msgp(19, something_not_written,target)
+	  return
+    end
     if(Abilities.has_abilities(target, 35, 101))
-      _mp([:ability_display, target])
-      _msgp(19, 198, target)
+	  _mp([:ability_display, target])
+	  _msgp(19, 198, target)
       return
     #> Hyper Cutter
     elsif(:{d1} == :atk and Abilities.has_ability_usable(target, 51))
