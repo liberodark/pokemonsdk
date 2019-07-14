@@ -9,8 +9,8 @@ module UI
       @invisible_if_egg = []
       init_memo
       @text_info = add_text(13, 138, 294, 16, '')
-	  @exp_container = push(30,129,RPG::Cache.interface("exp_bar"))
-	  @exp_bar = push_sprite(create_exp_bar)
+	  no_egg @exp_container = push(30,129,RPG::Cache.interface("exp_bar"))
+	  no_egg @exp_bar = push_sprite(create_exp_bar)
 	  @exp_bar.data_source = :exp_rate
     end
 
@@ -86,7 +86,7 @@ module UI
       @text_info.multiline_text = text
     end
 	def create_exp_bar
-      bar = Bar.new(@viewport,31,130,RPG::Cache.interface("bar_exp"),93, 2, 0, 0, 1)
+      bar = Bar.new(@viewport,31,130,RPG::Cache.interface("bar_exp"),73, 2, 0, 0, 1)
       # Define the data source of the EXP Bar
       bar.data_source = :exp_rate
       return bar
