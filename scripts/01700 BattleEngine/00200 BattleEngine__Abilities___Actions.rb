@@ -104,7 +104,7 @@ module BattleEngine
       if(has_ability_usable(pkmn, pkmn.ability))
         case pkmn.ability
         when 11 #> Intimidation
-          if(switched) #> Cas où le Pokémon vient d'être lancé (switch)
+          if(switched == true) #> Cas où le Pokémon vient d'être lancé (switch)
             _mp([:ability_display, pkmn])
             enemies.each do |enemy|
               _mp([:change_atk, enemy, -1])
@@ -203,7 +203,7 @@ module BattleEngine
       end
       #> Vérification des capacités spéciales ennemies
       enemies.each do |enemy|
-        unless enemy.battle_effect.has_no_ability_effect? or enemy.dead?
+        unless enemy.battle_effect.has_no_ability_effect? or enemy.dead? or enemy.battle_effect.nb_of_turn_here > 0
           case enemy.ability
           when 11 #> Intimidation
             _mp([:ability_display, enemy])
@@ -257,6 +257,12 @@ module BattleEngine
               return false
             end
           end
+		when 156
+			if (skill.type_grass?)
+			  _mp([:ability_display, pkmn])
+			  _mp([:change_atk, pkmn, 1])
+			  return false
+			end
         when 119 #> Motorisé
           if(skill.type_electric?)
             _mp([:ability_display, pkmn])

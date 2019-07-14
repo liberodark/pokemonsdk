@@ -52,24 +52,35 @@ module GamePlay
 				when 1
 					_convert_data.each do |skill|
 						if skill[1] <= @pokemon.level
+						  unless moves.include?(skill[1])
 							moves << skill[1]
+						  end
 						end
 					end
 					GameData::Pokemon.breed_moves(@pokemon.id).each do |skill|
-						moves << skill
+						unless moves.include?(skill)
+							moves << skill
+						end
 					end
 				when 2
 					_convert_data.each do |skill|
+					  unless moves.include?(skill[1])
 						moves << skill[1]
+					  end
 					end
 					GameData::Pokemon.breed_moves(@pokemon.id).each do |skill|
-						moves << skill
+						unless moves.include?(skill)
+							moves << skill
+						end
 					end
 				else
 					_convert_data.each do |skill|
 						if skill[0] <= @pokemon.level
-							moves << skill[1]
+							unless moves.include?(skill[1])
+								moves << skill[1]
+							end
 						end
+						p skill
 					end
 			end
 			@pokemon.skills_set.each do |skill|
@@ -104,6 +115,7 @@ module GamePlay
 				scene = GamePlay::Skill_Learn.new(@pokemon, @move_set[@index])
 				scene.main
 				@running = false if scene.learnt == true
+				Graphics.transition if scene.learnt == false
 			elsif (trigger?(:B))
 				@running = false
 			end

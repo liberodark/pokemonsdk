@@ -162,10 +162,10 @@ class Scene_Battle
           end
         #>Orbe Flamme
         elsif(BattleEngine::_has_item(i, 273))
-          BattleEngine::_message_stack_push([:status_burn, i, true]) if i.battle_effect.nb_of_turn_here == 0
+          BattleEngine::_message_stack_push([:status_burn, i, true]) if i.battle_effect.nb_of_turn_here == 1
         #>Orbe Toxique
         elsif(BattleEngine::_has_item(i, 272))
-          BattleEngine::_message_stack_push([:status_toxic, i, true])  if i.battle_effect.nb_of_turn_here == 0
+          BattleEngine::_message_stack_push([:status_toxic, i, true])  if i.battle_effect.nb_of_turn_here == 1
         #>Orbe Vie
         elsif(BattleEngine::_has_item(i, 270))
           BattleEngine::_message_stack_push([:hp_down, i, i.max_hp/10])

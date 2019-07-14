@@ -108,6 +108,13 @@ module BattleEngine
     #===
     def leech_seed(target, launcher)
       return if @ignore or target.hp==0
+	# Herbivore
+	  if BattleEngine::Abilities.has_ability_usable(target, 156)
+		_mp([:ability_display, target])
+		_mp([:change_atk, target, 1])
+		#_msgp(19, something_not_written,target)
+		return
+	  end
       msg(parse_text_with_pokemon(19, 607, target))
       target.battle_effect.apply_leech_seed(launcher)
     end
