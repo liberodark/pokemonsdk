@@ -181,21 +181,27 @@ module PFM
     end
 
     # Get the list of all the skill the Pokemon can learn again
-    # @return [Array<PFM::Skill>]
-    def remindable_skills
-      move_set = $game_data_pokemon[@id][@form].move_set
-      level = @level
+    # @param mode [Integer] Define the moves that can be learnt again :
+    #   1 = breed_moves + learnt + potentially_learnt
+    #   2 = all moves
+    #   other = learnt + potentially_learnt
+    # @return [Array<Integer>]
+    def remindable_skills(mode = 0)
+      move_set = GameData::Pokemon.move_set(@id, @form)
+      level = mode == 2 ? Float::INFINITY : @level
       remindable_ids = []
       # Collect natural skills
       0.step(move_set.size - 1, 2) do |i|
-        remindable_ids << move_set[i + 1] if level <= move_set[i]
+        remindable_ids << move_set[i + 1] if level >= move_set[i]
       end
       # Collect learnt skills
       remindable_ids.concat(@skill_learnt)
+      # Collect the bread move skills
+      remindable_ids.concat(GameData::Pokemon.breed_moves(@id, @form)) if mode == 1
       # Clean the list
       remindable_ids.uniq!
       # Remove the skill the pokemon actually has and return the array of PFM::Skills
-      return (remindable_ids - skills).collect { |id| PFM::Skill.new(id) }
+      return (remindable_ids - skills)
     end
 
     # Load the skill from an Array
