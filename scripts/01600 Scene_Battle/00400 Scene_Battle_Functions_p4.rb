@@ -171,6 +171,7 @@ class Scene_Battle
       end
       # i.battle_turns = 0
     end
+    @exp_distributed = true
   end
   #===
   #>phase4_exp_calculation

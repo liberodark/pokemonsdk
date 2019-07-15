@@ -10,6 +10,7 @@ class Scene_Battle
   def start_phase4
     @a_remaining_pk.visible = false
     @e_remaining_pk.visible = false if $game_temp.trainer_battle
+    @exp_distributed = false
     @phase = 4
     # Incrémentation du nombre de tours
     $game_temp.battle_turn += 1
