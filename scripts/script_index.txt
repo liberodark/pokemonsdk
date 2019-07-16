@@ -12,7 +12,6 @@ pokemonsdk/scripts/00300 Patch_Ruby/00200 Object.rb
 pokemonsdk/scripts/00300 Patch_Ruby/00300 String.rb
 pokemonsdk/scripts/00300 Patch_Ruby/00400 Symbol.rb
 pokemonsdk/scripts/00300 Patch_Ruby/00500 Dir.rb
-pokemonsdk/scripts/00300 Patch_Ruby/00600 Module.rb
 pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/00100 Various_Patch.rb
 pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/00200 Bitmap.rb
 pokemonsdk/scripts/00400 Patch_Ajouts_LiteRGSS/00400 Graphics.rb

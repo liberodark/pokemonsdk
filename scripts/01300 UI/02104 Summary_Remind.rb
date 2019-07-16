@@ -3,12 +3,17 @@ module UI
   class Summary_Remind < Summary_Skills
     # @return [Integer] maximum number of moves shown in the screen
     MAX_MOVES = 5
+    # @return [Integer] mode passed to the {PFM::Pokemon#remindable_skills} method
+    attr_accessor :mode
+    # @return [Array<PFM::Skill>] list of learnable moves
+    attr_reader :learnable_skills
     # Create a new Summary_Remind UI for the summary
     # @param viewport [Viewport]
     # @param pokemon [PFM::Pokemon] Pokemon that should relearn some skills
     def initialize(viewport, pokemon)
       # @type [Integer] offset index telling the first move in the list that is shown on the screen
       @offset_index = 0
+      @mode = 0
       super(viewport)
       # Moving the original interface
       set_position(0, 71)
@@ -46,6 +51,14 @@ module UI
       @index = index.to_i
       @move_info.data = @learnable_skills[@index] if @learnable_skills
       @skills[@index - @offset_index].selected = true
+    end
+
+    # Update the skills shown in the UI
+    # @param pokemon [PFM::Pokemon]
+    def update_skills(pokemon = @data)
+      @learnable_skills = pokemon.remindable_skills(@mode).collect { |id| PFM::Skill.new(id) }
+      @move_info.data = @learnable_skills[@index]
+      update_skill_list
     end
 
     private
@@ -91,14 +104,6 @@ module UI
       add_text(114 + 97, 19 + 48, 95, 16, :dfs_basis, 2, type: SymText, color: 1)
     end
 
-    # Update the skills shown in the UI
-    # @param pokemon [PFM::Pokemon]
-    def update_skills(pokemon)
-      @learnable_skills = pokemon.remindable_skills
-      @move_info.data = @learnable_skills[@index]
-      update_skill_list
-    end
-
     # Update the skill list
     def update_skill_list
       @skills.each_with_index do |skill_stack, index|
@@ -124,6 +129,7 @@ module UI
     # @param index [Integer] fixed index
     # @param max_index [Integer] last possible index
     def fix_offset_index(index, max_index)
+      return if max_index < MAX_MOVES
       last_offset_index = @offset_index
       mid_index = MAX_MOVES / 2
       if index > mid_index
