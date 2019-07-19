@@ -53,7 +53,8 @@ module Audio
         file_data = File.binread(filename)
         Yuki::ElapsedTime.show(:audio_load_sound, 'Loading sound from disk took')
       end
-      sound_info = FMOD::SoundExInfo.new(file_data.bytesize)
+      gm_filename = filename.include?('.mid') && File.exist?('gm.dls') ? 'gm.dls' : nil
+      sound_info = FMOD::SoundExInfo.new(file_data.bytesize, nil, nil, nil, nil, nil, gm_filename)
       sound = FMOD::System.createSound(file_data, create_sound_get_flags(flags), sound_info)
       sound.instance_variable_set(:@extinfo, sound_info)
       Yuki::ElapsedTime.show(:audio_load_sound, 'Creating sound object took')
