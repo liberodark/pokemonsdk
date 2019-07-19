@@ -74,14 +74,22 @@ module UI
       time = Time.new
       time -= (time.to_i - 1)
       time += pokemon.captured_at
+      time_egg = Time.new
+      time_egg -= (time_egg.to_i - 1)
+      time_egg += pokemon.egg_at if pokemon.egg_at
       hash = {
+        '[VAR NUM2(0007)]' => time_egg.strftime('%d'),
+        '[VAR NUM2(0006)]' => time_egg.strftime('%m'),
+        '[VAR NUM2(0005)]' => time_egg.strftime('%y'),
+        '[VAR LOCATION(0008)]' => pokemon.egg_zone_name,
         '[VAR NUM3(0003)]' => pokemon.captured_level.to_s,
         '[VAR NUM2(0002)]' => time.strftime('%d'),
         '[VAR NUM2(0001)]' => time.strftime('%m'),
         '[VAR NUM2(0000)]' => time.strftime('%y'),
         '[VAR LOCATION(0004)]' => pokemon.captured_zone_name
       }
-      text = parse_text(28, 25, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
+      mem = pokemon.memo_text || []
+      text = parse_text(mem[0] || 28, mem[1] || 25, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
       text.gsub!('Level', "\nLevel") if $options.language == 'en'
       @text_info.multiline_text = text
     end

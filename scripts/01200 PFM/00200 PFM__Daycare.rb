@@ -101,6 +101,7 @@ module PFM
       pokemon = PFM::Pokemon.new(daycare[:layable], 1)
       inherit(pokemon, daycare[:pokemon])
       pokemon.egg_init
+      pokemon.memo_text = [28, 31]
       return pokemon
     end
     # If there's an egg in the daycare

@@ -133,6 +133,12 @@ module PFM
     # Level of the Pokemon when the Pokemon was caught
     # @return [Integer]
     attr_accessor :captured_level
+    # Zone (id) where the Egg has been obtained
+    # @return [Integer]
+    attr_accessor :egg_in
+    # Time when the Egg has been obtained
+    # @return [Integer]
+    attr_accessor :egg_at
     # If the Pokemon is shiny
     # @return [Boolean]
     attr_accessor :shiny
@@ -193,6 +199,9 @@ module PFM
     # List of Ribbon ID the Pokemon got
     # @return [Array<Integer>]
     attr_accessor :ribbons
+    # Memo text [file_id, text_id]
+    # @return [Array<Integer>]
+    attr_accessor :memo_text
     # Create a new Pokemon with specific parameters
     # @param id [Integer] ID of the Pokemon in the database
     # @param level [Integer] level of the Pokemon
@@ -297,6 +306,7 @@ module PFM
       @hp_rate = 1
       @exp_rate = 0
       @mega_evolved = false
+      @memo_text = nil
     end
     # Code generation of the Pokemon (taking various informations in considerations)
     # @param force_shiny [Boolean] if the Pokemon have 100% chance to be shiny
@@ -391,6 +401,14 @@ module PFM
         return d.map_name.to_s if(d.map_included?(map_id))
       end
 =end
+      return $game_data_zone[0].map_name.to_s
+    end
+    # Return the name of the zone where the egg has been obtained
+    # @return [String]
+    def egg_zone_name
+      if @egg_in && (d = $game_data_zone[@egg_in & 0xFFFF])
+        return _utf8(d.map_name.to_s)
+      end
       return $game_data_zone[0].map_name.to_s
     end
     # Return the name of the item the Pokemon is holding
