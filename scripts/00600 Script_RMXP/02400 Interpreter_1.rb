@@ -18,15 +18,24 @@ class Interpreter_RMXP
 
   # Clear the state of the interpreter
   def clear
-    @map_id = 0                       # 起動時のマップ ID
-    @event_id = 0                     # イベント ID
-    @message_waiting = false          # メッセージ終了待機中
-    @move_route_waiting = false       # 移動完了待機中
+    # Map ID where the Interpreter was started
+    @map_id = 0
+    # Event ID in the map that is currently running the Interpreter
+    @event_id = 0
+    # If the Interpreter is waiting for a message
+    @message_waiting = false
+    # If the Interpreter is waiting for events to complete their mouve_rotue
+    @move_route_waiting = false
+    # If the Interpreter is waiting for a specific event to complete its moves
     @move_route_waiting_id = nil
-    @button_input_variable_id = 0     # ボタン入力 変数 ID
-    @wait_count = 0                   # ウェイトカウント
-    @child_interpreter = nil          # 子インタプリタ
-    @branch = {}                      # 分岐データ
+    # ID of the variable where the Interpreter should put the Input key value
+    @button_input_variable_id = 0
+    # Number of frame the Interpreter has to wait until next execution
+    @wait_count = 0
+    # Sub Interpreters
+    @child_interpreter = nil
+    # Branches (condition, choices etc...)
+    @branch = {}
   end
 
   # Launch a common event in a child interpreter
@@ -42,13 +51,15 @@ class Interpreter_RMXP
   # Setup the interpreter with a list of Commands
   # @param list [Array<RPG::Command>] list of commands
   # @param event_id [Integer] id of the event that launch the interpreter
-  def setup(list, event_id)
+  # @param block [Proc] the ruby commands to execute using a fiber (list is ignored if this variable is set)
+  def setup(list, event_id, block = nil)
     clear
     @map_id = $game_map.map_id
     @event_id = event_id
-    @list = list
+    @list = block ? :fiber : list
     @index = 0
     @branch.clear
+    create_fiber(block) if block
   end
 
   # Tells if the interpreter is running or not
@@ -123,45 +134,18 @@ class Interpreter_RMXP
       @index += 1
     end
   end
+
   # Constant that holds the LiteRGSS input key to RGSS input Key
   LiteRGSS2RGSS_Input = {
-    A: 13,
-    B: 12,
-    X: 14,
-    Y: 15,
-    L: 17,
-    R: 18,
-    UP: 8,
-    DOWN: 2,
-    LEFT: 4,
-    RIGHT: 6,
-    L2: 16,
-    R2: 25,
-    L3: 23,
-    R3: 29,
-    START: 22,
-    SELECT: 21,
+    A: 13, B: 12, X: 14, Y: 15,
+    L: 17, R: 18,
+    UP: 8, DOWN: 2, LEFT: 4, RIGHT: 6,
+    L2: 16, R2: 25, L3: 23, R3: 29,
+    START: 22, SELECT: 21
   }
   # Constant that holds the RGSS input key to LiteRGSS input key
-  RGSS2LiteRGSS_Input = {
-    13 => :A,
-    12 => :B,
-    14 => :X,
-    15 => :Y,
-    17 => :L,
-    18 => :R,
-    8 => :UP,
-    2 => :DOWN,
-    4 => :LEFT,
-    6 => :RIGHT,
-    16 => :L2,
-    11 => :A,
-    25 => :R2,
-    23 => :L3,
-    29 => :R3,
-    22 => :START,
-    21 => :SELECT,
-  }
+  RGSS2LiteRGSS_Input = LiteRGSS2RGSS_Input.invert
+  RGSS2LiteRGSS_Input[11] = :A
   RGSS2LiteRGSS_Input.default = :HOME
   # Check if a button is triggered and store its id in a variable
   def input_button
@@ -259,6 +243,16 @@ class Interpreter_RMXP
       log_debug("Event #{@event_id} executed 100 commands without giving the control back")
       Graphics.update
       @loop_count = 0
+    end
+  end
+
+  # Create the Interpreter Fiber
+  # @param block [Proc] the ruby commands to execute using a fiber 
+  def create_fiber(block)
+    raise 'Another fiber is running!' if @fiber
+    @fiber = Fiber.new do
+      instance_exec(&block)
+      @fiber = @list = nil
     end
   end
 end
