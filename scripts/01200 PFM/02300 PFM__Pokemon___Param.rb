@@ -37,6 +37,7 @@ module PFM
       #     ball: opt Integer # ID of the ball used to catch the Pokemon
       #     bonus: opt Array<Integer> # EV of the Pokemon [hp, atk, dfe, spd, ats, dfs]
       #     nature: opt Integer # Nature of the Pokemon
+      #     memo_text: opt Array<Integer> [file_id, text_id]
       # @param hash [Hash] the hash parameter of the Pokemon
       # @return [PFM::Pokemon]
       def generate_from_hash(hash)
@@ -84,6 +85,8 @@ module PFM
         pokemon.loyalty = hash[:loyalty] || pokemon.loyalty
         # Set ball used to catch the Pokemon
         pokemon.captured_with = hash[:ball] || pokemon.captured_with
+        # Memo text
+        pokemon.memo_text = hash[:memo_text]
 
         return pokemon
       end
