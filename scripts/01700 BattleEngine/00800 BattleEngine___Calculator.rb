@@ -482,7 +482,7 @@ module BattleEngine
     end
     #>FF / Torche
     if ability == 18
-      last_damaging = launcher.battle_effet.last_damaging_skill
+      last_damaging = launcher.battle_effect.last_damaging_skill
       if(((last_damaging and last_damaging.type_fire?) or launcher.burn?) and skill.type_fire?)
         n *= 1.5
       end
