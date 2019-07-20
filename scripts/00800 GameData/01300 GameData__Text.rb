@@ -22,6 +22,7 @@ module GameData
 
     # load text in the correct lang ($options.language or LANG in game.ini)
     def load
+      reload_rh_texts unless $RELEASE
       lang = ($pokemon_party ? $pokemon_party.options.language : default_lang)
       unless lang && Available_Langs.include?(lang)
         log_error "Unsupported language code (#{lang}).\nSupported language code are : #{Available_Langs.join(', ')}"
@@ -142,6 +143,20 @@ module GameData
         arr = build_dialog_from_csv_rows(rows, lang_index)
         output_filename = format('%<id>d.%<lang>s.dat', id: file_id, lang: lang)
         save_data(arr, output_filename)
+      end
+    end
+
+    # Reload texts from Ruby Host
+    def reload_rh_texts
+      langs = Dir["Data/Text/Dialogs/#{CSV_BASE}.*.dat"].collect { |i| i.match(/[0-9]+\.([a-z]+)\.dat$/).captures[0] }
+      if File.mtime("Data/Text/Dialogs/#{CSV_BASE}.#{langs.first}.dat") < File.mtime("Data/Text/#{langs.first}.dat")
+        log_debug('Updating Text files')
+        filename = 'plugins/text2csv' # Just to avoid the warning
+        require filename
+        Available_Langs.clear
+        Available_Langs.concat(langs)
+        log_debug('Compiling Text files')
+        compile
       end
     end
   end
