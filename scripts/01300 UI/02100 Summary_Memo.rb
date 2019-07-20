@@ -9,9 +9,9 @@ module UI
       @invisible_if_egg = []
       init_memo
       @text_info = add_text(13, 138, 294, 16, '')
-	  no_egg @exp_container = push(30,129,RPG::Cache.interface("exp_bar"))
-	  no_egg @exp_bar = push_sprite(create_exp_bar)
-	  @exp_bar.data_source = :exp_rate
+      no_egg @exp_container = push(30, 129, RPG::Cache.interface('exp_bar'))
+      no_egg @exp_bar = push_sprite(create_exp_bar)
+      @exp_bar.data_source = :exp_rate
     end
 
     # Set an object inivisible if the Pokemon is an egg
@@ -54,7 +54,7 @@ module UI
       no_egg add_text(114, 19 + 80, 120, 16, texts[12]) # Next lvl
       no_egg add_text(114, 19 + 96, 95, 16, text_get(23, 7)) # Objet
       # --- Data part ---
-	  with_font(20){no_egg add_text(11,125,56,13, "EXP")}
+      with_font(20) { no_egg add_text(11, 125, 56, 13, 'EXP') }
       add_text(114, 19, 194, 16, :name, 2, type: SymText, color: 1)
       no_egg add_text(114, 19 + 16, 95, 16, :id_text, 2, type: SymText, color: 1)
       @level_value = no_egg(add_text(114 + 97, 19 + 16, 95, 16, :level_text, 2, type: SymText, color: 1))
@@ -71,6 +71,7 @@ module UI
     # @param pokemon [PFM::Pokemon]
     def load_text_info(pokemon)
       return load_egg_text_info(pokemon) if pokemon.egg?
+
       time = Time.new
       time -= (time.to_i - 1)
       time += pokemon.captured_at
@@ -93,26 +94,39 @@ module UI
       text.gsub!('Level', "\nLevel") if $options.language == 'en'
       @text_info.multiline_text = text
     end
-	def create_exp_bar
-      bar = Bar.new(@viewport,31,130,RPG::Cache.interface("bar_exp"),73, 2, 0, 0, 1)
+
+    def create_exp_bar
+      bar = Bar.new(@viewport, 31, 130, RPG::Cache.interface('bar_exp'), 73, 2, 0, 0, 1)
       # Define the data source of the EXP Bar
       bar.data_source = :exp_rate
       return bar
     end
+
     # Load the text info when it's an egg
     # @param pokemon [PFM::Pokemon]
     def load_egg_text_info(pokemon)
+      time_egg = Time.new
+      time_egg -= (time_egg.to_i - 1)
+      time_egg += pokemon.egg_at if pokemon.egg_at
+      hash = {
+        '[VAR NUM2(0007)]' => time_egg.strftime('%d'),
+        '[VAR NUM2(0006)]' => time_egg.strftime('%m'),
+        '[VAR NUM2(0005)]' => time_egg.strftime('%y'),
+        '[VAR LOCATION(0008)]' => pokemon.egg_zone_name,
+        '[VAR NUM3(0003)]' => pokemon.captured_level.to_s,
+        '[VAR LOCATION(0004)]' => pokemon.captured_zone_name
+      }
       if pokemon.step_remaining > 10_240
-        text = text_get(28, 89)
+        text = parse_text(28, 89, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
       elsif pokemon.step_remaining > 2_560
-        text = text_get(28, 88)
+        text = parse_text(28, 88, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
       elsif pokemon.step_remaining > 1_280
-        text = text_get(28, 87)
+        text = parse_text(28, 87, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
       else
-        text = text_get(28, 86)
+        text = parse_text(28, 86, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
       end
-      @text_info.multiline_text = text.gsub(/([^.]\.|\?|\!) /) { "#{$1} \n" }
+      text.gsub!('Level', "\nLevel") if $options.language == 'en'
+      @text_info.multiline_text = text # .gsub(/([^.]\.|\?|\!) /) { "#{$1} \n" }
     end
-		
   end
 end
