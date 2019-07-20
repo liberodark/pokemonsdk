@@ -252,6 +252,7 @@ class Interpreter_RMXP
     raise 'Another fiber is running!' if @fiber
     @fiber = Fiber.new do
       instance_exec(&block)
+    ensure # Release the fiber & list whatever happens in the fiber
       @fiber = @list = nil
     end
   end
