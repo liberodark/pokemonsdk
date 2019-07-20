@@ -259,8 +259,14 @@ class Spriteset_Map
     @sp_bg.y = -30
     @sp_bg.z = 5001
     @sp_bg.bitmap = bmp = RPG::Cache.windowskin("Pannel_#{$game_data_zone[zone].panel_id}")
-    @sp_fg = Text.new(0, nil, 2, -30 - 4, bmp.width, bmp.height, $game_data_zone[zone].map_name, 1)
-    @sp_fg.load_color(10)
+    map_name = PFM::Text.parse_string_for_messages($game_data_zone[zone].map_name)
+    color = 10
+    map_name.gsub!(/\\c\[([0-9]+)\]/) do
+      color = $1.to_i
+      nil
+    end
+    @sp_fg = Text.new(0, nil, 2, -30 - 4, bmp.width, bmp.height, map_name, 1,
+                      Text::Util::DEFAULT_OUTLINE_SIZE, color)
     @sp_fg.z = 5002
     @counter = 0
   end
