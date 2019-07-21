@@ -108,4 +108,6 @@ class Interpreter < Interpreter_RMXP
     @move_route_waiting_id = event_id
   end
   alias attendre_fin_deplacement_cet_event wait_character_move_completion
+  alias wait_event wait_character_move_completion
+  alias attendre_event wait_character_move_completion
 end

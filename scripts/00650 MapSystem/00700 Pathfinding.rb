@@ -65,17 +65,6 @@ module Pathfinding
   @last_request_id = 0
 
   PRESET_COMMANDS = Array.new(5) { |i| RPG::MoveCommand.new(i) }.method(:[])
-  # Convert a path to an RPG::MoveRoute
-  # @param path [Array<Integer>] directions list
-  # @return [RPG::MoveRoute]
-  def self.path_to_route(path)
-    route = RPG::MoveRoute.new # Init a non repeated route
-    route.repeat = false
-    # Create the list with empty command at the end
-    path.push 0
-    route.list = path.collect(&PRESET_COMMANDS)
-    return route # Return the usable move route
-  end
 
   # Add the request to the system list and start looking for path
   # @param character [Game_Character] the character looking for a path
@@ -267,6 +256,7 @@ module Pathfinding
     # @param tries [Integer, Symbol] the amount of tries allowed before fail, use :infinity to have unlimited tries
     # @param tags [Symbol] the name of the Pathfinding::TagsWeight constant to use to calcultate the node weight
     def initialize(character, target, tries, tags)
+      log_debug "Character ##{character.id} request created."
       @character = character
       @target = target
       @state = :search
@@ -360,10 +350,12 @@ module Pathfinding
       if result == :not_found
         # If result not found, it start waiting before retrying
         if @remaining_tries == :infinity || (@remaining_tries -= 1) > 0
+          log_debug "Character ##{@character.id} fail to found path. Retrying..."
           @state = :wait
           @retry_countdown = TRY_DELAY
         else
           # If no more chances : the path finding end here
+          log_debug "Character ##{@character.id} fail to found path"
           @character.stop_path
         end
       # A path is found : throw it to the character
@@ -385,14 +377,17 @@ module Pathfinding
       if @character.real_x % 128 + @character.real_y % 128 == 0
         # Check target movement
         if @target.check_move(@character.x, @character.y)
+          log_debug "Character ##{@character.id}'s target has moved"
           @state = :reload
           return 1
         end
         # Check if the character is stucked
         if stucked?
+          log_debug "Character ##{@character.id} is stucked"
           @state = :reload
         # Detect if the target is already reached (player passing next to the event, etc)
         elsif @target.reached?(@character.x, @character.y, @character.z)
+          log_debug "Character ##{@character.id} reached the target"
           @character.stop_path
         end
       end
@@ -418,6 +413,7 @@ module Pathfinding
       # Check first update
       return 1 unless is_first_update
 
+      log_debug "Character ##{@character.id} reload request"
       @character.path = :pending # @character.force_move_route(WAITING_ROUTE)
       @open.clear
       @open.push [0, character.x, character.y, character.z, @cursor.state, -1]
@@ -430,6 +426,7 @@ module Pathfinding
     # Make the character following the found path
     # @param path [Array<Integer>] The path, list of move direction
     def send_path(path)
+      log_debug "Character ##{@character.id} found a path"
       Pathfinding.debug_add(@character, @cursor, path)
       @character.define_path((path << 0).collect(&PRESET_COMMANDS))
       # @character.force_move_route(Pathfinding.path_to_route(path))
