@@ -213,7 +213,6 @@ class Interpreter
     else
       $game_player.find_path to: x, type: :Border
     end
-    wait_for_player
   end
 
   # Shortcut for get_character(@event_id).animate_from_charset(*args)
@@ -231,6 +230,7 @@ class Interpreter
   def wait_for_player
     wait_character_move_completion 0
   end
+  alias attendre_joueur wait_for_player
   
   # Open the casino gameplay
   # @param arg [Symbol] the mode of the casino :voltorb_flip, :cashmachine, ...

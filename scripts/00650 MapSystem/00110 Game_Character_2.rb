@@ -225,7 +225,7 @@ class Game_Character
 
   # When the command is 0 we reached the end and we loop back if the repeat mode is on
   def move_type_custom_end
-    if @move_route.repeat
+    if @move_route&.repeat
       @move_route_index = 0
     else
       # Restore the original move route
