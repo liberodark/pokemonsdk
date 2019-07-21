@@ -140,7 +140,11 @@ module PFM
               next(!pkmn.dead? && pkmn.hp < pkmn.max_hp) # If the Pokemon isn't KO
             end
           end
-          hp = heal_data.hp || heal_data.hp_rate / 100.0
+          if heal_data.hp && heal_data.hp > 0
+            hp = heal_data.hp
+          elsif heal_data.hp_rate && heal_data.hp_rate > 0
+            hp = heal_data.hp_rate / 100.0
+          end
           # In battle = action to push
           if $game_temp.in_battle
             # /!\ Incohérence d'une résurection d'un mort sur le banc
