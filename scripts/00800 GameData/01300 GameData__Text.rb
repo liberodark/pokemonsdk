@@ -149,9 +149,9 @@ module GameData
     # Reload texts from Ruby Host
     def reload_rh_texts
       langs = Dir["Data/Text/Dialogs/#{CSV_BASE}.*.dat"].collect { |i| i.match(/[0-9]+\.([a-z]+)\.dat$/).captures[0] }
-      if lang.empty? ||
+      if langs.empty? ||
          File.mtime("Data/Text/Dialogs/#{CSV_BASE}.#{langs.first}.dat") < File.mtime("Data/Text/#{langs.first}.dat")
-        lang << GamePlay::Load::DEFAULT_GAME_LANGUAGE if lang.empty?
+        langs << GamePlay::Load::DEFAULT_GAME_LANGUAGE if langs.empty?
         log_debug('Updating Text files')
         filename = 'plugins/text2csv' # Just to avoid the warning
         require filename
