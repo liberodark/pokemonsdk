@@ -378,16 +378,16 @@ module BattleEngine
   end
   #===
   #>s_counter
-  # Définition de l'attaque riposte / voile mirroir et fulmifer
+  # Définition de l'attaque riposte / voile miroir et fulmifer
   #===
   def s_counter(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     damages = launcher.battle_effect.get_taken_damages_from(target)
-    if(damages > 0 and skill.id == 68) #>Domages et de type physiques
+    if(damages > 0 && skill.id == 68) #> Dommages et de type physique
       _message_stack_push([:hp_down, target, 2*damages])
-    elsif(damages < 0 and skill.id == 243)
+    elsif(damages < 0 && skill.id == 243)
       _message_stack_push([:hp_down, target, -2*damages])
-    elsif(damages != 0 and skill.id == 368)
+    elsif(damages != 0 && skill.id == 368)
       _message_stack_push([:hp_down, target, damages.abs*3/2])
     else
       _message_stack_push(MSG_Fail)
@@ -395,13 +395,13 @@ module BattleEngine
   end
   #===
   #>s_hp_eq_level
-  # Définition des attaques frape atlas et ombre nocturne
+  # Définition des attaques frappe atlas et ombre nocturne
   #===
   def s_hp_eq_level(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     type_mod = _type_modifier_calculation(target, skill)
     if(type_mod != 0)
-      _message_stack_push([:hp_down, target, target.level])
+      _message_stack_push([:hp_down, target, launcher.level])
     else
       _message_stack_push(MSG_Fail)
     end
@@ -427,7 +427,7 @@ module BattleEngine
       #>Tête de Roc / Garde Magik
       unless(Abilities.has_abilities(launcher, 38, 17))
         n = Recoil_3.include?(skill.id) ? 3 : 4
-        n = 2 if skill.id == 457 or skill.id == 617 #>Fracass'Tête / Lumière du Néant
+        n = 2 if skill.id == 457 || skill.id == 617 #>Fracass'Tête / Lumière du Néant
         _message_stack_push([:hp_down, launcher, hp / n])
         _message_stack_push([:msg, parse_text_with_pokemon(19, 378, launcher)])
       end
