@@ -4,6 +4,8 @@ module PFM
   # Main object stored in $trainer and $pokemon_party.trainer
   # @author Nuri Yuri
   class Trainer
+    # Time format
+    TIME_FORMAT = '%02d:%02d'
     # Name of the trainer as a boy (Default to Palbolsky)
     # @return [String]
     attr_accessor :name_boy
@@ -39,8 +41,8 @@ module PFM
     attr_accessor :current_version
     # Create a new Trainer
     def initialize
-      @name_boy = ext_text(9000, 2) # "Palbolsky"
-      @name_girl = ext_text(9000, 3) # "Yuri"
+      @name_boy = default_male_name
+      @name_girl = default_female_name
       $game_switches[Yuki::Sw::Gender] = @playing_girl = false
       $game_variables[Yuki::Var::Player_ID] = @id_boy = rand(0x3FFFFFFF)
       @id_girl = (@id_boy ^ 0x28F4AB4C)
@@ -92,7 +94,8 @@ module PFM
     # Return the time counter (current time - time counter)
     # @return [Integer]
     def time_counter
-      return Time.new.to_i - @time_counter
+      counter = Time.new.to_i - @time_counter
+      return counter < 0 ? 0 : counter
     end
 
     # Update the play time and reload the time counter
@@ -152,5 +155,28 @@ module PFM
       $game_actors[1].name = name
     end
     alias set_gender define_gender
+
+    # Return the play time text (without updating it)
+    # @return [String]
+    def play_time_text
+      time = @play_time
+      hours = time / 3600
+      minutes = (time - 3600 * hours) / 60
+      return format(TIME_FORMAT, hours, minutes)
+    end
+
+    private
+
+    # Return the default male name
+    # @return [String]
+    def default_male_name
+      ext_text(9000, 2)
+    end
+
+    # Return the default female name
+    # @return [String]
+    def default_female_name
+      ext_text(9000, 3)
+    end
   end
 end

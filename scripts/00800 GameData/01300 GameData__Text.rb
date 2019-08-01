@@ -8,6 +8,8 @@ module GameData
     Available_Langs = %w[en fr it de es ko kana]
     # Base index of pokemon text in csv files
     CSV_BASE = 100_000
+    # Name of the file containing all the dialogs
+    VD_TEXT_FILENAME = 'Data/2.dat'
     # List of texts in the current language
     # @type [Array<Array<String>>]
     @texts = []
@@ -86,12 +88,25 @@ module GameData
     # @param file_id [Integer] id of the dialog file
     # @return [Boolean] if the operation was a success
     def try2get_marshalized_dialog(file_id)
-      if File.exist?(filename = format('Data/Text/Dialogs/%<id>d.%<lang>s.dat', id: file_id, lang: @lang))
+      filename = format('Data/Text/Dialogs/%<id>d.%<lang>s.dat', id: file_id, lang: @lang)
+      if marshalized_text_file_exist?(filename)
         @dialogs[file_id] = load_data(filename)
         log_info("Marshal text #{filename} was loaded") if debug?
         return true
       end
       return false
+    end
+
+    # Test if a marshalized text file exist
+    # @param filename [String] name of the file in Data/text/Dialogs
+    # @return [Boolean]
+    def marshalized_text_file_exist?(filename)
+      if $RELEASE
+        vdfilename = VD_TEXT_FILENAME
+        ::Kernel::Loaded[vdfilename] = Yuki::VD.new(vdfilename, :read) unless ::Kernel::Loaded.key?(vdfilename)
+        return ::Kernel::Loaded[vdfilename].exists?(File.basename(filename))
+      end
+      return File.exist?(filename)
     end
 
     # Try to load a csv dialog file

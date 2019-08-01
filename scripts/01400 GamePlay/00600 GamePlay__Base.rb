@@ -128,10 +128,7 @@ module GamePlay
     # @return [Integer, nil] the choice result
     def display_message_and_wait(message, start = 1, *choices)
       choice = display_message(message, start, *choices)
-      while $game_temp.message_window_showing
-        Graphics.update
-        @message_window.update
-      end
+      close_message_window
       return choice
     end
 
@@ -219,6 +216,16 @@ module GamePlay
         @message_window = message_class.new(Viewport.create(*message_viewport_args), self)
         # end
         @message_window.z = message_z
+      end
+    end
+
+    # Force the message window to "close"
+    def close_message_window
+      return unless @message_window
+      while $game_temp.message_window_showing
+        Graphics.update
+        yield if block_given?
+        @message_window.update
       end
     end
 
