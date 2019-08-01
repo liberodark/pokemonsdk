@@ -244,6 +244,7 @@ pokemonsdk/scripts/01300 UI/02311 UI__List Items.rb
 pokemonsdk/scripts/01300 UI/02400 UI__ItemSprite.rb
 pokemonsdk/scripts/01300 UI/02500 UI__ScrollBar.rb
 pokemonsdk/scripts/01300 UI/02600 UI__TextInput.rb
+pokemonsdk/scripts/01300 UI/02700 SaveWindow.rb
 pokemonsdk/scripts/01400 GamePlay/00100 Scene_Title.rb
 pokemonsdk/scripts/01400 GamePlay/00200 Scene_Map.rb
 pokemonsdk/scripts/01400 GamePlay/00300 Scene_NameInput.rb

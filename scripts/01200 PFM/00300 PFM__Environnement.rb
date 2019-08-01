@@ -4,6 +4,8 @@ module PFM
   # The global Environment object is stored in $env and $pokemon_party.env
   # @author Nuri Yuri
   class Environnement
+    # Unkonw location text
+    UNKNOWN_ZONE = 'Zone ???'
     include GameData::SystemTags
     # The master zone (zone that show the pannel like city, unlike house of city)
     # @note Master zone are used inside Pokemon data
@@ -183,21 +185,32 @@ module PFM
 
     # Return the current zone in which the player is
     # @return [Integer] the zone ID in the database
-    def get_current_zone
+    def current_zone
       return @zone
     end
+    alias get_current_zone current_zone
 
     # Return the zone data in which the player is
     # @return [GameData::Map]
-    def get_current_zone_data
+    def current_zone_data
       $game_data_zone[@zone]
+    end
+    alias get_current_zone_data current_zone_data
+
+    # Return the zone name in which the player is (master zone)
+    # @return [String]
+    def current_zone_name
+      zone = @master_zone
+      return $game_data_zone[zone].map_name if zone && $game_data_zone[zone]
+      UNKNOWN_ZONE
     end
 
     # Return the warp zone ID (where the player will teleport with skills)
     # @return [Integer] the ID of the zone in the database
-    def get_warp_zone
+    def warp_zone
       return @warp_zone
     end
+    alias get_warp_zone warp_zone
 
     # Get the zone data in the worldmap
     # @param x [Integer] the x position of the zone in the World Map

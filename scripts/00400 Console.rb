@@ -64,7 +64,7 @@ module Kernel
   # @param message [String]
   # @return [String] the message
   def log_error(message)
-    return if $RELEASE
+    return message if $RELEASE
     rc = binding.receiver
     rc = rc.is_a?(Module) ? rc : rc.class
     Kernel.log_stack << [:pcc, "[#{rc}] #{message}", 0x01]

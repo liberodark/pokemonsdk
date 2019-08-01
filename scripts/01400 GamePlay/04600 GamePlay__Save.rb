@@ -1,5 +1,5 @@
 module GamePlay
-  # Save game interface
+  # Save game scene
   class Save < Base
     # Windowskin used to save the game
     Windowskin = 'message'
@@ -20,43 +20,38 @@ module GamePlay
       Dir.home
     ]
     # @return [Integer] index of the save file (to allow multi-save)
-    @@save_index = 0
-    # Create a new GamePlay::Save interface
-    # @param no_message [Boolean] tell the upper interface to disable message processing
-    def initialize(no_message = false)
-      super(no_message)
+    @save_index = 0
+
+    # Create a new GamePlay::Save
+    def initialize
+      super
       make_save_directory
-      # Instanciate IVARs
-      @pokemon_party = nil
-      @filename = Save.save_filename
-      @fileexist = File.exist?(@filename)
-      # Making Windows
-      instanciate_windows
-      build_window if @fileexist
+      @viewport = Viewport.create(:main, 10_500)
+      if File.exist?(Save.save_filename)
+        @window = UI::SaveWindow.new(@viewport)
+        @window.data = current_pokemon_party
+      end
+      @answered = false
     end
 
-    # Function processing the Save interface
-    def main_process
-      save_question = text_get(26, 15)
-      yes = text_get(25, 20)
-      no = text_get(25, 21)
-      # Dont save the game if the player don't answer yes (0), make no (1) the default option
-      return unless display_message(save_question, 1, yes, no) == 0
-      save_game
-      saved_message = parse_text(26, 17, TRNAME[0] => $trainer.name)
-      display_message(saved_message)
-    end
-
-    # Function that instanciate the windows
-    def instanciate_windows
-      @save_window = Game_Window.new
-      @save_window.x = 2
-      @save_window.y = 2
-      @save_window.z = 10_001
-      @save_window.width = 200
-      @save_window.height = 108
-      @save_window.windowskin = RPG::Cache.windowskin(Windowskin)
-      @save_window.visible = false
+    # Update the save scene
+    def update
+      return unless super
+      if @answered
+        Save.save
+        saved_message = parse_text(26, 17, TRNAME[0] => $trainer.name)
+        display_message_and_wait(saved_message)
+        @running = false
+      else
+        save_question = text_get(26, 15)
+        yes = text_get(25, 20)
+        no = text_get(25, 21)
+        if display_message(save_question, 1, yes, no) != 0 # NO
+          close_message_window
+          @running = false
+        end
+        @answered = true
+      end
     end
 
     # Function creating the save directory
@@ -65,71 +60,19 @@ module GamePlay
       Dir.mkdir!(directory)
     end
 
-    # Function that builds the save window (text + visibility)
-    # @param win [Game_Window] the built window
-    def build_window(win = @save_window)
-      @pokemon_party = pokemon_party = current_pokemon_party || Save.load
-      win.visible = true
-      width = 168
-      if pokemon_party
-        win.add_text(0, 0, width, 16, retreive_zone_name(pokemon_party), 0).load_color(3)
-        # Show the continue text
-        win.add_text(0, 16, width, 16, text_get(25, 0), 0) if self.class != Save
-        # Show the badge part
-        win.add_text(0, 32, width, 16, text_get(25, 1), 0)
-        win.add_text(0, 32, width, 16, pokemon_party.trainer.badge_counter, 2).load_color(1)
-        # Show the Pokedex part
-        win.add_text(0, 48, width, 16, text_get(25, 3), 0)
-        win.add_text(0, 48, width, 16, pokemon_party.pokedex.pokemon_seen, 2).load_color(1)
-        # Show the game time part
-        win.add_text(0, 64, width, 16, text_get(25, 5), 0)
-        win.add_text(0, 64, width, 16, retreive_play_time(pokemon_party), 2).load_color(1)
-        # Show player name
-        win.add_text(0, 16, width, 16, pokemon_party.trainer.name, 2)
-           .load_color(pokemon_party.trainer.playing_girl ? 2 : 1)
-      else
-        # Show the corrupted message
-        win.add_text(0, 0, width, 16, CORRUPTED_FILE_MESSAGE, 1).load_color(2)
-        @save_window.height = 44
-      end
-    end
-
-    # Function that returns the formated game time
-    # @param pokemon_party [PFM::Pokemon_Party] the save state
-    def retreive_play_time(pokemon_party)
-      time = pokemon_party.trainer.play_time
-      hours = time / 3600
-      minutes = (time - 3600 * hours) / 60
-      format(DispTime, hours, minutes)
-    end
-
-    # Function that return the zone name
-    # @param pokemon_party [PFM::Pokemon_Party] the save state
-    def retreive_zone_name(pokemon_party)
-      zone = pokemon_party.env.get_current_zone
-      return $game_data_zone[zone].map_name if zone && $game_data_zone[zone]
-      UNKNOWN_ZONE
-    end
-
-    # Function that saves the game
-    def save_game
-      GamePlay::Save.save(@filename)
-    end
-
-    # Function that disposes the scene
-    def dispose
-      @save_window.dispose
-      $game_temp.message_window_showing = false
-      super
-    end
-
     # Return the current Pokemon_Party object
     # @return [Pokemon_Party, nil]
     def current_pokemon_party
-      $pokemon_party
+      $pokemon_party || Save.load
     end
 
     class << self
+      # @return [Integer] index of the save file (to allow multi-save)
+      attr_accessor :save_index
+      # @return [Hash] all the before save hooks
+      BEFORE_SAVE_HOOKS = { game_map: proc { $game_map.begin_save } }
+      # @return [Hash] all the after save hooks
+      AFTER_SAVE_HOOKS = { game_map: proc { $game_map.end_save } }
       # Save a game
       # @param filename [String, nil] name of the save file (nil = auto name the save file)
       def save(filename = nil)
@@ -145,14 +88,15 @@ module GamePlay
         $trainer.update_play_time
         $trainer.current_version = PSDK_Version
         $trainer.game_version = Game_Version
-        $game_map.begin_save
+        # Call the hooks that make the save data safer and lighter
+        BEFORE_SAVE_HOOKS.each_value(&:call)
         # Build the save data
         save_data = 'PKPRT'
         save_data << Marshal.dump($pokemon_party)
         # Save the game
         File.binwrite(filename, save_data)
-        # Make the game ready to play again
-        $game_map.end_save
+        # Call the hooks that restore all the data
+        AFTER_SAVE_HOOKS.each_value(&:call)
       end
 
       # Load a game
@@ -179,7 +123,7 @@ module GamePlay
       def save_filename
         root = save_root_path.tr('\\', '/').encode(Encoding::UTF_8)
         game_name = root.start_with?('.') ? '' : ".#{Config::Title}/"
-        filename = (@@save_index > 0 ? format(MULTI_SAVE_FORMAT, BASE_FILENAME, @@save_index) : BASE_FILENAME)
+        filename = (@save_index > 0 ? format(MULTI_SAVE_FORMAT, BASE_FILENAME, @save_index) : BASE_FILENAME)
         return format('%<root>s/%<game_name>s%<filename>s', root: root, game_name: game_name, filename: filename)
       end
     end

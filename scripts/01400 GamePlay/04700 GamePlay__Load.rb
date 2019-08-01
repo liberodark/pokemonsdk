@@ -1,34 +1,40 @@
-#encoding: utf-8
-
-#noyard
 module GamePlay
-  class Load < Save
+  # Load game scene
+  class Load < Base
     # @return [String] Default language of the game
     DEFAULT_GAME_LANGUAGE = 'fr'
     # @return [Array] List of the languages the player can choose (empty list = no choice)
     LANGUAGE_CHOICE_LIST = %w[en fr es]
     # @return [Array] List of the language name when the player can choose
     LANGUAGE_CHOICE_NAME = %w[English French Spanish]
+    # Number of save allowed (set Float::INFINITY to have infinite saves, set 1 if you want only one save)
+    MAXIMUM_SAVE = 4
+    # Constant telling the Viewport.oy property doesn't work with Window because of a LiteRGSS bug
+    WINDOW_VIEWPORT_INCOMPATIBILITY = false
     # Create a new GamePlay::Load scene
     # @param delete_game [Boolean] if we should delete the save state
     def initialize(delete_game = false)
+      super
       @viewport = Viewport.create(:main, 1)
-      @viewport.color = Color.new(162, 194, 204)
       super(false)
-      @save_window.x = (@viewport.rect.width - @save_window.width) / 2
+      GameData::Text.load
+      @all_window = UI::SpriteStack.new(@viewport)
+      create_background
+      create_windows
       @running = true
       @index = 0
-      @max_index = (@fileexist ? 2 : 1)
-      @delete_game = @fileexist & delete_game
+      @max_index = @all_window.size - 1
+      @delete_game = File.exist?(Save.save_filename) & delete_game & (MAXIMUM_SAVE <= 1)
       if @delete_game
         $pokemon_party = PFM::Pokemon_Party.new(false, @pokemon_party.options.language)
         $pokemon_party.expand_global_var
-        @save_window.visible = false
+        @all_window.each { |window| window.visible = false }
       end
-      new_game_window
       Graphics.sort_z
+      refresh
     end
 
+    # Main process, this scene is particular because it's aimed to run when Scene_Title still exists so we redefine main
     def main
       curr_scene = $scene
       check_up
@@ -42,13 +48,7 @@ module GamePlay
 
     def update
       return @message_window.update if @delete_game
-      if Input.trigger?(:DOWN)
-        @index += 1
-        @index = 0 if @index >= @max_index
-        refresh
-      elsif Input.trigger?(:UP)
-        @index -= 1
-        @index = @max_index - 1 if @index < 0
+      if index_changed(:@index, :UP, :DOWN, @max_index)
         refresh
       elsif Input.trigger?(:A)
         action
@@ -59,29 +59,48 @@ module GamePlay
       end
     end
 
-    def new_game_window
-      @new_window = Game_Window.new
-      @new_window.x = 60
-      @new_window.y = 112
-      @new_window.z = 10_001
-      @new_window.width = 200
-      @new_window.height = 32
-      @new_window.add_text(0, 0, 200, 16, ext_text(9000, 0))
-      @new_window.opacity = 128
-      @new_window.windowskin = RPG::Cache.windowskin(Windowskin)
-      @new_window.visible = @save_window.visible && @pokemon_party
+    # Refresh the window opacity & position
+    def refresh
+      @all_window.each.with_index do |window, i|
+        window.opacity = (i == @index ? 255 : 128)
+      end
+      current_window = @all_window[@index]
+      return unless current_window
+      last_y = current_window.y + current_window.height + 2
+      if last_y > @viewport.rect.height
+        oy = @viewport.rect.height - last_y - 48
+        if WINDOW_VIEWPORT_INCOMPATIBILITY
+          @all_window.move(0, oy)
+        else
+          @viewport.oy = -oy
+          @background_sprite.oy = oy
+        end
+      elsif WINDOW_VIEWPORT_INCOMPATIBILITY && (last_y = current_window.y - 2) < 0
+        @all_window.move(0, -last_y)
+      elsif !WINDOW_VIEWPORT_INCOMPATIBILITY
+        @background_sprite.oy = @viewport.oy = 0
+      end
     end
 
+    private
+
+    # Execute an action when the validation key is pressed
     def action
       Graphics.freeze
-      # @@save_index = @index
-      if @fileexist && @index == 0
-        load_game
+      if @all_window[@index].is_a?(UI::SaveWindow)
+        Save.save_index = @all_window[@index].index if MAXIMUM_SAVE > 1
+        if @all_window[@index].data
+          load_game
+        else
+          Save.save_index -= 1 if MAXIMUM_SAVE > 1
+          party = find_save
+          $pokemon_party = PFM::Pokemon_Party.new(false, party&.options&.language || DEFAULT_GAME_LANGUAGE)
+          $pokemon_party.expand_global_var
+          $game_system.se_play($data_system.cursor_se)
+          $game_map.update
+        end
       else
-        $pokemon_party = PFM::Pokemon_Party.new(false, @pokemon_party&.options&.language || DEFAULT_GAME_LANGUAGE)
-        $pokemon_party.expand_global_var
-        $game_system.se_play($data_system.cursor_se)
-        $game_map.update
+        return custom_action
       end
       $trainer.redefine_var
       Yuki::FollowMe.set_battle_entry
@@ -91,21 +110,24 @@ module GamePlay
       @running = false
     end
 
+    # User defined actions
+    def custom_action
+      # do nothing
+    end
+
+    # Perform the mouse actions
     def mouse_action
-      if @save_window.visible
-        if @save_window.simple_mouse_in?
-          @index = 0
-          action
-        end
-      end
-      if @new_window.visible && @new_window.simple_mouse_in?
-        @index = 1
+      @all_window.each.with_index do |window, i|
+        next unless window.visible && window.simple_mouse_in?
+        @index = i
+        refresh
         action
       end
     end
 
+    # Load the current game
     def load_game
-      $pokemon_party = @pokemon_party
+      $pokemon_party = @all_window[@index].data
       $pokemon_party.expand_global_var
       $game_system.se_play($data_system.cursor_se)
       $game_map.setup($game_map.map_id)
@@ -119,16 +141,31 @@ module GamePlay
       Pathfinding.load
     end
 
-    def refresh
-      if @fileexist
-        @save_window.opacity = (@index != 0 ? 128 : 255)
+    # Function that create all the window related to save loading
+    # @param last_y [Integer] the y coordinate where the first window should be shown
+    # @return [Integer] the last expected y coordinate for a window (for monkey patch)
+    def create_windows(last_y = 0)
+      1.upto(MAXIMUM_SAVE) do |i|
+        Save.save_index = i if MAXIMUM_SAVE > 1
+        break unless File.exist?(Save.save_filename)
+        save = Save.load
+        window = UI::SaveWindow.new(@viewport, i, last_y)
+        window.data = save
+        last_y = window.y + window.height
+        @all_window.add_custom_sprite window
       end
-      @new_window.opacity = (@index != 1 ? 128 : 255)
+      # New Game Window
+      window = UI::SaveWindow.new(@viewport, Save.save_index + 1, last_y)
+      window.data = false
+      last_y = window.y + window.height
+      @all_window.add_custom_sprite window
+      return last_y
     end
 
-    def dispose
-      @new_window&.dispose
-      super
+    # Create the background sprite
+    def create_background
+      @background_sprite = Sprite.new(@viewport)
+      @background_sprite.set_bitmap('save_background', :interface)
     end
 
     # Ask the player if he really wants to delete his game
@@ -191,16 +228,9 @@ module GamePlay
     # Create the language window
     # @return [Array]
     def create_language_window
-      win1 = Window.new
-      win1.lock
-      stack = UI::SpriteStack.new(win1)
-      stack.add_text(0, 0, 160, 16, 'Choose your language')
-      win1.set_position(80, 80)
-      win1.set_size(160, 44)
-      win1.window_builder = GameData::Windows::MessageWindow
-      win1.windowskin = RPG::Cache.windowskin(Windowskin)
-      win1.unlock
-      win2 = Yuki::ChoiceWindow.new(160, LANGUAGE_CHOICE_NAME)
+      win1 = UI::Window.new(@viewport, 80, 80, 160, 44)
+      win1.add_text(0, 0, 160, 16, 'Choose your language')
+      win2 = Yuki::ChoiceWindow.new(160, LANGUAGE_CHOICE_NAME, @viewport)
       win2.set_position(80, 128)
       win2.z = win1.z = 200
       Graphics.transition
@@ -210,14 +240,17 @@ module GamePlay
     # Check if the game states should be deleted or if the player should start a new game
     def check_up
       return delete_game_question if @delete_game
-      return create_new_game unless @pokemon_party
+      # Make sure the save index is correct when multi save is allowed
+      Save.save_index = 1 if MAXIMUM_SAVE > 1
+      return create_new_game unless find_save
+      @all_window.each { |window| window.visible = true }
       Graphics.transition
     end
 
-    # Force the current pokemon party to be nil since we load the game
-    # @return [nil]
-    def current_pokemon_party
-      nil
+    # Return a save that exists and is loaded
+    # @return [PFM::Pokemon_Party, nil]
+    def find_save
+      @all_window.stack.find { |window| window.is_a?(UI::SaveWindow) && window.data }&.data
     end
   end
 end
