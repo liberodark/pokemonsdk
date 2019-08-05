@@ -55,8 +55,9 @@ module ScriptLoader
   # Load the PSDK scripts from the index
   def load_script_from_index
     lines = File.readlines(index_filename)
+    path = ENV['ALTERNATIVE_PATH'] || '.'
     lines.each do |filename|
-      require(filename.chomp)
+      require(File.join(path, filename.chomp))
     end
   end
 
