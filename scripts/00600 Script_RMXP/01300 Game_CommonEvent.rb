@@ -63,4 +63,3 @@ class Game_CommonEvent
     end
   end
 end
-

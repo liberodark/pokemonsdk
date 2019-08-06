@@ -177,9 +177,22 @@ class Game_Player < Game_Character
         @encounter_count -= 1 if @encounter_count > 0
       end
     end
-
     return unless Input.trigger?(:A)
-    check_event_trigger_here([0])
-    check_event_trigger_there([0, 1, 2])
+
+    result = check_event_trigger_here([0])
+    result ||= check_event_trigger_there([0, 1, 2])
+    return if result
+
+    check_diving_trigger_here
+  end
+
+  # Start common event diving if the player stand on diving system tag and is surfing
+  def check_diving_trigger_here
+    if !@__bridge &&
+       !$game_temp.message_window_showing &&
+       $game_player.surfing? &&
+       $game_map.system_tag_here?($game_player.x, $game_player.y, ::GameData::SystemTags::TUnderWater)
+      $game_temp.common_event_id = Game_CommonEvent::DIVE
+    end
   end
 end
