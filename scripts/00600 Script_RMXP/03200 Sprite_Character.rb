@@ -166,7 +166,7 @@ class Sprite_Character < RPG::Sprite
     @shadow.x = @character.shadow_screen_x
     @shadow.y = @character.shadow_screen_y
     @shadow.z = z - 1
-    @shadow.visible = !@character.jumping? && !@character.shadow_disabled
+    @shadow.visible = !@character.jumping? && !@character.shadow_disabled && @character.activated?
   end
 
   # Change the bush_depth

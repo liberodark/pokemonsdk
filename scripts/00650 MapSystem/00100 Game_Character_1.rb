@@ -216,5 +216,11 @@ class Game_Character
   end
 
   # Define the function check_event_trigger_touch to prevent bugs
-  def check_event_trigger_touch(*args) end
+  def check_event_trigger_touch(*args); end
+
+  # Check if the character is activate. Useful to make difference between event without active page and others.
+  # @return [Boolean]
+  def activated?
+    true
+  end
 end
