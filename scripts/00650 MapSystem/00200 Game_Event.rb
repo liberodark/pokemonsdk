@@ -142,6 +142,12 @@ class Game_Event < Game_Character
     super(*args) if Yuki::MapLinker.from_center_map?(self)
   end
 
+  # Check if the character is activate. Useful to make difference between event without active page and others.
+  # @return [Boolean]
+  def activated?
+    return !@page.nil?
+  end
+  
   private
 
   # Refresh all the information of the event according to the new page
