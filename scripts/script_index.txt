@@ -211,6 +211,7 @@ pokemonsdk/scripts/01300 UI/00100 UI__SpriteStack.rb
 pokemonsdk/scripts/01300 UI/00101 Window.rb
 pokemonsdk/scripts/01300 UI/00200 UI__Bar.rb
 pokemonsdk/scripts/01300 UI/00300 HelperSprites.rb
+pokemonsdk/scripts/01300 UI/00400 GenericBase.rb
 pokemonsdk/scripts/01300 UI/01200 UI__KeyShortcut.rb
 pokemonsdk/scripts/01300 UI/01201 KeyBindingViewer.rb
 pokemonsdk/scripts/01300 UI/01300 UI__DexCTLRButton.rb

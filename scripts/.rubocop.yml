@@ -1,6 +1,10 @@
 AllCops:
   TargetRubyVersion: "2.5"
 
+# Idk why this rule exists but it's boring
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
 # Sometime I don't want to repeat top level do
 Style/Documentation:
   Enabled: false

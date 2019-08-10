@@ -4,6 +4,7 @@ class Interpreter
   # @param mode [Integer] see {GamePlay::Move_Reminder#initialize}
   # @return [Boolean] if the Pokemon learnt a move or not
   def move_reminder(pokemon = $actors[$game_variables[::Yuki::Var::Party_Menu_Sel]], mode = 0)
+    Graphics.freeze
     scene = GamePlay::Move_Reminder.new(pokemon, mode)
     scene.main
     Graphics.transition

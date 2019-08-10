@@ -25,8 +25,9 @@ module GamePlay
     # @return [Array]
     SelectorRect = [[0, 0, 132, 52], [0, 64, 132, 52]]
     # Create a new Party_Menu
-    # @param party [Array<PFM::Pokemon>] list of Pokémon in the party
-    # @param mode [Symbol] :map => from map (select), :menu => from menu, :battle => from Battle, :item => Use an item, :hold => Hold an item, :choice => processing a choice related proc (do not use)
+    # @param party [Array<PFM::Pokemon>] list of Pokemon in the party
+    # @param mode [Symbol] :map => from map (select), :menu => from menu, :battle => from Battle, :item => Use an item,
+    #                      :hold => Hold an item, :choice => processing a choice related proc (do not use)
     # @param extend_data [Integer, Hash] extend_data informations
     # @param no_leave [Boolean] tells the interface to disallow leaving without choosing
     def initialize(party, mode = :map, extend_data = nil, no_leave: false)

@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 module GamePlay
   # The base class of every GamePlay scene interface
   #
@@ -43,6 +41,7 @@ module GamePlay
       # Store the current scene
       @__last_scene = $scene
       _init_sprites
+      message_soft_lock_prevent
     end
 
     # Scene update process
@@ -60,6 +59,7 @@ module GamePlay
     # Dispose the scene graphics.
     # @note @viewport and @message_window will be disposed.
     def dispose
+      message_soft_lock_prevent
       @message_window&.dispose(with_viewport: true) unless @inherited_message_window || @message_window == false
       @viewport&.dispose
     end
@@ -358,6 +358,70 @@ module GamePlay
     def define_call_scene_fade_in(type, parameters = nil)
       @cfi_type = type
       @cfi_param = parameters
+    end
+
+    # Function performing some tests to prevent softlock from messages at certain points
+    def message_soft_lock_prevent
+      if $game_temp.message_window_showing
+        log_error('Message were still showing!')
+        $game_temp.message_window_showing = false
+      end
+    end
+
+    # Return the text according to the param
+    # @param to_translate [Array(Symbol, Integer, Integer), String] the text info in order to get the right text
+    # @example :
+    #   get_text([:text_get, 0, 25]) # will return 'Pikachu'
+    #   get_text('test') # will return 'test'
+    def get_text(to_translate)
+      return send(*to_translate) if to_translate.is_a?(Array)
+      return to_translate
+    end
+  end
+
+  # Base Scene where you should not define update but dedicated update methods :
+  # ```ruby
+  # class MyScene < BaseCleanUpdate
+  #   # Called when input can be updated (put your input related code inside)
+  #   # @return [Boolean] if the update can continue
+  #   def update_inputs
+  #     # ...
+  #     return true
+  #   end
+  #
+  #   # Called when mouse can be updated (put your mouse related code inside)
+  #   # @param moved [Boolean] boolean telling if the mouse moved
+  #   # @return [Boolean] if the update can continue
+  #   def update_mouse(moved = false)
+  #     return unless moved
+  #     # ...
+  #     return true
+  #   end
+  #
+  #   # Called each frame after message update and eventual mouse/input update
+  #   # @return [Boolean] if the update can continue
+  #   def update_graphics
+  #     # ...
+  #     return true
+  #   end
+  # end
+  # ```
+  # All the update methods are optionnal but you should define at least one otherwise your Scene
+  # will be useless and softlock the game
+  class BaseCleanUpdate < Base
+    # Scene update process
+    # @return [Boolean] if the scene should continue the update process or abort it (message/animation etc...)
+    def update
+      can_continue = true
+      # Process message
+      can_continue = false unless super
+      # Update inputs
+      can_continue = false if can_continue && respond_to?(:update_inputs) && update_inputs == false
+      # Update mouse
+      can_continue = false if can_continue && respond_to?(:update_mouse) && update_mouse(Mouse.moved) == false
+      # Update the graphics at the end with the correct state
+      return update_graphics && can_continue if respond_to?(:update_graphics)
+      return can_continue
     end
   end
 end
