@@ -7,7 +7,8 @@ module UI
     # - :x, :y [Integer] the coords of the list in the viewport
     # - :width, :height [Integer] the dimensions of the list
     # - :skin [String] the window skin
-    # - :padding_left, :padding_right, :padding_top, :padding_bottom [Integer] the distance between the edge of the window and the content
+    # - :padding_left, :padding_right, :padding_top, :padding_bottom [Integer]
+    #     the distance between the edge of the window and the content
     # - :item_type [Class] the item type to display
     # - :item_params [Hash] the parameters of the item (specific to item_type)
     # - :items [Array] data to display
@@ -18,7 +19,7 @@ module UI
     # @param viewport [Viewport] the viewport to use
     # @param kwargs [Hash] the list data
     # @author Leikt
-    def initialize(viewport, **kwargs)
+    def initialize(viewport, kwargs = {})
       # Retrieve attributes
       @viewport = viewport
       @direction = kwargs.fetch(:direction, :vertical)
@@ -104,7 +105,7 @@ module UI
     def index=(value)
       return unless @enabled
 
-      @content.moveto value, true
+      @content.moveto(value, true)
     end
 
     # Return the selected object
@@ -303,7 +304,7 @@ end
 #         looped: true
 #       )
 
-#       # Icone de sélection
+#       # Icone de selection
 #       UI::Window.new(@viewport, 260, 5, 32, 32)
 #       @pkm_display = UI::PokemonIconSprite.new(@viewport)
 #       @pkm_display.set_position(276, 18)
@@ -314,9 +315,9 @@ end
 
 #       # Liste tris
 #       @sort_proc = {
-#         'Name' => proc { |a, b| GameData::Item.name(a[0]) <=> GameData::Item.name(b[0]) }, 
-#         'Count' => proc { |a,b| a[1] <=> b[1] }, 
-#         'Value' => proc { |a, b| GameData::Item.price(a[0]) <=> GameData::Item.price(b[0]) }, 
+#         'Name' => proc { |a, b| GameData::Item.name(a[0]) <=> GameData::Item.name(b[0]) },
+#         'Count' => proc { |a,b| a[1] <=> b[1] },
+#         'Value' => proc { |a, b| GameData::Item.price(a[0]) <=> GameData::Item.price(b[0]) },
 #         'None' => nil
 #       }
 #       @ui_list_sort = UI::List.new(

@@ -1,0 +1,274 @@
+module UI
+  # Sprite that show the 1st type of the Pokemon
+  class Type1Sprite < SpriteSheet
+    # Create a new Type Sprite
+    # @param viewport [LiteRGSS::Viewport, nil] the viewport in which the sprite is stored
+    # @param from_pokedex [Boolean] if the type is the Pokedex type (other source image)
+    def initialize(viewport, from_pokedex = false)
+      super(viewport, 1, $game_data_types.size)
+      filename = "types_#{$options.language}"
+      if from_pokedex
+        set_bitmap(RPG::Cache.pokedex_exist?(filename) ? filename : 'types', :pokedex)
+      else
+        set_bitmap(RPG::Cache.interface_exist?(filename) ? filename : 'types', :interface)
+      end
+    end
+
+    # Set the Pokemon used to show the type
+    # @param pokemon [PFM::Pokemon, nil]
+    def data=(pokemon)
+      self.sy = pokemon.send(*data_source) if (self.visible = (pokemon ? true : false))
+    end
+
+    private
+
+    # Retreive the data source of the type sprite
+    # @return [Symbol]
+    def data_source
+      :type1
+    end
+  end
+
+  # Sprite that show the 2nd type of the Pokemon
+  class Type2Sprite < Type1Sprite
+    private
+
+    # Retreive the data source of the type sprite
+    # @return [Symbol]
+    def data_source
+      :type2
+    end
+  end
+
+  # Class that show a type image using an object that responds to #type
+  class TypeSprite < Type1Sprite
+    private
+
+    # Retreive the data source of the type sprite
+    # @return [Symbol]
+    def data_source
+      :type
+    end
+  end
+
+  # Sprite that show the gender of a Pokemon
+  class GenderSprite < SpriteSheet
+    # Name of the gender image in Graphics/Interface
+    IMAGE_NAME = 'battlebar_gender'
+    # Create a new Gender Sprite
+    # @param viewport [LiteRGSS::Viewport, nil] the viewport in which the sprite is stored
+    def initialize(viewport)
+      super(viewport, 3, 1)
+      set_bitmap(IMAGE_NAME, :interface)
+    end
+
+    # Set the Pokemon used to show the gender
+    # @param pokemon [PFM::Pokemon, nil]
+    def data=(pokemon)
+      self.sx = pokemon.gender if (self.visible = (pokemon ? true : false))
+    end
+  end
+
+  # Sprite that show the status of a Pokemon
+  class StatusSprite < SpriteSheet
+    # Name of the image in Graphics/Interface
+    IMAGE_NAME = 'BattleBar_states'
+    # Number of official states
+    STATE_COUNT = 10
+    # Create a new Status Sprite
+    # @param viewport [LiteRGSS::Viewport, nil] the viewport in which the sprite is stored
+    def initialize(viewport)
+      super(viewport, 1, STATE_COUNT)
+      set_bitmap(IMAGE_NAME, :interface)
+    end
+
+    # Set the Pokemon used to show the status
+    # @param pokemon [PFM::Pokemon, nil]
+    def data=(pokemon)
+      self.sy = pokemon.status if (self.visible = (pokemon ? true : false))
+    end
+  end
+
+  # Sprite that show the hold item if the pokemon is holding an item
+  class HoldSprite < Sprite
+    # Name of the image in Graphics/Interface
+    IMAGE_NAME = 'hold'
+    # Create a new Hold Sprite
+    # @param viewport [LiteRGSS::Viewport, nil] the viewport in which the sprite is stored
+    def initialize(viewport)
+      super(viewport)
+      set_bitmap(IMAGE_NAME, :interface)
+    end
+
+    # Set the Pokemon used to show the hold image
+    # @param pokemon [PFM::Pokemon, nil]
+    def data=(pokemon)
+      self.visible = (pokemon ? pokemon.item_holding != 0 : false)
+    end
+  end
+
+  # Sprite that show the actual item held if the Pokemon is holding one
+  class RealHoldSprite < Sprite
+    # Set the Pokemon used to show the hold image
+    # @param pokemon [PFM::Pokemon, nil]
+    def data=(pokemon)
+      self.visible = (pokemon ? pokemon.item_holding != 0 : false)
+      set_bitmap(GameData::Item.icon(pokemon.item_holding), :icon) if visible
+    end
+  end
+
+  # Class that show the category of a skill
+  class CategorySprite < SpriteSheet
+    # Name of the image in Graphics/Interface
+    IMAGE_NAME = 'skill_categories'
+    # Create a new category sprite
+    # @param viewport [LiteRGSS::Viewport] viewport in which the sprite is shown
+    def initialize(viewport)
+      super(viewport, 1, 3)
+      set_bitmap(IMAGE_NAME, :interface)
+    end
+
+    # Set the object that responds to #atk_class
+    # @param object [#atk_class, nil]
+    def data=(object)
+      self.sy = object.atk_class - 1 if (self.visible = (object ? true : false))
+    end
+  end
+
+  # Class that show the face sprite of a Pokemon
+  class PokemonFaceSprite < Sprite
+    # Create a new Pokemon FaceSprite
+    # @param viewport [Viewport] Viewport in which the sprite is shown
+    # @param auto_align [Boolean] if the sprite auto align itself (sets its own ox/oy when data= is called)
+    def initialize(viewport, auto_align = true)
+      super(viewport)
+      @auto_align = auto_align
+    end
+
+    # Set the pokemon
+    # @param pokemon [PFM::Pokemon, nil]
+    def data=(pokemon)
+      if (self.visible = (pokemon ? true : false))
+        bmp = self.bitmap = pokemon.send(*bitmap_source)
+        auto_align(bmp) if @auto_align
+      end
+    end
+
+    private
+
+    # Retreive the bitmap source
+    # @return [Symbol]
+    def bitmap_source
+      :battler_face
+    end
+
+    # Align the sprite according to the bitmap properties
+    # @param bmp [Bitmap] the bitmap source
+    def auto_align(bmp)
+      set_origin(bmp.width / 2, bmp.height)
+    end
+  end
+
+  # Class that show the back sprite of a Pokemon
+  class PokemonBackSprite < PokemonFaceSprite
+    private
+
+    # Retreive the bitmap source
+    # @return [Symbol]
+    def bitmap_source
+      :battler_back
+    end
+  end
+
+  # Class that show the icon sprite of a Pokemon
+  class PokemonIconSprite < PokemonFaceSprite
+    private
+
+    # Retreive the bitmap source
+    # @return [Symbol]
+    def bitmap_source
+      :icon
+    end
+
+    # Align the sprite according to the bitmap properties
+    # @param bmp [Bitmap] the bitmap source
+    def auto_align(bmp)
+      set_origin(bmp.width / 2, bmp.height / 2)
+    end
+  end
+
+  # Class that show the icon sprite of a Pokemon
+  class PokemonFootSprite < Sprite
+    # Format of the icon name
+    D3 = '%03d'
+    # Set the pokemon
+    # @param pokemon [PFM::Pokemon, nil]
+    def data=(pokemon)
+      self.bitmap = RPG::Cache.foot_print(format(D3, pokemon.id)) if (self.visible = (pokemon ? true : false))
+    end
+  end
+
+  # Class that show the item icon
+  class ItemSprite < Sprite
+    # Set the item that should be shown
+    # @param item_id [Integer, Symbol]
+    def data=(item_id)
+      set_bitmap(GameData::Item.icon(item_id), :icon)
+    end
+  end
+
+  # Class that show the category of a skill
+  class AttackDummySprite < SpriteSheet
+    # Name of the image shown
+    IMAGE_NAME = 'battle_attack_dummy'
+    # Create a new category sprite
+    # @param viewport [LiteRGSS::Viewport] viewport in which the sprite is shown
+    def initialize(viewport)
+      super(viewport, 1, $game_data_types.size)
+      set_bitmap(IMAGE_NAME, :interface)
+    end
+
+    # Set the object that responds to #atk_class
+    # @param object [#atk_class, nil]
+    def data=(object)
+      self.sy = object.type if (self.visible = (object ? true : false))
+    end
+  end
+
+  # Object that show a text using a method of the data object sent
+  class SymText < Text
+    # Add a text inside the window, the offset x/y will be adjusted
+    # @param font_id [Integer] the id of the font to use to draw the text
+    # @param viewport [LiteRGSS::Viewport, nil] the viewport used to show the text
+    # @param x [Integer] the x coordinate of the text surface
+    # @param y [Integer] the y coordinate of the text surface
+    # @param width [Integer] the width of the text surface
+    # @param height [Integer] the height of the text surface
+    # @param method [Symbol] the symbol of the method to call in the data object
+    # @param align [0, 1, 2] the align of the text in its surface (best effort => no resize), 0 = left, 1 = center, 2 = right
+    # @param outlinesize [Integer, nil] the size of the text outline
+    # @param color [Integer] the id of the color
+    # @param sizeid [Intger] the id of the size to use
+    def initialize(font_id, viewport, x, y, width, height, method, align = 0, outlinesize = nil, color = nil, sizeid = nil)
+      super(font_id, viewport, x, y, width, height, nil.to_s, align, outlinesize, color, sizeid)
+      @method = method
+    end
+
+    # Set the Object used to show the text
+    # @param object [Object, nil]
+    def data=(object)
+      return unless (self.visible = (object ? true : false))
+      self.text = object.public_send(@method).to_s
+    end
+  end
+
+  # Object that show a multiline text using a method of the data object sent
+  class SymMultilineText < SymText
+    # Set the Object used to show the text
+    # @param object [Object, nil]
+    def data=(object)
+      return unless (self.visible = (object ? true : false))
+      self.multiline_text = object.public_send(@method).to_s
+    end
+  end
+end

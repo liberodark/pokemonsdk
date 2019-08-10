@@ -68,8 +68,8 @@ module GamePlay
       def create_board
         @board_tiles = []
         @board_counters =
-          Array.new(5) { |i| UI::VoltorbFlip::BoardCounter.new(i, true, @viewport) } +
-          Array.new(5) { |i| UI::VoltorbFlip::BoardCounter.new(i, false, @viewport) }
+          Array.new(5) { |i| UI::VoltorbFlip::BoardCounter.new(@viewport, i, true) } +
+          Array.new(5) { |i| UI::VoltorbFlip::BoardCounter.new(@viewport, i, false) }
         0.upto(4) do |bx|
           0.upto(4) do |by|
             rx = BoardDispX + 3 + bx * TileOffset

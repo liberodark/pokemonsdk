@@ -210,24 +210,12 @@ pokemonsdk/scripts/01200 PFM/03300 PFM__Choice_Helper.rb
 pokemonsdk/scripts/01300 UI/00100 UI__SpriteStack.rb
 pokemonsdk/scripts/01300 UI/00101 Window.rb
 pokemonsdk/scripts/01300 UI/00200 UI__Bar.rb
-pokemonsdk/scripts/01300 UI/00300 UI__SpriteSheetManager.rb
-pokemonsdk/scripts/01300 UI/00400 UI__TypeSprite.rb
-pokemonsdk/scripts/01300 UI/00500 UI__GenderSprite.rb
-pokemonsdk/scripts/01300 UI/00600 UI__StatusSprite.rb
-pokemonsdk/scripts/01300 UI/00700 UI__HoldSprite.rb
-pokemonsdk/scripts/01300 UI/00800 UI__SymText.rb
-pokemonsdk/scripts/01300 UI/00900 UI__CategorySprite.rb
-pokemonsdk/scripts/01300 UI/01000 UI__AttackDummySprite.rb
-pokemonsdk/scripts/01300 UI/01100 UI__PokemonSprite.rb
+pokemonsdk/scripts/01300 UI/00300 HelperSprites.rb
 pokemonsdk/scripts/01300 UI/01200 UI__KeyShortcut.rb
 pokemonsdk/scripts/01300 UI/01201 KeyBindingViewer.rb
 pokemonsdk/scripts/01300 UI/01300 UI__DexCTLRButton.rb
 pokemonsdk/scripts/01300 UI/01301 SummaryCTRLButton.rb
-pokemonsdk/scripts/01300 UI/01400 UI__DexWinSprite.rb
-pokemonsdk/scripts/01300 UI/01500 UI__DexWinInfo.rb
-pokemonsdk/scripts/01300 UI/01600 UI__DexWinMap.rb
-pokemonsdk/scripts/01300 UI/01700 UI__DexSeenGot.rb
-pokemonsdk/scripts/01300 UI/01800 UI__DexButton.rb
+pokemonsdk/scripts/01300 UI/01400 Dex UIs.rb
 pokemonsdk/scripts/01300 UI/01900 UI__Button.rb
 pokemonsdk/scripts/01300 UI/02000 UI__TeamButton.rb
 pokemonsdk/scripts/01300 UI/02100 Summary_Memo.rb
@@ -235,14 +223,11 @@ pokemonsdk/scripts/01300 UI/02101 Summary_Stat.rb
 pokemonsdk/scripts/01300 UI/02102 Summary_Skills.rb
 pokemonsdk/scripts/01300 UI/02103 Summary_Top.rb
 pokemonsdk/scripts/01300 UI/02104 Summary_Remind.rb
-pokemonsdk/scripts/01300 UI/02200 UI__CasinoVoltorbFlip_sprites.rb
-pokemonsdk/scripts/01300 UI/02300 UI__List.rb
-pokemonsdk/scripts/01300 UI/02305 UI__List__Content.rb
-pokemonsdk/scripts/01300 UI/02306 UI__List__Content__Horizontal.rb
-pokemonsdk/scripts/01300 UI/02307 UI__List__Content__Vertical.rb
+pokemonsdk/scripts/01300 UI/02200 VoltorbFlipSprites.rb
+pokemonsdk/scripts/01300 UI/02300 List.rb
+pokemonsdk/scripts/01300 UI/02305 List__Content.rb
+pokemonsdk/scripts/01300 UI/02306 List__Content__Helper.rb
 pokemonsdk/scripts/01300 UI/02310 UI__List__Item.rb
-pokemonsdk/scripts/01300 UI/02311 UI__List Items.rb
-pokemonsdk/scripts/01300 UI/02400 UI__ItemSprite.rb
 pokemonsdk/scripts/01300 UI/02500 UI__ScrollBar.rb
 pokemonsdk/scripts/01300 UI/02600 UI__TextInput.rb
 pokemonsdk/scripts/01300 UI/02700 SaveWindow.rb

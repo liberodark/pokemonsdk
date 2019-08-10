@@ -14,10 +14,8 @@ module UI
       ability_text = add_text(13, 138, 100, 16, text_get(33, 142) + ': ')
       @ability_name = add_text(13 + ability_text.real_width, 138, 294, 16, :ability_name, type: SymText, color: 1)
       @ability_descr = add_text(13, 138 + 16, 294, 16, :ability_descr, type: SymMultilineText)
-	  @hp_container = push(11,128,RPG::Cache.interface("menu_pokemon_hp"), rect: ::Rect.new(0,0,67,6))
-	 
-	  @hp = add_custom_sprite(create_hp_bar) # Copy/Paste from Party_Menu
-
+      @hp_container = add_sprite(11, 128, RPG::Cache.interface('menu_pokemon_hp'), rect: Rect.new(0, 0, 67, 6))
+      @hp = add_custom_sprite(create_hp_bar) # Copy/Paste from Party_Menu
     end
 
     # Set the Pokemon shown by the UI
@@ -55,14 +53,16 @@ module UI
       add_text(114, 19 + 96, 95, 16, :dfs_basis, 2, type: SymText, color: 1)
       init_ev_iv
     end
-	# Create the HP Bar for the pokemon Copy/Paste from Menu_Party
+
+    # Create the HP Bar for the pokemon Copy/Paste from Menu_Party
     # @return [UI::Bar]
     def create_hp_bar
-      bar = Bar.new(@viewport,25, 129, RPG::Cache.interface('team/HPBars'), 52, 4, 0, 0, 3)
+      bar = Bar.new(@viewport, 25, 129, RPG::Cache.interface('team/HPBars'), 52, 4, 0, 0, 3)
       # Define the data source of the HP Bar
       bar.data_source = :hp_rate
       return bar
     end
+
     # Init the ev/iv texts
     def init_ev_iv
       offset = 102

@@ -282,8 +282,7 @@ module UI
         if @looped
           if index < 0
             @looping_index = index
-          end
-          if index >= @data.length
+          elsif index >= @data.length
             @looping_index = index
           end
           index = (@data.empty? ? 0 : index % @data.length)
@@ -378,7 +377,8 @@ module UI
       def animated_cursor_moveto(index)
         anime_index = @looping_index || index
         @cursor_targeted_position = anime_index * @item_size
-        @cursor_animation_step = ((@cursor_targeted_position - @content_style.object_position(@cursor)) / MOVE_DURATION).round
+        cas = ((@cursor_targeted_position - @content_style.object_position(@cursor)) / MOVE_DURATION).round
+        @cursor_animation_step = cas
         @index_targeted = index
         # Cancel animation if no move
         @cursor_targeted_position = nil if @cursor_animation_step == 0
@@ -389,8 +389,10 @@ module UI
       # @author Leikt
       def animated_content_moveto(index)
         anime_index = @looping_index || index
-        @content_targeted_position = CONTENT_POSITIONNING[@mode].call(anime_index, @item_list.length, @data.length) * @item_size
-        @content_animation_step = ((@content_targeted_position - @content_style.object_origin(@viewport)) / MOVE_DURATION).round
+        ctp = CONTENT_POSITIONNING[@mode].call(anime_index, @item_list.length, @data.length) * @item_size
+        @content_targeted_position = ctp
+        cas = ((@content_targeted_position - @content_style.object_origin(@viewport)) / MOVE_DURATION).round
+        @content_animation_step = cas
         # Cancel animation if no move
         @content_targeted_position = nil if @content_animation_step == 0
       end
@@ -472,9 +474,7 @@ module UI
           @content_style.set_object_position @cursor, @cursor_targeted_position
           @cursor_targeted_position = nil
           @index = @index_targeted
-          if @looping_index
-            static_cursor_moveto(@index)
-          end
+          static_cursor_moveto(@index) if @looping_index
         end
       end
 
@@ -491,9 +491,7 @@ module UI
            @content_animation_step < 0 && new_pos <= @content_targeted_position
           @content_style.set_object_origin self, @content_targeted_position
           @content_targeted_position = nil
-          if @looping_index
-            static_content_moveto(@index)
-          end
+          static_content_moveto(@index) if @looping_index
         end
       end
     end
