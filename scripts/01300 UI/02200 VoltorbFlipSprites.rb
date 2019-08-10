@@ -75,7 +75,7 @@ module UI
         @move_count = false
         @board_x = 0
         @board_y = 0
-        set_coordinates(*get_board_position(@board_x, @board_y))
+        set_position(*get_board_position(@board_x, @board_y))
       end
 
       # Update the cursor mouvement, return true if the mouvement has been updated
