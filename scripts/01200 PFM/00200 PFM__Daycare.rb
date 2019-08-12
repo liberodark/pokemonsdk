@@ -241,7 +241,7 @@ module PFM
     # Give 1 exp point to a pokemon 
     # @param pokemon [PFM::Pokemon] the pokemon to give one exp point
     def exp_pokemon(pokemon)
-      if(pokemon.level < GameData::MAX_LEVEL)
+      if(pokemon.level < $pokemon_party.level_max_limit)
         pokemon.exp += 1
         if(pokemon.exp >= pokemon.exp_lvl)
           pokemon.level_up_stat_refresh

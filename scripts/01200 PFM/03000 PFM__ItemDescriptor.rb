@@ -382,7 +382,7 @@ module PFM
           #> Le pokémon ne doit pas être au niveau max
           hash[:on_pokemon_choice] = proc do |pkmn|
             next(false) if pkmn.egg?
-            pkmn.level < ::GameData::MAX_LEVEL
+            pkmn.level < $pokemon_party.level_max_limit
           end
           #> Utilisation sur le Pokémon
           hash[:on_pokemon_use] = proc do |pkmn|

@@ -38,7 +38,7 @@ class Interpreter
     if pokemon_id < 1 || pokemon_id >= $game_data_pokemon.size
       do_not_add = "Database Error : The Pokémon ##{pokemon_id} doesn't exists."
     end
-    if level < 1 || level > GameData::MAX_LEVEL
+    if level < 1 || level > $pokemon_party.level_max_limit
       do_not_add << 10 if do_not_add
       do_not_add = "#{do_not_add}Level Error : level #{level} is out of bound."
     end

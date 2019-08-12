@@ -106,7 +106,7 @@ class Scene_Battle
 
       #On passe au suivant si le Pokémon n'exste pas, est KO ou est déjà aux max level
       next if !i or i.dead?
-      next if i.level>=GameData::MAX_LEVEL
+      next if i.level>=$pokemon_party.level_max_limit
 
       base_exp=phase4_exp_calculation(pokemon,i) #Expérience récupérée de base
       if(j<$game_temp.vs_type)
@@ -126,7 +126,7 @@ class Scene_Battle
       display_message(text)
       #Boucle de distribution de l'expérience
       given=0
-      while given < get_exp and i.level < GameData::MAX_LEVEL
+      while given < get_exp and i.level < $pokemon_party.level_max_limit
         exp_lvl=i.exp_list[i.level+1].to_i
         exp=(exp_lvl-i.exp_list[i.level])/40
         exp=1 if exp<=0
