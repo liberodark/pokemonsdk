@@ -42,7 +42,7 @@ class Object
   # @param types [Class] expected type for param
   # @return [Boolean] if an exception should be raised when all parameters will be checked
   def validate_param_value(method_name, param_name, value, types)
-    if types.is_a?(Class)
+    if types.is_a?(Module)
       return value.is_a?(types) ? false : validate_param_error_simple(method_name, param_name, value, types)
     elsif types.is_a?(Symbol)
       return send(types, value) ? false : validate_param_error_method(method_name, param_name, value, types)
@@ -101,7 +101,7 @@ class Object
     if (sub_type = types[Array])
       return validate_param_error_simple(method_name, param_name, value, Array) unless value.is_a?(Array)
       validate_param_complex_value_size(method_name, param_name, value, types)
-      if sub_type.is_a?(Class)
+      if sub_type.is_a?(Module)
         value.each_with_index do |sub_val, index|
           error |= validate_param_value(method_name, "#{param_name}[#{index}]", sub_val, sub_type)
         end
