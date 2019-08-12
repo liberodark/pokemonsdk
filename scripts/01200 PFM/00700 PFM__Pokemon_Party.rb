@@ -83,6 +83,9 @@ module PFM
     # The pathfinding requests
     # @return [Array<Object>]
     attr_accessor :pathfinding_requests
+    # Maximum level an allied Pokemon can reach
+    # @return [Integer]
+    attr_accessor :level_max_limit
     # Create a new Pokemon Party
     # @param battle [Boolean] if its a party of a NPC battler
     # @param starting_language [String] the lang id of the game described by this object
@@ -115,6 +118,7 @@ module PFM
       @game_map = Game_Map.new
       @game_player = Game_Player.new
       @pathfinding_requests = Pathfinding::DEFAULT_SAVE
+      @max_level = GameData::MAX_LEVEL
       expand_global_var
       @pokedex = PFM::Pokedex.new
       @trainer = PFM::Trainer.new

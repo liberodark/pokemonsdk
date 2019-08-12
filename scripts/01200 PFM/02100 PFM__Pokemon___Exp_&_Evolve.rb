@@ -50,13 +50,13 @@ module PFM
         current = exp - _exp_last
         @exp_rate = (delta == 0 ? 1 : current / delta.to_f) #> Vérifier pour la correction
       else
-        @exp_rate = (@level < GameData::MAX_LEVEL ? 1 : 0)
+        @exp_rate = (@level < $pokemon_party.level_max_limit ? 1 : 0)
       end
     end
     # Increase the level of the Pokemon
     # @return [Boolean] if the level has successfully been increased
     def level_up
-      return false if @level >= GameData::MAX_LEVEL
+      return false if @level >= $pokemon_party.level_max_limit
       _exp_last = GameData::EXP_TABLE[exp_type][@level]
       delta = self.exp_lvl - _exp_last
       self.exp += (delta - (exp - _exp_last))
@@ -68,7 +68,7 @@ module PFM
       st=$game_temp.in_battle
       $game_temp.in_battle=false
       list0=[self.max_hp, self.atk_basis, self.dfe_basis, self.ats_basis, self.dfs_basis, self.spd_basis]
-      @level += 1 if @level < GameData::MAX_LEVEL
+      @level += 1 if @level < $pokemon_party.level_max_limit
       self.exp = exp_list[@level] if @exp<exp_list[@level].to_i
       hp_diff = list0[0] - @hp
       list1=[self.max_hp, self.atk_basis, self.dfe_basis, self.ats_basis, self.dfs_basis, self.spd_basis]
@@ -110,7 +110,7 @@ module PFM
     # Change the level of the Pokemon
     # @param lvl [Integer] the new level of the Pokemon
     def level=(lvl)
-      if(lvl>0 and lvl<=GameData::MAX_LEVEL)
+      if(lvl>0 and lvl<=$pokemon_party.level_max_limit)
         @exp=self.exp_list[lvl]
         @exp_rate = 0
         @level=lvl
