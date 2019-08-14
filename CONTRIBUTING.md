@@ -23,10 +23,8 @@ In your Pokémon SDK folder, you'll open `cmd.bat` and write the following comma
 
 You should follow the branch naming :
 
-* Feature branche are named like this : `feature/name_of_the_feature`
-* The bug fix branche are named
-    * Like this : `bugfix/issue_id`
-    * Or : `bugfix/name_of_the_bug`
+* Feature branche are named like this : `feature/us-ID name`
+* The bug fix branche are named like this : `bugfix/us-ID name`
 
 To make your new feature/bugfix enter the following commands your pokemonsdk folder :
 
@@ -248,25 +246,10 @@ The same goes for filenames, window builders etc...
 
 ### Don't write all the logic inside `update` in Scenes
 
-This allow specialization or customization of scenes. Usually an update method should looks like this : 
-```ruby
-def update
-  update_graphics
-  return unless super # Message process
-  return if update_inputs # An input does something
-  return if can_update_mouse? && update_mouse # Mouse did something
-end
-```
-Or alternatively (to have better graphics integration) :
-```ruby
-def update
-  can_continue = true
-  can_continue = false unless super # Message process
-  can_continue = false if can_continue && update_inputs # An input does something
-  can_continue = false if can_continue && can_update_mouse? && update_mouse # Mouse did something
-  update_graphics # Update the graphics at the end with the correct state
-end
-```
+The best thing is to make your Scene inherit from `GamePlay::BaseCleanUpdate` and define :
+- `update_inputs` for the inputs logic (not called if message are processing)
+- `update_mouse(moved)` for the mouse logic (not called if update_inputs return false or message are processing)
+- `update_graphics` to update the graphics animation each frames
 
 ### Don't update texts each frame
 
@@ -282,14 +265,14 @@ In a class, some methods like `init_ui` should not be called from the exterior (
 
 Example :
 ```ruby
-class Thing < GamePlay::Base
+class Thing < GamePlay::BaseCleanUpdate
   def initialize
     super
     init_viewport
     init_ui
   end
 
-  def update
+  def update_inputs
     # ...
   end
 
