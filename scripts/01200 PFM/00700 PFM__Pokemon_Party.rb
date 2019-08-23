@@ -94,6 +94,7 @@ module PFM
       @bag = PFM::Bag.new
       @repel_count = 0
       @steps = 0
+      @level_max_limit = GameData::MAX_LEVEL
       return if battle
       game_state_initialize(starting_language)
       rmxp_boot unless $tester
