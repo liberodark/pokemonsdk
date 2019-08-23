@@ -331,8 +331,10 @@ class Game_Player
     @pattern = 0
     if @surfing
       enter_in_surfing_state
-    elsif $game_switches[::Yuki::Sw::EV_Bicycle] || $game_switches[::Yuki::Sw::EV_AccroBike]
+    elsif $game_switches[::Yuki::Sw::EV_Bicycle]
       enter_in_cycling_state
+    elsif $game_switches[::Yuki::Sw::EV_AccroBike]
+      enter_in_acro_bike_state
     else
       enter_in_walking_state
     end
