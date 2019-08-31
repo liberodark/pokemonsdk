@@ -1,4 +1,8 @@
 class Game_Player
+  # Indicate if the player is on acro bike
+  # @return [Boolean]
+  attr_reader :on_acro_bike
+
   # Define Acro Bike state of the Game_Player
   # @author Nuri Yuri
   def on_acro_bike=(state)
