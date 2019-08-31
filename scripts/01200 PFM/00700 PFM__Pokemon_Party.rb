@@ -187,6 +187,8 @@ module PFM
       @pathfinding_requests ||= Pathfinding::DEFAULT_SAVE
       @env.instance_variable_set(:@worldmap, 0) unless @env.instance_variable_defined?(:@worldmap) || @env.frozen?
       @env.instance_variable_set(:@visited_worldmap, [0]) unless @env.instance_variable_defined?(:@visited_worldmap) || @env.frozen?
+      # Patch 2019-08-31
+      $pokemon_party.level_max_limit = GameData::MAX_LEVEL unless $pokemon_party.level_max_limit
     end
 
     # Update the processing of the repel

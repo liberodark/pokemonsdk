@@ -110,11 +110,10 @@ module PFM
     # Change the level of the Pokemon
     # @param lvl [Integer] the new level of the Pokemon
     def level=(lvl)
-      if(lvl>0 and lvl<=$pokemon_party.level_max_limit)
-        @exp=self.exp_list[lvl]
+      if lvl > 0 && lvl <= $pokemon_party.level_max_limit
+        @exp = self.exp_list[lvl]
         @exp_rate = 0
         @level=lvl
-
       end
     end
     # Check if the Pokemon can evolve and return the evolve id if possible
