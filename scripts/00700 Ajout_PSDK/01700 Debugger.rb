@@ -84,7 +84,7 @@ module Debugger
   # @param table [Array] a table that contain every defined Pokemon
   # @return [String] the output data
   # @author Nuri Yuri
-  def find_pokemon(name, text_id = 0, table = $game_data_pokemon)
+  def find_pokemon(name, text_id = 0, table = GameData::Pokemon.all)
     return_data = ''
     text = GameData::Text
     pokemon_name = nil
@@ -102,28 +102,28 @@ module Debugger
   # @param name [String, Regexp] the name
   # @return [String] the output data
   def find_nature(name)
-    find_pokemon(name, 8, $game_data_natures)
+    find_pokemon(name, 8, GameData::Natures.all)
   end
 
   # Find an ability based on a part of its name
   # @param name [String, Regexp] the name
   # @return [String] the output data
   def find_ability(name)
-    find_pokemon(name, 4, $game_data_abilities)
+    find_pokemon(name, 4, GameData::Abilities.psdk_id_to_gf_id)
   end
 
   # Find a skill based on a part of its name
   # @param name [String, Regexp] the name
   # @return [String] the output data
   def find_skill(name)
-    find_pokemon(name, 6, $game_data_skill)
+    find_pokemon(name, 6, GameData::Skill.all)
   end
 
   # Find an item based on a part of its name
   # @param name [String, Regexp] the name
   # @return [String] the output data
   def find_item(name)
-    find_pokemon(name, 12, $game_data_item)
+    find_pokemon(name, 12, GameData::Item.all)
   end
 
   # Find a type based on a part of its name
@@ -133,9 +133,9 @@ module Debugger
   def find_type(name)
     return_data = ''
     pokemon_name = nil
-    $game_data_types.each_with_index do |type, i|
+    GameData::Type.all.each_with_index do |type, i|
       type_name = type.name
-      if type_name =~ name
+      if type_name.match?(name)
         return_data << format(ID_NAME_FORMAT, i, type_name)
       end
     end
@@ -173,9 +173,9 @@ module Debugger
   # @return [Boolean] if a normal position has been found
   # @author Nuri Yuri
   def __find_maker_warp(id)
-    $game_data_zone.each do |data|
-      if(data.map_included?(id))
-        if(data.warp_x and data.warp_y)
+    GameData::Zone.all.each do |data|
+      if data.map_included?(id)
+        if data.warp_x && data.warp_y
           $game_temp.player_new_x = data.warp_x + ::Yuki::MapLinker.get_OffsetX
           $game_temp.player_new_y = data.warp_y + ::Yuki::MapLinker.get_OffsetY
           return true

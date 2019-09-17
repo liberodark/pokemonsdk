@@ -1,5 +1,4 @@
 class Object
-
   # Parse a text from the text database with specific informations and a pokemon
   # @param file_id [Integer] ID of the text file
   # @param text_id [Integer] ID of the text in the file

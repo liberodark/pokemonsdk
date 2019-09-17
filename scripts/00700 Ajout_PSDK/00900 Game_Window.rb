@@ -1,7 +1,7 @@
-#encoding: utf-8
-
 # Display a Window with the ability to zoom.
 # @author Nuri Yuri
+# @deprecated Don't use this otherwise your scripts will have issue once I removed this!
+#   Use UI::Window instead !
 class Game_Window
   include Text::Util
   # Width of the window

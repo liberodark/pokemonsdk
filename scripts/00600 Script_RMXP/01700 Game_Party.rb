@@ -4,7 +4,7 @@
 class Game_Party
   attr_reader   :actors                   # アクター
   attr_accessor   :gold                     # ゴールド
-  attr_reader   :steps                    # 歩数
+  attr_accessor   :steps                    # 歩数
   # Default initialization
   def initialize
     # アクターの配列を作成

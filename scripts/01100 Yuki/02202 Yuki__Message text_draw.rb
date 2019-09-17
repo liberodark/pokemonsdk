@@ -77,7 +77,7 @@ module Yuki
     # @param counter [Integer] the counter
     # @return [Integer] the new counter, if counter == -1, the user requested to skip the progress thing
     def progress(text, str, counter)
-      speed = @current_speed == 0 ? $options.message_speed : @current_speed
+      speed = (@current_speed == 0 ? $options&.message_speed : @current_speed) || 1
       text.nchar_draw = 0
       text.opacity = contents_opacity
       until text.nchar_draw >= str.size

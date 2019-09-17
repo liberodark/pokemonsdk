@@ -1,7 +1,7 @@
-#encoding: utf-8
-
 # Display a message window
 # @author Nuri Yuri
+# @deprecated Don't use this otherwise your script will be broken once I removed this script !
+#   Use Yuki::Message instead
 class Window_Message < Game_Window
   # Constant that holds the marker actions
   MarkerActions = [

@@ -769,7 +769,7 @@ module Util
             return "$pokemon_party.money <= #{param[1]}"
           end
         when 8 # Item stored
-          return "$bag.has_item?(#{param[1]})"
+          return "$bag.contain_item?(#{param[1]})"
         when 11 # Key pressed
           return "Input.press?(:#{::Interpreter::RGSS2LiteRGSS_Input[param[1]]})"
         when 12 # Script condition

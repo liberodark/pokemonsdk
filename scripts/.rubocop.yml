@@ -5,6 +5,10 @@ AllCops:
 Naming/MemoizedInstanceVariableName:
   Enabled: false
 
+# x, y, z etc... are pretty common in this project
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
+
 # Sometime I don't want to repeat top level do
 Style/Documentation:
   Enabled: false

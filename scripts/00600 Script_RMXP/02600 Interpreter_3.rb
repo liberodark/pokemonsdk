@@ -237,7 +237,7 @@ class Interpreter_RMXP
         result = ($pokemon_party.money <= @parameters[1])#($game_party.gold <= @parameters[1])
       end
     when 8  # アイテム / Item is owned
-      result = $bag.has_item?(@parameters[1])#($game_party.item_number(@parameters[1]) > 0)
+      result = $bag.contain_item?(@parameters[1])#($game_party.item_number(@parameters[1]) > 0)
     when 9  # 武器
       result = false #($game_party.weapon_number(@parameters[1]) > 0)
     when 10  # 防具
