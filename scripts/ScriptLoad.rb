@@ -7,6 +7,8 @@ module ScriptLoader
   SCRIPT_INDEX_PATH = File.join(VSCODE_SCRIPT_PATH, 'script_index.txt')
   # Path to the deflate scripts
   DEFLATE_SCRIPT_PATH = File.join(VSCODE_SCRIPT_PATH, 'mega_script.deflate')
+  # Regular expression for script folder
+  SCRIPT_FOLDER_REG = %r{/[0-9]+[ _][^/]+/$}i
 
   module_function
 
@@ -31,7 +33,7 @@ module ScriptLoader
   def load_vscode_scripts(path, file = nil)
     puts format('Loading %<path>s...', path: path)
     load_scripts(path, file)
-    Dir[File.join(path, '*/')].sort.each { |pathname| load_scripts(pathname, file) }
+    Dir[File.join(path, '*/')].grep(SCRIPT_FOLDER_REG).sort.each { |pathname| load_vscode_scripts(pathname, file) }
   end
 
   # Load all scripts from a path

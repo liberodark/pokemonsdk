@@ -1,7 +1,77 @@
 module GamePlay
   # The base class of every GamePlay scene interface
   #
-  # Add some usefull functions like message display and scene switch
+  # Add some usefull functions like message display and scene switch and perform the most of the task for you.
+  #   Generic Process of a GamePlay::Base
+  #     1. initialize
+  #       1.1 Create the message box (if called by super(false) or super())
+  #     2. main
+  #     2.1 main_begin
+  #       2.1.1 create_graphics
+  #       2.1.2 Graphics.transition (fade in)
+  #     2.2 loop { update }
+  #     2.3 main_end
+  #       2.3.1 Graphics.freeze (fade out)
+  #       2.3.2 dispose : grep all the /viewport/ ivar and dispose them
+  #     3. update (in GamePlay::BaseCleanUpdate)
+  #       3.1 update message
+  #       3.2 update inputs (if not locked by message)
+  #       3.3 update mouse (if not locked by inputs)
+  #       3.4 update graphics (always)
+  #
+  # This class is inherited by GamePlay::BaseCleanUpdate
+  #
+  # You usually will define your Scene the following way :
+  # ```ruby
+  # class Scene < BaseCleanUpdate
+  #   # Create a new scene
+  #   # @param args [Array] input arguments (do something better than *args)
+  #   def initialize(*args)
+  #     super() # <= the () force super to be called without argument because by `super` alone use the method arguments!
+  #     # Initialize only the logic here (instance variable used for the state or data used by the UI)
+  #   end
+  #
+  #   # Called when input can be updated (put your input related code inside)
+  #   # @return [Boolean] if the update can continue
+  #   def update_inputs
+  #     # ...
+  #     return true
+  #   end
+  #
+  #   # Called when mouse can be updated (put your mouse related code inside, optional)
+  #   # @param moved [Boolean] boolean telling if the mouse moved
+  #   # @return [Boolean] if the update can continue
+  #   def update_mouse(moved)
+  #     return unless moved
+  #     # ...
+  #     return true
+  #   end
+  #
+  #   # Called each frame after message update and eventual mouse/input update
+  #   # @return [Boolean] if the update can continue
+  #   def update_graphics
+  #     # ...
+  #     return true
+  #   end
+  #
+  #   private
+  #
+  #   # Create all the UI and thing related to graphics (super create the viewport)
+  #   def create_graphics
+  #     super
+  #     # ...
+  #   end
+  #
+  #   # (optional) Create the viewport (called by create_graphics from Base)
+  #   def create_viewport
+  #     super # < if you still use main with default settings, otherwise don't call super
+  #     @sub_viewport = Viewport.create(...) # < Sub viewport for other stuff
+  #   end
+  # end
+  # ```
+  #
+  # Note : You don't have to define the dispose function with this. All the viewport that are stored inside ivar will be
+  #       automatically disposed if the variable name contains viewport.
   # @author Nuri Yuri
   class Base
     # Default fade type used to switch between interfaces
@@ -61,7 +131,9 @@ module GamePlay
     def dispose
       message_soft_lock_prevent
       @message_window&.dispose(with_viewport: true) unless @inherited_message_window || @message_window == false
-      @viewport&.dispose
+      instance_variables.grep(/viewport/).collect { |ivar| instance_variable_get(ivar) }.each do |vp|
+        vp.dispose if vp.is_a?(Viewport) && !vp.disposed?
+      end
     end
 
     # The GamePlay entry point (Must not be overridden).
@@ -180,6 +252,7 @@ module GamePlay
 
     # The main process at the begin of scene
     def main_begin
+      create_graphics
       fade_in(@mbf_type || DEFAULT_TRANSITION, @mbf_param || DEFAULT_TRANSITION_PARAMETER)
     end
 
@@ -377,6 +450,18 @@ module GamePlay
       return send(*to_translate) if to_translate.is_a?(Array)
       return to_translate
     end
+
+    # Create the viewport (oftern used)
+    def create_viewport
+      # Main viewport
+      # @type [LiteRGSS::Viewport]
+      @viewport = Viewport.create(:main, 10_000)
+    end
+
+    # Create the Scene Graphics (should be overloaded, called before Graphics.transition in main_begin)
+    def create_graphics
+      create_viewport
+    end
   end
 
   # Base Scene where you should not define update but dedicated update methods :
@@ -392,7 +477,7 @@ module GamePlay
   #   # Called when mouse can be updated (put your mouse related code inside)
   #   # @param moved [Boolean] boolean telling if the mouse moved
   #   # @return [Boolean] if the update can continue
-  #   def update_mouse(moved = false)
+  #   def update_mouse(moved)
   #     return unless moved
   #     # ...
   #     return true

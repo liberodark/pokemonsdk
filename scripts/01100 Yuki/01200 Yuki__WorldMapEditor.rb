@@ -66,7 +66,7 @@ module Yuki
 
     # Update the current zone
     def update_zone
-      $game_data_worldmap[@current_worldmap].data[@x, @y] = @current_zone
+      GameData::WorldMap.get(@current_worldmap).data[@x, @y] = @current_zone
       update_infobox
     end
 
@@ -81,12 +81,12 @@ module Yuki
           data[x, y] = -1
         end
       end
-      $game_data_worldmap[@current_worldmap].data = data
+      GameData::WorldMap.get(@current_worldmap).data = data
     end
 
     # Remove the zone
     def remove_zone
-      $game_data_worldmap[@current_worldmap].data[@x, @y] = -1
+      GameData::WorldMap.get(@current_worldmap).data[@x, @y] = -1
       update_infobox
     end
 
@@ -110,28 +110,30 @@ module Yuki
     # Save the world map
     def save
       # Gather zone worldmap
-      $game_data_worldmap.each_with_index do |worldmap, id|
+      GameData::WorldMap.all.each_with_index do |worldmap, id|
+        # Set the correct id to the worldmap
+        worldmap.id = id
         # Correct zones id
         0.upto(worldmap.data.xsize - 1) do |x|
           0.upto(worldmap.data.ysize - 1) do |y|
-            worldmap.data[x, y] = -1 if worldmap.data[x, y] >= $game_data_zone.length
+            worldmap.data[x, y] = -1 if worldmap.data[x, y] >= GameData::Zone.all.length
           end
         end
         # Set the zones
         worldmap.zone_list_from_data.each do |zone_id|
-          $game_data_zone[zone_id].worldmap_id = id
+          GameData::Zone.get(zone_id).worldmap_id = id
         end
       end
       # Save the data
-      save_data([$game_data_map, $game_data_zone], 'Data/PSDK/MapData.rxdata')
-      save_data($game_data_worldmap, 'Data/PSDK/WorldMaps.rxdata')
+      save_data([$game_data_map, GameData::Zone.all], 'Data/PSDK/MapData.rxdata')
+      save_data(GameData::WorldMap.all, 'Data/PSDK/WorldMaps.rxdata')
       $game_system.se_play($data_system.decision_se)
     end
 
     # List the zone
     def list_zone(name = '')
       name = name.downcase
-      $game_data_zone.each_with_index do |zone, index|
+      GameData::Zone.all.each_with_index do |zone, index|
         puts "#{index} : #{zone.map_name}" if zone && zone.map_name.downcase.include?(name)
       end
       show_help
@@ -140,14 +142,14 @@ module Yuki
     # Select a zone
     def select_zone(id)
       @current_zone = id
-      puts $game_data_zone[id].map_name.to_s
+      puts GameData::Zone.get(id).map_name
     end
 
     # Select a world map
     def select_worldmap(id)
       @current_worldmap = id
-      @map_sprite&.set_bitmap('worldmap/worldmaps/' + $game_data_worldmap[id].image, :interface)
-      puts "World map #{$game_data_worldmap[id].name} is now selected."
+      @map_sprite&.set_bitmap('worldmap/worldmaps/' + GameData::WorldMap.get(id).image, :interface)
+      puts "World map #{GameData::WorldMap.get(id).name} is now selected."
     end
 
     # Add a new world map and select it
@@ -155,22 +157,22 @@ module Yuki
     # @param name_id [Integer] the text id in the file
     # @param file_id [String, Integer, nil] the file to pick the region name, by default the Ruby Host
     def add_worldmap(image, name_id, file_id = nil)
-      $game_data_worldmap.push GameData::WorldMap.new(image, name_id, file_id)
-      name = $game_data_worldmap.last.name
+      GameData::WorldMap.all.push GameData::WorldMap.new(image, name_id, file_id)
+      name = GameData::WorldMap.all.last.name
       puts "World map added : #{name.downcase}"
-      select_worldmap($game_data_worldmap.length - 1)
+      select_worldmap(GameData::WorldMap.all.length - 1)
       clear_map
     end
 
     # Delete world map
     # @param id [Integer] the id of the map to delete
     def delete_worldmap(id)
-      if $game_data_worldmap.length <= 1
+      if GameData::WorldMap.all.length <= 1
         puts "You can't delete the last world map"
         return nil
       end
-      puts "World map deleted : #{$game_data_worldmap[id]&.name}"
-      $game_data_worldmap.delete_at(id)
+      puts "World map deleted : #{GameData::WorldMap.get(id)&.name}"
+      GameData::WorldMap.all.delete_at(id)
       select_worldmap(0)
     end
 
@@ -178,7 +180,7 @@ module Yuki
     # @param name [String, ''] the name to filter
     def list_worldmap(name = '')
       name = name.downcase
-      $game_data_worldmap.each_with_index do |wm, index|
+      GameData::WorldMap.all.each_with_index do |wm, index|
         puts "#{index} : #{wm.name}" if wm && wm.name.downcase.include?(name)
       end
       show_help
@@ -189,10 +191,10 @@ module Yuki
     # @param name_id [Integer] the id of the text in the file
     # @param file_id [Integer, String, nil] the file id / name by default ruby host
     def set_worldmap_name(id, name_id, file_id = nil)
-      old_name = $game_data_worldmap[id].name
-      $game_data_worldmap[id].name_id = name_id
-      $game_data_worldmap[id].name_file_id = file_id
-      new_name = $game_data_worldmap[id].name
+      old_name = GameData::WorldMap.get(id).name
+      GameData::WorldMap.get(id).name_id = name_id
+      GameData::WorldMap.get(id).name_file_id = file_id
+      new_name = GameData::WorldMap.get(id).name
       puts "\"#{old_name}\" has been rename to \"#{new_name}\""
     end
 
@@ -200,9 +202,9 @@ module Yuki
     # @param id [Integer] the id of the world map to edit
     # @param new_image [Integer] the new filename of the image
     def set_worldmap_image(id, new_image)
-      $game_data_worldmap[id].image = new_image
+      GameData::WorldMap.get(id).image = new_image
       @map_sprite.set_bitmap('worldmap/worldmaps/' + new_image, :interface) if @current_worldmap == id
-      puts "#{$game_data_worldmap[id].name}'s' image updated to #{new_image}"
+      puts "#{GameData::WorldMap.get(id).name}'s' image updated to #{new_image}"
     end
 
     # Init the editor
@@ -230,7 +232,7 @@ module Yuki
     # Create the sprites
     def init_sprites
       @viewport = Viewport.create(:main, 2000)
-      @map_sprite = Sprite.new(@viewport).set_bitmap('worldmap/worldmaps/' + $game_data_worldmap[@current_worldmap].image, :interface)
+      @map_sprite = Sprite.new(@viewport).set_bitmap('worldmap/worldmaps/' + GameData::WorldMap.get(@current_worldmap).image, :interface)
       @cursor = Sprite.new(@viewport).set_bitmap('worldmap/' + 'cursor', :interface)
                       .set_rect_div(0, 0, 1, 2)
       @infobox = Text.new(0, @viewport,
@@ -242,8 +244,8 @@ module Yuki
     # Update the infobox
     def update_infobox
       # zone = $env.get_zone(@x,@y)
-      zone_id = $game_data_worldmap[@current_worldmap].data[@x, @y]
-      zone = zone_id && (zone_id >= 0) ? $game_data_zone[zone_id] : nil
+      zone_id = GameData::WorldMap.get(@current_worldmap).data[@x, @y]
+      zone = zone_id && (zone_id >= 0) ? GameData::Zone.get(zone_id) : nil
       if zone
         @infobox.visible = true
         if zone.warp_x && zone.warp_y

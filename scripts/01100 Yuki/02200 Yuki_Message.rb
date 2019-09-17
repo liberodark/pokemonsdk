@@ -96,7 +96,7 @@ module Yuki
       self.active = false
       self.pause = false
       @contents_showing = false
-      $game_temp.message_proc.call unless $game_temp.message_proc.nil?
+      $game_temp.message_proc&.call
       reset_game_temp_message_info
       dispose_sub_elements
       reset_overwrites

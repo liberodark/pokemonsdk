@@ -253,13 +253,13 @@ class Spriteset_Map
   # create the zone panel of the current zone
   # @param zone [Integer, nil] the id of the zone where the player is
   def create_panel(zone)
-    return unless zone && $game_data_zone[zone].panel_id > 0
+    return unless zone && GameData::Zone.get(zone).panel_id > 0
     @sp_bg ||= Sprite.new
     @sp_bg.x = 2
     @sp_bg.y = -30
     @sp_bg.z = 5001
-    @sp_bg.bitmap = bmp = RPG::Cache.windowskin("Pannel_#{$game_data_zone[zone].panel_id}")
-    map_name = PFM::Text.parse_string_for_messages($game_data_zone[zone].map_name)
+    @sp_bg.bitmap = bmp = RPG::Cache.windowskin("Pannel_#{GameData::Zone.get(zone).panel_id}")
+    map_name = PFM::Text.parse_string_for_messages(GameData::Zone.get(zone).map_name)
     color = 10
     map_name.gsub!(/\\c\[([0-9]+)\]/) do
       color = $1.to_i

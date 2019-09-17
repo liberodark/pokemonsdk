@@ -1,7 +1,7 @@
-#encoding: utf-8
-
 # Display a choice Window
 # @author Nuri Yuri
+# @deprecated Don't use this otherwise your script will be broken once I removed this !
+#   Use Yuki::ChoiceWindow instead.
 class Window_Choice < Game_Window
   # Array of choice colors
   # @return [Array<Integer>]
