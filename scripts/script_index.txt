@@ -133,6 +133,7 @@ pokemonsdk/scripts/00800 GameData/00900 Constants/00200 GameData__Bag.rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/01600 Tutos (deprecated).rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/01700 States.rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/01800 EV.rb
+pokemonsdk/scripts/00800 GameData/00900 Constants/01801 Stages.rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/02000 Windows (Builder).rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/02100 Colors.rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/02200 Pickup data.rb

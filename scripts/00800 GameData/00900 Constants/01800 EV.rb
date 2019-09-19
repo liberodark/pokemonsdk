@@ -13,5 +13,14 @@ module GameData
     SPD = 3
     # HP EV Index
     HP = 0
+
+    module_function
+
+    # Find the symbol of an EV according to the EV id
+    # @param value [Integer] EV id
+    # @return [Symbol]
+    def index(value)
+      constants.find { |const_name| const_get(const_name) == value } || :__undef__
+    end
   end
 end

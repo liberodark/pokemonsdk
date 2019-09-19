@@ -67,6 +67,7 @@ module GameData
     end
 
     # Return the psdk_id_to_gf_id array
+    # @return [Array<Integer>]
     def psdk_id_to_gf_id
       return @psdk_id_to_gf_id
     end

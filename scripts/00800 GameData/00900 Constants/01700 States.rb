@@ -17,5 +17,14 @@ module GameData
     TOXIC = 8
     # K.O. state
     DEATH = KO = 9
+
+    module_function
+
+    # Find the symbol of a state according to the State id
+    # @param value [Integer] State id
+    # @return [Symbol]
+    def index(value)
+      constants.find { |const_name| const_get(const_name) == value } || :__undef__
+    end
   end
 end

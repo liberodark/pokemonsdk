@@ -87,7 +87,7 @@ module ScriptLoader
   # @return [String]
   def index_filename
     return @index_filename if @index_filename
-    if !ARGV.grep(/\-\-util[ =]update/).empty?
+    if !ARGV.grep(/\-\-util[ =]update$/).empty?
       @index_filename = File.join(VSCODE_SCRIPT_PATH, 'script_update_index.txt')
       # Prevent RMXP Scripts from loading
       Kernel.define_method(:eval) { |*args| }
@@ -100,6 +100,12 @@ module ScriptLoader
     end
     puts "Script Index : #{@index_filename}"
     return @index_filename
+  end
+
+  # Load a tool script
+  # @param relative_path [String] path from pokemonsdk/scripts/tools to access to the script
+  def load_tool(relative_path)
+    require "#{VSCODE_SCRIPT_PATH}/tools/#{relative_path}"
   end
 end
 
