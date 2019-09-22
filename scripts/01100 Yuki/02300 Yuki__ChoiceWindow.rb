@@ -127,7 +127,7 @@ module Yuki
     def build_window
       max = @choices.size
       max = MaxChoice if max > MaxChoice
-      self.height = max * default_line_height + window_builder[5] * 2
+      self.height = max * default_line_height + window_builder[5] + window_builder[-1]
       refresh
     end
 
@@ -143,7 +143,7 @@ module Yuki
         text_obj = @texts.add_text(cursor_rect.width + cursor_rect.x, i * default_line_height, 0, default_line_height, text, color: @colors[i])
         max_width = text_obj.real_width if max_width < text_obj.real_width
       end
-      self.width = max_width + 2 * window_builder[4] + cursor_rect.width + cursor_rect.x if @autocalc_width
+      self.width = max_width + window_builder[4] + window_builder[-2] + cursor_rect.width + cursor_rect.x if @autocalc_width
       @texts.stack.each { |text| text.width = max_width }
     end
 

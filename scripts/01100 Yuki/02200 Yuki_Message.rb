@@ -55,14 +55,14 @@ module Yuki
       @face_stack = UI::SpriteStack.new(viewport, default_cache: :battler)
       # Name of the one who is speaking
       @name_window = Window.new(viewport)
-      @name_text = Text.new(0, @name_window, 0, -Text::Util::FOY, 0, default_line_height, '')
+      @name_text = create_name_text
       reset_overwrites
       init_window
       self.visible = false
       @auto_skip = false
       @stay_visible = false
       @drawing_message = false
-      @text_sample = Text.new(0, viewport, 0, 0, 0, 0, ' ')
+      @text_sample = create_sample_text
       @text_sample.visible = false
       @fade_out = false
       @fade_in = false
@@ -220,21 +220,21 @@ module Yuki
     def update_name_windowskin
       windowskin_name = current_name_windowskin
       return if @name_windowskin_name == windowskin_name
-      @name_window.window_builder = current_name_window_builder
+      wb = @name_window.window_builder = current_name_window_builder
       @name_window.windowskin = RPG::Cache.windowskin(@name_windowskin_name = windowskin_name)
       @name_window.x = x
       if current_position != :top
-        @name_window.y = y - 2 * @name_window.window_builder[5] - default_line_height - default_vertical_margin
+        @name_window.y = y - wb[5] - wb[-1] - default_line_height - default_vertical_margin
       else
         @name_window.y = y + height + default_vertical_margin
       end
-      @name_window.height = 2 * @name_window.window_builder[5] + default_line_height
+      @name_window.height = wb[5] + wb[-1] + default_line_height
     end
 
     # Wait the user input
     def wait_user_input
       self.pause = true
-      until Input.trigger?(:A) || (Mouse.trigger?(:left) and simple_mouse_in?) || stop_message_process?
+      until Input.trigger?(:A) || (Mouse.trigger?(:left) && simple_mouse_in?) || stop_message_process?
         message_update_processing
       end
       $game_system.se_play($data_system.cursor_se)
@@ -249,7 +249,7 @@ module Yuki
 
     # Return the window height
     def window_height
-      base_height = 2 * current_window_builder[5]
+      base_height = (wb = current_window_builder)[5] + wb[-1]
       base_height + default_line_height * line_number
     end
 
@@ -303,6 +303,16 @@ module Yuki
     def reset_overwrites
       @position_overwrite = @windowskin_overwrite = @nameskin_overwrite = nil
       @line_number_overwrite = @width_overwrite = nil
+    end
+
+    # Create the name text
+    def create_name_text
+      Text.new(0, @name_window, 0, -Text::Util::FOY, 0, default_line_height, '')
+    end
+
+    # Create the sample text
+    def create_sample_text
+      Text.new(0, viewport, 0, 0, 0, 0, ' ')
     end
   end
 end

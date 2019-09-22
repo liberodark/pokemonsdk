@@ -38,7 +38,7 @@ module Yuki
       @name_window.visible = true
       @name_window.lock
       @name_window.set_origin(0, 0)
-      @name_window.width = @name_text.text_width(name) + 2 * @name_window.window_builder[4]
+      @name_window.width = @name_text.text_width(name) + @name_window.window_builder[4] + @name_window.window_builder[-2]
       @name_window.unlock
       @name_text.text = name
     end
