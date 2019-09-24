@@ -106,7 +106,10 @@ module Scheduler
   end
 end
 
-Scheduler::EventTasks.on(:end_jump, 'Dust after jumping') { |event| Yuki::Particles.add_particle(event, :dust) }
+Scheduler::EventTasks.on(:end_jump, 'Dust after jumping') do |event|
+  particle = Game_Character::SurfTag.include?(event.system_tag) ? :water_dust : :dust
+  Yuki::Particles.add_particle(event, particle)
+end
 Scheduler::EventTasks.on(:end_step, 'Repel count', -1) { $pokemon_party.repel_update }
 Scheduler::EventTasks.on(:end_step, 'Daycare', -1) { $daycare.update }
 Scheduler::EventTasks.on(:end_step, 'Loyalty check', -1) { $pokemon_party.loyalty_update }

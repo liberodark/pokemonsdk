@@ -298,7 +298,7 @@ module Yuki
         max_counter: 1,
         loop: false,
         data: [
-          { file: 'wetsand', rect: [0, 0, 20, 11], zoom: 0.8, position: :character_pos, oy_offset: 6}
+          { file: 'wetsand', rect: [0, 0, 20, 11], zoom: 0.8, position: :character_pos, oy_offset: 6 }
         ]
       },
       stay: {
@@ -307,9 +307,26 @@ module Yuki
         data: [
           { wait: 1 }, { rect: [0, 0, 20, 11] },
           { wait: 1 }, { rect: [20, 0, 20, 11] },
-          { wait: 1 }, { rect: [40, 0, 20, 11] },
+          { wait: 1 }, { rect: [40, 0, 20, 11] }
         ]
       },
+      leave: EMPTY
+    }
+
+    # Splash shown when we jump on water
+    Data[0][:water_dust] = {
+      enter: {
+        max_counter: 8,
+        loop: false,
+        data: [
+          { file: 'wetsand', rect: [0, 0, 20, 11], zoom: 0.8, position: :character_pos, oy_offset: 6 },
+          { wait: 1 }, { rect: [0, 0, 20, 11] },
+          { wait: 1 }, { rect: [20, 0, 20, 11] },
+          { wait: 1 }, { rect: [40, 0, 20, 11] },
+          { state: :leave }
+        ]
+      },
+      stay: EMPTY,
       leave: EMPTY
     }
 
