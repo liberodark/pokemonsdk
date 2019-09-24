@@ -18,16 +18,16 @@ module PFM
       return @actors.size == 6
     end
 
-    # Is the party able to start a battle ?
-    # @return [Boolean]
-    def alive?
-      return @actors.none?(&:dead?)
-    end
-
     # Is the party not able to start a battle ?
     # @return [Boolean]
     def dead?
-      return !alive?
+      return empty? || @actors.all?(&:dead?)
+    end
+
+    # Is the party able to start a battle ?
+    # @return [Boolean]
+    def alive?
+      return !dead?
     end
 
     # Number of pokemon alive in the party

@@ -78,7 +78,7 @@ module ScriptLoader
     hash.each do |filename, contents|
       dirname = File.dirname(filename)
       mkdir(*dirname.split('/')) unless Dir.exist?(dirname)
-      File.write(filename, contents)
+      File.binwrite(filename, contents)
     end
     File.delete(DEFLATE_SCRIPT_PATH)
   end

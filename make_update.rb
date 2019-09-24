@@ -50,7 +50,7 @@ files.each do |filename|
   end
   real_filename = File.join(psdk_base_path, filename)
   if File.exist?(real_filename)
-    mega_script_arch[real_filename] = File.read(real_filename)
+    mega_script_arch[real_filename] = File.binread(real_filename)
   end
 end
 update_file_contents << "mega_script.deflate:%PSDK%/scripts/mega_script.deflate\n"
