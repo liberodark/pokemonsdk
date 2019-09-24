@@ -11,7 +11,7 @@ module Yuki
     # Name of the cursor in Graphics/Windowskins/
     CursorSkin = 'Cursor'
     # Name of the windowskin in Graphics/Windowskins/
-    WindowSkin = 'Message'
+    WINDOW_SKIN = 'Message'
     # Number of choice shown until a relative display is generated
     MaxChoice = 9
     # Index that tells the system to scroll up or down everychoice (relative display)
@@ -173,7 +173,7 @@ module Yuki
     # Retreive the current windowskin
     # @return [String]
     def current_windowskin
-      $game_system.windowskin_name
+      WINDOW_SKIN
     end
 
     # Retreive the current window_builder

@@ -13,6 +13,8 @@ module Yuki
   class Message < LiteRGSS::Window
     # Name of the pause skin in Graphics/Windowskins/
     PauseSkin = 'Pause2'
+    # Windowskin for the name window
+    NAME_SKIN = 'message'
     # @return [Symbol, Array, nil] Overwrite the message position for the current message
     # @note Values can be : :top, :middle, :bottom, :left, :right, [x, y]
     attr_accessor :position_overwrite
@@ -127,7 +129,7 @@ module Yuki
     # Retreive the current windowskin of the name window
     # @return [String]
     def current_name_windowskin
-      @nameskin_overwrite || $game_system.windowskin_name
+      @nameskin_overwrite || NAME_SKIN
     end
 
     # Dispose the sub element of the window (thing created during the message processing)
