@@ -421,7 +421,7 @@ module PFM
     # @param ev [Integer] EV of the stat
     # @param nature_index [Integer] Index of the nature modifier in the nature array
     def calc_regular_stat(base, iv, ev, nature_index)
-      return (((2 * base + ev / 4 + iv) * @level / 100) + 5) * nature[nature_index]
+      return (((2 * base + ev / 4 + iv) * @level / 100) + 5) * nature[nature_index] / 100
     end
   end
 end
