@@ -179,7 +179,7 @@ module Yuki
     # Retreive the current window_builder
     # @return [Array]
     def current_window_builder
-      return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2] == 'M_' # SkinHGSS
+      return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2].casecmp?('m_') # SkinHGSS
       ::GameData::Windows::MessageWindow # Skin PSDK
     end
 
