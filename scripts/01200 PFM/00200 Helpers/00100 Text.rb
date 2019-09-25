@@ -338,7 +338,7 @@ module PFM
     # @param value [Integer, String]
     # @param index [Integer] index of the number1 variable
     def set_num3(value, index = 0)
-      set_variable(NUM2[index].to_s, value.to_s)
+      set_variable(NUM3[index].to_s, value.to_s)
     end
   end
 end

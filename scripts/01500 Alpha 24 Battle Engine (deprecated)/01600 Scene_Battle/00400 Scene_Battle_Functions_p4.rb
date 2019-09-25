@@ -24,46 +24,36 @@ class Scene_Battle
     end
     return false
   end
-  #===
-  #>phase4_message_remove_hp
-  #Animation de la perte de HP
-  #===
-  def phase4_message_remove_hp(pokemon,hp)
-    pk_hp=pokemon.hp
-    20.times do |i|
-      pokemon.hp=pk_hp-hp*i/20
-      pokemon.hp=0 if pokemon.hp<0
+
+  # HP Down animation
+  # @param pokemon [PFM::Pokemon] Pokemon that loses the HP
+  # @param hp [Integer] number of HP to remove
+  def phase4_message_remove_hp(pokemon, hp)
+    pk_hp = pokemon.hp
+    max_time = (hp < 60 || pk_hp <= hp) ? 30 : 60
+    1.step(max_time) do |i|
+      pokemon.hp = pk_hp - (hp * i / max_time)
       status_bar_update(pokemon)
-      break if pokemon.hp<=0
+      break if pokemon.hp <= 0
       Graphics.update
       update_animated_sprites
     end
-    pokemon.hp=pk_hp-hp
-    pokemon.hp=0 if pokemon.hp<0
-    status_bar_update(pokemon)
-    Graphics.update
-    update_animated_sprites
-    phase4_animation_KO(pokemon) if (pk_hp-hp)<=0
+    phase4_animation_KO(pokemon) if (pk_hp - hp) <= 0
   end
-  #===
-  #>phase4_message_add_hp
-  #Animation du gain de HP
-  #===
-  def phase4_message_add_hp(pokemon,hp)
-    pk_hp=pokemon.hp
-    20.times do |i|
-      pokemon.hp=pk_hp+hp*i/20
-      pokemon.hp=pokemon.max_hp if pokemon.hp>pokemon.max_hp
+
+  # HP Up animation
+  # @param pokemon [PFM::Pokemon] Pokemon that receive the HP
+  # @param hp [Integer] number of HP to add
+  def phase4_message_add_hp(pokemon, hp)
+    pk_hp = pokemon.hp
+    max_time = hp < 60 ? 30 : 60
+    1.step(max_time) do |i|
+      pokemon.hp = pk_hp + (hp * i / max_time)
       status_bar_update(pokemon)
-      break if pokemon.hp==pokemon.max_hp
+      break if pokemon.hp == pokemon.max_hp
       Graphics.update
       update_animated_sprites
     end
-    pokemon.hp=pk_hp+hp
-    pokemon.hp=pokemon.max_hp if pokemon.hp>pokemon.max_hp
-    status_bar_update(pokemon)
-    Graphics.update
-    update_animated_sprites
   end
   #===
   #>status_bar_update
@@ -107,79 +97,68 @@ class Scene_Battle
 
       # Bonus from Multi-Exp
       exp_amount += (base_exp / 2) if battler.item_db_symbol == :"exp._share" && index >= $game_temp.vs_type
-    end
-    getters.each_index do |j|
-      i=getters[j] #Pokémon recevant l'expérience
 
-      #On passe au suivant si le Pokémon n'exste pas, est KO ou est déjà aux max level
-      next if !i or i.dead?
-      next if i.level>=$pokemon_party.level_max_limit
+      # No distribution if no exp
+      next if exp_amount == 0
 
-      base_exp=phase4_exp_calculation(pokemon,i) #Expérience récupérée de base
-      if(j<$game_temp.vs_type)
-        get_exp=base_exp*battle_turn/turn_sum/$game_temp.vs_type
-      else
-        get_exp=base_exp*i.battle_turns/turn_sum
-      end
-      #Bonus du multi-exp (exp_totale*50%) // critère 4G
-      get_exp+=(base_exp/2) if(i.item_holding == 216 and j>=$game_temp.vs_type)
+      # EV distribution
+      battler.add_bonus(pokemon.battle_list)
 
-      next if get_exp==0
-      base_exp=i.exp #Expérience de base
-      i.add_bonus(pokemon.battle_list) #Distribution des EVs
-      text = parse_text(18, ((i.item_holding == 216) ? 44 : 43),
-      "[VAR 010C(0000)]" => i.given_name,
-      NUM7R => get_exp.to_s)
-      display_message(text)
-      #Boucle de distribution de l'expérience
-      given=0
-      while given < get_exp && i.level < $pokemon_party.level_max_limit
-        exp_lvl=i.exp_list[i.level+1].to_i
-        exp=(exp_lvl-i.exp_list[i.level])/40
-        exp=1 if exp<=0
-
-        #Mise à jour de l'expérience pour le niveau actuel (40 frames = 1 niveau)
-        40.times do
-          i.exp+=exp
-          break if i.exp>exp_lvl or i.exp>(base_exp+get_exp)
-          #Si le Pokémon n'est pas sur le terrain on ne met pas la barre à jour
-          if(j<$game_temp.vs_type)
-            status_bar_update(i)
-            Graphics.update
-            update_animated_sprites
-          end
-        end
-
-        #Ici on recalibre l'expérience totale
-        i.exp=exp_lvl if i.exp>exp_lvl
-        i.exp=(base_exp+get_exp) if i.exp>(base_exp+get_exp)
-        if(j<$game_temp.vs_type) #Mise à jour de la barre affin de bien voir l'arrêt exact
-          status_bar_update(i)
-          Graphics.update
-          update_animated_sprites
-        end
-
-        #Si on est au dessus de l'exp nécessaire au niveau, on level up !
-        if i.exp >= exp_lvl
-          list = i.level_up_stat_refresh
-          status_bar_update(i) if j<$game_temp.vs_type
-          display_message(parse_text(18, 62, '[VAR 010C(0000)]' => i.given_name,
-          ::PFM::Text::NUM3[1] => (i.level).to_s))
-          i.level_up_window_call(list[0],list[1],@message_window.z+5) if i.position>=0
-          @message_window.update
-          Graphics.update
-          update_animated_sprites
-          i.check_skill_and_learn
-          @_Evolve<<i unless @_Evolve.include?(i)
-        end
-
-        #Mise à jour de l'exp donnée pour savoir si on arrête ou non la boucle
-        given=i.exp-base_exp
-      end
-      # i.battle_turns = 0
+      # Exp animation
+      phase4_distribute_exp_animation(battler, exp_amount, index)
     end
     @exp_distributed = true
   end
+
+  EXP_SOUND = 'audio/se/exp_sound'
+  LVL_SOUND = 'audio/me/rosa_levelup'
+  # Animation of the experience distribution to one Pokemon
+  # @param battler [PFM::Pokemon] Pokemon receiving the exp
+  # @param exp_amount [Integer] number of exp point to distribute
+  # @param index [Integer] index of the battler in the battler array
+  def phase4_distribute_exp_animation(battler, exp_amount, index)
+    # Display exp message
+    text = parse_text(
+      18, battler.item_db_symbol == :"exp._share" ? 44 : 43,
+      '[VAR 010C(0000)]' => battler.given_name,
+      NUM7R => exp_amount.to_s
+    )
+    display_message(text)
+    final_exp = battler.exp + exp_amount
+    # Distribution loop
+    while battler.exp < final_exp && battler.level < $pokemon_party.level_max_limit
+      exp_delta = (battler.exp_lvl - battler.exp_list[battler.level]) / 104
+      exp_delta = 1 if exp_delta <= 0
+      Audio.se_play(EXP_SOUND)
+      # Current level exp distribution
+      while battler.exp < final_exp && battler.exp < battler.exp_lvl
+        # Add & calibration
+        battler.exp = (battler.exp + exp_delta).clamp(0, battler.exp_lvl).clamp(0, final_exp)
+        # Show bar animation
+        next unless index < $game_temp.vs_type
+        status_bar_update(battler)
+        Graphics.update
+        update_animated_sprites
+      end
+      Audio.se_stop
+      # Level up sequenc if needed
+      if battler.exp >= battler.exp_lvl
+        list = battler.level_up_stat_refresh
+        status_bar_update(battler) if index < $game_temp.vs_type
+        Audio.me_play(LVL_SOUND)
+        PFM::Text.set_num3(battler.level.to_s, 1)
+        display_message(parse_text(18, 62, '[VAR 010C(0000)]' => battler.given_name))
+        PFM::Text.reset_variables
+        battler.level_up_window_call(list[0], list[1], @message_window.z + 5) if battler.position >= 0
+        @message_window.update
+        Graphics.update
+        update_animated_sprites
+        battler.check_skill_and_learn
+        @_Evolve << battler unless @_Evolve.include?(battler)
+      end
+    end
+  end
+
   #===
   #>phase4_exp_calculation
   #Calcul de l'expérience

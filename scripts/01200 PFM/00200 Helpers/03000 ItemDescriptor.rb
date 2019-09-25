@@ -19,6 +19,7 @@ module PFM
   # @author Nuri Yuri
   module ItemDescriptor
     include GameData::SystemTags
+    LVL_SOUND = 'audio/me/rosa_levelup'
     # Proc executed when there's no condition (returns true)
     NoCondition = proc { true }
     # Common event condition procs to call before calling event (common_event_id => proc { conditions })
@@ -387,6 +388,7 @@ module PFM
             level.times do |i|
               if(pkmn.level_up)
                 list = pkmn.level_up_stat_refresh
+                Audio.me_play(LVL_SOUND)
                 $scene.display_message(parse_text(22, 128, 
                   be::PKNICK[0] => pkmn.given_name, be::NUM3[1] => pkmn.level.to_s))
                 pkmn.level_up_window_call(list[0],list[1],40005)

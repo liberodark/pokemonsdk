@@ -199,7 +199,7 @@ class Scene_Battle
   #>phase5_ramassage_take_object : récupère l'objet selon les conditions
   #===
   def phase5_ramassage_take_object(pkmn)
-    off = (((pkmn.level - 1.0) / $pokemon_party.level_max_limit) * 10).to_i
+    off = (((pkmn.level - 1.0) / GameData::MAX_LEVEL) * 10).to_i # Offset should always depends on the final max level
     ind = phase5_ramassage_get_index(rand(100))
     env = $env
     if(env.tall_grass? or env.grass?)
