@@ -385,7 +385,7 @@ class Pokemon_Effect
     mod = GameData::Type.multiplier(13, pokemon.type1) *
           GameData::Type.multiplier(13, pokemon.type2) *
           GameData::Type.multiplier(13, pokemon.type3)
-    return (pokemon.max_hp * mod).floor
+    return (pokemon.max_hp * mod / 8).floor
   end
   #> application de la toile gluante
   def sticky_web

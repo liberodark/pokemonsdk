@@ -79,28 +79,35 @@ class Scene_Battle
     bar.refresh
     bar.update
   end
-  #===
-  #>phase4_distribute_exp
-  #Distribution de l'expérience. pokemon est celui qui est tombé KO
-  #===
+
+  # Distribute the exp for the enemies of pokemon
+  # @param pokemon [PFM::Pokemon] the pokemon that got KO'd
   def phase4_distribute_exp(pokemon)
     return if $game_switches[::Yuki::Sw::BT_NoExp]
-    #Selection des Pokémons qui reçoivent l'expérience
-    getters=(pokemon.position<0 ? @actors : @enemies)
-    #Si c'est pas le camp de l'attaquant, pas de distribution de l'exp
-    #return if !getters.include?(@_launcher) and @_launcher #Retiré à cause des contre coups
-    #Somme du nombre de tours
-    turn_sum=0
-    getters.each do |i|
-      turn_sum+=i.battle_turns if i
+    # Pokemon getting the exp
+    # @type [Array<PFM::Pokemon>]
+    getters = (pokemon.position < 0 ? @actors : @enemies)
+    # Calculate the total amount of turn
+    turn_sum = getters.sum { |battler| battler&.battle_turns || 0 }
+    return if turn_sum == 0 # No exp if no turn used to beat the enemy
+    # Number of turn used by the current battling pokemon
+    battle_turn = getters[0, $game_temp.vs_type].sum { |battler| battler&.battle_turns || 0 }
+    # We try to give exp to each pokemon
+    getters.each_with_index do |battler, index|
+      # No exp if KO or level >= max_level
+      next if !battler || battler.dead?
+      next if battler.level >= $pokemon_party.level_max_limit
+      # Calculate the amount of exp according to if the pokemon is battling or not
+      base_exp = phase4_exp_calculation(pokemon, battler)
+      if index < $game_temp.vs_type
+        exp_amount = base_exp * battle_turn / turn_sum / $game_temp.vs_type
+      else
+        exp_amount = base_exp * battler.battle_turns / turn_sum
+      end
+
+      # Bonus from Multi-Exp
+      exp_amount += (base_exp / 2) if battler.item_db_symbol == :"exp._share" && index >= $game_temp.vs_type
     end
-    #Somme des tours des combattant
-    battle_turn=0
-    $game_temp.vs_type.times do |j|
-      battle_turn+=getters[j].battle_turns if getters[j]
-    end
-    return if turn_sum==0
-    #On scane tous les Pokémons de l'équipe affin de distribuer expérience
     getters.each_index do |j|
       i=getters[j] #Pokémon recevant l'expérience
 
@@ -126,7 +133,7 @@ class Scene_Battle
       display_message(text)
       #Boucle de distribution de l'expérience
       given=0
-      while given < get_exp and i.level < $pokemon_party.level_max_limit
+      while given < get_exp && i.level < $pokemon_party.level_max_limit
         exp_lvl=i.exp_list[i.level+1].to_i
         exp=(exp_lvl-i.exp_list[i.level])/40
         exp=1 if exp<=0
