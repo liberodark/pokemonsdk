@@ -5,6 +5,7 @@ module GamePlay
       return update_inputs_skill if @mode == :skill
       return update_inputs_view if @mode == :view
       @running = false if Input.trigger?(:B)
+      return true
     end
 
     # Update the graphics
@@ -32,6 +33,7 @@ module GamePlay
         @skill_selected = -1
         @running = false
       end
+      return true
     end
 
     # Perform the validation of the update_inputs_skills
@@ -72,6 +74,7 @@ module GamePlay
       when 2
         update_inputs_skill_ui
       end
+      return true
     end
 
     # Update the basic inputs

@@ -57,7 +57,7 @@ module GamePlay
 
     # Update the mouse interaction with the ctrl buttons
     def update_mouse_ctrl
-      update_mouse_ctrl_buttons(@base_ui.ctrl, ACTIONS[ctrl_id_state - 1], @mode == :skill)
+      update_mouse_ctrl_buttons(@base_ui.ctrl, ACTIONS[ctrl_id_state], @mode == :skill)
     end
 
     # Action performed when the player press on the [A] button with the mouse

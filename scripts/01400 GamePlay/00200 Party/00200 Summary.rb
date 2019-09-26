@@ -7,7 +7,7 @@ module GamePlay
     KEYS = [
       %i[DOWN LEFT RIGHT B],
       %i[DOWN LEFT RIGHT B],
-      %i[DOWN LEFT RIGHT B],
+      %i[A LEFT RIGHT B],
       %i[A LEFT RIGHT B],
       %i[A LEFT RIGHT B],
       %i[A LEFT RIGHT B]
