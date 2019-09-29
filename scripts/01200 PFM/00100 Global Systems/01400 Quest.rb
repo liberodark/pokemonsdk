@@ -47,7 +47,7 @@ module PFM
     def start(quest_id)
       return false unless GameData::Quest.id_valid?(quest_id)
       return false if finished?(quest_id)
-      return false unless @active_quests.fetch(quest_id, nil)
+      return false if @active_quests.fetch(quest_id, nil)
       quest_data = GameData::Quest.get(quest_id)
       quest = @active_quests[quest_id] = {}
       quest[:items] = Array.new(quest_data.items.size, 0) if quest_data.items

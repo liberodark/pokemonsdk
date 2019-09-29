@@ -72,6 +72,9 @@ module GameData
     end
     alias get_shown_goal shown_goal
 
+    alias number_of_egg_to_find get_egg_amount
+    alias number_of_egg_to_hatch hatch_egg_amount
+
     class << self
       # All the quests
       # @type [Array<GameData::Quest>]
