@@ -248,6 +248,11 @@ module PFM
       if @signal[:finish].any?
         finish_names = @signal[:finish].collect { |quest_id| GameData::Quest.name(quest_id) }
         # TODO : Show new quest UI with finish_names
+        # Switch the quests from stack to stack
+        @signal[:finish].each do |quest_id|
+          @finished_quests[quest_id] = @active_quests[quest_id] if @active_quests[quest_id]
+          @active_quests.delete(quest_id)
+        end
       end
       @signal[:start].clear
       @signal[:finish].clear
