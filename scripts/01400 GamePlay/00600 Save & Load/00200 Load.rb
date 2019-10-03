@@ -42,6 +42,7 @@ module GamePlay
       return @message_window.update if @delete_game
       if index_changed(:@index, :UP, :DOWN, @max_index)
         refresh
+        $game_system.se_play($data_system.cursor_se)
       elsif Input.trigger?(:A)
         action
       elsif Mouse.trigger?(:left)
@@ -210,6 +211,7 @@ module GamePlay
       if LANGUAGE_CHOICE_LIST.empty?
         $pokemon_party = PFM::Pokemon_Party.new(false, DEFAULT_GAME_LANGUAGE)
       else
+        @all_window.each { |window| window.visible = false }
         ask_game_language
       end
       $pokemon_party.expand_global_var
