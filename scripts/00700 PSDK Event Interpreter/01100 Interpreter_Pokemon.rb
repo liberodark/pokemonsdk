@@ -79,7 +79,7 @@ class Interpreter
   # @param id [Integer, Symbol] the id of the Pokemon in the database
   def cry_pokemon(id)
     id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-    raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists." if id < 1 || id >= GameData::Pokemon.all.size
+    raise "Database Error : The Pokémon ##{id} doesn't exists." unless GameData::Pokemon.id_valid?(id)
     Audio.se_play(format('Audio/SE/Cries/%03dCry.wav', id))
   end
 
