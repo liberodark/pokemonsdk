@@ -33,7 +33,7 @@ module GamePlay
     def update
       return unless super
       if @answered
-        Save.save
+        save_game
         saved_message = parse_text(26, 17, TRNAME[0] => $trainer.name)
         display_message_and_wait(saved_message)
         @running = false
@@ -73,6 +73,11 @@ module GamePlay
     # @return [Pokemon_Party, nil]
     def current_pokemon_party
       $pokemon_party || Save.load
+    end
+
+    # Save the game (method allowing hooks on the save)
+    def save_game
+      Save.save
     end
 
     class << self

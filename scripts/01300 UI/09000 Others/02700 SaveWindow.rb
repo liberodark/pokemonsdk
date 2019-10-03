@@ -152,7 +152,9 @@ module UI
     def update_player(party)
       if party
         @player_character.visible = true
-        @player_character.set_bitmap(party.game_player.character_name, :character).set_rect_div(0, 0, 4, 4)
+        character_name = party.game_player.character_name.clone
+        character_name.gsub!(party.game_player.chara_by_state, Game_Player::STATE_APPEARANCE_SUFFIX[:walking])
+        @player_character.set_bitmap(character_name, :character).set_rect_div(0, 0, 4, 4)
         @player_text.load_color(COLORS[@data.trainer.playing_girl ? 2 : 1])
       else
         @player_character.visible = false
