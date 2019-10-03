@@ -87,7 +87,7 @@ module PFM
       arr = get_order(socket)
       arr.clear
       gdi = GameData::Item
-      arr.concat(@items.each_index.select { |item_id| gdi.socket(item_id) == socket })
+      arr.concat(@items.each_index.select { |item_id| gdi.socket(item_id) == socket && (@items[item_id] || 0) > 0 })
       arr.sort! { |item_ida, item_idb| gdi.position(item_ida) <=> gdi.position(item_idb) }
       return arr
     end
