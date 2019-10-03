@@ -18,6 +18,7 @@ module GamePlay
       if(Input.repeat?(:UP))
         @index-=1
         @index=@item_ids.size if @index<0
+        return _draw_stuff
       elsif(Input.repeat?(:DOWN))
         @index+=1
         @index=0 if @index>@item_ids.size
