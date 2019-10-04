@@ -47,6 +47,7 @@ module BattleEngine
   #V : 
   #===
   def use_skill(launcher, targets, skill)
+    _State_local_update_launcher(launcher)
     #===
     #> Traitement du cas où l'attaque vient tout juste d'être lancée
     #===
@@ -57,6 +58,7 @@ module BattleEngine
     msg_push = true # Affiche <pkmn> utilise <attaque> si true
     targets.each do |target|
       if (target and !target.dead?)
+        _State_local_update_target(target)
         #===
         #> Indication des données pour l'interpreter
         #===
