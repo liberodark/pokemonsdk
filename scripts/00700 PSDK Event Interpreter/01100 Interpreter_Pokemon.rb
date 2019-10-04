@@ -149,7 +149,7 @@ class Interpreter
   def call_battle_wild(id, level, *args)
     id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
     # /!\ the following condition can trigger some bugs...
-    if args[0].is_a?(Numeric) or args[0].class == PFM::Pokemon or id.class == PFM::Pokemon
+    if args[0].is_a?(Numeric) || args[0].is_a?(Symbol) || args[0].class == PFM::Pokemon or id.class == PFM::Pokemon
       args[0] = GameData::Pokemon.get_id(args[0]) if args[0].is_a?(Symbol)
       $wild_battle.start_battle(id, level, *args)
     else
