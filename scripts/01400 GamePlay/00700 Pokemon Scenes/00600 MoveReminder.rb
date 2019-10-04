@@ -60,6 +60,7 @@ module GamePlay
     # Update the graphics
     def update_graphics
       @base.update_background_animation
+      @ui.update_graphics
     end
 
     # Update the mouse

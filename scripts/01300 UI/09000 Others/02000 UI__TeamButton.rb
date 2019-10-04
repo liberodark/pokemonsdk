@@ -26,7 +26,7 @@ module UI
       @background = add_sprite(15, 7, background_name)
       @background.src_rect.height = TextureBackgroundHeight
       # Show the Pokemon icon sprite
-      add_sprite(32, 24, NO_INITIAL_IMAGE, type: PokemonIconSprite)
+      @icon = add_sprite(32, 24, NO_INITIAL_IMAGE, type: PokemonIconSprite)
       # Show the Pokemon nickname
       add_text(50, 17, 79, 16, :given_name, type: SymText, color: 9)
       # Show the Pokemon gender
@@ -95,6 +95,11 @@ module UI
     # Refresh the button
     def refresh
       self.data = @data
+    end
+
+    # Update the graphics
+    def update_graphics
+      @icon.update
     end
 
     private

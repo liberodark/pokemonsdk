@@ -79,6 +79,7 @@ module GamePlay
     def update_graphics
       update_selector
       @base_ui.update_background_animation
+      @team_buttons.each(&:update_graphics)
     end
     alias update_during_process update_graphics
 

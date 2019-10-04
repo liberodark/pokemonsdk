@@ -22,6 +22,7 @@ module GamePlay
     def update_graphics
       @base_ui.update_background_animation
       update_arrow
+      @pokeface.update_graphics
     end
 
     private

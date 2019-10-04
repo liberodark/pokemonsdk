@@ -61,6 +61,11 @@ module UI
       update_skill_list
     end
 
+    # Update the graphics
+    def update_graphics
+      @icon.update
+    end
+
     private
 
     # Return the background name
@@ -80,7 +85,7 @@ module UI
       @gender = push(101, 10, nil, type: GenderSprite)
       @level_text = add_text(11, 8 + 14, 60, 16, text_get(27, 29), color: 9) # Level
       add_text(14 + @level_text.real_width, 8 + 14, 95, 16, :level_text, type: SymText, color: 11)
-      push(94, 20, nil, type: PokemonIconSprite)
+      @icon = push(94, 20, nil, type: PokemonIconSprite)
       init_stats
     end
 

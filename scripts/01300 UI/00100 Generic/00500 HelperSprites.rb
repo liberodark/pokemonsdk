@@ -143,23 +143,49 @@ module UI
     def initialize(viewport, auto_align = true)
       super(viewport)
       @auto_align = auto_align
+      # @type [Yuki::GifReader]
+      @gif_reader = nil
     end
 
     # Set the pokemon
     # @param pokemon [PFM::Pokemon, nil]
     def data=(pokemon)
       if (self.visible = (pokemon ? true : false))
-        bmp = self.bitmap = pokemon.send(*bitmap_source)
+        bmp = self.bitmap = load_bitmap(pokemon)
         auto_align(bmp) if @auto_align
       end
     end
 
+    # Update the face sprite
+    def update
+      @gif_reader&.update(bitmap)
+    end
+
     private
+
+    # Load the Sprite bitmap
+    # @param pokemon [PFM::Pokemon]
+    # @return [Bitmap]
+    def load_bitmap(pokemon)
+      bitmap&.dispose if @gif_reader
+      if (@gif_reader = pokemon.send(*gif_source))
+        bmp = Bitmap.new(@gif_reader.width, @gif_reader.height)
+        @gif_reader.update(bmp)
+        return bmp
+      end
+      return pokemon.send(*bitmap_source)
+    end
 
     # Retreive the bitmap source
     # @return [Symbol]
     def bitmap_source
       :battler_face
+    end
+
+    # Retreive the gif source
+    # @return [Symbol]
+    def gif_source
+      :gif_face
     end
 
     # Align the sprite according to the bitmap properties
@@ -178,22 +204,63 @@ module UI
     def bitmap_source
       :battler_back
     end
+
+    # Retreive the gif source
+    # @return [Symbol]
+    def gif_source
+      :gif_back
+    end
   end
 
   # Class that show the icon sprite of a Pokemon
-  class PokemonIconSprite < PokemonFaceSprite
+  class PokemonIconSprite < SpriteSheet
+    # Create a new Pokemon FaceSprite
+    # @param viewport [Viewport] Viewport in which the sprite is shown
+    # @param auto_align [Boolean] if the sprite auto align itself (sets its own ox/oy when data= is called)
+    def initialize(viewport, auto_align = true)
+      super(viewport, 2, 1)
+      @auto_align = auto_align
+      @max_counter = 60
+    end
+
+    # Set the pokemon
+    # @param pokemon [PFM::Pokemon, nil]
+    def data=(pokemon)
+      if (self.visible = (pokemon ? true : false))
+        bmp = pokemon.icon
+        @nb_x = bmp.width / bmp.height
+        self.bitmap = bmp
+        auto_align(bmp) if @auto_align
+        @counter = 0
+        @max_counter = max_counter(pokemon)
+      end
+    end
+
+    # Update the pokemon animation
+    def update
+      @counter += 1
+      if @counter >= @max_counter
+        self.sx = (@sx + 1) % 2
+        @counter = 0
+      end
+    end
+
     private
 
-    # Retreive the bitmap source
-    # @return [Symbol]
-    def bitmap_source
-      :icon
+    # Find the max number of frame before switching the @sx value
+    # @param pokemon [PFM::Pokemon, nil]
+    def max_counter(pokemon)
+      return Float::INFINITY if pokemon.asleep? || pokemon.dead?
+      # Changes speed for Pokemon with status effects
+      return 15 if pokemon.status != 0
+      # Changes speed for Pokemon
+      return 10 + ((1 - pokemon.hp_rate) * 60).to_i
     end
 
     # Align the sprite according to the bitmap properties
     # @param bmp [Bitmap] the bitmap source
     def auto_align(bmp)
-      set_origin(bmp.width / 2, bmp.height / 2)
+      set_origin(width / 2, bmp.height / 2)
     end
   end
 

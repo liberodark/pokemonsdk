@@ -6,7 +6,7 @@ module UI
     # @param viewport [Viewport]
     def initialize(viewport)
       super(viewport, 0, 0, default_cache: :interface)
-      push(55, 119, nil, type: PokemonFaceSprite)
+      @sprite = push(55, 119, nil, type: PokemonFaceSprite)
       @name = add_text(11, 8, 100, 16, :given_name, type: SymText, color: 9)
       @gender = push(101, 10, nil, type: GenderSprite)
       @item = push(72 + 6, 88 + 16, nil, type: RealHoldSprite)
@@ -21,6 +21,11 @@ module UI
       @gender.visible = false if NO_GENDER.include?(pokemon.id) || pokemon.egg?
       @item.visible = false if pokemon.egg?
       @ball.set_bitmap(GameData::Item.icon(pokemon.captured_with), :icon)
+    end
+
+    # Update the graphics
+    def update_graphics
+      @sprite.update
     end
   end
 end
