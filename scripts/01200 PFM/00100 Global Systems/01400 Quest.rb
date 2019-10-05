@@ -241,13 +241,14 @@ module PFM
 
     # Check the signals and display them
     def check_up_signal
+      return unless $scene.is_a?(Scene_Map)
       if @signal[:start].any?
         start_names = @signal[:start].collect { |quest_id| GameData::Quest.name(quest_id) }
-        # TODO : Show new quest UI with start_names
+        show_quest_inform(start_names, true)
       end
       if @signal[:finish].any?
         finish_names = @signal[:finish].collect { |quest_id| GameData::Quest.name(quest_id) }
-        # TODO : Show new quest UI with finish_names
+        show_quest_inform(finish_names, false)
         # Switch the quests from stack to stack
         @signal[:finish].each do |quest_id|
           @finished_quests[quest_id] = @active_quests[quest_id] if @active_quests[quest_id]
@@ -345,6 +346,16 @@ module PFM
       elsif earning[:item]
         $bag.add_item(earning[:item], earning[:item_amount])
       end
+    end
+
+    # Show the new/finished quest info
+    # @param names [Array<String>]
+    # @param is_new [Boolean]
+    def show_quest_inform(names, is_new)
+      return unless $scene.is_a?(Scene_Map)
+      # @type [Spriteset_Map]
+      helper = $scene.spriteset
+      names.each { |name| helper.inform_quest(name, is_new) }
     end
   end
 end

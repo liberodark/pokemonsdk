@@ -16,6 +16,7 @@ class Spriteset_Map
     init_characters
     init_player
     init_weather_picture_timer
+    init_quest_informer
     finish_init(zone)
   end
 
@@ -158,6 +159,12 @@ class Spriteset_Map
     @timer_sprite = Sprite_Timer.new
   end
 
+  # Create the quest informer array
+  def init_quest_informer
+    # @type [Array<UI::QuestInformer>]
+    @quest_informers = []
+  end
+
   # Spriteset_map dispose
   # @param from_warp [Boolean] if true, prepare a screenshot with some conditions and cancel the sprite dispose process
   # @return [Sprite, nil] a screenshot or nothing
@@ -172,6 +179,7 @@ class Spriteset_Map
     @weather.dispose
     @picture_sprites.each(&:dispose)
     @timer_sprite.dispose
+    @quest_informers.clear
     @viewport1.dispose
     @viewport2.dispose
     @viewport3.dispose
@@ -195,6 +203,7 @@ class Spriteset_Map
     @viewport1.update
     @viewport3.update
     update_panel
+    update_quest_informer
     @viewport1.sort_z unless Graphics.skipping_frame?
   end
 
@@ -310,6 +319,13 @@ class Spriteset_Map
     return @viewport1
   end
 
+  # Add a new quest informer
+  # @param name [String] Name of the quest
+  # @param is_new [Boolean] if the quest is new
+  def inform_quest(name, is_new)
+    @quest_informers << UI::QuestInformer.new(@viewport2, name, is_new, @quest_informers.size)
+  end
+
   private
 
   # Take a snapshot of the map
@@ -324,5 +340,14 @@ class Spriteset_Map
     sp.oy = sp.bitmap.height / 2
     sp.zoom = 1.0 / Config::ScreenScale if Config.const_defined?(:ScreenScale)
     return sp
+  end
+
+  # Update the quest informer
+  def update_quest_informer
+    @quest_informers.each do |informer|
+      informer.update
+      informer.dispose if informer.done?
+    end
+    @quest_informers.clear if @quest_informers.all?(&:done?)
   end
 end

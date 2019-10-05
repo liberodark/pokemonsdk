@@ -178,6 +178,7 @@ pokemonsdk/scripts/01100 Yuki/02400 Yuki_Debug.rb
 pokemonsdk/scripts/01100 Yuki/02401 Yuki__Debug MainUI.rb
 pokemonsdk/scripts/01100 Yuki/02402 Debug_SystemTags.rb
 pokemonsdk/scripts/01100 Yuki/02403 Debug_Groups.rb
+pokemonsdk/scripts/01100 Yuki/00100 Animation/00001 Groups.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00100 Pokedex.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00200 Pokemon_Party.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00201 Pokemon_Party Management.rb
@@ -221,6 +222,7 @@ pokemonsdk/scripts/01300 UI/00500 Summary/00300 Stat.rb
 pokemonsdk/scripts/01300 UI/00500 Summary/00400 Skills.rb
 pokemonsdk/scripts/01300 UI/00500 Summary/00500 Remind.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00100 KeyBindingViewer.rb
+pokemonsdk/scripts/01300 UI/09000 Others/00200 QuestInformer.rb
 pokemonsdk/scripts/01300 UI/09000 Others/01300 UI__DexCTLRButton.rb
 pokemonsdk/scripts/01300 UI/09000 Others/01400 Dex UIs.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02000 UI__TeamButton.rb
