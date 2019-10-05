@@ -221,6 +221,7 @@ module UI
       super(viewport, 2, 1)
       @auto_align = auto_align
       @max_counter = 60
+      @counter = 0
     end
 
     # Set the pokemon
