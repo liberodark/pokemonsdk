@@ -36,6 +36,7 @@ module BattleEngine
     @_Actions = act = actor_actions + enemy_actions
     i = nil
     pkmn = nil
+    quick_claw_triggered = false
     #>Détection d'un switch
     act.each do |i|
       if(i[0] & ID_Switch == ID_Switch) #>Pour prendre en compte 2 et 3
@@ -89,9 +90,10 @@ module BattleEngine
         #>Vérification des objets / talents (avec prio)
         if(_has_items(pkmn, 316, 279)) #>Encens Plein, Ralentiqueue
           i.priority -= DeltaPrio/2
-        elsif(_has_item(pkmn, 217) and _chance(20)) #>Vive Griffe #>Utiliser chance 20 ou rand(100)<20 ?
+        elsif(_has_item(pkmn, 217) && rand(100) < 20) #>Vive Griffe #>Utiliser chance 20 ou rand(100)<20 ?
           i.priority += DeltaPrio #>Attaque avant
           i.spd = -i.spd #>Mais ne parasite pas
+          quick_claw_triggered = true
         elsif(_has_items(pkmn, 215, 278, 289, 290, 291, 292, 293, 294)) #>Bracelet Macho, Balle Fer, truc Pouvoir,
           i.spd /= 2
         elsif(pkmn.id == 132 and _has_item(pkmn, 274)) #>Poudre Vite / Métamorph
@@ -178,6 +180,8 @@ module BattleEngine
         else
           pkmn.prepared_skill = ID_Struggle
         end
+        _msgp(19, 1031, pkmn, '[VAR ITEM2(0001)]' => pkmn.item_name, '[VAR PKNICK(0000)]' => pkmn.given_name) if quick_claw_triggered && _has_item(pkmn, 217)
+        quick_claw_triggered = false
       elsif(i[0]==ID_Switch)
         next unless pkmn = (i[1]<0 ? enemies[i[2]] : actors[i[2]])
         pkmn.attack_order = act_ind
