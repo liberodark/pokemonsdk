@@ -143,7 +143,8 @@ class Scene_Battle
       Graphics.freeze
     else
       $game_system.bgm_stop
-      $game_system.bgm_play($game_temp.map_bgm) unless $scene.is_a?(Yuki::SoftReset)
+      #$game_system.bgm_play($game_temp.map_bgm) unless $scene.is_a?(Yuki::SoftReset)
+			$game_map.autoplay unless $scene.is_a?(Yuki::SoftReset)
     end
   end
   #--------------------------------------------------------------------------

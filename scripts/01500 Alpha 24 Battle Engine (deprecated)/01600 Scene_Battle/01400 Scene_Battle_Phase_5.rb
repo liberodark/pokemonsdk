@@ -17,6 +17,7 @@ class Scene_Battle
       $game_switches[Yuki::Sw::BT_Defeat]=false
     end
     $game_switches[Yuki::Sw::BT_Victory]=!$game_switches[Yuki::Sw::BT_Defeat]
+		$game_player.leave_cycling_state if $game_switches[Yuki::Sw::BT_Defeat] == true 
     #>Retrait de l'état de méga évolution
     @actors.each do |pkmn|
       pkmn.unmega_evolve if pkmn
