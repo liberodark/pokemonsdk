@@ -27,7 +27,7 @@ module PFM
         $scene.display_message(parse_text(39, 8))
       end
     end,
-    fly: proc do |_pkmn, _skill, test = false|
+    fly: proc do |pkmn, _skill, test = false|
       next false if test
       if $game_switches[Yuki::Sw::Env_CanFly]
         carte = GamePlay::WorldMap.new(:fly, $env.get_worldmap, pkmn)
