@@ -213,6 +213,7 @@ module BattleEngine
       end
 
     end
+    STURDY_BLOCK_MOVES = %i[s_multi_hit s_2hits s_explosion]
     #===
     #> Capacités avant la perte des HP
     #  Indique si la perte des HP peut s'effectuer ou non
@@ -235,7 +236,7 @@ module BattleEngine
           end
         when 37 #> Fermeté
           unless(::GameData::Flag_4G)
-            if(pkmn.max_hp == pkmn.hp and hp >= pkmn.hp and skill.symbol != :s_explosion)
+            if(pkmn.max_hp == pkmn.hp and hp >= pkmn.hp and !STURDY_BLOCK_MOVES.include?(skill.symbol))
               _mp([:ability_display, pkmn])
               _mp([:hp_down_proto, pkmn, pkmn.hp - 1])
               return false

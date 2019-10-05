@@ -133,6 +133,7 @@ module BattleEngine
       return if @ignore or target.hp==0
       msg(parse_text_with_pokemon(19,213,target))
     end
+    MULTI_HIT_MOVES = %i[s_multi_hit s_2hits]
     #===
     #>Affichage de la perte de HP
     #===
@@ -160,8 +161,10 @@ module BattleEngine
         if(be.has_endure_effect? or (BattleEngine._has_item(target, 230) and rand(10)==0))
           hp = target.hp - 1
         elsif(BattleEngine._has_item(target, 275))
-          hp = target.hp - 1
-          set_item(target, 0, true)
+          if target.hp == target.max_hp && !MULTI_HIT_MOVES.include?(@skill.symbol)
+            hp = target.hp - 1
+            set_item(target, 0, true)
+          end
         end
       end
       #> Si le Pokémon a des capacités qui l'empêche de perdre des HP
