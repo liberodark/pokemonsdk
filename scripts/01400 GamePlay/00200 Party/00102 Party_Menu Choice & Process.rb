@@ -28,7 +28,7 @@ module GamePlay
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       unless pokemon.egg?
         pokemon.skills_set.each_with_index do |skill, i|
-          if skill && (skill.map_use > 0 || ::PFM::SkillProcess[skill.id])
+          if skill && (skill.map_use > 0 || PFM::SKILL_PROCESS[skill.db_symbol])
             choices.register_choice(skill.name, i, on_validate: method(:use_pokemon_skill), color: skill_color)
           end
         end
@@ -81,7 +81,7 @@ module GamePlay
       pokemon = @party[@index]
       # @type [PFM::Skill]
       skill = pokemon.skills_set[move_index]
-      if (@call_skill_process = PFM::SkillProcess[skill.id])
+      if (@call_skill_process = PFM::SKILL_PROCESS[skill.db_symbol])
         if (type = @call_skill_process.call(pokemon, nil, true))
           if type == true
             @call_skill_process.call(pokemon, skill)
@@ -94,6 +94,7 @@ module GamePlay
           elsif type == :block
             display_message(parse_text(22, 108))
             @base_ui.hide_win_text
+            @call_skill_process = nil
             return
           end
         else

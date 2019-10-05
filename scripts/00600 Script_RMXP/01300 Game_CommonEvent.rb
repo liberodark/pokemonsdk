@@ -1,5 +1,7 @@
 # Describe a common event during the game processing
 class Game_CommonEvent
+  # @return [Integer] ID of the wild battle start common event
+  WILD_BATTLE = 1
   # @return [Integer] ID of the appearence common event
   APPEARANCE = 2
   # @return [Integer] ID of the follower speech common event
