@@ -60,7 +60,7 @@ module BattleEngine
     elsif(skill.type_ground? and !_is_grounded(target))
       type_mod = 0
       if _has_item(target, 541) #> Ballon
-        _msgp(19, 408, pokemon)
+        _msgp(19, 408, target)
       elsif @_State[:target_ability] == 48 #> Lévitation
         _mp([:ability_display, target])
       end
