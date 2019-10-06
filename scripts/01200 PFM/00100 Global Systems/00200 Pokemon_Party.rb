@@ -86,6 +86,9 @@ module PFM
     # Maximum level an allied Pokemon can reach
     # @return [Integer]
     attr_accessor :level_max_limit
+    # Name of the time set to use (nil = default)
+    # @return [Symbol, nil]
+    attr_accessor :tint_time_set
     # Create a new Pokemon Party
     # @param battle [Boolean] if its a party of a NPC battler
     # @param starting_language [String] the lang id of the game described by this object
