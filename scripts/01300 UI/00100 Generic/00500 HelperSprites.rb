@@ -253,7 +253,7 @@ module UI
     def max_counter(pokemon)
       return Float::INFINITY if pokemon.asleep? || pokemon.dead?
       # Changes speed for Pokemon with status effects
-      return 15 if pokemon.status != 0
+      return 20 + ((1 - pokemon.hp_rate) * 120).to_i if pokemon.status != 0
       # Changes speed for Pokemon
       return 10 + ((1 - pokemon.hp_rate) * 60).to_i
     end
