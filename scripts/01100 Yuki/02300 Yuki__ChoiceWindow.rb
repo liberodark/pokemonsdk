@@ -96,9 +96,9 @@ module Yuki
         return
       end
       if @choices.size > MaxChoice
-        self.oy -= 16 unless @index < DeltaChoice || @index > (@choices.size - DeltaChoice)
+        self.oy -= default_line_height unless @index < DeltaChoice || @index > (@choices.size - DeltaChoice)
       end
-      cursor_rect.y -= 16
+      cursor_rect.y -= default_line_height
       @index -= 1
     end
 
@@ -111,9 +111,9 @@ module Yuki
         return
       end
       if @choices.size > MaxChoice
-        self.oy += 16 unless @index < DeltaChoice || @index > (@choices.size - DeltaChoice)
+        self.oy += default_line_height unless @index < DeltaChoice || @index > (@choices.size - DeltaChoice)
       end
-      cursor_rect.y += 16
+      cursor_rect.y += default_line_height
     end
 
     # Change the window builder and rebuild the window
@@ -149,7 +149,7 @@ module Yuki
 
     # Define the cursor rect
     def define_cursor_rect
-      cursor_rect.set(-4, @index * 16, cursorskin.width, cursorskin.height)
+      cursor_rect.set(-4, @index * default_line_height, cursorskin.width, cursorskin.height)
     end
 
     # Tells the choice is done
