@@ -7,13 +7,13 @@ class Scene_Battle
   #>start_phase2 : Initialisation du choix pour le pokémon index
   #===
   def start_phase2(index=0)
-    @viewport.rect.height = @viewport_sub.rect.y - @viewport.rect.y
     # Remise à 0 de l'avancement de la phase 4 (on passe forcément ici)
     @phase4_step = 0
     @phase = 2
     return if judge
     @action_selector.pos_selector(@action_index=0) unless USE_ALPHA_25_UI
     #Vidage des actions si on retourne au premier actor :d
+    index = 0 if index < 0
     @actor_actions.clear if index == 0
     #Si le Pokémon est KO on le saute
     if @actors[index].dead?
@@ -34,6 +34,7 @@ class Scene_Battle
       window.width = @viewport.rect.width - @player_choice_ui.width
       @player_choice_ui.reset
       @player_choice_ui.visible = true
+      @viewport.rect.height = @viewport_sub.rect.y - @viewport.rect.y
     end
     display_message(parse_text(18, 71, '[VAR 010C(0000)]' => @actors[index].given_name),false) if @Actions_To_DO.size==0
     unless USE_ALPHA_25_UI
