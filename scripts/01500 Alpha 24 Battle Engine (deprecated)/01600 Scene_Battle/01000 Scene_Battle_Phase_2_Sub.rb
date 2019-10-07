@@ -91,9 +91,9 @@ class Scene_Battle
     #> Vérification de l'empêchement de fuite (blocage ou combat de dresseur)
     t = $game_temp.trainer_battle 
     if t or $game_switches[Yuki::Sw::BT_NoEscape]
+      @player_choice_ui&.visible = false
       display_message(text_get(18,(t ? 79 : 77))) #"Vous ne pouvez pas fuire lors d'un combat de dresseur.")
       @action_selector&.visible = true
-      @player_choice_ui&.visible = true
       start_phase2(@actor_actions.size)
       return
     end

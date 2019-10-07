@@ -7,6 +7,7 @@ class Scene_Battle
   Yuki::Sw::BT_Phase2,Yuki::Sw::BT_Phase3,
   Yuki::Sw::BT_Phase4,Yuki::Sw::BT_Phase5]
   USE_ALPHA_25_UI = true
+  SHOW_ALPHA_25_BLACK_BORDER = true
   #===
   #>Récupération des contantes utiles
   #===
@@ -79,11 +80,11 @@ class Scene_Battle
     # Intialisation de la variable d'attente
     @wait_count = 0
     # Initialisation du background
-    @viewport=Viewport.create(:main, 1000)
-    rc = @viewport.rect
-    @viewport_sub = Viewport.new(rc.x, rc.y + rc.height - 48, rc.width, 48)
-    @viewport_sub.z = 60_000
+    @viewport = Viewport.create(:main, 1000)
     if USE_ALPHA_25_UI
+      rc = @viewport.rect
+      @viewport_sub = Viewport.new(rc.x, rc.y + rc.height - 48, rc.width, 48)
+      @viewport_sub.z = 60_000
       @player_choice_ui = BattleUI::PlayerChoice.new(@viewport_sub)
       @skill_choice_ui = BattleUI::SkillChoice.new(@viewport_sub)
     end
@@ -129,7 +130,7 @@ class Scene_Battle
     PSP.dispose_sprite
     #<PSPADD
     @viewport.dispose
-    @viewport_sub.dispose
+    @viewport_sub&.dispose
     #>Réajout des objets non utilisés.
     while @phase4_step < @actions.size
       phase4_use_item(@actions[@phase4_step], true) if @actions[@phase4_step][0] == 1

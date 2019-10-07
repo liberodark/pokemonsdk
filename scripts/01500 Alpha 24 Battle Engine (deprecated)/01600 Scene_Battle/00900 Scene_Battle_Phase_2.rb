@@ -34,7 +34,7 @@ class Scene_Battle
       window.width = @viewport.rect.width - @player_choice_ui.width
       @player_choice_ui.reset
       @player_choice_ui.visible = true
-      @viewport.rect.height = @viewport_sub.rect.y - @viewport.rect.y
+      @viewport.rect.height = @viewport_sub.rect.y - @viewport.rect.y if SHOW_ALPHA_25_BLACK_BORDER
     end
     display_message(parse_text(18, 71, '[VAR 010C(0000)]' => @actors[index].given_name),false) if @Actions_To_DO.size==0
     unless USE_ALPHA_25_UI
@@ -117,6 +117,7 @@ class Scene_Battle
   #===
   def update_phase2_escape(auto_return=false)
     @message_window.width = @viewport.rect.width if USE_ALPHA_25_UI
+    @player_choice_ui&.visible = false
     spc_stop_bouncing_animation
     success = rand(256) < phase2_flee_factor
     $game_temp.vs_type.times do |i|
