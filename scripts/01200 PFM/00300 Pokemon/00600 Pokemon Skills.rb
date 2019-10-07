@@ -218,5 +218,8 @@ module PFM
       end
       skills_set.compact!
     end
+
+    # Compatibility for deprecated battle engine
+    alias moveset skills_set
   end
 end

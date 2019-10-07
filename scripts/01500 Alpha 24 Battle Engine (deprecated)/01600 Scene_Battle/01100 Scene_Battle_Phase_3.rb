@@ -27,23 +27,30 @@ class Scene_Battle
     end
 
     #>Récupération de l'index d'une attaque "valide"
-    @atk_index=0
-    4.times do |i|
-      skill=actor.skills_set[i]
-      @atk_index=i if skill and skill.id==actor.last_skill.to_i.abs
+    @atk_index = 0
+    if USE_ALPHA_25_UI
+      @skill_choice_ui.reset(@actors[@actor_actions.size])
+      @skill_choice_ui.visible = true
+      @message_window.visible = false
+    else
+      4.times do |i|
+        skill=actor.skills_set[i]
+        @atk_index=i if skill and skill.id==actor.last_skill.to_i.abs
+      end
+      @skill_selector.update_text(@atk_index, @actors[@actor_actions.size])
+      @skill_selector.visible = true
     end
-    @skill_selector.update_text(@atk_index, @actors[@actor_actions.size])
-    @skill_selector.visible = true
     #@message_window.visible = false
     0 while get_action
 
-    launch_phase_event(3,true)
+    launch_phase_event(3, true)
   end
   #===
   #>update_phase3
   #Mise à jour de la phase 3 : Choix de l'attaque à réaliser
   #===
   def update_phase3
+    return update_phase3_alpha25 if USE_ALPHA_25_UI
     forced_action = get_action
 
     if(!forced_action and Mouse.trigger?(:left))
@@ -99,6 +106,25 @@ class Scene_Battle
       @skill_selector.visible=false
       @message_window.visible=true
       start_phase2(@actor_actions.size)
+    end
+  end
+
+  def update_phase3_alpha25
+    @skill_choice_ui.update
+    if @skill_choice_ui.validated?
+      @skill_choice_ui.visible = false
+      @message_window.visible = true
+      return start_phase2(@actor_actions.size) if @skill_choice_ui.result == :cancel
+      @atk_index = @actors[@actor_actions.size].moveset.index(@skill_choice_ui.result)
+      if(BattleEngine::_skill_blocked?(@actors[@actor_actions.size], @skill_choice_ui.result))
+        $game_system.se_play($data_system.buzzer_se)
+        phase4_message_display()
+        return
+      end
+      ennemies = update_phase3_enemy_select
+      return start_phase2(@actor_actions.size) if ennemies == -1
+      @actor_actions.push([0, @atk_index, ennemies, @actors[@actor_actions.size]])
+      update_phase2_next_act
     end
   end
 end

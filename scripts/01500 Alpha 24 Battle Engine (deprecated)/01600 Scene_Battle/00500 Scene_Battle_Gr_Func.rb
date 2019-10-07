@@ -88,4 +88,17 @@ class Scene_Battle
       @animator = nil
     end
   end
+
+  # Start the IdlePokemonAnimation (bouncing)
+  # @param pokemon_index [Integer] Index of the Pokemon in the party
+  def spc_start_bouncing_animation(pokemon_index)
+    sprite = @actor_sprites[pokemon_index]
+    bar = @actor_bars[pokemon_index]
+    @parallel_animations[Battle::Visual::IdlePokemonAnimation] = Battle::Visual::IdlePokemonAnimation.new(self, sprite, bar)
+  end
+
+  # Stop the IdlePokemonAnimation (bouncing)
+  def spc_stop_bouncing_animation
+    @parallel_animations[Battle::Visual::IdlePokemonAnimation]&.remove
+  end
 end

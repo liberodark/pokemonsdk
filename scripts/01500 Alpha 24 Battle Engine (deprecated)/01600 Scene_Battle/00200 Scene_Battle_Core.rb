@@ -6,6 +6,7 @@ class Scene_Battle
   SWs_ID_Phase=[Yuki::Sw::BT_Phase1,Yuki::Sw::BT_Phase1,
   Yuki::Sw::BT_Phase2,Yuki::Sw::BT_Phase3,
   Yuki::Sw::BT_Phase4,Yuki::Sw::BT_Phase5]
+  USE_ALPHA_25_UI = true
   #===
   #>Récupération des contantes utiles
   #===
@@ -16,6 +17,7 @@ class Scene_Battle
   attr_accessor :fished
   attr_reader :actions
   attr_reader :phase4_step
+  attr_reader :parallel_animations
   #--------------------------------------------------------------------------
   # ● Lancement de la scène
   #--------------------------------------------------------------------------
@@ -44,8 +46,10 @@ class Scene_Battle
     @trainer_names=[]
     # Initialisation de l'affichage graphique du bas
     @message_window = Message.new(Viewport.create(:main, 2000), self)# Window_Message.new()#true)
-    @action_selector=Action_Selector.new
-    @skill_selector=Skill_Selector.new
+    unless USE_ALPHA_25_UI
+      @action_selector=Action_Selector.new
+      @skill_selector=Skill_Selector.new
+    end
     #Initialisation des variables d'état
     @action_index=0 
     @actor_actions=[]
@@ -61,6 +65,7 @@ class Scene_Battle
     @stuff_to_update = [] #>Variable des objets à mettre à jour pendant les messages
     @e_remaining_pk = nil #>Sprite des ball enemies
     @a_remaining_pk = nil #>Sprite des ball allié
+    @parallel_animations = {}
     @to_start=nil #Variable de synchronisation entre start x et l'interpreter
     @money = 0
     @flee_attempt = 0
@@ -75,6 +80,13 @@ class Scene_Battle
     @wait_count = 0
     # Initialisation du background
     @viewport=Viewport.create(:main, 1000)
+    rc = @viewport.rect
+    @viewport_sub = Viewport.new(rc.x, rc.y + rc.height - 48, rc.width, 48)
+    @viewport_sub.z = 60_000
+    if USE_ALPHA_25_UI
+      @player_choice_ui = BattleUI::PlayerChoice.new(@viewport_sub)
+      @skill_choice_ui = BattleUI::SkillChoice.new(@viewport_sub)
+    end
     gr_display_background()
     #Creation des tableaux de sprite
     @actor_sprites=[]
@@ -109,14 +121,15 @@ class Scene_Battle
     Graphics.freeze
     # Effacer les fenêtres
     @message_window.dispose(with_viewport: true)
-    @action_selector.dispose
-    @skill_selector.dispose
+    @action_selector&.dispose
+    @skill_selector&.dispose
     #effacement de tous les sprites générés par l'affichage graphique
     gr_dispose
     #>PSPADD
     PSP.dispose_sprite
     #<PSPADD
     @viewport.dispose
+    @viewport_sub.dispose
     #>Réajout des objets non utilisés.
     while @phase4_step < @actions.size
       phase4_use_item(@actions[@phase4_step], true) if @actions[@phase4_step][0] == 1
@@ -387,5 +400,6 @@ class Scene_Battle
     @enemy_sprites.each do |i|
       i.update if i
     end
+    @parallel_animations.each_value(&:update)
   end
 end

@@ -7,11 +7,12 @@ class Scene_Battle
   #>start_phase2 : Initialisation du choix pour le pokémon index
   #===
   def start_phase2(index=0)
+    @viewport.rect.height = @viewport_sub.rect.y - @viewport.rect.y
     # Remise à 0 de l'avancement de la phase 4 (on passe forcément ici)
     @phase4_step = 0
     @phase = 2
     return if judge
-    @action_selector.pos_selector(@action_index=0)
+    @action_selector.pos_selector(@action_index=0) unless USE_ALPHA_25_UI
     #Vidage des actions si on retourne au premier actor :d
     @actor_actions.clear if index == 0
     #Si le Pokémon est KO on le saute
@@ -28,9 +29,18 @@ class Scene_Battle
       @actor_actions.push([0, @actors[index].find_last_skill_position, 0,@actors[index]])
       return update_phase2_next_act
     end
+    if USE_ALPHA_25_UI
+      (window = @message_window).wait_input = false
+      window.width = @viewport.rect.width - @player_choice_ui.width
+      @player_choice_ui.reset
+      @player_choice_ui.visible = true
+    end
     display_message(parse_text(18, 71, '[VAR 010C(0000)]' => @actors[index].given_name),false) if @Actions_To_DO.size==0
-    @action_selector.pokemon = @actors[index]
-    @action_selector.visible = true
+    unless USE_ALPHA_25_UI
+      @action_selector.pokemon = @actors[index]
+      @action_selector.visible = true
+    end
+    spc_start_bouncing_animation(index)
     0 while get_action
     launch_phase_event(2,true)
   end
@@ -39,6 +49,7 @@ class Scene_Battle
   #Méthode qui va mettre à jour le choix Attaquer, Sac, PKMN, Fuite
   #===
   def update_phase2
+    return update_phase2_alpha_25 if USE_ALPHA_25_UI
     #> Actions forcés par le tutoriel
     forced_action = get_action
 
@@ -60,6 +71,7 @@ class Scene_Battle
     elsif Input.trigger?(:B) and !forced_action or forced_action==:B
       if @actor_actions.size>0 and @actor_actions[-1][0] != 1 #> Empêchement du retour pour les objets
         $game_system.se_play($data_system.decision_se)
+        spc_stop_bouncing_animation
         start_phase2(@actor_actions.size-1)
       end
     end
@@ -67,11 +79,27 @@ class Scene_Battle
     #Reposition du sprite de selection
     @action_selector.pos_selector(@action_index)
   end
+
+  UI_CHOICE_TRANSLATION = { attack: 0, bag: 2, pokemon: 1, flee: 3 }
+  def update_phase2_alpha_25
+    @player_choice_ui.update
+    if @player_choice_ui.validated?
+      if @player_choice_ui.result == :cancel
+        $game_system.se_play($data_system.decision_se)
+        spc_stop_bouncing_animation
+        return start_phase2(@actor_actions.size-1)
+      end
+      @action_index = UI_CHOICE_TRANSLATION[@player_choice_ui.result] || 0
+      on_phase2_validation
+    end
+  end
   #===
   #>update_phase2_next_act
   #Méthode permettant de sauter l'actor en cours pour le suivant ou la phase 4
   #===
   def update_phase2_next_act
+    @message_window.width = @viewport.rect.width if USE_ALPHA_25_UI
+    spc_stop_bouncing_animation
     if $game_temp.vs_type==2 and @actors[1] and
       !@actors[1].dead? and @actor_actions.size==1
       unless(@actor_actions[0][0] == 1 and @actor_actions[0][1][1][:ball_data])
@@ -87,6 +115,8 @@ class Scene_Battle
   #Méthode de fuite (menu fuite)
   #===
   def update_phase2_escape(auto_return=false)
+    @message_window.width = @viewport.rect.width if USE_ALPHA_25_UI
+    spc_stop_bouncing_animation
     success = rand(256) < phase2_flee_factor
     $game_temp.vs_type.times do |i|
       next unless @actors[i]
