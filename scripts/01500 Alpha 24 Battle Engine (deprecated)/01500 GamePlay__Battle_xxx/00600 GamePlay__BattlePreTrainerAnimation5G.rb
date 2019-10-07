@@ -115,16 +115,16 @@ module GamePlay
         index = max == 2 ? i : 2
         sp = ball_sprites[i] = Sprite.new(@viewport).
           set_coordinates(tbls[0][index][0] + 48, tbls[0][index][1] - 60, 20).
-          set_origin(8, 18)
+          set_origin(32, 32)
         sp.bitmap = RPG::Cache.ball(enemies[i].ball_sprite) if enemies[i]
         sp = ball_sprites[i + max] = Sprite.new(@viewport).
           set_coordinates(tbls[1][index][0] + 48, tbls[1][index][1] - 60, 3).
-          set_origin(8, 18)
+          set_origin(32, 32)
         sp.bitmap = RPG::Cache.ball(actors[i].ball_sprite) if actors[i]
       end
       (BALL_Animation.size/2).times do |i|
         ball_sprites.each do |sp|
-          sp.src_rect.set(0,BALL_Animation[i*2]*26,16,26)
+          sp.src_rect.set(0,BALL_Animation[i*2]*64,64,64)
           sp.angle = BALL_Animation[i*2+1]
           sp.y += 5 if i >= 20 and i < 30
         end

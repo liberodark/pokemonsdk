@@ -179,8 +179,8 @@ module GamePlay
         sp.x = 340 + i*delta_ball - ($game_temp.vs_type - 1) * delta_ball
         sp.z = 20
         sp.bitmap = RPG::Cache.ball(enemies[i].ball_sprite) if enemies[i]
-        sp.ox = 8
-        sp.oy = 18
+        sp.ox = 32
+        sp.oy = 32
       end
       delta_x = 180.0 / (BALL_Animation.size / 2)
       delta_angle = Math::PI / (BALL_Animation.size / 2)
@@ -189,7 +189,7 @@ module GamePlay
       (BALL_Animation.size/2).times do |i|
         y = 120 - Math::sin(angle) * r_y
         ball_sprites.each do |sp|
-          sp.src_rect.set(0,BALL_Animation[i*2]*26,16,26)
+          sp.src_rect.set(0,BALL_Animation[i*2]*64,64,64)
           sp.angle = BALL_Animation[i*2+1]
           sp.x -= delta_x
           sp.y = y
