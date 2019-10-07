@@ -61,7 +61,7 @@ module Yuki
         Tone.new(-55, -55, -15, 0), # 20
         Tone.new(-60, -60, -14, 0), # 21
         Tone.new(-65, -65, -13, 0), # 22
-        Tone.new(-70, -70, -10, 0), # 23
+        Tone.new(-70, -70, -10, 0) # 23
       ]
     }
     # The different tones
