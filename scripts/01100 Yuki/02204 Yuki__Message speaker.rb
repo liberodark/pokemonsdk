@@ -6,7 +6,9 @@ module Yuki
     PARSER = {
       'name=' => :parse_speaker_name,
       'face=' => :parse_speaker_face,
-      'city=' => :parse_city_image
+      'city=' => :parse_city_image,
+      'can_skip' => :parse_can_skip,
+      'windowskin=' => :parse_window_skin
     }
 
     # Parse the speakers information
@@ -83,6 +85,18 @@ module Yuki
       @city_sprite.z = z + 1
       @city_sprite.opacity = 0
       @city_sprite.set_bitmap(name, :picture)
+    end
+
+    # Parse the can skip authorisation
+    # @param _ignored [String] ignored param
+    def parse_can_skip(_ignored)
+      @can_skip_message = true
+    end
+
+    # Parse the message box windowsking change
+    # @param windowskin [String] name of the temporary windowskin
+    def parse_window_skin(windowskin)
+      @windowskin_overwrite = windowskin
     end
   end
 end

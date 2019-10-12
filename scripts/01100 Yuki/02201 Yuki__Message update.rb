@@ -84,7 +84,7 @@ module Yuki
           if Input.trigger?(:A) or (Mouse.trigger?(:left) and simple_mouse_in?)
             $game_system.se_play($data_system.cursor_se)
             terminate_message
-          elsif update_choice_auto_skip
+          elsif update_choice_auto_skip || panel_skip?
             terminate_message
           end
         else

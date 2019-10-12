@@ -84,7 +84,7 @@ module Yuki
         break if stop_message_process?
         text.nchar_draw += 1
         counter += 1
-        if Input.trigger?(:A) or (Mouse.trigger?(:left) and simple_mouse_in?) # Skip request
+        if Input.trigger?(:A) || (Mouse.trigger?(:left) && simple_mouse_in?) || panel_skip? # Skip request
           text.nchar_draw = str.size
           return -1
         end
@@ -130,11 +130,11 @@ module Yuki
     def replace_message_codes(text)
       text = ::PFM::Text.parse_string_for_messages(text)
       text.gsub!(/\\[Gg]/) { show_gold_window }
-      text.gsub!(/\[WAIT ([0-9]+)\]/) { "\x02[#{$1}]"}
-      text.gsub!(/\\[Cc]\[([0-9]+)\]/) { "\001[#{$1}]" }
+      text.gsub!(/\[WAIT ([0-9]+)\]/, "\x02[\\1]")
+      text.gsub!(/\\[Cc]\[([0-9]+)\]/, "\x01[\\1]")
       text.gsub!(/\\[Ss]\[([bir]+)\]/) { "\x03[#{get_style_code($1)}]" }
       text.gsub!(/\\\^/) { "\x04[0]" }
-      text.gsub!(/\\spd\[([0-9]+)\]/) { "\x05[#{$1}]" }
+      text.gsub!(/\\spd\[([0-9]+)\]/, "\x05[\\1]")
       text.sub!(/\:\[([^\]]+)\]\:/) { parse_speaker($1) }
       text.gsub!(S_000, S_sl)
       return text
@@ -146,6 +146,7 @@ module Yuki
       return unless $game_temp.message_text
       @drawing_message = true
       set_origin(0, 0)
+      @can_skip_message = false
       text = replace_message_codes($game_temp.message_text)
       @x = origin_x
       @y = 0
@@ -180,7 +181,7 @@ module Yuki
           set_text_style(@text, @style)
           @x += @text.real_width
           counter = progress(@text, instr, counter) unless skip
-          skip = (counter == -1 || Input.trigger?(:A))
+          skip = (counter == -1 || Input.trigger?(:A) || panel_skip?)
         end
       end
       @text = nil
@@ -189,6 +190,11 @@ module Yuki
     # Return the origin x for the current message
     def origin_x
       @city_sprite ? @city_sprite.width : 0
+    end
+
+    # Test if the player is reading a pannel and skips by moving
+    def panel_skip?
+      @can_skip_message && Input.dir4 != 0 && Input.dir4 != $game_player.direction
     end
 
     # Call a marker action
