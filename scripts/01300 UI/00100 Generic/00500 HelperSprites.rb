@@ -152,7 +152,7 @@ module UI
     def data=(pokemon)
       if (self.visible = (pokemon ? true : false))
         bmp = self.bitmap = load_bitmap(pokemon)
-        auto_align(bmp) if @auto_align
+        auto_align(bmp, pokemon) if @auto_align
       end
     end
 
@@ -190,8 +190,10 @@ module UI
 
     # Align the sprite according to the bitmap properties
     # @param bmp [Bitmap] the bitmap source
-    def auto_align(bmp)
-      set_origin(bmp.width / 2, bmp.height)
+    # @param pokemon [PFM::Pokemon]
+    def auto_align(bmp, pokemon)
+      oy = bmp.height + (self.class == PokemonFaceSprite ? pokemon.front_offset_y : 0)
+      set_origin(bmp.width / 2, oy)
     end
   end
 

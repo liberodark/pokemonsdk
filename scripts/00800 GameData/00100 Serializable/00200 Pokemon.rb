@@ -109,6 +109,9 @@ module GameData
     # List of moves the Pokemon can learn from a NPC
     # @return [Array<Integer>]
     attr_accessor :master_moves
+    # Front offset y of the Pokemon for Summary & Dex UI
+    # @return [Integer]
+    attr_accessor :front_offset_y
     # Create a new GameData::Pokemon object
     def initialize(height, weight, id_bis, type1, type2, base_hp, base_atk, 
       base_dfe, base_spd, base_ats, base_dfs, ev_hp, ev_atk, ev_dfe, ev_spd, 
@@ -151,6 +154,7 @@ module GameData
       @items = items
       @baby = baby
     end
+
     class << self
       # All the Pokemon with their form
       @data = []
@@ -637,6 +641,19 @@ module GameData
           return (data[form] || data[0]).baby
         end
         return @data[0][0].baby
+      end
+
+      # Safely return the front offset y of a Pokemon
+      # @param id [Integer, Symbol] id of the Pokemon in the database
+      # @param form [Integer] form of the Pokemon
+      # @return [Integer]
+      def front_offset_y(id, form = 0)
+        id = get_id(id) if id.is_a?(Symbol)
+        if id_valid?(id)
+          data = @data[id]
+          return (data[form] || data[0]).front_offset_y || 0
+        end
+        return 0
       end
 
       # Safely return the db_symbol of an item

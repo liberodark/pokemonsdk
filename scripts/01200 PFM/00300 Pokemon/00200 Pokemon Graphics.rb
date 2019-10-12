@@ -97,6 +97,7 @@ module PFM
       return ::Yuki::GifReader.new(str) if File.exist?(str)
       return nil
     end
+
     # Return the GifReader back of the Pokemon
     # @return [::Yuki::GifReader, nil]
     def gif_back
@@ -140,6 +141,12 @@ module PFM
         @character = character
       end
       return @character
+    end
+
+    # Return the front offset y of the Pokemon
+    # @return [Integer]
+    def front_offset_y
+      return GameData::Pokemon.front_offset_y(@id, @form)
     end
 
     private
