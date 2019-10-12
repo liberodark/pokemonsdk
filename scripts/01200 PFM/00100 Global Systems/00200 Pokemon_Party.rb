@@ -89,6 +89,9 @@ module PFM
     # Name of the time set to use (nil = default)
     # @return [Symbol, nil]
     attr_accessor :tint_time_set
+    # User data
+    # @return [Hash]
+    attr_reader :user_data
     # Create a new Pokemon Party
     # @param battle [Boolean] if its a party of a NPC battler
     # @param starting_language [String] the lang id of the game described by this object
@@ -123,17 +126,17 @@ module PFM
       @game_player = Game_Player.new
       @pathfinding_requests = Pathfinding::DEFAULT_SAVE
       @max_level = GameData::MAX_LEVEL
-      expand_global_var
       @pokedex = PFM::Pokedex.new
       @trainer = PFM::Trainer.new
       @options = PFM::Options.new(starting_language)
-      load_parameters
       @storage = PFM::Storage.new
       @env = PFM::Environnement.new
       @wild_battle = PFM::Wild_Battle.new
       @daycare = PFM::Daycare.new
       @berries = {}
       @quests = PFM::Quests.new
+      expand_global_var
+      load_parameters
     end
 
     # Perform the RMXP bootup
@@ -194,6 +197,9 @@ module PFM
       end
       # Patch 2019-08-31
       $pokemon_party.level_max_limit = GameData::MAX_LEVEL unless $pokemon_party.level_max_limit
+      # Patch 2019-10-12
+      @user_data ||= {}
+      $user_data = @user_data
     end
 
     # Update the processing of the repel
