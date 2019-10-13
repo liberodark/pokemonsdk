@@ -4,7 +4,6 @@ module GamePlay
     def create_graphics
       super
       create_base_ui
-      create_frame
       unless @page_id # If we're only showing a Pokemon Dex info we'll not create the other sprites
         create_list
         create_arrow
@@ -14,6 +13,7 @@ module GamePlay
       end
       create_face
       create_info
+      create_frame
       # We update the state to give the dex an initial state before it shows
       change_state(@state)
     end

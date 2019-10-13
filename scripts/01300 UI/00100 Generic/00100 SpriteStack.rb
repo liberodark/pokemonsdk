@@ -37,7 +37,7 @@ module UI
     # @param type [Class] the class to use to generate the sprite
     # @param ox [Numeric] the ox of the sprite
     # @param oy [Numeric] the oy of the sprite
-    # @return [type.new(@viewport, *args)] the pushed sprite
+    # @return [Sprite] the pushed sprite
     def push(x, y, bmp, *args, rect: nil, type: LiteRGSS::Sprite, ox: 0, oy: 0)
       sprite = type.new(@viewport, *args)
       sprite.set_position(@x + x, @y + y).set_origin(ox, oy)
@@ -70,6 +70,7 @@ module UI
     # @param filename [String] name of the image in the cache
     # @param rect [Array, nil] the src_rect.set arguments if required
     # @param type [Class] the class to use to generate the sprite
+    # @return [Sprite]
     def add_background(filename, type: LiteRGSS::Sprite, rect: nil)
       sprite = type.new(@viewport)
       sprite.set_position(@x, @y)

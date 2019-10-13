@@ -23,51 +23,51 @@ module GamePlay
   #
   # You usually will define your Scene the following way :
   # ```ruby
-  # class Scene < BaseCleanUpdate
-  #   # Create a new scene
-  #   # @param args [Array] input arguments (do something better than *args)
-  #   def initialize(*args)
-  #     super() # <= the () force super to be called without argument because by `super` alone use the method arguments!
-  #     # Initialize only the logic here (instance variable used for the state or data used by the UI)
-  #   end
+  #   class Scene < BaseCleanUpdate
+  #     # Create a new scene
+  #     # @param args [Array] input arguments (do something better than *args)
+  #     def initialize(*args)
+  #       super() # <= the () force super to be called without argument because by `super` alone use the method arguments!
+  #       # Initialize only the logic here (instance variable used for the state or data used by the UI)
+  #     end
   #
-  #   # Called when input can be updated (put your input related code inside)
-  #   # @return [Boolean] if the update can continue
-  #   def update_inputs
-  #     # ...
-  #     return true
-  #   end
+  #     # Called when input can be updated (put your input related code inside)
+  #     # @return [Boolean] if the update can continue
+  #     def update_inputs
+  #       # ...
+  #       return true
+  #     end
   #
-  #   # Called when mouse can be updated (put your mouse related code inside, optional)
-  #   # @param moved [Boolean] boolean telling if the mouse moved
-  #   # @return [Boolean] if the update can continue
-  #   def update_mouse(moved)
-  #     return unless moved
-  #     # ...
-  #     return true
-  #   end
+  #     # Called when mouse can be updated (put your mouse related code inside, optional)
+  #     # @param moved [Boolean] boolean telling if the mouse moved
+  #     # @return [Boolean] if the update can continue
+  #     def update_mouse(moved)
+  #       return unless moved
+  #       # ...
+  #       return true
+  #     end
   #
-  #   # Called each frame after message update and eventual mouse/input update
-  #   # @return [Boolean] if the update can continue
-  #   def update_graphics
-  #     # ...
-  #     return true
-  #   end
+  #     # Called each frame after message update and eventual mouse/input update
+  #     # @return [Boolean] if the update can continue
+  #     def update_graphics
+  #       # ...
+  #       return true
+  #     end
   #
-  #   private
+  #     private
   #
-  #   # Create all the UI and thing related to graphics (super create the viewport)
-  #   def create_graphics
-  #     super
-  #     # ...
-  #   end
+  #     # Create all the UI and thing related to graphics (super create the viewport)
+  #     def create_graphics
+  #       super
+  #       # ...
+  #     end
   #
-  #   # (optional) Create the viewport (called by create_graphics from Base)
-  #   def create_viewport
-  #     super # < if you still use main with default settings, otherwise don't call super
-  #     @sub_viewport = Viewport.create(...) # < Sub viewport for other stuff
+  #     # (optional) Create the viewport (called by create_graphics from Base)
+  #     def create_viewport
+  #       super # < if you still use main with default settings, otherwise don't call super
+  #       @sub_viewport = Viewport.create(...) # < Sub viewport for other stuff
+  #     end
   #   end
-  # end
   # ```
   #
   # Note : You don't have to define the dispose function with this. All the viewport that are stored inside ivar will be
@@ -253,6 +253,7 @@ module GamePlay
     # The main process at the begin of scene
     def main_begin
       create_graphics
+      sort_sprites
       fade_in(@mbf_type || DEFAULT_TRANSITION, @mbf_param || DEFAULT_TRANSITION_PARAMETER)
     end
 
@@ -462,34 +463,39 @@ module GamePlay
     def create_graphics
       create_viewport
     end
+
+    # Sort the sprites inside the main viewport
+    def sort_sprites
+      @viewport&.sort_z
+    end
   end
 
   # Base Scene where you should not define update but dedicated update methods :
   # ```ruby
-  # class MyScene < BaseCleanUpdate
-  #   # Called when input can be updated (put your input related code inside)
-  #   # @return [Boolean] if the update can continue
-  #   def update_inputs
-  #     # ...
-  #     return true
-  #   end
+  #   class MyScene < BaseCleanUpdate
+  #     # Called when input can be updated (put your input related code inside)
+  #     # @return [Boolean] if the update can continue
+  #     def update_inputs
+  #       # ...
+  #       return true
+  #     end
   #
-  #   # Called when mouse can be updated (put your mouse related code inside)
-  #   # @param moved [Boolean] boolean telling if the mouse moved
-  #   # @return [Boolean] if the update can continue
-  #   def update_mouse(moved)
-  #     return unless moved
-  #     # ...
-  #     return true
-  #   end
+  #     # Called when mouse can be updated (put your mouse related code inside)
+  #     # @param moved [Boolean] boolean telling if the mouse moved
+  #     # @return [Boolean] if the update can continue
+  #     def update_mouse(moved)
+  #       return unless moved
+  #       # ...
+  #       return true
+  #     end
   #
-  #   # Called each frame after message update and eventual mouse/input update
-  #   # @return [Boolean] if the update can continue
-  #   def update_graphics
-  #     # ...
-  #     return true
+  #     # Called each frame after message update and eventual mouse/input update
+  #     # @return [Boolean] if the update can continue
+  #     def update_graphics
+  #       # ...
+  #       return true
+  #     end
   #   end
-  # end
   # ```
   # All the update methods are optionnal but you should define at least one otherwise your Scene
   # will be useless and softlock the game

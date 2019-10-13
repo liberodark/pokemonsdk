@@ -17,8 +17,8 @@ module UI
     # @param keys [Array<Symbol>] list of keys used in the ControlButton
     def initialize(viewport, texts = nil, keys = DEFAULT_KEYS)
       super(viewport)
-      @background = add_background('team/Fond')
-      @button_background = add_sprite(0, 214, 'tcard/button_background')
+      @background = add_background('team/Fond').set_z(-10)
+      @button_background = add_sprite(0, 214, 'tcard/button_background').set_z(500)
       @keys = keys
       create_control_button
       self.button_texts = texts
@@ -105,6 +105,7 @@ module UI
         with_font(text_font) { @text = add_text(17, 3, 51, 13, nil.to_s, color: text_color(coords_index)) }
         @coords_index = coords_index
         self.pressed = false
+        self.z = 501
       end
 
       # Set the button pressed
