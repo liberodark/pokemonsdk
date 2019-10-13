@@ -180,7 +180,7 @@ class Game_Player < Game_Character
     return unless Input.trigger?(:A)
 
     result = check_event_trigger_here([0])
-    result ||= check_event_trigger_there([0, 1, 2])
+    result |= check_event_trigger_there([0, 1, 2])
     return if result
 
     check_diving_trigger_here
