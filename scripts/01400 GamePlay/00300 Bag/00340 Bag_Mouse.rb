@@ -27,7 +27,7 @@ module GamePlay
       new_index = @pocket_ui.stack.find_index(&:simple_mouse_in?)
       if new_index
         play_cursor_se
-        change_pocket(new_index)
+        @bag_sprite.visible ? animate_pocket_change(new_index) : change_pocket(new_index)
         return false
       end
       return true

@@ -140,6 +140,7 @@ module GamePlay
       compact = @compact_mode == :enabled
       @info_compact.visible = compact
       @info_wide.visible = !compact
+      @bag_sprite.index = @socket_index
       @bag_sprite.visible = compact
     end
 
