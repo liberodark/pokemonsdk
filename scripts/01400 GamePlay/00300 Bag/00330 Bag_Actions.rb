@@ -17,6 +17,7 @@ module GamePlay
     # When player wants to use the item
     def use_item_in_battle
       item_id = @item_list[index = @index]
+      return action_b if item_id == nil
       return play_buzzer_se unless GameData::Item.battle_usable?(item_id)
       play_decision_se
       util_item_useitem(item_id)
