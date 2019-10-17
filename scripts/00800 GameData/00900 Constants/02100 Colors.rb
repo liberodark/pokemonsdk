@@ -82,6 +82,10 @@ module GameData
     Fonts.define_fill_color(23, Color.new(27, 27, 110))
     Fonts.define_shadow_color(23, sh_color)
     Fonts.define_outline_color(23, cnt_color)
+    # Bag Item Name color
+    Fonts.define_fill_color(24, Color.new(57, 59, 67))
+    Fonts.define_shadow_color(24, Color.new(156, 124, 46))
+    Fonts.define_outline_color(24, cnt_color)
 
     # Poison flash color
     PSN = Color.new(123, 55, 123, 128)

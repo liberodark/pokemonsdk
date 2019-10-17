@@ -4,6 +4,8 @@ module GameData
   class Item < Base
     # Default icon name
     NO_ICON = 'return'
+    # HM/TM text
+    HM_TM_TEXT = '%s %s'
     # Name of the item icon in Graphics/Icons/
     # @return [String]
     attr_accessor :icon
@@ -51,6 +53,17 @@ module GameData
         id = get_id(id) if id.is_a?(Symbol)
         return text_get(12, id) if id_valid?(id)
         return text_get(12, 0)
+      end
+
+      # Safely return the exact name of an item
+      # @param id [Integer, Symbol] id of the item in the database
+      # @return [String]
+      def exact_name(id)
+        # Process the HM/TM name
+        if (data = misc_data(id)) && (data.ct_id || data.cs_id)
+          return format(HM_TM_TEXT, name(id), Skill.name(data.skill_learn.to_i))
+        end
+        return name(id)
       end
 
       # Safely return the description of an item

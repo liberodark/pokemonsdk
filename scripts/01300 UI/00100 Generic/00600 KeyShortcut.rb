@@ -3,12 +3,12 @@ module UI
   class KeyShortcut < Sprite
     # Create a new KeyShortcut sprite
     # @param viewport [LiteRGSS::Viewport]
-    # @param key [Symbol] Input.trigger? argument
+    # @param key [Symbol, Integer] Input.trigger? argument (or Keyboard exact key if integer)
     # @param red [Boolean] pick the red texture instead of the blue texture
     def initialize(viewport, key, red = false)
       super(viewport)
       set_bitmap(red ? 'Key_ShortRed' : 'Key_Short', :pokedex)
-      find_key(key)
+      key.is_a?(Symbol) ? find_key(key) : show_key(key)
     end
     # KeyIndex that holds the value of the Keyboard constants in the right order according to the texture
     KeyIndex = [
@@ -36,6 +36,12 @@ module UI
         end
       end
       set_rect_div(9, 4, 10, 5) # A blank key
+    end
+
+    # Show the exact key (when key from initialize was an interger)
+    def show_key(key)
+      id = KeyIndex.index(key) || NUMPAD_KEY_INDEX.index(key) || 49
+      set_rect_div(id % 10, id / 10, 10, 5)
     end
   end
 

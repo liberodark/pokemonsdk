@@ -468,6 +468,26 @@ module GamePlay
     def sort_sprites
       @viewport&.sort_z
     end
+
+    # Play decision SE
+    def play_decision_se
+      $game_system&.se_play($data_system&.decision_se)
+    end
+
+    # Play cursor SE
+    def play_cursor_se
+      $game_system&.se_play($data_system&.cursor_se)
+    end
+
+    # Play buzzer SE
+    def play_buzzer_se
+      $game_system&.se_play($data_system&.buzzer_se)
+    end
+
+    # Play cancel SE
+    def play_cancel_se
+      $game_system&.se_play($data_system&.cancel_se)
+    end
   end
 
   # Base Scene where you should not define update but dedicated update methods :

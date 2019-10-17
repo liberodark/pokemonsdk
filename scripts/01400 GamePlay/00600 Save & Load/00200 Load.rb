@@ -139,6 +139,7 @@ module GamePlay
     def load_game
       $pokemon_party = @all_window[@index].data
       $pokemon_party.expand_global_var
+      $pokemon_party.load_parameters
       $game_system.se_play($data_system.cursor_se)
       $game_map.setup($game_map.map_id)
       $game_player.moveto($game_player.x, $game_player.y) # center

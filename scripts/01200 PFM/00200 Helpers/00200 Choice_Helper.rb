@@ -45,12 +45,13 @@ module PFM
     # @param y [Integer] y coordinate of the choice window
     # @param width [Integer] width of the choice window
     # @param on_update [#call, nil] handle to call during choice update
+    # @param align_right [Boolean] tell if the x/y coordinate are the top right coordinate of the choice
     # @param args [Array] argument to send to the on_update handle
     # @return [Integer] the choice made by the user
-    def display_choice(viewport, x, y, width, *args, on_update: nil)
+    def display_choice(viewport, x, y, width, *args, on_update: nil, align_right: false)
       @canceled = false
-      # @type [Window_Choice]
-      window = build_choice_window(viewport, x, y, width)
+      # @type [Yuki::ChoiceWindow]
+      window = build_choice_window(viewport, x, y, width, align_right)
       loop do
         Graphics.update
         window.update
@@ -72,15 +73,15 @@ module PFM
     # @param x [Integer] x coordinate of the choice window
     # @param y [Integer] y coordinate of the choice window
     # @param width [Integer] width of the choice window
-    # @return [Window_Choice]
-    def build_choice_window(viewport, x, y, width)
+    # @param align_right [Boolean] tell if the x/y coordinate are the top right coordinate of the choice
+    # @return [Yuki::ChoiceWindow]
+    def build_choice_window(viewport, x, y, width, align_right)
       # @type [Array<String>]
       choice_list = @choices.collect { |c| c[:text] }
       # Choice window
-      # @type [Window_Choice]
+      # @type [Yuki::ChoiceWindow]
       window = @class.new(width, choice_list, viewport)
-      window.x = x
-      window.y = y
+      window.set_position(x - (align_right ? window.width : 0), y)
       window.z = viewport ? viewport.z : 1000
       @choices.each_with_index do |c, i|
         if c[:disable_detect]&.call(*c[:args])

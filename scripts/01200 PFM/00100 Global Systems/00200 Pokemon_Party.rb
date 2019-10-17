@@ -112,6 +112,7 @@ module PFM
     # @param starting_language [String] the lang id of the game described by this object
     def game_state_initialize(starting_language)
       @game_variables = Game_Variables.new
+      $game_variables ||= @game_variables
       @game_switches = Game_Switches.new
       $game_switches ||= @game_switches
       @game_self_switches = Game_SelfSwitches.new

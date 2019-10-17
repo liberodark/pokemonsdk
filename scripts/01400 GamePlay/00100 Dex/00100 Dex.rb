@@ -219,15 +219,15 @@ module GamePlay
         # @return [String]
         def pokedex_height
           # @type [String]
-          text = ext_text(9000, 70)
+          text = ext_text(9000, 71)
           using_retard_unit = !text.downcase.end_with?('m')
           if using_retard_unit
             inches = (height * 39.3701).to_i
             feet = inches / 12
             inches -= feet * 12
-            format(ext_text(9000, 71), feet, inches)
+            format(text, feet, inches)
           else
-            return format(ext_text(9000, 71), height)
+            return format(text, height)
           end
         end
       end
