@@ -93,26 +93,36 @@ class Scene_Battle
     @e_remaining_pk.y = -16
     @stuff_to_update << @e_remaining_pk
     @e_remaining_pk.move_to(320,0,30)
-    first_name = sprintf(TrainerName_Format, ::GameData::Trainer.class_name(@trainer_class),@trainer_names[0]) #> Formatage du nom des dresseurs pour la compréhension
+    first_name_0 = sprintf(TrainerName_Format, ::GameData::Trainer.class_name(@trainer_class),@trainer_names[0]) #> Formatage du nom des dresseurs pour la compréhension
+    first_name_1 = sprintf(TrainerName_Format, ::GameData::Trainer.class_name(@trainer_class),@trainer_names[1]) #> Mod pour avoir le nom complet du dresseur à chaqu'une de ses actions.
     if($game_temp.vs_type == 1 or @enemies.size == 1)
-      display_message(parse_text(18,9, BattleEngine::TRNAME[0] => first_name))
+      display_message(parse_text(18,9, BattleEngine::TRNAME[0] => first_name_0))
       animator.unlock
       @message_window.blocking = false
-      display_message(parse_text(18,18, BattleEngine::TRNAME[0] => @trainer_names[0],
+      display_message(parse_text(18,18, BattleEngine::TRNAME[0] => first_name_0,
       BattleEngine::PKNICK[1] => @enemies[0].given_name))
     else
-      display_message(parse_text(18,11, BattleEngine::TRNAME[0] => first_name,
-      BattleEngine::TRNAME[1] => @trainer_names[1]))
-      animator.unlock
-      @message_window.blocking = false
-      #>A faire !
-      if($game_temp.vs_enemies == 1)
-        display_message(parse_text(18,18, BattleEngine::TRNAME[0] => @trainer_names[0],
-      BattleEngine::PKNICK[1] => @enemies[0].given_name))
-        display_message(parse_text(18,18, BattleEngine::TRNAME[0] => @trainer_names[1],
-      BattleEngine::PKNICK[1] => @enemies[1].given_name))
+      if @trainer_names.length == 1
+        display_message(parse_text(18,9, BattleEngine::TRNAME[0] => first_name_0))
+        animator.unlock
+        @message_window.blocking = false
+        display_message(parse_text(18,19, BattleEngine::TRNAME[0] => first_name_0,
+        BattleEngine::PKNICK[1] => @enemies[0].given_name, BattleEngine::PKNICK[2] => @enemies[1].given_name))
+        @trainer_names[1] = @trainer_names[0]
       else
+        display_message(parse_text(18,11, BattleEngine::TRNAME[0] => first_name_0,
+        BattleEngine::TRNAME[1] => first_name_1))
+        animator.unlock
+        @message_window.blocking = false
+        #>A faire !
+        if($game_temp.vs_enemies == 1)
+          display_message(parse_text(18,18, BattleEngine::TRNAME[0] => first_name_0,
+          BattleEngine::PKNICK[1] => @enemies[0].given_name))
+          display_message(parse_text(18,18, BattleEngine::TRNAME[0] => first_name_1,
+          BattleEngine::PKNICK[1] => @enemies[1].given_name))
+        else
 
+        end
       end
     end
     Graphics.update while(animator.update)
