@@ -78,9 +78,12 @@ module UI
     end
 
     # Return the win_text and create it if needed
+    # @return [Text]
     def win_text
-      @win_text_background ||= add_sprite(0, 217, 'team/Win_Txt')
+      @win_text_background ||= add_sprite(0, 217, 'team/Win_Txt').set_z(502)
       @win_text ||= add_text(2, 220, 238, 15, nil.to_s, color: 9)
+      @win_text.z = 502
+      @win_text
     end
 
     # Return the list of hidden button when win_text is shown

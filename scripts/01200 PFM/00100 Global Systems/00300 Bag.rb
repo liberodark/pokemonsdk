@@ -73,10 +73,12 @@ module PFM
     alias drop_item remove_item
 
     # Get the order of items in a socket
-    # @param socket [Integer] ID of the socket
+    # @param socket [Integer, Symbol] ID of the socket
     # @return [Array]
     def get_order(socket)
       return [] if @locked
+      return @shortcut if socket == :favorites
+      return process_battle_order(socket) if socket.is_a?(Symbol) # TODO
       return (@orders[socket] ||= [])
     end
 
@@ -85,9 +87,11 @@ module PFM
     # @return [Array] the new order
     def reset_order(socket)
       arr = get_order(socket)
-      arr.clear
       gdi = GameData::Item
-      arr.concat(@items.each_index.select { |item_id| gdi.socket(item_id) == socket && (@items[item_id] || 0) > 0 })
+      unless socket == :favorites
+        arr.clear
+        arr.concat(@items.each_index.select { |item_id| gdi.socket(item_id) == socket && (@items[item_id] || 0) > 0 })
+      end
       arr.sort! { |item_ida, item_idb| gdi.position(item_ida) <=> gdi.position(item_idb) }
       return arr
     end

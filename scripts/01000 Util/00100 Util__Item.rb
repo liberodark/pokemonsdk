@@ -7,7 +7,7 @@ module Util
   module Item
     # Use an item in a GamePlay::Base child class
     # @param item_id [Integer] ID of the item in the database
-    def util_item_useitem(item_id)
+    def util_item_useitem(item_id, &result_process)
       #>Récupération des données d'actions de l'objet
       extend_data = ::PFM::ItemDescriptor.actions(item_id)
       #> Vérification des messages
@@ -27,6 +27,7 @@ module Util
             next
           end
           $bag.remove_item(item_id, 1) if GameData::Item.limited_use?(item_id) and scene.return_data != -1
+          result_process&.call
         end
         call_scene(GamePlay::Party_Menu, @team ? @team : $actors, :item, extend_data, no_leave: false)
         return false unless @running
