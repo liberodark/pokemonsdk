@@ -12,7 +12,7 @@ module GamePlay
       battle: [
         [:ext_text, 9000, 159], # Use
         info, sort,
-        cancel = [:ext_text, 9000, 117] # Cancel
+        cancel = [:ext_text, 9000, 17] # Cancel
       ],
       berry: [
         [:ext_text, 9000, 156], # Plant
