@@ -9,8 +9,9 @@ module UI
       @sprite = push(55, 119, nil, type: PokemonFaceSprite)
       @name = add_text(11, 8, 100, 16, :given_name, type: SymText, color: 9)
       @gender = push(101, 10, nil, type: GenderSprite)
-      @item = push(72 + 6, 88 + 16, nil, type: RealHoldSprite)
+      @item = push(72 + 6, 74 + 16, nil, type: RealHoldSprite)
       @ball = push(107, 11, nil, ox: 16, oy: 16)
+      push(10, 108, nil, type: StatusSprite)
     end
 
     # Set the Pokemon shown
