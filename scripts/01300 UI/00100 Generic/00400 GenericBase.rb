@@ -17,8 +17,8 @@ module UI
     # @param keys [Array<Symbol>] list of keys used in the ControlButton
     def initialize(viewport, texts = nil, keys = DEFAULT_KEYS)
       super(viewport)
-      @background = add_background('team/Fond').set_z(-10)
-      @button_background = add_sprite(0, 214, 'tcard/button_background').set_z(500)
+      @background = add_background(background_filename).set_z(-10)
+      @button_background = add_sprite(0, 214, button_background_filename).set_z(500)
       @keys = keys
       create_control_button
       self.button_texts = texts
@@ -70,6 +70,18 @@ module UI
     end
 
     private
+
+    # Return the name of the background
+    # @return [String]
+    def background_filename
+      'team/Fond'
+    end
+
+    # Return the name of the button background
+    # @return [String]
+    def button_background_filename
+      'tcard/button_background'
+    end
 
     # Create the control buttons
     def create_control_button
