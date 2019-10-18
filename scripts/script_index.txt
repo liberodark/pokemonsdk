@@ -233,7 +233,6 @@ pokemonsdk/scripts/01300 UI/00500 Summary/00400 Skills.rb
 pokemonsdk/scripts/01300 UI/00500 Summary/00500 Remind.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00100 KeyBindingViewer.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00200 QuestInformer.rb
-pokemonsdk/scripts/01300 UI/09000 Others/01300 UI__DexCTLRButton.rb
 pokemonsdk/scripts/01300 UI/09000 Others/01400 Dex UIs.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02000 UI__TeamButton.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02200 VoltorbFlipSprites.rb
