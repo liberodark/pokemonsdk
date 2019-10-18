@@ -103,8 +103,7 @@ module GamePlay
           load_game
         else
           Save.save_index -= 1 if MAXIMUM_SAVE > 1
-          party = find_save
-          $pokemon_party = PFM::Pokemon_Party.new(false, party&.options&.language || DEFAULT_GAME_LANGUAGE)
+          create_new_party
           $pokemon_party.expand_global_var
           $game_system.se_play($data_system.cursor_se)
           $game_map.update
@@ -208,6 +207,16 @@ module GamePlay
 
     # Create a new game and start it
     def create_new_game
+      create_new_party
+      $pokemon_party.expand_global_var
+      $trainer.redefine_var
+      $scene = Scene_Map.new
+      Yuki::TJN.force_update_tone
+      @running = false
+    end
+
+    # Creaye a new Pokemon Party object and ask the language if possible
+    def create_new_party
       # No language choice => default language
       if LANGUAGE_CHOICE_LIST.empty?
         $pokemon_party = PFM::Pokemon_Party.new(false, DEFAULT_GAME_LANGUAGE)
@@ -215,11 +224,6 @@ module GamePlay
         @all_window.each { |window| window.visible = false }
         ask_game_language
       end
-      $pokemon_party.expand_global_var
-      $trainer.redefine_var
-      $scene = Scene_Map.new
-      Yuki::TJN.force_update_tone
-      @running = false
     end
 
     # Ask the game language to the player
