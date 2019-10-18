@@ -72,14 +72,18 @@ module UI
   # Sprite that show the status of a Pokemon
   class StatusSprite < SpriteSheet
     # Name of the image in Graphics/Interface
-    IMAGE_NAME = 'BattleBar_states'
+    IMAGE_NAME = 'statuts'
+    # Name of the image in Graphics/Interface
+    IMAGE_NAME_DEFAULT = 'statutsen'
     # Number of official states
     STATE_COUNT = 10
     # Create a new Status Sprite
     # @param viewport [LiteRGSS::Viewport, nil] the viewport in which the sprite is stored
     def initialize(viewport)
       super(viewport, 1, STATE_COUNT)
-      set_bitmap(IMAGE_NAME, :interface)
+      filename = IMAGE_NAME + $options.language
+      filename = IMAGE_NAME_DEFAULT unless RPG::Cache.interface_exist?(filename)
+      set_bitmap(filename, :interface)
     end
 
     # Set the Pokemon used to show the status
