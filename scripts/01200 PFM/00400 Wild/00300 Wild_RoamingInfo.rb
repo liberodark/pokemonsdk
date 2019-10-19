@@ -58,7 +58,7 @@ module PFM
     # Test if the Roaming Pokemon is appearing (to start the battle)
     # @return [Boolean]
     def appearing?
-      return false if @pokemon.hp == 0
+      return false if @pokemon.hp <= 0
       if @map_id == $game_map.map_id &&
          @zone_type == $env.get_zone_type(true) &&
          @tag == $game_player.terrain_tag

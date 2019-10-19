@@ -207,7 +207,7 @@ class Scene_Battle
     end
     BattleEngine.get_actors.clear
     BattleEngine.get_enemies.clear
-    $actors.delete_if { |pokemon| pokemon.hp == 0 } if($game_switches[::Yuki::Sw::Nuzlocke_ENA])
+    $actors.delete_if { |pokemon| pokemon.hp <= 0 } if($game_switches[::Yuki::Sw::Nuzlocke_ENA])
     # Retour à la carte
     $scene = Scene_Map.new
   end

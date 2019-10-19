@@ -93,12 +93,12 @@ module PFM
       elsif sym == :sacred_ash
         usable = false
         $actors.each do |pkmn|
-          usable = true if pkmn.hp == 0 and !pkmn.egg?
+          usable = true if pkmn.hp <= 0 and !pkmn.egg?
         end
         return Chen unless usable
         hash[:on_use] = proc do
           $actors.each do |pkmn|
-            next unless pkmn and pkmn.hp == 0
+            next unless pkmn and pkmn.hp <= 0
             pkmn.cure
             pkmn.hp = pkmn.max_hp
             pkmn.skills_set.each do |j|
@@ -133,7 +133,7 @@ module PFM
             next(false) if pkmn.egg?
             states = heal_data.states
             if states
-              next(pkmn.hp == 0) if(states.include?(GameData::States::DEATH)) # If it recovers from KO
+              next(pkmn.hp <= 0) if(states.include?(GameData::States::DEATH)) # If it recovers from KO
               next(states.include?(pkmn.status) or (!pkmn.dead? and pkmn.hp < pkmn.max_hp)) # All other states
             else
               next(!pkmn.dead? && pkmn.hp < pkmn.max_hp) # If the Pokemon isn't KO
@@ -183,7 +183,7 @@ module PFM
               hp = hp.class == Float ? (pkmn.max_hp * hp).round : hp
               base_hp = pkmn.hp
               pkmn.hp += hp
-              if(base_hp == 0)
+              if(base_hp <= 0)
                 $scene.display_message(parse_text(22, 115, be::PKNICK[0] => pkmn.given_name))
               else
                 $scene.display_message(parse_text(22, 109, be::PKNICK[0] => pkmn.given_name,

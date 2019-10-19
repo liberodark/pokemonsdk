@@ -25,7 +25,7 @@ module BattleEngine
       @launcher=launcher
       @target=target
       @skill=skill
-      @ignore=(launcher.hp==0 or target.hp==0) if launcher and target
+      @ignore=(launcher.hp<=0 or target.hp<=0) if launcher and target
       if skill and skill.symbol == :s_explosion
         @ignore = false #> Explosion
       end
@@ -84,7 +84,7 @@ module BattleEngine
     #>Affichage de "machin attaque truc"
     #===
     def use_skill_msg(launcher, target, skill)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       msg(parse_text_with_pokemon(21, skill.id*3, launcher, PKNAME[0] => launcher.given_name))#name))
       @scene.animation(launcher, target, skill)
     end
@@ -109,7 +109,7 @@ module BattleEngine
       msg(parse_text(18, 82))
     end
     def useless_msg(target)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       msg(parse_text_with_pokemon(19, 210, target))
     end
     def efficiency_sound(mod)
@@ -126,11 +126,11 @@ module BattleEngine
     #>Messages relatifs à la précision et l'esquive
     #===
     def launcher_fail_msg(launcher, target)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       msg(parse_text_with_pokemon(19,24,target))
     end
     def target_evasion_msg(launcher, target)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       msg(parse_text_with_pokemon(19,213,target))
     end
     MULTI_HIT_MOVES = %i[s_multi_hit s_2hits]
@@ -138,7 +138,7 @@ module BattleEngine
     #>Affichage de la perte de HP
     #===
     def hp_down(target, hp, extra_info=0)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       @target = target
       
       be = target.battle_effect
@@ -277,14 +277,14 @@ module BattleEngine
     #> Perte de HP sans rien autour
     #===
     def hp_down_proto(target, hp)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       @scene.phase4_message_remove_hp(target, hp)
     end
     #===
     #>Gain de HP
     #===
     def hp_up(target, hp, msg = nil, *args)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       msg(parse_text_with_pokemon(19, msg, target, *args)) if msg
       @scene.phase4_message_add_hp(target, hp)
     end
@@ -292,7 +292,7 @@ module BattleEngine
     #>KO en un coup ou Sacrifice
     #===
     def OHKO(target, sacrifice=false)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       #> Fermeté
       if(Abilities.has_ability_usable(target, 37))
         _mp([:ability_display, target])
