@@ -6,6 +6,7 @@ pokemonsdk/scripts/00400 Console.rb
 pokemonsdk/scripts/00000 Dependencies/00100 _Patch_temporaire_/00100 Sprite_RGSS_Fix.rb
 pokemonsdk/scripts/00000 Dependencies/00100 _Patch_temporaire_/00200 Plane.rb
 pokemonsdk/scripts/00000 Dependencies/00200 GameData(dep)/00100 GameData__SystemTags.rb
+pokemonsdk/scripts/00000 Dependencies/00200 GameData(dep)/00900 Yuki__VD.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00100 NilClass.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00101 Boolean.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00200 Object.rb
@@ -154,7 +155,6 @@ pokemonsdk/scripts/01100 Yuki/00502 Yuki_Particles Action Handlers.rb
 pokemonsdk/scripts/01100 Yuki/00600 Yuki__TJN.rb
 pokemonsdk/scripts/01100 Yuki/00700 Yuki__Berries.rb
 pokemonsdk/scripts/01100 Yuki/00800 Yuki__Utils.rb
-pokemonsdk/scripts/01100 Yuki/00900 Yuki__VD.rb
 pokemonsdk/scripts/01100 Yuki/01000 Yuri_Tilemap.rb
 pokemonsdk/scripts/01100 Yuki/01001 Yuri_Tilemap2.rb
 pokemonsdk/scripts/01100 Yuki/01100 Yuki__SystemTagEditor.rb

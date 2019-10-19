@@ -8,7 +8,7 @@ class Window_Message < Game_Window
     lambda { |_binding, marker| },
     # 1 -> Color
     lambda { |_binding, marker| 
-      _binding.local_variable_set(:color, marker.last % GameData::Colors::Text_In.size)
+      _binding.local_variable_set(:color, marker.last % GameData::Colors::COLOR_COUNT)
     },
     # 2 -> Wait
     lambda { |_binding, marker| marker.last.times { _binding.receiver.message_update_processing } },
@@ -424,7 +424,7 @@ class Window_Message < Game_Window
 =begin
         case marker.first
         when 1 # Color
-          color = marker.last % GameData::Colors::Text_In.size
+          color = marker.last % GameData::Colors::COLOR_COUNT
         when 2 # Wait
           marker.last.times { message_update_processing }
         when 3 # Style

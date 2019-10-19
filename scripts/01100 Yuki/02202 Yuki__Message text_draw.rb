@@ -207,7 +207,7 @@ module Yuki
     # Change the color
     # @param maker [Array]
     def execute_marker_1(marker)
-      @color = marker.last % GameData::Colors::Text_In.size
+      @color = marker.last % GameData::Colors::COLOR_COUNT
       marker_fix_x
     end
 

@@ -36,6 +36,9 @@ module GamePlay
       end
       ::Scheduler.start(:on_scene_switch, ::Scene_Title) unless @running
       dispose
+      # Unload title related pictures
+      RPG::Cache.load_title(true)
+      RPG::Cache.load_interface(true)
     end
 
     def update
