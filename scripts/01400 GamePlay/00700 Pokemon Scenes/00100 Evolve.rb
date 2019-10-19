@@ -62,7 +62,7 @@ module GamePlay
         @pokemon.id = @clone.id
         @pokemon.form = @clone.form
         #check_alola_evolve(@pokemon)
-        @pokemon.check_skill_and_learn(false, -1)
+        @pokemon.check_skill_and_learn#(false, -1) #(US-45) Fin de ligne commentée tant que la BDD n'aura pas les niveaux à -1 pour les attaques par évolution.
         #===
         #> Munja évolution de Ningale
         #===

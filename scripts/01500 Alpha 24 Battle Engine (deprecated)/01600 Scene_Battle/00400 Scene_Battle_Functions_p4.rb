@@ -17,9 +17,9 @@ class Scene_Battle
   #Vérification de la possibilité d'affichage des message
   #===
   def phase4_cant_display_message(launcher,target)
-    if launcher and launcher.hp==0
+    if launcher and launcher.hp<=0
       return true
-    elsif target and target.hp==0
+    elsif target and target.hp<=0
       return true
     end
     return false

@@ -10,7 +10,7 @@ module BattleEngine
     #>Synchro
     #===
     def synchro_apply(target, meth)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       #> Synchro
       if(@launcher != target and @launcher and BattleEngine::Abilities.has_ability_usable(target, 33))
         @launcher.send(meth, true)
@@ -26,7 +26,7 @@ module BattleEngine
     #  Forced indique une confusion auto induite ou provenant d'une cap' (colère etc...)
     #===
     def status_confuse(target, forced=false, msg_id = 345)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       return if @no_secondary_effect
       #> Déjà confus
       if(target.confused?)
@@ -59,7 +59,7 @@ module BattleEngine
     #>Endormir
     #===
 		def status_sleep(target, nb_turn = nil, msg_id = 306, forced = false)
-			return if @ignore or target.hp==0
+			return if @ignore or target.hp<=0
 			return if @no_secondary_effect
 			# Herbivore
 			if @skill && @skill.type_grass? && BattleEngine::Abilities.has_ability_usable(target, 156)
@@ -110,7 +110,7 @@ module BattleEngine
 		#>Geler
 		#===
 		def status_frozen(target, forced = false)
-			return if @ignore or target.hp==0
+			return if @ignore or target.hp<=0
 			return if @no_secondary_effect
 			# Herbivore
 			if @skill && @skill.type_grass? && BattleEngine::Abilities.has_ability_usable(target, 156)
@@ -158,7 +158,7 @@ module BattleEngine
 		#>Enpoisonner
 		#===
 		def status_poison(target, forced = false)
-			return if @ignore or target.hp==0
+			return if @ignore or target.hp<=0
 			return if @no_secondary_effect
 			#> Déjà empoisonné
 			# Herbivore
@@ -205,7 +205,7 @@ module BattleEngine
 		#>Intoxiquer
 		#===
 		def status_toxic(target, forced = false)
-			return if @ignore or target.hp==0
+			return if @ignore or target.hp<=0
 			return if @no_secondary_effect
 			#> Déjà empoisonné
 			# Herbivore
@@ -247,7 +247,7 @@ module BattleEngine
 		#>Paralyser
 		#===
 		def status_paralyze(target, forced = false)
-			return if @ignore or target.hp==0
+			return if @ignore or target.hp<=0
 			return if @no_secondary_effect
 			# Herbivore
 			if @skill && @skill.type_grass? && BattleEngine::Abilities.has_ability_usable(target, 156)
@@ -294,7 +294,7 @@ module BattleEngine
 		#>Brûler
 		#===
 		def status_burn(target, forced = false)
-			return if @ignore or target.hp==0
+			return if @ignore or target.hp<=0
 			return if @no_secondary_effect
 			# Herbivore
 			if @skill && @skill.type_grass? && BattleEngine::Abilities.has_ability_usable(target, 156)
@@ -359,7 +359,7 @@ module BattleEngine
     #>Soigner la cible
     #===
     def status_cure(target)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       if(target.status==0)
 #        @scene.display_message(GameData.b_str(47, target.given_name)) #"N'a aucune altération de status, cela échoue.")
         return
@@ -383,7 +383,7 @@ module BattleEngine
     #>Soin forcé du gel
     #===
     def ice_cure(target)
-      return if @ignore or target.hp==0 or !target.frozen?
+      return if @ignore or target.hp<=0 or !target.frozen?
       target.cure
       _msgp(19, 294, target)
       @scene.status_bar_update(target)

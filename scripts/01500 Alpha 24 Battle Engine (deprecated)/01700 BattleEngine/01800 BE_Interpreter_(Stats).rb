@@ -44,7 +44,7 @@ def check_flora_stats(target)
 	end
 end
 def change_{d1}(target, power)
-  return if @ignore or target.hp==0
+  return if @ignore or target.hp<=0
   return if @no_secondary_effect
   return if target.battle_effect.has_no_stat_change_effect?
   return if target.battle_effect.has_substitute_effect? and @launcher != target and @skill and @skill.id != 432

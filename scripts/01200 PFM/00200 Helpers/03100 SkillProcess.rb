@@ -3,7 +3,7 @@ module PFM
   # Associate a skill id to a proc that take 3 parameter : pkmn(PFM::Pokemon), skill(PFM::Skill), test(Boolean)
   SKILL_PROCESS = {
     milk_drink: milk_drink = proc do |pkmn, _skill, test = false|
-      next :block if pkmn.hp == 0 && test
+      next :block if pkmn.hp <= 0 && test
       next :choice if test
       if $actors[$scene.return_data] != pkmn && !pkmn.dead? && pkmn.hp != pkmn.max_hp
         # Put heal animation here

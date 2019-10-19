@@ -8,7 +8,7 @@ module BattleEngine
     #>Appliquer l'amour (attraction) (j'ai mis 5 tours mais aucune idée '^')
     #===
     def attract_effect(launcher, target, nb_turn = 5)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       be = target.battle_effect
       if(be.has_attract_effect? and nb_turn > 0)
         msg_fail
@@ -31,7 +31,7 @@ module BattleEngine
     #>Appliquer la peur
     #===
     def effect_afraid(target)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       #> Attention
       if(Abilities.has_ability_usable(target, 19))
         ability_display(target)
@@ -47,7 +47,7 @@ module BattleEngine
     #>Appliquer powder
     #===
     def powder_effect(target)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       be = target.battle_effect
       be.apply_powder
       msg(parse_text_with_pokemon(19, 1210, target))
@@ -62,7 +62,7 @@ module BattleEngine
     #>set_reload_state
     #===
     def set_reload_state(target)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       target.battle_effect.set_reload_state(true)
     end
     #===
@@ -75,14 +75,14 @@ module BattleEngine
     #>Réquiem
     #===
     def perish_song(target)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       target.battle_effect.apply_perish_song unless target.battle_effect.has_perish_song_effect?
     end
     #===
     #>Jakpot
     #===
     def jackpot(target)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       if(target.position > 0)
         n = 5
         #>Piece rune / Encens Veine
@@ -98,7 +98,7 @@ module BattleEngine
     #>Etreinte
     #===
     def bind(target, nb_turn, skill, launcher)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       unless target.battle_effect.has_bind_effect?
         target.battle_effect.apply_bind(nb_turn, skill.name, launcher)
       end
@@ -107,7 +107,7 @@ module BattleEngine
     #>Vampigraine
     #===
     def leech_seed(target, launcher)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
 	# Herbivore
 	  if BattleEngine::Abilities.has_ability_usable(target, 156)
 		_mp([:ability_display, target])
@@ -124,7 +124,7 @@ module BattleEngine
     def future_skill(target, hp, nb_turn, skill_id)
       be = target.battle_effect
 =begin
-      if @ignore or target.hp==0 or be.is_locked_by_future_skill? or @launcher.battle_effect.has_future_skill?
+      if @ignore or target.hp<=0 or be.is_locked_by_future_skill? or @launcher.battle_effect.has_future_skill?
         msg_fail
         return
       end
@@ -185,14 +185,14 @@ module BattleEngine
     #> Modifier une valeur du battle effect
     #===
     def set_be_value(target, variable, value)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       target.battle_effect.send(variable, value)
     end
     #===
     #> Switch d'un Pokémon
     #===
     def switch_pokemon(target, to)
-      return if @ignore or target.hp==0 or @target.hp==0
+      return if @ignore or target.hp<=0 or @target.hp<=0
       #> Swich choisi
       unless to
         if (target.position < 0 ? @scene.enemy_party : $pokemon_party).pokemon_alive > $game_temp.vs_type
@@ -207,14 +207,14 @@ module BattleEngine
     #>Effet de gribouille
     #===
     def sketch(launcher, skill, id)
-      return if @ignore or @target.hp==0
+      return if @ignore or @target.hp<=0
       skill.switch(id, 0, true)
     end
     #===
     #>Effet de copie
     #===
     def mimic(launcher, target, skill, id)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       skill.switch(id)
       target.battle_effect.apply_mimic(launcher, skill)
     end
@@ -222,7 +222,7 @@ module BattleEngine
     #>Perte de PP
     #===
     def pp_down(target, skill, pp)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       skill.pp -= pp
     end
     #===
@@ -235,7 +235,7 @@ module BattleEngine
     #>Changement d'objet
     #===
     def set_item(target, id, nokeep = false)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       target.battle_item = id
       target.item_holding = id if nokeep
       if(id == 0 and Abilities.has_ability_usable(target, 114)) #> Délestage
@@ -315,7 +315,7 @@ module BattleEngine
     #> berry_cure : Soin par baie
     #===
     def berry_cure(target, iname)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       if(target.status==0)
         return
       end
@@ -338,7 +338,7 @@ module BattleEngine
     #>confuse_cure : sortir de la confusion
     #===
     def confuse_cure(target, iname)
-      return if @ignore or target.hp==0
+      return if @ignore or target.hp<=0
       target.confuse = false
       _msgp(19, 938, target, ITEM2[1] => iname)
     end
