@@ -87,7 +87,9 @@ module Yuki
     BT_NoEscape = 41
     # If the battle doesn't give exp
     BT_NoExp = 42
-
+    # If the catch is forbidden
+    BT_NoCatch = 43
+    
     # If the player is running
     EV_Run = 52
     # If the player can run

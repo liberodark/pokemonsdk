@@ -110,9 +110,6 @@ class Scene_Battle
   # Fin du combat de pokémon, affichage des gains éventuels + évents spécifiques
   #===
   def phase5_pokemon_end
-    @_EXP_GIVE.each do |i|
-      phase4_distribute_exp(i)
-    end
     if $game_switches[Yuki::Sw::BT_Catch]
       pkmn = @enemies[@enemies[0].dead? ? 1 : 0]
       if (pkmn.sub_id != nil)
@@ -151,6 +148,9 @@ class Scene_Battle
     if @money > 0
       v = add_money(0)
       display_message(parse_text(18, 61, TRNAME[0] => $trainer.name, '[VAR NUM6(0001,E07F)]' => v.to_s))
+    end
+    @_EXP_GIVE.each do |i| # déplacé
+      phase4_distribute_exp(i)
     end
   end
   #===
