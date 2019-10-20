@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 # Namespace that contains modules and classes written by Nuri Yuri
 # @author Nuri Yuri
 module Yuki
@@ -23,16 +21,13 @@ module Yuki
     #   @param io [#<<] the io that receive the log
     def run(e, io = nil)
       return if e.class == LiteRGSS::Graphics::ClosedWindowError
-      raise if e.message.empty? or e.class.to_s == 'Reset'
+      raise if e.message.empty? || e.class.to_s == 'Reset'
       error_log = build_error_log(e)
       if io
         io << error_log
       else
         File.open('Error.log', 'wb') { |f| f << error_log }
-        cc 0x01
-        puts error_log
-        cc 0x07
-        system('pause') rescue nil
+        try_graphic_display
       end
     end
 
@@ -52,10 +47,8 @@ module Yuki
       str << format("Script : %<script>s\r\n", script: source_name)
       str << format("Ligne : %<line>d\r\n", line: source_line)
       str << format("Date : %<date>s\r\n", date: Time.new.strftime('%d/%m/%Y %H:%M:%S'))
-      str << format("Logiciel : %<software>s %<version>s\r\n", software: Software, version: PSDK_Version)
-      if @eval_script
-        str << format("Script used by eval command : \r\n%<script>s\r\n\r\n", script: @eval_script)
-      end
+      str << format("Logiciel : %<software>s %<version>s\r\n", software: Software, version: PSDK_Version.to_str_version)
+      str << format("Script used by eval command : \r\n%<script>s\r\n\r\n", script: @eval_script) if @eval_script
       str << 'Backtraces'.center(80, '=')
       str << "\r\n"
       index = e.backtrace_locations.size
@@ -66,6 +59,7 @@ module Yuki
                       index: index, script: source_name, line: i.lineno, method: i.base_label)
       end
       str << 'Fin du log'.center(80, '=')
+      Yuki.set_clipboard(str)
       return str
     end
 
@@ -73,7 +67,11 @@ module Yuki
     # @param source_name [String] the source name path
     # @return [String] the fixed source name
     def fix_source_path(source_name)
-      source_name.sub(File.expand_path('.'), nil.to_s)
+      source = source_name.sub(File.expand_path('.'), nil.to_s)
+      unless source.sub!(%r{/pokemonsdk/scripts/(.*)}, '\1 (PSDK)') || source.sub!(%r{/scripts/(.*)}, '\1 (user)')
+        source << (source.include?('/lib/') ? ' (ruby)' : ' (RMXP)')
+      end
+      return source
     end
 
     # Sets the script used by the eval command
@@ -90,6 +88,26 @@ module Yuki
     # @return [String, nil]
     def get_eval_script
       return @eval_script
+    end
+
+    # Try to show the exception
+    def try_graphic_display
+      str = <<~EODSP
+        The game crashed!
+        We copied the error in the clipboard. You can also find it in Error.log
+      EODSP
+      begin
+        @vp = Viewport.create(:main, 100_000)
+        @vp.color = Color.new(255, 0, 0)
+        Text.new(0, vp, 0, 16, vp.rect.width, Font::FONT_SMALL, str, 1, 0, 10)
+      rescue StandardError
+        puts str
+        system('pause')
+        return
+      end
+      Graphics.wait(100)
+      Graphics.update until Input.trigger?(:C)
+      @vp.dispose
     end
   end
 end
