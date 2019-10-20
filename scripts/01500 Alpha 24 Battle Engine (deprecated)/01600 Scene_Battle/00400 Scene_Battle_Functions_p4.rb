@@ -222,6 +222,8 @@ class Scene_Battle
   #>phase4_try_to_catch_pokemon
   #Fonction de tentative de capture d'un Pokémon
   #===
+  ULTRA_BEAST = [789,790,791,792,793,794,795,796,797,798,799,800,803,804,805,806] # ID des Ultra-Chimères
+  MOON_EVOLVE = [29,30,31,32,33,34,35,36,39,40,173,174,300,301,517,518] # ID des lignés des Pokémons qui évoluent avec une Pierre Lune
   def phase4_try_to_catch_pokemon(ball_data,id)
     pokemon=@enemies[@enemies[0].dead? ? 1 : 0]
     hpmax=pokemon.max_hp*3
@@ -232,16 +234,19 @@ class Scene_Battle
     when 1,2,3,8
       bs=1.5
     when 4,5
-      bs=2
+      bs=2.5 #Depuis la 5G, c'est passé à x2.5
     else
       bs=1
     end
     #Calcul du bonus de ball utilisé
     bb=phase4_ball_bonus(ball_data,pokemon)
-    #>Mass ball
-    if(ball_data.special_catch and ball_data.special_catch[:mass])
-      if(pokemon.weight < 100)
+    puts "Bonus Ball : #{bb}"
+    #>Masse ball (avec patch USUL)
+    if(ball_data.special_catch and ball_data.special_catch[:mass] and rate > 0)
+      if(pokemon.weight < 100 and rate >= 21)
         rate -= 20
+      elsif(pokemon.weight < 100 and rate < 21)
+        rate = 1
       elsif(pokemon.weight > 300)
         rate += 30
       elsif(pokemon.weight > 200)
@@ -251,9 +256,13 @@ class Scene_Battle
     #Taux préliminaires
     a=(hpmax-hp)*rate*bs*bb/hpmax
     b=(0xFFFF*(a/255.0)**0.25).to_i
-    cnt=0
-    4.times do |i|
-      cnt+=1 if(rand(0xFFFF)<b)
+    if rate == 0 or $game_switches[Yuki::Sw::BT_NoCatch] or $game_temp.trainer_battle == true # Capture impossible ou interdite
+      cnt=-2
+    else
+      cnt=0
+      4.times do |i|
+        cnt+=1 if(rand(0xFFFF)<b)
+      end
     end
     return phase4_animation_capture(cnt,pokemon,id)
   end
@@ -264,10 +273,18 @@ class Scene_Battle
   def phase4_ball_bonus(ball_data,pokemon)
     data=ball_data.special_catch
     if(data)
-      if(types=data[:types])
+      if(types=data[:types]) and !ULTRA_BEAST.include?(pokemon.id) # Si Ultra Chimère, on skip cette condition
         if(types.include?(pokemon.type1) or types.include?(pokemon.type2))
           return (data[:catch_rate] ? data[:catch_rate] : ball_data.catch_rate)
         end
+      elsif ULTRA_BEAST.include?(pokemon.id) # Si Ultra-Chimère
+        if (data[:ub_ball]) # Ultra Ball à paramétrer avec la capture spécifique (hash) : "{ub_ball: true}" dans le Ruby Host (ID de la ball dans le Ruby Host : 851)
+          return 5      
+        else
+          return 0.1      
+        end
+      elsif (data[:ub_ball]) # Ultra Ball lancée sur une non Ultra-Chimère
+        return 0.1
       elsif(data[:level]) #Faiblo ball
         if(pokemon.level<19)
           return 3
@@ -275,21 +292,20 @@ class Scene_Battle
           return 2
         end
       elsif(data[:time]) #Chrono ball
-        return (1+$game_temp.battle_turn/25)
+        return [(0.7+$game_temp.battle_turn*0.3),4].min
       elsif(data[:bis]) #Bis ball
-        return 3 if $pokedex.pokemon_caught?(pokemon.id)
+        return 3 if $pokedex.has_captured?(pokemon.id)
       elsif(data[:scuba]) #Scuba ball
-        return 3.5 if $env.under_water?#Vérifier si on est sous l'eau
+        return 3.5 if $env.under_water? or $env.pond? or $env.sea? or @fished #Vérifier si on est sur l'eau, sous l'eau ou en train de pêcher
       elsif(data[:dark]) #Sombre ball
-        return 4 if $env.night? or $env.cave?#Vérifier si on est la nuit ou dans une grotte
-      elsif(data[:speed]) #Speed Ball
-        return 4 if $game_temp.battle_turn<6
-        return 3 if $game_temp.battle_turn<11
-        return 2 if $game_temp.battle_turn<16
+        return 3 if $env.night? or $env.cave?#Vérifier si on est la nuit ou dans une grotte
+      elsif(data[:speed]) #Rapide Ball
+        return 5 if $game_temp.battle_turn<2
+        return 1 if $game_temp.battle_turn>=2
       elsif(data[:speed_pk])
         return 4 if pokemon.base_spd >= 100 or $wild_battle.is_roaming?(pokemon)#>Vérifier que le pokémon adverse est rapide
       elsif(data[:appat])
-        return 3 if @fished #>Vérifier que le pokémon vient d'être peché
+        return 5 if @fished #>Vérifier que le pokémon vient d'être peché
       elsif(data[:level_ball])
         lvl = @actors[0].level
         if(lvl / 4 > pokemon.level)
@@ -300,16 +316,15 @@ class Scene_Battle
           return 2
         end
       elsif(data[:moon_ball])
-        data = GameData::Pokemon.get_data(pokemon.id, pokemon.form)
-        if(data.special_evolution and data.special_evolution[:stone]==81)
-          return 4
-        end
+        return 4 if MOON_EVOLVE.include?(pokemon.id)
       elsif(data[:love])
-        if(@actors[0].gender * pokemon.gender == 2)
+        if(@actors[0].gender * pokemon.gender == 2) and @actors[0].id == pokemon.id
           return 8
         end
       end
       return 1
+    elsif ULTRA_BEAST.include?(pokemon.id) and ball_data.catch_rate < 255 # Traitement des balls sans data, on exclut le malus d'Ultra-Chimère sur la Master ball
+      return 0.1 # Ball sans "data" lancée sur Ultra Chimère. (L'Ultra Ball a de la data et a donc déjà été traitée en amont)
     else
       return ball_data.catch_rate
     end
@@ -319,12 +334,29 @@ class Scene_Battle
   #Animation de la capture //!!!\\ A terminer !
   #===
   def phase4_animation_capture(cnt,pokemon,id)
-    gr_launch_ball_to_enemy(pokemon, id)
-    (cnt - 1).times do
-      gr_animate_ball_on_enemy(pokemon)
+    case cnt
+    when -2
+      gr_deflect_ball(pokemon, id)
+    when 3,4
+      gr_launch_ball_to_enemy(pokemon, id)
+      shake=3
+    when 2
+      gr_launch_ball_to_enemy(pokemon, id)
+      shake=2
+    when 1
+      gr_launch_ball_to_enemy(pokemon, id)
+      shake=1
+    else
+      gr_launch_ball_to_enemy(pokemon, id)
+      shake=0
+    end
+    if cnt >= 0
+      shake.times do # Détermine nombre de secousses
+        gr_animate_ball_on_enemy(pokemon)
+      end
     end
 
-    if cnt == 4
+    if cnt >= 4
       gr_animate_caught(pokemon)
       #Faire toute la scène de capture
       $game_switches[Yuki::Sw::BT_Catch] = true
@@ -333,10 +365,30 @@ class Scene_Battle
       pokemon.trainer_name = $trainer.name
       pokemon.trainer_id = $trainer.id
       pokemon.code_generation(pokemon.shiny, !pokemon.shiny)
+      @_EXP_GIVE.push(pokemon)  # ligne ajoutée pour donner l'XP à la capture.
       start_phase5
     else
-      gr_animate_pokebreak(pokemon)
-      display_message(parse_text(18, 63 + rand(4)))
+      case cnt
+      when -2
+        $bag.add_item(id, 1) #Le joueur récupère la ball déviée
+        if $game_temp.trainer_battle
+          display_message(parse_text(18, 69)) # Pokémon d'un dresseur, ball déviée
+        else
+          display_message(parse_text(20, 84)) # Capture impossible, ball déviée. Le message "chen" est le moins pire parmi les strings disponibles pour notifier cet impossibilité.
+        end
+      when 3
+        gr_animate_pokebreak(pokemon)
+        display_message(parse_text(18, 66))
+      when 2
+        gr_animate_pokebreak(pokemon)
+        display_message(parse_text(18, 65))
+      when 1
+        gr_animate_pokebreak(pokemon)
+        display_message(parse_text(18, 64))
+      else
+        gr_animate_pokebreak(pokemon)
+        display_message(parse_text(18, 63))
+      end
     end
   end
 
@@ -349,6 +401,25 @@ class Scene_Battle
     @ball_sprite = Sprite.new(@viewport).set_bitmap(GameData::Item.ball_data(id).img, :ball)
     @ball_sprite.visible = false
     @animator = Yuki::Basic_Animator.new(load_data('Data/Animations/pokeball_catch.dat'), origin_sprite, pokemon_sprite)
+    @animator.parameters[:ball_sprite] = @ball_sprite
+    while @animator.update
+      @viewport.sort_z
+      update_animated_sprites
+      Graphics.update unless @animator.terminated?
+    end
+    @animator = nil
+  end
+
+  # --- Ajout - animation créée à l'origine pour Sacred Phoenix ---
+  # Show the deflect ball animation
+  # @param pokemon [PFM::Pokemon] Pokemon we try to catch
+  # @param id [Integer] ID of the ball in the database
+  def gr_deflect_ball(pokemon, id)
+    pokemon_sprite = gr_get_pokemon_sprite(pokemon)
+    origin_sprite = pokemon.position < 0 ? @actor_sprites.first : @enemy_sprites.first
+    @ball_sprite = Sprite.new(@viewport).set_bitmap(GameData::Item.ball_data(id).img, :ball)
+    @ball_sprite.visible = false
+    @animator = Yuki::Basic_Animator.new(load_data('Data/Animations/pokeball_deflect.dat'), origin_sprite, pokemon_sprite)
     @animator.parameters[:ball_sprite] = @ball_sprite
     while @animator.update
       @viewport.sort_z

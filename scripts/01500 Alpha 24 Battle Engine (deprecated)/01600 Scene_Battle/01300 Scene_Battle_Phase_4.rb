@@ -105,7 +105,7 @@ class Scene_Battle
     extend_data = data[1]
     position = data[2]
     if(readd) #>Réajout
-      $bag.add_item(item_id,1) if(!position or position >= 0)
+      $bag.add_item(item_id,1) if(!position or position >= 0) and not extend_data[:ball_data] # Patch sur cette ligne pour éviter un glitch de ball récupérée en double en cas de ball déviée suivi d'une fuite.
       return
     end
     unless extend_data[:ball_data]
@@ -125,11 +125,11 @@ class Scene_Battle
       extend_data[:action_to_push].call
       phase4_message_display
     elsif(extend_data[:ball_data])
-      if($game_temp.trainer_battle)
-        display_message(parse_text(18,69))
-      else
-        phase4_try_to_catch_pokemon(extend_data[:ball_data], item_id)
-      end
+      $scene.message_window.blocking = false # Défilement auto du message de lancer de ball
+      msg = parse_text(18, 34, TRNAME[0] => $trainer.name, ITEM2[1] => GameData::Item.name(item_id)) # En 4G, c'était "[Joueur] lance une [Ball] !". Parmi les strings existants, le (18, 34) est celui qui s'en rapproche le plus.
+      display_message(msg) # Ça donnera "[Joueur] utilise [Ball] !" à la place.
+      $scene.message_window.blocking = true if $game_temp.trainer_battle == false # Restauration du non défilement auto des messages en combat sauvage
+      phase4_try_to_catch_pokemon(extend_data[:ball_data], item_id) #Moddé : suppression de la non condition de dresseur. Au lieu du message "chen", le blocage se fera en aval avec l'animation adéquate.
     end
 #    if(GameData::Item.limited_use?(item_id))
 #      if(!position or position >= 0)
