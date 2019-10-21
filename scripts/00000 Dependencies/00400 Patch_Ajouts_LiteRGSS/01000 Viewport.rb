@@ -5,9 +5,9 @@ class Viewport
   # Hash containing all the Viewport configuration (:main, :sub etc...)
   CONFIGS = {}
   # Global offset x applied to the viewports (Fullscreen use)
-  GLOBAL_OFFSET_X = 0
+  GLOBAL_OFFSET_X = PSDK_CONFIG.viewport_offset_x
   # Global offset y applied to the viewports (Fullscreen use)
-  GLOBAL_OFFSET_Y = 0
+  GLOBAL_OFFSET_Y = PSDK_CONFIG.viewport_offset_y
   # Filename for viewport compiled config
   VIEWPORT_CONF_COMP = 'Data/Viewport.rxdata'
   # Filename for viewport uncompiled config

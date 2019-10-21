@@ -2,13 +2,13 @@ module GamePlay
   # Load game scene
   class Load < Base
     # @return [String] Default language of the game
-    DEFAULT_GAME_LANGUAGE = 'fr'
+    DEFAULT_GAME_LANGUAGE = PSDK_CONFIG.default_language_code
     # @return [Array] List of the languages the player can choose (empty list = no choice)
-    LANGUAGE_CHOICE_LIST = %w[en fr es]
+    LANGUAGE_CHOICE_LIST = PSDK_CONFIG.choosable_language_code
     # @return [Array] List of the language name when the player can choose
-    LANGUAGE_CHOICE_NAME = %w[English French Spanish]
+    LANGUAGE_CHOICE_NAME = PSDK_CONFIG.choosable_language_texts
     # Number of save allowed (set Float::INFINITY to have infinite saves, set 1 if you want only one save)
-    MAXIMUM_SAVE = 4
+    MAXIMUM_SAVE = PSDK_CONFIG.maximum_saves
     # Constant telling the Viewport.oy property doesn't work with Window because of a LiteRGSS bug
     WINDOW_VIEWPORT_INCOMPATIBILITY = false
     # Create a new GamePlay::Load scene

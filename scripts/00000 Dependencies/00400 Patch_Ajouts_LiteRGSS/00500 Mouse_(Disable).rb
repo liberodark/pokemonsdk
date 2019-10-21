@@ -1,4 +1,4 @@
-if Config.const_defined?(:DisableMouse) && Config::DisableMouse &&
+if PSDK_CONFIG.mouse_disabled &&
    !(PARGV[:tags] || PARGV[:worldmap] || PARGV[:"animation-editor"])
   # Module helps to get the mouse informations
   module Mouse

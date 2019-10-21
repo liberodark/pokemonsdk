@@ -5,9 +5,9 @@ module Yuki
   # @author Nuri Yuri
   module MapLinker
     # The offset in X until we see black borders
-    OffsetX = 10
+    OffsetX = PSDK_CONFIG.tilemap.maplinker_offset_x
     # The offset in Y until we seen black borders
-    OffsetY = 7
+    OffsetY = PSDK_CONFIG.tilemap.maplinker_offset_y
     # The number of tiles the Maker has to let in common between each maps
     DeltaMaker = 3
     # The default Map (black borders)

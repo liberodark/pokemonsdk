@@ -34,7 +34,7 @@ class Tilemap
   # @return [Boolean]
   attr_reader :disposed
   # Number of frame before each autotile change their animation frame
-  Autotile_Frame_Count = 6
+  Autotile_Frame_Count = PSDK_CONFIG.tilemap.autotile_idle_frame_count
   # The autotile builder data
   Autotiles = [
     [ [27, 28, 33, 34], [ 5, 28, 33, 34], [27,  6, 33, 34], [ 5,  6, 33, 34],
@@ -53,9 +53,9 @@ class Tilemap
   # The source rect (to draw autotiles)
   SRC = Rect.new(0, 0, 16, 16)
   # Number of tiles drawn on X axis
-  NX = 22
+  NX = PSDK_CONFIG.tilemap.tilemap_size_x
   # Number of tiles drawn on Y axis
-  NY = 17
+  NY = PSDK_CONFIG.tilemap.tilemap_size_y
   # List of parsed Autotile bitmap by tile ID
   #@@autotile_bmp = Array.new(384)
   # List of unparsed Autotile bitmap (to detect autotile change)

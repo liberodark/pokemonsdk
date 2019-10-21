@@ -1,6 +1,6 @@
 module GameData
   # The maximum level in the Game
-  MAX_LEVEL = ::Config::Pokemon_Max_Level
+  MAX_LEVEL = PSDK_CONFIG.pokemon_max_level
   # The Experience table (common exp curves)
   EXP_TABLE = load_data('Data/Exptable.rxdata') rescue []
   if EXP_TABLE.empty? || EXP_TABLE[0].size < MAX_LEVEL + 1

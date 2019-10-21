@@ -1,3 +1,4 @@
+pokemonsdk/scripts/00000 PSDK_CONFIG.rb
 pokemonsdk/scripts/00001 RMXP_DATA.rb
 pokemonsdk/scripts/00002 state.rb
 pokemonsdk/scripts/00100 Yuki__EXC.rb
@@ -159,7 +160,6 @@ pokemonsdk/scripts/01100 Yuki/01000 Yuri_Tilemap.rb
 pokemonsdk/scripts/01100 Yuki/01001 Yuri_Tilemap2.rb
 pokemonsdk/scripts/01100 Yuki/01100 Yuki__SystemTagEditor.rb
 pokemonsdk/scripts/01100 Yuki/01200 Yuki__WorldMapEditor.rb
-pokemonsdk/scripts/01100 Yuki/01300 Yuki__AnimationEditor.rb
 pokemonsdk/scripts/01100 Yuki/01400 Yuki__VisualDebug.rb
 pokemonsdk/scripts/01100 Yuki/01500 Yuki__ScrollBar.rb
 pokemonsdk/scripts/01100 Yuki/01600 Yuki__Transitions.rb

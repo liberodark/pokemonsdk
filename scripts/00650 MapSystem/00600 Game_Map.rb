@@ -9,7 +9,11 @@ class Game_Map
   # If the Path Finding system is enabled
   PATH_FINDING_ENABLED = true
   # If the player is always on the center of the screen
-  CenterPlayer = ::Config::CenterPlayer
+  CenterPlayer = PSDK_CONFIG.player_always_centered
+  # Number of tiles the player can see in x
+  NUM_TILE_VIEW_Y = 15
+  # Number of tiles the player can see in y
+  NUM_TILE_VIEW_X = 20
   attr_accessor :tileset_name             # タイルセット ファイル名
   attr_accessor :autotile_names           # オートタイル ファイル名
   attr_accessor :panorama_name            # パノラマ ファイル名
@@ -171,8 +175,6 @@ class Game_Map
     @need_refresh = false
   end
 
-  NUM_TILE_VIEW_Y = 15
-
   # Scrolls the map down
   # @param distance [Integer] distance in y to scroll
   # @param is_priority [Boolean] used if there is a prioratary scroll running
@@ -200,8 +202,6 @@ class Game_Map
       # @display_x = [@display_x - distance, 0].max
     end
   end
-
-  NUM_TILE_VIEW_X = 20
 
   # Scrolls the map right
   # @param distance [Integer] distance in x to scroll

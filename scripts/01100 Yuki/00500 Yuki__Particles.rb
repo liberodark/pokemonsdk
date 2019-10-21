@@ -144,7 +144,7 @@ module Yuki
 
     # Initialize the zoom info
     def init_zoom
-      @zoom = (zoom = ::Config::Specific_Zoom) ? zoom : ZoomDiv[1]
+      @zoom = PSDK_CONFIG.specific_zoom || ZoomDiv[1]
       @add_z = @zoom
     end
 

@@ -1,9 +1,9 @@
 # Management of the player displacement on the Map
 class Game_Player < Game_Character
   # 4 time the x position of the Game_Player sprite
-  CENTER_X = (320 - 16) * 4
+  CENTER_X = PSDK_CONFIG.tilemap.center_x
   # 4 time the y position of the Game_Player sprite
-  CENTER_Y = (240 - 16) * 4
+  CENTER_Y = PSDK_CONFIG.tilemap.center_y
   # Name of the bump sound when the player hit a wall
   BUMP_FILE = 'audio/se/bump'
   # true if the player is on the back wheel of its Acro bike
@@ -23,14 +23,14 @@ class Game_Player < Game_Character
   # @param x [Integer] the x position on the MAP
   # @param y [Integer] the y position on the MAP
   def center(x, y)
-    unless Game_Map::CenterPlayer
-      max_x = ($game_map.width - 20) * 128
-      max_y = ($game_map.height - 15) * 128
-      $game_map.display_x = [0, [x * 128 - CENTER_X, max_x].min].max
-      $game_map.display_y = [0, [y * 128 - CENTER_Y, max_y].min].max
-    else
+    if Game_Map::CenterPlayer
       $game_map.display_x = x * 128 - CENTER_X
       $game_map.display_y = y * 128 - CENTER_Y
+    else
+      max_x = ($game_map.width - 20) * 128
+      max_y = ($game_map.height - 15) * 128
+      $game_map.display_x = (x * 128 - CENTER_X).clamp(0, max_x) # [0, [x * 128 - CENTER_X, max_x].min].max
+      $game_map.display_y = (y * 128 - CENTER_Y).clamp(0, max_y) # [0, [y * 128 - CENTER_Y, max_y].min].max
     end
   end
 

@@ -3,7 +3,7 @@ class Sprite_Character < RPG::Sprite
   # Zoom conversion array
   ZoomDiv = [1, 2, 1, 2 / 3.0, 1, 1]
   # Zoom of a tile
-  TILE_ZOOM = 0.5
+  TILE_ZOOM = PSDK_CONFIG.tilemap.character_tile_zoom
   # Tag that disable shadow
   Shadow_Tag = '§'
   # Name of the shadow file
@@ -46,7 +46,7 @@ class Sprite_Character < RPG::Sprite
   # Initialize the zoom info of the Sprite_Character
   def init_zoom
     self.zoom = 1 # $zoom_factor
-    @zoom = (zoom = ::Config::Specific_Zoom) ? zoom : ZoomDiv[1] # $zoom_factor.to_i]
+    @zoom = PSDK_CONFIG.specific_zoom || ZoomDiv[1] # $zoom_factor.to_i]
   end
 
   # Initialize the add_z info & the shadow sprite of the Sprite_Character

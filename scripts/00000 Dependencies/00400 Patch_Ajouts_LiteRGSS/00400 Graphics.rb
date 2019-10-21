@@ -24,7 +24,7 @@ module Graphics
     @on_start.clear
     io_initialize
     frame_reset
-    @no_mouse = (Config.const_defined?(:DisableMouse) and Config::DisableMouse and !PARGV[:tags])
+    @no_mouse = (PSDK_CONFIG.mouse_disabled && !PARGV[:tags])
     init_sprite
   end
 
