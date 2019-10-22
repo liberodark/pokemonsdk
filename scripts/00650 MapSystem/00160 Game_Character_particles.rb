@@ -5,8 +5,9 @@ class Game_Character
   # Show an emotion to an event or the player
   # @param type [Symbol] the type of emotion (see wiki)
   # @param wait [Integer] the number of frame the event will wait after this command.
-  def emotion(type, wait = 34)
-    Yuki::Particles.add_particle(self, type)
+  # @param params [Hash] particle params
+  def emotion(type, wait = 34, params = {})
+    Yuki::Particles.add_particle(self, type, params)
     @wait_count = wait
   end
 

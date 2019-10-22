@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 class Interpreter
   # Return the $game_variables
   # @return [Game_Variables]
@@ -48,8 +46,26 @@ class Interpreter
   # @param type [Symbol] the type of emotion (see wiki)
   # @param char_id [Integer] the ID of the event (> 0), the current event (0) or the player (-1)
   # @param wait [Integer] the number of frame the event will wait after this command.
-  def emotion(type, char_id = 0, wait = 34)
-    Yuki::Particles.add_particle(get_character(char_id), type)
+  # @param params [Hash] particle
+  # @note The available emotion type are :
+  #   - :exclamation
+  #   - :exclamation2
+  #   - :poison
+  #   - :interrogation
+  #   - :music
+  #   - :love
+  #   - :joy
+  #   - :sad
+  #   - :happy
+  #   - :angry
+  #   - :sulk
+  #   - :nocomment
+  # @example Displaying the poison emotion :
+  #   emotion(:poison)
+  # @example Displaying the poison emotion on the player (with offset) :
+  #   emotion(:poison, -1, 34, oy_offset: 10)
+  def emotion(type, char_id = 0, wait = 34, params = {})
+    Yuki::Particles.add_particle(get_character(char_id), type, params)
     @wait_count = wait
   end
 

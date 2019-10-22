@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 module Yuki
   # Module that manage the particle display
   # @author Nuri Yuri
@@ -20,7 +18,7 @@ module Yuki
     def update
       return unless @stack
       @stack.each do |i|
-        i.update if i and !i.disposed
+        i.update if i && !i.disposed
       end
       # Clean stack part
       return unless @clean_stack
@@ -36,12 +34,13 @@ module Yuki
     # Add a particle to the stack
     # @param character [Game_Character] the character on which the particle displays
     # @param particle_tag [Integer, Symbol] identifier of the particle in the hash
-    def add_particle(character, particle_tag)
+    # @param params [Hash] additional params for the particle
+    def add_particle(character, particle_tag, params = {})
       return unless @stack
       return if character.character_name.empty?
       particle_data = find_particle(character.terrain_tag, particle_tag)
       return unless particle_data
-      @stack.push(Particle_Object.new(character, particle_data, @on_teleportation))
+      @stack.push(Particle_Object.new(character, particle_data, @on_teleportation, params))
     end
 
     # Add a parallax
@@ -59,6 +58,7 @@ module Yuki
       @stack << object
       return object
     end
+
     # Add a building
     # @param image [String] name of the image in Graphics/Autotiles/
     # @param x [Integer] x coordinate of the building
@@ -72,24 +72,25 @@ module Yuki
       @stack << object
       return object
     end
+
     # Return the viewport of in which the Particles are shown
     def viewport
       @viewport
     end
+
     # Tell the particle manager the game is warping the player. Particle will skip the :enter phase.
     # @param v [Boolean]
     def set_on_teleportation(v)
       @on_teleportation = v
     end
+
     # Dispose each particle
     def dispose
       return unless @stack
-      t = Time.new
       @stack.each do |i|
-        i.dispose if i and !i.disposed
+        i.dispose if i && !i.disposed
       end
-      @stack=nil
-      #GC.start #> Supprimé pour cause de perte de temps
+      @stack = nil
     end
   end
   # The object that describe a particle
@@ -123,7 +124,8 @@ module Yuki
     #       chara: Boolean # If the particle Bitmap is treaten like the Character bitmap
     #       rect: Array(Integer, Integer, Integer, Integer) # the parameter of the #set function of Rect (src_rect)
     # @param on_tp [Boolean] tells the particle to skip the :enter animation or not
-    def initialize(character, data, on_tp = false)
+    # @param params [Hash] additional params for the animation
+    def initialize(character, data, on_tp = false, params = {})
       @x = character.x
       @y = character.y
       @z = character.z
@@ -140,6 +142,7 @@ module Yuki
       @oy_off = 0
       @ox_off = 0
       @wait_count = 0
+      @params = params
     end
 
     # Initialize the zoom info
@@ -265,6 +268,7 @@ module Yuki
       @factor_y = 0
       update
     end
+
     # Update the parallax position
     def update
       dx = $game_map.display_x / 8
@@ -272,6 +276,7 @@ module Yuki
       @sprite.x = (@x - dx) + (@factor_x * dx)
       @sprite.y = (@y - dy) + (@factor_y * dy)
     end
+
     # Dispose the parallax
     def dispose
       return if @disposed
@@ -303,14 +308,16 @@ module Yuki
       @real_y = (y + MapLinker::OffsetY) * 128
       update
     end
+
     # Update the building position (x, y, z)
     def update
       dx = $game_map.display_x / 8
       dy = $game_map.display_y / 8
       @sprite.x = (@x - dx)
       @sprite.y = (@y - dy)
-      @sprite.z = (@real_y - $game_map.display_y + 4) / 4 + 94 #< C'est optimisé au poil de couille, le tilemap est un peu chiant ^^'
+      @sprite.z = (@real_y - $game_map.display_y + 4) / 4 + 94
     end
+
     # Dispose the building
     def dispose
       return if @disposed

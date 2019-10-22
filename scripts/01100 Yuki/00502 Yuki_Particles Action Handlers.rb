@@ -26,8 +26,8 @@ module Yuki
     add_handler(:position) { |data| @position_type = data }
     add_handler(:angle) { |data| @sprite.angle = data }
     add_handler(:add_z) { |data| @add_z = data }
-    add_handler(:oy_offset) { |data| @oy_off = data }
-    add_handler(:ox_offset) { |data| @ox_off = data }
+    add_handler(:oy_offset) { |data| @oy_off = data + @params.fetch(:oy_offset, 0) }
+    add_handler(:ox_offset) { |data| @ox_off = data + @params.fetch(:ox_offset, 0) }
     add_handler(:opacity) { |data| @sprite.opacity = data }
     add_handler(:se_play) { |data| Audio.se_play(*data) }
     add_handler(:se_player_play) { |data| Audio.se_play(*data) if @character == $game_player }
