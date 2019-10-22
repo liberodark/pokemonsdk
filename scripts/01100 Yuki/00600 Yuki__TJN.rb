@@ -86,6 +86,17 @@ module Yuki
 
     module_function
 
+    # Function that init the TJN variables
+    def init_variables
+      # Fix the game variables
+      unless $game_switches[Sw::TJN_RealTime]
+        $game_variables[Var::TJN_WDay] = 1 if $game_variables[Var::TJN_WDay] <= 0
+        $game_variables[Var::TJN_MDay] = 1 if $game_variables[Var::TJN_MDay] <= 0
+        $game_variables[Var::TJN_Month] = 1 if $game_variables[Var::TJN_Month] <= 0
+      end
+      $user_data[:tjn_events] ||= {}
+    end
+
     # Update the tone of the screen and the game time
     def update
       @timer < one_minute ? @timer += 1 : update_time
@@ -102,6 +113,20 @@ module Yuki
     # @return [Tone]
     def current_tone
       $game_switches[Sw::TJN_Enabled] ? @current_tone_value : NEUTRAL_TONE
+    end
+
+    # Function that scan all the timed event for the current map in order to update them
+    # @param map_id [Integer] ID of the map where to update the timed events
+    def update_timed_events(map_id = $game_map.map_id)
+      curr_time = $game_system.map_interpreter.current_time
+      (map_data = $user_data.dig(:tjn_events, map_id))&.each do |event_id, data|
+        if data.first <= curr_time
+          $game_map.need_refresh = true
+          $game_system.map_interpreter.set_self_switch(true, data.last, event_id, map_id)
+          data.clear
+        end
+      end
+      map_data&.delete_if { |_key, value| value.empty? }
     end
 
     class << self
@@ -127,6 +152,7 @@ module Yuki
       # Update the virtual time by adding 1 minute to the variable
       # @return [Boolean] if update_time should call update_tone
       def update_virtual_time
+        update_timed_events
         return should_update_tone_each_minute unless ($game_variables[Var::TJN_Min] += 1) >= 60
         $game_variables[Var::TJN_Min] = 0
         return true unless ($game_variables[Var::TJN_Hour] += 1) >= 24
@@ -154,6 +180,7 @@ module Yuki
         $game_variables[Var::TJN_WDay] = time.wday
         $game_variables[Var::TJN_MDay] = time.day
         $game_variables[Var::TJN_Month] = time.month
+        update_timed_events if last_min != time.min
         return should_update_tone_each_minute ? last_min != time.min : last_hour != time.hour
       end
 

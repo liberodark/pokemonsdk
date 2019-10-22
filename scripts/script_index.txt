@@ -109,6 +109,7 @@ pokemonsdk/scripts/00700 PSDK Event Interpreter/01000 Interpreter_Environnement.
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01100 Interpreter_Pokemon.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01101 Interpreter_Pokemon Internal.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01102 Interpreter_Move_Reminder.rb
+pokemonsdk/scripts/00700 PSDK Event Interpreter/01150 Interpreter_Time.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01200 Interpreter_Shortcut.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01201 Interpreter_add_item.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01205 Interpreter_Fiber.rb

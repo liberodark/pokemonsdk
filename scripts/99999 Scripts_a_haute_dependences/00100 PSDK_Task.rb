@@ -61,6 +61,15 @@ module Scheduler
     Yuki::TJN.update
     Yuki::Particles.update
   end
+
+  add_proc(:on_scene_switch, ::Scene_Title, 'Correction du TJN', 1000) do
+    Yuki::TJN.init_variables
+  end
+
+  add_proc(:on_warp_start, ::Scene_Map, 'Trigger timed events', 1000) do
+    Yuki::TJN.update_timed_events($game_temp.player_new_map_id)
+  end
+
 =begin
   add_proc(:on_update, ::Scene_Map, 'Ajout Visual Debug', 1100) do
     if false#Input.trigger?(Input::F9) #£VisualDebug
@@ -73,6 +82,7 @@ module Scheduler
     Yuki::VisualDebug.update if Yuki::VisualDebug.enabled? #£VisualDebug
   end
 =end
+
   add_proc(:on_hour_update, ::Scene_Map, 'Actualisation des groupes', 1000) do
     $wild_battle.reset
     $wild_battle.load_groups
