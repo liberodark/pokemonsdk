@@ -12,8 +12,8 @@ module GamePlay
         create_worldmap
       end
       create_face
-      create_info
       create_frame
+      create_info
       # We update the state to give the dex an initial state before it shows
       change_state(@state)
     end

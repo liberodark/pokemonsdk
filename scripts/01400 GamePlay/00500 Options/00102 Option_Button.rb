@@ -16,6 +16,7 @@ module GamePlay
         @button_image.bitmap.width - 8,
         @button_image.bitmap.height / 3 - Text::Util::FOY,
         GameData::Text.get(42, 1+type), 2)
+      @text.z = 202
       draw(false)
     end
 
