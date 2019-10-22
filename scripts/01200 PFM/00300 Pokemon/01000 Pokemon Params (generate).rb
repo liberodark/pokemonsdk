@@ -72,6 +72,7 @@ module PFM
           pokemon.ability_current = pokemon.ability = ability
           pokemon.ability_index = nil
         end
+        pokemon.form = form
         # Set Nature
         pokemon.nature = hash[:nature] || pokemon.nature_id
         # Set trainer info
