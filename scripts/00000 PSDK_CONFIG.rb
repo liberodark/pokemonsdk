@@ -155,6 +155,7 @@ module ScriptLoader
     # Function that choose the best resolution
     # @return [Array<Integer>]
     def choose_best_resolution
+      return editors_resolution if running_editor?
       native = @native_resolution.split('x').collect(&:to_i)
       @viewport_offset_x = 0
       @viewport_offset_y = 0
@@ -170,6 +171,19 @@ module ScriptLoader
       else
         return native
       end
+    end
+
+    # Return the editor resolution
+    # @return [Array<Integer>]
+    def editors_resolution
+      @window_scale = 1
+      @running_in_full_screen = false
+      return [640, 480]
+    end
+
+    # Tell if the game is running an editor
+    def running_editor?
+      return PARGV[:tags] || PARGV[:worldmap]
     end
 
     # Function that tries to find the best resolution in all_res according to native & desired
