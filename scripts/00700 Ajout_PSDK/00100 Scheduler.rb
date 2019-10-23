@@ -152,7 +152,7 @@ module Scheduler
   # Return the object of the Boot Scene (usually Scene_Title)
   # @return [Object]
   def get_boot_scene
-    return Yuki::SystemTagEditor if Config.const_defined?(:EditSystemTags)
+    return Yuki::SystemTagEditor if PARGV[:tags]
     return Yuki::WorldMapEditor if PARGV[:worldmap]
     return Yuki::AnimationEditor if PARGV[:"animation-editor"]
     test = PARGV[:test].to_s # ARGV.grep(/--test=./).first.to_s.gsub("--test=","")

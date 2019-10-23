@@ -38,7 +38,7 @@ module Yuki
     # Start the SystemTag edition
     def start
       return if @running
-      return fork unless Config.const_defined?(:EditSystemTags)
+      return fork unless PARGV[:tags]
       init_context
       init_surfaces
       until Keyboard.press?(Keyboard::Escape)

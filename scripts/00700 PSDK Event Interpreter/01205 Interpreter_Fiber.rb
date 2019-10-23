@@ -12,6 +12,7 @@ class Interpreter
   #   choice_result = message("You are wonkru or you are the enemy of wonkru!\nChoose !", 1, 'Wonkru', '*Knifed*')
   # @return [Integer] the choosen choice (0 indexed this time)
   def message(string, cancel_type = 0, *choices)
+    return rmxp_message(string, 1, *choices) unless @fiber # RMXP Compatibility
     choice_result = 0
     # Return false to the interpreter while the last message is shown
     Fiber.yield(false) while $game_temp.message_text
@@ -32,5 +33,36 @@ class Interpreter
     Fiber.yield(true)
     # Return the result to the event
     return choice_result
+  end
+
+  # Show a yes no choice
+  # @param message [String] message shown by the event
+  # @param yes [String] string used as yes
+  # @param no [String] string used as no
+  # @example Simple yes/no choice (in a condition)
+  #   yes_no_choice('Do you want to continue?')
+  # @example Boy/Girl choice (in a condition, validation will mean boy)
+  #   yes_no_choice('Are you a boy?[WAIT 60] \nOr are you a girl?', 'Boy', 'Girl')
+  # @return [Boolean] if the yes option was choosen
+  def yes_no_choice(message, yes = nil, no = nil)
+    p message
+    yes ||= text_get(11, 27)
+    no ||= text_get(11, 28)
+    return rmxp_message(message, 1, yes.dup, no.dup) == 0 unless @fiber # RMXP Compatibility
+    return message(message, 2, yes.dup, no.dup) == 0
+  end
+
+  private
+
+  # Call the RMXP message
+  # @param message [String] message to display
+  # @param start [Integer] choice start
+  # @param choices [Array<String>] choices
+  # @return [Integer]
+  def rmxp_message(message, start, *choices)
+    @message_waiting = true
+    result = $scene.display_message(message, start, *choices)
+    @message_waiting = false
+    return result
   end
 end

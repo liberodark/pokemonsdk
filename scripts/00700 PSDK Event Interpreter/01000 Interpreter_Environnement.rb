@@ -3,6 +3,8 @@ class Interpreter < Interpreter_RMXP
   # Detect if the event can spot the player and move to the player
   # @param nb_pas [Integer] number of step the event should do to spot the player
   # @return [Boolean] if the event spot the player or not
+  # @example To detect the player 7 tiles in front of the event, put in a condition :
+  #   player_spotted?(7)
   # @author Nuri Yuri
   def player_spotted?(nb_pas)
     return false if $game_switches[Yuki::Sw::Env_Detection]
@@ -41,6 +43,28 @@ class Interpreter < Interpreter_RMXP
     return result
   end
   alias trainer_spotted player_spotted?
+
+  # Detect if the event can spot the player and move to the player with direction relative detection
+  # @param up [Integer] number of step to the up direction
+  # @param down [Integer] number of step to the down direction
+  # @param left [Integer] number of step to the left direction
+  # @param right [Integer] number of step to the right direction
+  # @example The event turn left and bottom but does not have the same vision when turned bottom
+  #   player_spotted_directional?(left: 7, bottom: 3)
+  # @return [Boolean] if the event spotted the player
+  def player_spotted_directional?(up: nil, down: nil, left: nil, right: nil)
+    case $game_map.events[@event_id].direction
+    when 2
+      return player_spotted?(down || up || left || right || 1)
+    when 8
+      return player_spotted?(up || down || left || right || 1)
+    when 4
+      return player_spotted?(left || right || up || down || 1)
+    when 6
+      return player_spotted?(right || left || up || down || 1)
+    end
+    return false
+  end
 
   # Detect the player in a specific direction
   # @param nb_pas [Integer] the number of step between the event and the player

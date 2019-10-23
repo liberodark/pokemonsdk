@@ -68,11 +68,11 @@ module Yuki
     def critical_section(extended_message = nil)
       yield
     rescue Exception => exception
-      if WARNINGS.include?(exception.class)
-        warning(exception.class, exception.message + "\n#{extended_message}")
-      else
-        error(exception, exception.message + "\n#{extended_message}")
-      end
+      # if WARNINGS.include?(exception.class)
+      #   warning(exception.class, exception.message + "\n#{extended_message}")
+      # else
+      error(exception, exception.message + "\n#{extended_message}")
+      # end
     end
   end
 end
