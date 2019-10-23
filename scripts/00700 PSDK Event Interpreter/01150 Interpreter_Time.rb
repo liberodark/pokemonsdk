@@ -2,7 +2,7 @@ class Interpreter
   # Return the current time in minute
   # @return [Integer]
   def current_time
-    return (Time.new.to_i / 60) if $game_switches[Yuki::Sw::TJN_RealTime]
+    return ((time = Time.new).to_i / 60 + time.gmtoff / 60) if $game_switches[Yuki::Sw::TJN_RealTime]
     $game_variables[Yuki::Var::TJN_Min] +
       $game_variables[Yuki::Var::TJN_Hour] * 60 +
       (($game_variables[Yuki::Var::TJN_MDay] - 1) % 7) * 1440 +
