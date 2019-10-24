@@ -80,12 +80,16 @@ module BattleEngine
       return if @ignore
       msg(parse_text(18, 84))
     end
+    MOVE_REP = '[VAR MOVE(0000)]'
     #===
     #>Affichage de "machin attaque truc"
     #===
     def use_skill_msg(launcher, target, skill)
-      return if @ignore or target.hp<=0
-      msg(parse_text_with_pokemon(21, skill.id*3, launcher, PKNAME[0] => launcher.given_name))#name))
+      return if @ignore or target.hp <= 0
+      msg(parse_text_with_pokemon(8999 - GameData::Text::CSV_BASE, 12, launcher,
+                                  PKNAME[0] => launcher.given_name,
+                                  MOVE_REP => skill.name))
+      # msg(parse_text_with_pokemon(21, skill.id*3, launcher, PKNAME[0] => launcher.given_name))#name))
       @scene.animation(launcher, target, skill)
     end
 
