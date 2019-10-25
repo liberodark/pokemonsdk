@@ -11,7 +11,7 @@ module GameData
     # We load the color info image
     RPG::Cache.load_interface
     # @type [Yuki::VD, nil]
-    windowskin_vd = RPG::Cache.instance_variable_get(:@interface_data)
+    windowskin_vd = RPG::Cache.instance_variable_get(:@windowskin_data)
     data = windowskin_vd&.read_data('_colors')
     # We load the color image, the `data ? true : false` is wanted because of the internal functions
     # @type [Image]
