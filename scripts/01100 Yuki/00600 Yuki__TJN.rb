@@ -100,7 +100,10 @@ module Yuki
     # Update the tone of the screen and the game time
     def update
       @timer < one_minute ? @timer += 1 : update_time
-      update_tone if @forced
+      if @forced
+        update_real_time if $game_switches[Sw::TJN_RealTime] && @timer < one_minute
+        update_tone
+      end
     end
 
     # Force the next update to update the tone
@@ -187,13 +190,14 @@ module Yuki
       # Update the tone of the screen
       # @note if the game switch Yuki::Sw::TJN_Enabled is off, the tone is not updated
       def update_tone
-        @forced = false
         return unless $game_switches[Sw::TJN_Enabled]
         change_tone_to_neutral unless (day_tone = $game_switches[Sw::Env_CanFly])
         day_tone = false if $env.sunny? # Zenith adds an other tone so we don't change
         update_tone_internal(day_tone)
         $game_map.need_refresh = true
         ::Scheduler.start(:on_hour_update, $scene.class)
+      ensure
+        @forced = false
       end
 
       # Internal part of the update tone where flags are set & tone is processed
