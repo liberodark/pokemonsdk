@@ -24,6 +24,7 @@ module Battle
     #   or inside Data/Events/Battle/{id}.yarb (if compiled) is a 5 digit number (zero padding at the begining)
     # @param id [Integer] id of the battle
     def load_events(id)
+      return if id < 0
       id = format('%05d', id)
       $RELEASE ? load_ruby_events(id) : load_yarb_events(id)
     end

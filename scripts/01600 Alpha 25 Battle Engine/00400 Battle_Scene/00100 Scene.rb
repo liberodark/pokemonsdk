@@ -37,6 +37,8 @@ module Battle
       @skip_frame = false
       # Create the message proc
       create_message_proc
+      # Init & call first event
+      load_events(logic.battle_info.battle_id)
       call_event(:logic_init)
     end
 

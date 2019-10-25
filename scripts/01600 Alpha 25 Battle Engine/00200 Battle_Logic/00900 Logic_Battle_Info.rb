@@ -20,6 +20,8 @@ module Battle
       attr_accessor :wild_battle_reason
       # @return [Boolean] if the trainer battle is a "couple" battle
       attr_accessor :trainer_is_couple
+      # @return [Integer] ID of the battle (for event loading)
+      attr_accessor :battle_id
 
       # Create a new Battle Info
       # @param hash [Hash] basic info about the battle
@@ -32,6 +34,7 @@ module Battle
         @max_level = hash[:max_level] || nil
         @vs_type = hash[:vs_type] || 1
         @trainer_is_couple = hash[:couple] || false
+        @battle_id = hash[:battle_id] || -1
       end
 
       # Tell if the battle is a trainer battle
