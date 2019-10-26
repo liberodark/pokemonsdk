@@ -45,7 +45,6 @@ class Interpreter
   #   yes_no_choice('Are you a boy?[WAIT 60] \nOr are you a girl?', 'Boy', 'Girl')
   # @return [Boolean] if the yes option was choosen
   def yes_no_choice(message, yes = nil, no = nil)
-    p message
     yes ||= text_get(11, 27)
     no ||= text_get(11, 28)
     return rmxp_message(message, 1, yes.dup, no.dup) == 0 unless @fiber # RMXP Compatibility

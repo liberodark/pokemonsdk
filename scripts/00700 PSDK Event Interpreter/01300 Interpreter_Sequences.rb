@@ -1,4 +1,5 @@
 class Interpreter
+  include Util::SystemMessage if const_defined?(:Util)
   # Name of the file used as Received Pokemon ME (with additional parameter like volume)
   RECEIVED_POKEMON_ME = ['audio/me/rosa_yourpokemonevolved', 80]
   # Header of the system messages
@@ -11,14 +12,13 @@ class Interpreter
   def receive_pokemon_sequence(pokemon_or_id, level = 5, shiny = false)
     pokemon = add_pokemon(pokemon_or_id, level, shiny)
     if pokemon
-      PFM::Text.set_pkname(pokemon)
       Audio.me_play(*RECEIVED_POKEMON_ME)
-      message(SYSTEM_MESSAGE_HEADER + ext_text(8999, 15)) # Received a Pokemon
+      show_message(:received_pokemon, pokemon: pokemon, header: SYSTEM_MESSAGE_HEADER)
       original_name = pokemon.given_name
-      while yes_no_choice(ext_text(8999, 16)) # Give a nickname ?
+      while yes_no_choice(load_message(:give_nickname_question))
         rename_pokemon(pokemon)
-        PFM::Text.set_pknick(pokemon)
-        if pokemon.given_name == original_name || yes_no_choice(ext_text(8999, 17)) # Is that correct ?
+        if pokemon.given_name == original_name ||
+           yes_no_choice(load_message(:is_nickname_correct_qesion, pokemon: pokemon))
           break
         else
           pokemon.given_name = original_name
@@ -33,9 +33,9 @@ class Interpreter
   # Show the "Pokemon was sent to BOX $" message
   # @param pokemon [PFM::Pokemon] Pokemon sent to the box
   def pokemon_stored_sequence(pokemon)
-    PFM::Text.set_pknick(pokemon)
-    PFM::Text.set_variable('[VAR BOXNAME]', $storage.get_box_name($storage.current_box))
-    message(SYSTEM_MESSAGE_HEADER + ext_text(8999, 18))
-    PFM::Text.reset_variables
+    show_message(:pokemon_stored_to_box,
+                 pokemon: pokemon,
+                 '[VAR BOXNAME]' => $storage.get_box_name($storage.current_box),
+                 header: SYSTEM_MESSAGE_HEADER)
   end
 end
