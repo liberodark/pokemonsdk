@@ -162,6 +162,7 @@ module PFM
     # @return [Integer, false] the id of the Pokemon that will be in the egg or no special baby with these Pokemon
     def special_lay_check(daycare, female, male)
       female_sym = female.db_symbol
+      male_sym = male.db_symbol
       # Ditto + (Phione / Manaphy)
       if male.db_symbol == :ditto && BREEDING_WITH_DITTO.include?(female_sym)
         return daycare[:layable] = GameData::Pokemon.get_id(:phione)
