@@ -40,6 +40,15 @@ module PFM
       return alive
     end
 
+    # Méthode pour tester si un Pokémon d'un ID spécifique est présent dans l'équipe et apte au combat.
+    def specific_alive?(id)
+      alive = false
+      $pokemon_party.actors.each do |i|
+        alive = true if i.id == id and i.hp > 0
+      end
+      return alive
+    end
+
     # Add a Pokemon to the pary (also update the Pokedex Informations)
     # @param pkmn [PFM::Pokemon]
     # @return [Boolean, Integer] Box index if stored in a box, false if failed, true if stored in the Party
