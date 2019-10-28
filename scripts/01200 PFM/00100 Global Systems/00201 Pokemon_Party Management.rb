@@ -40,13 +40,19 @@ module PFM
       return alive
     end
 
-    # Méthode pour tester si un Pokémon d'un ID spécifique est présent dans l'équipe et apte au combat.
+    # Test if a specific Pokémon is able to fight or not
+    # @param id [Integer] ID of the Pokemon
+    # @return [Boolean]
+    # @example Checking if Pikachu is alive in the party
+    #   $pokemon_party.specific_alive?(25)
+    # @example Checking if alolan Meowth is alive in the party
+    #   $pokemon_party.specific_alive?(52) { |pokemon| pokemon.form == 1 }
     def specific_alive?(id)
-      alive = false
-      $pokemon_party.actors.each do |i|
-        alive = true if i.id == id and i.hp > 0
+      if block_given?
+        return @actors.any? { |pokemon| !pokemon.dead? && (pokemon.id == id || !id) && yield(pokemon) }
+      else
+        return @actors.any? { |pokemon| !pokemon.dead? && pokemon.id == id }
       end
-      return alive
     end
 
     # Add a Pokemon to the pary (also update the Pokedex Informations)
