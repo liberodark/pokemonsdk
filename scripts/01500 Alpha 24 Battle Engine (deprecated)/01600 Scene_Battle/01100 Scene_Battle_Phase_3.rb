@@ -1,4 +1,4 @@
-#encoding: utf-8
+    #encoding: utf-8
 
 #noyard
 # Description: Définition de la phase de choix de l'attaque à réaliser
@@ -119,7 +119,7 @@ class Scene_Battle
       if(BattleEngine::_skill_blocked?(@actors[@actor_actions.size], @skill_choice_ui.result))
         $game_system.se_play($data_system.buzzer_se)
         phase4_message_display()
-        return
+        return start_phase2(@actor_actions.size)
       end
       ennemies = update_phase3_enemy_select
       return start_phase2(@actor_actions.size) if ennemies == -1

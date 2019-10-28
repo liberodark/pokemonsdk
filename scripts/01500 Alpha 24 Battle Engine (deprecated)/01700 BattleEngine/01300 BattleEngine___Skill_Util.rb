@@ -356,7 +356,6 @@ module BattleEngine
   # Indique si l'attaque est bloqué et affiche le message
   #===
   def _skill_blocked?(launcher, skill, msg = true)
-    return true if skill.pp <= 0
     id = skill.id
     be = launcher.battle_effect
     #>Entrave
@@ -371,6 +370,9 @@ module BattleEngine
       return true
     elsif(be.has_imprison_effect? and be.is_skill_imprisonned?(skill)) #> Possessif
       _mp([:msg, parse_text_with_pokemon(19, 589, launcher, MOVE[1] => skill.name)]) if msg
+      return true
+    elsif (skill.pp <= 0) #> Pas de PP
+      _mp([:msg, parse_text_with_pokemon(18, 85, launcher, MOVE[1] => skill.name)]) if msg
       return true
     end
     return false
