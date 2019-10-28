@@ -122,6 +122,10 @@ module Yuki
     def set_text_style(text, style)
       text.bold = true if (style & 1) != 0
       text.italic = true if (style & 2) != 0
+      if bigger_text?
+        @text.size = Font::FONT_SIZE
+        @text.y += 4
+      end
     end
 
     # Replace the message user code to message specific code in order to generate the right marker
@@ -233,10 +237,7 @@ module Yuki
     # Bigger text
     # @param _maker [Array]
     def execute_marker_4(_marker)
-      return unless @text
-      @text.size = Font::FONT_SIZE
-      @text.y += 4
-      @x = @text.x + @text.real_width
+      @style ^= 0x04
     end
 
     # Change the text speed

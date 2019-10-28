@@ -316,5 +316,10 @@ module Yuki
     def create_sample_text
       Text.new(0, viewport, 0, 0, 0, 0, ' ')
     end
+
+    # Is text displaying bigger (marker 4 compatibility)
+    def bigger_text?
+      @style.anybits?(0x04)
+    end
   end
 end
