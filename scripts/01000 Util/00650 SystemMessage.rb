@@ -23,7 +23,8 @@ module Util
       received_pokemon: [:ext_text, 8999, 15],
       give_nickname_question: [:ext_text, 8999, 16],
       is_nickname_correct_qesion: [:ext_text, 8999, 17],
-      pokemon_stored_to_box: [:ext_text, 8999, 18]
+      pokemon_stored_to_box: [:ext_text, 8999, 18],
+      bag_store_item_in_pocket: [:text_get, 41, 9]
     }
     # Capture regexp
     HAS_NUMBER_REG = /_([0-9]+)$/
@@ -94,7 +95,7 @@ module Util
       text_handler = PFM::Text
       opts.each do |key, value|
         next text_handler.set_variable(key, value) if key.is_a?(String)
-        number = key.match(HAS_NUMBER_REG)&.captures&.to_i || 0
+        number = key.match(HAS_NUMBER_REG)&.captures&.first&.to_i || 0
         if key.match?(IS_POKEMON)
           text_handler.set_pkname(value, number)
           text_handler.set_pknick(value, number)

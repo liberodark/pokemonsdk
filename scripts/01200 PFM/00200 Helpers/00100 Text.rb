@@ -242,6 +242,7 @@ module PFM
       text.gsub!(*Dot)
       text.gsub!(*Money)
       @variables.each { |expr, value| text.gsub!(expr, value) }
+      text.gsub!(KAPHOTICS_Clean, S_Empty)
       return text
     end
 
