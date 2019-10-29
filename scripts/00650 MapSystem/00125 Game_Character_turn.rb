@@ -98,8 +98,14 @@ class Game_Character
 
   # Turn toward the player
   def turn_toward_player
-    sx = @x - $game_player.x
-    sy = @y - $game_player.y
+    turn_toward_character($game_player)
+  end
+
+  # Turn toward another character
+  # @param character [Game_Character]
+  def turn_toward_character(character)
+    sx = @x - character.x
+    sy = @y - character.y
     return if sx == 0 && sy == 0
     if sx.abs > sy.abs
       sx > 0 ? turn_left : turn_right

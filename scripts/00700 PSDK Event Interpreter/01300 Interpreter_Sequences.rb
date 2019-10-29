@@ -4,6 +4,14 @@ class Interpreter
   RECEIVED_POKEMON_ME = ['audio/me/rosa_yourpokemonevolved', 80]
   # Header of the system messages
   SYSTEM_MESSAGE_HEADER = ':[windowskin=m_18]:\\c[10]'
+  # Default BGM used for trainer battle (sent to AudioFile so no audio/bgm)
+  DEFAULT_TRAINER_BGM = ['xy_trainer_battle', 100, 100]
+  # Default eye bgm for trainer encounter (direct, requires audio/bgm)
+  DEFAULT_EYE_BGM = ['audio/bgm/pkmrs-enc1', 100, 100]
+  # Default exclamation SE for trainer encounter (direct, requires audio/se)
+  DEFAULT_EXCLAMATION_SE = ['audio/se/015-jump01', 65, 95]
+  # Duration of the exclamation particle
+  EXCLAMATION_PARTICLE_DURATION = 54
   # Receive Pokemon sequence, when the player is given a Pokemon
   # @param pokemon_or_id [Integer, Symbol, PFM::Pokemon] the ID of the pokemon in the database or a Pokemon
   # @param level [Integer] the level of the Pokemon (if ID given)
@@ -37,5 +45,70 @@ class Interpreter
                  pokemon: pokemon,
                  '[VAR BOXNAME]' => $storage.get_box_name($storage.current_box),
                  header: SYSTEM_MESSAGE_HEADER)
+  end
+
+  # Start a trainer battle
+  # @param trainer_id [Integer] ID of the trainer in Ruby Host
+  # @param bgm [String, Array] BGM to play for battle
+  # @param disable [String] Name of the local switch to disable (if defeat)
+  # @param enable [String] Name of the local switch to enable (if victory)
+  # @param troop_id [Integer] ID of the troop to use : 3 = trainer, 4 = Gym Leader, 5 = Elite, 6 = Champion
+  # @example Start a simple trainer battle
+  #   start_trainer_battle(5) # 5 is the trainer 5 in Ruby Host
+  # @example Start a trainer battle agains a gym leader
+  #   start_trainer_battle(5, bgm: '28 Pokemon Gym', troop_id: 4)
+  def start_trainer_battle(trainer_id, bgm: DEFAULT_TRAINER_BGM, disable: 'A', enable: 'B', troop_id: 3)
+    set_self_switch(false, disable, @event_id) # Better to disable the switch here than in defeat
+    original_battle_bgm = $game_system.battle_bgm
+    $game_system.battle_bgm = RPG::AudioFile.new(*bgm)
+    $game_variables[Yuki::Var::Trainer_Battle_ID] = trainer_id
+    $game_temp.battle_abort = true
+    $game_temp.battle_calling = true
+    $game_temp.battle_troop_id = troop_id
+    $game_temp.battle_can_escape = false
+    $game_temp.battle_can_lose = false
+    $game_temp.battle_proc = proc do |n|
+      yield if block_given?
+      set_self_switch(true, enable, @event_id) if n == 0
+      $game_system.battle_bgm = original_battle_bgm
+    end
+  end
+
+  # Sequence to call before start trainer battle
+  # @param phrase [String] the full speech of the trainer
+  # @param eye_bgm [String, Array] BGM to play during the speech
+  # @param exclamation_se [String, Array] SE to play when the trainer detect the player
+  # @example Simple eye sequence
+  #   trainer_eye_sequence('Hello!')
+  # @example Eye sequence with another eye_bgm
+  #   trainer_eye_sequence('Hello!', eye_bgm: 'audio/bgm/pkmrs-enc7')
+  def trainer_eye_sequence(phrase, eye_bgm: DEFAULT_EYE_BGM, exclamation_se: DEFAULT_EXCLAMATION_SE)
+    character = get_character(@event_id)
+    character.turn_toward_player
+    front_coordinates = $game_player.front_tile
+    # Unless the player triggered the event we show the exclamation
+    unless character.x == front_coordinates.first && character.y == front_coordinates.last
+      Audio.se_play(*exclamation_se)
+      emotion(:exclamation)
+      EXCLAMATION_PARTICLE_DURATION.times do
+        $game_player.update
+        $scene.spriteset.update
+        Graphics.update
+      end
+    end
+    Audio.bgm_play(*eye_bgm)
+    # We move to the trainer
+    while (($game_player.x - character.x).abs + ($game_player.y - character.y).abs) > 1
+      character.move_toward_player
+      while character.moving?
+        $game_map.update
+        $scene.spriteset.update
+        Graphics.update
+      end
+    end
+    $game_player.turn_toward_character(character)
+    # We do the speech
+    $scene.display_message(phrase)
+    @wait_count = 2
   end
 end
