@@ -235,6 +235,7 @@ pokemonsdk/scripts/01300 UI/00500 Summary/00400 Skills.rb
 pokemonsdk/scripts/01300 UI/00500 Summary/00500 Remind.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00100 KeyBindingViewer.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00200 QuestInformer.rb
+pokemonsdk/scripts/01300 UI/09000 Others/00300 MenuButton.rb
 pokemonsdk/scripts/01300 UI/09000 Others/01400 Dex UIs.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02000 UI__TeamButton.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02200 VoltorbFlipSprites.rb
@@ -250,7 +251,6 @@ pokemonsdk/scripts/01400 GamePlay/00200 Scene_Map.rb
 pokemonsdk/scripts/01400 GamePlay/00400 GamePlay__Sprites.rb
 pokemonsdk/scripts/01400 GamePlay/00600 GamePlay__Base.rb
 pokemonsdk/scripts/01400 GamePlay/00050 Menu/00100 Menu.rb
-pokemonsdk/scripts/01400 GamePlay/00050 Menu/00101 Menu_Item.rb
 pokemonsdk/scripts/01400 GamePlay/00100 Dex/00100 Dex.rb
 pokemonsdk/scripts/01400 GamePlay/00100 Dex/00101 Dex_Graphics.rb
 pokemonsdk/scripts/01400 GamePlay/00200 Party/00100 Party_Menu.rb

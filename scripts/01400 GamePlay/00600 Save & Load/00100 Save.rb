@@ -21,12 +21,15 @@ module GamePlay
     ]
     # @return [Integer] index of the save file (to allow multi-save)
     @save_index = 0
+    # @return [Boolean] if the game was saved
+    attr_reader :saved
 
     # Create a new GamePlay::Save
     def initialize
       super
       make_save_directory
       @answered = false
+      @saved = false
     end
 
     # Update the save scene
@@ -37,6 +40,7 @@ module GamePlay
         saved_message = parse_text(26, 17, TRNAME[0] => $trainer.name)
         display_message_and_wait(saved_message)
         @running = false
+        @saved = true
       else
         save_question = text_get(26, 15)
         yes = text_get(25, 20)

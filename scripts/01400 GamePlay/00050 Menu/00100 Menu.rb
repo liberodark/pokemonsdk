@@ -1,141 +1,228 @@
-#encoding: utf-8
-
-#noyard
 module GamePlay
-  class Menu < Base
+  # Main menu UI
+  #
+  # Rewritten thanks to Jaizu demand
+  class Menu < BaseCleanUpdate
     attr_accessor :call_skill_process
+    # List of action according to the "image_index" to call
+    ACTION_LIST = %i[open_dex open_party open_bag open_tcard open_option open_save open_quit]
+    # Entering - leaving animation offset
+    ENTERING_ANIMATION_OFFSET = 150
+    # Entering - leaving animation duration
+    ENTERING_ANIMATION_DURATION = 15
+    # Create a new menu
     def initialize
       super
-      @viewport=Viewport.create(:main, 10_000)
-      @under_viewport=Viewport.create(:main, 9_999)
-      @under_viewport.color=Color.new(49,49,49,153)
-
-      @conditions=[$game_switches[Yuki::Sw::Pokedex], #Pokédex possédé
-      $actors.size>0, #Possède un Pokémon
-      !$bag.locked, #Sac
-      true, #Carte de dresseur
-      !$game_system.save_disabled, #Sauvegarde
-      true, #Options
-      true]
-      @index=$game_temp.last_menu_index
-
-      @sprites=Array.new(@conditions.size)
-      @conditions.each_index do |i|
-        @sprites[i] = Menu_Item.new(@viewport,i,@conditions[i])
-        @sprites[i].set_selected_state(true) if @index==i
-      end
-
-      @shown=false
-      @running=true
+      init_conditions
+      init_indexes
+      @index = $game_temp.last_menu_index
+      @index = 0 if @index >= @image_indexes.size
+      @max_index = @image_indexes.size - 1
+      @quiting = false # Flag allowing to really quit
+      @entering = true # Flag telling we're entering
+      @counter = 0 # Animation counter
+      @in_save = false
     end
 
-    def main_begin
-      update_index
-      @update_spritemap = @__last_scene.class == ::Scene_Map
+    # Create all the graphics
+    def create_graphics
       super
+      create_background
+      create_buttons
+      init_entering
     end
 
+    # End of the scene
     def main_end
       super
       $game_temp.last_menu_index = @index
     end
 
-    def update
-      @__last_scene.sprite_set_update if @update_spritemap
-      super
-      unless @shown
-        @sprites.each do |i|
-          i.x-=8
-        end
-        if(@sprites[0].x<=(320-@sprites[0].width))
-          @shown=true 
-          @sprites.each do |i|
-            i.x=320-i.width-2
+    # Update the input interaction
+    # @return [Boolean] if no input was detected
+    def update_inputs
+      return false if @entering || @quiting
+      if index_changed(:@index, :UP, :DOWN, @max_index)
+        play_cursor_se
+        update_buttons
+      elsif Input.trigger?(:A)
+        action
+      elsif Input.trigger?(:B)
+        @running = false
+      else
+        return true
+      end
+      return false
+    end
+
+    # Update the mouse interaction
+    # @param moved [Boolean] if the mouse moved
+    # @return [Boolean]
+    def update_mouse(moved)
+      @buttons.each_with_index do |button, index|
+        next unless button.simple_mouse_in?
+        if moved
+          last_index = @index
+          @index = index
+          if last_index != index
+            update_buttons
+            play_cursor_se
           end
+        elsif Mouse.trigger?(:LEFT)
+          @index = index
+          update_buttons
+          play_decision_se
+          action
         end
-        return
+        return false
       end
-      if(Mouse.moved or Mouse.trigger?(:left))
-        update_mouse_index
+      return true
+    end
+
+    # Update the graphics
+    def update_graphics
+      # Little trick to allow quitting animation ;)
+      unless @running || @quiting
+        @quiting = true
+        @running = true
       end
-      if(Input.repeat?(:DOWN))
-        @index+=1
-        @index=0 if(@index>=@sprites.size)
-        update_index
-      elsif(Input.repeat?(:UP))
-        @index-=1
-        @index+=@sprites.size if(@index<0)
-        update_index
-      elsif(trigger?(:A) or Mouse.trigger?(:left)) # Input.trigger?(:A))
-        change_scene
-      elsif(trigger?(:B) || trigger?(:X)) # Input.trigger?(:B))
-        @running = false
+      # Update each animation
+      if @entering
+        update_entering_animation
+      elsif @quiting
+        update_quitting_animation
+      else
+        @buttons.each(&:update)
       end
     end
 
-    def update_mouse_index
-      @sprites.each_with_index do |sp, i|
-        @index = i if sp.simple_mouse_in?
+    # Overload the visible= to allow save to keep the curren background
+    # @param value [Boolean]
+    def visible=(value)
+      if @in_save
+        @buttons.each { |button| button.visible = value }
+      else
+        super(value)
       end
-      update_index
     end
 
-    #===
-    #> Patch du changement de scène
-    #===
-    def visible=(v)
-      super(v & @running)
-      return if v == false and @index == 4
-      @under_viewport.visible = v & @running
-      @__last_scene.sprite_set_visible = v if @update_spritemap
+    private
+
+    # Animation played during enter sequence
+    def update_entering_animation
+      @buttons.each { |button| button.move(-ENTERING_ANIMATION_OFFSET / ENTERING_ANIMATION_DURATION, 0) }
+      @background.opacity += 255 / ENTERING_ANIMATION_DURATION
+      @counter += 1
+      if @counter >= ENTERING_ANIMATION_DURATION
+        @counter = 0
+        @entering = false
+        update_buttons
+      end
     end
 
-    def change_scene
-      unless(@conditions[@index])
-        #SE impossible
-        return
+    # Animation played during the quit sequence
+    def update_quitting_animation
+      @buttons.each { |button| button.move(ENTERING_ANIMATION_OFFSET / ENTERING_ANIMATION_DURATION, 0) }
+      @background.opacity -= 255 / ENTERING_ANIMATION_DURATION
+      @counter += 1
+      @running = false if @counter >= ENTERING_ANIMATION_DURATION
+    end
+
+    # Create the conditional array telling which scene is enabled
+    def init_conditions
+      @conditions =
+        [
+          $game_switches[Yuki::Sw::Pokedex], # Pokedex
+          $actors.any?, # Party
+          !$bag.locked, # Bag
+          true, # Trainer card
+          !$game_system.save_disabled, # Save
+          true, # Options
+          true
+        ]
+    end
+
+    # Init the image_indexes array
+    def init_indexes
+      @image_indexes = @conditions.collect.with_index { |condition, index| condition ? index : nil }
+      @image_indexes.compact!
+    end
+
+    # Create the background image (blur)
+    def create_background
+      @screen_is_not_a_viewport = Graphics.snap_to_bitmap # trick to auto dispose the bitmap
+      @background = ShaderedSprite.new(@viewport).set_bitmap(@screen_is_not_a_viewport)
+      @background.zoom = @viewport.rect.width / @screen_is_not_a_viewport.width.to_f
+      @background.shader = Shader.new(Shader.load_to_string('blur'))
+      @background.shader.set_float_uniform('resolution', [@viewport.rect.width, @viewport.rect.height])
+      @background.opacity -= 255 / ENTERING_ANIMATION_DURATION * ENTERING_ANIMATION_DURATION
+    end
+
+    # Create the menu buttons
+    def create_buttons
+      @buttons = Array.new(@image_indexes.size) do |i|
+        UI::PSDKMenuButton.new(@viewport, @image_indexes[i], i)
       end
-      case @index
-      when 1 #Equipe
-        @running = false
-        @__result_process = proc do |scene|
-          if(scene.call_skill_process)
-            @call_skill_process = scene.call_skill_process
-          end
+    end
+
+    # Update the menu button states
+    def update_buttons
+      @buttons.each_with_index { |button, index| button.selected = index == @index }
+    end
+
+    # Init the entering animation
+    def init_entering
+      @buttons.each { |button| button.move(ENTERING_ANIMATION_OFFSET, 0) }
+    end
+
+    # Perform the action to do at the current index
+    def action
+      play_decision_se
+      send(ACTION_LIST[@image_indexes[@index]])
+    end
+
+    # Open the Dex UI
+    def open_dex
+      call_scene(Dex)
+    end
+
+    # Open the Party_Menu UI
+    def open_party
+      call_scene(Party_Menu, $actors, :menu) do |scene|
+        if scene.call_skill_process
+          @call_skill_process = scene.call_skill_process
+          @running = false
         end
-        call_scene(Party_Menu, $actors, :menu)
-      when 0 #Pokédex
-        call_scene(Dex)
-      when 2 #Sac
-        call_scene(Bag)
-      when 3 #Carte de dresseur
-        call_scene(TCard)
-      when 4 #Sauvegarder
-        @running = false
-        call_scene(Save)
-      when 5 #Options
-        call_scene(Options)
-      else #Quitter
-        @running = false
-        @index=0
-      end
-      @__last_scene.sprite_set_visible = true if @update_spritemap
-    end
-
-    def update_index
-      @sprites.each_index do |i|
-        @sprites[i].set_selected_state(@index==i)
       end
     end
 
-    def dispose
-      return if @sprites[0].disposed?
-      Graphics.freeze
-      super
+    # Open the Bag UI
+    def open_bag
+      call_scene(Bag)
     end
 
-    def create_graphics
-      # Skipped to prevent glitches
+    # Open the TCard UI
+    def open_tcard
+      call_scene(TCard)
+    end
+
+    # Open the Save UI
+    def open_save
+      @in_save = true
+      call_scene(Save) do |scene|
+        @running = false if scene.saved
+      end
+      @in_save = false
+    end
+
+    # Open the Options UI
+    def open_option
+      call_scene(Options)
+    end
+
+    # Quit the scene
+    def open_quit
+      @running = false
     end
   end
 end
