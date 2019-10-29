@@ -108,7 +108,9 @@ class Interpreter
     end
     $game_player.turn_toward_character(character)
     # We do the speech
+	@message_waiting = true
     $scene.display_message(phrase)
+	@message_waiting = false
     @wait_count = 2
   end
 end
