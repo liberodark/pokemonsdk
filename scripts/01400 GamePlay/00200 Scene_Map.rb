@@ -234,7 +234,7 @@ class Scene_Map
     #>Lancement du menu
     menu = GamePlay::Menu.new
     menu.main
-    Graphics.transition
+    Graphics.transition(1)
     if(menu.call_skill_process)
       process = menu.call_skill_process.shift
       process.call(*menu.call_skill_process)
