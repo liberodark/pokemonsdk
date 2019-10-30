@@ -9,7 +9,7 @@ module GameData
     # Text color (stroke)
     BattleBar_Text_OUT = Color.new(33, 33, 33)
     # We load the color info image
-    RPG::Cache.load_interface
+    RPG::Cache.load_windowskin
     # @type [Yuki::VD, nil]
     windowskin_vd = RPG::Cache.instance_variable_get(:@windowskin_data)
     data = windowskin_vd&.read_data('_colors')

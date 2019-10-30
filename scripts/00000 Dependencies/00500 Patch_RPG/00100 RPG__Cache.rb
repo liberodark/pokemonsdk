@@ -5,7 +5,7 @@ module RPG
     # Array of load methods to call when the game starts
     LOADS = %i[load_animation load_autotile load_ball load_battleback load_battler load_character load_fog load_icon
                load_panorama load_particle load_pc load_picture load_pokedex load_title load_tileset
-               load_transition load_windowskin load_foot_print load_b_icon load_poke_front load_poke_back]
+               load_transition load_interface load_foot_print load_b_icon load_poke_front load_poke_back]
     # Common filename of the image to load
     Common_filename = 'Graphics/%s/%s'
     # Common filename with .png
