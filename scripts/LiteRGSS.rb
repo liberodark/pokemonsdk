@@ -475,6 +475,10 @@ module LiteRGSS
     # Does nothing (RGSS compatibility)
     def update
     end
+    # Return a snapshot of the viewport
+    # @return [Bitmap]
+    def snap_to_bitmap
+    end
   end
   # Class that describe a sprite shown on the screen or inside a viewport
   # @note Sprites cannot be saved, loaded from file nor cloned in the memory

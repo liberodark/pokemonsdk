@@ -150,11 +150,11 @@ module GamePlay
 
     # Create the background image (blur)
     def create_background
-      @screen_is_not_a_viewport = Graphics.snap_to_bitmap # trick to auto dispose the bitmap
-      @background = ShaderedSprite.new(@viewport).set_bitmap(@screen_is_not_a_viewport)
-      @background.zoom = @viewport.rect.width / @screen_is_not_a_viewport.width.to_f
+      vp = @__last_scene.is_a?(Scene_Map) ? @__last_scene.spriteset.map_viewport : @__last_scene.viewport
+      @screen_is_not_a_viewport = snap = vp.snap_to_bitmap # Trick to auto dispose the bitmap
+      @background = ShaderedSprite.new(@viewport).set_bitmap(snap)
       @background.shader = Shader.new(Shader.load_to_string('blur'))
-      @background.shader.set_float_uniform('resolution', [@viewport.rect.width, @viewport.rect.height])
+      @background.shader.set_float_uniform('resolution', [snap.width, snap.height])
       @background.opacity -= 255 / ENTERING_ANIMATION_DURATION * ENTERING_ANIMATION_DURATION
     end
 
