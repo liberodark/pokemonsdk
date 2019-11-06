@@ -285,7 +285,7 @@ module PFM
     def inherit_moves(pokemon, male, female)
       female_moveset = female.get_data.move_set.select.with_index { |_, index| index.odd? }
       male_moveset = male.get_data.move_set.select.with_index { |_, index| index.odd? }
-      pokemon_moveset = pokemn.get_data.move_set.select.with_index { |_, index| index.odd? }
+      pokemon_moveset = pokemon.get_data.move_set.select.with_index { |_, index| index.odd? }
       # Take moves known by male, female & pokemon
       common_skill = female_moveset - (female_moveset - male_moveset)
       common_skill = pokemon_moveset - (pokemon_moveset - common_skill)
