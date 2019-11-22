@@ -12,7 +12,7 @@ You can find a documentation of the `LiteRGSS` here : [LiteRGSS documentation](h
 Currently, you use two or three tools to edit a PSDK project : 
 - [RPG Maker XP](http://www.rpgmakerweb.com/products/programs/rpg-maker-xp) : to edit the event and eventually the maps
 - [Tiled](https://www.mapeditor.org) : To make the maps with more freedom (you'll need [Tile2RXDATA](https://pokemonworkshop.fr/forum/index.php?topic=4588.0#post_english) to load the map in RMXP)
-- **RubyHost** : to edti the database.
+- **RubyHost** : to edit the database.
 
 ## How to download PSDK ?
 
