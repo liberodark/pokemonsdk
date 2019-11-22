@@ -296,7 +296,7 @@ module PFM
         learn_skill(pokemon, skill_id)
       end
       # Try to teach all the breed move known by the male
-      breed_moves = pokemon_data.breed_moves.each do |skill_id|
+      breed_moves = GameData::Pokemon.breed_moves(pokemon.id, pokemon.form).each do |skill_id|
         next unless male.skill_learnt?(skill_id)
         learn_skill(pokemon, skill_id)
       end
