@@ -178,6 +178,8 @@ module ScriptLoader
     def editors_resolution
       @window_scale = 1
       @running_in_full_screen = false
+      @viewport_offset_x = 0
+      @viewport_offset_y = 0
       return [640, 480]
     end
 
