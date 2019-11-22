@@ -148,6 +148,7 @@ module PFM
       # If there's a change to breed, we try to find the right baby using the special lay check
       if rate != 0
         return if special_lay_check(daycare, female, male)
+        male_data, female_data = get_pokemon_data(male, female)
         daycare[:layable] = female_data.baby
         daycare[:rate] = 0 if daycare[:layable] == 0
       else
