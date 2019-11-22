@@ -219,8 +219,9 @@ class Game_Character
       return true
     end
     # Special commands
+    @move_type_custom_special_result = false
     move_type_custom_special(command)
-    return false
+    return @move_type_custom_special_result
   end
 
   # When the command is 0 we reached the end and we loop back if the repeat mode is on

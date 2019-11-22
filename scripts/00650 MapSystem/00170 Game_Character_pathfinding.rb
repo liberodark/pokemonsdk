@@ -25,6 +25,7 @@ class Game_Character
     # Set move route forcing to true
     @move_route_forcing_path_finder ||= @move_route_forcing
     @move_route_forcing = true
+    @move_type_custom_special_result = true
   end
 
   # Stop following the path if there is one and clear the agent
