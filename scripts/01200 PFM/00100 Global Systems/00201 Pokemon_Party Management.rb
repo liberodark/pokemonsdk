@@ -40,6 +40,11 @@ module PFM
       return alive
     end
 
+    # Index of the first pokemon alive in the party
+    def first_pokemon_alive_index
+      return @actors.index { |pokemon| !pokemon.dead? }
+    end
+
     # Test if a specific Pokémon is able to fight or not
     # @param id [Integer] ID of the Pokemon
     # @return [Boolean]
