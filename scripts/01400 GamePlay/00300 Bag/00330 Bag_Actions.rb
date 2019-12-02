@@ -210,6 +210,7 @@ module GamePlay
     def sell_item
       play_decision_se
       item_id = @item_list[@index]
+      return action_b if item_id == nil
       price = GameData::Item.price(item_id) / 2
       PFM::Text.set_item_name(GameData::Item.exact_name(item_id))
       if price > 0
