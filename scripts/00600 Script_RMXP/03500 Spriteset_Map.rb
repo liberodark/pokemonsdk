@@ -295,6 +295,7 @@ class Spriteset_Map
       @sp_fg.y += 1
     elsif @counter == 154
       dispose_sp_map
+      Graphics.sort_z
     elsif @counter > 122
       @sp_bg.y -= 1
       @sp_fg.y -= 1
