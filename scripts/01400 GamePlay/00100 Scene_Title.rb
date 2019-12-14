@@ -6,6 +6,8 @@ class Scene_Title
   TITLE_BGM_LENGTH = 4_418_000
   # @return [String] name of the Title BGM
   TITLE_BGM_NAME = 'audio/bgm/rosa_title'
+  # @return [Boolean] if the title screen use random font
+  RANDOM_TITLE_FONT = true
   # Entry point of the scene. If player hit X + B + UP the GamePlay::Load scene will ask the save deletion.
   def main
     data_load
@@ -59,9 +61,11 @@ class Scene_Title
     Graphics.freeze
     @viewport.color.alpha = 0
     #@viewport.tone.set(0,0,0,0)
-    @fnt = rand(3)
+    @fnt = RANDOM_TITLE_FONT ? rand(3) : 0
     @main_sprite.bitmap = RPG::Cache.title("fond_#@fnt")
-    @start_sprite.bitmap = RPG::Cache.title("start")
+    lang = (GamePlay::Save.load&.options&.language || 'en')
+    lang = 'en' unless RPG::Cache.title_exist?("start#{lang}")
+    @start_sprite.bitmap = RPG::Cache.title("start#{lang}")
     @start_sprite.visible = false
     @counter = 0
     Graphics.transition
