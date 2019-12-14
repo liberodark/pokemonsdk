@@ -1,4 +1,3 @@
-require 'json'
 module GameData
   # Class Responsive of encoding data collection to JSON
   class JSONFromDataCollection

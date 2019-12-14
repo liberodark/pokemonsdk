@@ -48,31 +48,24 @@ class Viewport
 
     # Load the viewport configs
     def load_configs
-      if Config.const_defined?(:Viewport, false) # Old Way
-        CONFIGS.merge!(
-          main: {
-            x: Config::Viewport::X,
-            y: Config::Viewport::Y,
-            width: Config::Viewport::Width,
-            height: Config::Viewport::Height
-          },
-          sub: {
-            x: Config::Viewport::Sub_X,
-            y: Config::Viewport::Sub_Y,
-            width: Config::Viewport::Sub_Width,
-            height: Config::Viewport::Sub_Height
-          }
-        )
-      else # New Way
-        if debug?
-          if !File.exist?(VIEWPORT_CONF_COMP) || File.mtime(VIEWPORT_CONF_TEXT) > File.mtime(VIEWPORT_CONF_COMP)
-            require 'json'
-            log_debug('Updating Viewport Configuration...')
+      if debug?
+        unless File.exist?(VIEWPORT_CONF_COMP) && File.exist?(VIEWPORT_CONF_TEXT)
+          if File.exist?(VIEWPORT_CONF_TEXT)
             save_data(JSON.parse(File.read(VIEWPORT_CONF_TEXT), symbolize_names: true), VIEWPORT_CONF_COMP)
+          else
+            vp_conf = { main: { x: 0, y: 0, width: 320, height: 240 } }
+            File.write(VIEWPORT_CONF_TEXT, vp_conf.to_json)
+            sleep(1)
+            save_data(vp_conf, VIEWPORT_CONF_COMP)
           end
         end
-        CONFIGS.merge!(load_data(VIEWPORT_CONF_COMP))
+        # Load json conf if newer than binary conf
+        if File.mtime(VIEWPORT_CONF_TEXT) > File.mtime(VIEWPORT_CONF_COMP)
+          log_debug('Updating Viewport Configuration...')
+          save_data(JSON.parse(File.read(VIEWPORT_CONF_TEXT), symbolize_names: true), VIEWPORT_CONF_COMP)
+        end
       end
+      CONFIGS.merge!(load_data(VIEWPORT_CONF_COMP))
     end
   end
 

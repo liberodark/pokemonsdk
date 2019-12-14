@@ -60,10 +60,7 @@ module ScriptLoader
     def try_to_load_config
       data = load_data(DAT_FILENAME) rescue nil
       unless data
-        if File.exist?(YAML_FILENAME)
-          require 'yaml'
-          data = YAML.load(File.read(YAML_FILENAME))
-        end
+        data = YAML.load(File.read(YAML_FILENAME)) if File.exist?(YAML_FILENAME)
       end
       return data.is_a?(PSDKConfig) ? data : nil
     end
@@ -88,7 +85,6 @@ module ScriptLoader
       @tilemap = @tilemap.is_a?(TilemapConfig) ? @tilemap : TilemapConfig.new
       save |= @tilemap.fix_missing_values
       if save
-        require 'yaml'
         File.write(YAML_FILENAME, YAML.dump(self))
         save_data(self, DAT_FILENAME)
       end

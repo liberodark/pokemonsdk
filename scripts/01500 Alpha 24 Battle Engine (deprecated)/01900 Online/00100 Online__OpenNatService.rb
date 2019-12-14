@@ -1,5 +1,3 @@
-#encoding: utf-8
-
 # Module that manage Online Interaction of Pokemon SDK
 # @note : Uses https://gitlab.com/NuriYuri/rubyliteigd
 module Online
@@ -12,8 +10,6 @@ module Online
     PortDescr = "Port de communication Online pour PSDK"
     # Default port time to leave (port is open of 1 hour)
     PortTime = 3600
-    # Variable that tells if LiteIGD has been loaded (its long)
-    @@LiteIGDLoaded = false
     # Variable that tells the IGD has already been found
     @@found_once = false
     # IP Address of the Computer on the internet (private IP if no IGD found)
@@ -33,20 +29,7 @@ module Online
     attr_reader :private_port
     # Create a new OpenNatService instance
     def initialize
-      load_LiteIGD unless @@LiteIGDLoaded
       retreive_ips
-    end
-    # Load LiteIGD, will trigger Graphics.update if executed in main Thread
-    def load_LiteIGD
-      if Thread.main == Thread.current
-        th = Thread.new do
-          require "LiteIGD"
-        end
-        Graphics.update while th.status
-      else
-        require "LiteIGD"
-      end
-      @@LiteIGDLoaded = true
     end
     # Retreive the IP adresses of the computer
     def retreive_ips

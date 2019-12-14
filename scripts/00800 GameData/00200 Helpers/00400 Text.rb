@@ -1,5 +1,3 @@
-require 'csv'
-
 module GameData
   # Module that helps the game to get text in various langages
   # @author Nuri Yuri

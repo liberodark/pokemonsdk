@@ -1,6 +1,10 @@
 AllCops:
   TargetRubyVersion: "2.5"
 
+# Alias_method is mandatory with operator, using alias raise a syntax error
+Style/Alias:
+  Enabled: false
+
 # Idk why this rule exists but it's boring
 Naming/MemoizedInstanceVariableName:
   Enabled: false
@@ -20,6 +24,10 @@ Style/FrozenStringLiteralComment:
 # 120 characters seems better than 80, we don't use small screen anymore
 Metrics/LineLength:
   Max: 120
+
+# 10 arguments is fine, most of the time they're used as data feeding
+Metrics/ParameterLists:
+  Max: 10
 
 # I did some mistakes, I try to respect this rule without seeing my mistakes
 Naming/ConstantName:
