@@ -1,4 +1,3 @@
-require 'psych'
 module GamePlay
   class KeyBinding
     class << self
@@ -17,7 +16,7 @@ module GamePlay
 
       # Perform the internal operation of loading the inputs
       def load_inputs_internal
-        data = Psych.load(File.read(input_filename), fallback: false)
+        data = YAML.load(File.read(input_filename), fallback: false)
         raise 'Bad Input data' unless data.is_a?(Hash)
         UI::KeyBindingViewer::KEYS.each do |infos|
           key = infos[0]
@@ -55,7 +54,7 @@ module GamePlay
         UI::KeyBindingViewer::KEYS.each do |infos|
           data[infos[0]] = Input::Keys[infos[0]].clone
         end
-        File.open(input_filename, 'w') { |f| Psych.dump(data, f) }
+        File.open(input_filename, 'w') { |f| YAML.dump(data, f) }
       end
 
       # Return the filename with path of the inputs.yml file

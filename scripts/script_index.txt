@@ -180,7 +180,8 @@ pokemonsdk/scripts/01100 Yuki/02400 Yuki_Debug.rb
 pokemonsdk/scripts/01100 Yuki/02401 Yuki__Debug MainUI.rb
 pokemonsdk/scripts/01100 Yuki/02402 Debug_SystemTags.rb
 pokemonsdk/scripts/01100 Yuki/02403 Debug_Groups.rb
-pokemonsdk/scripts/01100 Yuki/00100 Animation/00001 Groups.rb
+pokemonsdk/scripts/01100 Yuki/00100 Animation/00100 Animation.rb
+pokemonsdk/scripts/01100 Yuki/00100 Animation/00101 Commands.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00100 Pokedex.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00200 Pokemon_Party.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00201 Pokemon_Party Management.rb
@@ -350,6 +351,7 @@ pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01800 Online_Battle
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01800 Online_Battle/00300 Scene_Battle_Client_.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01800 Online_Battle/00400 Scene_Battle_Server.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01800 Online_Battle/00500 Scene_Battle_Magneto.rb
+pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01900 Online/00001 LiteIGD.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01900 Online/00100 Online__OpenNatService.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01900 Online/00200 Online__Map.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01900 Online/00300 GamePlay__Trade.rb
