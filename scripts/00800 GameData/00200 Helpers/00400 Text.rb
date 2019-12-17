@@ -22,7 +22,7 @@ module GameData
 
     # load text in the correct lang ($options.language or LANG in game.ini)
     def load
-      reload_rh_texts unless $RELEASE
+      reload_rh_texts unless PSDK_CONFIG.release?
       lang = ($pokemon_party ? $pokemon_party.options.language : default_lang)
       unless lang && Available_Langs.include?(lang)
         log_error "Unsupported language code (#{lang}).\nSupported language code are : #{Available_Langs.join(', ')}"
@@ -99,7 +99,7 @@ module GameData
     # @param filename [String] name of the file in Data/text/Dialogs
     # @return [Boolean]
     def marshalized_text_file_exist?(filename)
-      if $RELEASE
+      if PSDK_CONFIG.release?
         vdfilename = VD_TEXT_FILENAME
         ::Kernel::Loaded[vdfilename] = Yuki::VD.new(vdfilename, :read) unless ::Kernel::Loaded.key?(vdfilename)
         return ::Kernel::Loaded[vdfilename].exists?(File.basename(filename))

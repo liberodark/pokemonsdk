@@ -36,7 +36,7 @@ module Audio
           t = Time.new
           @sound_cache[filename] = File.open(filename, 'rb') { |f| f.read(f.size) }
           @sound_count[filename] = 5
-          log_info "\rAudio::Cache : #{filename} loaded in #{Time.new - t}s" unless $RELEASE
+          log_info "\rAudio::Cache : #{filename} loaded in #{Time.new - t}s" unless PSDK_CONFIG.release?
         end
       end
     end

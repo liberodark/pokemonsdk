@@ -26,10 +26,10 @@ module Battle
     def load_events(id)
       return if id < 0
       id = format('%05d', id)
-      $RELEASE ? load_ruby_events(id) : load_yarb_events(id)
+      PSDK_CONFIG.release? ? load_ruby_events(id) : load_yarb_events(id)
     end
 
-    if $RELEASE
+    if PSDK_CONFIG.release?
       # Load the events from a YARB file
       # @param id [String] the id of the event (00051 for 51)
       def load_yarb_events(id)

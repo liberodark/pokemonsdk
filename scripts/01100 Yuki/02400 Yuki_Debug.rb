@@ -54,7 +54,7 @@ module Yuki
     end
   end
 
-  unless $RELEASE
+  unless PSDK_CONFIG.release?
     Scheduler.add_proc(:on_update, :any, 'Yuki::Debug', 0, proc { Debug.create_debugger if Keyboard.press?(Keyboard::F9)})
   end
 end

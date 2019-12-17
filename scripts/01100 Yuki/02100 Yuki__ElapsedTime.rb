@@ -1,7 +1,7 @@
 module Yuki
   # Module that allow to mesure elapsed time between two calls of #show
   #
-  # This module is muted when $RELEASE = true
+  # This module is muted when PSDK_CONFIG.release? = true
   #
   # Example :
   #   Yuki::ElapsedTime.start(:test)
@@ -18,7 +18,7 @@ module Yuki
     # Start the time counter
     # @param name [Symbol] name of the timer
     def start(name)
-      return if $RELEASE || @disabled_timers.include?(name)
+      return if PSDK_CONFIG.release? || @disabled_timers.include?(name)
       @timers[name] = Time.new
     end
 
@@ -38,7 +38,7 @@ module Yuki
     # @param name [Symbol] name of the timer
     # @param message [String] message to show in the console
     def show(name, message)
-      return if $RELEASE || @disabled_timers.include?(name)
+      return if PSDK_CONFIG.release? || @disabled_timers.include?(name)
       timer = @timers[name]
       delta_time = Time.new - timer
       if delta_time > 1

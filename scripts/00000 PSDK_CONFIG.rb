@@ -29,6 +29,8 @@ module ScriptLoader
     attr_reader :player_always_centered
     # @return [Boolean] if the mouse is disabled
     attr_reader :mouse_disabled
+    # @return [String, nil] the mouse skind to use
+    attr_reader :mouse_skin
     # @return [Integer, nil] Specific zoom for overworld things
     attr_reader :specific_zoom
     # @return [Integer] OffsetX of all the viewports
@@ -49,8 +51,22 @@ module ScriptLoader
       data&.instance_variables&.each do |ivar_name|
         instance_variable_set(ivar_name, data.instance_variable_get(ivar_name))
       end
-      fix_variables(!data || ($DEBUG && !File.exist?(DAT_FILENAME)))
+      fix_variables(!data || should_save)
       adjust_litergss_config
+    end
+
+    # Tell if the game is in Release mode
+    # @return [Boolean]
+    def release?
+      @release = File.exist?('Data/Scripts.dat') if @release.nil?
+      return @release
+    end
+
+    # Tell if the game is in Debug mode
+    # @return [Boolean]
+    def debug?
+      @debug = !release? && ARGV.include?('debug') if @debug.nil?
+      return @debug
     end
 
     private
@@ -68,12 +84,13 @@ module ScriptLoader
     # Function that fix the variables
     # @param save [Boolean] if the object should be saved
     def fix_variables(save)
-      @game_title = (@game_title || Config::Title).to_s
+      @game_title = (@game_title || 'Pokémon SDK').to_s
       @game_version = (@game_version || 256).to_i
       @default_language_code = (@default_language_code || 'en').to_s
       @choosable_language_code ||= %w[en fr es]
       @choosable_language_texts ||= %w[English French Spanish]
       @maximum_saves = (@maximum_saves || 4).to_i
+      @mouse_skin = nil unless @mouse_skin.is_a?(String)
       fix_resolution
       fix_scale
       fix_full_screen
@@ -85,6 +102,8 @@ module ScriptLoader
       @tilemap = @tilemap.is_a?(TilemapConfig) ? @tilemap : TilemapConfig.new
       save |= @tilemap.fix_missing_values
       if save
+        remove_instance_variable(:@release) if instance_variable_defined?(:@release)
+        remove_instance_variable(:@debug) if instance_variable_defined?(:@debug)
         File.write(YAML_FILENAME, YAML.dump(self))
         save_data(self, DAT_FILENAME)
       end
@@ -92,7 +111,7 @@ module ScriptLoader
 
     # Function that fix the native resolution
     def fix_resolution
-      resolution = (@native_resolution || "#{Config::ScreenWidth}x#{Config::ScreenHeight}")
+      resolution = (@native_resolution || '320x240')
                    .to_s.split('x').collect(&:to_i)[0, 2]
       resolution = [320, 240] unless resolution.size == 2
       ratio = resolution.first.to_r / resolution.last
@@ -202,6 +221,14 @@ module ScriptLoader
       return [desired_res.first / @window_scale, desired_res.last / @window_scale].map(&:round)
     end
 
+    # Function telling if the game should save the file or not
+    # @return [Boolean]
+    def should_save
+      return false if release?
+      return (!File.exist?(DAT_FILENAME) || !File.exist?(YAML_FILENAME)) ||
+             (File.mtime(DAT_FILENAME) < File.mtime(YAML_FILENAME))
+    end
+
     # Class describing the tilemap configuation
     class TilemapConfig
       # @return [String] full constant path of the tilemap class (from Object)
@@ -239,7 +266,7 @@ module ScriptLoader
       # Function that fix the missing values
       # @return [Boolean] if the files should be saved again
       def fix_missing_values
-        return $DEBUG && false
+        return ARGV.include?('debug') && false
       end
     end
   end

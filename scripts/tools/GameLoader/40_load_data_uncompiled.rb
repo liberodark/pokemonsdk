@@ -12,5 +12,3 @@ def save_data(data, filename)
   File.binwrite(filename, Marshal.dump(data))
   return nil
 end
-
-$DEBUG = ARGV.include?('debug')

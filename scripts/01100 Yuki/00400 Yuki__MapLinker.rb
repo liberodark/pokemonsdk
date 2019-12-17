@@ -265,7 +265,7 @@ module Yuki
     # Autoload the sounds of the other maps
     # @param map_id [Integer] id of the map the player warped
     def autoload_sounds(map_id)
-      log_info 'MapLinker autoload sounds...' unless $RELEASE
+      log_info 'MapLinker autoload sounds...' unless PSDK_CONFIG.release?
       args = []
       [@north_data, @east_data, @sud_data, @west_data].each do |data|
         next unless data
@@ -447,7 +447,7 @@ module Yuki
     # @return [Boolean]
     def should_tileset_be_converted?(filename, tilesetname)
       return true unless RPG::Cache.tileset_exist?(filename)
-      return false if $RELEASE
+      return false if PSDK_CONFIG.release?
       return true unless File.exist?(filename = "graphics/tilesets/#{filename}.png")
       return File.mtime("graphics/tilesets/#{tilesetname}.png".downcase) >
              File.mtime(filename)

@@ -62,7 +62,7 @@ module GameData
     def load_ability_db_symbol
       return load_data('Data/PSDK/Abilities_Symbols.rxdata')
     rescue StandardError, LoadError
-      require 'plugins/update_db_symbol.rb' unless $RELEASE
+      require 'plugins/update_db_symbol.rb' unless PSDK_CONFIG.release?
       return load_data('Data/PSDK/Abilities_Symbols.rxdata')
     end
 

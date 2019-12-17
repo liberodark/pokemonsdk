@@ -179,7 +179,7 @@ PARGV.define_arg(:help, aliases: [:h]) do
     '--fullscreen : Tell if the game launch in fullscreen',
     0x06
   )
-  if $DEBUG && !File.exist?('Data/Scripts.dat')
+  unless File.exist?('Data/Scripts.dat')
     pcc(
       '--tags : Open the system tag editor',
       '--worldmap : Open the worldmap editor',

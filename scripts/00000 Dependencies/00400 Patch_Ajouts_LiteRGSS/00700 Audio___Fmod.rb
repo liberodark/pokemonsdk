@@ -340,7 +340,7 @@ if Object.const_defined?(:FMOD)
         end
       end
       return unless start && length
-      log_info "LOOP: #{start} -> #{start + length}" unless $RELEASE
+      log_info "LOOP: #{start} -> #{start + length}" unless PSDK_CONFIG.release?
       sound.setLoopPoints(start, FMOD::TIMEUNIT::PCM, start + length, FMOD::TIMEUNIT::PCM)
     end
 

@@ -29,7 +29,7 @@ module Kernel
   # Debug print command, prints each args using puts
   # @param args [Array<Object>]
   def pc(*args)
-    return if $RELEASE
+    return if PSDK_CONFIG.release?
     args.each { |arg| puts arg.to_s }
   end
 
@@ -38,7 +38,7 @@ module Kernel
   # @example setting the background in purple and the text in white
   #   cc 0x57
   def cc(code)
-    return if $RELEASE
+    return if PSDK_CONFIG.release?
     bg = (code & 0xF0) >> 4
     fg = code & 0x0F
     # Change the background
@@ -53,7 +53,7 @@ module Kernel
   #   pcc 'Message', 0x01
   # @author Leikt
   def pcc(*args)
-    return if $RELEASE
+    return if PSDK_CONFIG.release?
     print "\r"
     cc args.pop if args.last.is_a?(Integer)
     pc(*args)
@@ -64,7 +64,7 @@ module Kernel
   # @param message [String]
   # @return [String] the message
   def log_error(message)
-    return message if $RELEASE
+    return message if PSDK_CONFIG.release?
     rc = binding.receiver
     rc = rc.is_a?(Module) ? rc : rc.class
     Kernel.log_stack << [:pcc, "[#{rc}] #{message}", 0x01]
@@ -75,7 +75,7 @@ module Kernel
   # @param message [String]
   # @return [String] the message
   def log_info(message)
-    return if $RELEASE
+    return message if PSDK_CONFIG.release?
     rc = binding.receiver
     rc = rc.is_a?(Module) ? rc : rc.class
     Kernel.log_stack << [:pcc, "[#{rc}] #{message}", 0x02]
@@ -86,7 +86,7 @@ module Kernel
   # @param message [String]
   # @return [String] the message
   def log_debug(message)
-    return if $RELEASE
+    return message if PSDK_CONFIG.release?
     return unless debug?
     rc = binding.receiver
     rc = rc.is_a?(Module) ? rc : rc.class
@@ -98,7 +98,7 @@ module Kernel
 
   # Display the colors and their codes
   def colors
-    return if $RELEASE
+    return if PSDK_CONFIG.release?
     0.upto(100) do |code|
       pcc "Text with code #{code}", code
     end
@@ -115,7 +115,7 @@ module Kernel
     end
   end
 
-  unless $RELEASE
+  unless PSDK_CONFIG.release?
     # Shortcuts for console commands
     # @example Calling a method of the map interpreter from the console
     #   S.MI.add_pokemon(:pikachu)

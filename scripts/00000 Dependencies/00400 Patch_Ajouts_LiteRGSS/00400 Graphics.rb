@@ -136,7 +136,7 @@ module Graphics
   # Initialize the IO related stuff of Graphics
   def io_initialize
     STDOUT.sync = true unless STDOUT.tty?
-    return if $RELEASE
+    return if PSDK_CONFIG.release?
     @cmd_thread = create_command_thread
   rescue StandardError
     puts 'Failed to initialize IO related things'
