@@ -95,13 +95,11 @@ module Graphics
     return if @no_mouse
     @mouse = Sprite.new
     @mouse.z = 200_001
-    if Config.const_defined?(:MouseSkin) and RPG::Cache.windowskin_exist?(Config::MouseSkin)
-      @mouse.bitmap = RPG::Cache.windowskin(Config::MouseSkin)
+    mouse_skin = PSDK_CONFIG.mouse_skin || (Config.const_defined?(:MouseSkin) && Config::MouseSkin)
+    if mouse_skin && RPG::Cache.windowskin_exist?(mouse_skin)
+      @mouse.bitmap = RPG::Cache.windowskin(mouse_skin)
     else
-      @mouse.bitmap = Bitmap.new(10, 10)
-      @mouse.bitmap.fill_rect(0, 0, 5, 5, Color.new(0, 0, 0, 255))
-      @mouse.bitmap.fill_rect(1, 1, 4, 4, Color.new(255, 255, 255, 255))
-      @mouse.bitmap.update
+      @mouse.bitmap = Bitmap.new("\x89PNG\r\n\x1A\n\x00\x00\x00\rIHDR\x00\x00\x00\n\x00\x00\x00\x11\x04\x03\x00\x00\x00\x16\r \xD6\x00\x00\x00\x0FPLTENNN\xA3I\xA4\xE5\xE5\xE5\xD3\xD3\xD3\xC3\xC3\xC3RUt6\x00\x00\x00\x02tRNS\xFF\x00\xE5\xB70J\x00\x00\x00GIDATx\x015\xCA\xC1\t\xC40\fD\xD1/[\x05\xAC:XH\x03\x01\xA7\x00\x1F\xA6\xFF\x9A2\x16D\x87\a\x9F\x11Q>h\xC7\t\xC6\xBF\xBD\x1C\xCCu\xB7+\xDA}|\x14LI\x9B\x94\x80D^\xA9\xF4\x1Am\xD5\xCF?\x9F\xEE\x17sz\a\xBD\xEBds/\x00\x00\x00\x00IEND\xAEB`\x82", true)
     end
   end
 

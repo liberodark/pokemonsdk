@@ -140,7 +140,7 @@ module GamePlay
 
       def save_filename
         root = save_root_path.tr('\\', '/').encode(Encoding::UTF_8)
-        game_name = root.start_with?('.') ? '' : ".#{Config::Title}/"
+        game_name = root.start_with?('.') ? '' : ".#{PSDK_CONFIG.game_title}/"
         filename = (@save_index > 0 ? format(MULTI_SAVE_FORMAT, BASE_FILENAME, @save_index) : BASE_FILENAME)
         return format('%<root>s/%<game_name>s%<filename>s', root: root, game_name: game_name, filename: filename)
       end
