@@ -48,7 +48,7 @@ class Viewport
 
     # Load the viewport configs
     def load_configs
-      if debug?
+      unless PSDK_CONFIG.release?
         unless File.exist?(VIEWPORT_CONF_COMP) && File.exist?(VIEWPORT_CONF_TEXT)
           if File.exist?(VIEWPORT_CONF_TEXT)
             save_data(JSON.parse(File.read(VIEWPORT_CONF_TEXT), symbolize_names: true), VIEWPORT_CONF_COMP)
