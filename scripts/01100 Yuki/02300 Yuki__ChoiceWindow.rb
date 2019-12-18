@@ -144,6 +144,7 @@ module Yuki
         max_width = text_obj.real_width if max_width < text_obj.real_width
       end
       self.width = max_width + window_builder[4] + window_builder[-2] + cursor_rect.width + cursor_rect.x if @autocalc_width
+      self.width += 10 if current_windowskin[0, 2].casecmp('m_') #SkinHGSS
       @texts.stack.each { |text| text.width = max_width }
     end
 
@@ -173,13 +174,13 @@ module Yuki
     # Retreive the current windowskin
     # @return [String]
     def current_windowskin
-      WINDOW_SKIN
+      $game_system.windowskin_name
     end
 
     # Retreive the current window_builder
     # @return [Array]
     def current_window_builder
-      return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2].casecmp?('m_') # SkinHGSS
+      return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2] == 'm_' # SkinHGSS
       ::GameData::Windows::MessageWindow # Skin PSDK
     end
 
