@@ -151,6 +151,7 @@ class Scene_Battle
       end
       lvl = 1 if lvl < 1
       selected[i].level=lvl
+      selected[i].captured_level = lvl
       selected[i].exp=selected[i].exp_list[lvl]
       selected[i].hp=selected[i].max_hp
     end

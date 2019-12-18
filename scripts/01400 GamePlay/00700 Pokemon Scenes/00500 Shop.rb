@@ -180,7 +180,7 @@ module GamePlay
     def create_description_window
       @descr_window = Window.new(@viewport)
       @descr_window.lock
-      @descr_window.set_size(@viewport.rect.width - 4, 48 + current_window_builder[1])
+      @descr_window.set_size(@viewport.rect.width - 4, 48 + (current_window_builder[1] < 16 ? 16 : current_window_builder[1]))
       @descr_window.set_position(2, @viewport.rect.height - @descr_window.height - 2)
       @descr_window.windowskin = @gold_window.windowskin
       @descr_window.window_builder = @gold_window.window_builder
@@ -203,7 +203,7 @@ module GamePlay
       @item_window = Window.new(@viewport)
       @item_window.lock
       wb = @gold_window.window_builder
-      @item_window.set_size(150 + wb[0] * 2, 128 + wb[1])
+      @item_window.set_size(150 + (wb[0] < 16 ? 19 : wb[0]) * 2, 128 + (wb[1] < 16 ? 16 : wb[1]))
       @item_window.set_position(@viewport.rect.width - @item_window.width - 2, 2)
       @item_window.windowskin = @gold_window.windowskin
       @item_window.window_builder = @gold_window.window_builder
@@ -223,7 +223,7 @@ module GamePlay
       @gold_window.lock
       wb = @gold_window.window_builder = current_window_builder
       @gold_window.set_position(2, 2)
-      @gold_window.set_size(64 + wb[0] * 2, 32 + wb[1])
+      @gold_window.set_size(64 + (wb[0] < 16 ? 19 : wb[0]) * 2, 32 + (wb[1] < 16 ? 16 : wb[1]))
       @gold_window.windowskin = RPG::Cache.windowskin(current_windowskin)
       @gold_window.unlock
       stack = UI::SpriteStack.new(@gold_window)
@@ -245,7 +245,7 @@ module GamePlay
     # Retreive the current window_builder
     # @return [Array]
     def current_window_builder
-      return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2] == 'M_' # SkinHGSS
+      return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2] == 'm_' # SkinHGSS
       ::GameData::Windows::MessageWindow # Skin PSDK
     end
 
