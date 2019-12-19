@@ -172,7 +172,19 @@ module Yuki
       @followers.size.times do |i|
         v = @followers[i]
         c = v.character
-        c.moveto($game_player.x, $game_player.y)
+        x,y = $game_player.x, $game_player.y
+        case $game_player.direction
+        when 2
+          y -= 1
+        when 8
+          y += 1
+        when 4
+          x += 1
+        when 6
+          x -= 1
+        end
+        x,y = $game_player.x, $game_player.y if !$game_map.passable?(x,y,$game_player.direction)
+        c.moveto(x,y)
         c.direction = $game_player.direction
         c.instance_variable_set(:@memorized_move, nil)
         c.update
