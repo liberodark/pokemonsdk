@@ -96,6 +96,8 @@ module PFM
       @ev_hp+=n
       @ev_hp=252 if @ev_hp>252
       @ev_hp=0 if @ev_hp<0
+      @hp = (@hp_rate*max_hp).round
+      @hp_rate = @hp.to_f/max_hp
       return true
     end
     # Safely add ATK EV

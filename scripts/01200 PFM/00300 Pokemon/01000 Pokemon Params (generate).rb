@@ -88,6 +88,7 @@ module PFM
         pokemon.captured_with = hash[:ball] || pokemon.captured_with
         # Memo text
         pokemon.memo_text = hash[:memo_text]
+        pokemon.hp = pokemon.max_hp
 
         return pokemon
       end
