@@ -182,6 +182,7 @@ module GamePlay
     # @note : Also update interface state
     # @param pokemon [PFM::Pokemon] Pokemon that change form
     def form_change_message(pokemon)
+      pokemon.hp = ((pokemon.max_hp)*(pokemon.hp_rate)).round
       @team_buttons[@index].data = pokemon
       display_message(parse_text(22, 157, ::PFM::Text::PKNAME[0] => pokemon.given_name))
     end
