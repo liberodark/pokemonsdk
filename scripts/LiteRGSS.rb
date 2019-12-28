@@ -817,7 +817,7 @@ module LiteRGSS
     attr_accessor :visible
     # @return [Numeric] number of point to build the shape (can be modified only with circle and convex)
     attr_accessor :point_count
-    # Retreive the coordinate of a point
+    # Retrieve the coordinate of a point
     # @param index [Integer] index of the point in the point list
     # @return [Array(Integer, Integer)]
     def get_point(index)
@@ -946,22 +946,22 @@ module LiteRGSS
     # @return [self]
     def define_shadow_color(font_id, color)
     end
-    # Retreive the default size of a font
+    # Retrieve the default size of a font
     # @param font_id [Integer] the ID of the font
     # @return [Integer]
     def get_default_size(font_id)
     end
-    # Retreive the fill color of a font
+    # Retrieve the fill color of a font
     # @param font_id [Integer] the ID of the font
     # @return [Color]
     def get_fill_color(font_id)
     end
-    # Retreive the outline color of a font
+    # Retrieve the outline color of a font
     # @param font_id [Integer] the ID of the font
     # @return [Color]
     def get_outline_color(font_id)
     end
-    # Retreive the shadow color of a font
+    # Retrieve the shadow color of a font
     # @param font_id [Integer] the ID of the font
     # @return [Color]
     def get_shadow_color(font_id)
@@ -1274,7 +1274,7 @@ module LiteRGSS
       end
     end
   end
-  # Module that helps to retreive Mouse information during the game time
+  # Module that helps to retrieve Mouse information during the game time
   # 
   # The buttons of the mouse are : :LEFT (:left), :MIDDLE (:middle), :RIGHT (:right), :X1, :X2
   module Mouse
@@ -1295,10 +1295,10 @@ module LiteRGSS
     def released?(sym)
     end
     class << self
-      # Retreive the x mouse position on the screen
+      # Retrieve the x mouse position on the screen
       # @return [Integer]
       attr_reader :x
-      # Retreive the y mouse position on the screen
+      # Retrieve the y mouse position on the screen
       # @return [Integer]
       attr_reader :y
       # The vertical mouse wheel delta

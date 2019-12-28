@@ -47,7 +47,7 @@ module UI
 
     private
 
-    # Retreive the current window_builder
+    # Retrieve the current window_builder
     # @param skin [String]
     # @return [Array]
     def current_window_builder(skin)

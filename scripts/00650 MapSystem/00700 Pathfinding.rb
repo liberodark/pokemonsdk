@@ -488,7 +488,7 @@ module Pathfinding
 
         # Cost calculation : start with last node cost
         # Add the weight of the tag
-        # Retreive the straight direction (we prefer straight lines)
+        # Retrieve the straight direction (we prefer straight lines)
         cost = node.first + tags_weight[game_map.system_tag(kx, ky)] - ((node[5] & 0xF) == direction ? 1 : 0)
         backtrace_move = direction | node[1] << 4 | node[2] << 14 | node[3] << 24
         # Sort and insert the new node

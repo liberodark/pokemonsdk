@@ -34,6 +34,8 @@ module Yuki
     attr_accessor :stay_visible
     # @return [GamePlay::InputNumber] Variable that holds the GamePlay::InputNumber object
     attr_accessor :input_number_window
+    # @return [String, nil] the last text the window showed (used in battle to prevent redisplay of pokemon name)
+    attr_reader :last_text
 
     # List of message instance (to allow the access to the current message)
     @@instances = {}
@@ -120,13 +122,13 @@ module Yuki
       $game_temp.num_input_digits_max = 0
     end
 
-    # Retreive the current windowskin
+    # Retrieve the current windowskin
     # @return [String]
     def current_windowskin
       @windowskin_overwrite || $game_system.windowskin_name
     end
 
-    # Retreive the current windowskin of the name window
+    # Retrieve the current windowskin of the name window
     # @return [String]
     def current_name_windowskin
       @nameskin_overwrite || NAME_SKIN
@@ -177,7 +179,7 @@ module Yuki
       set_position(x, y)
     end
 
-    # Retreive the current window position
+    # Retrieve the current window position
     # @return [Symbol, Array]
     def current_position
       position = @position_overwrite || $game_system.message_position
@@ -192,7 +194,7 @@ module Yuki
       position
     end
 
-    # Retreive the current window_builder
+    # Retrieve the current window_builder
     # @return [Array]
     def current_window_builder
       return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2].casecmp?('m_') # SkinHGSS
@@ -211,7 +213,7 @@ module Yuki
       update_name_windowskin
     end
 
-    # Retreive the current window_builder of the name window
+    # Retrieve the current window_builder of the name window
     # @return [Array]
     def current_name_window_builder
       return ::GameData::Windows::MessageHGSS if current_name_windowskin[0, 2].casecmp?('m_') # SkinHGSS

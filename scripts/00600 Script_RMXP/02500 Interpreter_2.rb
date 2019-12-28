@@ -42,7 +42,7 @@ class Interpreter_RMXP
     end
   end
 
-  # Command that retreive a Game_Character object
+  # Command that retrieve a Game_Character object
   # @param parameter [Integer, Symbol] > 0 : id of the event, 0 : current event, -1 : player or follower, Symbol : alias
   # @return [Game_Event, Game_Player, Game_Character]
   def get_character(parameter)
@@ -64,7 +64,7 @@ class Interpreter_RMXP
     end
   end
 
-  # Command that retreive a value and negate it if wanted
+  # Command that retrieve a value and negate it if wanted
   # @param operation [Integer] if 1 negate the value
   # @param operand_type [Integer] if 0 takes operand, otherwise take the game variable n°operand
   # @param operand [Integer] the value or index

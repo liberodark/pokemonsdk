@@ -27,7 +27,7 @@ module Scheduler
 
     # Add a new task
     # @param task_type [Symbol] one of the specific tasks
-    # @param description [String] description allowing to retreive the task
+    # @param description [String] description allowing to retrieve the task
     # @param event_id [Integer, :any] id of the event that triggers the task
     # @param map_id [Integer, :any] id of the map where the task triggers
     # @param task [Proc] task executed
@@ -94,7 +94,7 @@ module Scheduler
 
     # Remove a task
     # @param task_type [Symbol] one of the specific tasks
-    # @param description [String] description allowing to retreive the task
+    # @param description [String] description allowing to retrieve the task
     # @param event_id [Integer, :any] id of the event that triggers the task
     # @param map_id [Integer, :any] id of the map where the task triggers
     def delete(task_type, description, event_id, map_id)

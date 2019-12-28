@@ -115,7 +115,7 @@ module Online
       end
       return str
     end
-    # Retreive the IP and the Port from a code
+    # Retrieve the IP and the Port from a code
     # @param _code [String] the code
     # @param offset [Integer] offset to add to the IP section to prevent service collision (Battle/Trade)
     # @return [Array<String, Integer>, nil] ip, port or nil if failure (bad code)
@@ -131,7 +131,7 @@ module Online
     end
     # Get a part of the IP adress
     # @param _code [String] the code
-    # @param i [Integer] index of the Byte of the IP to retreive
+    # @param i [Integer] index of the Byte of the IP to retrieve
     # @param offset [Integer] offset to add to the IP section to prevent service collision (Battle/Trade)
     # @return [Integer, nil] nil if bad code
     def self.get_ip_component(_code, i, offset)

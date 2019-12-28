@@ -152,6 +152,7 @@ module Yuki
       set_origin(0, 0)
       @can_skip_message = false
       text = replace_message_codes($game_temp.message_text)
+      @last_text = $game_temp.message_text
       @x = origin_x
       @y = 0
       @current_speed = 0

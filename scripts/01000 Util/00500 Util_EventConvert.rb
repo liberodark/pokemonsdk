@@ -422,7 +422,7 @@ module Util
         io.puts("#{' ' * @indent}$game_party.gain_gold(#{operate_value(*param[0, 3])})")
       end
 
-      # Command that retreive a value and negate it if wanted
+      # Command that retrieve a value and negate it if wanted
       # @param operation [Integer] if 1 negate the value
       # @param operand_type [Integer] if 0 takes operand, otherwise take the game variable n°operand
       # @param operand [Integer] the value or index

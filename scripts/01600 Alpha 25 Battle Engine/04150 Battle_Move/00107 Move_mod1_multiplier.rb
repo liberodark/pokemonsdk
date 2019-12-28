@@ -26,7 +26,7 @@ module Battle
     def calc_mod1_brn(user)
       return 1 unless physical? && user.burn?
       return 1 if user.ability_db_symbol == :guts
-      return 0.5
+      return VAL_0_5
     end
 
     # Calculate the RL mod
@@ -39,7 +39,7 @@ module Battle
       else
         return 1 unless logic.bank_light_screen?(target.bank)
       end
-      return $game_temp.vs_type == 2 ? (2 / 3.0) : 0.5
+      return $game_temp.vs_type == 2 ? (2 / 3.0) : VAL_0_5
     end
 
     # Calculate the TVT mod
@@ -65,9 +65,9 @@ module Battle
     def calc_mod1_sr
       if $env.sunny?
         return 1.5 if type == 2
-        return 0.5 if type == 3
+        return VAL_0_5 if type == 3
       elsif $env.rain?
-        return 0.5 if type == 2
+        return VAL_0_5 if type == 2
         return 1.5 if type == 3
       end
       return 1

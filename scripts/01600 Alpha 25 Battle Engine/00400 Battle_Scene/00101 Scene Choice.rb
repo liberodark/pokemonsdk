@@ -104,8 +104,11 @@ module Battle
     def switch_choice
       pokemon_to_send = @visual.show_pokemon_choice
       if pokemon_to_send
+        pokemon_to_switch = @logic.battler(0, @player_actions.size)
         # The player made a choice we store the action and we check if he can make other choices
-        @player_actions << { type: :switch, who: @logic.battler(0, @player_actions.size), with: pokemon_to_send }
+        @player_actions << { type: :switch, who: pokemon_to_switch, with: pokemon_to_send }
+        pokemon_to_send.switching = true
+        pokemon_to_switch.switching = true
         log_debug("Action : #{@player_actions.last}") if debug? # To prevent useless overhead outside debug
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else
@@ -119,8 +122,8 @@ module Battle
       return unless action
       case action[:type]
       when :switch
-        action[:who].will_be_switched = false
-        action[:with].will_be_switched = false
+        action[:who].switching = false
+        action[:with].switching = false
       end
     end
 

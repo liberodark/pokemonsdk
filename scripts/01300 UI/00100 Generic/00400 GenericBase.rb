@@ -148,14 +148,14 @@ module UI
 
       private
 
-      # Retreive the color of the text
+      # Retrieve the color of the text
       # @param coords_index [Integer] index of the coordinates to use in order to position the button
       # @return [Integer]
       def text_color(coords_index)
         coords_index == 3 ? 21 : 20
       end
 
-      # Retreive the id of the font used to show the text
+      # Retrieve the id of the font used to show the text
       # @return [Integer]
       def text_font
         20

@@ -170,10 +170,10 @@ class Interpreter
     $storage.instance_variable_set(var_id, party)
   end
 
-  # Retreive the saved team when emptied ( /!\ empty the current team)
+  # Retrieve the saved team when emptied ( /!\ empty the current team)
   # @param id_storage [String] the specific name of the storage, if nil sent to $storage.other_party
   # @author Nuri Yuri
-  def retreive_saved_party(id_storage = nil)
+  def retrieve_saved_party(id_storage = nil)
     var_id = id_storage ? "@_str_#{id_storage}".to_sym : :@other_party
     party = $storage.instance_variable_get(var_id)
     return nil if party.empty?
@@ -183,6 +183,7 @@ class Interpreter
     $actors = $pokemon_party.actors = party
     $storage.remove_instance_variable(var_id) if id_storage
   end
+  alias retreive_saved_party retrieve_saved_party
 
   # Save some Pokemon of the team somewhere and remove them from the party
   # @param id_storage [String] the specific name of the storage, if nil sent to $storage.other_party
@@ -204,10 +205,10 @@ class Interpreter
     end
   end
 
-  # Retreive previously stolen Pokemon ( /!\ uses #add_pokemon)
+  # Retrieve previously stolen Pokemon ( /!\ uses #add_pokemon)
   # @param id_storage [String] the specific name of the storage, if nil sent to $storage.other_party
   # @author Nuri Yuri
-  def retreive_stolen_pokemon(id_storage = nil)
+  def retrieve_stolen_pokemon(id_storage = nil)
     var_id = id_storage ? "@_str_#{id_storage}".to_sym : :@other_party
     party = $storage.instance_variable_get(var_id)
     return nil if party.empty?
@@ -216,6 +217,7 @@ class Interpreter
     end
     $storage.remove_instance_variable(var_id) if id_storage
   end
+  alias retreive_stolen_pokemon retrieve_stolen_pokemon
 
   # Start an online Trade
   # @param server [Boolean] if the player is the server

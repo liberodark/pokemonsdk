@@ -75,7 +75,7 @@ module ScriptLoader
     # @return [PSDKConfig]
     def try_to_load_config
       data = load_data(DAT_FILENAME) rescue nil
-      unless data
+      if !data || should_save
         data = YAML.load(File.read(YAML_FILENAME)) if File.exist?(YAML_FILENAME)
       end
       return data.is_a?(PSDKConfig) ? data : nil

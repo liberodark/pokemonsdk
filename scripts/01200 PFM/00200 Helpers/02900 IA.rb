@@ -694,7 +694,7 @@ module PFM
       end
       return 0
     end
-    # Retreive the Pokemon when the Actor array changed
+    # Retrieve the Pokemon when the Actor array changed
     # @param pokemon [PFM::Pokemon]
     # @return [PFM::Pokemon]
     def get_pokemon(pokemon)
@@ -703,7 +703,7 @@ module PFM
       end
       return @enemies[-pokemon.position-1]
     end
-    # Retreive the Pokemon from the original array
+    # Retrieve the Pokemon from the original array
     # @param pokemon [PFM::Pokemon]
     # @return [PFM::Pokemon]
     def get_pokemon_o(pokemon)

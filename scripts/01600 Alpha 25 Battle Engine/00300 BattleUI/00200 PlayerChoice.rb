@@ -36,19 +36,11 @@ module BattleUI
     # Update the Window cursor
     def update
       return if validated?
-      return validate if Input.trigger?(:A)
+      return validate if Input.trigger?(:A) || (Mouse.trigger?(:LEFT) && simple_mouse_in?)
       return cancel if Input.trigger?(:B)
       last_index = @index
-      case Input.dir4
-      when 6
-        @index = @index < 2 ? 1 : 3
-      when 4
-        @index = @index < 2 ? 0 : 2
-      when 2
-        @index = @index.odd? ? 3 : 2
-      when 8
-        @index = @index.odd? ? 1 : 0
-      end
+      update_key_index
+      update_mouse_index
       update_cursor if last_index != @index
     end
 
@@ -89,6 +81,29 @@ module BattleUI
       add_text(TEXT_OX + DELTA_X, 0, DELTA_X - TEXT_OX, DELTA_Y, text_get(32, 1)) # Bag
       add_text(TEXT_OX, DELTA_Y, DELTA_X - TEXT_OX, DELTA_Y, text_get(32, 2)) # Pokemon
       add_text(TEXT_OX + DELTA_X, DELTA_Y, DELTA_X - TEXT_OX, DELTA_Y, text_get(32, 3)) # Flee
+    end
+
+    # Update the mouse index if the mouse moved
+    def update_mouse_index
+      return unless Mouse.moved
+      return unless simple_mouse_in?
+      stack.each_with_index do |text, index|
+        break @index = index if text.simple_mouse_in?
+      end
+    end
+
+    # Update the index if a key was pressed
+    def update_key_index
+      case Input.dir4
+      when 6
+        @index = @index < 2 ? 1 : 3
+      when 4
+        @index = @index < 2 ? 0 : 2
+      when 2
+        @index = @index.odd? ? 3 : 2
+      when 8
+        @index = @index.odd? ? 1 : 0
+      end
     end
   end
 end

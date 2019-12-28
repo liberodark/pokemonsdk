@@ -37,6 +37,9 @@ module PFM
     # @return [Integer] Position of the Pokemon in the bank
     attr_accessor :position
 
+    # @return [Numeric] Order of the Pokemon in the action chain (the lesser the faster)
+    attr_accessor :order
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param max_level [Integer] new max level for Online battle
@@ -49,6 +52,7 @@ module PFM
       @type3 = 0
       @bank = 0
       @position = -1
+      @order = -1
     end
 
     # Reload the original ability
@@ -62,8 +66,16 @@ module PFM
       @position && !dead?
     end
 
+    # Is the pokemon able to use a move ?
+    # @return [Boolean]
+    def can_use_move?
+      moves = @moveset
+      # TODO : Implement all the move conditions
+      return moves.any? { |move| move.pp > 0 }
+    end
+
     def to_s
-      "<PB:#{@given_name},#{@bank},#{@position} lv=#{@level} hp=#{@hp_rate.round(3)} st=#{@status}>"
+      "<PB:#{name},#{@bank},#{@position} lv=#{@level} hp=#{@hp_rate.round(3)} st=#{@status}>"
     end
     alias inspect to_s
 

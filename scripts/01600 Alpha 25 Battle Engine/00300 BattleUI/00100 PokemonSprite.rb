@@ -32,6 +32,11 @@ module BattleUI
       !@animation.nil?
     end
 
+    # Return if the animation is done
+    def done?
+      @animation.nil?
+    end
+
     # Dispose the sprite
     def dispose
       if @gif
@@ -64,6 +69,19 @@ module BattleUI
           cry
           @animation = nil
           self.zoom = 1
+        end
+      end
+    end
+
+    # Start the going in (ball) Animation
+    def start_animation_going_in
+      self.zoom = 1
+      reset_position
+      @animation = proc do
+        self.zoom = zoom_x - 0.1
+        if zoom_x <= 0
+          @animation = nil
+          self.zoom = 0
         end
       end
     end

@@ -81,6 +81,7 @@ module Battle
     end
 
     # Return the current accuracy of the move
+    # @return [Integer]
     def accuracy
       @accuracy || GameData::Skill.accuracy(@id)
     end
@@ -258,7 +259,7 @@ module Battle
     end
 
     class << self
-      # Retreive a registered move
+      # Retrieve a registered move
       # @param symbol [Symbol] be_method of the move
       # @return [Class]
       def [](symbol)

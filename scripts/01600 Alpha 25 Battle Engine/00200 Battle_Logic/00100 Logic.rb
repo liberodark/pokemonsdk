@@ -20,6 +20,7 @@ module Battle
       @battle_info = battle_scene.battle_info
       Message.setup(self)
       @messages = []
+      # @type [Array<Hash>]
       @actions = []
       @bags = []
       @battlers = []

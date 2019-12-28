@@ -19,7 +19,7 @@ class Scene_Battle
       @waiter = 0
     end
 
-    # Retreive the current window position
+    # Retrieve the current window position
     # @note Always return :bottom if the battler interpreter is not running
     # @return [Symbol, Array]
     def current_position

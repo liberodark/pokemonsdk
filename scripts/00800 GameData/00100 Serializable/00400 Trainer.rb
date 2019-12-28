@@ -48,7 +48,7 @@ module GameData
         id.between?(0, @data.size - 1)
       end
 
-      # Retreive all the trainer
+      # Retrieve all the trainer
       # @return [Array<GameData::Trainer>]
       def all
         return @data

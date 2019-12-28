@@ -167,7 +167,7 @@ module PARGV
 end
 
 # Define global PARGV
-PARGV.define_arg(:scale, flag: false, default: 2) { |value| value.to_f.between?(0.1, 12) ? value.to_f : 2 }
+PARGV.define_arg(:scale, flag: false, default: nil) { |value| value.to_f.between?(0.1, 12) ? value.to_f : 2 }
 PARGV.define_arg(:smooth)
 PARGV.define_arg(:fullscreen)
 PARGV.define_arg(:help, aliases: [:h]) do

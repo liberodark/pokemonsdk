@@ -1,5 +1,5 @@
 module PFM
-  # The text parser of PSDK (retreive text from GameData::Text)
+  # The text parser of PSDK (retrieve text from GameData::Text)
   # @author Nuri Yuri
   module Text
     @variables = {}

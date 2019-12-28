@@ -331,11 +331,6 @@ module PFM
     def nature_id
       return @nature
     end
-    # Return the text of the nature
-    # @return [String]
-    def nature_text
-      return text_get(8, nature.first)
-    end
     # Return the primitive data of the Pokemon
     # @return [GameData::Pokemon]
     def get_data
@@ -385,24 +380,6 @@ module PFM
         return Color.new(0,0,0)
       end
     end
-    # Return the name of the zone where the Pokemon has been caught
-    # @return [String]
-    def captured_zone_name
-      zone_name = _utf8(GameData::Zone.get(@captured_in & 0xFFFF).map_name.to_s)
-      return PFM::Text.parse_string_for_messages(zone_name)
-    end
-    # Return the name of the zone where the egg has been obtained
-    # @return [String]
-    def egg_zone_name
-      zone_name = _utf8(GameData::Zone.get((@egg_in || @captured_in) & 0xFFFF).map_name.to_s)
-      return PFM::Text.parse_string_for_messages(zone_name)
-    end
-    # Return the name of the item the Pokemon is holding
-    # @return [String]
-    def item_name
-      return GameData::Item.name(@battle_item) if $game_temp.in_battle
-      return GameData::Item.name(@item_holding)
-    end
     # Return the db_symbol of the Pokemon's item held
     # @return [Symbol]
     def item_db_symbol
@@ -434,16 +411,6 @@ module PFM
     # @return [Boolean]
     def dead?
       return (@hp<=0 or self.egg?)
-    end
-    # Return the Pokemon name in the Pokedex
-    # @return [String]
-    def name
-      return GameData::Text.get(0,@step_remaining==0 ? @id : 0)
-    end
-    # Return the Pokemon name upcase in the Pokedex
-    # @return [String]
-    def name_upper
-      return GameData::Text.get(0,@step_remaining==0 ? @id : 0).upcase
     end
     # Return the Pokemon rareness
     # @return [Integer]
@@ -482,37 +449,10 @@ module PFM
     def ability
       return @ability_current
     end
-    # Return the name of the current ability of the Pokemon
-    # @return [String]
-    def ability_name
-      return GameData::Abilities.name(self.ability)
-    end
-    # Reture the description of the current ability of the Pokemon
-    # @return [String]
-    def ability_descr
-      return GameData::Abilities.descr(self.ability)
-    end
     # Return the db_symbol of the Pokemon's Ability
     # @return [Symbol]
     def ability_db_symbol
       GameData::Abilities.db_symbol(self.ability)
-    end
-    # Return the given name of the Pokemon (Pokedex name if no given name)
-    # @return [String]
-    def given_name
-      return @given_name if @given_name
-      return self.name
-    end
-    # Give a new name to the Pokemon
-    # @param v [String] the new name of the Pokemon
-    def given_name=(v)
-      @given_name = v
-      @given_name = nil if v == self.name
-    end
-    # Convert the Pokemon to a string (battle debug)
-    # @return [String]
-    def to_s
-      return "<P:#{self.given_name}_#{@code.to_s(36)}_#{@position}>"
     end
     # Return the battle effect of the Pokemon or the default battle effect
     # @return [Pokemon_Effect]
@@ -523,11 +463,6 @@ module PFM
     # @return [Integer]
     def trainer_id
       return @trainer_id%100000
-    end
-    # Return the normalized text trainer id of the Pokemon
-    # @return [String]
-    def trainer_id_text
-      return sprintf("%05d", self.trainer_id)
     end
     # Return if the Pokemon is from the player (he caught it)
     # @return [Boolean]
@@ -569,55 +504,23 @@ module PFM
     def ribbon_got?(id)
       return @ribbons.include?(id)
     end
+
     # Set the captured_in flags (to know from which game the pokemon came from)
     # @param flag [Integer] the new flag
-    def set_flag(flag)
-      @captured_in = (@captured_in & 0x0000FFFF) | (flag & 0xFFFF0000)
+    def flags=(flag)
+      @captured_in = zone_id | (flag & 0xFFFF0000)
     end
+
     # Tell if the pokemon is from a past version
     # @return [Boolean]
     def from_past?
       return (@captured_in & 0x00FF0000) == Flag_39
     end
-    # Returns the level text
-    # @return [String]
-    def level_text
-      @level.to_s
-    end
-    # Return the level text (to_pokemon_number)
-    # @return [String]
-    def level_pokemon_number
-      @level.to_s.to_pokemon_number
-    end
-    # Return the level text with "Level: " inside
-    # @return [String]
-    def level_text2
-      "#{text_get(27, 29)}#@level"
-    end
-    # Returns the HP text
-    # @return [String]
-    def hp_text
-      "#@hp / #{self.max_hp}"
-    end
-    # Returns the HP text (to_pokemon_number)
-    # @return [String]
-    def hp_pokemon_number
-      "#@hp / #{self.max_hp}".to_pokemon_number
-    end
-    # Return the text of the Pokemon ID
-    # @return [String]
-    def id_text
-      sprintf("%03d", $pokedex.national? ? @id : ::GameData::Pokemon.id_bis(@id))
-    end
-    # Return the text of the Pokemon ID with N°
-    # @return [String]
-    def id_text2
-      sprintf("N°%03d", $pokedex.national? ? @id : ::GameData::Pokemon.id_bis(@id))
-    end
-    # Return the text of the Pokemon ID to pokemon number
-    # @return [String]
-    def id_text3
-      sprintf("%03d", $pokedex.national? ? @id : ::GameData::Pokemon.id_bis(@id)).to_pokemon_number
+
+    # Get the zone id where the Pokemon has been found
+    # @param special_zone [Integer, nil] if you want to use this function for stuff like egg_zone_id
+    def zone_id(special_zone = nil)
+      (special_zone || @captured_in) & 0x0000FFFF
     end
 
     private

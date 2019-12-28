@@ -1,6 +1,6 @@
 # Display everything that should be displayed during the Scene_Map
 class Spriteset_Map
-  # Retreive the Game Player sprite
+  # Retrieve the Game Player sprite
   # @return [Sprite_Character]
   attr_reader :game_player_sprite
   # Initialize a new Spriteset_Map object
@@ -47,7 +47,9 @@ class Spriteset_Map
   # Return the prefered tilemap class
   # @return [Class]
   def tilemap_class
-    return Object.const_get(PSDK_CONFIG.tilemap.tilemap_class)
+    return Tilemap::WithLessRubySprites_16 # if ARGV.include?('tilemap')
+    # ((::Config::Yuri_Tilemap_Disabled or $zoom_factor == 2) ? Tilemap : Yuri_Tilemap)
+    # return Yuri_Tilemap
   end
 
   # Tilemap initialization
@@ -295,7 +297,6 @@ class Spriteset_Map
       @sp_fg.y += 1
     elsif @counter == 154
       dispose_sp_map
-      Graphics.sort_z
     elsif @counter > 122
       @sp_bg.y -= 1
       @sp_fg.y -= 1
@@ -332,9 +333,12 @@ class Spriteset_Map
   def take_map_snapshot
     sp = Sprite.new(@viewport3)
     sp.z = 10**6
-    sp.bitmap = @viewport1.snap_to_bitmap
-    sp.ox = sp.x = sp.width / 2
-    sp.oy = sp.y = sp.height / 2
+    sp.bitmap = Graphics.snap_to_bitmap
+    sp.x = Graphics.width / 2
+    sp.ox = sp.bitmap.width / 2
+    sp.y = Graphics.height / 2
+    sp.oy = sp.bitmap.height / 2
+    sp.zoom = 1.0 / Config::ScreenScale if Config.const_defined?(:ScreenScale)
     return sp
   end
 

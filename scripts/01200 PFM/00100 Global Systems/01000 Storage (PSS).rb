@@ -32,7 +32,7 @@ module PFM
       return store_in_current_box(pokemon)
     end
 
-    # Retreive a box content
+    # Retrieve a box content
     # @param id [Integer] the id of the box
     # @return [Array<30 PFM::Pokemon, nil>]
     def get_box(id)
