@@ -215,6 +215,7 @@ class Scene_Battle
     pokemon.status=0
     @_EXP_GIVE.push(pokemon)
     BattleEngine::_State_sub_update
+    pokemon.reset_stat_stage
   end
 
   #===

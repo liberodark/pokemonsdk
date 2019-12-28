@@ -366,6 +366,7 @@ class Scene_Battle
       pokemon.trainer_id = $trainer.id
       pokemon.code_generation(pokemon.shiny, !pokemon.shiny)
       @_EXP_GIVE.push(pokemon)  # ligne ajoutée pour donner l'XP à la capture.
+      pokemon.reset_stat_stage
       start_phase5
     else
       case cnt
