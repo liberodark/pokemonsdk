@@ -37,8 +37,9 @@ module ProjectCompilation
 
     def load_recursive_from_path(path, current_path)
       Dir["#{current_path}/*/"].each do |sub_path|
-        load_all_from_path(path, sub_path[0...-1])
-        load_recursive_from_path(path, sub_path)
+        real_sub_path = sub_path[0...-1]
+        load_all_from_path(path, real_sub_path)
+        load_recursive_from_path(path, real_sub_path)
       end
     end
 
