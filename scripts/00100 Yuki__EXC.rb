@@ -20,6 +20,7 @@ module Yuki
     #   @param e [Exception] the exception thrown by Ruby
     #   @param io [#<<] the io that receive the log
     def run(e, io = nil)
+      log_debug(e.inspect)
       return if e.class == LiteRGSS::Graphics::ClosedWindowError
       raise if e.message.empty? || e.class.to_s == 'Reset'
       error_log = build_error_log(e)
@@ -36,6 +37,7 @@ module Yuki
     # @return [String] the log readable by anybody
     def build_error_log(e)
       str = ''
+      return build_system_stack_error_log(e, str) if e.is_a?(SystemStackError)
       return unless e.backtrace_locations
       source_arr = e.backtrace_locations[0]
       source_name = fix_source_path(source_arr.path.to_s)
@@ -108,6 +110,19 @@ module Yuki
       Graphics.wait(100)
       Graphics.update until Input.trigger?(:C)
       @vp.dispose
+    end
+
+    # Build the SystemStackError message
+    # @param e [SystemStackError]
+    # @param str
+    def build_system_stack_error_log(e, str)
+      str << format("Message :\r\n%<message>s\r\n", message: e.message.to_s.gsub(/[\r\n]+/, "\r\n"))
+      str << format("Type : %<type>s\r\n", type: e.class)
+      str << format("Date : %<date>s\r\n", date: Time.new.strftime('%d/%m/%Y %H:%M:%S'))
+      str << format("Logiciel : %<software>s %<version>s\r\n", software: Software, version: PSDK_Version.to_str_version)
+      str << format("Script used by eval command : \r\n%<script>s\r\n", script: @eval_script) if @eval_script
+      str << (e.backtrace || ['Unkown Sources...']).join("\r\n")
+      return str
     end
   end
 end

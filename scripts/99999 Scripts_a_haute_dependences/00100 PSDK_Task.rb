@@ -121,8 +121,8 @@ module Scheduler
   end
 
   add_proc(:on_update, :any, 'KeyBinding addition', 0) do
-    if $scene.class != GamePlay::KeyBinding
-      if Keyboard.press?(Keyboard::F1)
+    if $scene.class != GamePlay::KeyBinding && !$scene.is_a?(Scene_Battle)
+      if Keyboard.press?(Keyboard::F1) && !($game_temp&.message_window_showing)
         GameData::Text.load unless $options
         GamePlay::KeyBinding.new.main
         Graphics.transition
