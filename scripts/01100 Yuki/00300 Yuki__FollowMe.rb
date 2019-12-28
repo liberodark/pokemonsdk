@@ -25,8 +25,8 @@ module Yuki
       return unless $game_switches[Sw::FM_Enabled]
       chara_update = ($game_variables[Var::FM_Sel_Foll] == 0)
       last_follower = $game_player
+      last_follower.set_follower(nil, true)
       i = 0
-      j = 0
       # Manage human
       0.upto($game_variables[Var::FM_N_Human] - 1) do |j|
         next unless $game_actors[i + 2]
@@ -74,6 +74,7 @@ module Yuki
       end
       character = follower.character
       last_follower.set_follower(character)
+      character.set_follower(nil)
       if chara_update
         character.character_name = entity.character_name
         character.is_pokemon = character.step_anime = entity.class == PFM::Pokemon
@@ -220,6 +221,7 @@ module Yuki
     # Smart disable the following system (keep it active when smart_enable is called)
     def smart_disable
       return unless $game_switches[Sw::FM_Enabled]
+      $game_player.set_follower(nil, true)
       set_player_follower_particles(false)
       $game_switches[Sw::FM_WasEnabled] = $game_switches[Sw::FM_Enabled]
       $game_switches[Sw::FM_Enabled] = false

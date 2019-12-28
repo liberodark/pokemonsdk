@@ -13,8 +13,10 @@ class Game_Player
 
   # Define the follower of the player, if the player already has event following him, it'll put them at the tail of the following events
   # @param follower [Game_Character, Game_Event] the follower
+  # @param force [Boolean] param comming from Yuki::FollowMe to actually force the follower
   # @author Nuri Yuri
-  def set_follower(follower)
+  def set_follower(follower, force = false)
+    return @follower = follower if force
     return reset_follower unless follower
     return if @follower == follower
     return @follower = follower unless @follower
