@@ -61,7 +61,6 @@ class Text
   # @author Nuri Yuri
   def simple_mouse_in?(mouse_x = Mouse.x, mouse_y = Mouse.y)
     if viewport
-      p "text not" unless viewport.simple_mouse_in?(mouse_x, mouse_y)
       return false unless viewport.simple_mouse_in?(mouse_x, mouse_y)
       mouse_x, mouse_y = viewport.translate_mouse_coords(mouse_x, mouse_y)
     end

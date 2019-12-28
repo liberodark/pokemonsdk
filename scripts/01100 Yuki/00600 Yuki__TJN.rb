@@ -250,7 +250,6 @@ module Yuki
           current_tone = tones[tone_index]
           @current_tone_value.set(current_tone.red, current_tone.green, current_tone.blue, current_tone.gray)
         end
-        print "\r#{$game_variables[Var::TJN_Hour]} #{@current_tone_value}       "
         $game_screen.start_tone_change(@current_tone_value, tone_change_time)
       end
 
