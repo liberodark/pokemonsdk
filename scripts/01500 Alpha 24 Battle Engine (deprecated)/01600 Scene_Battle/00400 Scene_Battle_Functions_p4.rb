@@ -149,7 +149,7 @@ class Scene_Battle
         PFM::Text.set_num3(battler.level.to_s, 1)
         display_message(parse_text(18, 62, '[VAR 010C(0000)]' => battler.given_name))
         PFM::Text.reset_variables
-        battler.level_up_window_call(list[0], list[1], @message_window.z + 5) if battler.position >= 0
+        battler.level_up_window_call(list[0], list[1], @message_window.z + 5) if @actors.include?(battler) # battler.position >= 0
         @message_window.update
         Graphics.update
         update_animated_sprites
