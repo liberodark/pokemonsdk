@@ -22,7 +22,7 @@ module GamePlay
         PFM::Text::PKNICK[0] => pokemon.given_name, 
         PFM::Text::ABILITY[1] => pokemon.ability_name)
       align = pokemon.position < 0 ? 2 : 0
-      @text = Text.new(0, viewport, 0, -Text::Util::FOY, self.bitmap.width - 20, 16, nil.to_s, align)
+      @text = Text.new(0, viewport, 0, 8 - Text::Util::FOY, bitmap.width - 10, 16, nil.to_s, align)
       @text.y -= 8 if(@text.text_width(text) > @text.width)
       @text.multiline_text = text
       @pokemon = pokemon

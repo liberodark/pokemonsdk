@@ -42,7 +42,9 @@ module GameData
     def find_using_symbol(symbol)
       @db_symbols.index(symbol)
     end
-    alias get_id find_using_symbol
+    class << self
+      alias get_id find_using_symbol
+    end
 
     # Tell if the id is valid
     # @param id [Integer]
