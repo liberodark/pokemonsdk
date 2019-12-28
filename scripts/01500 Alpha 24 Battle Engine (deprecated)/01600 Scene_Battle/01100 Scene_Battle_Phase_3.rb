@@ -3,7 +3,7 @@
 #noyard
 # Description: Définition de la phase de choix de l'attaque à réaliser
 class Scene_Battle
-  # Retreive the Struggle move
+  # Retrieve the Struggle move
   # @return [PFM::Skill]
   def phase3_struggle_move
     Scene_Battle.const_set(:StruggleSkill, PFM::Skill.new(165)) unless Scene_Battle.const_defined?(:StruggleSkill)

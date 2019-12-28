@@ -17,24 +17,19 @@ module BattleUI
     def initialize(viewport)
       @skills = SkillWindow.new(viewport)
       @info = SkillInfoWindow.new(viewport)
+      # List of last index according to the pokemon that was used
+      # @type [Hash{ PFM::PokemonBattler => Integer }]
+      @last_indexes = {}
     end
 
     # Update the window cursor
     def update
       return if validated?
-      return validate if Input.trigger?(:A)
+      return validate if Input.trigger?(:A) || (Mouse.trigger?(:left) && @skills.simple_mouse_in?)
       return cancel if Input.trigger?(:B)
       last_index = @skills.index
-      case Input.dir4
-      when 6
-        @skills.index = last_index < 2 ? 1 : 3
-      when 4
-        @skills.index = last_index < 2 ? 0 : 2
-      when 2
-        @skills.index = last_index.odd? ? 3 : 2
-      when 8
-        @skills.index = last_index.odd? ? 1 : 0
-      end
+      update_key_index(last_index)
+      update_mouse_index
       if last_index != @skills.index
         @skills.update_cursor
         @info.data = @pokemon.moveset[@skills.index]
@@ -52,7 +47,7 @@ module BattleUI
     def reset(pokemon)
       @pokemon = pokemon
       @skills.data = pokemon
-      @skills.index = 0
+      @skills.index = @last_indexes[pokemon] || 0
       @skills.update_cursor
       @info.data = @pokemon.moveset[@skills.index]
       @result = nil
@@ -70,6 +65,7 @@ module BattleUI
     # Validate the user choice
     def validate
       @result = @pokemon.moveset[@skills.index]
+      @last_indexes[@pokemon] = @skills.index
       $game_system.se_play($data_system.decision_se)
     end
 
@@ -77,6 +73,29 @@ module BattleUI
     def cancel
       @result = :cancel
       $game_system.se_play($data_system.cancel_se)
+    end
+
+    # Update the mouse index if the mouse moved
+    def update_mouse_index
+      return unless Mouse.moved
+      return unless @skills.simple_mouse_in?
+      @skills.stack.each_with_index do |text, index|
+        break @skills.index = index if text.simple_mouse_in?
+      end
+    end
+
+    # Update the index if a key was pressed
+    def update_key_index(last_index)
+      case Input.dir4
+      when 6
+        @skills.index = last_index < 2 ? 1 : 3
+      when 4
+        @skills.index = last_index < 2 ? 0 : 2
+      when 2
+        @skills.index = last_index.odd? ? 3 : 2
+      when 8
+        @skills.index = last_index.odd? ? 1 : 0
+      end
     end
 
     # Window allowing to select the skill

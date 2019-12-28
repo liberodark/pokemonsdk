@@ -101,7 +101,7 @@ module GamePlay
       auto_adjust_button
     end
 
-    # Retreive the button texts according to the mode
+    # Retrieve the button texts according to the mode
     # @return [Array<String>]
     def button_texts
       return Array.new(4) { |i| ext_text(9000, 14 + i) } if @mode != :select

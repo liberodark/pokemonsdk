@@ -3,7 +3,7 @@ class Game_Map
   # @return [Boolean]
   attr_accessor :event_erased
 
-  # Retreive the ID of the SystemTag on a specific tile
+  # Retrieve the ID of the SystemTag on a specific tile
   # @param x [Integer] x position of the tile
   # @param y [Integer] y position of the tile
   # @return [Integer]
@@ -51,7 +51,7 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
     end
   end
 
-  # Retreive the id of a specific tile
+  # Retrieve the id of a specific tile
   # @param x [Integer] x position of the tile
   # @param y [Integer] y position of the tile
   # @return [Integer] id of the tile

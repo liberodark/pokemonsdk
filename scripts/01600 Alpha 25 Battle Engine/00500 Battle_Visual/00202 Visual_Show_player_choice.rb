@@ -17,7 +17,8 @@ module Battle
       pokemon = @battle_scene.logic.battler(0, pokemon_index)
       (window = @battle_scene.message_window).wait_input = false
       window.width = @viewport.rect.width - @player_choice_ui.width
-      @battle_scene.display_message(parse_text(18, 71, '[VAR 010C(0000)]' => pokemon.given_name))
+      text_to_show = parse_text(18, 71, '[VAR 010C(0000)]' => pokemon.given_name)
+      @battle_scene.display_message(text_to_show) if @battle_scene.message_window.last_text != text_to_show
     end
 
     private
@@ -47,7 +48,7 @@ module Battle
     # @param pokemon_index [Integer] Index of the Pokemon in the party
     def show_player_choice_end(pokemon_index)
       spc_stop_bouncing_animation(pokemon_index)
-      @player_choice_ui.visible = false
+      # @player_choice_ui.visible = false
       @locking = false
     end
 

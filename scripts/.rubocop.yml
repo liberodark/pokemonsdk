@@ -5,6 +5,10 @@ AllCops:
 Style/Alias:
   Enabled: false
 
+# I want thing to be customizable as much as possible so unused method argument can happen but may be used by monkey patch
+Lint/UnusedMethodArgument:
+  Enabled: false
+
 # Idk why this rule exists but it's boring
 Naming/MemoizedInstanceVariableName:
   Enabled: false

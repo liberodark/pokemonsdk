@@ -36,6 +36,8 @@ module Battle
       return (damage * calc_mod3(user, target)).floor
     end
 
+    private
+
     # Base power calculation
     # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler] target of the move
@@ -52,9 +54,9 @@ module Battle
       # CHG
       result *= user.last_successfull_move == :charge && type == 4 ? 2 : 1
       # MS
-      result = (result * 0.5).floor if logic.global_mud_sport? && type == 4
+      result = (result * VAL_0_5).floor if logic.global_mud_sport? && type == 4
       # WS
-      result = (result * 0.5).floor if logic.global_water_sport? && type == 2
+      result = (result * VAL_0_5).floor if logic.global_water_sport? && type == 2
       # UA
       result = (result * send(USER_ABILITY_MULTIPLIER[user.ability_db_symbol], user, target)).floor
       # FA
@@ -73,7 +75,8 @@ module Battle
       # SM
       result = (result * (ph_move ? user.atk_modifier : user.ats_modifier)).floor
       # AM
-      result = (result * send((ph_move ? ATK_ABILITY_MODIFIER : ATS_ABILITY_MODIFIER)[user.ability_db_symbol], user, target)).floor
+      am = send((ph_move ? ATK_ABILITY_MODIFIER : ATS_ABILITY_MODIFIER)[user.ability_db_symbol], user, target)
+      result = (result * am).floor
       # IM
       return (result * send((ph_move ? ATK_ITEM_MODIFIER : ATS_ITEM_MODIFIER)[user.item_db_symbol], user, target)).floor
     end
@@ -92,10 +95,12 @@ module Battle
       result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor
       # Mod
       result = (result * 1.5).floor if !ph_move && $env.sandstorm? && target.type_rock?
-      result = (result * send((ph_move ? DFE_ABILITY_MODIFIER : DFS_ABILITY_MODIFIER)[target.ability_db_symbol], user, target)).floor
-      result = (result * send((ph_move ? DFE_ITEM_MODIFIER : DFS_ITEM_MODIFIER)[target.item_db_symbol], user, target)).floor
+      mod = send((ph_move ? DFE_ABILITY_MODIFIER : DFS_ABILITY_MODIFIER)[target.ability_db_symbol], user, target)
+      result = (result * mod).floor
+      mod = send((ph_move ? DFE_ITEM_MODIFIER : DFS_ITEM_MODIFIER)[target.item_db_symbol], user, target)
+      result = (result * mod).floor
       # SX
-      result = (result * 0.5).floor if EXPLOSION_SELF_DESTRUCT_MOVE.include?(db_symbol)
+      result = (result * VAL_0_5).floor if EXPLOSION_SELF_DESTRUCT_MOVE.include?(db_symbol)
       return result
     end
 

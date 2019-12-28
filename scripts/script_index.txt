@@ -209,6 +209,7 @@ pokemonsdk/scripts/01200 PFM/00300 Pokemon/00700 Pokemon Stats.rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/00800 Pokemon Status.rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/00900 Pokemon Types.rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/01000 Pokemon Params (generate).rb
+pokemonsdk/scripts/01200 PFM/00300 Pokemon/01100 Pokemon Text.rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/90000 Skill.rb
 pokemonsdk/scripts/01200 PFM/00400 Wild/00100 Wild Battle (manager).rb
 pokemonsdk/scripts/01200 PFM/00400 Wild/00200 Wild_Info.rb
@@ -359,9 +360,12 @@ pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/02100 Pokemon_Scrip
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/02100 Pokemon_Script_Project/00200 Scene_Battle___PSP_add.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00100 PokemonBattler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00200 States_1.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00300 Statistics.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00301 Statistics Speed mod.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00100 Logic.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00101 Logic_Battler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00102 Logic_Actions.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00102 Logic_Actions_Procedure.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00103 Logic_critical_hit.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00200 Logic_global_states.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00300 Logic_bank_states.rb
@@ -400,6 +404,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00107 Move_mod
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00108 Move_mod2_multiplier.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00109 Move_mod3_multiplier.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00110 Move_target.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00111 Move Chance of Hit.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00200 RecoilMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00100 AI.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04400 Battle_Message/00001 BattleStart.rb

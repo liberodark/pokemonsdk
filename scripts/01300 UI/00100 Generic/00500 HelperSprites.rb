@@ -22,7 +22,7 @@ module UI
 
     private
 
-    # Retreive the data source of the type sprite
+    # Retrieve the data source of the type sprite
     # @return [Symbol]
     def data_source
       :type1
@@ -33,7 +33,7 @@ module UI
   class Type2Sprite < Type1Sprite
     private
 
-    # Retreive the data source of the type sprite
+    # Retrieve the data source of the type sprite
     # @return [Symbol]
     def data_source
       :type2
@@ -44,7 +44,7 @@ module UI
   class TypeSprite < Type1Sprite
     private
 
-    # Retreive the data source of the type sprite
+    # Retrieve the data source of the type sprite
     # @return [Symbol]
     def data_source
       :type
@@ -180,7 +180,7 @@ module UI
       return pokemon.send(*bitmap_source)
     end
 
-    # Retreive the bitmap source
+    # Retrieve the bitmap source
     # @return [Symbol]
     def bitmap_source
       :battler_face
@@ -205,7 +205,7 @@ module UI
   class PokemonBackSprite < PokemonFaceSprite
     private
 
-    # Retreive the bitmap source
+    # Retrieve the bitmap source
     # @return [Symbol]
     def bitmap_source
       :battler_back

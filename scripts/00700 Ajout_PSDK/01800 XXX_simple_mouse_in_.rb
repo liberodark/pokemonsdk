@@ -6,12 +6,8 @@ class Sprite
   # @author Nuri Yuri
   def simple_mouse_in?(mouse_x = Mouse.x, mouse_y = Mouse.y)
     if viewport
-      rect = viewport.rect
-      mouse_x -= rect.x
-      mouse_y -= rect.y
-      return false if mouse_x >= rect.width || mouse_y >= rect.height
-      mouse_x += viewport.ox
-      mouse_y += viewport.oy
+      return false unless viewport.simple_mouse_in?(mouse_x, mouse_y)
+      mouse_x, mouse_y = viewport.translate_mouse_coords(mouse_x, mouse_y)
     end
     bx = x
     by = y
@@ -29,12 +25,8 @@ class Sprite
   # @author Nuri Yuri
   def mouse_in?(mouse_x = Mouse.x, mouse_y = Mouse.y)
     if viewport
-      rect = viewport.rect
-      mouse_x -= rect.x
-      mouse_y -= rect.y
-      return false if mouse_x >= rect.width || mouse_y >= rect.height
-      mouse_x += viewport.ox
-      mouse_y += viewport.oy
+      return false unless viewport.simple_mouse_in?(mouse_x, mouse_y)
+      mouse_x, mouse_y = viewport.translate_mouse_coords(mouse_x, mouse_y)
     end
     bx = x - ox * (zx = zoom_x)
     by = y - oy * (zy = zoom_y)
@@ -51,11 +43,7 @@ class Sprite
   # @return [Array(Integer, Integer)] the mouse coordinates on the sprite
   # @author Nuri Yuri
   def translate_mouse_coords(mouse_x = Mouse.x, mouse_y = Mouse.y)
-    if viewport
-      rect = viewport.rect
-      mouse_x -= (rect.x - viewport.ox)
-      mouse_y -= (rect.y - viewport.oy)
-    end
+    mouse_x, mouse_y = viewport.translate_mouse_coords(mouse_x, mouse_y) if viewport
     mouse_x -= x
     mouse_y -= y
     rect = src_rect
@@ -73,12 +61,9 @@ class Text
   # @author Nuri Yuri
   def simple_mouse_in?(mouse_x = Mouse.x, mouse_y = Mouse.y)
     if viewport
-      rect = viewport.rect
-      mouse_x -= rect.x
-      mouse_y -= rect.y
-      return false if mouse_x >= rect.width || mouse_y >= rect.height
-      mouse_x += viewport.ox
-      mouse_y += viewport.oy
+      p "text not" unless viewport.simple_mouse_in?(mouse_x, mouse_y)
+      return false unless viewport.simple_mouse_in?(mouse_x, mouse_y)
+      mouse_x, mouse_y = viewport.translate_mouse_coords(mouse_x, mouse_y)
     end
     bx = x
     by = y
@@ -95,11 +80,7 @@ class Text
   # @return [Array(Integer, Integer)] the mouse coordinates on the sprite
   # @author Nuri Yuri
   def translate_mouse_coords(mouse_x = Mouse.x, mouse_y = Mouse.y)
-    if viewport
-      rect = viewport.rect
-      mouse_x -= (rect.x - viewport.ox)
-      mouse_y -= (rect.y - viewport.oy)
-    end
+    mouse_x, mouse_y = viewport.translate_mouse_coords(mouse_x, mouse_y) if viewport
     mouse_x -= x
     mouse_y -= y
     return mouse_x, mouse_y
@@ -134,7 +115,8 @@ class Viewport
   # @author Nuri Yuri
   def simple_mouse_in?(mouse_x = Mouse.x, mouse_y = Mouse.y)
     vp_rect = rect
-    if vp_rect.x <= mouse_x && (vp_rect.x + vp_rect.width) > mouse_x && vp_rect.y <= mouse_y && (vp_rect.y + vp_rect.height) > mouse_x
+    if vp_rect.x <= mouse_x && (vp_rect.x + vp_rect.width) > mouse_x &&
+       vp_rect.y <= mouse_y && (vp_rect.y + vp_rect.height) > mouse_y
       return true
     end
     return false
@@ -159,12 +141,8 @@ class Window
   # @author Nuri Yuri
   def simple_mouse_in?(mouse_x = Mouse.x, mouse_y = Mouse.y)
     if viewport
-      rect = viewport.rect
-      mouse_x -= rect.x
-      mouse_y -= rect.y
-      return false if mouse_x >= rect.width || mouse_y >= rect.height
-      mouse_x += viewport.ox
-      mouse_y += viewport.oy
+      return false unless viewport.simple_mouse_in?(mouse_x, mouse_y)
+      mouse_x, mouse_y = viewport.translate_mouse_coords(mouse_x, mouse_y)
     end
     bx = x
     by = y
@@ -182,12 +160,11 @@ class Window
   # @author Nuri Yuri
   def translate_mouse_coords(mouse_x = Mouse.x, mouse_y = Mouse.y)
     if viewport
-      rect = viewport.rect
-      mouse_x -= (rect.x - viewport.ox)
-      mouse_y -= (rect.y - viewport.oy)
+      mouse_x, mouse_y = viewport.translate_mouse_coords(mouse_x, mouse_y)
     end
-    mouse_x -= (x - ox)
-    mouse_y -= (y - oy)
+    rect = self.rect
+    mouse_x -= rect.x - ox
+    mouse_y -= rect.y - oy
     return mouse_x, mouse_y
   end
 end

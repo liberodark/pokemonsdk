@@ -1,6 +1,5 @@
 --hide-void-return
 --default-return ''
---no-private
 --title "Pokemon SDK"
 --exclude "scripts/VSCodeHelper.rb"
 --exclude "scripts/00001 RMXP_DATA.rb"

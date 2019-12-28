@@ -30,14 +30,14 @@ module Yuki
       return false unless data = @data[event_id]
       return data[0] != 0
     end
-    # Retreive the ID of the berry that is planted on an event
+    # Retrieve the ID of the berry that is planted on an event
     # @param event_id [Integer] ID of the event
     # @return [Integer]
     def get_berry_id(event_id)
       return 0 unless data = @data[event_id]
       return data[0]
     end
-    # Retreive the Internal ID of the berry (text_id)
+    # Retrieve the Internal ID of the berry (text_id)
     # @param event_id [Integer] ID of the event
     # @return [Integer]
     def get_berry_internal_id(event_id)
@@ -50,7 +50,7 @@ module Yuki
       end
       return 0
     end
-    # Retreive the stage of a berry
+    # Retrieve the stage of a berry
     # @param event_id [Integer] ID of the event
     # @return [Integer]
     def get_stage(event_id)

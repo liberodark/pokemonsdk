@@ -1,13 +1,13 @@
 module GameData
-  # Battle stages index
+  # Battle stages index (Index of Stat modifier level)
   module Stages
-    ATK = 0
-    ATS = 3
-    DFE = 1
-    DFS = 4
-    SPD = 2
-    EVA = 5
-    ACC = 6
+    ATK_STAGE = 0
+    ATS_STAGE = 3
+    DFE_STAGE = 1
+    DFS_STAGE = 4
+    SPD_STAGE = 2
+    EVA_STAGE = 5
+    ACC_STAGE = 6
 
     module_function
 

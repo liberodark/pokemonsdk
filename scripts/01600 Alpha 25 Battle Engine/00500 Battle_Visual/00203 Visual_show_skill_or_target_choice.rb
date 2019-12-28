@@ -33,6 +33,7 @@ module Battle
       @skill_choice_ui.reset(@battle_scene.logic.battler(0, pokemon_index))
       @skill_choice_ui.visible = true
       @battle_scene.message_window.visible = false
+      @player_choice_ui.visible = false
       spc_start_bouncing_animation(pokemon_index)
     end
 

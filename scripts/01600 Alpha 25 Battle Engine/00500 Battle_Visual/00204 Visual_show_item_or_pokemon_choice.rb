@@ -5,24 +5,34 @@ module Battle
     # Method that show the item choice
     # @return [Array<Integer, PFM::PokemonBattler>, nil]
     def show_item_choice
-      Graphics.freeze
-      @battle_scene.message_window.visible = false
-      party = BAG_PARTY_POSITIONS.collect { |i| @battle_scene.logic.battler(0, i) }
-      party.compact!
-      scene = GamePlay::Battle_Bag.new(party)
-      scene.main
-      return_data = scene.return_data
-      log_debug("Bag returned #{return_data}")
-      @battle_scene.message_window.visible = true
-      Graphics.transition
-      return nil
+      data_to_return = nil
+      @battle_scene.call_scene(GamePlay::Battle_Bag, party = retrieve_party) do |scene|
+        return_data = scene.return_data
+        data_to_return = [return_data.first, party[return_data.last]] if return_data.is_a?(Array)
+      end
+      log_debug("show_item_choice returned #{data_to_return}")
+      return data_to_return
     end
 
     # Method that show the pokemon choice
     # @return [PFM::PokemonBattler, nil]
     def show_pokemon_choice
+      data_to_return = nil
+      @battle_scene.call_scene(GamePlay::Party_Menu, party = retrieve_party, :battle) do |scene|
+        return_data = scene.return_data
+        data_to_return = party[return_data] if return_data != -1
+      end
+      log_debug("show_pokemon_choice returned #{data_to_return}")
+      return data_to_return
+    end
 
-      return nil
+    private
+
+    # Method that returns the party for the Bag & Party scene
+    # @return [Array<PFM::PokemonBattler>]
+    def retrieve_party
+      party = BAG_PARTY_POSITIONS.collect { |i| @battle_scene.logic.battler(0, i) }
+      return party.compact!
     end
   end
 end

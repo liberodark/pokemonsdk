@@ -124,7 +124,7 @@ module Yuki
       @followers.clear
     end
 
-    # Retreive a follower
+    # Retrieve a follower
     # @param i [Integer] index of the follower in the @followers Array
     # @return [Game_Character] $game_player if i is invalid
     def get_follower(i)

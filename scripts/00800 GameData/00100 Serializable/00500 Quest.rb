@@ -87,7 +87,7 @@ module GameData
         return @data[quest_id].primary
       end
 
-      # Retreive the quest name
+      # Retrieve the quest name
       # @param quest_id [Integer] ID of the quest in the database
       # @return [String]
       def name(quest_id)
@@ -95,7 +95,7 @@ module GameData
         return text_get(45, quest_id)
       end
 
-      # Retreive the quest description
+      # Retrieve the quest description
       # @param quest_id [Integer] ID of the quest
       def descr(quest_id)
         return nil.to_s unless id_valid?(quest_id)
@@ -291,7 +291,7 @@ module GameData
         return id.between?(0, @data.size - 1)
       end
 
-      # Retreive a specific quest
+      # Retrieve a specific quest
       # @param id [Integer]
       # @return [GameData::Quest]
       def get(id)

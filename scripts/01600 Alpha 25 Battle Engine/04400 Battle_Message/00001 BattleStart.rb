@@ -2,9 +2,9 @@ module Battle
   # Module holding all the message function used by the battle engine
   module Message
     include PFM::Text
-    # @type [Battle::Logic::BattleInfo] battle infos (to retreive some stuff)
+    # @type [Battle::Logic::BattleInfo] battle infos (to retrieve some stuff)
     @battle_info = nil
-    # @type [Battle::Logic] the battle logic (to retreive some stuff)
+    # @type [Battle::Logic] the battle logic (to retrieve some stuff)
     @logic = nil
 
     module_function

@@ -128,6 +128,7 @@ module BattleUI
     def load_background
       # @type [Array<Sprite>] List of sprite that should have their opacity waving
       @animated_sprites = []
+      return # Right now this feature is shit, we'll see later
       random = @move.target == :random_foe
       if @move.no_choice_skill? && !random
         load_linked_background

@@ -8,8 +8,7 @@ module Battle
       # Add player actions
       @logic.add_actions(@player_actions)
       @player_actions.clear
-      # https://gitlab.com/NuriYuri/gemme_4.0/issues/2
-      # @logic.sort_actions
+      @logic.sort_actions
       # Tell to call udpdate_battle_phase on the next frame
       @next_update = :udpdate_battle_phase
     end

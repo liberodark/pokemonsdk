@@ -101,7 +101,7 @@ module GamePlay
       @base_ui.mode = ctrl_id_state
     end
 
-    # Retreive the ID state of the ctrl button
+    # Retrieve the ID state of the ctrl button
     # @return [Integer] a number sent to @base_ui.mode to choose the texts to show
     def ctrl_id_state
       case @index

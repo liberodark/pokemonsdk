@@ -2,7 +2,7 @@ module PFM
   # Module that helps to get data from Battles or to perform actions
   module BattleInterface
     module_function
-    # Retreive an actor
+    # Retrieve an actor
     # @param index [Integer] index of the actor in the team, 1..6 = in $actor, 7..Infinity = in BattleEngine.get_actors
     # @param team [Integer, nil] id of the team (0 = player, 1 = friend, nil = no distinction)
     # @note team is ingored when index > 6
@@ -25,7 +25,7 @@ module PFM
       end
       return nil
     end
-    # Retreive an enemy
+    # Retrieve an enemy
     # @param index [Integer] index of the actor in the team, 1..6 = in $actor, 7..Infinity = in BattleEngine.get_actors
     # @param team [Integer, nil] id of the team (0 = 1st trainer, 1 = 2nd trainer, nil = no distinction)
     # @return [PFM::Pokemon, nil]

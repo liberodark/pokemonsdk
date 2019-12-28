@@ -44,7 +44,7 @@ module GameData
         return get(defensive_type)&.hit_by(offensive_type) || 1
       end
 
-      # Retreive the name of a type
+      # Retrieve the name of a type
       # @param id [Integer] ID of the type
       # @return [String]
       def name(id)
@@ -52,7 +52,7 @@ module GameData
         return DEFAULT_NAME
       end
 
-      # Retreive a type by its id
+      # Retrieve a type by its id
       # @param id [Integer] ID of the type
       # @return [GameData::Type]
       def get(id)
@@ -60,7 +60,7 @@ module GameData
         return @data.first
       end
 
-      # Retreive all the types
+      # Retrieve all the types
       # @return [Array<GameData::Type>]
       def all
         @data

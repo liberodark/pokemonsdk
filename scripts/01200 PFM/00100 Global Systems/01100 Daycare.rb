@@ -67,7 +67,7 @@ module PFM
     # @param id [Integer] the ID of the daycare
     # @param index [Integer] the index of the Pokemon in the daycare
     # @return [PFM::Pokemon, nil]
-    def retreive_pokemon(id, index)
+    def retrieve_pokemon(id, index)
       return nil unless (daycare = @daycares[id]) && (pokemon = daycare.dig(:pokemon, index))
       daycare[:pokemon][index] = nil
       daycare[:level][index] = nil
@@ -77,19 +77,21 @@ module PFM
       daycare[:layable] = 0
       return pokemon
     end
-    alias withdraw_pokemon retreive_pokemon
+    alias withdraw_pokemon retrieve_pokemon
+    alias retreive_pokemon retrieve_pokemon
 
     # Get the egg rate of a daycare
     # @param id [Integer] the ID of the daycare
     # @return [Integer]
-    def retreive_egg_rate(id)
+    def retrieve_egg_rate(id)
       return @daycares[id][:rate].to_i
     end
+    alias retreive_egg_rate retrieve_egg_rate
 
-    # Retreive the egg layed
+    # Retrieve the egg layed
     # @param id [Integer] the ID of the daycare
     # @return [PFM::Pokemon]
-    def retreive_egg(id)
+    def retrieve_egg(id)
       daycare = @daycares[id]
       daycare[:egg] = nil
       layable_check(daycare, daycare[:pokemon])
@@ -100,6 +102,7 @@ module PFM
       pokemon.memo_text = [28, 31]
       return pokemon
     end
+    alias retreive_egg retrieve_egg
 
     # If an egg was layed in this daycare
     # @param id [Integer] the ID of the daycare

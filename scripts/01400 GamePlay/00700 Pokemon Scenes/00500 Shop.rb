@@ -236,13 +236,13 @@ module GamePlay
       @money_text.text = parse_text(11, 9, NUM7R => $pokemon_party.money.to_s)
     end
 
-    # Retreive the current windowskin
+    # Retrieve the current windowskin
     # @return [String]
     def current_windowskin
       $game_system.windowskin_name
     end
 
-    # Retreive the current window_builder
+    # Retrieve the current window_builder
     # @return [Array]
     def current_window_builder
       return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2] == 'm_' # SkinHGSS

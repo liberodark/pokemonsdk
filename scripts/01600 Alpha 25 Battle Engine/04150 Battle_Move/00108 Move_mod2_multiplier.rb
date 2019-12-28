@@ -10,7 +10,7 @@ module Battle
       update_use_count(user)
       item = user.item_db_symbol
       result = 1
-      result *= 1.3 if item == :life_orb
+      result *= VAL_1_3 if item == :life_orb
       result *= calc_mod2_metronome if item == :metronome
       result *= 1.5 if db_symbol == :me_first
       return result

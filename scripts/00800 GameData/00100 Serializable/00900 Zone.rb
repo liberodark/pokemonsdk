@@ -103,7 +103,7 @@ module GameData
         @data = game_data_zone.freeze
       end
 
-      # Retreive all the defined zones
+      # Retrieve all the defined zones
       # @return [Array<Zone>]
       def all
         return @data

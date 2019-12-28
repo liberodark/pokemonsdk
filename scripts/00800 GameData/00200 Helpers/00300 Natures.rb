@@ -1,5 +1,5 @@
 module GameData
-  # A module that help to retreive nature informations
+  # A module that help to retrieve nature informations
   # @author Nuri Yuri
   module Natures
     # Data holding all the nature info
