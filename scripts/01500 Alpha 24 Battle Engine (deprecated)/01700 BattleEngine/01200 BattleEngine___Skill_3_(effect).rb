@@ -125,7 +125,7 @@ module BattleEngine
         party = (target.position < 0 ? @_Enemies : @_Actors)
         n_party = Array.new
         $game_temp.vs_type.upto(party.size-1) do |i|
-          n_party<<party[i] if party[i].hp > 0
+          n_party<<party[i] unless party[i].dead? # if party[i].hp > 0
         end
         if(Abilities.has_ability_usable(target, 84)) #>Ventouse
           _mp([:msg, parse_text_with_pokemon(19,454,target)])
