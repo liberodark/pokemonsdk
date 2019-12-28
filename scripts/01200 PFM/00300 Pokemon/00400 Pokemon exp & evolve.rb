@@ -82,31 +82,15 @@ module PFM
     # @param list1 [Array<Integer>] new basis stat list
     # @param z_level [Integer] z superiority of the Window
     def level_up_window_call(list0, list1, z_level)
-      window = Window.new
-      window.lock
+      window = UI::LevelUpWindow.new(nil, self, list0, list1)
       window.z = z_level
-      window.set_size(140, 180)
-      window.set_position(Graphics.width - window.width - 2, Graphics.height - window.height - 2)
-      window.window_builder = GameData::Windows::MessageWindow
-      window.windowskin = RPG::Cache.windowskin('Message')
-      sprite = Sprite.new(window).set_bitmap(sbmp = icon)
-      texts = UI::SpriteStack.new(window)
-      start_y = sbmp.height
-      w = sbmp.width
-      width = 140 - window.window_builder[4] * 2 - 2
-      texts.add_text(w, 0, width - w, start_y, given_name, 1)
-      format_str = '%d (+%d)'
-      6.times do |i|
-        start_y += 16
-        texts.add_text(0, start_y, width, 16, text_get(22, 121 + i))
-        texts.add_text(0, start_y, width, 16, format(format_str, list1[i], list1[i] - list0[i]), 2, color: 1)
-      end
-      window.unlock
       Graphics.sort_z
-      Graphics.update until Input.trigger?(:A)
+      until Input.trigger?(:A)
+        window.update
+        Graphics.update
+      end
       $game_system.se_play($data_system.decision_se)
       window.dispose
-      sprite.dispose unless sprite.disposed?
     end
 
     # Change the level of the Pokemon
