@@ -48,9 +48,6 @@ module BattleEngine
       #>Fair / Clairevoyance
       elsif(target.type_ghost? and target.battle_effect.has_foresight_effect?)
         type_mod = 1
-      #>Verrouillage
-      elsif(launcher.battle_effect.has_lock_on_effect? and launcher.battle_effect.get_lock_on_target == target)
-        type_mod = 1
       #> Querelleur
       elsif(target.type_ghost? and @_State[:launcher_ability] == 59)
         type_mod = 1
