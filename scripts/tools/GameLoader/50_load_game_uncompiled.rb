@@ -19,6 +19,8 @@ begin
       require filename
     end
   end
+  pausable_util = /(update)/
+  system('pause') if !PARGV[:util].empty? && PARGV[:util].any? { |util| util.match?(pausable_util) }
 rescue StandardError
   display_game_exception('An error occured during Utility loading...')
 end
