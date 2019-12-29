@@ -38,6 +38,10 @@ module ProjectCompilation
       features_in_lib << utf16 unless features_in_lib.include?(utf16)
       utf16 = "#{lib_path}/ruby/2.5.0/i386-mingw32/enc/utf_16be.so"
       features_in_lib << utf16 unless features_in_lib.include?(utf16)
+      bin = "#{lib_path}/ruby/2.5.0/i386-mingw32/enc/trans/single_byte.so"
+      features_in_lib << bin unless features_in_lib.include?(bin)
+      pem = "#{lib_path}/cert.pem"
+      features_in_lib << pem unless features_in_lib.include?(pem)
       return features_in_lib.collect { |filename| filename.sub(curr_path, '') }
     end
   end

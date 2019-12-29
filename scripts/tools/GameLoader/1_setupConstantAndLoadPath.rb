@@ -11,3 +11,5 @@ $LOAD_PATH.concat(paths.collect { |path| path.dup.force_encoding('UTF-8').freeze
 # Add . and ./plugins to load_path
 $LOAD_PATH << '.' unless $LOAD_PATH.include?('.')
 $LOAD_PATH << './plugins' unless $LOAD_PATH.include?('./plugins')
+
+ENV['SSL_CERT_FILE'] ||= './lib/cert.pem' if $0 == 'Game.rb' # Launched from PSDK
