@@ -87,7 +87,7 @@ class Interpreter
   # @param index_or_pokemon [Integer, PFM::Pokemon] the Pokemon or the index of the Pokemon in the party (0~5)
   # @param num_char [Integer] the number of character the Pokemon can have in its name.
   # @author Nuri Yuri
-  def rename_pokemon(index_or_pokemon, num_char = 10)
+  def rename_pokemon(index_or_pokemon, num_char = 12)
     if index_or_pokemon.is_a?(Integer)
       pokemon = $actors[index_or_pokemon]
       raise "IndexError : Pokemon at index #{index_or_pokemon} couldn't be found." unless pokemon
@@ -109,7 +109,7 @@ class Interpreter
   # @param num_char [Integer] the number of character the Pokemon can have in its name.
   # @return [PFM::Pokemon, nil] if nil, the Pokemon couldn't be stored in the PC or added to the party. Otherwise it's the Pokemon that was added.
   # @author Nuri Yuri
-  def add_rename_pokemon(pokemon_or_id, level = 5, shiny = false, num_char = 10)
+  def add_rename_pokemon(pokemon_or_id, level = 5, shiny = false, num_char = 12)
     pokemon = add_pokemon(pokemon_or_id, level, shiny)
     rename_pokemon(pokemon, num_char) if pokemon
     return pokemon
