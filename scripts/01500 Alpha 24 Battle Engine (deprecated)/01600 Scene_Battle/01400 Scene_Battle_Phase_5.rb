@@ -134,7 +134,7 @@ class Scene_Battle
       #>Renommer
       if(display_message(parse_text(30, 0, PKNAME[0] => pkmn.name), true, 1, 
         text_get(25,20), text_get(25,21)) == 0)
-        scene = ::Scene_NameInput.new(pkmn.name, 10, pkmn)
+        scene = ::Scene_NameInput.new(pkmn.name, 12, pkmn)
         scene.main
         pkmn.given_name = scene.return_name
         Graphics.transition
