@@ -201,7 +201,7 @@ class Interpreter
     end
     unless no_save
       var_id = id_storage ? "@_str_#{id_storage}".to_sym : :@other_party
-      $storage.instance_variable_set(var_id, party)
+      $storage.instance_variable_set(var_id, pokemons)
     end
   end
 
