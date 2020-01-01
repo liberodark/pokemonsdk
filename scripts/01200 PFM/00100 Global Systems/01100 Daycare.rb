@@ -232,8 +232,8 @@ module PFM
     end
 
     # Return the parents in male, female order (to make the lay process easier)
-    # @param potential_male [Array<PFM::Pokemon>]
-    # @param potential_female [Array<PFM::Pokemon>]
+    # @param potential_male [PFM::Pokemon]
+    # @param potential_female [PFM::Pokemon]
     # @return [Array<PFM::Pokemon>]
     def assign_gender((potential_male, potential_female))
       # If the potential male is a female, potential_female is a male
