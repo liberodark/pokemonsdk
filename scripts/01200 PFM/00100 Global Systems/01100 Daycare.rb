@@ -232,14 +232,17 @@ module PFM
     end
 
     # Return the parents in male, female order (to make the lay process easier)
-    # @param parents [Array<PFM::Pokemon>]
+    # @param potential_male [Array<PFM::Pokemon>]
+    # @param potential_female [Array<PFM::Pokemon>]
     # @return [Array<PFM::Pokemon>]
-    def assign_gender(parents)
-      potential_female = parents[parents.first.gender == 2 ? 0 : 1]
-      # In this case, the first Pokemon wasn't a female so we test if the second is a ditto
-      # If the second is a ditto, we'll assume the male is a female to have the right baby
-      return parents if potential_female.gender == 0 && potential_female.db_symbol == :ditto
-      return parents[1 - parents.index(potential_female)], potential_female
+    def assign_gender((potential_male, potential_female))
+      # If the potential male is a female, potential_female is a male
+      # If the potential_female is a ditto, potential_male will be the mother
+      if potential_male.gender == 2 || potential_female.db_symbol == :ditto
+        potential_male, potential_female = potential_female, potential_male
+      end
+      # Otherwise potential_male is a "male" and potential_female is a "female"
+      return potential_male, potential_female
     end
 
     # Return the data of each breedable Pokemon
