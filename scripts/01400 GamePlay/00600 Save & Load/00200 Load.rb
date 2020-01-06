@@ -57,7 +57,7 @@ module GamePlay
 
     # Create the save related graphics
     def create_graphics
-      super
+      create_viewport
       @all_window = UI::SpriteStack.new(@viewport)
       create_background
       create_windows

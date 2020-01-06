@@ -26,7 +26,7 @@ module GamePlay
 
     # Create all the graphics
     def create_graphics
-      super
+      create_viewport
       create_background
       create_buttons
       init_entering

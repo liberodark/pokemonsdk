@@ -80,7 +80,7 @@ module GamePlay
 
     # Create the Move Reminder UI
     def create_graphics
-      super
+      create_viewport
       create_base
       create_ui
     end

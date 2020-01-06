@@ -182,7 +182,7 @@ module GamePlay
 
     # Create the scene graphics
     def create_graphics
-      super
+      create_viewport
       create_background
       create_pokemon_sprite
       create_egg_sprite

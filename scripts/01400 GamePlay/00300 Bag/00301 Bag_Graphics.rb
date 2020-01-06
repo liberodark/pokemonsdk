@@ -43,7 +43,7 @@ module GamePlay
 
     # Create all the graphics for the UI
     def create_graphics
-      super
+      create_viewport
       create_base_ui
       create_pocket_ui
       create_scroll_bar

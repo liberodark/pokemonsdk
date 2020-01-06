@@ -17,7 +17,7 @@ module GamePlay
 
     # Create the grahics of the KeyBinding scene
     def create_graphics
-      super
+      create_viewport
       create_base_ui
       create_overlay
       create_ui

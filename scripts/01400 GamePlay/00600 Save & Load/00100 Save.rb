@@ -55,7 +55,7 @@ module GamePlay
 
     # Create the save related graphics
     def create_graphics
-      super
+      create_viewport
       if File.exist?(Save.save_filename)
         @window = UI::SaveWindow.new(@viewport)
         @window.data = current_pokemon_party

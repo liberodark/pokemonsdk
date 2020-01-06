@@ -46,7 +46,7 @@ module GamePlay
 
     # Create all the UI of the scene & set their default content
     def create_graphics
-      super
+      create_viewport
       create_base
       create_uis
       create_top_ui

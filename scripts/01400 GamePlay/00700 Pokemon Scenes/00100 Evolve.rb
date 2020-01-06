@@ -171,7 +171,7 @@ module GamePlay
     end
 
     def create_graphics
-      super
+      create_viewport
       create_background
       create_sprite_pkmn
       create_sprite_pkmn_evolved
