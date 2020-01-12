@@ -2,7 +2,7 @@ module GamePlay
   class Dex
     # Create all the graphics
     def create_graphics
-      super
+      create_viewport
       create_base_ui
       unless @page_id # If we're only showing a Pokemon Dex info we'll not create the other sprites
         create_list

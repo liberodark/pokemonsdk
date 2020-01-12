@@ -145,7 +145,7 @@ module GamePlay
 
     # Create all the graphics required by this Scene
     def create_graphics
-      super
+      create_viewport
       create_background
       create_map
       create_cursor

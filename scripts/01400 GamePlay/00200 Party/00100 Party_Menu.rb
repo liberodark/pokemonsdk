@@ -87,7 +87,7 @@ module GamePlay
 
     # Create the UI graphics
     def create_graphics
-      super
+      create_viewport
       create_base_ui
       create_team_buttons
       create_frames #  Must be after team buttons to ensure the black frame to work

@@ -57,7 +57,7 @@ module GamePlay
 
     # Create the UI Graphics
     def create_graphics
-      super
+      create_viewport
       create_base_ui
       create_sub_background
       create_trainer_sprite
