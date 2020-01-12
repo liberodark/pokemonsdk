@@ -162,8 +162,10 @@ module GamePlay
 
     # Create the map sprite
     def create_map
-      @map_worldmap = Sprite.new(@viewport_map).set_bitmap('worldmap/worldmaps/' +
-      GameData::WorldMap.get(@worldmap_id).image, :interface)
+      @map_worldmap = Sprite.new(@viewport_map).set_bitmap(
+        GameData::WorldMap.worldmap_image_filename(GameData::WorldMap.get(@worldmap_id).image),
+        :interface
+      )
     end
 
     # Create the cursor
@@ -418,7 +420,10 @@ module GamePlay
     def set_worldmap(id)
       # Update the worldmap
       @worldmap_id = id
-      @map_worldmap.set_bitmap('worldmap/worldmaps/' + GameData::WorldMap.get(@worldmap_id).image, :interface)
+      @map_worldmap.set_bitmap(
+        GameData::WorldMap.worldmap_image_filename(GameData::WorldMap.get(@worldmap_id).image),
+        :interface
+      )
       recenter_map
       @ui_infobox.set_region GameData::WorldMap.get(@worldmap_id).name
       # Update player

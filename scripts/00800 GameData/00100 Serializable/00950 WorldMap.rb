@@ -33,7 +33,7 @@ module GameData
     def image=(value)
       @image = value
 
-      bmp = RPG::Cache.interface(value)
+      bmp = RPG::Cache.interface(WorldMap.worldmap_image_filename(value))
       max_x = bmp.width / GamePlay::WorldMap::TileSize
       max_y = bmp.height / GamePlay::WorldMap::TileSize
       n_data = Table.new(max_x, max_y)
@@ -90,6 +90,14 @@ module GameData
       def get(id)
         return @data[id] if id_valid?(id)
         return @data.first
+      end
+
+      # Give the appropriate filename for the worldmap image in Graphics/interface
+      # @param filename [String]
+      # @return [String]
+      def worldmap_image_filename(filename)
+        return filename if filename.start_with?('worldmap/worldmaps/')
+        return "worldmap/worldmaps/#{filename}"
       end
 
       # Return all the worldmap

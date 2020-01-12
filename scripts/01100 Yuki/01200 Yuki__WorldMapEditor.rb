@@ -148,8 +148,17 @@ module Yuki
     # Select a world map
     def select_worldmap(id)
       @current_worldmap = id
-      @map_sprite&.set_bitmap('worldmap/worldmaps/' + GameData::WorldMap.get(id).image, :interface)
-      puts "World map #{GameData::WorldMap.get(id).name} is now selected."
+      worldmap = GameData::WorldMap.get(id)
+      worldmap_filename = GameData::WorldMap.worldmap_image_filename(worldmap.image)
+      if RPG::Cache.interface_exist?(worldmap_filename)
+        bmp = RPG::Cache.interface(worldmap_filename)
+        max_x = bmp.width / GamePlay::WorldMap::TileSize
+        max_y = bmp.height / GamePlay::WorldMap::TileSize
+        worldmap.image = worldmap.image if worldmap.data.xsize != max_x || worldmap.data.ysize != max_y
+        @map_sprite&.bitmap = bmp
+
+      end
+      puts "World map #{worldmap.name} is now selected."
     end
 
     # Add a new world map and select it
@@ -202,9 +211,14 @@ module Yuki
     # @param id [Integer] the id of the world map to edit
     # @param new_image [Integer] the new filename of the image
     def set_worldmap_image(id, new_image)
-      GameData::WorldMap.get(id).image = new_image
-      @map_sprite.set_bitmap('worldmap/worldmaps/' + new_image, :interface) if @current_worldmap == id
-      puts "#{GameData::WorldMap.get(id).name}'s' image updated to #{new_image}"
+      worldmap_filename = GameData::WorldMap.worldmap_image_filename(new_image)
+      if RPG::Cache.interface_exist?(worldmap_filename)
+        GameData::WorldMap.get(id).image = new_image
+        @map_sprite.set_bitmap(worldmap_filename, :interface) if @current_worldmap == id
+        puts "#{GameData::WorldMap.get(id).name}'s' image updated to #{new_image}"
+      else
+        puts "#{worldmap_filename} doesn't exist!"
+      end
     end
 
     # Init the editor
@@ -231,8 +245,11 @@ module Yuki
 
     # Create the sprites
     def init_sprites
-      @viewport = Viewport.create(:main, 2000)
-      @map_sprite = Sprite.new(@viewport).set_bitmap('worldmap/worldmaps/' + GameData::WorldMap.get(@current_worldmap).image, :interface)
+      @viewport = Viewport.create(0, 0, 640, 480, 2000)
+      @map_sprite = Sprite.new(@viewport).set_bitmap(
+        GameData::WorldMap.worldmap_image_filename(GameData::WorldMap.get(@current_worldmap).image),
+        :interface
+      )
       @cursor = Sprite.new(@viewport).set_bitmap('worldmap/' + 'cursor', :interface)
                       .set_rect_div(0, 0, 1, 2)
       @infobox = Text.new(0, @viewport,
