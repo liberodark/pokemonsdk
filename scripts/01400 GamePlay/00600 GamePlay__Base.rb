@@ -58,7 +58,7 @@ module GamePlay
   #
   #     # Create all the UI and thing related to graphics (super create the viewport)
   #     def create_graphics
-  #       super
+  #       create_viewport # Necessary to make the scene work properly
   #       # ...
   #     end
   #
