@@ -33,7 +33,7 @@ module GamePlay
       # Use option
       map_usable = proc { !GameData::Item.map_usable?(item_id) }
       # Give option
-      giv_check = proc { $pokemon_party.pokemon_alive <= 0 }
+      giv_check = proc { $pokemon_party.pokemon_alive <= 0 || !GameData::Item.holdable?(item_id) }
       # Unregister / register
       if $bag.shortcuts.include?(item_id)
         reg_id = 14
@@ -83,10 +83,19 @@ module GamePlay
     def choice_a_berry
       play_decision_se
       @running = false
+      @return_data = @item_list[@index] || -1
+    end
+    alias choice_a_map choice_a_berry
+
+    # Choice when the player press A in Hold mode
+    def choice_a_hold
+      item_id = @item_list[@index]
+      return action_b if item_id.nil?
+      return play_buzzer_se if item_id == 0 || !GameData::Item.holdable?(item_id)
+      play_decision_se
+      @running = false
       @return_data = @item_list[@index]
     end
-    alias choice_a_hold choice_a_berry
-    alias choice_a_map choice_a_berry
 
     # Choice when the player press A in shop mode
     def choice_a_shop
