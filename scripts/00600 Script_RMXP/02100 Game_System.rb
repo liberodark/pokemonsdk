@@ -30,7 +30,7 @@ class Game_System
   # play the cry of a Pokémon
   # @param id [Integer] the id of the Pokémon in the database
   def cry_play(id)
-    Audio.cry_play(sprintf("Audio/SE/Cries/%03dCry.wav", id.to_i))
+    Audio.cry_play(sprintf("Audio/SE/Cries/%03dCry", id.to_i))
   end
   # Plays a BGM
   # @param bgm [RPG::AudioFile] a descriptor of the BGM

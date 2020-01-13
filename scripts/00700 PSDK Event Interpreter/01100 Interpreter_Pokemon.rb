@@ -80,7 +80,7 @@ class Interpreter
   def cry_pokemon(id)
     id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
     raise "Database Error : The Pokémon ##{id} doesn't exists." unless GameData::Pokemon.id_valid?(id)
-    Audio.se_play(format('Audio/SE/Cries/%03dCry.wav', id))
+    Audio.se_play(format('Audio/SE/Cries/%03dCry', id))
   end
 
   # Show the rename interface of a Pokemon
