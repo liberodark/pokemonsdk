@@ -1,3 +1,5 @@
+PARGV.parse
+
 # Load data from a file
 # @param filename [String] name of the file where to load the data
 # @param utf8 [Boolean] if the utf8 conversion should be done

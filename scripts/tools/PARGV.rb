@@ -171,23 +171,24 @@ PARGV.define_arg(:scale, flag: false, default: nil) { |value| value.to_f.between
 PARGV.define_arg(:smooth)
 PARGV.define_arg(:fullscreen)
 PARGV.define_arg(:help, aliases: [:h]) do
-  pcc 'PSDK Help'.center(80, '='), 0x60
-  pcc(
+  print "\e[46m\e[30m"
+  puts 'PSDK Help'.center(80, '=')
+  print "\e[40m\e[36m"
+  puts(
     '--scale=value : Define the screen scale (to make it bigger or smaller)',
     "  default value : #{PARGV.default(:help)}",
     '--smooth : Tell if the texture are smoothed by GPU',
-    '--fullscreen : Tell if the game launch in fullscreen',
-    0x06
+    '--fullscreen : Tell if the game launch in fullscreen'
   )
   unless File.exist?('Data/Scripts.dat')
-    pcc(
+    puts(
       '--tags : Open the system tag editor',
       '--worldmap : Open the worldmap editor',
-      '--util=scriptname : Load a plugin (scriptname in plugins)',
-      0x06
+      '--util=scriptname : Load a plugin (scriptname in plugins)'
     )
   end
-  pcc '--help : Show this', 0x06
+  puts '--help : Show this'
+  print "\e[37m"
   exit!
 end
 # Define PARGV from debug perspective
