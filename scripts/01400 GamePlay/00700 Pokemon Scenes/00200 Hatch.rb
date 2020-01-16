@@ -61,7 +61,7 @@ module GamePlay
     def play_music
       $game_system.bgm_memorize2
       Audio.bgm_stop
-      Audio.bgm_play(Evolve::EvolveMusic)
+      Audio.bgm_play(Evolve::EVOLVE_MUSIC)
     end
 
     # Update the message to show according to the counter
@@ -73,7 +73,7 @@ module GamePlay
         display_message(text_get(36, 37))
       elsif @counter == POKEMON_ALPHA_DOWN_END
         @message_window.auto_skip = false
-        Audio.bgm_play(Evolve::EvolvedMusic)
+        Audio.bgm_play(Evolve::EVOLVED_MUSIC)
         PFM::Text.set_pkname(@pokemon, 0)
         display_message(text_get(36, 38))
       elsif @counter > POKEMON_ALPHA_DOWN_END
@@ -160,7 +160,7 @@ module GamePlay
       else
         id_bg += 1
       end
-      @background = Sprite.new(@viewport).set_bitmap(Evolve::BackNames[id_bg], :battleback)
+      @background = Sprite.new(@viewport).set_bitmap(Evolve::BACK_NAMES[id_bg], :battleback)
     end
 
     # Create the Pokemon sprite
