@@ -41,6 +41,7 @@ module UI
         @inputs[@chars.size]&.visible = true
         @counter = 0
       end
+      @character_sprite.update
     end
 
     private
@@ -67,14 +68,15 @@ module UI
 
     # Create the character sprite
     def create_character_sprite
-      @character_sprite = Sprite.new(self)
-      @character_sprite.set_position(*character_sprite_position)
       if @character.is_a?(PFM::Pokemon)
-        @character_sprite.bitmap = @character.icon
+        @character_sprite = PokemonIconSprite.new(self, false)
+        @character_sprite.data = @character
       elsif @character.is_a?(String)
+        @character_sprite = Sprite.new(self)
         @character_sprite.set_bitmap(@character, :character)
         @character_sprite.src_rect.set(nil, nil, @character_sprite.width / 4, @character_sprite.height / 4)
       end
+      @character_sprite.set_position(*character_sprite_position)
       @character_sprite.set_origin(@character_sprite.width / 2, @character_sprite.height)
     end
 
