@@ -47,9 +47,7 @@ class Spriteset_Map
   # Return the prefered tilemap class
   # @return [Class]
   def tilemap_class
-    return Tilemap::WithLessRubySprites_16 # if ARGV.include?('tilemap')
-    # ((::Config::Yuri_Tilemap_Disabled or $zoom_factor == 2) ? Tilemap : Yuri_Tilemap)
-    # return Yuri_Tilemap
+    return Object.const_get(PSDK_CONFIG.tilemap.tilemap_class)
   end
 
   # Tilemap initialization
