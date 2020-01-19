@@ -134,4 +134,26 @@ class Interpreter < Interpreter_RMXP
   alias attendre_fin_deplacement_cet_event wait_character_move_completion
   alias wait_event wait_character_move_completion
   alias attendre_event wait_character_move_completion
+  
+  # Detect if a specified tile (in layer 3) is in the specified zone
+  # @param x [Integer] the coordinate x of the zone
+  # @param y [Integer] the coordinate y of the zone
+  # @param width [Integer] the width of the zone
+  # @param height [Integer] the height of the zone
+  # @param tile_id [Integer] the tile's id in the tileset
+  # @return [Boolean] "true" if the tile is detected in the zone, else "false"
+  # @example To detect if there is non-cracked ice floor tile in a zone going from
+  #      X = 15 (included) to 24 and Y = 10 (included) to 15, you have to write : 
+  #      detect_invalid_tile(15, 10, 10, 6, 394)
+  #      To calculate tile_id the formula is this one : 384 + tileset_x + tileset_y * 8
+  #      For example : the tile is the third of the second line we then have tileset_x = 2, tileset_y = 1 which gives 394.
+  def detect_invalid_tile(x, y, width, height, tile_id)
+    ox = Yuki::MapLinker.get_OffsetX
+    oy = Yuki::MapLinker.get_OffsetY
+    rangex = (x + ox)...(x + ox + width)
+    rangey = (y + oy)...(y + oy + height)
+    gm = $game_map
+    return rangex.any? { |tx| rangey.any? { |ty| gm.get_tile(tx, ty) == tile_id } }
+  end
+
 end
