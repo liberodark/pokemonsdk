@@ -100,8 +100,8 @@ module GamePlay
       ind = _party_window(*Box)
       box_id = $storage.current_box
       if (ind == 0) # Renommer
-        $storage.set_box_name(box_id,
-        Scene_NameInput.new($storage.get_box_name(box_id), 10, "pc_psdk").main.return_name)
+        name = GamePlay::NameInput.new($storage.get_box_name(box_id), 10, 'pc_psdk').main.return_name
+        $storage.set_box_name(box_id, name)
         Graphics.transition
         change_box
       elsif (ind == 1) # Changement thème

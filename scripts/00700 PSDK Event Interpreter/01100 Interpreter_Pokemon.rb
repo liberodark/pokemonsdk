@@ -96,7 +96,7 @@ class Interpreter
     end
     Graphics.freeze
     $scene.window_message_close(false) if $scene.class == Scene_Map
-    pokemon.given_name = Scene_NameInput.new(pokemon.given_name, num_char, pokemon).main.return_name
+    pokemon.given_name = GamePlay::NameInput.new(pokemon.given_name, num_char, pokemon).main.return_name
     Graphics.transition
     @wait_count = 2
   end

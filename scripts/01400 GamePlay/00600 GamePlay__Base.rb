@@ -105,6 +105,8 @@ module GamePlay
     # @param message_z [Integer] the z superiority of the message
     # @param message_viewport_args [Array] if empty : [:main, message_z] will be used.
     def initialize(no_message = false, message_z = 10_001, *message_viewport_args)
+      # List of object to dispose in #dispose
+      @object_to_dispose = []
       # Force the message window of the map to be closed
       $scene.window_message_close(true) if $scene.class == Scene_Map
       message_initialize(no_message, message_z, message_viewport_args)
@@ -131,9 +133,16 @@ module GamePlay
     def dispose
       message_soft_lock_prevent
       @message_window&.dispose(with_viewport: true) unless @inherited_message_window || @message_window == false
+      @object_to_dispose.each(&:dispose)
       instance_variables.grep(/viewport/).collect { |ivar| instance_variable_get(ivar) }.each do |vp|
         vp.dispose if vp.is_a?(Viewport) && !vp.disposed?
       end
+    end
+
+    # Add a disposable object to the "object_to_dispose" array
+    # @param args [Array<#dispose>]
+    def add_disposable(*args)
+      @object_to_dispose.concat(args)
     end
 
     # The GamePlay entry point (Must not be overridden).

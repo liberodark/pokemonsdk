@@ -12,6 +12,7 @@ pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00100 NilClass.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00101 Boolean.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00200 Object.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00201 Object_validate_param.rb
+pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00202 Object_Module_void.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00300 String.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00400 Symbol.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00500 Dir.rb
@@ -244,6 +245,8 @@ pokemonsdk/scripts/01300 UI/09000 Others/01400 Dex UIs.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02000 UI__TeamButton.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02200 VoltorbFlipSprites.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02700 SaveWindow.rb
+pokemonsdk/scripts/01300 UI/09001 NameInput/00001 NameInputBaseUI.rb
+pokemonsdk/scripts/01300 UI/09001 NameInput/00002 NameInputUI.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02300 List.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02305 List__Content.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02306 List__Content__Helper.rb
@@ -296,8 +299,9 @@ pokemonsdk/scripts/01400 GamePlay/01000 Storage/04000 GamePlay__StorageMove.rb
 pokemonsdk/scripts/01400 GamePlay/01000 Storage/04100 GamePlay__StorageRemove.rb
 pokemonsdk/scripts/01400 GamePlay/01000 Storage/04300 GamePlay__StorageTrade.rb
 pokemonsdk/scripts/01400 GamePlay/01000 Storage/04400 GamePlay__StorageUtils.rb
-pokemonsdk/scripts/01400 GamePlay/01100 Input/00300 Scene_NameInput.rb
-pokemonsdk/scripts/01400 GamePlay/01100 Input/01100 GamePlay__InputNumber.rb
+pokemonsdk/scripts/01400 GamePlay/01100 Input/00700 NameInput.rb
+pokemonsdk/scripts/01400 GamePlay/01100 Input/00701 NumberInput.rb
+pokemonsdk/scripts/01400 GamePlay/01100 Input/01100 InputNumber_message.rb
 pokemonsdk/scripts/01400 GamePlay/01400 Quest/03200 GamePlay__QuestBookMenu.rb
 pokemonsdk/scripts/01400 GamePlay/01400 Quest/03300 GamePlay__QuestBookList.rb
 pokemonsdk/scripts/01400 GamePlay/01400 Quest/03400 GamePlay__QuestBookQuest.rb

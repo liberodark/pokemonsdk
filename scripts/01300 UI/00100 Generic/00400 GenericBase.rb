@@ -17,10 +17,8 @@ module UI
     # @param keys [Array<Symbol>] list of keys used in the ControlButton
     def initialize(viewport, texts = nil, keys = DEFAULT_KEYS)
       super(viewport)
-      @background = add_background(background_filename).set_z(-10)
-      @button_background = add_sprite(0, 214, button_background_filename).set_z(500)
       @keys = keys
-      create_control_button
+      create_graphics
       self.button_texts = texts
     end
 
@@ -70,6 +68,20 @@ module UI
     end
 
     private
+
+    def create_graphics
+      create_background
+      create_button_background
+      create_control_button
+    end
+
+    def create_background
+      @background = add_background(background_filename).set_z(-10)
+    end
+
+    def create_button_background
+      @button_background = add_sprite(0, 214, button_background_filename).set_z(500)
+    end
 
     # Return the name of the background
     # @return [String]

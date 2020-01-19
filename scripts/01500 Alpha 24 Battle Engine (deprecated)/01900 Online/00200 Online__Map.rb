@@ -104,7 +104,7 @@ module Online
 
     def input_code
       Graphics.freeze
-      scene = Scene_NameInput::NumInput.new
+      scene = GamePlay::NumberInput.new('', 17, 'pc_psdk', phrase: 'Entrez le code de l\'hôte :')
       scene.main
       Graphics.transition
       return scene.return_name

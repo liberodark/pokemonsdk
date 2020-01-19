@@ -92,7 +92,7 @@ module GamePlay
       choice = display_message(text_get(36, 39), 1, text_get(11, 27), text_get(11, 28))
       return unless choice == 0 # No
       Graphics.freeze
-      @pokemon.given_name = Scene_NameInput.new(@pokemon.given_name, 12, @pokemon).main.return_name
+      @pokemon.given_name = GamePlay::NameInput.new(@pokemon.given_name, 12, @pokemon).main.return_name
     end
 
     # Update the animation

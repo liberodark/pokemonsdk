@@ -29,7 +29,7 @@ module GamePlay
     #   2 = all moves
     #   other = learnt + potentially_learnt
     def initialize(pokemon, mode = 0)
-      super
+      super()
       @index = 0
       @pokemon = pokemon
       @mode = mode

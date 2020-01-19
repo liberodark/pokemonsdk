@@ -195,11 +195,8 @@ class Scene_Map
 
   # Call the name input scene
   def call_name
-    # 名前入力呼び出しフラグをクリア
     $game_temp.name_calling = false
-    # プレイヤーの姿勢を矯正
     $game_player.straighten
-    # 名前入力画面に切り替え
     Graphics.freeze
     window_message_close(false)
     self.sprite_set_visible = false
@@ -209,7 +206,8 @@ class Scene_Map
     else
       character = actor.character_name
     end
-    name = Scene_NameInput.new(actor.name, $game_temp.name_max_char, character.empty? ? nil : character).main.return_name
+    scene = GamePlay::NameInput.new(actor.name, $game_temp.name_max_char, character.empty? ? nil : character).main
+    name = scene.return_name
     $trainer.name = name if $game_temp.name_actor_id == 1
     actor.name = name
     self.sprite_set_visible = true

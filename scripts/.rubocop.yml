@@ -1,6 +1,10 @@
 AllCops:
   TargetRubyVersion: "2.5"
 
+# For some reason I need private symbol
+Style/AccessModifierDeclarations:
+  Enabled: false
+
 # Alias_method is mandatory with operator, using alias raise a syntax error
 Style/Alias:
   Enabled: false
