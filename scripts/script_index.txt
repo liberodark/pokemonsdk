@@ -247,6 +247,9 @@ pokemonsdk/scripts/01300 UI/09000 Others/02200 VoltorbFlipSprites.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02700 SaveWindow.rb
 pokemonsdk/scripts/01300 UI/09001 NameInput/00001 NameInputBaseUI.rb
 pokemonsdk/scripts/01300 UI/09001 NameInput/00002 NameInputUI.rb
+pokemonsdk/scripts/01300 UI/09002 Options/00001 Description.rb
+pokemonsdk/scripts/01300 UI/09002 Options/00002 Arrow.rb
+pokemonsdk/scripts/01300 UI/09002 Options/00003 Button.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02300 List.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02305 List__Content.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02306 List__Content__Helper.rb
@@ -277,9 +280,8 @@ pokemonsdk/scripts/01400 GamePlay/00300 Bag/00400 BattleBag.rb
 pokemonsdk/scripts/01400 GamePlay/00400 Trainer/00100 TCard.rb
 pokemonsdk/scripts/01400 GamePlay/00400 Trainer/00200 Hall of Fame.rb
 pokemonsdk/scripts/01400 GamePlay/00400 Trainer/00300 Dressing.rb
-pokemonsdk/scripts/01400 GamePlay/00500 Options/00100 Options.rb
-pokemonsdk/scripts/01400 GamePlay/00500 Options/00101 Option_Element.rb
-pokemonsdk/scripts/01400 GamePlay/00500 Options/00102 Option_Button.rb
+pokemonsdk/scripts/01400 GamePlay/00500 Options/00001 Options_Helper.rb
+pokemonsdk/scripts/01400 GamePlay/00500 Options/00002 Options Scene.rb
 pokemonsdk/scripts/01400 GamePlay/00500 Options/04800 KeyBinding.rb
 pokemonsdk/scripts/01400 GamePlay/00500 Options/04801 KeyBinding_LS.rb
 pokemonsdk/scripts/01400 GamePlay/00600 Save & Load/00100 Save.rb

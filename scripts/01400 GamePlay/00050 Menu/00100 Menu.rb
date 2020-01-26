@@ -217,7 +217,9 @@ module GamePlay
 
     # Open the Options UI
     def open_option
-      call_scene(Options)
+      call_scene(Options) do |scene|
+        @running = false if scene.modified_options.include?(:language)
+      end
     end
 
     # Quit the scene

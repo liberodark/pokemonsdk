@@ -51,6 +51,15 @@ module PFM
       @sfx_volume = Audio.sfx_volume = value
     end
 
+    # Change both music & sfx volume at the same time
+    # @param value [Integer] the new volume
+    def master_volume=(value)
+      self.music_volume = value
+      self.sfx_volume = value
+    end
+
+    alias master_volume music_volume
+
     # Change the in game lang (reload the texts)
     # @param value [String] the new lang id
     def language=(value)

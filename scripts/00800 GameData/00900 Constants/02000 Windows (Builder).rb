@@ -10,5 +10,9 @@ module GameData
     # List of awailable message frames
     # @return [Array<String>]
     MESSAGE_FRAME = %w[message m_1 m_2 m_3 m_4 m_5 m_6 m_7 m_8 m_9 m_10 m_11 m_12 m_13 m_14 m_15 m_16 m_17 m_18]
+    # List of message frames names
+    # @return [Array<String>]
+    MESSAGE_FRAME_NAMES = %w[X/Y Gold Silver Red Blue Green Orange Purple Heart\ Gold Soul\ Silver Rocket Blue\ Indus
+                             Red\ Indus Swamp Safari Brick Sea River B/W]
   end
 end

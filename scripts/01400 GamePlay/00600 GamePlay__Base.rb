@@ -147,6 +147,7 @@ module GamePlay
 
     # The GamePlay entry point (Must not be overridden).
     def main
+      raise 'You forgot to call super in initialize of your scene' unless @object_to_dispose
       # Store the last scene and store self in $scene
       @__last_scene = $scene if $scene != self
       $scene = self

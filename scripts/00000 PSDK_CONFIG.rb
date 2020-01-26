@@ -39,6 +39,8 @@ module ScriptLoader
     attr_reader :viewport_offset_y
     # @return [TilemapConfig] tilemap configurations
     attr_reader :tilemap
+    # @return [OptionsConfig] options configuration
+    attr_reader :options
     # Name of the yaml file
     YAML_FILENAME = 'Data/project_indentity.yml'
     # Name of the dat file
@@ -67,6 +69,12 @@ module ScriptLoader
     def debug?
       @debug = !release? && ARGV.include?('debug') if @debug.nil?
       return @debug
+    end
+
+    # Save the full configs
+    def save_to_files
+      File.write(YAML_FILENAME, YAML.dump(self))
+      save_data(self, DAT_FILENAME)
     end
 
     private
@@ -99,13 +107,15 @@ module ScriptLoader
       @pokemon_max_level = (@pokemon_max_level || 100).to_i
       @player_always_centered = @player_always_centered == true
       @mouse_disabled = @mouse_disabled == true
+      save |= !@tilemap.is_a?(TilemapConfig)
       @tilemap = @tilemap.is_a?(TilemapConfig) ? @tilemap : TilemapConfig.new
       save |= @tilemap.fix_missing_values
+      save |= !@options.is_a?(OptionsConfig)
+      @options = @options.is_a?(OptionsConfig) ? @options : OptionsConfig.new
       if save
         remove_instance_variable(:@release) if instance_variable_defined?(:@release)
         remove_instance_variable(:@debug) if instance_variable_defined?(:@debug)
-        File.write(YAML_FILENAME, YAML.dump(self))
-        save_data(self, DAT_FILENAME)
+        save_to_files
       end
     end
 
@@ -267,6 +277,57 @@ module ScriptLoader
       # @return [Boolean] if the files should be saved again
       def fix_missing_values
         return ARGV.include?('debug') && false
+      end
+    end
+
+    # Class describing the options configuration
+    class OptionsConfig
+      # @return [Array<Symbol>] option order
+      attr_reader :order
+      # @return [Array<Array>] options info for the Option scene
+      attr_reader :options
+      # Create a new OptionsConfig
+      def initialize
+        @order = %i[message_speed message_frame volume battle_animation battle_style language]
+        @options = [
+          [
+            :message_speed, :choice, [1, 2, 3],
+            [
+              [:text_get, 42, 4],
+              [:text_get, 42, 5],
+              [:text_get, 42, 6]
+            ],
+            [:text_get, 42, 3], [:text_get, 42, 7], :message_speed
+          ],
+          [
+            :message_frame, :choice, 'GameData::Windows::MESSAGE_FRAME', 'GameData::Windows::MESSAGE_FRAME_NAMES',
+            'Message Frame', 'Change the message frame', :message_frame
+          ],
+          [
+            :volume, :slider, { min: 0, max: 100, increment: 1 }, '%d%%',
+            [:ext_text, 9000, 29], [:ext_text, 9000, 30], :master_volume
+          ],
+          [
+            :battle_animation, :choice, [true, false],
+            [
+              [:text_get, 42, 9],
+              [:text_get, 42, 10]
+            ],
+            [:text_get, 42, 8], [:text_get, 42, 11], :show_animation
+          ],
+          [
+            :battle_style, :choice, [true, false],
+            [
+              [:text_get, 42, 13],
+              [:text_get, 42, 14]
+            ],
+            [:text_get, 42, 12], [:text_get, 42, 15], :battle_mode
+          ],
+          [
+            :language, :choice, 'PSDK_CONFIG#choosable_language_code', 'PSDK_CONFIG#choosable_language_texts',
+            'Language', 'Choose the language of the game', :language
+          ]
+        ]
       end
     end
   end
