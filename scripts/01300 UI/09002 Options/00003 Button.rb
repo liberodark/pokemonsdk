@@ -37,8 +37,6 @@ module UI
         @option_value.text = value_text
       end
 
-      private
-
       # Retreive the option value text
       # @return [String]
       def value_text

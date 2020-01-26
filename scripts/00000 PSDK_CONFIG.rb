@@ -301,7 +301,7 @@ module ScriptLoader
           ],
           [
             :message_frame, :choice, 'GameData::Windows::MESSAGE_FRAME', 'GameData::Windows::MESSAGE_FRAME_NAMES',
-            'Message Frame', 'Change the message frame', :message_frame
+            [:ext_text, 9000, 165], [:ext_text, 9000, 166], :message_frame
           ],
           [
             :volume, :slider, { min: 0, max: 100, increment: 1 }, '%d%%',
@@ -325,7 +325,7 @@ module ScriptLoader
           ],
           [
             :language, :choice, 'PSDK_CONFIG#choosable_language_code', 'PSDK_CONFIG#choosable_language_texts',
-            'Language', 'Choose the language of the game', :language
+            [:ext_text, 9000, 167], [:ext_text, 9000, 168], :language
           ]
         ]
       end

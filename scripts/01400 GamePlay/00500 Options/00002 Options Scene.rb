@@ -25,7 +25,11 @@ module GamePlay
       if index_changed!(:@index, :UP, :DOWN, @max_index)
         play_cursor_se
         update_list
-        @description.data = @options[@order[@index]]
+        @description.data = current_option
+        return false
+      end
+      if Input.trigger?(:A) && @order[@index] == :message_frame
+        display_message(@buttons[@index].value_text)
         return false
       end
       return save_options if Input.trigger?(:B)
@@ -106,7 +110,6 @@ module GamePlay
     # Function that try to update the option value
     # @return [Boolean]
     def update_input_option_value
-      current_option = @options[@order[@index]]
       new_value = nil
       if Input.repeat?(:RIGHT)
         new_value = current_option.next_value
@@ -132,6 +135,12 @@ module GamePlay
         next @options_copy.send(option.getter) != option.current_value
       end
       return @running = false
+    end
+
+    # Return the current option
+    # @return [GamePlay::Options::Helper]
+    def current_option
+      @options[@order[@index]]
     end
   end
 end
