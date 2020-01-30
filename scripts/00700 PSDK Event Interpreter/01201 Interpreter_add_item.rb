@@ -1,4 +1,7 @@
 class Interpreter
+
+  MODE_SWOOSH = true
+
   # Add an item to the bag if possible, will delete the event forever
   # @param item_id [Integer] id of the item in the database
   # @param no_delete [Boolean] bypass the deletion of the event
@@ -12,8 +15,10 @@ class Interpreter
     if (max = GameData::Bag::MaxItem) > 0 && ($bag.item_quantity(item_id) + count) >= max
       add_item_no_space(item_id, no_space_text_id, color)
     else
-      item_text, socket = add_item_show_message_got(item_id, text_id, color)
-      if count == 1
+      item_text, socket = add_item_show_message_got(item_id, text_id, color, count: count)
+      # Pokemon Sword/Shield does not show this type of message
+      # If you want your game to show it, change MODE_SWOOSH to false
+      if count == 1 && !MODE_SWOOSH
         show_message(
           :bag_store_item_in_pocket,
           item_1: item_text, header: SYSTEM_MESSAGE_HEADER,
@@ -67,11 +72,11 @@ class Interpreter
   # @param text_id [Integer] ID of the text used when the item is found
   # @param color [Integer] color to put on the item name
   # @return [Array<String, Integer>] the name of the item with the decoration and its socket
-  def add_item_show_message_got(item_id, text_id, color)
-    item_text = "\\c[#{color}]#{GameData::Item.name(item_id)}\\c[10]"
+  def add_item_show_message_got(item_id, text_id, color, count: 1)
+    count == 1 ? item_text = "\\c[#{color}]#{GameData::Item.name(item_id)}\\c[10]" : item_text = "\\c[#{color}]#{ext_text(9001, item_id)}\\c[10]"
     misc_data = GameData::Item.misc_data(item_id)
     socket = GameData::Item.socket(item_id)
-
+    
     Audio.me_play(ItemGetME[(socket == 3 ? 2 : (socket == 5 ? 1 : 0))], 80)
     if misc_data&.skill_learn
       text_id = text_id <= 3 ? 3 : 6
@@ -86,7 +91,8 @@ class Interpreter
       show_message(
         :item_got_text,
         item_1: item_text, header: SYSTEM_MESSAGE_HEADER,
-        PFM::Text::TRNAME[0] => $trainer.name
+        PFM::Text::TRNAME[0] => $trainer.name,
+        '[VAR 1402(0001)]' => "#{count} "
       )
     end
     return item_text, socket
