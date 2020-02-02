@@ -1,6 +1,10 @@
 AllCops:
   TargetRubyVersion: "2.5"
 
+# PSDK is not a gem
+Naming/FileName:
+  Enabled: false
+
 # For some reason I need private symbol
 Style/AccessModifierDeclarations:
   Enabled: false
@@ -18,7 +22,7 @@ Naming/MemoizedInstanceVariableName:
   Enabled: false
 
 # x, y, z etc... are pretty common in this project
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   Enabled: false
 
 # Sometime I don't want to repeat top level do

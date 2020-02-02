@@ -20,43 +20,54 @@ module Yuki
 
     # Update of the Follower Management. Their graphics are updated here.
     def update
-      update_check_last_state
-      # Don't update if the system is not active
-      return unless $game_switches[Sw::FM_Enabled]
-      chara_update = ($game_variables[Var::FM_Sel_Foll] == 0)
+      entities = follower_entities
+      return clear unless enabled
+
       last_follower = $game_player
+      follower_event = @followers.find { |follower| follower.character.follower.is_a?(Game_Event) }&.character&.follower
+      follower_event ||= last_follower.follower if last_follower.follower.is_a?(Game_Event)
+      chara_update = selected_follower == 0
+
+      # Reset following state
       last_follower.set_follower(nil, true)
-      i = 0
-      # Manage human
-      0.upto($game_variables[Var::FM_N_Human] - 1) do |j|
-        next unless $game_actors[i + 2]
-        last_follower = update_follower(last_follower, i, $game_actors[j + 2], chara_update)
-        i += 1
+      @followers.each { |follower| follower.character.set_follower(nil) }
+
+      # Update each follower
+      entities.each_with_index do |entity, index|
+        last_follower = update_follower(last_follower, index, entity, chara_update)
       end
-      # Manage Player's Pokemon
-      0.upto($game_variables[Var::FM_N_Pokem] - 1) do |j|
-        next unless $actors[j] && !$actors[j].dead?
-        last_follower = update_follower(last_follower, i, $actors[j], chara_update)
-        i += 1
-      end
-      # Manage friend's Pokemon
-      other_party = $storage.other_party
-      0.upto($game_variables[Var::FM_N_Friend] - 1) do |j|
-        return unless other_party[j] && !other_party[j].dead?
-        last_follower = update_follower(last_follower, i, other_party[j], chara_update)
-        i += 1
-      end
+
       # Remove the remaining followers
-      @followers.pop&.dispose while @followers.size > i
+      @followers.pop&.dispose while @followers.size > entities.size
+
+      # Update the last follower's follower
+      update_follower_event(last_follower, follower_event)
     end
 
-    # Part of the update function that checks the last state in order to dispose the sprites
-    def update_check_last_state
-      return unless @laststate != $game_switches[Sw::FM_Enabled]
-      @laststate = $game_switches[Sw::FM_Enabled]
-      return if @laststate
-      @followers.each { |i| i&.dispose }
-      @followers.clear
+    # Function that attempts to set the event as last follower
+    # @param last_follower [Game_Character]
+    # @param follower_event [Game_Event]
+    def update_follower_event(last_follower, follower_event)
+      last_follower_event = follower_event
+      while last_follower_event&.follower
+        last_follower_event.set_follower(nil) unless last_follower_event.follower.is_a?(Game_Event)
+        last_follower_event = last_follower_event.follower
+      end
+      last_follower.set_follower(follower_event) if last_follower.follower != follower_event
+    end
+
+    # Get the follower entities (those giving information about character_name)
+    # @return [Array<#character_name>]
+    def follower_entities
+      human = (0...human_count).map { |i| $game_actors[i] }
+      human.compact!
+      player_pokemon = (0...pokemon_count).map { |i| $actors[i] }
+      player_pokemon.compact!
+      player_pokemon.reject!(&:dead?)
+      other_pokemon = (0...other_pokemon_count).map { |i| $storage.other_party[i] }
+      other_pokemon.compact!
+      other_pokemon.reject!(&:dead?)
+      return human.concat(player_pokemon).concat(other_pokemon)
     end
 
     # Update of a single follower
@@ -74,7 +85,6 @@ module Yuki
       end
       character = follower.character
       last_follower.set_follower(character)
-      character.set_follower(nil)
       if chara_update
         character.character_name = entity.character_name
         character.is_pokemon = character.step_anime = entity.class == PFM::Pokemon
@@ -83,7 +93,7 @@ module Yuki
       character.through = true
       character.update
       follower.update
-      follower.z -= 1 if character.x == $game_player.x and character.y == $game_player.y
+      follower.z -= 1 if character.x == $game_player.x && character.y == $game_player.y
       return (@followers[i] = follower).character
     end
 
@@ -121,6 +131,7 @@ module Yuki
     # Clears the follower (and dispose them)
     def clear
       return unless @followers
+
       @followers.each { |i| i&.dispose }
       @followers.clear
     end
