@@ -1,6 +1,6 @@
 module ScriptLoader
   # Path of the scripts of PSDK
-  VSCODE_SCRIPT_PATH = __FILE__.tr('\\', '/').sub(%r{/[^/]+\.rb$}, '').sub(File.expand_path('.') + '/', '')
+  VSCODE_SCRIPT_PATH = __FILE__.force_encoding(Encoding::UTF_8).tr('\\', '/').sub(%r{/[^/]+\.rb$}, '').sub(File.expand_path('.') + '/', '')
   # Path of the scripts of the Project
   PROJECT_SCRIPT_PATH = 'scripts'
   # Path to the script index
