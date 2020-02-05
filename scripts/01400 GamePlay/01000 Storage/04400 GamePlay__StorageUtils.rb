@@ -11,6 +11,7 @@ module GamePlay
     include UI
     def initialize
       @viewport = Viewport.create(:main, 10000)
+      super()
       @background = Sprite.new(@viewport).set_bitmap(Background, :pc)
       init_pokemon_box
       init_box_title

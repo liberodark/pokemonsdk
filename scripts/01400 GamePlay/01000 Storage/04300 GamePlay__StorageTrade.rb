@@ -9,6 +9,7 @@ module GamePlay
 
     attr_accessor :return_data
     def initialize
+      super()
       @utils = StorageUtils.new
       @index = 1
       @utils.draw_selector(@index)

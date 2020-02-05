@@ -8,6 +8,7 @@ module GamePlay
     REL = "Relâcher"
     QTT = "Quitter"
     def initialize
+      super()
       @utils = StorageUtils.new
       @index = 1
       @pokemon_move = nil
