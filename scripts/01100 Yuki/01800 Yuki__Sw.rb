@@ -60,7 +60,8 @@ module Yuki
     MSG_Ponctuation = 27
     # If the actor doesn't turn to the event that show the message
     MSG_Noturn = 28
-
+    # If the Pokemon FollowMe should use Let's Go Mode
+    FollowMe_LetsGoMode = 29
     # If the battle is updating the phase (inside battle event condition)
     BT_PhaseUpdate = 30
     # If the phase 1 of the battle is running (Intro)

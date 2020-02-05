@@ -61,13 +61,38 @@ module Yuki
     def follower_entities
       human = (0...human_count).map { |i| $game_actors[i] }
       human.compact!
-      player_pokemon = (0...pokemon_count).map { |i| $actors[i] }
-      player_pokemon.compact!
-      player_pokemon.reject!(&:dead?)
-      other_pokemon = (0...other_pokemon_count).map { |i| $storage.other_party[i] }
-      other_pokemon.compact!
-      other_pokemon.reject!(&:dead?)
-      return human.concat(player_pokemon).concat(other_pokemon)
+      if $game_switches[Yuki::Sw::FollowMe_LetsGoMode]
+        return human.concat(player_pokemon_lets_go_entity).concat(other_pokemon_entities)
+      else
+        return human.concat(player_pokemon_entities).concat(other_pokemon_entities)
+      end
+    end
+
+    # Get the player's pokemon follower entities
+    # @return [Array<#character_name>]
+    def player_pokemon_entities
+      player_mon = (0...pokemon_count).map { |i| $actors[i] }
+      player_mon.compact!
+      player_mon.reject!(&:dead?)
+      return player_mon
+    end
+
+    # Get the player's pokemon follower entity if the FollowMe mode is Let's Go
+    # @return [Array<#character_name>]
+    def player_pokemon_lets_go_entity
+      return [] if pokemon_count == -1 || pokemon_count >= $actors.size
+      player_mon = [$actors[pokemon_count]]
+      player_mon.reject!(&:dead?)
+      return player_mon
+    end
+
+    # Get the friend's pokemon follower entities
+    # @return [Array<#character_name>]
+    def other_pokemon_entities
+      other_mon = (0...other_pokemon_count).map { |i| $storage.other_party[i] }
+      other_mon.compact!
+      other_mon.reject!(&:dead?)
+      return other_mon
     end
 
     # Update of a single follower
