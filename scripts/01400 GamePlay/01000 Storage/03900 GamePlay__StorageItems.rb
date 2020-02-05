@@ -8,6 +8,7 @@ module GamePlay
     INF = "Résumé"
     QTT = "Quitter"
     def initialize
+      super()
       @utils = StorageUtils.new
       @index = 1
       @utils.draw_selector(@index)
