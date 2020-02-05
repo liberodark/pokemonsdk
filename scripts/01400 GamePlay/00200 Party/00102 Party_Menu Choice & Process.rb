@@ -38,6 +38,15 @@ module GamePlay
         .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
         .register_choice(text_get(23, 8), on_validate: method(:action_move_current_pokemon), disable_detect: proc { @party.size <= 1 }) # Move
       unless pokemon.egg?
+        if $game_switches[Yuki::Sw::FollowMe_LetsGoMode]
+          if $game_variables[Yuki::Var::FM_N_Pokem] == @index
+            choices
+            .register_choice(text_get(23, 165), on_validate: method(:deselect_follower)) #Unfollow
+          elsif $game_variables[Yuki::Var::FM_N_Pokem] != @index
+            choices
+            .register_choice(text_get(23, 164), on_validate: method(:select_follower)) #Follower
+          end
+        end
         choices
           .register_choice(text_get(23, 146), on_validate: method(:give_item)) # Give
           .register_choice(text_get(23, 147), on_validate: method(:take_item), disable_detect: method(:current_pokemon_has_no_item)) # Take
