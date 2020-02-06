@@ -298,4 +298,16 @@ module PFM
       end
     end
   end
+
+  class Pokemon_Party
+    # The informations about the Wild Pokemon Battle
+    # @return [PFM::Wild_Battle]
+    attr_accessor :wild_battle
+    on_player_initialize(:wild_battle) { @wild_battle = PFM::Wild_Battle.new }
+    on_expand_global_variables(:wild_battle) do
+      # Variable containing the Wild Pokemon (Remaining & Romaing) information.
+      # It's also able to start battle against Wild Pokemon
+      $wild_battle = @wild_battle
+    end
+  end
 end

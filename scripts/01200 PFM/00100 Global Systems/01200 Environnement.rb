@@ -491,4 +491,15 @@ module PFM
       @modified_worldmap_position = nil
     end
   end
+
+  class Pokemon_Party
+    # The environment informations
+    # @return [PFM::Environnement]
+    attr_accessor :env
+    on_player_initialize(:env) { @env = PFM::Environnement.new }
+    on_expand_global_variables(:env) do
+      # Variable containing all the environment related information (current zone, weather...)
+      $env = @env
+    end
+  end
 end

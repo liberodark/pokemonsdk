@@ -77,6 +77,7 @@ module PFM
     def pokemon_captured_set_count(id, number)
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= GameData::Pokemon.all.size
+
       @nb_captured[id] = number.to_i
     end
 
@@ -85,6 +86,7 @@ module PFM
     def pokemon_captured_inc(id)
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= GameData::Pokemon.all.size
+
       @nb_captured[id] = @nb_captured[id].to_i.next
     end
 
@@ -101,8 +103,10 @@ module PFM
     # @param number [Integer] the number of Pokemon fought in the specified specie
     def pokemon_mark_fought(id, number)
       return unless enabled?
+
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= GameData::Pokemon.all.size
+
       @nb_fought[id] = number.to_i
     end
 
@@ -110,8 +114,10 @@ module PFM
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     def pokemon_fought_inc(id)
       return unless enabled?
+
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= GameData::Pokemon.all.size
+
       @nb_fought[id] = @nb_fought[id].to_i.next
     end
 
@@ -122,8 +128,10 @@ module PFM
     #                         (Giving Pokemon before givin the Pokedex).
     def mark_seen(id, form = 0, forced: false)
       return unless enabled? || forced
+
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= GameData::Pokemon.all.size
+
       @seen += 1 if @has_seen_and_forms[id].to_i == 0
       @has_seen_and_forms[id] = @has_seen_and_forms[id].to_i | (1 << form)
       $game_variables[Yuki::Var::Pokedex_Seen] = @seen
@@ -135,6 +143,7 @@ module PFM
     def unmark_seen(id, form = false)
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= GameData::Pokemon.all.size
+
       if form
         @has_seen_and_forms[id] = @has_seen_and_forms[id].to_i & ~(1 << form)
       else
@@ -149,6 +158,7 @@ module PFM
     def mark_captured(id)
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= GameData::Pokemon.all.size
+
       unless @has_captured[id]
         @has_captured[id] = true
         @captured += 1
@@ -161,6 +171,7 @@ module PFM
     def unmark_captured(id)
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return if id >= GameData::Pokemon.all.size
+
       if @has_captured[id]
         @has_captured[id] = false
         @captured -= 1
@@ -174,6 +185,7 @@ module PFM
     def pokemon_seen?(id)
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return false if id >= GameData::Pokemon.all.size
+
       return @has_seen_and_forms[id].to_i != 0
     end
     alias has_seen? pokemon_seen?
@@ -184,6 +196,7 @@ module PFM
     def pokemon_caught?(id)
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return false if id >= GameData::Pokemon.all.size
+
       return @has_captured[id]
     end
     alias has_captured? pokemon_caught?
@@ -194,6 +207,7 @@ module PFM
     def form_seen(id)
       id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
       return 0 if id >= GameData::Pokemon.all.size
+
       return @has_seen_and_forms[id].to_i
     end
     alias get_forms form_seen
@@ -217,13 +231,26 @@ module PFM
       current = result = $env.get_worldmap
       GameData::WorldMap.each_id do |worldmap_id|
         next unless $env.visited_worldmap?(worldmap_id)
+
         wm_zones = GameData::WorldMap.zone_list(worldmap_id)
         pkm_zones = GameData::Pokemon.spawn_zones(pokemon_id)
         next unless (wm_zones - pkm_zones).length != wm_zones.length
+
         result = worldmap_id
         break if worldmap_id == result && result == current
       end
       return result
+    end
+  end
+
+  class Pokemon_Party
+    # The Pokedex of the player
+    # @return [PFM::Pokedex]
+    attr_accessor :pokedex
+    on_player_initialize(:pokedex) { @pokedex = PFM::Pokedex.new }
+    on_expand_global_variables(:pokedex) do
+      # Variable containing the Pokedex Information
+      $pokedex = @pokedex
     end
   end
 end

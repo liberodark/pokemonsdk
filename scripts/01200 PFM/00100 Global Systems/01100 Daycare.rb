@@ -375,4 +375,15 @@ module PFM
       end
     end
   end
+
+  class Pokemon_Party
+    # The daycare management object
+    # @return [PFM::Daycare]
+    attr_accessor :daycare
+    on_player_initialize(:daycare) { @daycare = PFM::Daycare.new }
+    on_expand_global_variables(:daycare) do
+      # Variable containing the daycare information
+      $daycare = @daycare
+    end
+  end
 end

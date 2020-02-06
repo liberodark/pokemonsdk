@@ -179,4 +179,15 @@ module PFM
       ext_text(9000, 3)
     end
   end
+
+  class Pokemon_Party
+    # The informations about the player and the game
+    # @return [PFM::Trainer]
+    attr_accessor :trainer
+    on_player_initialize(:trainer) { @trainer = PFM::Trainer.new }
+    on_expand_global_variables(:trainer) do
+      # Variable containing the Trainer (card) information
+      $trainer = @trainer
+    end
+  end
 end

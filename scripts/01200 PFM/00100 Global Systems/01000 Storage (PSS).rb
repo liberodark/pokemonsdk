@@ -153,4 +153,15 @@ module PFM
       return true
     end
   end
+
+  class Pokemon_Party
+    # The PC storage of the player
+    # @return [PFM::Storage]
+    attr_accessor :storage
+    on_player_initialize(:storage) { @storage = PFM::Storage.new }
+    on_expand_global_variables(:storage) do
+      # Variable containing the Pokemon Storage System and other parties
+      $storage = @storage
+    end
+  end
 end

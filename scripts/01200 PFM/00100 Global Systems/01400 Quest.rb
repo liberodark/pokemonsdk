@@ -358,4 +358,15 @@ module PFM
       names.each { |name| helper.inform_quest(name, is_new) }
     end
   end
+
+  class Pokemon_Party
+    # The player quests informations
+    # @return [PFM::Quests]
+    attr_accessor :quests
+    on_player_initialize(:quests) { @quests = PFM::Quests.new }
+    on_expand_global_variables(:quests) {
+      # Variable containing all the quests information
+      $quests = @quests
+    }
+  end
 end

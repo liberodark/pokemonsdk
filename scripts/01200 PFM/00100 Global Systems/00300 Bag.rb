@@ -38,6 +38,7 @@ module PFM
     # @return [Integer]
     def item_quantity(id)
       return 0 if @locked
+
       id = GameData::Item.get_id(id) if id.is_a?(Symbol)
       return @items[id] || 0
     end
@@ -48,6 +49,7 @@ module PFM
     def add_item(id, nb)
       return if @locked
       return remove_item(id, -nb) if nb < 0
+
       id = GameData::Item.get_id(id) if id.is_a?(Symbol)
       @items[id] ||= 0
       @items[id] += nb
@@ -62,6 +64,7 @@ module PFM
     def remove_item(id, nb)
       return if @locked
       return add_item(id, -nb) if nb < 0
+
       id = GameData::Item.get_id(id) if id.is_a?(Symbol)
       @items[id] ||= 0 unless @items[id]
       @items[id] -= nb
@@ -79,6 +82,7 @@ module PFM
       return [] if @locked
       return @shortcut if socket == :favorites
       return process_battle_order(socket) if socket.is_a?(Symbol) # TODO
+
       return (@orders[socket] ||= [])
     end
 
@@ -127,6 +131,7 @@ module PFM
     # @param id [Integer] ID of the item
     def add_item_to_order(id)
       return if @items[id] <= 0
+
       socket = GameData::Item.socket(id)
       get_order(socket) << id unless get_order(socket).include?(id)
     end
@@ -135,7 +140,19 @@ module PFM
     # @param id [Integer] ID of the item
     def remove_item_from_order(id)
       return unless @items[id] <= 0
+
       get_order(GameData::Item.socket(id)).delete(id)
     end
+  end
+
+  class Pokemon_Party
+    # The bag of the player
+    # @return [PFM::Bag]
+    attr_accessor :bag
+    on_initialize(:bag) { @bag = PFM::Bag.new }
+    on_expand_global_variables(:bag) {
+      # Variable containing the player's bag information
+      $bag = @bag
+    }
   end
 end

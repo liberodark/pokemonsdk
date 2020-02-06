@@ -83,4 +83,15 @@ module PFM
       $game_system&.windowskin_name = @message_frame
     end
   end
+
+  class Pokemon_Party
+    # The game options
+    # @return [PFM::Options]
+    attr_accessor :options
+    on_player_initialize(:options) { @options = PFM::Options.new(@starting_language) }
+    on_expand_global_variables(:options) do
+      # Variable containing all the game options
+      $options = @options
+    end
+  end
 end

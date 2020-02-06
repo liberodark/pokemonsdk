@@ -185,9 +185,9 @@ pokemonsdk/scripts/01100 Yuki/00100 Animation/00100 Animation.rb
 pokemonsdk/scripts/01100 Yuki/00100 Animation/00101 Commands.rb
 pokemonsdk/scripts/01100 Yuki/00200 FollowMe/00001 Config.rb
 pokemonsdk/scripts/01100 Yuki/00200 FollowMe/00300 Core.rb
+pokemonsdk/scripts/01200 PFM/00010 Pokemon_Party/00200 Accessors.rb
+pokemonsdk/scripts/01200 PFM/00010 Pokemon_Party/00201 Management.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00100 Pokedex.rb
-pokemonsdk/scripts/01200 PFM/00100 Global Systems/00200 Pokemon_Party.rb
-pokemonsdk/scripts/01200 PFM/00100 Global Systems/00201 Pokemon_Party Management.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00300 Bag.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00400 Trainer.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00500 Options.rb
