@@ -17,7 +17,7 @@ module GamePlay
       load_options
       @modified_options = []
       @index = 0
-      @max_index = @order.size - 1
+      @max_index = 0
       @options_copy = $options.clone
     end
 
@@ -89,9 +89,14 @@ module GamePlay
     end
 
     def create_buttons
-      @buttons = @order.map.with_index { |sym, index| UI::Options::Button.new(@button_viewport, index, @options[sym]) }
+      @buttons = @order.map.with_index do |sym, index|
+        next nil unless @options[sym]
+
+        UI::Options::Button.new(@button_viewport, index, @options[sym])
+      end.compact
       @arrow = UI::Options::Arrow.new(@button_viewport)
       @arrow.oy -= (@buttons.first&.stack&.first&.height || 0) / 2
+      @max_index = @buttons.size - 1
     end
 
     def create_frame
@@ -101,8 +106,9 @@ module GamePlay
     def update_list
       @arrow.y = @buttons[@index].stack.first.y
       @button_viewport.oy = 0
-      return unless @max_index > MAX_BUTTON_SHOWN
+      return unless (@max_index + 1) > MAX_BUTTON_SHOWN
       return if @index < MAX_BUTTON_SHOWN / 2
+
       offset_y = (@index - MAX_BUTTON_SHOWN / 2 + 1).clamp(0, @buttons.size - MAX_BUTTON_SHOWN)
       @button_viewport.oy = offset_y * UI::Options::Button::OPTION_OFFSET_Y
     end
