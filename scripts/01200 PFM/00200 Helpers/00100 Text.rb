@@ -226,7 +226,8 @@ module PFM
     # @param text [String] the message
     # @return [String] the parsed message
     def parse_string_for_messages(text)
-      return text if text.empty? # or text.frozen?
+      return text.dup if text.empty? # or text.frozen?
+
       # Detect dialog
       text = detect_dialog(text).dup
       # Gsub text
