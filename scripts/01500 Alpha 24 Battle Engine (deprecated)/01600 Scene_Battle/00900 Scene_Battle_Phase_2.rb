@@ -91,6 +91,7 @@ class Scene_Battle
         return start_phase2(@actor_actions.size-1)
       end
       @action_index = UI_CHOICE_TRANSLATION[@player_choice_ui.result] || 0
+      @player_choice_ui.reset
       on_phase2_validation
     end
   end

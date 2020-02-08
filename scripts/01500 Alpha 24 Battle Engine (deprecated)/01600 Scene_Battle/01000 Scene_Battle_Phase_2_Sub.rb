@@ -8,9 +8,9 @@ class Scene_Battle
   #===
   def on_phase2_validation
     @action_selector&.visible = false
-    $game_system.se_play($data_system.decision_se)
     case @action_index
     when 0  #Attaquer
+      $game_system.se_play($data_system.decision_se)
       @player_choice_ui&.visible = false
       launch_phase_event(3,false)
       @to_start = :start_phase3
@@ -27,6 +27,7 @@ class Scene_Battle
   #> Affichage de l'interface du sac
   #===
   def phase2_display_bag
+    $game_system.se_play($data_system.decision_se)
     Graphics.freeze
     @message_window.visible = false
     @player_choice_ui&.visible = false
@@ -56,9 +57,11 @@ class Scene_Battle
   def phase2_display_team
     #> Si le Pokémon est bloqué on l'empêche de se faire switch
     unless BattleEngine::_can_switch(@actors[@actor_actions.size])
+      $game_system.se_play($data_system.buzzer_se)
       @player_choice_ui&.visible = true
       return @action_selector&.visible = true
     end
+    $game_system.se_play($data_system.decision_se)
     Graphics.freeze
     @player_choice_ui&.visible = false
     @message_window.visible = false
@@ -88,6 +91,7 @@ class Scene_Battle
   #> Action de fuite
   #===
   def phase2_flee
+    $game_system.se_play($data_system.decision_se)
     #> Vérification de l'empêchement de fuite (blocage ou combat de dresseur)
     t = $game_temp.trainer_battle 
     if t or $game_switches[Yuki::Sw::BT_NoEscape]
