@@ -14,6 +14,9 @@ module PFM
     # The id of the current box
     # @return [Integer]
     attr_accessor :current_box
+    # The Let's Go Follower
+    # @return [PFM::Pokemon]
+    attr_accessor :lets_go_follower
     # Create a new storage
     def initialize
       @boxes = Array.new(MAX_BOXES) { Array.new(30) }

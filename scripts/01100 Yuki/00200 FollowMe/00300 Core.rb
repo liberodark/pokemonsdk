@@ -59,13 +59,16 @@ module Yuki
     # Get the follower entities (those giving information about character_name)
     # @return [Array<#character_name>]
     def follower_entities
+      player_pokemon = in_lets_go_mode? ? player_pokemon_lets_go_entity : player_pokemon_entities
+      return human_entities.concat(player_pokemon).concat(other_pokemon_entities)
+    end
+
+    # Get the human follower entities
+    # @return [Array<#character_name>]
+    def human_entities
       human = (0...human_count).map { |i| $game_actors[i] }
       human.compact!
-      if $game_switches[Yuki::Sw::FollowMe_LetsGoMode]
-        return human.concat(player_pokemon_lets_go_entity).concat(other_pokemon_entities)
-      else
-        return human.concat(player_pokemon_entities).concat(other_pokemon_entities)
-      end
+      return human
     end
 
     # Get the player's pokemon follower entities
@@ -80,10 +83,10 @@ module Yuki
     # Get the player's pokemon follower entity if the FollowMe mode is Let's Go
     # @return [Array<#character_name>]
     def player_pokemon_lets_go_entity
-      return [] if pokemon_count == -1 || pokemon_count >= $actors.size
-      player_mon = [$actors[pokemon_count]]
-      player_mon.reject!(&:dead?)
-      return player_mon
+      follower = $storage.lets_go_follower
+      return [] unless follower && !follower.dead? && $actors.include?(follower)
+
+      return [follower]
     end
 
     # Get the friend's pokemon follower entities

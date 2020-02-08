@@ -38,13 +38,11 @@ module GamePlay
         .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
         .register_choice(text_get(23, 8), on_validate: method(:action_move_current_pokemon), disable_detect: proc { @party.size <= 1 }) # Move
       unless pokemon.egg?
-        if $game_switches[Yuki::Sw::FollowMe_LetsGoMode]
-          if $game_variables[Yuki::Var::FM_N_Pokem] == @index
-            choices
-            .register_choice(text_get(23, 165), on_validate: method(:deselect_follower)) #Unfollow
-          elsif $game_variables[Yuki::Var::FM_N_Pokem] != @index
-            choices
-            .register_choice(text_get(23, 164), on_validate: method(:select_follower)) #Follower
+        if Yuki::FollowMe.in_lets_go_mode?
+          if $storage.lets_go_follower == pokemon
+            choices.register_choice(text_get(23, 165), on_validate: method(:deselect_follower)) # Unfollow
+          else
+            choices.register_choice(text_get(23, 164), on_validate: method(:select_follower)) # Follow
           end
         end
         choices
@@ -124,6 +122,16 @@ module GamePlay
       @base_ui.hide_win_text
       call_scene(Summary, @party[@index], mode, @party, extend_data)
       Graphics.wait(4) { update_during_process }
+    end
+
+    # Action of deselecting the follower
+    def deselect_follower
+      $storage.lets_go_follower = nil
+    end
+
+    # Action of selecting the follower
+    def select_follower
+      $storage.lets_go_follower = @party[@index]
     end
 
     # Action of giving an item to the Pokemon

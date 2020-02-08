@@ -61,5 +61,17 @@ module Yuki
     def other_pokemon_count=(count)
       $game_variables[Var::FM_N_Friend] = count
     end
+
+    # Is the FollowMe in Let's Go Mode
+    # @return [Boolean]
+    def in_lets_go_mode?
+      $game_switches[Sw::FollowMe_LetsGoMode]
+    end
+
+    # Set the FollowMe Let's Go Mode state
+    # @param mode [Boolean] true if in lets go mode
+    def lets_go_mode=(mode)
+      $game_switches[Sw::FollowMe_LetsGoMode] = mode
+    end
   end
 end

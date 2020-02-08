@@ -133,7 +133,7 @@ module GamePlay
     def dispose
       message_soft_lock_prevent
       @message_window&.dispose(with_viewport: true) unless @inherited_message_window || @message_window == false
-      @object_to_dispose.each(&:dispose)
+      @object_to_dispose.each { |object| object.dispose unless object.disposed? }
       instance_variables.grep(/viewport/).collect { |ivar| instance_variable_get(ivar) }.each do |vp|
         vp.dispose if vp.is_a?(Viewport) && !vp.disposed?
       end
