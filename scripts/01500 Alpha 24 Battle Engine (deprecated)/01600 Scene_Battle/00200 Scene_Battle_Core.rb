@@ -89,8 +89,10 @@ class Scene_Battle
       @skill_choice_ui = BattleUI::SkillChoice.new(@viewport_sub)
     end
     gr_display_background()
-    #Creation des tableaux de sprite
-    @actor_sprites=[]
+    @mega_evolve_window = MegaEvolveWindow.new(@viewport)
+    BattleEngine.reset_mega_evolutions
+    # Creation des tableaux de sprite
+    @actor_sprites = []
     @enemy_sprites=[]
     @actor_bars=[]
     @enemy_bars=[]

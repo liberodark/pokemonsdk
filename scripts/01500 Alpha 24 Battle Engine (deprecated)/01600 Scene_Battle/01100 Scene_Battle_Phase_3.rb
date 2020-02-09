@@ -25,6 +25,7 @@ class Scene_Battle
       @actor_actions.push([0,actor.skills_set.index(actor.battle_effect.encore_skill).to_i,
       util_targetselection_automatic(actor, actor.battle_effect.encore_skill),actor])
     end
+    @mega_evolve_window.show if BattleEngine.can_pokemon_mega_evolve?(actor, $bag)
 
     #>Récupération de l'index d'une attaque "valide"
     @atk_index = 0
@@ -60,6 +61,9 @@ class Scene_Battle
       end
     end
 
+    # Update MegaEvolve
+    update_phase3_mega
+
     #@skill_selector.update
     if Input.repeat?(:LEFT) and !forced_action or forced_action==:LEFT
       @atk_index-=1
@@ -93,6 +97,7 @@ class Scene_Battle
         $game_system.se_play($data_system.buzzer_se)
         return
       end
+      @mega_evolve_window.hide
       @skill_selector.visible=false
       @message_window.visible=true
       $game_system.se_play($data_system.decision_se)
@@ -102,6 +107,7 @@ class Scene_Battle
       update_phase2_next_act
     #Annulation
     elsif Input.trigger?(:B) and !forced_action or forced_action==:B
+      @mega_evolve_window.hide
       $game_system.se_play($data_system.cancel_se)
       @skill_selector.visible=false
       @message_window.visible=true
@@ -109,9 +115,23 @@ class Scene_Battle
     end
   end
 
+  def update_phase3_mega
+    if @mega_evolve_window.visible && Input.trigger?(:X)
+      if BattleEngine.can_pokemon_mega_evolve?(@actors[@actor_actions.size], $bag) # Not already registered to mega evolve
+        BattleEngine.prepare_mega_evolve(@actors[@actor_actions.size], $bag)
+        @mega_evolve_window.show(true)
+      else
+        BattleEngine.unprepare_mega_evolve(@actors[@actor_actions.size])
+        @mega_evolve_window.show(false)
+      end
+    end
+  end
+
   def update_phase3_alpha25
+    update_phase3_mega
     @skill_choice_ui.update
     if @skill_choice_ui.validated?
+      @mega_evolve_window.hide
       @skill_choice_ui.visible = false
       @message_window.visible = true
       return start_phase2(@actor_actions.size) if @skill_choice_ui.result == :cancel

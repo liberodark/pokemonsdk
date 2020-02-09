@@ -34,6 +34,7 @@ class Scene_Battle
     # Tri de l'odre d'execution des actions
     @actions = BattleEngine::_make_action_order(@actor_actions, @enemy_actions, @actors, @enemies)
     launch_phase_event(4,true)
+    phase4_mega_evolve
     unless $game_switches[::Yuki::Sw::BT_HardExp]
       $game_temp.vs_type.times do |i|
         if(@actors[i] and !@actors[i].dead?)
@@ -41,6 +42,21 @@ class Scene_Battle
         end
       end
     end
+  end
+  # Manage all mega evolution
+  def phase4_mega_evolve
+    BattleEngine.each_prepared_mega_evolve do |pokemon, bag|
+      tool_name = BattleEngine.mega_tool_name(bag)
+      BattleEngine._msgp(19, 1167, pokemon, 
+        PKNICK[0] => pokemon.given_name, ITEM2[2] => pokemon.item_name,
+        TRNAME[1] => pokemon.trainer_name, ITEM2[3] => tool_name
+      )
+      # Animation
+      pokemon.mega_evolve
+      BattleEngine._mp([:switch_form, pokemon])
+      BattleEngine._msgp(19, 1170, pokemon, PKNICK[0] => pokemon.given_name, PKNAME[1] => pokemon.name)
+    end
+    phase4_message_display
   end
   #===
   #>update_phase4

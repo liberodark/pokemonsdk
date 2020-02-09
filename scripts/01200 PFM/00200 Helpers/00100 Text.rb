@@ -11,7 +11,7 @@ module PFM
     # Trainer name var catcher
     TRNAME = Array.new(7) { |i| "[VAR TRNAME(000#{i})]" }
     # Item var catcher
-    ITEM2 = ['[VAR ITEM2(0000)]', '[VAR ITEM2(0001)]', '[VAR ITEM2(0002)]']
+    ITEM2 = ['[VAR ITEM2(0000)]', '[VAR ITEM2(0001)]', '[VAR ITEM2(0002)]', '[VAR ITEM2(0003)]']
     # Move var catcher
     MOVE = ['[VAR MOVE(0000)]', '[VAR MOVE(0001)]', '[VAR MOVE(0002)]']
     # Number var catcher

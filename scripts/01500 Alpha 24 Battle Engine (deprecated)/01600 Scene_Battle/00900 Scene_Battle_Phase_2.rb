@@ -14,7 +14,10 @@ class Scene_Battle
     @action_selector.pos_selector(@action_index=0) unless USE_ALPHA_25_UI
     #Vidage des actions si on retourne au premier actor :d
     index = 0 if index < 0
-    @actor_actions.clear if index == 0
+    if index == 0
+      @actor_actions.clear
+      BattleEngine.clear_prepared_mega_evolve
+    end
     #Si le Pokémon est KO on le saute
     if @actors[index].dead?
       @actor_actions.push([-1])

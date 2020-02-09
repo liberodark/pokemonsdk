@@ -321,6 +321,7 @@ pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01500 GamePlay__Bat
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01500 GamePlay__Battle_xxx/00900 Scene_Battle__Action_Selector.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01500 GamePlay__Battle_xxx/01000 Scene_Battle__Skill_Selector.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01500 GamePlay__Battle_xxx/01100 Scene_Battle__Skill_Element.rb
+pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01500 GamePlay__Battle_xxx/01200 MegaEvolveWindow.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01600 Scene_Battle/00100 Scene_Battle_Action_d'Event.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01600 Scene_Battle/00200 Scene_Battle_Core.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01600 Scene_Battle/00300 Scene_Battle_Event_Functions.rb
@@ -340,6 +341,7 @@ pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01600 Scene_Battle/
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00100 BattleEngine__Abilities.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00200 BattleEngine__Abilities___Actions.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00400 BattleEngine___Core.rb
+pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00450 MegaEvolve.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00500 BattleEngine___Accuracy.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00600 BattleEngine___Attack_Order.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00700 BattleEngine___Battlers.rb
