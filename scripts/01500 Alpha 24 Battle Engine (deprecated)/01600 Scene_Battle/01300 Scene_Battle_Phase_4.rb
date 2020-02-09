@@ -47,14 +47,14 @@ class Scene_Battle
   def phase4_mega_evolve
     BattleEngine.each_prepared_mega_evolve do |pokemon, bag|
       tool_name = BattleEngine.mega_tool_name(bag)
-      BattleEngine._msgp(19, 1167, pokemon, 
+      BattleEngine._msgp(19, 1165, pokemon, 
         PKNICK[0] => pokemon.given_name, ITEM2[2] => pokemon.item_name,
         TRNAME[1] => pokemon.trainer_name, ITEM2[3] => tool_name
       )
       # Animation
       pokemon.mega_evolve
       BattleEngine._mp([:switch_form, pokemon])
-      BattleEngine._msgp(19, 1170, pokemon, PKNICK[0] => pokemon.given_name, PKNAME[1] => pokemon.name)
+      BattleEngine._msgp(19, 1168, pokemon, PKNICK[0] => pokemon.given_name, PKNAME[1] => pokemon.name)
     end
     phase4_message_display
   end

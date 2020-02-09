@@ -39,6 +39,10 @@ module PFM
         target = -target_position - 1
       end
       launcher = get_pokemon_o(launcher)
+      # Dirty Mega evolution add
+      if BattleEngine.can_pokemon_mega_evolve?(launcher, get_bag(launcher))
+        BattleEngine.prepare_mega_evolve(launcher, get_bag(launcher))
+      end
       @results << [0, skill_index, target, launcher]
     end
     # Add a switch action to the stack
