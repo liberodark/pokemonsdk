@@ -21,6 +21,7 @@ module GamePlay
       @got = push(134, 2, "battlebar_get")
       @gender = push(0, 0, nil, type: GenderSprite)
       @name = add_text(0, 0, 84, 16, :given_name, 2, 1, type: SymText, color: 9)
+      @mega_mark = add_sprite(0, 0, 'battle/mega_mark')
       @level = add_text(0, 0, 32, 16, :level_pokemon_number, 0, 1, type: SymText, color: 9)
       @hp_bar = push_sprite Bar.new(viewport, 0, 0, RPG::Cache.interface("battlebar_hp"), 48, 4, 0, 0, 6)
       @hp_text = add_text(75, 31, 68, 16, :hp_pokemon_number, 1, 1, type: SymText, color: 9)
@@ -44,6 +45,7 @@ module GamePlay
       @hp_bar.rate = @pokemon.hp_rate
       @hp_text.visible = @exp_bar.visible = false
       @got.visible = $pokedex.pokemon_caught?(@pokemon.id)
+      @mega_mark.visible = @pokemon.mega_evolved?
     end
     # Refresh the bar contents when it's an actor bar
     def refresh_actor
@@ -51,6 +53,7 @@ module GamePlay
       @exp_bar.rate = @pokemon.exp_rate
       @hp_text.visible = @exp_bar.visible = true
       @got.visible = false
+      @mega_mark.visible = @pokemon.mega_evolved?
     end
     # Sets the Pokémon shown by this bar
     # @param v [PFM::Pokemon]
@@ -81,6 +84,7 @@ module GamePlay
         .set_bitmap(Files[1], :interface)
       @gender.set_position(87, 4)
       @name.set_position(0, 0)
+      @mega_mark.set_position(132, 13)
       @level.set_position(108, 2)
       @hp_bar.set_position(79, 20)
       @status.set_position(27, 17)
@@ -92,6 +96,7 @@ module GamePlay
         .set_bitmap(Files[0], :interface)
       @gender.set_position(98, 13)
       @name.set_position(12, 9)
+      @mega_mark.set_position(137, 22)
       @level.set_position(119, 11)
       @hp_bar.set_position(85, 29)
       @hp_text.set_position(75, 28)

@@ -56,6 +56,9 @@ module BattleEngine
     def msgf(message)
       @scene.display_message(message, true)
     end
+    def refresh_bar(pokemon)
+      @scene.gr_get_pokemon_bar(pokemon).refresh
+    end
     #===
     #>Affichage d'un échec
     #===

@@ -54,6 +54,7 @@ class Scene_Battle
       # Animation
       pokemon.mega_evolve
       BattleEngine._mp([:switch_form, pokemon])
+      BattleEngine._mp([:refresh_bar, pokemon])
       BattleEngine._msgp(19, 1168, pokemon, PKNICK[0] => pokemon.given_name, PKNAME[1] => pokemon.name)
     end
     phase4_message_display
