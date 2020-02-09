@@ -196,6 +196,7 @@ pokemonsdk/scripts/01200 PFM/00100 Global Systems/01100 Daycare.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01200 Environnement.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01300 MagnetoVS.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01400 Quest.rb
+pokemonsdk/scripts/01200 PFM/00100 Global Systems/01500 HoneyTree.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/00100 Text.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/00200 Choice_Helper.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/02900 IA.rb
