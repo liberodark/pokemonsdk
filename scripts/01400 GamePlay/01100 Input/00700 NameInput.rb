@@ -14,7 +14,7 @@ module GamePlay
     # @param phrase [String, nil] phrase to show in order to display the name
     def initialize(default_name, max_length, character = nil, phrase: nil)
       super()
-      @return_name = @default_name = default_name[0, max_length].dup
+      @return_name = @default_name = default_name[0, max_length].dup.force_encoding(Encoding::UTF_8)
       @input_name = @default_name.chars
       @max_length = max_length
       @character = character
