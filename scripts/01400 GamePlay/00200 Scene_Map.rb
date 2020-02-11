@@ -199,7 +199,6 @@ class Scene_Map
     $game_player.straighten
     Graphics.freeze
     window_message_close(false)
-    self.sprite_set_visible = false
     actor = $game_actors[$game_temp.name_actor_id]
     if $game_temp.name_actor_id == 1
       character = $game_player.character_name
@@ -210,7 +209,6 @@ class Scene_Map
     name = scene.return_name
     $trainer.name = name if $game_temp.name_actor_id == 1
     actor.name = name
-    self.sprite_set_visible = true
     Graphics.transition
   end
 
