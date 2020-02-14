@@ -109,7 +109,7 @@ module BattleEngine
           _mp([:msg, parse_text_with_pokemon(19,454,target)])
         elsif(target.battle_effect.has_ingrain_effect?) #>Racines
           _mp([:msg, parse_text_with_pokemon(19,742,target)])
-        elsif(launcher.level > target.level)
+        elsif(launcher.level > target.level && !$game_switches[Yuki::Sw::BT_NoEscape])
           _mp([:msg, parse_text_with_pokemon(19, 767, launcher)])
           _message_stack_push([:roar, target])
         else
@@ -1194,7 +1194,7 @@ module BattleEngine
   #===
   def s_teleport(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
-    if($game_temp.trainer_battle)
+    if($game_temp.trainer_battle || $game_switches[Yuki::Sw::BT_NoEscape])
       _mp(MSG_Fail)
     else
       _mp([:msg, parse_text_with_pokemon(19, 767, launcher)])
