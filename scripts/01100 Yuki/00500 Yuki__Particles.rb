@@ -262,8 +262,8 @@ module Yuki
       @sprite.opacity = opacity
       @sprite.blend_type = blend_type
       @sprite.bitmap = ::RPG::Cache.picture(image)
-      @x = x + MapLinker::OffsetX * 16
-      @y = y + MapLinker::OffsetY * 16
+      @x = x + MapLinker.get_OffsetX * 16
+      @y = y + MapLinker.get_OffsetY * 16
       @factor_x = 0
       @factor_y = 0
       update
@@ -303,9 +303,9 @@ module Yuki
       @sprite = ::Sprite.new(Particles.viewport, true)
       @sprite.bitmap = ::RPG::Cache.autotile(image)
       @sprite.oy = @sprite.bitmap.height - oy - 16
-      @x = (x + MapLinker::OffsetX) * 16
-      @y = (y + MapLinker::OffsetY) * 16
-      @real_y = (y + MapLinker::OffsetY) * 128
+      @x = (x + MapLinker.get_OffsetX) * 16
+      @y = (y + MapLinker.get_OffsetY) * 16
+      @real_y = (y + MapLinker.get_OffsetY) * 128
       update
     end
 
