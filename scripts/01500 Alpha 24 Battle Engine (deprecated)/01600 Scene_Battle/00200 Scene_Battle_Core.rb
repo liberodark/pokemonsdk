@@ -19,6 +19,7 @@ class Scene_Battle
   attr_reader :actions
   attr_reader :phase4_step
   attr_reader :parallel_animations
+  attr_reader :viewport
   #--------------------------------------------------------------------------
   # ● Lancement de la scène
   #--------------------------------------------------------------------------
