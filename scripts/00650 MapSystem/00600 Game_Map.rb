@@ -158,8 +158,8 @@ class Game_Map
 
   # Auto play bgm and bgs of the map if defined
   def autoplay
-    autoplay_bgm? ? $game_system.bgm_play(current_bgm) : Audio.bgm_stop
-    autoplay_bgs? ? $game_system.bgs_play(current_bgs) : Audio.bgs_stop
+    $game_system.bgm_play(current_bgm) if autoplay_bgm?
+    $game_system.bgs_play(current_bgs) if autoplay_bgs?
   end
 
   # Refresh events and common events of the map
