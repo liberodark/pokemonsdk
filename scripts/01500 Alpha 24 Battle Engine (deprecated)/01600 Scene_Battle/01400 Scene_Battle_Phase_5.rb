@@ -16,22 +16,24 @@ class Scene_Battle
     else
       $game_switches[Yuki::Sw::BT_Defeat]=false
     end
-    $game_switches[Yuki::Sw::BT_Victory]=!$game_switches[Yuki::Sw::BT_Defeat]
-		$game_player.leave_cycling_state if $game_switches[Yuki::Sw::BT_Defeat] == true 
-    #>Retrait de l'état de méga évolution
-    @actors.each do |pkmn|
-      pkmn.unmega_evolve if pkmn
-      pkmn.reset_stat_stage
-      pkmn.form_calibrate
-      #>Vérifications de cheniti
-      pkmn.form = pkmn.form_generation(-1) if pkmn.id == 412 || pkmn.id == 413
-    end
+    $game_switches[Yuki::Sw::BT_Victory] = !$game_switches[Yuki::Sw::BT_Defeat]
+    $game_player.leave_cycling_state if $game_switches[Yuki::Sw::BT_Defeat] == true
     launch_phase_event(5,false)
     @message_window.blocking = true
     if($game_temp.trainer_battle)
       phase5_trainer_end
     else
       phase5_pokemon_end
+    end
+    #>Retrait de l'état de méga évolution
+    @actors.each do |pkmn|
+      next unless pkmn
+
+      pkmn.unmega_evolve
+      pkmn.reset_stat_stage
+      pkmn.form_calibrate
+      #>Vérifications de cheniti
+      pkmn.form = pkmn.form_generation(-1) if pkmn.id == 412 || pkmn.id == 413
     end
     phase5_ramassage
     phase5_object_actions
