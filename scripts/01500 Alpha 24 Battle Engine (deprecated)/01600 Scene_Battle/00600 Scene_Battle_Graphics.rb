@@ -3,6 +3,9 @@
 #noyard
 # Description: Gestion des graphismes de combat
 class Scene_Battle
+
+  include UI
+
   BackNames=["back_building","back_grass","back_tall_grass","back_taller_grass",
     "back_cave","back_mount","back_pond","back_sea","back_under_water",
     "back_ice","back_snow","back_sand"]

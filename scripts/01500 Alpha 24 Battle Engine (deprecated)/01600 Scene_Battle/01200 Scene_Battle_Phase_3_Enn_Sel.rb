@@ -51,6 +51,7 @@ class Scene_Battle
     index=0
     index=1 if @enemies[0].dead?
     sps[1-index].opacity=sps[ally_index].opacity=128
+    frames_count = 0
     loop do
       Graphics.update
       update_animated_sprites
@@ -108,30 +109,26 @@ class Scene_Battle
   #>Génération de la fenêtre de choix
   #===
   def update_phase3_enemy_select_window(*selectables)
-    w=@__p3esw=Game_Window.new(@viewport)
-    ws=w.windowskin=RPG::Cache.windowskin("M_4")
-    wb=w.window_builder=GameData::Windows::MessageHGSS
-    w.width=ws.width-wb[2]+64 #wb[0]+
-    w.height=ws.height-wb[3]+64 #wb[1]+
-    w.x=(320-w.width)/2
-    w.y=(192-w.height)/2
-    w.z=100000
-    @__p3ess=Array.new(4) do |i|
-      s=Sprite.new(@viewport)
-      s.x=w.x+wb[0]+(i&0x01)*32
-      s.y=w.y+wb[1]+(i&0x02)*16 #(2*16 = 32)
-      unless selectables[i]
-        s.tone.set(0,0,0,255)
-        s.opacity=64
-      end
-      pk=(i&0x02 == 2 ? @actors[i-2] : @enemies[i])
-      if(pk and !pk.dead?)
-        s.bitmap=pk.icon
+    rect = @viewport.rect
+    wb = GameData::Windows::MessageHGSS
+    width = (wb[4] + wb[-2] + 64)
+    height = (wb[5] + wb[-1] + 64)
+    window = UI::Window.new(@viewport,
+      (rect.width - width) / 2, # x
+      (rect.height - height) / 2, # y
+      width, height, skin: 'm_4')
+    window.z = 100000
+    @__p3esw = window
+    @__p3ess = Array.new(4) do |i|
+      sprite = PokemonIconSprite.new(window, false)
+              .set_position((i % 2 == 0 ? -4 : 28), (i / 2 == 0 ? -2 : 30))
+      pokemon = (i / 2) == 0 ? @enemies[i] : @actors[i - 2]
+      if pokemon && !pokemon.dead?
+        sprite.data = pokemon
       else
-        s.bitmap=RPG::Cache.b_icon("-01")
+        sprite.bitmap = RPG::Cache.b_icon('-01')
       end
-      s.z=100001
-      s
+      next sprite
     end
   end
   #===
