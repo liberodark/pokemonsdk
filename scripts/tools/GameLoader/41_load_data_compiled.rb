@@ -14,6 +14,7 @@ def load_data(filename, utf8 = false)
   elsif filename.start_with?('Data/Animations/')
     return load_data_vd(filename, 'Data/4.dat', utf8)
   elsif filename.start_with?('Data/')
+    filename = filename.gsub('Data/Buildings/', 'buildings_') if filename.start_with?('Data/Buildings/')
     return load_data_vd(filename, 'Data/0.dat', utf8)
   end
   Marshal.load(File.binread(filename))
@@ -36,6 +37,19 @@ def load_data_vd(filename, vdfilename, utf8 = false)
     end
   )
 end
+
+class File
+  class << self
+    alias old_exist? exist?
+    def exist?(filename)
+      if filename.start_with?('Data/Buildings')
+        return ::Kernel::Loaded['Data/0.dat']&.exists?(filename.gsub('Data/Buildings/', 'buildings_')) == true
+      end
+      return old_exist?(filename)
+    end
+  end
+end
+
 
 # Save data to a file
 # @param data [Object] data to save to a file

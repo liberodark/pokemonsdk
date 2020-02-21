@@ -14,14 +14,15 @@ module ProjectCompilation
       files.each do |filename|
         next unless File.exist?(filename)
         puts filename
-        vd.write_data(File.basename(filename).downcase, File.binread(filename))
+        basename = filename.start_with?('Data/Buildings/') ? filename.gsub('Data/Buildings/', 'buildings_') : File.basename(filename)
+        vd.write_data(basename.downcase, File.binread(filename))
       end
       vd.close
     end
 
     def get_data_files
       return @map_files, @data_files if @map_files && @data_files
-      data_files = Dir['Data/*.*']
+      data_files = Dir['Data/*.*'] + Dir['Data/Buildings/*.rxdata']
       data_files.delete('Data/Scripts.rxdata')
       data_files.delete('Data/PSDK_BOOT.rxdata')
       data_files.delete('Data/PSDK_BOOT.rb')
