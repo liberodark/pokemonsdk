@@ -8,7 +8,8 @@ module Yuki
       'face=' => :parse_speaker_face,
       'city=' => :parse_city_image,
       'can_skip' => :parse_can_skip,
-      'windowskin=' => :parse_window_skin
+      'windowskin=' => :parse_window_skin,
+      'lookto=' => :look_to_event
     }
 
     # Parse the speakers information
@@ -97,6 +98,17 @@ module Yuki
     # @param windowskin [String] name of the temporary windowskin
     def parse_window_skin(windowskin)
       @windowskin_overwrite = windowskin
+    end
+
+    # Turn the player toward the event of it's choice
+    # @param event [String] the info about the chosen event
+    # @example example of event
+    #   If you want your player to turn to the talking event, write :[lookto=] or :[lookto=0]
+    #   If you want your player to turn to another event, write :[lookto=X] where X is the event's id
+    #   Take care to always write the id without the first 0. Example : 036 should always be written 36.
+    def look_to_event(event = '0')
+      event = event.to_i
+      event == 0 ? $game_player.look_to($game_system.map_interpreter.event_id) : $game_player.look_to(event)
     end
   end
 end
