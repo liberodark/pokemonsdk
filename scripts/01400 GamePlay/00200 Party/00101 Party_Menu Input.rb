@@ -38,6 +38,8 @@ module GamePlay
     # Action triggered when B is pressed
     def action_B
       return if no_leave_B
+      # Ensure we don't leave with a call_skill_process
+      @call_skill_process = nil
       $game_system.se_play($data_system.decision_se)
       # Cancel choice attempt
       return @choice_object.cancel if @choice_object
