@@ -59,6 +59,8 @@ class Game_Temp
   # Name of the tileset to load instead of the normal one
   # @return [String]
   attr_accessor :tileset_name
+  # Variable used to store the tileset name
+  attr_accessor :tileset_temp
   # ID of the currently processed map by the maplinker (to fetch the tileset)
   # @return [String]
   attr_accessor :maplinker_map_id
@@ -119,4 +121,3 @@ class Game_Temp
     @temp_team = []
   end
 end
-
