@@ -1,6 +1,6 @@
 module BattleEngine
   # List of tools that allow MEGA Evolution
-  MEGA_EVOLVE_TOOLS = %i[mega_bracelet mega_pendant mega_glasses mega_anchor mega_stickpin mega_tiara mega_anklet
+  MEGA_EVOLVE_TOOLS = %i[mega_ring mega_bracelet mega_pendant mega_glasses mega_anchor mega_stickpin mega_tiara mega_anklet
                          mega_cuff]
   # List of trainer id that used "MEGA Evolution" (to prevent two mega in the same battle)
   @mega_evolved_trainer_ids = []
