@@ -223,7 +223,7 @@ module Yuki
                                    last_event_id, events, link_data[4], :y)
       # Copy the west events
       ox = west_data.width - OffsetX - DeltaMaker
-      last_event_id = ajust_events(west_data, ox, west_data.width - DeltaMaker - 1, -ox, 
+      last_event_id = ajust_events(west_data, ox, west_data.width - DeltaMaker - 1, -ox,
                                    link_data[7] + OffsetY, last_event_id, events, link_data[6])
       # Copy the east event
       ajust_events(est_data, DeltaMaker, OffsetX + DeltaMaker - 1,
@@ -405,9 +405,10 @@ module Yuki
     # @param map_id [Integer]
     # @param data [RPG::Map] data of the map
     def get_map_tileset_name(map_id, data)
-      $game_temp.maplinker_map_id = map_id
-      Scheduler.start(:on_getting_tileset_name)
       tileset = $data_tilesets[data.tileset_id]
+      $game_temp.maplinker_map_id = map_id
+      $game_temp.tileset_temp = tileset.tileset_name
+      Scheduler.start(:on_getting_tileset_name)
       name = get_tileset_name($game_temp.tileset_name || tileset.tileset_name)
       $game_temp.tileset_name = nil
       return name, tileset.priorities
