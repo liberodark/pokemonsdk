@@ -247,6 +247,7 @@ pokemonsdk/scripts/01300 UI/09000 Others/01400 Dex UIs.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02000 UI__TeamButton.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02200 VoltorbFlipSprites.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02700 SaveWindow.rb
+pokemonsdk/scripts/01300 UI/09000 Others/02800 BlurScreenshot.rb
 pokemonsdk/scripts/01300 UI/09001 NameInput/00001 NameInputBaseUI.rb
 pokemonsdk/scripts/01300 UI/09001 NameInput/00002 NameInputUI.rb
 pokemonsdk/scripts/01300 UI/09002 Options/00001 Description.rb

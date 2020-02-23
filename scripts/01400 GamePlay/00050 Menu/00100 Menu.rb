@@ -150,13 +150,8 @@ module GamePlay
 
     # Create the background image (blur)
     def create_background
-      vp = @__last_scene.is_a?(Scene_Map) ? @__last_scene.spriteset.map_viewport : @__last_scene.viewport
-      add_disposable snap = vp.snap_to_bitmap # Trick to auto dispose the bitmap
-      add_disposable @background = ShaderedSprite.new(vp).set_bitmap(snap)
-      @background.shader = Shader.new(Shader.load_to_string('blur'))
-      @background.shader.set_float_uniform('resolution', [snap.width, snap.height])
+      add_disposable @background = UI::BlurScreenshot.new(@__last_scene)
       @background.opacity -= 255 / ENTERING_ANIMATION_DURATION * ENTERING_ANIMATION_DURATION
-      @background.z = 10_000
     end
 
     # Create the menu buttons
@@ -191,10 +186,7 @@ module GamePlay
     def open_party
       call_scene(Party_Menu, $actors, :menu) do |scene|
         Yuki::FollowMe.update
-        @background.bitmap.dispose
-        @background.bitmap = nil
-        @background.viewport.sort_z
-        add_disposable(@background.bitmap = @background.viewport.snap_to_bitmap)
+        @background.update_snapshot
         if scene.call_skill_process
           @call_skill_process = scene.call_skill_process
           @running = false
