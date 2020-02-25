@@ -30,9 +30,8 @@ pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/01000 Viewport
 pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/01100 Sprite.rb
 pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/01200 Shader.rb
 pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/01300 Sprite__WithColor.rb
-pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/01400 Keyboard.rb
 pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/01500 Converter.rb
-pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/01600 Font.rb
+pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/01600 Fonts.rb
 pokemonsdk/scripts/00000 Dependencies/00500 Patch_RPG/00100 RPG__Cache.rb
 pokemonsdk/scripts/00000 Dependencies/00500 Patch_RPG/00200 RPG__Event.rb
 pokemonsdk/scripts/00000 Dependencies/00500 Patch_RPG/00300 RPG__Weather.rb

@@ -80,10 +80,10 @@ module Graphics
     @last_time = @current_time
     @current_time = Time.new
     fps_update
-    self.fps_visible = !@ingame_fps_text.visible if !@last_f2 && Keyboard.press?(Keyboard::F2)
-    @last_f2 = Keyboard.press?(Keyboard::F2)
-    @fps_balancing = !@fps_balancing if !@last_f3 && Keyboard.press?(Keyboard::F3)
-    @last_f3 = Keyboard.press?(Keyboard::F3)
+    self.fps_visible = !@ingame_fps_text.visible if !@last_f2 && Input::Keyboard.press?(Input::Keyboard::F2)
+    @last_f2 = Input::Keyboard.press?(Input::Keyboard::F2)
+    @fps_balancing = !@fps_balancing if !@last_f3 && Input::Keyboard.press?(Input::Keyboard::F3)
+    @last_f3 = Input::Keyboard.press?(Input::Keyboard::F3)
   end
 
   # Manage the frame display (skip frames, show multiple frames)

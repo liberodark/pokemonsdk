@@ -155,7 +155,7 @@ module GamePlay
       @searching = ''
       @item_ids ||= 1..GameData::Item::LAST_ID
       @saved_keys = Input::Keys[:A].clone
-      Input::Keys[:A].clear << Keyboard::Enter
+      Input::Keys[:A].clear << Input::Keyboard::Enter
       @pocket_name.text = ext_text(9000, 160)
       @item_list = []
       @last_index = 0

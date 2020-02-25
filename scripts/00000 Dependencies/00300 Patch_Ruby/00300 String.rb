@@ -9,7 +9,8 @@ class String
   # @return [self]
   # @author Nuri Yuri
   def to_pokemon_number
-    return self if Font::NoPokemonFont
+    return self if Fonts::NO_POKEMON_FONT
+
     tr!('0123456789n/', '│┤╡╢╖╕╣║╗╝‰▓')
     return self
   end

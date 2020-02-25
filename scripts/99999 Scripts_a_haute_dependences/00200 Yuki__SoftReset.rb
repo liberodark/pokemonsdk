@@ -1,7 +1,7 @@
 unless PARGV[:worldmap] || PARGV[:"animation-editor"] || PARGV[:test] || PARGV[:tags]
   # Add soft reset sequence
   Scheduler.add_proc(:on_update, :any, 'SoftReset', 10**99) do
-    if Keyboard.press?(Keyboard::F12) && $scene.class != Yuki::SoftReset
+    if Input::Keyboard.press?(Input::Keyboard::F12) && $scene.class != Yuki::SoftReset
       # Set the running to false if possible
       $scene&.instance_variable_set(:@running, false)
       # Switching the scene to the soft reset
@@ -31,7 +31,7 @@ unless PARGV[:worldmap] || PARGV[:"animation-editor"] || PARGV[:test] || PARGV[:
         # Reloading required ressources
         Graphics.on_start { Graphics.init_sprite }
         ts = 0.1
-        sleep(ts) while Keyboard.press?(Keyboard::F12)
+        sleep(ts) while Input::Keyboard.press?(Input::Keyboard::F12)
         $scene = Scheduler.get_boot_scene
       end
 

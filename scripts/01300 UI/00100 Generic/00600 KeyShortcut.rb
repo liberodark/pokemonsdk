@@ -11,20 +11,19 @@ module UI
       key.is_a?(Symbol) ? find_key(key) : show_key(key)
     end
     # KeyIndex that holds the value of the Keyboard constants in the right order according to the texture
-    KeyIndex = [
-      Keyboard::A, Keyboard::B, Keyboard::C, Keyboard::D, Keyboard::E, Keyboard::F, Keyboard::G, Keyboard::H, Keyboard::I, Keyboard::J,
-      Keyboard::K, Keyboard::L, Keyboard::M, Keyboard::N, Keyboard::O, Keyboard::P, Keyboard::Q, Keyboard::R, Keyboard::S, Keyboard::T,
-      Keyboard::U, Keyboard::V, Keyboard::W, Keyboard::X, Keyboard::Y, Keyboard::Z, Keyboard::Num0, Keyboard::Num1, Keyboard::Num2, Keyboard::Num3,
-      Keyboard::Num4, Keyboard::Num5, Keyboard::Num6, Keyboard::Num7, Keyboard::Num8, Keyboard::Num9, Keyboard::Space, Keyboard::Backspace, Keyboard::Enter, Keyboard::LShift,
-      Keyboard::LControl, Keyboard::LAlt, Keyboard::Escape, Keyboard::Left, Keyboard::Right, Keyboard::Up, Keyboard::Down
-    ]
+    KeyIndex = %i[A B C D E F G H I J
+                  K L M N O P Q R S T
+                  U V W X Y Z Num0 Num1 Num2 Num3
+                  Num4 Num5 Num6 Num7 Num8 Num9 Space Backspace Enter LShift
+                  LControl LAlt Escape Left Right Up Down].collect(&Input::Keyboard.method(:const_get))
+    kbd = Input::Keyboard
     # KeyIndex for the NumPad Keys
     NUMPAD_KEY_INDEX = [
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-      -1, -1, -1, -1, -1, -1, Keyboard::Numpad0, Keyboard::Numpad1, Keyboard::Numpad2, Keyboard::Numpad3,
-      Keyboard::Numpad4, Keyboard::Numpad5, Keyboard::Numpad6, Keyboard::Numpad7, Keyboard::Numpad8, Keyboard::Numpad9, -1, -1, -1, Keyboard::RShift,
-      Keyboard::RControl, Keyboard::RAlt, -1, -1, -1, -1, -1
+      -1, -1, -1, -1, -1, -1, kbd::Numpad0, kbd::Numpad1, kbd::Numpad2, kbd::Numpad3,
+      kbd::Numpad4, kbd::Numpad5, kbd::Numpad6, kbd::Numpad7, kbd::Numpad8, kbd::Numpad9, -1, -1, -1, kbd::RShift,
+      kbd::RControl, kbd::RAlt, -1, -1, -1, -1, -1
     ]
     # Find the key rect in the Sprite according to the input key requested
     # @param key [Symbol] the Virtual Input Key.

@@ -41,7 +41,7 @@ module Yuki
       return fork unless PARGV[:tags]
       init_context
       init_surfaces
-      until Keyboard.press?(Keyboard::Escape)
+      until Input::Keyboard.press?(Input::Keyboard::Escape)
         Graphics.update
         update_click unless update_scroll_bar
         update_control

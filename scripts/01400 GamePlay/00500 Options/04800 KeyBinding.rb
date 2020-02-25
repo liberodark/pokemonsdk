@@ -135,17 +135,18 @@ module GamePlay
     def update_key_binding
       if @ui.key_index < 4
         UI::KeyShortcut::KeyIndex.each do |key_value|
-          return validate_key(key_value) if Keyboard.press?(key_value)
+          return validate_key(key_value) if Input::Keyboard.press?(key_value)
         end
         UI::KeyShortcut::NUMPAD_KEY_INDEX.each do |key_value|
-          return validate_key(key_value) if key_value >= 0 && Keyboard.press?(key_value)
+          return validate_key(key_value) if key_value >= 0 && Input::Keyboard.press?(key_value)
         end
       else
         unless Input.joy_connected?(Input.main_joy)
           action_b_blink
           return display_message(ext_text(8998, 28))
         end
-        return action_b_blink if Keyboard.press?(Keyboard::Escape)
+        return action_b_blink if Input::Keyboard.press?(Input::Keyboard::Escape)
+
         0.upto(Input.joy_button_count(Input.main_joy)) do |key_value|
           if Input.joy_button_press?(Input.main_joy, key_value)
             return validate_key((-key_value - 1) - 32 * Input.main_joy)
@@ -164,7 +165,7 @@ module GamePlay
     # Validate the key change
     # @param key_value [Integer] the value of the key in Keyboard
     def validate_key(key_value)
-      if key_value == Keyboard::Escape
+      if key_value == Input::Keyboard::Escape
         ch = display_message_and_wait(ext_text(8998, 31), 1, ext_text(8998, 32), ext_text(8998, 33))
         return if ch == 0
       end

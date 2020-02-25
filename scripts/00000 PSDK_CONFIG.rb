@@ -41,6 +41,8 @@ module ScriptLoader
     attr_reader :tilemap
     # @return [OptionsConfig] options configuration
     attr_reader :options
+    # @return [LayoutConfig] layout configuration
+    attr_reader :layout
     # Name of the yaml file
     YAML_FILENAME = 'Data/project_indentity.yml'
     # Name of the dat file
@@ -109,9 +111,9 @@ module ScriptLoader
       @mouse_disabled = @mouse_disabled == true
       save |= !@tilemap.is_a?(TilemapConfig)
       @tilemap = @tilemap.is_a?(TilemapConfig) ? @tilemap : TilemapConfig.new
-      save |= @tilemap.fix_missing_values
-      save |= !@options.is_a?(OptionsConfig)
+      save |= @tilemap.fix_missing_values | !@options.is_a?(OptionsConfig) | !@layout.is_a?(LayoutConfig)
       @options = @options.is_a?(OptionsConfig) ? @options : OptionsConfig.new
+      @layout = @layout.is_a?(LayoutConfig) ? @layout : LayoutConfig.new
       if save
         remove_instance_variable(:@release) if instance_variable_defined?(:@release)
         remove_instance_variable(:@debug) if instance_variable_defined?(:@debug)
@@ -181,6 +183,7 @@ module ScriptLoader
     # @return [Array<Integer>]
     def choose_best_resolution
       return editors_resolution if running_editor?
+
       native = @native_resolution.split('x').collect(&:to_i)
       @viewport_offset_x = 0
       @viewport_offset_y = 0
@@ -188,6 +191,7 @@ module ScriptLoader
         desired = [native.first * @window_scale, native.last * @window_scale].map(&:round)
         all_res = Graphics.list_resolutions
         return native if all_res.include?(desired)
+
         if all_res.include?(native)
           @window_scale = 1
           return native
@@ -235,6 +239,7 @@ module ScriptLoader
     # @return [Boolean]
     def should_save
       return false if release?
+
       return (!File.exist?(DAT_FILENAME) || !File.exist?(YAML_FILENAME)) ||
              (File.mtime(DAT_FILENAME) < File.mtime(YAML_FILENAME))
     end
@@ -328,6 +333,117 @@ module ScriptLoader
             [:ext_text, 9000, 167], [:ext_text, 9000, 168], :language
           ]
         ]
+      end
+    end
+
+    # Claas describing the layout configuration
+    class LayoutConfig
+      # General information about font (loading the fonts, sizes etc...)
+      # @return [General]
+      attr_reader :general
+      # Informations about how to show message according to the scene class
+      # @return [Hash{ String => Message }]
+      attr_reader :messages
+      # Information about how to show the choices according to the scene class
+      # @return [Hash{ String => Choice }]
+      attr_reader :choices
+
+      # Create a new layout config
+      def initialize
+        @general = General.new
+        @messages = { any: Message.new, 'Battle::Scene' => Message.new }
+        @choices = { any: Choice.new }
+      end
+
+      # General information about font
+      class General
+        # If the default font uses special chars as "0123456789" for Pokemon HP number
+        # @return [Boolean]
+        attr_reader :supports_pokemon_number
+        # List of ttf files the game has to load
+        # @return [Array]
+        attr_reader :ttf_files
+        # List of alternative sizing (to prevent loading font for that size, sizeid: should be used in add text to use
+        # the said size)
+        # @return [Array]
+        attr_reader :alt_sizes
+
+        # Create a new General info about font
+        def initialize
+          @supports_pokemon_number = false
+          @ttf_files = [
+            { id: 0, name: 'PokemonDS', size: 13, line_height: 16 },
+            { id: 1, name: 'PokemonDS', size: 26, line_height: 32 },
+            { id: 20, name: 'PowerGreenSmall', size: 11, line_height: 13 }
+          ]
+          @alt_sizes = [
+            { id: 2, size: 22, line_height: 26 }
+          ]
+        end
+      end
+
+      # Information about message
+      class Message
+        # Force the windowskin regardless of the options
+        # @return [String, nil]
+        attr_reader :windowskin
+        # Force the name window to have a specific windowskin
+        # @return [String, nil]
+        attr_reader :name_windowskin
+        # Number of lines shown by the message
+        # @return [Integer]
+        attr_reader :line_count
+        # Number of pixel between the first pixel of the windowskin
+        # @return [Integer]
+        attr_reader :border_spacing
+        # ID of the font used by the Window
+        # @return [Integer]
+        attr_reader :default_font
+        # ID of the default color
+        # @return [Integer]
+        attr_reader :default_color
+        # Change the color mapping : Mapping from \c[key] to value (x position) in _colors.png
+        # @return [Hash{ Integer => Integer }]
+        attr_reader :color_mapping
+
+        # Create a new Message information
+        def initialize
+          @windowskin = nil
+          @name_windowskin = nil
+          @line_count = 2
+          @border_spacing = 2
+          @default_font = 0
+          @default_color = 0
+          @color_mapping = {}
+        end
+      end
+
+      # Information about choice
+      class Choice
+        # Force the windowskin regardless of the options
+        # @return [String, nil]
+        attr_reader :windowskin
+        # Number of pixel between the first pixel of the windowskin
+        # @return [Integer]
+        attr_reader :border_spacing
+        # ID of the font used by the Window
+        # @return [Integer]
+        attr_reader :default_font
+        # ID of the default color
+        # @return [Integer]
+        attr_reader :default_color
+        # Change the color mapping : Mapping from \c[key] to value (x position) in _colors.png
+        # @return [Hash{ Integer => Integer }]
+        attr_reader :color_mapping
+
+        # Create a new Choice information
+        def initialize
+          @windowskin = nil
+          @border_spacing = 2
+          @default_font = 0
+          @default_color = 0
+          @color_mapping = {}
+        end
       end
     end
   end

@@ -122,7 +122,7 @@ module Scheduler
 
   add_proc(:on_update, :any, 'KeyBinding addition', 0) do
     if $scene.class != GamePlay::KeyBinding && !$scene.is_a?(Scene_Battle)
-      if Keyboard.press?(Keyboard::F1) && !($game_temp&.message_window_showing)
+      if Input::Keyboard.press?(Input::Keyboard::F1) && !$game_temp&.message_window_showing
         GameData::Text.load unless $options
         GamePlay::KeyBinding.new.main
         Graphics.transition
@@ -132,6 +132,7 @@ module Scheduler
 
   add_proc(:on_scene_switch, ::Scene_Title, 'Custom worldmap marker correction', 1000) do
     next unless $scene.is_a?(Scene_Map) && $trainer.current_version.to_i <= 6177
+
     unless $env.worldmap_custom_markers.is_a?(Array)
       log_debug('Fixing Worldmap markers')
       $env.instance_variable_set(:@worldmap_custom_markers, [])

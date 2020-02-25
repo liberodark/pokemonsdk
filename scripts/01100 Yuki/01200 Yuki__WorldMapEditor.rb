@@ -14,7 +14,7 @@ module Yuki
       init
       show_help
       Graphics.transition
-      until Keyboard.press?(Keyboard::Escape)
+      until Input::Keyboard.press?(Input::Keyboard::Escape)
         Graphics.update
         update
       end

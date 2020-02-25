@@ -10,7 +10,7 @@ module UI
         super(viewport, 3, 220)
         add_background('bag/search_bar')
         @search_input = add_text(29, 1, 0, 13, nil.to_s, type: UserInput)
-        add_sprite(216, 1, NO_INITIAL_IMAGE, Keyboard::Enter, type: KeyShortcut)
+        add_sprite(216, 1, NO_INITIAL_IMAGE, Input::Keyboard::Enter, type: KeyShortcut)
         self.z = 506 # 500 + 6 since ctrl button has more priority
       end
 

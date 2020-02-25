@@ -21,7 +21,7 @@ module Yuki
       begin
         init_graphics(ERROR_COLOR, klass, message)
         Text.new(0, @viewport, 8, Graphics.height - LINE_HEIGHT * 2 - 4, 0, LINE_HEIGHT, "Full error log will be stored inside Error.log").load_color(9)
-        Graphics.update until Keyboard.press?(Keyboard::Enter)
+        Graphics.update until Input::Keyboard.press?(Input::Keyboard::Enter)
         dispose
       rescue LiteRGSS::Graphics::StoppedError
         puts 'Window closed...'
@@ -35,7 +35,7 @@ module Yuki
     # @param message [String] Message of the warning
     def warning(klass, message)
       init_graphics(WARNING_COLOR, klass, message)
-      Graphics.update until Keyboard.press?(Keyboard::Enter)
+      Graphics.update until Input::Keyboard.press?(Input::Keyboard::Enter)
       dispose
       Graphics.wait(20)
     rescue LiteRGSS::Graphics::StoppedError
