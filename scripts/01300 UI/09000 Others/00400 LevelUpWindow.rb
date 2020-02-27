@@ -41,13 +41,12 @@ module UI
 
     # Create all the stats texts
     def create_stats_texts
-      start_y = @pokemon_icon.height
-      width = rect.width
       format_str = '%d (+%d)'
-      6.times do |i|
-        start_y += 16
-        add_text(0, start_y, width, 16, text_get(22, 121 + i))
-        add_text(0, start_y, width, 16, format(format_str, @list1[i], @list1[i] - @list0[i]), 2, color: 1)
+      sprite_stack.with_surface(0, @pokemon_icon.height, rect.width) do
+        6.times do |i|
+          add_line(i + 1, text_get(22, 121 + i))
+          add_line(i + 1, format(format_str, @list1[i], @list1[i] - @list0[i]), 2, color: 1)
+        end
       end
     end
 

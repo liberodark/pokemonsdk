@@ -52,7 +52,7 @@ module UI
     # @param x [Integer] the x coordinate of the text surface
     # @param y [Integer] the y coordinate of the text surface
     # @param width [Integer] the width of the text surface
-    # @param height [Integer] the height of the text surface
+    # @param height [Integer, nil] the height of the text surface (if nil, uses the line_height from sizeid)
     # @param str [String] the text shown by this object
     # @param align [0, 1, 2] the align of the text in its surface (best effort => no resize), 0 = left, 1 = center, 2 = right
     # @param outlinesize [Integer, nil] the size of the text outline
@@ -60,6 +60,7 @@ module UI
     # @param color [Integer] the id of the color
     # @return [LiteRGSS::Text] the text object
     def add_text(x, y, width, height, str, align = 0, outlinesize = Text::Util::DEFAULT_OUTLINE_SIZE, type: Text, color: nil, sizeid: nil)
+      height ||= Fonts.line_height(sizeid || @font_id.to_i)
       text = type.new(@font_id.to_i, @viewport, x + @x, y - Text::Util::FOY + @y, width, height, str, align, outlinesize, color, sizeid)
       text.draw_shadow = outlinesize.nil?
       @stack << text
@@ -92,7 +93,7 @@ module UI
 
     # Execute push operations with an alternative cache
     #
-    # Example :
+    # @example
     #   with_cache(:pokedex) { add_background('win_sprite') }
     # @param cache [Symbol] function of RPG::Cache used to load images
     def with_cache(cache)
@@ -105,7 +106,7 @@ module UI
 
     # Execute add_text operation with an alternative font
     #
-    # Example :
+    # @example
     #   with_font(2) { add_text(0, 0, 320, 32, 'Big Text', 1) }
     # @param font_id [Integer] id of the font
     def with_font(font_id)
@@ -114,6 +115,57 @@ module UI
       yield
     ensure
       @font_id = last_font
+    end
+
+    # Execute add_line with specific metrics info
+    # @example
+    #   with_surface(x, y, unit_width, size_id) do
+    #     add_line(0, "Centered", 1)
+    #     add_line(1, "Left Red", color: 2)
+    #     add_line(2, "Right Blue", 2, color: 1)
+    #     add_line(0, "Centered on next surface", 1, dx: 1)
+    #   end
+    # @param x [Integer] X position of the surface
+    # @param y [Integer] Y position of the surface
+    # @param unit_width [Integer] Width of the line (for alignment and offset x)
+    # @param size_id [Integer] Size to use to get the right metrics
+    # @param offset_width [Integer] offset between each columns when dx: is used
+    def with_surface(x, y, unit_width, size_id = 0, offset_width = 2)
+      last_surface_x = @surface_x
+      last_surface_y = @surface_y
+      last_unit_width = @surface_width
+      last_size_id = @surface_size_id
+      last_offset_width = @surface_offset_width
+      @surface_x = x
+      @surface_y = y
+      @surface_width = unit_width
+      @surface_size_id = size_id
+      @surface_offset_width = offset_width
+      yield
+    ensure
+      @surface_x = last_surface_x
+      @surface_y = last_surface_y
+      @surface_width = last_unit_width
+      @surface_size_id = last_size_id
+      @surface_offset_width = last_offset_width
+    end
+
+    # Add a text inside the stack using metrics given by with_surface
+    # @param line_index [Integer] index of the line in the surface
+    # @param str [String] the text shown by this object
+    # @param align [0, 1, 2] the align of the text in its surface (best effort => no resize), 0 = left, 1 = center, 2 = right
+    # @param outlinesize [Integer, nil] the size of the text outline
+    # @param type [Class] the type of text
+    # @param color [Integer] the id of the color
+    # @param dx [Integer] offset x to use "table like" display (this value is multiplied by width)
+    # @return [LiteRGSS::Text] the text object
+    def add_line(line_index, str, align = 0, outlinesize = Text::Util::DEFAULT_OUTLINE_SIZE, type: Text, color: nil, dx: 0)
+      x = @surface_x + dx * (@surface_width + @surface_offset_width)
+      y = @surface_y + line_index * (height = Fonts.line_height(@surface_size_id || @font_id.to_i))
+      text = type.new(@font_id.to_i, @viewport, x + @x, y - Text::Util::FOY + @y, @surface_width, height, str, align, outlinesize, color, @surface_size_id)
+      text.draw_shadow = outlinesize.nil?
+      @stack << text
+      return text
     end
 
     # Return an element of the stack

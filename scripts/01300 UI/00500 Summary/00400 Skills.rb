@@ -61,16 +61,20 @@ module UI
     # Init the texts of the UI
     def init_texts
       texts = text_file_get(27)
-      add_text(114, 19, 60, 16, texts[3]) # Type
-      add_text(114, 19 + 16, 60, 16, texts[36]) # Category
-      add_text(114 + 97, 19, 60, 16, texts[37]) # Power
-      add_text(114 + 97, 19 + 16, 60, 16, texts[39]) # Accuracy
+      with_surface(114, 19, 95) do
+        add_line(0, texts[3]) # Type
+        add_line(1, texts[36]) # Category
+        add_line(0, texts[37], dx: 1) # Power
+        add_line(1, texts[39], dx: 1) # Accuracy
+      end
       @move_info = SpriteStack.new(@viewport)
-      @move_info.add_text(114 + 97, 19, 95, 16, :power_text, 2, type: SymText, color: 1)
-      @move_info.add_text(114 + 97, 19 + 16, 95, 16, :accuracy_text, 2, type: SymText, color: 1)
+      @move_info.with_surface(114, 19, 95) do
+        @move_info.add_line(0, :power_text, 2, type: SymText, color: 1, dx: 1)
+        @move_info.add_line(1, :accuracy_text, 2, type: SymText, color: 1, dx: 1)
+        @move_info.add_line(2, :description, type: SymMultilineText, color: 1).width = 195
+      end
       @move_info.push(175, 21, nil, type: TypeSprite)
       @move_info.push(175, 21 + 16, nil, type: CategorySprite)
-      @move_info.add_text(114, 19 + 32, 195, 16, :description, type: SymMultilineText, color: 1)
     end
 
     # Init the skills of the UI

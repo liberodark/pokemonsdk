@@ -370,14 +370,15 @@ module ScriptLoader
 
         # Create a new General info about font
         def initialize
-          @supports_pokemon_number = false
+          @supports_pokemon_number = true
           @ttf_files = [
             { id: 0, name: 'PokemonDS', size: 13, line_height: 16 },
             { id: 1, name: 'PokemonDS', size: 26, line_height: 32 },
             { id: 20, name: 'PowerGreenSmall', size: 11, line_height: 13 }
           ]
           @alt_sizes = [
-            { id: 2, size: 22, line_height: 26 }
+            { id: 2, size: 22, line_height: 26 },
+            { id: 3, size: 13, line_height: 13 }
           ]
         end
       end

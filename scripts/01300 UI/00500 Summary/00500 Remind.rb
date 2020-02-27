@@ -92,21 +92,23 @@ module UI
     # Init the stat texts
     def init_stats
       texts = text_file_get(27)
-      @nature_text = add_text(114, 19, 60, 16, '') # Nature
       @stat_name_texts = []
-      add_text(114, 19 + 16, 60, 16, texts[15]) # HP
-      @stat_name_texts << add_text(114, 19 + 32, 60, 16, texts[18]) # Attack
-      @stat_name_texts << add_text(114, 19 + 48, 60, 16, texts[20]) # Defense
-      @stat_name_texts << add_text(114 + 97, 19 + 16, 120, 16, texts[26]) # Speed
-      @stat_name_texts << add_text(114 + 97, 19 + 32, 120, 16, texts[22]) # Attack Spe
-      @stat_name_texts << add_text(114 + 97, 19 + 48, 95, 16, texts[24]) # Defense Spe
-      # --- Data part ---
-      add_text(114, 19 + 16, 95, 16, :hp_text, 2, type: SymText, color: 1)
-      add_text(114, 19 + 32, 95, 16, :atk_basis, 2, type: SymText, color: 1)
-      add_text(114, 19 + 48, 95, 16, :dfe_basis, 2, type: SymText, color: 1)
-      add_text(114 + 97, 19 + 16, 95, 16, :spd_basis, 2, type: SymText, color: 1)
-      add_text(114 + 97, 19 + 32, 95, 16, :ats_basis, 2, type: SymText, color: 1)
-      add_text(114 + 97, 19 + 48, 95, 16, :dfs_basis, 2, type: SymText, color: 1)
+      with_surface(114, 19, 95) do
+        @nature_text = add_line(0, '') # Nature
+        add_line(1, texts[15]) # HP
+        @stat_name_texts << add_line(2, texts[18]) # Attack
+        @stat_name_texts << add_line(3, texts[20]) # Defense
+        @stat_name_texts << add_line(1, texts[26], dx: 1) # Speed
+        @stat_name_texts << add_line(2, texts[22], dx: 1) # Attack Spe
+        @stat_name_texts << add_line(3, texts[24], dx: 1) # Defense Spe
+        # --- Data part ---
+        add_line(1, :hp_text, 2, type: SymText, color: 1)
+        add_line(2, :atk_basis, 2, type: SymText, color: 1)
+        add_line(3, :dfe_basis, 2, type: SymText, color: 1)
+        add_line(1, :spd_basis, 2, type: SymText, color: 1, dx: 1)
+        add_line(2, :ats_basis, 2, type: SymText, color: 1, dx: 1)
+        add_line(3, :dfs_basis, 2, type: SymText, color: 1, dx: 1)
+      end
     end
 
     # Update the skill list

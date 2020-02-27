@@ -22,21 +22,31 @@ module UI
     # Add a text to the window
     # @see https://psdk.pokemonworkshop.fr/yard/UI/SpriteStack.html#add_text-instance_method UI::SpriteStack#add_text
     def add_text(x, y, width, height, str, align = 0, outlinesize = Text::Util::DEFAULT_OUTLINE_SIZE, type: Text, color: 0)
-      @stack ||= SpriteStack.new(self)
-      @stack.add_text(x, y, width, height, str, align, outlinesize, type: type, color: color)
+      sprite_stack.add_text(x, y, width, height, str, align, outlinesize, type: type, color: color)
+    end
+
+    # Add a text line to the window
+    # @see https://psdk.pokemonworkshop.fr/yard/UI/SpriteStack.html#add_line-instance_method UI::SpriteStack#add_line
+    def add_line(line_index, str, align = 0, outlinesize = Text::Util::DEFAULT_OUTLINE_SIZE, type: Text, color: nil, dx: 0)
+      sprite_stack.add_line(line_index, str, align, outlinesize, type: type, color: color, dx: dx)
     end
 
     # Push a sprite to the window
     # @see https://psdk.pokemonworkshop.fr/yard/UI/SpriteStack.html#push-instance_method UI::SpriteStack#push
     def push(x, y, bmp, *args, rect: nil, type: LiteRGSS::Sprite, ox: 0, oy: 0)
-      @stack ||= SpriteStack.new(self)
-      @stack.push(x, y, bmp, *args, rect: rect, type: type, ox: ox, oy: oy)
+      sprite_stack.push(x, y, bmp, *args, rect: rect, type: type, ox: ox, oy: oy)
     end
 
     # Return the stack of the window if any
     # @return [Array]
     def stack
       return (@stack&.stack || [])
+    end
+
+    # Return the sprite stack used by the window
+    # @return [SpriteStack]
+    def sprite_stack
+      @stack ||= SpriteStack.new(self)
     end
 
     # Load the cursor

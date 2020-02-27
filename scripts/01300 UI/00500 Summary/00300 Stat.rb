@@ -34,23 +34,25 @@ module UI
 
     # Init the stat texts
     def init_stats
-      texts = text_file_get(27)
-      # --- Static part ---
-      @nature_text = add_text(114, 19, 60, 16, '') # Nature
       @stat_name_texts = []
-      add_text(114, 19 + 16, 60, 16, texts[15]) # HP
-      @stat_name_texts << add_text(114, 19 + 32, 60, 16, texts[18]) # Attack
-      @stat_name_texts << add_text(114, 19 + 48, 60, 16, texts[20]) # Defense
-      @stat_name_texts << add_text(114, 19 + 64, 120, 16, texts[26]) # Speed
-      @stat_name_texts << add_text(114, 19 + 80, 120, 16, texts[22]) # Attack Spe
-      @stat_name_texts << add_text(114, 19 + 96, 95, 16, texts[24]) # Defense Spe
-      # --- Data part ---
-      add_text(114, 19 + 16, 95, 16, :hp_text, 2, type: SymText, color: 1)
-      add_text(114, 19 + 32, 95, 16, :atk_basis, 2, type: SymText, color: 1)
-      add_text(114, 19 + 48, 95, 16, :dfe_basis, 2, type: SymText, color: 1)
-      add_text(114, 19 + 64, 95, 16, :spd_basis, 2, type: SymText, color: 1)
-      add_text(114, 19 + 80, 95, 16, :ats_basis, 2, type: SymText, color: 1)
-      add_text(114, 19 + 96, 95, 16, :dfs_basis, 2, type: SymText, color: 1)
+      texts = text_file_get(27)
+      with_surface(114, 19, 95) do
+        # --- Static part ---
+        @nature_text = add_line(0, '') # Nature
+        add_line(1, texts[15]) # HP
+        @stat_name_texts << add_line(2, texts[18]) # Attack
+        @stat_name_texts << add_line(3, texts[20]) # Defense
+        @stat_name_texts << add_line(4, texts[26]) # Speed
+        @stat_name_texts << add_line(5, texts[22]) # Attack Spe
+        @stat_name_texts << add_line(6, texts[24]) # Defense Spe
+        # --- Data part ---
+        add_line(1, :hp_text, 2, type: SymText, color: 1)
+        add_line(2, :atk_basis, 2, type: SymText, color: 1)
+        add_line(3, :dfe_basis, 2, type: SymText, color: 1)
+        add_line(4, :spd_basis, 2, type: SymText, color: 1)
+        add_line(5, :ats_basis, 2, type: SymText, color: 1)
+        add_line(6, :dfs_basis, 2, type: SymText, color: 1)
+      end
       init_ev_iv
     end
 
@@ -68,22 +70,26 @@ module UI
       offset = 102
       # --- EV part ---
       if SHOW_EV
-        add_text(114 + offset, 19 + 16, 95, 16, :ev_hp_text, type: SymText)
-        add_text(114 + offset, 19 + 32, 95, 16, :ev_atk_text, type: SymText)
-        add_text(114 + offset, 19 + 48, 95, 16, :ev_dfe_text, type: SymText)
-        add_text(114 + offset, 19 + 64, 95, 16, :ev_spd_text, type: SymText)
-        add_text(114 + offset, 19 + 80, 95, 16, :ev_ats_text, type: SymText)
-        add_text(114 + offset, 19 + 96, 95, 16, :ev_dfs_text, type: SymText)
+        with_surface(114 + offset, 19, 95) do
+          add_line(1, :ev_hp_text, type: SymText)
+          add_line(2, :ev_atk_text, type: SymText)
+          add_line(3, :ev_dfe_text, type: SymText)
+          add_line(4, :ev_spd_text, type: SymText)
+          add_line(5, :ev_ats_text, type: SymText)
+          add_line(6, :ev_dfs_text, type: SymText)
+        end
         offset += 44
       end
       # --- IV part ---
       if SHOW_IV
-        add_text(114 + offset, 19 + 16, 95, 16, :iv_hp_text, type: SymText)
-        add_text(114 + offset, 19 + 32, 95, 16, :iv_atk_text, type: SymText)
-        add_text(114 + offset, 19 + 48, 95, 16, :iv_dfe_text, type: SymText)
-        add_text(114 + offset, 19 + 64, 95, 16, :iv_spd_text, type: SymText)
-        add_text(114 + offset, 19 + 80, 95, 16, :iv_ats_text, type: SymText)
-        add_text(114 + offset, 19 + 96, 95, 16, :iv_dfs_text, type: SymText)
+        with_surface(114 + offset, 19, 95) do
+          add_line(1, :iv_hp_text, type: SymText)
+          add_line(2, :iv_atk_text, type: SymText)
+          add_line(3, :iv_dfe_text, type: SymText)
+          add_line(4, :iv_spd_text, type: SymText)
+          add_line(5, :iv_ats_text, type: SymText)
+          add_line(6, :iv_dfs_text, type: SymText)
+        end
       end
     end
   end

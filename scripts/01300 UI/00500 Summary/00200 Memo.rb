@@ -43,28 +43,30 @@ module UI
     # Initialize the Memo part
     def init_memo
       texts = text_file_get(27)
-      # --- Static part ---
-      add_text(114, 19, 60, 16, texts[2]) # Nom
-      no_egg add_text(114, 19 + 16, 60, 16, texts[0]) # NoPokedex
-      @level_text = no_egg(add_text(114 + 97, 19 + 16, 60, 16, texts[29])) # Level
-      no_egg add_text(114, 19 + 32, 60, 16, texts[3]) # Type
-      no_egg add_text(114, 19 + 48, 60, 16, texts[8]) # DO
-      no_egg add_text(114 + 97, 19 + 48, 60, 16, texts[9]) # Numero id
-      no_egg add_text(114, 19 + 64, 120, 16, texts[10]) # Pt exp
-      no_egg add_text(114, 19 + 80, 120, 16, texts[12]) # Next lvl
-      no_egg add_text(114, 19 + 96, 95, 16, text_get(23, 7)) # Objet
-      # --- Data part ---
-      with_font(20) { no_egg add_text(11, 125, 56, 13, 'EXP') }
-      add_text(114, 19, 194, 16, :name, 2, type: SymText, color: 1)
-      no_egg add_text(114, 19 + 16, 95, 16, :id_text, 2, type: SymText, color: 1)
-      @level_value = no_egg(add_text(114 + 97, 19 + 16, 95, 16, :level_text, 2, type: SymText, color: 1))
+      with_surface(114, 19, 95) do
+        # --- Static part ---
+        add_line(0, texts[2]) # Nom
+        no_egg add_line(1, texts[0]) # NoPokedex
+        @level_text = no_egg(add_line(1, texts[29], dx: 1)) # Level
+        no_egg add_line(2, texts[3]) # Type
+        no_egg add_line(3, texts[8]) # DO
+        no_egg add_line(3, texts[9], dx: 1) # Numero id
+        no_egg add_line(4, texts[10]) # Pt exp
+        no_egg add_line(5, texts[12]) # Next lvl
+        no_egg add_line(6, text_get(23, 7)) # Objet
+        # --- Data part ---
+        with_font(20) { no_egg add_text(11, 125, 56, nil, 'EXP') }
+        add_line(0, :name, 2, type: SymText, color: 1, dx: 1)
+        no_egg add_line(1, :id_text, 2, type: SymText, color: 1)
+        @level_value = no_egg(add_line(1, :level_text, 2, type: SymText, color: 1, dx: 1))
+        no_egg add_line(3, :trainer_name, 2, type: SymText, color: 1)
+        no_egg add_line(3, :trainer_id_text, 2, type: SymText, color: 1, dx: 1)
+        no_egg add_line(4, :exp_text, 2, type: SymText, color: 1, dx: 1)
+        no_egg add_line(5, :exp_remaining_text, 2, type: SymText, color: 1, dx: 1)
+        no_egg add_line(6, :item_name, 2, type: SymText, color: 1, dx: 1)
+      end
       no_egg push(241, 19 + 34, nil, type: Type1Sprite)
       no_egg push(275, 19 + 34, nil, type: Type2Sprite)
-      no_egg add_text(114, 19 + 48, 90, 16, :trainer_name, 2, type: SymText, color: 1)
-      no_egg add_text(114 + 97, 19 + 48, 97, 16, :trainer_id_text, 2, type: SymText, color: 1)
-      no_egg add_text(114, 19 + 64, 194, 16, :exp_text, 2, type: SymText, color: 1)
-      no_egg add_text(114, 19 + 80, 194, 16, :exp_remaining_text, 2, type: SymText, color: 1)
-      no_egg add_text(114, 19 + 96, 194, 16, :item_name, 2, type: SymText, color: 1)
     end
 
     # Load the text info
