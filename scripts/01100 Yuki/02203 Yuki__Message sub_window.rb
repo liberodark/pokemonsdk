@@ -24,6 +24,7 @@ module Yuki
       return if @gold_window
 
       @gold_window = UI::Window.from_metrics(viewport, 318, 2, 48, 32, position: 'top_right')
+      @gold_window.z = z + 1
       @gold_window.sprite_stack.with_surface(0, 0, 44) do
         @gold_window.add_line(0, text_get(11, 6))
         @gold_window.add_line(1, PFM::Text.parse(11, 9, ::PFM::Text::NUM7R => $pokemon_party.money.to_s), 2)

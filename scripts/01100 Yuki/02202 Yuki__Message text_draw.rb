@@ -63,6 +63,7 @@ module Yuki
         instructions << arr
         return x if text.empty?
         return (arr << :new_line; x) if text == S_n
+
         text.split(S_n).each_with_index do |line, i|
           (arr << :new_line; x = 0) if i > 0
           x = adjust_text_lines(x, max_width, line, arr, true)
@@ -82,6 +83,7 @@ module Yuki
       text.opacity = contents_opacity
       until text.nchar_draw >= str.size
         break if stop_message_process?
+
         text.nchar_draw += 1
         counter += 1
         if Input.trigger?(:A) || (Mouse.trigger?(:left) && simple_mouse_in?) || panel_skip? # Skip request
@@ -100,6 +102,7 @@ module Yuki
     def line_transition
       default_line_height.times do
         return if stop_message_process?
+
         self.oy += 1
         @city_sprite&.y += 1
         message_update_processing
@@ -111,6 +114,7 @@ module Yuki
     # @return [Integer] the style integer
     def get_style_code(str)
       return 0 if str.include?('r')
+
       code = str.include?('b') ? 1 : 0
       code |= str.include?('i') ? 2 : 0
       return code
@@ -144,10 +148,18 @@ module Yuki
       return text
     end
 
+    # Translate the color according to the layout configuration
+    # @param color [Integer] color to translate
+    # @return [Integer] translated color
+    def translate_color(color)
+      current_layout.color_mapping[color] || color
+    end
+
     # Draw the message
     # @param lineheight [Integer] height of the line
     def refresh(lineheight = default_line_height)
       return unless $game_temp.message_text
+
       @drawing_message = true
       set_origin(0, 0)
       @can_skip_message = false
@@ -156,7 +168,7 @@ module Yuki
       @x = origin_x
       @y = 0
       @current_speed = 0
-      @color = get_default_color
+      @color = translate_color(get_default_color)
       @style = get_default_style
       generate_text_instructions(text)
       refresh_internal(lineheight)
@@ -173,6 +185,7 @@ module Yuki
         call_marker_action(marker) if marker
         instr_arr.each do |instr|
           break if stop_message_process?
+
           if instr == :new_line
             @x = origin_x
             @y += lineheight
@@ -212,7 +225,7 @@ module Yuki
     # Change the color
     # @param maker [Array]
     def execute_marker_1(marker)
-      @color = marker.last % GameData::Colors::COLOR_COUNT
+      @color = translate_color(marker.last % GameData::Colors::COLOR_COUNT)
       marker_fix_x
     end
 

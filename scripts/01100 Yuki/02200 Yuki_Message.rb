@@ -107,6 +107,13 @@ module Yuki
       @auto_skip = false
     end
 
+    # Retrieve the current layout configuration
+    # @return [ScriptLoader::PSDKConfig::LayoutConfig::Message]
+    def current_layout
+      config = PSDK_CONFIG.layout.messages
+      return config[$scene.class.to_s] || config[:any]
+    end
+
     private
 
     # Reset the $game_temp stuff
@@ -125,13 +132,13 @@ module Yuki
     # Retrieve the current windowskin
     # @return [String]
     def current_windowskin
-      @windowskin_overwrite || $game_system.windowskin_name
+      @windowskin_overwrite || current_layout.windowskin || $game_system.windowskin_name
     end
 
     # Retrieve the current windowskin of the name window
     # @return [String]
     def current_name_windowskin
-      @nameskin_overwrite || NAME_SKIN
+      @nameskin_overwrite || current_layout.name_windowskin || NAME_SKIN
     end
 
     # Dispose the sub element of the window (thing created during the message processing)
@@ -197,14 +204,14 @@ module Yuki
     # Retrieve the current window_builder
     # @return [Array]
     def current_window_builder
-      return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2].casecmp?('m_') # SkinHGSS
-      ::GameData::Windows::MessageWindow # Skin PSDK
+      return UI::Window.window_builder(current_windowskin)
     end
 
     # Update the windowskin
     def update_windowskin
       windowskin_name = current_windowskin
       return calculate_position if @windowskin_name == windowskin_name
+
       self.window_builder = current_window_builder
       self.windowskin = RPG::Cache.windowskin(@windowskin_name = windowskin_name)
       # Window size is dependant on the windowskin
@@ -216,14 +223,14 @@ module Yuki
     # Retrieve the current window_builder of the name window
     # @return [Array]
     def current_name_window_builder
-      return ::GameData::Windows::MessageHGSS if current_name_windowskin[0, 2].casecmp?('m_') # SkinHGSS
-      ::GameData::Windows::MessageWindow # Skin PSDK
+      return UI::Window.window_builder(current_name_windowskin)
     end
 
     # Update the name windowskin
     def update_name_windowskin
       windowskin_name = current_name_windowskin
       return if @name_windowskin_name == windowskin_name
+
       wb = @name_window.window_builder = current_name_window_builder
       @name_window.windowskin = RPG::Cache.windowskin(@name_windowskin_name = windowskin_name)
       @name_window.x = x
@@ -271,37 +278,39 @@ module Yuki
     # Return the default horizontal margin
     # @return [Integer]
     def default_horizontal_margin
-      return 2
+      return current_layout.border_spacing
     end
 
     # Return the default vertical margin
     # @return [Integer]
     def default_vertical_margin
-      return 2
+      return current_layout.border_spacing
     end
 
     # Return the default line number
     # @return [Integer]
     def default_line_number
-      return 2
+      return current_layout.line_count
     end
 
     # Return the default line height
     def default_line_height
-      return 16
+      return Fonts.line_height(current_layout.default_font)
     end
 
     # Return the default text color
     # @return [Integer]
-    def get_default_color
-      return 0
+    def default_color
+      return current_layout.default_color
     end
+    alias get_default_color default_color
 
     # Return the default text style
     # @return [Integer]
-    def get_default_style
+    def default_style
       return 0
     end
+    alias get_default_style default_style
 
     # Reset all the overwrite when the message has been shown
     def reset_overwrites

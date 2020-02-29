@@ -40,6 +40,13 @@ module Yuki
       @my = Mouse.y
     end
 
+    # Retrieve the current layout configuration
+    # @return [ScriptLoader::PSDKConfig::LayoutConfig::Choice]
+    def current_layout
+      config = PSDK_CONFIG.layout.choices
+      return config[$scene.class.to_s] || config[:any]
+    end
+
     # Update the choice, if player hit up or down the choice index changes
     def update
       if Input.repeat?(:DOWN)
@@ -52,23 +59,32 @@ module Yuki
       super
     end
 
+    # Translate the color according to the layout configuration
+    # @param color [Integer] color to translate
+    # @return [Integer] translated color
+    def translate_color(color)
+      current_layout.color_mapping[color] || color
+    end
+
     # Return the default height of a text line
     # @return [Integer]
     def default_line_height
-      16
+      Fonts.line_height(current_layout.default_font)
     end
 
     # Return the default text color
     # @return [Integer]
-    def get_default_color
-      return 0
+    def default_color
+      return translate_color(current_layout.default_color)
     end
+    alias get_default_color default_color
 
     # Return the disable text color
     # @return [Integer]
-    def get_disable_color
-      return 7
+    def disable_color
+      return translate_color(7)
     end
+    alias get_disable_color disable_color
 
     # Update the mouse action
     def update_mouse
@@ -78,8 +94,10 @@ module Yuki
         return Mouse.wheel = 0
       end
       return unless simple_mouse_in?
+
       @texts.stack.each_with_index do |text, i|
         next unless text.simple_mouse_in?
+
         if @index < i
           update_cursor_down while @index < i
         elsif @index > i
@@ -137,15 +155,35 @@ module Yuki
       @texts.dispose
       @choices.each_index do |i|
         text = PFM::Text.detect_dialog(@choices[i]).dup
-        text.gsub!(/\\[Cc]\[([0-9]+)\]/) { @colors[i] = $1.to_i ; nil}
+        text.gsub!(/\\[Cc]\[([0-9]+)\]/) do
+          @colors[i] = translate_color($1.to_i)
+          next(nil)
+        end
         text.gsub!(/\\t\[(.*),(.*)\]/) { ::PFM::Text.parse($1.to_i, $2.to_i) }
         text.gsub!(/\\d\[(.*),(.*)\]/) { $daycare.parse_poke($1.to_i, $2.to_i) }
-        text_obj = @texts.add_text(cursor_rect.width + cursor_rect.x, i * default_line_height, 0, default_line_height, text, color: @colors[i])
-        max_width = text_obj.real_width if max_width < text_obj.real_width
+        real_width = add_choice_text(text, i)
+        max_width = real_width if max_width < real_width
       end
       self.width = max_width + window_builder[4] + window_builder[-2] + cursor_rect.width + cursor_rect.x if @autocalc_width
       self.width += 10 if current_windowskin[0, 2].casecmp?('m_') #SkinHGSS
       @texts.stack.each { |text| text.width = max_width }
+    end
+
+    # Function that adds a choice text and manage various thing like getting the actual width of the text
+    # @param text [String]
+    # @param i [Integer] index in the loop
+    # @return [Integer] the real width of the text
+    def add_choice_text(text, i)
+      if (captures = text.match(/(.+) (\$[0-9]+|[0-9]+\$)$/)&.captures)
+        text_obj1 = @texts.add_text(cursor_rect.width + cursor_rect.x, i * default_line_height, 0, default_line_height,
+                                    captures.first, color: @colors[i])
+        text_obj2 = @texts.add_text(cursor_rect.width + cursor_rect.x, i * default_line_height, 0, default_line_height,
+                                    captures.last, 2, color: translate_color(get_default_color))
+        return text_obj1.real_width + text_obj2.real_width + 2 * Fonts.line_height(current_layout.default_font)
+      end
+      text_obj = @texts.add_text(cursor_rect.width + cursor_rect.x, i * default_line_height, 0, default_line_height,
+                                 text, color: @colors[i])
+      return text_obj.real_width
     end
 
     # Define the cursor rect
@@ -162,26 +200,25 @@ module Yuki
     # Return the default horizontal margin
     # @return [Integer]
     def default_horizontal_margin
-      return 2
+      return current_layout.border_spacing
     end
 
     # Return the default vertical margin
     # @return [Integer]
     def default_vertical_margin
-      return 2
+      return current_layout.border_spacing
     end
 
     # Retrieve the current windowskin
     # @return [String]
     def current_windowskin
-      $game_system.windowskin_name
+      current_layout.windowskin || $game_system.windowskin_name
     end
 
     # Retrieve the current window_builder
     # @return [Array]
     def current_window_builder
-      return ::GameData::Windows::MessageHGSS if current_windowskin[0, 2].casecmp?('m_') # SkinHGSS
-      ::GameData::Windows::MessageWindow # Skin PSDK
+      return UI::Window.window_builder(current_windowskin)
     end
 
     # Function that creates a new ChoiceWindow for Yuki::Message
