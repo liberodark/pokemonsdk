@@ -22,18 +22,15 @@ module Yuki
     # Show a window that tells the player how much money he got
     def show_gold_window
       return if @gold_window
-      @gold_window = Window.new(viewport)
-      @gold_window.lock
-      wb = @gold_window.window_builder = window_builder
-      @gold_window.windowskin = windowskin
-      @gold_window.set_size(48 + windowskin.width - wb[2], 32 + wb[1])
-      @gold_window.set_position(318 - @gold_window.width, 2)
-      @gold_window.z = z + 1
-      @gold_window.unlock
-      stack = UI::SpriteStack.new(@gold_window)
-      stack.add_text(0, 0, 44, 16, ::GameData::Text.get(11, 6))
-      stack.add_text(0, 16, 44, 16, ::PFM::Text.parse(11, 9, ::PFM::Text::NUM7R => $pokemon_party.money.to_s), 2)
-      nil
+
+      @gold_window = UI::Window.from_metrics(viewport, 318, 2, 48, 32, position: 'top_right')
+      (stack = @gold_window.sprite_stack).with_surface(0, 0, 44) do
+        stack.add_line(0, text_get(11, 6))
+        stack.add_line(1, PFM::Text.parse(11, 9, ::PFM::Text::NUM7R => $pokemon_party.money.to_s), 2)
+      end
+
+      # Ensure it doesn't shows in the message
+      return nil
     end
   end
 end
