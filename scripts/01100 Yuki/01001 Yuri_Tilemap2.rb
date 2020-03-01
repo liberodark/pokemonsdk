@@ -23,6 +23,7 @@ class Tilemap
         # Update the coordinates
         layer.each_with_index do |priority_layer, priority|
           next unless PRIORITY_LAYER_COUNT[priority] > pz
+
           priority_layer.each_with_index do |sprite, py|
             sprite.set_origin(ox, oy)
             sprite.z = (py + priority) * 32 - add_z if priority > 0
@@ -32,6 +33,7 @@ class Tilemap
           NY.times do |py|
             tile_id = map_data[cx = x + px, cy = y + py, pz]
             next unless tile_id&.between?(1, 383)
+
             priority = maplinker.get_priority(cx, cy)[tile_id]
             layer.dig(priority, py).set_rect(px, (tile_id % 48) * 32, autotiles_counter[tile_id / 48], 32, 32)
           end
@@ -50,7 +52,6 @@ class Tilemap
       autotiles_counter = @autotiles_counter
       autotiles_bmp = @autotiles # @autotiles_bmp
       # -- tileset1 = @tileset
-      max_size = 4096 # Graphics::MAX_TEXTURE_SIZE
       add_z = oy / 2
       maplinker = @map_linker
 
@@ -60,6 +61,7 @@ class Tilemap
         # Update the coordinates
         layer.each_with_index do |priority_layer, priority|
           next unless PRIORITY_LAYER_COUNT[priority] > pz
+
           priority_layer.each_with_index do |sprite, py|
             sprite.set_origin(ox, oy)
             sprite.z = (py + priority) * 32 - add_z if priority > 0
@@ -70,15 +72,18 @@ class Tilemap
           NY.times do |py|
             tile_id = map_data[cx = x + px, cy = y + py, pz]
             next if !tile_id || tile_id == 0
+
             priority = maplinker.get_priority(cx, cy)[tile_id] || 0
             if tile_id < 384 # Autotile
               rect.set((tile_id % 48) * 32, autotiles_counter[tile_id / 48], 32, 32)
               layer.dig(priority, py).set(px, autotiles_bmp[tile_id / 48 - 1], rect)
             else
+              tileset = maplinker.get_tileset(cx, cy)
+              max_size = tileset.height
               tid = tile_id - 384
               tlsy = tid / 8 * 32
               rect.set((tid % 8 + tlsy / max_size * 8) * 32, tlsy % max_size, 32, 32)
-              layer.dig(priority, py).set(px, maplinker.get_tileset(cx, cy), rect)
+              layer.dig(priority, py).set(px, tileset, rect)
             end
           end
         end
@@ -95,6 +100,7 @@ class Tilemap
       @sprites.each_with_index do |layer, pz|
         layer.each_with_index do |priority_layer, priority|
           next unless PRIORITY_LAYER_COUNT[priority] > pz
+
           priority_layer.each_with_index do |sprite, py|
             sprite.set_origin(ox, oy)
             sprite.z = (py + priority) * 32 - add_z if priority > 0
@@ -106,6 +112,7 @@ class Tilemap
     # Free the tilemap
     def dispose
       return if @disposed
+
       @all_sprites.each(&:dispose)
       @all_sprites = nil
       @sprites = nil
@@ -141,7 +148,6 @@ class Tilemap
             next(priority_layer)
           else # Otherwise we take the last one
             next(adjust_sprite_layer(priority, PRIORITY_LAYER_COUNT[priority]))
-            next(@sprites.last[priority])
           end
         end
         @sprites << priority_array
@@ -155,6 +161,7 @@ class Tilemap
   # @return [Sprite_Map]
   def adjust_sprite_layer(priority, count)
     return @sprites.last[priority] if count != 2
+
     sprite_to_return = @sprites.last[priority]
     @sprites.last[priority] = @sprites.first[priority]
     @sprites.first[priority] = sprite_to_return
