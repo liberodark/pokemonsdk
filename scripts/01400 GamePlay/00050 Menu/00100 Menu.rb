@@ -136,8 +136,8 @@ module GamePlay
           $actors.any?, # Party
           !$bag.locked, # Bag
           true, # Trainer card
-          !$game_system.save_disabled, # Save
           true, # Options
+          !$game_system.save_disabled, # Save
           true
         ]
     end
