@@ -210,7 +210,12 @@ class Scene_Battle
     end
     BattleEngine.get_actors.clear
     BattleEngine.get_enemies.clear
-    $actors.delete_if { |pokemon| pokemon.hp <= 0 } if($game_switches[::Yuki::Sw::Nuzlocke_ENA])
+    if $pokemon_party.nuzlocke.enabled?
+      $pokemon_party.nuzlocke.clear_dead_pokemon
+      unless $pokemon_party.nuzlocke.catching_locked_here? || $game_temp.trainer_battle
+        $pokemon_party.nuzlocke.lock_catch_in_current_zone
+      end
+    end
     # Retour à la carte
     $scene = Scene_Map.new
   end

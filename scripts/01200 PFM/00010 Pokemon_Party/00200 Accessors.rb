@@ -164,6 +164,15 @@ module PFM
       $game_temp = @game_temp
     end
 
+    # The nuzlocke logic
+    # @return [Nuzlocke]
+    attr_accessor :nuzlocke
+    on_player_initialize(:nuzlocke) { @nuzlocke = Nuzlocke.new }
+    on_expand_global_variables(:nuzlocke) do
+      # Variable containing the Nuzlocke Logic
+      @nuzlocke ||= Nuzlocke.new
+    end
+
     # The pathfinding requests
     # @return [Array<Object>]
     attr_accessor :pathfinding_requests
@@ -291,6 +300,7 @@ module PFM
         pokemon.cure
         $scene.delay_display_call(:display_poison_end, pokemon)
       end
+      nuzlocke.clear_dead_pokemon if nuzlocke.enabled?
     end
 
     # Update the remaining steps of all the Egg to hatch

@@ -142,19 +142,25 @@ class Scene_Battle
       extend_data[:action_to_push].call
       phase4_message_display
     elsif(extend_data[:ball_data])
-      $scene.message_window.blocking = false # Défilement auto du message de lancer de ball
-      msg = parse_text(18, 34, TRNAME[0] => $trainer.name, ITEM2[1] => GameData::Item.name(item_id)) # En 4G, c'était "[Joueur] lance une [Ball] !". Parmi les strings existants, le (18, 34) est celui qui s'en rapproche le plus.
-      display_message(msg) # Ça donnera "[Joueur] utilise [Ball] !" à la place.
-      $scene.message_window.blocking = true if $game_temp.trainer_battle == false # Restauration du non défilement auto des messages en combat sauvage
-      phase4_try_to_catch_pokemon(extend_data[:ball_data], item_id) #Moddé : suppression de la non condition de dresseur. Au lieu du message "chen", le blocage se fera en aval avec l'animation adéquate.
+      # Nuzlocke poke limit
+      if $pokemon_party.nuzlocke.enabled? && $pokemon_party.nuzlocke.catching_locked_here?
+        unless $scene.enemy_party.actors[0].shiny
+          display_message(ext_text(8999, 20)) # You can't catch anymore pokemon here
+          @player_choice_ui&.visible = true
+          @action_selector&.visible = true
+          $bag.add_item(item_id, 1)
+          @phase4_step += 1
+          return
+        end
+      end
+      $scene.message_window.blocking = false # Auto scrolling ball throw message
+      # In 4G, it was "[Player] throw a [Ball]!". Among the existing strings, the (18, 34) is the one that comes closest
+      # to it.
+      msg = parse_text(18, 34, TRNAME[0] => $trainer.name, ITEM2[1] => GameData::Item.name(item_id))
+      display_message(msg) # It will give "[Player] use [Ball]!" in place.
+      $scene.message_window.blocking = true if $game_temp.trainer_battle == false
+      phase4_try_to_catch_pokemon(extend_data[:ball_data], item_id)
     end
-#    if(GameData::Item.limited_use?(item_id))
-#      if(!position or position >= 0)
-#        $bag.remove_item(item_id,1)
-#      else
-#        @enemy_party.bag.remove_item(item_id,1)
-#      end
-#    end
   end
   #===
   #>Changer de pokemon

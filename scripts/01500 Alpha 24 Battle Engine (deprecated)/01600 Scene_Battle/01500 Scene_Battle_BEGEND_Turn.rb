@@ -393,12 +393,6 @@ class Scene_Battle
     actors[current_pokemon].attack_order=255
     BattleEngine::Abilities.on_launch_ability(actors[current_pokemon], true)
     phase4_message_display() if(BattleEngine::_message_stack_size>0)
-    #>Nuzlocke
-    if($game_switches[::Yuki::Sw::Nuzlocke_ENA])
-      pokemon = actors[old_pokemon]
-      $actors.delete(pokemon) if(actors[0].position >= 0)
-      actors.delete(pokemon)
-    end
   end
 
   def switch_turn_entry_hasard(pokemon)
