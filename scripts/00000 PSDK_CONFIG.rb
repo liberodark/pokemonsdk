@@ -44,7 +44,7 @@ module ScriptLoader
     # @return [LayoutConfig] layout configuration
     attr_reader :layout
     # Name of the yaml file
-    YAML_FILENAME = 'Data/project_indentity.yml'
+    YAML_FILENAME = 'Data/project_identity.yml'
     # Name of the dat file
     DAT_FILENAME = 'Data/project_identity.rxdata'
     # List of legal aspect ratio
@@ -57,6 +57,13 @@ module ScriptLoader
       end
       fix_variables(!data || should_save)
       adjust_litergss_config
+    end
+
+    def copy_past_old_project_identity
+      if File.exist?('Data/project_indentity.yml')
+        File.copy_stream('Data/project_indentity.yml', YAML_FILENAME)
+        File.delete('Data/project_indentity.yml')
+      end
     end
 
     # Tell if the game is in Release mode
@@ -238,8 +245,8 @@ module ScriptLoader
     # Function telling if the game should save the file or not
     # @return [Boolean]
     def should_save
+      copy_past_old_project_identity
       return false if release?
-
       return (!File.exist?(DAT_FILENAME) || !File.exist?(YAML_FILENAME)) ||
              (File.mtime(DAT_FILENAME) < File.mtime(YAML_FILENAME))
     end
