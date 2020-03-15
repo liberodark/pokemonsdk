@@ -297,6 +297,7 @@ pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00500 Shop.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00501 Pokemon_Shop.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00600 MoveReminder.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/01000 Shortcut.rb
+pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/09000 GTS.rb
 pokemonsdk/scripts/01400 GamePlay/01000 Storage/03700 GamePlay__Storage.rb
 pokemonsdk/scripts/01400 GamePlay/01000 Storage/03800 GamePlay__StorageDrop.rb
 pokemonsdk/scripts/01400 GamePlay/01000 Storage/03900 GamePlay__StorageItems.rb
