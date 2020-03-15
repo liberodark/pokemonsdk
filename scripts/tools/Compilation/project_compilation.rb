@@ -98,6 +98,8 @@ module ProjectCompilation
       GameLoader/1_setupConstantAndLoadPath.rb
       GameLoader/2_displayException.rb
       GameLoader/3_load_extensions.rb
+      GameLoader/31_ruby_dependencies.rb
+      GameLoader/32_console_compiled.rb
       GameLoader/41_load_data_compiled.rb
       GameLoader/Z_main.rb
       GameLoader/51_load_game_compiled.rb
