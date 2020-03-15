@@ -6,7 +6,7 @@ sha1 = STDIN.gets.chomp
 files = []
 IO.popen("git diff #{sha1} --name-only") do |f|
   while line = f.gets
-    if line.start_with?('scripts/')
+    if line.start_with?('scripts/') && !File.directory?(line.chomp)
       files << line.chomp
     end
   end
