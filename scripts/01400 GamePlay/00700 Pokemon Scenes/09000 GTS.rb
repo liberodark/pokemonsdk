@@ -106,9 +106,9 @@ module GTS
     $scene.call_scene(GamePlay::Evolve, new_poke, elv_id, true) if elv_id
 
     if !new_poke.game_code || new_poke.game_code != Settings::GAME_CODE
-      new_poke.set_flag(0x00E9_0000) # 9 = base2 : 1,0,0,1 = ?, !FromThisGame, !CapturedByPlayer, FromPresentTime
+      new_poke.flags = 0x00E9_0000 # 9 = base2 : 1,0,0,1 = ?, !FromThisGame, !CapturedByPlayer, FromPresentTime
     else
-      new_poke.set_flag(0x00ED_0000) # D = base2 : 1,1,0,1 = ?, FromThisGame, !CapturedByPlayer, FromPresentTime
+      new_poke.flags = 0x00ED_0000 # D = base2 : 1,1,0,1 = ?, FromThisGame, !CapturedByPlayer, FromPresentTime
     end
 
     return finish_trade_from_searching(my_pokemon, new_poke, choice, id) if searching
@@ -397,6 +397,7 @@ module GTS
         return
       end
       gpkmn = Core.download_pokemon(id).to_pokemon
+      pokemon_list = [] << gpkmn
       return display_message(ext_text(8997, 10)) unless gpkmn
 
       wanted_data = Core.download_wanted_data(id)
@@ -618,7 +619,7 @@ module GTS
         new_poke = Core.download_pokemon($pokemon_party.online_id).to_pokemon
         return display_message(ext_text(8997, 10)) unless new_poke
 
-        if finish_trade($pokemon_party.online_pokemon, new_poke, false)
+        if GTS.finish_trade($pokemon_party.online_pokemon, new_poke, false)
           $pokemon_party.add_pokemon(new_poke)
           $pokemon_party.online_pokemon = nil
           GamePlay::Save.save

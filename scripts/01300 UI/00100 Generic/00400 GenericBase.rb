@@ -15,7 +15,7 @@ module UI
     # @param viewport [Viewport]
     # @param texts [Array<String>] list of texts shown in the ControlButton
     # @param keys [Array<Symbol>] list of keys used in the ControlButton
-    def initialize(viewport, texts = nil, keys = DEFAULT_KEYS)
+    def initialize(viewport, texts = [], keys = DEFAULT_KEYS)
       super(viewport)
       @keys = keys
       create_graphics
