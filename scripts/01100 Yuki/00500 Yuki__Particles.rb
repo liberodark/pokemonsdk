@@ -83,7 +83,7 @@ module Yuki
     end
 
     # Tell if the system is ready to work
-    # @return [Boolea]
+    # @return [Boolean]
     def ready?
       return @stack && !viewport.disposed?
     end
