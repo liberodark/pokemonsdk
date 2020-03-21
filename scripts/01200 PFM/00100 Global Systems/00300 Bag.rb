@@ -46,7 +46,7 @@ module PFM
     # Add items in the bag and trigger the right quest objective
     # @param id [Integer, Symbol] id of the item in the database
     # @param nb [Integer] number of item to add
-    def add_item(id, nb)
+    def add_item(id, nb = 1)
       return if @locked
       return remove_item(id, -nb) if nb < 0
 
@@ -61,7 +61,7 @@ module PFM
     # Remove items from the bag
     # @param id [Integer, Symbol] id of the item in the database
     # @param nb [Integer] number of item to remove
-    def remove_item(id, nb)
+    def remove_item(id, nb = 999)
       return if @locked
       return add_item(id, -nb) if nb < 0
 
