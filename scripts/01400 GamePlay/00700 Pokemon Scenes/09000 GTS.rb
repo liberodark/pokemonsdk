@@ -69,6 +69,7 @@ module GTS
 
   # Main Method
   def open
+    Core.update_uri
     loading_viewport = Viewport.create(:main, 10_001)
     @loading_screen = LoadingScreen.new(loading_viewport)
     Audio.bgm_play(Settings::BGM) unless Settings::BGM.empty?
@@ -759,11 +760,16 @@ module GTS
 
   module Core
     # URI to the GTS server
-    GTS_URI = URI(Settings::URL + Settings::GAMEID.to_s)
+    @uri = URI(Settings::URL + Settings::GAMEID.to_s)
     # Locking mutex
     LOCK = Mutex.new
 
     module_function
+
+    # Update the URI
+    def update_uri
+      @uri = URI(Settings::URL + Settings::GAMEID.to_s)
+    end
 
     # Tests connection to the server (not used anymore but kept for possible use)
     def test_connection
@@ -780,7 +786,7 @@ module GTS
       Thread.new do
         LOCK.synchronize do
           Thread.main.wakeup
-          result = Net::HTTP.post_form(GTS_URI, data).body
+          result = Net::HTTP.post_form(@uri, data).body
           Thread.main.wakeup
         end
       end
