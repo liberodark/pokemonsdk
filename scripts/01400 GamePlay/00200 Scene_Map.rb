@@ -178,7 +178,7 @@ class Scene_Map
       $scene = Scene_Battle_Magneto.new
     end
     Graphics.wait(2)
-    $scene.screenshot = @spriteset.map_viewport.snap_to_bitmap
+    $scene.screenshot = Graphics.snap_to_bitmap # Conflict with DynamicLight
     Yuki::FollowMe.set_battle_entry
   end
 
