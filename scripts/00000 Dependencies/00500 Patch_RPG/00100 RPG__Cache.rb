@@ -352,6 +352,10 @@ module RPG
     # @param _hue [Integer] ingored (compatibility with RMXP)
     # @return [Bitmap]
     def interface(filename, _hue = 0)
+      if interface_exist?(filename_with_language = filename + ($options&.language || 'en')) ||
+         interface_exist?(filename_with_language = filename + 'en')
+        filename = filename_with_language
+      end
       load_image(@interface_cache, filename, Interface_Path, @interface_data)
     end
 
