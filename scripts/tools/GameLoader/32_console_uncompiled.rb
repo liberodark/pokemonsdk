@@ -26,9 +26,9 @@ module Kernel
   # @author Leikt
   def pcc(*args)
     print "\r"
-    cc args.pop if args.last.is_a?(Integer)
-    pc(*args)
-    cc 0x07
+    Kernel.cc args.pop if args.last.is_a?(Integer)
+    Kernel.pc(*args)
+    Kernel.cc 0x07
   end
 
   # Display an error
