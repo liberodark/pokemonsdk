@@ -20,10 +20,10 @@ module UI
       @keys = keys
       create_graphics
       self.button_texts = texts
-        if hide_background_and_button
-          @button_background.visible = false
-          @ctrl.each {|button| button.visible = false}
-        end
+      if hide_background_and_button
+        @button_background.visible = false
+        @ctrl.each {|button| button.visible = false}
+      end
     end
 
     # Set the keys of the buttons

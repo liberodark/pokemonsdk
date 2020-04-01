@@ -187,7 +187,11 @@ class Scene_Map
     # プレイヤーの姿勢を矯正
     $game_player.straighten
     # ショップ画面に切り替え
-    ::GamePlay::Shop.new.main
+    items = Array.new()
+    $game_temp.shop_goods.each_with_index do |good,i|
+      items[i] = good[1] 
+    end
+    ::GamePlay::Shop.new(items).main
     # ショップ呼び出しフラグをクリア
     $game_temp.shop_calling = false
     Graphics.transition
