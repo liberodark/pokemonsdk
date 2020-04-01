@@ -107,6 +107,7 @@ pokemonsdk/scripts/00700 PSDK Event Interpreter/01200 Interpreter_Shortcut.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01201 Interpreter_add_item.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01205 Interpreter_Fiber.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01300 Interpreter_Sequences.rb
+pokemonsdk/scripts/00700 PSDK Event Interpreter/01301 Interpreter_Shop.rb
 pokemonsdk/scripts/00800 GameData/02400 GameData__Loader.rb
 pokemonsdk/scripts/00800 GameData/00100 Serializable/00000 Base.rb
 pokemonsdk/scripts/00800 GameData/00100 Serializable/00101 BallData.rb
@@ -183,6 +184,7 @@ pokemonsdk/scripts/01200 PFM/00100 Global Systems/00100 Pokedex.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00300 Bag.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00400 Trainer.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00500 Options.rb
+pokemonsdk/scripts/01200 PFM/00100 Global Systems/00700 Shop.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01000 Storage (PSS).rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01100 Daycare.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01200 Environnement.rb
@@ -252,6 +254,12 @@ pokemonsdk/scripts/01300 UI/09900 Leikt/02306 List__Content__Helper.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02310 UI__List__Item.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02500 UI__ScrollBar.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02600 UI__TextInput.rb
+pokemonsdk/scripts/01300 UI/00700 Shop/00010 MoneyWindow.rb
+pokemonsdk/scripts/01300 UI/00700 Shop/00020 ShopBanner.rb
+pokemonsdk/scripts/01300 UI/00700 Shop/00030 ItemList.rb
+pokemonsdk/scripts/01300 UI/00700 Shop/00040 Arrow.rb
+pokemonsdk/scripts/01300 UI/00700 Shop/00050 ItemDescWindow.rb
+pokemonsdk/scripts/01300 UI/00700 Shop/00060 ScrollBar.rb
 pokemonsdk/scripts/01400 GamePlay/00100 Scene_Title.rb
 pokemonsdk/scripts/01400 GamePlay/00200 Scene_Map.rb
 pokemonsdk/scripts/01400 GamePlay/00400 GamePlay__Sprites.rb
@@ -286,11 +294,15 @@ pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00100 Evolve.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00200 Hatch.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00300 Skill_Learn.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00400 WorldMap.rb
-pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00500 Shop.rb
-pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00501 Pokemon_Shop.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00600 MoveReminder.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/01000 Shortcut.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/09000 GTS.rb
+pokemonsdk/scripts/01400 GamePlay/01200 Shop/00100 Shop.rb
+pokemonsdk/scripts/01400 GamePlay/01200 Shop/00101 Shop_Graphics.rb
+pokemonsdk/scripts/01400 GamePlay/01200 Shop/00102 Shop_Inputs.rb
+pokemonsdk/scripts/01400 GamePlay/01200 Shop/00110 Shop_Animations.rb
+pokemonsdk/scripts/01400 GamePlay/01200 Shop/00130 Shop_Actions.rb
+pokemonsdk/scripts/01400 GamePlay/01200 Shop/00140 Shop_Mouse.rb
 pokemonsdk/scripts/01400 GamePlay/01000 Storage/03700 GamePlay__Storage.rb
 pokemonsdk/scripts/01400 GamePlay/01000 Storage/03800 GamePlay__StorageDrop.rb
 pokemonsdk/scripts/01400 GamePlay/01000 Storage/03900 GamePlay__StorageItems.rb
