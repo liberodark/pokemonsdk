@@ -137,7 +137,9 @@ module GameData
       # Safely return the name of a move
       # @param id [Integer, Symbol] id of the move in the database
       # @return [String]
-      def name(id)
+      def name(id = Class)
+        return super() if id == Class
+
         id = get_id(id) if id.is_a?(Symbol)
         return text_get(6, id) if id_valid?(id)
         return '???'

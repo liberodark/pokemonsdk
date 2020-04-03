@@ -47,7 +47,9 @@ module GameData
       # Retrieve the name of a type
       # @param id [Integer] ID of the type
       # @return [String]
-      def name(id)
+      def name(id = Class)
+        return super() if id == Class
+
         return @data[id].name if id_valid?(id)
         return DEFAULT_NAME
       end

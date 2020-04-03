@@ -161,7 +161,9 @@ module GameData
       # Safely return the name of the Pokemon
       # @param id [Integer, Symbol] id of the Pokemon in the database
       # @return [String]
-      def name(id)
+      def name(id = Class)
+        return super() if id == Class
+
         id = get_id(id) if id.is_a?(Symbol)
         return text_get(0, id)
       end

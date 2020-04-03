@@ -49,7 +49,9 @@ module GameData
       # Safely return the name of an item
       # @param id [Integer, Symbol] id of the item in the database
       # @return [String]
-      def name(id)
+      def name(id = Class)
+        return super() if id == Class
+
         id = get_id(id) if id.is_a?(Symbol)
         return text_get(12, id) if id_valid?(id)
         return text_get(12, 0)
