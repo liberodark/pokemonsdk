@@ -198,7 +198,7 @@ module PFM
       end
       skills_set.reverse!
       # Load moves from options
-      load_skill_from_array(opts[:moves])
+      load_skill_from_array(opts[:moves]) if opts[:moves]
     end
 
     # Method that initialize the held item
