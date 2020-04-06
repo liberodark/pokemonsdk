@@ -1,34 +1,75 @@
-# PSDK
-This engine allows you to make 2D `P*k*mon` games running on Computer devices.
+# Pokémon SDK
 
-## What engine PSDK use ?
+`PSDK` is a Starter Kit allowing to create Pokémon Games using various tools like RPG Maker XP and custom data base editors.
 
-PSDK use the [LiteRGSS](https://github.com/NuriYuri/LiteRGSS) to display the game & [FMOD](https://fmod.com) to process the audio files.
+### Generic Links
 
-You can find a documentation of the `LiteRGSS` here : [LiteRGSS documentation](https://psdk.pokemonworkshop.fr/litergss/).
+[Downloads](https://download.psdk.pokemonworkshop.com/)
+| [Event Making Tutorial](https://psdk.pokemonworkshop.fr/wiki/en/event_making/index.html)
+| [Edit Database](https://psdk.pokemonworkshop.fr/wiki/en/ruby_host/index.html)
+| [Wiki](https://psdk.pokemonworkshop.com/en/)
+| [LiteRGSS Documentation](https://psdk.pokemonworkshop.com/litergss/)
 
-## How to edit a PSDK project ?
+### Database Indexes
 
-Currently, you use two or three tools to edit a PSDK project : 
-- [RPG Maker XP](http://www.rpgmakerweb.com/products/programs/rpg-maker-xp) : to edit the event and eventually the maps
-- [Tiled](https://www.mapeditor.org) : To make the maps with more freedom (you'll need [Tile2RXDATA](https://pokemonworkshop.fr/forum/index.php?topic=4588.0#post_english) to load the map in RMXP)
-- **RubyHost** : to edit the database.
+[Pokémon](https://psdk.pokemonworkshop.com/db/db_pokemon.html)
+| [Abilities](https://psdk.pokemonworkshop.com/db/db_ability.html)
+| [Items](https://psdk.pokemonworkshop.com/db/db_item.html)
+| [Moves](https://psdk.pokemonworkshop.com/db/db_skill.html)
 
-## How to download PSDK ?
+## Specifications
 
-To download PSDK you should join the [Pokémon Workshop Discord](https://discord.gg/0noB0gBDd91B8pMk) and ask the access in **#access_psdk** then download the right archive in the **Téléchargements-PSDK** category.
+Contrary to `PSP` or `Essentials`, `PSDK` doesn't use the RGSS. We wrote a graphic engine called `LiteRGSS` using `SFML`, which allows a better mastering of the Graphic part of PSDK like adding Shaders, turning some graphic process to C++ side etc...
 
-## Technical informations
+* Game Engine : `LiteRGSS` (under `Ruby 2.5.0`)
+* Default screen size : `320x240` (upscaled to `640x480`)
+* Sound : [FMOD](http://www.fmod.org/) (Support: Midi, WMA, MP3, OGG, MOD, WAVE)
+* Map Editor
+    * `RMXP`
+    * [Tiled](https://pokemonworkshop.fr/forum/index.php?topic=4617.0)
+* Event Editor
+    * `RMXP`
+    * WIP : VSCODE
+* Database Editor
+    * `RubyHost`
+* Dependencies : `SFML`, `LodePNG`, `libnsgif`, `FMOD`, `OpenGL`
 
-- Framerate : 60FPS
-- Default screen resolution : 320x240
-- Supported OS : Windows, Debian-like OS.
-- Ruby version : 2.5.0 (on Windows)
-- Supported Ruby feature :
+## PSDK Features
+### System Features
 
-    - Socket, net/HTTP, net/HTTPS
-    - OpenSSL
-    - Json, YAML
-    - Thread, Fiber, Mutex
-    - Gems (using `Game gem <arguments>`)
-    - Bundle (using `Game bundle <arguments>`)
+- [Time & Tint System](https://psdk.pokemonworkshop.fr/wiki/en/event_making/time-system.html) (using virtual or real clock)
+- Particle System (display animation on characters according to the terrain without using RMXP animations)
+- [FollowMe](https://psdk.pokemonworkshop.fr/wiki/en/event_making/followme.html) (also known as Following Pokémon)
+- [Quests](https://psdk.pokemonworkshop.fr/wiki/en/ruby_host/quest.html)
+- Double & Online Battles (P2P)
+- Running shoes
+- Key Binding UI (F1)
+- Multi-DayCare
+- Berry System
+- Online Trades (P2P)
+- GTS (you need to add an [external script](https://reliccastle.com/resources/314/))
+
+### Mapping & Event Making Features
+
+- Shadow under events system (also known as Overworld Shadows)
+- Extended event info (using the event name)  
+    This feature allow the maker to specify various thing like the event graphics y offset, if the event display shadow or even if the event needs to display a sprite (optimization).
+- SystemTags (Give more info about the terrain and allow specific interactions)
+    - Wild info System Tags (+Particles) : Tall Grass, Cave, Sea/Ocean, Pond/River, Sand, Snow etc…
+    - Mach Bike tiles (muddy slopes & cracked tiles)
+    - Acro Bike tiles (white rails & bunny hop rocks)
+    - Slopes (HGSS thing)
+    - Stairs (4G+ stairs)
+    - Bridges (With event support)
+    - Ledges
+    - Rapid water tiles (forcing direction) / Ice (sliding)
+    - Wet sand (Water particle on player)
+    - Headbutt
+- Dialog / Text Database allowing easier translation for the game using CSV format
+- Special Warp fades (5G out->in & 3G transition)
+- Weathers : Rain, Harsh sunlight, Sandstorm, Snow, Fog
+- Premade common events : Strength, Dig, Fly, DayCare Hosts, Berry Trees, Dowsing Machine, Head Butt, Cut, Rods, Rock Smash, WaterFall, Flash, Whirlpool, Rock Climb, Teleport, Defog
+
+### Mini-Games
+- Voltorb Flip
+- Ruins of Alph puzzle
