@@ -198,7 +198,9 @@ pokemonsdk/scripts/01200 PFM/00200 Helpers/02900 IA.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/03000 ItemDescriptor.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/03100 SkillProcess.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/03200 BattleInterface.rb
-pokemonsdk/scripts/01200 PFM/00300 Pokemon/00100 Pokemon.rb
+pokemonsdk/scripts/01200 PFM/00300 Pokemon/00001 Initialize.rb
+pokemonsdk/scripts/01200 PFM/00300 Pokemon/00002 Properties.rb
+pokemonsdk/scripts/01200 PFM/00300 Pokemon/00003 Deprecatable.rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/00200 Pokemon Graphics.rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/00300 Pokemon EV.rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/00400 Pokemon exp & evolve.rb

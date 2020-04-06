@@ -83,33 +83,6 @@ module PFM
       return (dfs_basis * dfs_modifier).floor
     end
 
-    # Reset the battle stat stage and stuff related to battle
-    def reset_stat_stage
-      # TODO : Move and ajust this in the battle code
-      @battle_stage = Array.new(7, 0)
-      @critical_modifier = 0
-      @ability_used = false
-      @ability_current = @ability
-      @confuse = false
-      @state_count = 0
-      @skills_set.each(&:reset)
-      @skills_set.reject! { |skill| skill.id == 0 }
-      if @sub_id
-        @id = @sub_id
-        @shiny = @sub_shiny
-        @form = @sub_form
-        @sub_id = @sub_shiny = @sub_form = nil
-        self.hp = (max_hp * hp_rate).to_i
-      end
-      @battle_item = @item_holding
-      @battle_item_data = []
-      @type1 = @type2 = @type3 = nil
-      @last_skill = 0
-      @skill_use_times = 0
-      @form = form_generation(-1) if db_symbol == :cherrim
-      @status_count = 0 if toxic?
-    end
-
     # Return the atk stage
     # @return [Integer]
     def atk_stage
