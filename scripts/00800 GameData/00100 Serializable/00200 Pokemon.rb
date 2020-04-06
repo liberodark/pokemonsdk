@@ -681,6 +681,8 @@ module GameData
       # @param symbol [Symbol]
       # @return [Integer]
       def get_id(symbol)
+        return 0 if symbol == :__undef__
+
         pokemon = @data.index { |data| data[0].db_symbol == symbol }
         return pokemon || 0
       end
