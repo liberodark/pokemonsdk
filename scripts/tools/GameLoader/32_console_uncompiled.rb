@@ -59,8 +59,6 @@ module Kernel
 
     rc = binding.receiver
     rc = rc.is_a?(Module) ? rc : rc.class
-    # Immediate because of the debug purpose
-    Kernel.process_log_stack
     pcc "[#{rc}] #{message}", 0x06
     return message
   end
