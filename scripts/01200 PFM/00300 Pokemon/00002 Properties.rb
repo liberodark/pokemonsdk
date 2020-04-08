@@ -14,7 +14,7 @@ module PFM
     attr_reader :hp
     # Code of the pokemon
     # @return [Integer]
-    attr_reader :code
+    attr_accessor :code
     # Number of step before the egg hatch (thus the Pokemon is an egg)
     # @return [Integer]
     attr_accessor :step_remaining
@@ -182,9 +182,9 @@ module PFM
     # Real id of the Pokemon when used transform
     # @return [Integer, nil]
     attr_accessor :sub_id
-    # If shiny or not for the Pokemon when used transform (needed to test if roaming pokemon is ditto)
+    # Real code of the Pokemon when used transform (needed to test if roaming pokemon is ditto)
     # @return [Integer, nil]
-    attr_accessor :sub_shiny
+    attr_accessor :sub_code
     # Real form index of the Pokemon when used transform (needed to test if roaming pokemon is ditto)
     # @return [Integer, nil]
     attr_accessor :sub_form
@@ -222,9 +222,10 @@ module PFM
 
     # Get the shiny attribute
     # @return [Boolean]
-    def shiny
+    def shiny?
       return (@code & 0xFFFF) < shiny_rate || @shiny
     end
+    alias shiny shiny?
 
     # Set the shiny attribut
     # @param shiny [Boolean]

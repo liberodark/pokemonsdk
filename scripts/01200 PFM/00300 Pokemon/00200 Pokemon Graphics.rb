@@ -12,6 +12,14 @@ module PFM
     MALE_NAME_FORM = '%03d_%02d'
     # Name of the Male battler
     MALE_NAME = '%03d'
+    # Name of the Shiny
+    SHINY_NAME = '%03ds'
+    # Name of the Shiny female
+    SHINY_FEMALE_NAME = '%03dfs'
+    # Name of the Shiny form
+    SHINY_NAME_FORM = '%03ds_%02d'
+    # Name of the Shiny female form
+    SHINY_FEMALE_NAME_FORM = '%03dfs_%02d'
     # Size of a battler
     BATTLER_SIZE = 96
     # Size of an icon
@@ -25,17 +33,118 @@ module PFM
       return RPG::Cache.ball(GameData::Item.ball_data(@captured_with).img)
     end
 
+    class << self
+      # Icon filename of a Pokemon
+      # @param id [Integer] ID of the Pokemon
+      # @param form [Integer] form index of the Pokemon
+      # @param female [Boolean] if the Pokemon is a female
+      # @param shiny [Boolean] shiny state of the Pokemon
+      # @param egg [Boolean] egg state of the Pokemon
+      # @return [String]
+      def icon_filename(id, form, female, shiny, egg)
+        return (test_icon(EGG_NAME_ID, id) || EGG_NAME) if egg
+
+        if form > 0
+          if female
+            filename = test_icon(SHINY_FEMALE_NAME_FORM, id, form) if shiny
+            filename ||= test_icon(FEMALE_NAME_FORM, id, form)
+          end
+          filename ||= test_icon(SHINY_NAME_FORM, id, form) if shiny
+          filename ||= test_icon(MALE_NAME_FORM, id, form)
+        end
+        if female
+          filename ||= test_icon(SHINY_FEMALE_NAME, id) if shiny
+          filename ||= test_icon(FEMALE_NAME, id)
+        end
+        filename ||= test_icon(SHINY_NAME, id) if shiny
+        filename ||= test_icon(MALE_NAME, id)
+        return filename || '000'
+      end
+
+      # Return the front battler name
+      # @param id [Integer] ID of the Pokemon
+      # @param form [Integer] form index of the Pokemon
+      # @param female [Boolean] if the Pokemon is a female
+      # @param shiny [Boolean] shiny state of the Pokemon
+      # @param egg [Boolean] egg state of the Pokemon
+      # @return [String]
+      def front_filename(id, form, female, shiny, egg)
+        return (test_front(0, EGG_NAME_ID, id) || EGG_NAME) if egg
+
+        hue = shiny ? 1 : 0
+        if form > 0
+          filename = test_front(hue, FEMALE_NAME_FORM, id, form) if female
+          filename ||= test_front(hue, MALE_NAME_FORM, id, form)
+        end
+        filename ||= test_front(hue, FEMALE_NAME, id) if female
+        filename ||= test_front(hue, MALE_NAME, id)
+        return filename || '000'
+      end
+
+      # Return the back battle of the Pokemon
+      # @param id [Integer] ID of the Pokemon
+      # @param form [Integer] form index of the Pokemon
+      # @param female [Boolean] if the Pokemon is a female
+      # @param shiny [Boolean] shiny state of the Pokemon
+      # @param egg [Boolean] egg state of the Pokemon
+      # @return [String]
+      def back_filename(id, form, female, shiny, egg)
+        return (test_back(0, EGG_NAME_ID, @id) || EGG_NAME) if egg
+
+        hue = shiny ? 1 : 0
+        if form > 0
+          filename = test_back(hue, FEMALE_NAME_FORM, id, form) if female
+          filename ||= test_back(hue, MALE_NAME_FORM, id, form)
+        end
+        filename ||= test_back(hue, FEMALE_NAME, id) if female
+        filename ||= test_back(hue, MALE_NAME, id)
+        return filename || '000'
+      end
+
+      private
+
+      # Try to get an icon filename
+      # @param args [Array] the format command parameters
+      # @return [String, nil]
+      def test_icon(*args)
+        RPG::Cache.b_icon_exist?(filename = format(*args)) ? filename : nil
+      end
+
+      # Try to get a front filename
+      # @param hue [Integer] the hue asked
+      # @param args [Array] the format command parameters
+      # @return [String, nil]
+      def test_front(hue, *args)
+        RPG::Cache.poke_front_exist?(filename = format(*args), hue) ? filename : nil
+      end
+
+      # Try to get a back filename
+      # @param hue [Integer] the hue asked
+      # @param args [Array] the format command parameters
+      # @return [String, nil]
+      def test_back(hue, *args)
+        RPG::Cache.poke_back_exist?(filename = format(*args), hue) ? filename : nil
+      end
+    end
+
     # Return the icon of the Pokemon
     # @return [Bitmap]
     def icon
-      return (load_icon(EGG_NAME_ID, @id) || RPG::Cache.b_icon(EGG_NAME)) if @step_remaining > 0
-      if @form > 0
-        bitmap = load_icon(FEMALE_NAME_FORM, @id, @form)
-        bitmap ||= load_icon(MALE_NAME_FORM, @id, @form)
-      end
-      bitmap ||= load_icon(FEMALE_NAME, @id) if @gender == 2
-      bitmap ||= load_icon(MALE_NAME, @id)
-      return bitmap || RPG::Cache.b_icon('000')
+      return RPG::Cache.b_icon(PFM::Pokemon.icon_filename(id, form, female?, shiny?, egg?))
+    end
+
+    # Return the front battler of the Pokemon
+    # @return [Bitmap]
+    def battler_face
+      return RPG::Cache.poke_front(PFM::Pokemon.front_filename(id, form, female?, shiny?, egg?), shiny? ? 1 : 0)
+    end
+    alias battler_front battler_face
+
+    # Return the back battle of the Pokemon
+    # @return [Bitmap]
+    def battler_back
+      filename = PFM::Pokemon.back_filename(id, form, female?, shiny?, egg?)
+      return filename == '000' ? RPG::Cache.poke_front(filename) : RPG::Cache.poke_back(filename, shiny? ? 1 : 0)
     end
 
     # Return the cry file name of the Pokemon
@@ -45,35 +154,6 @@ module PFM
       with_form = format('Audio/SE/Cries/%03d_%02dCry', @id, @form)
       return with_form if File.exist?(with_form)
       return format('Audio/SE/Cries/%03dCry', @id)
-    end
-
-    # Return the front battler of the Pokemon
-    # @return [Bitmap]
-    def battler_face
-      return (load_front(0, EGG_NAME_ID, @id) || RPG::Cache.poke_front(EGG_NAME)) if @step_remaining > 0
-      hue = @shiny ? 1 : 0
-      if @form > 0
-        bitmap = load_front(hue, FEMALE_NAME_FORM, @id, @form) if @gender == 2
-        bitmap ||= load_front(hue, MALE_NAME_FORM, @id, @form)
-      end
-      bitmap ||= load_front(hue, FEMALE_NAME, @id) if @gender == 2
-      bitmap ||= load_front(hue, MALE_NAME, @id)
-      return bitmap || RPG::Cache.poke_front('000')
-    end
-    alias battler_front battler_face
-
-    # Return the back battle of the Pokemon
-    # @return [Bitmap]
-    def battler_back
-      return (load_back(0, EGG_NAME_ID, @id) || RPG::Cache.poke_back(EGG_NAME)) if @step_remaining > 0
-      hue = @shiny ? 1 : 0
-      if @form > 0
-        bitmap = load_back(hue, FEMALE_NAME_FORM, @id, @form) if @gender == 2
-        bitmap ||= load_back(hue, MALE_NAME_FORM, @id, @form)
-      end
-      bitmap ||= load_back(hue, FEMALE_NAME, @id) if @gender == 2
-      bitmap ||= load_back(hue, MALE_NAME, @id)
-      return bitmap || RPG::Cache.poke_front('000')
     end
 
     # Return the GifReader face of the Pokemon
@@ -149,37 +229,6 @@ module PFM
     # @return [Integer]
     def front_offset_y
       return GameData::Pokemon.front_offset_y(@id, @form)
-    end
-
-    private
-
-    # Try to load an icon
-    # @param args [Array] the format command parameters
-    # @return [Bitmap, nil]
-    def load_icon(*args)
-      name = format(*args)
-      return RPG::Cache.b_icon(name) if RPG::Cache.b_icon_exist?(name)
-      return nil
-    end
-
-    # Try to load a front
-    # @param hue [Integer] the hue asked
-    # @param args [Array] the format command parameters
-    # @return [Bitmap, nil]
-    def load_front(hue, *args)
-      name = format(*args)
-      return RPG::Cache.poke_front(name, hue) if RPG::Cache.poke_front_exist?(name, hue)
-      return nil
-    end
-
-    # Try to load a back
-    # @param hue [Integer] the hue asked
-    # @param args [Array] the format command parameters
-    # @return [Bitmap, nil]
-    def load_back(hue, *args)
-      name = format(*args)
-      return RPG::Cache.poke_back(name, hue) if RPG::Cache.poke_back_exist?(name, hue)
-      return nil
     end
   end
 end

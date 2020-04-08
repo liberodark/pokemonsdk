@@ -116,7 +116,7 @@ class Scene_Battle
       pkmn = @enemies[@enemies[0].dead? ? 1 : 0]
       if (pkmn.sub_id != nil)
         pkmn.id = pkmn.sub_id
-        pkmn.shiny = pkmn.sub_shiny
+        pkmn.code = pkmn.sub_code
         pkmn.form = pkmn.sub_form
       end
       $quests.catch_pokemon(pkmn)
