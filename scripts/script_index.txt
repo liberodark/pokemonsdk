@@ -236,6 +236,12 @@ pokemonsdk/scripts/01300 UI/00500 Summary/00200 Memo.rb
 pokemonsdk/scripts/01300 UI/00500 Summary/00300 Stat.rb
 pokemonsdk/scripts/01300 UI/00500 Summary/00400 Skills.rb
 pokemonsdk/scripts/01300 UI/00500 Summary/00500 Remind.rb
+pokemonsdk/scripts/01300 UI/00700 Shop/00010 MoneyWindow.rb
+pokemonsdk/scripts/01300 UI/00700 Shop/00020 ShopBanner.rb
+pokemonsdk/scripts/01300 UI/00700 Shop/00030 ItemList.rb
+pokemonsdk/scripts/01300 UI/00700 Shop/00040 Arrow.rb
+pokemonsdk/scripts/01300 UI/00700 Shop/00050 ItemDescWindow.rb
+pokemonsdk/scripts/01300 UI/00700 Shop/00060 ScrollBar.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00100 KeyBindingViewer.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00200 QuestInformer.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00300 MenuButton.rb
@@ -250,18 +256,15 @@ pokemonsdk/scripts/01300 UI/09001 NameInput/00002 NameInputUI.rb
 pokemonsdk/scripts/01300 UI/09002 Options/00001 Description.rb
 pokemonsdk/scripts/01300 UI/09002 Options/00002 Arrow.rb
 pokemonsdk/scripts/01300 UI/09002 Options/00003 Button.rb
+pokemonsdk/scripts/01300 UI/09003 Casino/00001 NumberDisplay.rb
+pokemonsdk/scripts/01300 UI/09003 Casino/00002 BandDisplay.rb
+pokemonsdk/scripts/01300 UI/09003 Casino/00004 BaseUI.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02300 List.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02305 List__Content.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02306 List__Content__Helper.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02310 UI__List__Item.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02500 UI__ScrollBar.rb
 pokemonsdk/scripts/01300 UI/09900 Leikt/02600 UI__TextInput.rb
-pokemonsdk/scripts/01300 UI/00700 Shop/00010 MoneyWindow.rb
-pokemonsdk/scripts/01300 UI/00700 Shop/00020 ShopBanner.rb
-pokemonsdk/scripts/01300 UI/00700 Shop/00030 ItemList.rb
-pokemonsdk/scripts/01300 UI/00700 Shop/00040 Arrow.rb
-pokemonsdk/scripts/01300 UI/00700 Shop/00050 ItemDescWindow.rb
-pokemonsdk/scripts/01300 UI/00700 Shop/00060 ScrollBar.rb
 pokemonsdk/scripts/01400 GamePlay/00100 Scene_Title.rb
 pokemonsdk/scripts/01400 GamePlay/00200 Scene_Map.rb
 pokemonsdk/scripts/01400 GamePlay/00400 GamePlay__Sprites.rb
@@ -299,12 +302,6 @@ pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00400 WorldMap.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00600 MoveReminder.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/01000 Shortcut.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/09000 GTS.rb
-pokemonsdk/scripts/01400 GamePlay/01200 Shop/00100 Shop.rb
-pokemonsdk/scripts/01400 GamePlay/01200 Shop/00101 Shop_Graphics.rb
-pokemonsdk/scripts/01400 GamePlay/01200 Shop/00102 Shop_Inputs.rb
-pokemonsdk/scripts/01400 GamePlay/01200 Shop/00110 Shop_Animations.rb
-pokemonsdk/scripts/01400 GamePlay/01200 Shop/00130 Shop_Actions.rb
-pokemonsdk/scripts/01400 GamePlay/01200 Shop/00140 Shop_Mouse.rb
 pokemonsdk/scripts/01400 GamePlay/01000 Storage/03700 GamePlay__Storage.rb
 pokemonsdk/scripts/01400 GamePlay/01000 Storage/03800 GamePlay__StorageDrop.rb
 pokemonsdk/scripts/01400 GamePlay/01000 Storage/03900 GamePlay__StorageItems.rb
@@ -315,11 +312,18 @@ pokemonsdk/scripts/01400 GamePlay/01000 Storage/04400 GamePlay__StorageUtils.rb
 pokemonsdk/scripts/01400 GamePlay/01100 Input/00700 NameInput.rb
 pokemonsdk/scripts/01400 GamePlay/01100 Input/00701 NumberInput.rb
 pokemonsdk/scripts/01400 GamePlay/01100 Input/01100 InputNumber_message.rb
+pokemonsdk/scripts/01400 GamePlay/01200 Shop/00100 Shop.rb
+pokemonsdk/scripts/01400 GamePlay/01200 Shop/00101 Shop_Graphics.rb
+pokemonsdk/scripts/01400 GamePlay/01200 Shop/00102 Shop_Inputs.rb
+pokemonsdk/scripts/01400 GamePlay/01200 Shop/00110 Shop_Animations.rb
+pokemonsdk/scripts/01400 GamePlay/01200 Shop/00130 Shop_Actions.rb
+pokemonsdk/scripts/01400 GamePlay/01200 Shop/00140 Shop_Mouse.rb
 pokemonsdk/scripts/01400 GamePlay/01400 Quest/03200 GamePlay__QuestBookMenu.rb
 pokemonsdk/scripts/01400 GamePlay/01400 Quest/03300 GamePlay__QuestBookList.rb
 pokemonsdk/scripts/01400 GamePlay/01400 Quest/03400 GamePlay__QuestBookQuest.rb
 pokemonsdk/scripts/01400 GamePlay/09000 Games/00001 Casino__VoltorbFlip.rb
 pokemonsdk/scripts/01400 GamePlay/09000 Games/00002 Ruine_Alpha_by_FL0RENT_.rb
+pokemonsdk/scripts/01400 GamePlay/09000 Games/00003 Casino__SlotMachine.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01500 GamePlay__Battle_xxx/00100 GamePlay__BattleAbilityDisplayer.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01500 GamePlay__Battle_xxx/00200 GamePlay__BattleBalls.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01500 GamePlay__Battle_xxx/00300 GamePlay__BattleBar.rb
