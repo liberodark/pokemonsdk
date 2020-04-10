@@ -143,8 +143,35 @@ module PFM
     # Return the back battle of the Pokemon
     # @return [Bitmap]
     def battler_back
-      filename = PFM::Pokemon.back_filename(id, form, female?, shiny?, egg?)
-      return filename == '000' ? RPG::Cache.poke_front(filename) : RPG::Cache.poke_back(filename, shiny? ? 1 : 0)
+      return RPG::Cache.poke_back(PFM::Pokemon.back_filename(id, form, female?, shiny?, egg?), shiny? ? 1 : 0)
+    end
+
+    # Return the front offset y of the Pokemon
+    # @return [Integer]
+    def front_offset_y
+      return GameData::Pokemon.front_offset_y(id, form)
+    end
+
+
+    # Return the character name of the Pokemon
+    # @return [String]
+    def character_name
+      unless @character
+        character = nil
+        if female?
+          character = sprintf("%03df%s_%d", id, shiny? ? "s" : nil, form)
+          character = nil unless RPG::Cache.character_exist?(character)
+        end
+        unless character
+          character = sprintf("%03d%s_%d", id, shiny? ? "s" : nil, form)
+          unless RPG::Cache.character_exist?(character)
+            character = sprintf("%03d%s_0", id, shiny? ? "s" : nil)
+            character = sprintf("%03d_0", id) unless RPG::Cache.character_exist?(character)
+          end
+        end
+        @character = character
+      end
+      return @character
     end
 
     # Return the cry file name of the Pokemon
@@ -202,33 +229,6 @@ module PFM
       str = sprintf("Graphics/Pokedex/PokeBack%s/%03d.gif", hue, @id)
       return ::Yuki::GifReader.new(str) if File.exist?(str)
       return nil
-    end
-
-    # Return the character name of the Pokemon
-    # @return [String]
-    def character_name
-      unless @character
-        character = nil
-        if(@gender==2)
-          character = sprintf("%03df%s_%d",@id,@shiny ? "s" : nil,@form)
-          character = nil unless RPG::Cache.character_exist?(character)
-        end
-        unless character
-          character = sprintf("%03d%s_%d",@id,@shiny ? "s" : nil,@form)
-          unless RPG::Cache.character_exist?(character)
-            character = sprintf("%03d%s_0",@id,@shiny ? "s" : nil)
-            character = sprintf("%03d_0",@id) unless RPG::Cache.character_exist?(character)
-          end
-        end
-        @character = character
-      end
-      return @character
-    end
-
-    # Return the front offset y of the Pokemon
-    # @return [Integer]
-    def front_offset_y
-      return GameData::Pokemon.front_offset_y(@id, @form)
     end
   end
 end
