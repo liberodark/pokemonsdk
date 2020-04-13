@@ -2,9 +2,13 @@ module PFM
   # Class responsive of managing Nuzlocke information and helping to implement the nuzlocke logic
   # @author Logically anime and ralandel
   class Nuzlocke
+    # If we prevent Duplicate from locking catch
+    # @return [Boolean]
+    attr_accessor :no_lock_on_duplicate
     # Create a new Nuzlocke object
     def initialize
       @catch_locked_zones = []
+      @no_lock_on_duplicate = false
     end
 
     # Function that clears the dead Pokemon from the party
@@ -21,7 +25,12 @@ module PFM
     alias dead clear_dead_pokemon
 
     # Lock the current zone (prevent Pokemon from being able to be caught here)
-    def lock_catch_in_current_zone
+    # @note This method checks if that's possible to lock before locking
+    # @param pokemon_id [Integer] ID of the Pokemon that was seen before locking
+    def lock_catch_in_current_zone(pokemon_id)
+      return if catching_locked_here? || $game_temp.trainer_battle
+      return if no_lock_on_duplicate && $pokedex.pokemon_caught?(pokemon_id) && !$game_switches[Yuki::Sw::BT_Catch]
+
       @catch_locked_zones.push($env.master_zone)
     end
 

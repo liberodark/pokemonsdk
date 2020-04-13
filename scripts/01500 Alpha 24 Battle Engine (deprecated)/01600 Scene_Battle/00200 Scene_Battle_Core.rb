@@ -212,11 +212,7 @@ class Scene_Battle
     BattleEngine.get_enemies.clear
     if $pokemon_party.nuzlocke.enabled?
       $pokemon_party.nuzlocke.clear_dead_pokemon
-      unless $pokemon_party.nuzlocke.catching_locked_here? || $game_temp.trainer_battle
-        unless $pokedex.pokemon_caught?($scene.enemy_party.actors[0].id) == true && $game_switches[Yuki::Sw::BT_Catch] == false
-          $pokemon_party.nuzlocke.lock_catch_in_current_zone
-        end
-      end
+      $pokemon_party.nuzlocke.lock_catch_in_current_zone($scene.enemy_party.actors[0].id)
     end
     # Retour à la carte
     $scene = Scene_Map.new
