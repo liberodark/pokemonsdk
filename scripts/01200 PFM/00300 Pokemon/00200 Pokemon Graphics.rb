@@ -178,7 +178,9 @@ module PFM
     # @return [String]
     def cry
       return nil.to_s if @step_remaining > 0
-      with_form = format('Audio/SE/Cries/%03d_%02dCry', @id, @form)
+      with_form = format('Audio/SE/Cries/%03d_%02dCry.ogg', @id, @form)
+      return with_form if File.exist?(with_form)
+      with_form = format('Audio/SE/Cries/%03d_%02dCry.wav', @id, @form)
       return with_form if File.exist?(with_form)
       return format('Audio/SE/Cries/%03dCry', @id)
     end
