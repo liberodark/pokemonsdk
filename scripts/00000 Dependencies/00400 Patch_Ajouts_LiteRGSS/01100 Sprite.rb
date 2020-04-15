@@ -2,6 +2,9 @@
 #
 # see https://psdk.pokemonworkshop.com/litergss/LiteRGSS/Sprite.html
 class Sprite
+  # RGSS Compatibility "update" the sprite
+  def update
+  end
   # define the coordinates of the sprite
   # @param x [Numeric] x coordinate
   # @param y [Numeric] y coordinate
