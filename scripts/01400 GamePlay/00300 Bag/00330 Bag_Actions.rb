@@ -7,6 +7,8 @@ module GamePlay
     # When player wants to use the item
     def use_item
       item_id = @item_list[index = @index]
+      return play_buzzer_se unless $bag.contain_item?(item_id)
+
       util_item_useitem(item_id) do
         @base_ui.hide_win_text
         hide_shadow_frame
@@ -37,7 +39,10 @@ module GamePlay
 
     # When the player wants to give an item
     def give_item
-      call_scene(Party_Menu, $actors, :hold, @item_list[index = @index]) do
+      item_id = @item_list[index = @index]
+      return play_buzzer_se unless $bag.contain_item?(item_id)
+
+      call_scene(Party_Menu, $actors, :hold, item_id) do
         @base_ui.hide_win_text
         hide_shadow_frame
         update_bag_ui_after_action(index)
@@ -92,6 +97,8 @@ module GamePlay
     # When the player wants to throw an item
     def throw_item
       item_id = @item_list[index = @index]
+      return play_buzzer_se unless $bag.contain_item?(item_id)
+
       $game_temp.num_input_variable_id = Yuki::Var::EnteredNumber
       $game_temp.num_input_digits_max = $bag.item_quantity(item_id).to_s.size
       $game_temp.num_input_start = $bag.item_quantity(item_id)
