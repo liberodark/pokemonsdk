@@ -1,5 +1,5 @@
 module PFM
-
+  # Class describing the shop logic
   class Shop
     # Hash containing the defined shops
     # @return [Hash]
@@ -46,15 +46,15 @@ module PFM
 
       if @shop_list.key?(symbol_of_shop)
         list_item_id_to_refill.each_with_index do |id, index|
-          @shop_list[symbol_of_shop][id] = 0 if !@shop_list[symbol_of_shop].key?(id)
+          @shop_list[symbol_of_shop][id] = 0 unless @shop_list[symbol_of_shop].key?(id)
           if GameData::Item.limited_use?(id)
             @shop_list[symbol_of_shop][id] += (list_quantity_to_refill[index] != nil ? list_quantity_to_refill[index] : 1)
           else
             @shop_list[symbol_of_shop][id] = 1
           end
         end
-      else 
-        create_new_limited_shop(symbol_of_shop, list_item_id_to_refill, list_quantity_to_refill) # We create a shop if one do not already exist
+      else # We create a shop if one do not already exist
+        create_new_limited_shop(symbol_of_shop, list_item_id_to_refill, list_quantity_to_refill)
       end
     end
 
@@ -64,13 +64,12 @@ module PFM
     # @param list_quantity_to_remove [Array<Integer>] the array of the quantity to remove
     def remove_from_limited_shop(symbol_of_shop, list_item_id_to_remove, list_quantity_to_remove)
       return unless shop_param_legit?(symbol_of_shop, list_item_id_to_remove, list_quantity_to_remove)
-
-      return if !@shop_list.key?(symbol_of_shop)
+      return unless @shop_list.key?(symbol_of_shop)
 
       list_item_id_to_remove.each_with_index do |id, index|
-        next if !@shop_list[symbol_of_shop].key?(id)
+        next unless @shop_list[symbol_of_shop].key?(id)
 
-        @shop_list[symbol_of_shop][id] -= (list_quantity_to_remove[index] != nil ? list_quantity_to_remove[index] : 999)
+        @shop_list[symbol_of_shop][id] -= (list_quantity_to_remove[index].nil? ? 999 : list_quantity_to_remove[index])
         @shop_list[symbol_of_shop].delete(id) if @shop_list[symbol_of_shop][id] <= 0
       end
     end
@@ -94,17 +93,22 @@ module PFM
     # @param list_price [Array<Integer>] the array containing the prices of the Pokemon to sell
     # @param list_quantity_mon [Array<Integer>] the array containing the quantity of the Pokemon to sell
     # @param shop_rewrite [Boolean] if the system must completely overwrite an already existing shop
-    def create_new_pokemon_shop(sym_new_shop, list_id_mon, list_price, list_param_mon, list_quantity_mon = [], shop_rewrite: false)
-      return unless mon_shop_param_legit?(sym_new_shop, list_id: list_id_mon, list_param: list_param_mon,
-                                          list_price: list_price, list_quantity: list_quantity_mon)
+    def create_new_pokemon_shop(sym_new_shop, list_id_mon, list_price, list_param_mon, list_quantity_mon = [],
+                                shop_rewrite: false)
+      return unless mon_shop_param_legit?(sym_new_shop,
+                                          list_id: list_id_mon,
+                                          list_param: list_param_mon,
+                                          list_price: list_price,
+                                          list_quantity: list_quantity_mon)
 
       if @pokemon_shop_list.key?(sym_new_shop) && shop_rewrite
         @pokemon_shop_list.delete(sym_new_shop)
       elsif @pokemon_shop_list.key?(sym_new_shop) && shop_rewrite == false
         return refill_pokemon_shop(sym_new_shop, list_id_mon, list_param_mon, list_price, list_quantity_mon)
-
       end
+
       @pokemon_shop_list[sym_new_shop] = []
+
       list_id_mon.each_with_index do |id, index|
         register_new_pokemon_in_shop(sym_new_shop, id, list_price[index], list_param_mon[index], list_quantity_mon[index])
       end
@@ -118,8 +122,11 @@ module PFM
     # @param list_price [Array<Integer>] the array containing the prices of the Pokemon to sell
     # @param list_quantity_mon [Array<Integer>] the array containing the quantity of the Pokemon to sell
     def refill_pokemon_shop(symbol_of_shop, list_id_mon = [], list_price = [], list_param_mon = [], list_quantity_mon = [], pkm_rewrite: false)
-      return unless mon_shop_param_legit?(symbol_of_shop, list_id: list_id_mon, list_param: list_param_mon,
-                                          list_price: list_price, list_quantity: list_quantity_mon)
+      return unless mon_shop_param_legit?(symbol_of_shop,
+                                          list_id: list_id_mon,
+                                          list_param: list_param_mon,
+                                          list_price: list_price,
+                                          list_quantity: list_quantity_mon)
 
       if @pokemon_shop_list.key?(symbol_of_shop)
         list_id_mon.each_with_index do |id, index|
@@ -127,8 +134,8 @@ module PFM
                                        list_quantity_mon[index], rewrite: pkm_rewrite)
         end
         sort_pokemon_shop(symbol_of_shop)
-      else 
-        create_new_pokemon_shop(symbol_of_shop, list_id_mon, list_price, list_param_mon, list_quantity_mon) # We create a shop if one do not already exist
+      else # We create a shop if one do not already exist
+        create_new_pokemon_shop(symbol_of_shop, list_id_mon, list_price, list_param_mon, list_quantity_mon)
       end
     end
 
@@ -138,17 +145,20 @@ module PFM
     # @param param_form [Array<Hash>] the form of the Pokemon to delete (only if there is more than one form of a Pokemon in the list)
     # @param list_quantity_to_remove [Array<Integer>] the array of the quantity to remove
     def remove_from_pokemon_shop(symbol_of_shop, remove_list_mon, param_form = [], list_quantity_to_remove = [])
-      return unless mon_shop_param_legit?(symbol_of_shop, list_id: remove_list_mon, list_param: param_form,
+      return unless mon_shop_param_legit?(symbol_of_shop,
+                                          list_id: remove_list_mon,
+                                          list_param: param_form,
                                           list_quantity: list_quantity_to_remove)
-
-      return if !@pokemon_shop_list.key?(symbol_of_shop)
+      return unless @pokemon_shop_list.key?(symbol_of_shop)
 
       pkm_list = @pokemon_shop_list[symbol_of_shop]
       remove_list_mon.each_with_index do |id, index|
-        if result = pkm_list.find_index { |hash| hash[:id] == id and hash[:form].to_i == param_form[index].is_a?(Hash) ? param_form[index][:form].to_i : 0 }  
-          pkm_list[result][:quantity] -= (list_quantity_to_remove[index] != nil ? list_quantity_to_remove[index] : 999)
-          pkm_list.delete_at(result) if pkm_list[result][:quantity] <= 0
-        end
+        form = param_form[index].is_a?(Hash) ? param_form[index][:form].to_i : 0
+        result = pkm_list.find_index { |hash| hash[:id] == id && hash[:form].to_i == form }
+        next unless result
+
+        pkm_list[result][:quantity] -= (list_quantity_to_remove[index].nil? ? 999 : list_quantity_to_remove[index])
+        pkm_list.delete_at(result) if pkm_list[result][:quantity] <= 0
       end
       @pokemon_shop_list[symbol_of_shop] = pkm_list
       sort_pokemon_shop(symbol_of_shop)
@@ -162,21 +172,20 @@ module PFM
     # @param quantity [Integer] the quantity of the Pokemon to register
     # @param rewrite [Boolean] if an existing Pokemon should be rewritten or not
     def register_new_pokemon_in_shop(sym_shop, id, price, param, quantity, rewrite: false)
-      param = { level: param } if param.is_a?(Integer)
-      if (result = @pokemon_shop_list[sym_shop].index { |hash| hash[:id] == id and hash[:form].to_i == param[:form].to_i }) && rewrite
+      param = { level: param } if param.is_a?(Integer) # <= param is always hash from here @Rey
+      index_condition = proc { |hash| hash[:id] == id && hash[:form].to_i == param[:form].to_i }
+
+      if (result = @pokemon_shop_list[sym_shop].index(&index_condition)) && rewrite
         @pokemon_shop_list[sym_shop].delete_at(result)
-      elsif result = @pokemon_shop_list[sym_shop].index { |hash| hash[:id] == id and hash[:form].to_i == param[:form].to_i }
+      elsif (result = @pokemon_shop_list[sym_shop].index(&index_condition))
         return @pokemon_shop_list[sym_shop][result][:quantity] += quantity || 1
       end
-      hash_pkm = {}
+
+      hash_pkm = param.dup
       hash_pkm[:id] = id
-      if param.is_a? Integer
-        hash_pkm[:level] = param
-      elsif param.is_a? Hash
-        hash_pkm.merge!(param)
-      end
       hash_pkm[:price] = price
       hash_pkm[:quantity] = quantity || 1
+
       @pokemon_shop_list[sym_shop] << hash_pkm
     end
 
@@ -208,9 +217,11 @@ module PFM
     # @return [PFM::Shop]
     attr_accessor :shop
     on_player_initialize(:shop) { @shop = PFM::Shop.new }
-    on_expand_global_variables(:shop) {
+    on_expand_global_variables(:shop) do
       # Variable containing the limited shops information
       @shop ||= PFM::Shop.new
-    }
+      # Migration of old saves
+      @shop.pokemon_shop_list ||= {}
+    end
   end
 end
