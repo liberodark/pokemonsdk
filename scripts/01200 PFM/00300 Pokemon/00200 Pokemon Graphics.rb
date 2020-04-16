@@ -191,7 +191,7 @@ module PFM
       if @step_remaining>0
         return nil
       end
-      hue = @shiny ? "Shiny" : ""
+      hue = shiny? ? "Shiny" : ""
       if(@gender == 2)
         if(@form > 0)
           str = sprintf("Graphics/Pokedex/PokeFront%s/%03df_%02d.gif", hue, @id , @form)
@@ -215,7 +215,7 @@ module PFM
       if @step_remaining>0
         return nil
       end
-      hue = @shiny ? "Shiny" : ""
+      hue = shiny? ? "Shiny" : ""
       if(@gender == 2)
         if(@form > 0)
           str = sprintf("Graphics/Pokedex/PokeBack%s/%03df_%02d.gif", hue, @id , @form)
