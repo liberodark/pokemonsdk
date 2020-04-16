@@ -241,6 +241,9 @@ pokemonsdk/scripts/01300 UI/00700 Shop/00030 ItemList.rb
 pokemonsdk/scripts/01300 UI/00700 Shop/00040 Arrow.rb
 pokemonsdk/scripts/01300 UI/00700 Shop/00050 ItemDescWindow.rb
 pokemonsdk/scripts/01300 UI/00700 Shop/00060 ScrollBar.rb
+pokemonsdk/scripts/01300 UI/00800 Pokemon_Shop/00010 ItemList.rb
+pokemonsdk/scripts/01300 UI/00800 Pokemon_Shop/00020 ItemDescWindow.rb
+pokemonsdk/scripts/01300 UI/00800 Pokemon_Shop/00030 ScrollBar.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00100 KeyBindingViewer.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00200 QuestInformer.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00300 MenuButton.rb
@@ -317,6 +320,11 @@ pokemonsdk/scripts/01400 GamePlay/01200 Shop/00102 Shop_Inputs.rb
 pokemonsdk/scripts/01400 GamePlay/01200 Shop/00110 Shop_Animations.rb
 pokemonsdk/scripts/01400 GamePlay/01200 Shop/00130 Shop_Actions.rb
 pokemonsdk/scripts/01400 GamePlay/01200 Shop/00140 Shop_Mouse.rb
+pokemonsdk/scripts/01400 GamePlay/01300 Pokemon_Shop/00100 Shop.rb
+pokemonsdk/scripts/01400 GamePlay/01300 Pokemon_Shop/00110 Shop_Graphics.rb
+pokemonsdk/scripts/01400 GamePlay/01300 Pokemon_Shop/00120 Shop_Inputs.rb
+pokemonsdk/scripts/01400 GamePlay/01300 Pokemon_Shop/00130 Shop_Actions.rb
+pokemonsdk/scripts/01400 GamePlay/01300 Pokemon_Shop/00140 Shop_Mouse.rb
 pokemonsdk/scripts/01400 GamePlay/01400 Quest/03200 GamePlay__QuestBookMenu.rb
 pokemonsdk/scripts/01400 GamePlay/01400 Quest/03300 GamePlay__QuestBookList.rb
 pokemonsdk/scripts/01400 GamePlay/01400 Quest/03400 GamePlay__QuestBookQuest.rb
