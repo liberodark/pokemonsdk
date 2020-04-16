@@ -21,6 +21,7 @@ module GamePlay
     #   .new([4, 17], {4: 100, 17: 125}) # Will open a Shop selling Poké Balls at 100 Pokédollars and Potions at 125 Pokédollars
     def initialize(symbol_or_list, price_overwrite = {}, show_background: true)
       super()
+      return if symbol_or_list == false
       validate_param(:initialize, :symbol_or_list, symbol_or_list => [Symbol, Array])
       validate_param(:initialize, :symbol_or_list, symbol_or_list => { Array => Integer }) if symbol_or_list.class == Array
       validate_param(:initialize, :price_overwrite, price_overwrite => Hash)
