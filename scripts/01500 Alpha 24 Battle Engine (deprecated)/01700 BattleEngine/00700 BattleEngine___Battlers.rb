@@ -135,7 +135,7 @@ module BattleEngine
       else
         _mp([:use_skill_msg, pkmn, pkmn, skill])
         _mp([:msg, parse_text(18, 259, MOVE[0] => skill.name)])
-        _messahe_stack_push([:hp_down, pkmn, pkmn.max_hp/4])
+        _message_stack_push([:hp_down, pkmn, pkmn.max_hp/4])
       end
       return false
     end
