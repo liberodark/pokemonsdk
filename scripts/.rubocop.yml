@@ -34,7 +34,7 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 # 120 characters seems better than 80, we don't use small screen anymore
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 
 # 10 arguments is fine, most of the time they're used as data feeding
