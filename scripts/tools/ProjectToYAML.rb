@@ -178,3 +178,51 @@ class Table
     end
   end
 end
+
+# Fix to make Pokemon Data a bit more concise
+module GameData
+  class Pokemon
+    # Deceive YAML on instance_variable_get
+    # @param ivar [Symbol] name of the instance variable
+    # @return [Object]
+    def instance_variable_get(ivar)
+      value = super
+      if value.is_a?(Array) && value.all? { |subvalue| subvalue.is_a?(Integer) }
+        return "Array<Integer>[#{value.join(', ')}]"
+      end
+
+      return value
+    end
+
+    # Deceive YAML on instance_variable_set
+    # @param ivar [Symbol] name of the instance variable
+    # @param value [String, Object] value of the table
+    def instance_variable_set(ivar, value)
+      if value.is_a?(String) && value.start_with?('Array<Integer>[')
+        return super(ivar, value[15..-2].split(',').map(&:to_i))
+      end
+
+      super(ivar, value)
+    end
+  end
+
+  class Base
+    GENERIC_ORDER = %i[
+      @db_symbol @id @id_bis @form @type1 @type2 @base_hp @base_atk @base_dfe @base_spd @base_ats @base_dfs
+      @ev_hp @ev_atk @ev_dfe @ev_spd @ev_ats @ev_dfs @move_set @tech_set @master_moves @breed_moves @breed_groupes
+      @hatch_step @baby @evolution_level @evolution_id @special_evolution @exp_type @base_exp @base_loyalty
+      @rareness @female_rate @items @abilities @type @power @atk_class @priority @accuracy @pp_max @target
+      @critical_rate @map_use @be_method @effect_chance @status @battle_stage_mod
+    ]
+    # Decieve YAML to get ivar in the right order
+    def instance_variables
+      size = GENERIC_ORDER.size
+      super.sort do |a, b|
+        v = (GENERIC_ORDER.index(a) || size) <=> (GENERIC_ORDER.index(b) || size)
+        next v unless v == 0
+
+        a <=> b
+      end
+    end
+  end
+end
