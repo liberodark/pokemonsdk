@@ -131,7 +131,7 @@ module PFM
       @captured_in = opts[:captured_in] || $env.master_zone
       @given_name = opts[:given_name]
       @memo_text = opts[:memo_text]
-      self.gender = opts[:gender] || (primary_data.female_rate < rand(100) ? 2 : 1)
+      self.gender = opts[:gender] || (rand(100) < primary_data.female_rate ? 2 : 1)
       # Set flags
       self.flags = (FLAG_UNKOWN_USE | FLAG_FROM_THIS_GAME | FLAG_PRESENT_TIME)
       self.flags |= FLAG_CAUGHT_BY_PLAYER if @trainer_id == $trainer.id && @trainer_name == $trainer.name
