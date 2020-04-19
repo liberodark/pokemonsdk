@@ -174,7 +174,8 @@ class Game_Player < Game_Character
   def update_check_trigger(last_moving)
     if last_moving && !check_event_trigger_here([1, 2])
       unless debug? && Input.press?(:CTRL)
-        @encounter_count -= 1 if @encounter_count > 0
+        @encounter_count -= 1 if @encounter_count > 1
+        make_encounter_count if @encounter_count <= 1
       end
     end
     return unless Input.trigger?(:A)
