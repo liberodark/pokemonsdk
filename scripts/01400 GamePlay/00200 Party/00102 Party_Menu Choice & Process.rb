@@ -449,6 +449,7 @@ module GamePlay
       @move = -1
       @base_ui.hide_win_text
       @intern_mode = :normal
+      $game_player.make_encounter_count
     end
 
     # Process the switch between the items of two pokemon
