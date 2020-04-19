@@ -2,6 +2,9 @@ module GamePlay
   class Shop
     private
 
+    # Name of the SE to play when an item is bought
+    BUY_SE = 'Audio/SE/purchase_sound'
+
     # Launch the buy sequence
     def launch_buy_sequence
       if GameData::Item.limited_use?(@list_item[@index]) == false
@@ -111,10 +114,24 @@ module GamePlay
     def money_checkout(nb)
       display_message(parse_text(11, 29))
       $pokemon_party.lose_money(nb * @list_price[@index])
+      update_money_text
+      Audio.se_play(BUY_SE)
       $bag.add_item(@list_item[@index], nb)
       @what_was_buyed << @list_item[@index] unless @what_was_buyed.any? { |item| item == @list_item[@index] }
+      buy_item_special_offer(quantity)
       @shop.remove_from_limited_shop(@symbol_or_list, [@list_item[@index]], [nb]) if @symbol_or_list.is_a?(Symbol)
       update_shop_ui_after_buying(@index)
+    end
+
+    # Execute the special offer of the shop when the player bough an item
+    # @param item_id [Integer] ID of the item bought
+    # @param quantity [Integer] Number of item bought
+    def buy_item_special_offer(quantity)
+      if (1..16).include?(@list_item[@index]) && quantity >= 10
+        # Honnor ball gift
+        display_message(text_get(11, 32))
+        $bag.add_item(12, (quantity / 10))
+      end
     end
 
     # Make sure the Shop UI gets updated after buying something
