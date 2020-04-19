@@ -153,24 +153,30 @@ class Game_Map
     return @map.encounter_list
   end
 
-  # Returns the encounter step of the map
-  # @return [Integer] number of step the player must do before each encounter
-  def encounter_step
-    return @map.encounter_step
+  # Returns the encounter steps from RMXP data
+  # @return [Integer]
+  def rmxp_encounter_steps
+    @map.encounter_step
   end
 
-  alias rmxp_encounter_step encounter_step
+  # Returns the encounter step of the map (including ability modifier)
+  # @return [Integer] number of step the player must do before each encounter
   def encounter_step
-    value = rmxp_encounter_step  # encounter rate
+    return rmxp_encounter_steps unless $actors
+
     ability = $actors[0]&.ability_db_symbol || :__undef__ # the first pokemon in the party's ability
-    return value unless $actors
-    return value / 2 if ENC_FREQ_INC.include?(ability) # if the ability matches the encounter increasing ability the encounter rate is doubled
+
+    # if the ability matches the encounter increasing ability the encounter rate is doubled
+    return rmxp_encounter_steps / 2 if ENC_FREQ_INC.include?(ability)
+
+    # if the ability matches the encounter lowering ability the encounter rate is halved
     if ENC_FREQ_DEC.include?(ability) ||
-        (ENC_FREQ_DEC_HAIL.include?(ability) && $env.hail?) || 
-        (ENC_FREQ_DEC_SANDSTORM.include?(ability) && $env.sandstorm?)
-      return value * 2                              # if the ability matches the encounter lowering ability the encounter rate is halved
+       (ENC_FREQ_DEC_HAIL.include?(ability) && $env.hail?) ||
+       (ENC_FREQ_DEC_SANDSTORM.include?(ability) && $env.sandstorm?)
+      return rmxp_encounter_steps * 2
     end
-    return value # else the normal encounter rate is returned
+
+    return rmxp_encounter_steps # else the normal encounter rate is returned
   end
 
   # Returns the tile matrix of the Map
