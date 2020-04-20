@@ -118,7 +118,7 @@ module GamePlay
       Audio.se_play(BUY_SE)
       $bag.add_item(@list_item[@index], nb)
       @what_was_buyed << @list_item[@index] unless @what_was_buyed.any? { |item| item == @list_item[@index] }
-      buy_item_special_offer(quantity)
+      buy_item_special_offer(nb)
       @shop.remove_from_limited_shop(@symbol_or_list, [@list_item[@index]], [nb]) if @symbol_or_list.is_a?(Symbol)
       update_shop_ui_after_buying(@index)
     end
