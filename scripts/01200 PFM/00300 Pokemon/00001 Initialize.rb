@@ -122,7 +122,7 @@ module PFM
     def catch_data_initialize(opts)
       @captured_with = opts[:captured_with] || :"poké_ball"
       @captured_with = GameData::Item.get_id(@captured_with) unless @captured_with.is_a?(Integer)
-      @captured_at = opts[:captured_at].to_i || Time.now.to_i
+      @captured_at = (opts[:captured_at] || Time.now).to_i
       @captured_level = opts[:captured_level] || @level
       @egg_in = opts[:egg_in]
       @egg_at = opts[:egg_at]
