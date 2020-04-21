@@ -51,7 +51,7 @@ module GamePlay
 
     # Action related to A button
     def action_a
-      if $pokemon_party.money > @list_price[@index]
+      if $pokemon_party.money >= @list_price[@index]
         launch_buy_sequence
       else
         display_message(parse_text(11, 24))

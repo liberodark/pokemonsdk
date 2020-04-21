@@ -23,7 +23,7 @@ module GamePlay
 
     # Action related to A button
     def action_a
-      if $pokemon_party.money > @list_item[@index][:price]
+      if $pokemon_party.money >= @list_item[@index][:price]
         buy_pokemon
       else
         display_message(parse_text(11, 24))
