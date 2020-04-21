@@ -171,6 +171,8 @@ module PFM
     on_expand_global_variables(:nuzlocke) do
       # Variable containing the Nuzlocke Logic
       @nuzlocke ||= Nuzlocke.new
+      # Adding a new value for old save
+      @nuzlocke.graveyard ||= []
     end
 
     # The pathfinding requests
