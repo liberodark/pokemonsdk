@@ -316,7 +316,7 @@ module BattleEngine
 
   #===
   #>s_venom_drench
-  # Choc Venin
+  # Piege Venin
   #===
   def s_venom_drench(launcher, target, skill, msg_push = true)
     if target.poisoned? or target.toxic?
@@ -457,18 +457,6 @@ module BattleEngine
       s_basic(launcher, target, skill)
     else
       __s_beg_step(launcher, target, skill, msg_push)
-      _mp(MSG_Fail)
-    end
-  end
-  #===
-  #>s_captivate
-  # Séducition
-  #===
-  def s_captivate(launcher, target, skill, msg_push = true)
-    if(target.gender * launcher.gender == 2)
-      s_stat(launcher, target, skill)
-    else
-      return unless __s_beg_step(launcher, target, skill, msg_push)
       _mp(MSG_Fail)
     end
   end
