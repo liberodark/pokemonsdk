@@ -365,5 +365,17 @@ module BattleEngine
         actions.insert(@scene.phase4_step + 1, action)
       end
     end
+    #===
+    #> Fait attaquer une cible en dernier
+    #===
+    def quash(target)
+      i = nil
+      actions = @scene.actions
+      action = actions.find { |i| (i[0] == 0 and i[3] == target) }
+      if(action)
+        actions.delete(action)
+        actions.push(action)
+      end
+    end
   end
 end
