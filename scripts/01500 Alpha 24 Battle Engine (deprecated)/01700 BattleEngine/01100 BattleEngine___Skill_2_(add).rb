@@ -726,13 +726,25 @@ module BattleEngine
   #===
   def s_after_you(launcher, target, skill, msg_push = true)
     return unless __s_beg_step(launcher, target, skill, msg_push)
-    if _attacking_before?(launcher, target) or (target.attack_order - launcher.attack_order) == 1
+    if _attacking_before?(target, launcher) || $game_temp.vs_type == 1
       _mp(MSG_Fail)
     else
       _mp([:after_you, target])
     end
   end
-
+  #===
+  #>s_quash
+  # A la Queue
+  #===
+  def s_quash(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
+    # Fail if the target is already attacking last or if we are in a simple battle mode
+    if _attacking_last?(target) || $game_temp.vs_type == 1
+      _mp(MSG_Fail)
+    else
+      _mp([:quash, target])
+    end
+  end
   #===
   #>s_psycho_shift
   # Echange Psy
