@@ -5,10 +5,14 @@ module PFM
     # If we prevent Duplicate from locking catch
     # @return [Boolean]
     attr_accessor :no_lock_on_duplicate
+    # Storage of dead Pokemon to re-use later in other systems
+    # @return [Array<PFM::Pokemon>]
+    attr_accessor :graveyard
     # Create a new Nuzlocke object
     def initialize
       @catch_locked_zones = []
       @no_lock_on_duplicate = false
+      @graveyard = []
     end
 
     # Function that clears the dead Pokemon from the party
@@ -19,6 +23,8 @@ module PFM
       item_ids = $actors.select(&dead_condition).map(&:item_hold)
       # Add items back to the bag
       item_ids.each { |item_id| $bag.add_item(item_id, 1) if item_id >= 0 }
+      # Storing Pokemon that are dead
+      graveyard.concat($actors.select(&dead_condition))
       # Remove Pokemon from the party
       $actors.delete_if(&dead_condition)
     end
