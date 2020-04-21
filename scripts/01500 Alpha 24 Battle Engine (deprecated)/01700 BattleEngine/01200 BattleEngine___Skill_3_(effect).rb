@@ -1603,4 +1603,16 @@ module BattleEngine
       _mp([:msg, parse_text_with_pokemon(19, 1146, target)])
     end
   end
+  #===
+  #>s_flame_burst
+  # Rebondifeu
+  #===
+  def s_flame_burst(launcher, target, skill, msg_push = true)
+    return false unless s_basic(launcher, target, skill)
+    # If the target has the Flash Fire (Torche) ability, no side effect
+    unless(Abilities.has_abilities(target, 18))
+      # launcher's adjacents allies take damages
+      get_ally(launcher).each { |i| _mp([:hp_down, i, i.max_hp/16]) }
+    end
+  end
 end
