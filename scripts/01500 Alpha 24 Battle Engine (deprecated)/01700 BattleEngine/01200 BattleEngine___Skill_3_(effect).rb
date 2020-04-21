@@ -589,8 +589,17 @@ module BattleEngine
     elsif(target.hp == target.max_hp)
       _mp(MSG_Fail)
       return
+    # Heal Pulse fails if the target has a substitute
+    elsif(target.battle_effect.has_substitute_effect? && skill.id == 505)
+      _mp(MSG_Fail)
+      return
     end
-    hp = target.max_hp / 2
+    # Vibra Soin & Méga Blaster
+    if skill.id == 505 && Abilities.has_ability_usable(launcher, 177)
+      hp = target.max_hp * 3 / 4
+    else
+      hp = target.max_hp / 2
+    end
     _message_stack_push([:hp_up, target, hp])
     _message_stack_push([:msg, parse_text_with_pokemon(19, 387, target)])
   end
