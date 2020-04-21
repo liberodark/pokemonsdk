@@ -1564,6 +1564,31 @@ module BattleEngine
       '[VAR TYPE(0001)]' => GameData::Type.name(type))])
     end
   end
+    #===
+  #>s_reflect_type
+  # Copie Type
+  #===
+  def s_reflect_type(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
+    target_types = [target.type1, target.type2, target.type3]
+    # If the target has no type (Burn Up) or if the launcher has the Multitype (Multi-Type) ability
+    if target_types[0] == 0 || Abilities.has_ability_usable(launcher, 122)
+      _mp(MSG_Fail)
+    # If the target has the same types as the launcher
+    elsif target_types[0] == launcher.type1 && target_types[1] == launcher.type2 && target_types[2] == launcher.type3
+      _mp(MSG_Fail)
+    else
+      target_types.each_index do |i|
+        unless target_types[i] == 0
+          _mp([:set_type, launcher, target_types[i], i + 1])
+          _mp([:msg, parse_text_with_pokemon(19,899,launcher, 
+          '[VAR TYPE(0001)]' => GameData::Type.name(target_types[i]))])
+        else
+          _mp([:set_type, launcher, target_types[i], i + 1])
+        end
+      end
+    end
+  end
   #===
   #>s_mind_reader
   # Lire-Esprit
