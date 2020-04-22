@@ -1069,9 +1069,24 @@ module BattleEngine
   # Demi-Tour / Change Eclair / Relais
   #===
   def s_u_turn(launcher, target, skill, msg_push = true)
-    return unless skill.id == 226 or s_basic(launcher, target, skill)
-    unless(launcher.position < 0 and !$game_temp.trainer_battle)
+    return unless skill.id == 226 || s_basic(launcher, target, skill)
+    unless(launcher.position < 0 && !$game_temp.trainer_battle)
       _mp([:switch_pokemon, launcher, nil])
+    end
+  end
+  #===
+  #>s_parting_shot
+  # Dernier Mot
+  #===
+  def s_parting_shot(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
+    unless(launcher.position >= 0 && !_can_switch(launcher))
+      _message_stack_push([:change_atk, target, -1])
+      _message_stack_push([:change_ats, target, -1])
+      _mp([:msg, parse_text_with_pokemon(19, 770, launcher, PKNICK[0] => launcher.given_name, TRNAME[1] => $trainer.name)])
+      _mp([:switch_pokemon, launcher, nil])
+    else
+      _mp(MSG_Fail)
     end
   end
   #===

@@ -9,7 +9,7 @@ module BattleEngine
   #===
   def s_lock_on(launcher, target, skill, msg_push = true)
     return unless __s_beg_step(launcher, target, skill, msg_push)
-    #_mp([:msg, parse_text_with_pokemon(19, xxx, launcher, PKNICK[1] => target.given_name)])
+    _mp([:msg, parse_text_with_pokemon(19, 651, launcher, PKNICK[1] => target.given_name)])
     _mp([:apply_effect, launcher, :apply_lock_on, target])
   end
 
@@ -76,7 +76,7 @@ module BattleEngine
   # Façade
   #===
   def s_facade(launcher, target, skill, msg_push = true)
-    skill.power2 = 140 if launcher.poisoned? or launcher.paralyzed? #or launcher.burn?
+    skill.power2 = 140 if launcher.poisoned? || launcher.paralyzed? || launcher.burn?
     s_basic(launcher, target, skill)
     skill.power2 = nil
   end
@@ -124,7 +124,7 @@ module BattleEngine
     return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(launcher, skill)
     unless(target.battle_effect.has_wish_effect?)
-      #_mp([:msg, parse_text_with_pokemon(19, xxx, target)])
+      _mp([:msg, parse_text_with_pokemon(21, 819, target, PKNAME[0] => launcher.given_name)])
       _mp([:apply_effect, target, :apply_wish, target])
     else
       _mp([:msg_fail])
@@ -174,7 +174,7 @@ module BattleEngine
     return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     unless(target.battle_effect.has_yawn_effect? or target.battle_effect.has_safe_guard_effect?)
-      #_mp([:msg, parse_text_with_pokemon(19, xxx, target)])
+      _mp([:msg, parse_text_with_pokemon(19, 667, target, PKNICK[0] => target.given_name)])
       _mp([:apply_effect, target, :apply_yawn])
     else
       if(target.battle_effect.has_safe_guard_effect?) #> Rune protect
@@ -374,11 +374,12 @@ module BattleEngine
   # Calcination
   #===
   def s_incinerate(launcher, target, skill, msg_push = true)
-    return if s_basic(launcher, target, skill)
+    return unless s_basic(launcher, target, skill)
 	data = ::GameData::Item.misc_data(target.battle_item)
     if(data and data.berry) # TODO Joyaux
+      # TODO Fix msg parsing with plural
+      # _mp([:msg, parse_text_with_pokemon(19, 1114, target, PKNICK[0] => target.given_name, ITEM2[1] => ::GameData::Item.name(target.battle_item))])
       _mp([:set_item, target, 0, true])
-      #>Message ?
 	end
   end
 
@@ -387,7 +388,7 @@ module BattleEngine
   # Force Cachée
   #===
   def s_secret_power(launcher, target, skill, msg_push = true)
-    return if s_basic(launcher, target, skill)
+    return unless s_basic(launcher, target, skill)
     return if rand(100) > skill.effect_chance.to_i
     if($env.very_tall_grass? or $env.tall_grass?)
       _mp([:status_sleep, target])
@@ -408,7 +409,7 @@ module BattleEngine
   #>s_camouflage
   # Camouflage
   #===
-  def s_secret_power(launcher, target, skill, msg_push = true)
+  def s_camouflage(launcher, target, skill, msg_push = true)
     return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
     if($env.very_tall_grass? or $env.tall_grass?)
