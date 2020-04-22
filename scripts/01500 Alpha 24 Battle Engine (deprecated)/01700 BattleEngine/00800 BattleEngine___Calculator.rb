@@ -284,7 +284,7 @@ module BattleEngine
     when 120 #> Début calme
       n *= 0.5 if launcher.battle_effect.nb_of_turn_here < 5
     when 158 #> Force Sable
-      n *= 1.3 if skill.type_steel? || skill.type_rock? || skill.type_ground?
+      n *= 1.3 if (skill.type_steel? || skill.type_rock? || skill.type_ground?) && $env.sandstorm?
     end
     #> Flower Gift (Don floral) 2v2 effect
     sun_allies = get_ally(launcher)
@@ -312,7 +312,7 @@ module BattleEngine
         return 1.5 if pkmn.ability == other_ability && !pkmn.battle_effect.has_no_ability_effect?
       end
     when 158 #> Force Sable
-      return 1.3 if skill.type_steel? || skill.type_rock? || skill.type_ground?
+      return 1.3 if (skill.type_steel? || skill.type_rock? || skill.type_ground?) && $env.sandstorm?
     end
     return 1
   end
