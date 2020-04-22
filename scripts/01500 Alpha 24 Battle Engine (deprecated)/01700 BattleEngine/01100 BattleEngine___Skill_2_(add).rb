@@ -124,7 +124,7 @@ module BattleEngine
     return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(launcher, skill)
     unless(target.battle_effect.has_wish_effect?)
-      #_mp([:msg, parse_text_with_pokemon(19, xxx, target)])
+      _mp([:msg, parse_text_with_pokemon(21, 819, target, PKNAME[0] => launcher.given_name)])
       _mp([:apply_effect, target, :apply_wish, target])
     else
       _mp([:msg_fail])
@@ -174,7 +174,7 @@ module BattleEngine
     return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _magic_coat(launcher, target, skill)
     unless(target.battle_effect.has_yawn_effect? or target.battle_effect.has_safe_guard_effect?)
-      #_mp([:msg, parse_text_with_pokemon(19, xxx, target)])
+      _mp([:msg, parse_text_with_pokemon(19, 667, target, PKNICK[0] => target.given_name)])
       _mp([:apply_effect, target, :apply_yawn])
     else
       if(target.battle_effect.has_safe_guard_effect?) #> Rune protect
