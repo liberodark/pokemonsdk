@@ -301,6 +301,24 @@ module BattleEngine
     s_basic(launcher, target, skill)
     skill.type2 = nil
   end
+  
+  #===
+  #>s_techno_blast
+  # Techno-Buster
+  #===
+  def s_techno_blast(launcher, target, skill, msg_push = true)
+    # Fails if it's not Genesect
+    if launcher.id == 649
+      technodrives = { 116 => 3, 117 => 4, 118 => 2, 119 => 6 }
+      drive_check = false
+      technodrives.each { |key, value| drive_check = true if key == @_State[:launcher_item] }
+      skill.type2 = drive_check ? technodrives[@_State[:launcher_item]] : 1
+      s_basic(launcher, target, skill)
+      skill.type2 = nil
+    else
+      _mp(MSG_Fail)
+    end
+  end
 
   #===
   #>s_venoshock
