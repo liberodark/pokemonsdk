@@ -9,7 +9,7 @@ module BattleEngine
   #===
   def s_lock_on(launcher, target, skill, msg_push = true)
     return unless __s_beg_step(launcher, target, skill, msg_push)
-    #_mp([:msg, parse_text_with_pokemon(19, xxx, launcher, PKNICK[1] => target.given_name)])
+    _mp([:msg, parse_text_with_pokemon(19, 651, launcher, PKNICK[1] => target.given_name)])
     _mp([:apply_effect, launcher, :apply_lock_on, target])
   end
 
@@ -76,7 +76,7 @@ module BattleEngine
   # Façade
   #===
   def s_facade(launcher, target, skill, msg_push = true)
-    skill.power2 = 140 if launcher.poisoned? or launcher.paralyzed? #or launcher.burn?
+    skill.power2 = 140 if launcher.poisoned? || launcher.paralyzed? || launcher.burn?
     s_basic(launcher, target, skill)
     skill.power2 = nil
   end
