@@ -374,11 +374,12 @@ module BattleEngine
   # Calcination
   #===
   def s_incinerate(launcher, target, skill, msg_push = true)
-    return if s_basic(launcher, target, skill)
+    return unless s_basic(launcher, target, skill)
 	data = ::GameData::Item.misc_data(target.battle_item)
     if(data and data.berry) # TODO Joyaux
+      # TODO Fix msg parsing with plural
+      # _mp([:msg, parse_text_with_pokemon(19, 1114, target, PKNICK[0] => target.given_name, ITEM2[1] => ::GameData::Item.name(target.battle_item))])
       _mp([:set_item, target, 0, true])
-      #>Message ?
 	end
   end
 
@@ -387,7 +388,7 @@ module BattleEngine
   # Force Cachée
   #===
   def s_secret_power(launcher, target, skill, msg_push = true)
-    return if s_basic(launcher, target, skill)
+    return unless s_basic(launcher, target, skill)
     return if rand(100) > skill.effect_chance.to_i
     if($env.very_tall_grass? or $env.tall_grass?)
       _mp([:status_sleep, target])
@@ -408,7 +409,7 @@ module BattleEngine
   #>s_camouflage
   # Camouflage
   #===
-  def s_secret_power(launcher, target, skill, msg_push = true)
+  def s_camouflage(launcher, target, skill, msg_push = true)
     return unless __s_beg_step(launcher, target, skill, msg_push)
     target = _snatch_check(target, skill)
     if($env.very_tall_grass? or $env.tall_grass?)
