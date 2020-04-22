@@ -705,7 +705,6 @@ module BattleEngine
     hp=_damage_calculation(launcher, target, skill).to_i
     __s_hp_down_check(hp, target)
   end
-
   #===
   #>s_psywave
   # Vague Psy
@@ -714,6 +713,15 @@ module BattleEngine
     skill.power2 = launcher.level * (rand(10) + 5) / 10
     s_basic(launcher, target, skill)
     skill.power2 = nil
+  end
+  #===
+  #>s_final_gambit
+  # Tout ou Rien
+  #===
+  def s_final_gambit(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
+    __s_hp_down_check(launcher.hp, target)
+    _mp([:hp_down, launcher, launcher.hp])
   end
   #===
   #>s_outrage
