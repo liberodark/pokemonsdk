@@ -28,7 +28,7 @@ module BattleEngine
     #>First modifier
     mod1 = _mod1_calculation(launcher, target, skill)
     #>CH (critical hit)
-    ch = _critical_calculation(launcher, target, skill, (params and params[:ch]))
+    ch = _critical_calculation(launcher, target, skill, (params && params[:ch]))
     #>Second modifier
     mod2 = _mod2_calculation(launcher, target, skill)
     #>R
@@ -43,18 +43,18 @@ module BattleEngine
     type_mod = _type_modifier_calculation(target, skill)
     if(type_mod == 0)
       #>Est au sol
-      if skill.type_ground? and _is_grounded(target)
+      if skill.type_ground? && _is_grounded(target)
         type_mod = 1
       #>Fair / Clairevoyance
-      elsif(target.type_ghost? and target.battle_effect.has_foresight_effect?)
+      elsif(target.type_ghost? && target.battle_effect.has_foresight_effect?)
         type_mod = 1
       #> Querelleur
-      elsif(target.type_ghost? and @_State[:launcher_ability] == 59)
+      elsif(target.type_ghost? && @_State[:launcher_ability] == 59)
         type_mod = 1
-      elsif(target.battle_effect.has_miracle_eye_effect? and target.type_dark? and skill.type_psy?)
+      elsif(target.battle_effect.has_miracle_eye_effect? && target.type_dark? && skill.type_psy?)
         type_mod = 1
       end
-    elsif(skill.type_ground? and !_is_grounded(target))
+    elsif(skill.type_ground? && !_is_grounded(target))
       type_mod = 0
       if _has_item(target, 541) #> Ballon
         _msgp(19, 408, target)
@@ -62,7 +62,7 @@ module BattleEngine
         _mp([:ability_display, target])
       end
     #> Garde Mystik
-    elsif(type_mod < 2 and Abilities.has_ability_usable(target, 91))
+    elsif(type_mod < 2 && Abilities.has_ability_usable(target, 91))
       type_mod = 0
       _mp([:ability_display, target])
     end
@@ -85,7 +85,7 @@ module BattleEngine
     pc "==== Damage END : #{damages} ===="
     cc 0x07
     end
-    damages = (base_power > 0 and damages > 0 and damages < 1) ? 1 : damages.to_i
+    damages = (base_power > 0 && damages > 0 && damages < 1) ? 1 : damages.to_i
     return damages
   end
   #===
@@ -95,7 +95,7 @@ module BattleEngine
   #    skill : PFM::Skill
   #===
   def _type_modifier_calculation(target, skill)
-    return 2 if skill.id == 573 and target.type_water? # Lyophilisation
+    return 2 if skill.id == 573 && target.type_water? # Lyophilisation
     type = skill.type
     type1 = GameData::Type.multiplier(type, target.type1)
     type2 = GameData::Type.multiplier(type, target.type2)
@@ -129,11 +129,11 @@ module BattleEngine
     #>Variable dédiée à la modification des items
     it = _base_power_item_calculation(launcher, skill)
     #>Modifieur de chargeur
-    chg = (be.has_charge_effect? and skill.type_electric?) ? 2 : 1
+    chg = (be.has_charge_effect? && skill.type_electric?) ? 2 : 1
     #>Modification par lance boue
-    ms = (@_State[:mud_sport] > 0 and skill.type_electric?) ? 0.33 : 1
+    ms = (@_State[:mud_sport] > 0 && skill.type_electric?) ? 0.33 : 1
     #>Modification par Tourniquet
-    ws = (@_State[:water_sport] > 0 and skill.type_fire?) ? 0.5 : 1 #> Pas réduit de 67% ?
+    ws = (@_State[:water_sport] > 0 && skill.type_fire?) ? 0.5 : 1 #> Pas réduit de 67% ?
     #>Modification talent lanceur
     ua = _base_power_user_ability_calculation(launcher, target, skill)
     #>Modification talent cible
@@ -141,7 +141,7 @@ module BattleEngine
     #>Si la cible est hors de portée les attaques qui touchent mettent aussi x2
     if(target.battle_effect.has_out_of_reach_effect?)
       oor = target.battle_effect.get_out_of_reach
-      chg *= 2 if(::GameData::Skill.can_hit_out_of_reach?(oor ,skill.db_symbol))
+      chg *= 2 if(::GameData::Skill.can_hit_out_of_reach?(oor, skill.db_symbol))
     end
     return (fa * ua * ws * ms * chg * it * bp * hh)
   end
@@ -160,7 +160,7 @@ module BattleEngine
     return 1 unless item
     imisc = item.misc_data
     return 1 unless imisc
-    return 1 if imisc.need_user_id and imisc.need_user_id != launcher.id
+    return 1 if imisc.need_user_id && imisc.need_user_id != launcher.id
     n = 1
     n *= 1.1 if imisc.check_atk_class == skill.atk_class
     n *= 1.2 if imisc.powering_skill_type1 == skill.type
@@ -191,13 +191,13 @@ module BattleEngine
     when 55 #> Poing de fer
       return 1.2 if skill.punching? #> Skill de type coup de poing - La donnée n'est peut être pas renseignée !
     when 1 #> Brasier
-      return 1.5 if skill.type_fire? and launcher.hp < (launcher.max_hp / 3)
+      return 1.5 if skill.type_fire? && launcher.hp < (launcher.max_hp / 3)
     when 0 #> Engrais
-      return 1.5 if skill.type_grass? and launcher.hp < (launcher.max_hp / 3)
+      return 1.5 if skill.type_grass? && launcher.hp < (launcher.max_hp / 3)
     when 2 #> Torrent
-      return 1.5 if skill.type_water? and launcher.hp < (launcher.max_hp / 3)
+      return 1.5 if skill.type_water? && launcher.hp < (launcher.max_hp / 3)
     when 6 #> Essaim
-      return 1.5 if skill.type_insect? and launcher.hp < (launcher.max_hp / 3)
+      return 1.5 if skill.type_insect? && launcher.hp < (launcher.max_hp / 3)
     when 26 #> Technicien
       return 1.5 if skill.base_power <= 60
     when 177 #> Méga Blaster
@@ -218,7 +218,7 @@ module BattleEngine
     ability = @_State[:target_ability]
     case ability
     when 42 #> Isograisse
-      return 0.5 if skill.type_ice? or skill.type_fire?
+      return 0.5 if skill.type_ice? || skill.type_fire?
     when 117 #> Ignifugé
       return 0.5 if skill.type_fire?
     when 22 #> Peau sèche
@@ -235,15 +235,13 @@ module BattleEngine
   def _sp_atk_calculation(launcher, target, skill)
     id = skill.id
     if skill.physical?
-      if(id == 251 and !::GameData::Flag_4G) #> Baston
+      if(id == 251 && !::GameData::Flag_4G) #> Baston
         stat = launcher.base_atk
       elsif(id == 492) #>Tricherie
         stat = target.atk
       else
         #> Lame Sainte / Inconscient
-        stat = ((id == 533 or @_State[:target_ability] == 110) ? 
-          launcher.atk_basis : 
-          launcher.atk)
+        stat = ((id == 533 || @_State[:target_ability] == 110) ? launcher.atk_basis : launcher.atk)
       end
       #>Protection
       sym = launcher.position < 0 ? :enn_reflect : :act_reflect
@@ -253,7 +251,7 @@ module BattleEngine
       im = _sp_atk_ph_item_calculation(launcher, target, skill)
     else
       #> Lame Sainte / Inconscient
-      stat = ((id == 533 or @_State[:target_ability] == 110) ? 
+      stat = ((id == 533 || @_State[:target_ability] == 110) ? 
         launcher.ats_basis : 
         launcher.ats)
       #>Mur Lumière
@@ -263,7 +261,7 @@ module BattleEngine
       am = _sp_atk_sp_ability_calculation(launcher, target, skill)
       im = _sp_atk_sp_item_calculation(launcher, target, skill)
     end
-    return (im * am * stat)#sm * 
+    return (im * am * stat) #sm * 
   end
   #===
   #>_sp_atk_ph_ability_calculation
@@ -272,22 +270,28 @@ module BattleEngine
   #E : <BE_Model1>
   #===
   def _sp_atk_ph_ability_calculation(launcher, target, skill)
+    n = 1
     ability = @_State[:launcher_ability]
     case ability
     when 95, 75 #> Force Pure, Coloforce
-      return 2
+      n *= 2
     when 112 #> Don floral (2v2 !)
-      return 1.5 if $env.sunny?
+      n *= 1.5 if $env.sunny?
     when 10 #> Cran
-      return 1.5 if launcher.paralyzed? or launcher.poisoned? or launcher.burn? or launcher.asleep?
+      n *= 1.5 if launcher.paralyzed? || launcher.poisoned? || launcher.burn? || launcher.asleep?
     when 74 #> Agitation
-      return 1.5
+      n *= 1.5
     when 120 #> Début calme
-      return 0.5 if launcher.battle_effect.nb_of_turn_here < 5
+      n *= 0.5 if launcher.battle_effect.nb_of_turn_here < 5
     when 158 #> Force Sable
-      return 1.3 if skill.type_steel? or skill.type_rock? or skill.type_ground? 
+      n *= 1.3 if skill.type_steel? || skill.type_rock? || skill.type_ground?
     end
-    return 1
+    #> Flower Gift (Don floral) 2v2 effect
+    sun_allies = get_ally(launcher)
+    check_flower_gift = false
+    sun_allies.each { |i| check_flower_gift = true if Abilities.has_ability_usable(i, 112) }
+    n *= 1.5 if $env.sunny? && $game_temp.vs_type != 1 && check_flower_gift
+    return n
   end
   #===
   #>_sp_atk_sp_ability_calculation
@@ -305,10 +309,10 @@ module BattleEngine
     when 96, 97 #> Plus, Minus
       other_ability = ability == 96 ? 97 : 96
       get_ally(launcher).each do |pkmn|
-        return 1.5 if pkmn.ability == other_ability and !pkmn.battle_effect.has_no_ability_effect?
+        return 1.5 if pkmn.ability == other_ability && !pkmn.battle_effect.has_no_ability_effect?
       end
     when 158 #> Force Sable
-      return 1.3 if skill.type_steel? or skill.type_rock? or skill.type_ground? 
+      return 1.3 if skill.type_steel? || skill.type_rock? || skill.type_ground?
     end
     return 1
   end
@@ -328,7 +332,7 @@ module BattleEngine
     n *= 1.5 if item == 220 #> Bandeau Choix
     imisc = item.misc_data
     return n unless imisc
-    n *= 2 if imisc.need_ids_ph_2 and imisc.need_ids_ph_2.include?(launcher.id)
+    n *= 2 if imisc.need_ids_ph_2 && imisc.need_ids_ph_2.include?(launcher.id)
     return n
   end
   #===
@@ -347,8 +351,8 @@ module BattleEngine
     n *= 1.5 if item == 297 #> Lunettes Choix 
     imisc = item.misc_data
     return n unless imisc
-    n *= 2 if imisc.need_ids_sp_2 and imisc.need_ids_sp_2.include?(launcher.id)
-    n *= 1.5 if imisc.need_ids_sp_1_5 and imisc.need_ids_sp_1_5.include?(launcher.id)
+    n *= 2 if imisc.need_ids_sp_2 && imisc.need_ids_sp_2.include?(launcher.id)
+    n *= 1.5 if imisc.need_ids_sp_1_5 && imisc.need_ids_sp_1_5.include?(launcher.id)
     return n
   end
   #===
@@ -368,7 +372,7 @@ module BattleEngine
     dfe = dfe_basis if @_State[:launcher_ability] == 110 #> Inconscient
     if skill.physical?
       #> Attrition / Lame Sainte
-      stat = (id == 498 or id == 533) ? target.send(dfe_basis) : target.send(dfe)
+      stat = (id == 498 || id == 533) ? target.send(dfe_basis) : target.send(dfe)
       #sm = launcher.dfe_modifier
       mod = _sp_def_mod_ph_calculation(launcher, target, skill)
     else
@@ -379,13 +383,13 @@ module BattleEngine
         dfs_basis = _state ? :dfe_basis : :dfs_basis
         dfs = dfs_basis if @_State[:launcher_ability] == 110 #> Inconscient
         #> Attrition / Lame Sainte
-        stat = (id == 498 or id == 533) ? target.send(dfs_basis) : target.send(dfs)
+        stat = (id == 498 || id == 533) ? target.send(dfs_basis) : target.send(dfs)
       end
       #sm = launcher.dfs_modifier
       mod = _sp_def_mod_sp_calculation(launcher, target, skill)
     end
     #sx = skill.self_destruct? ? 0.5 : 1
-    return (mod * stat)#sx * sm * 
+    return (mod * stat) #sx * sm * 
   end
   #===
   #>_sp_def_mod_ph_calculation
@@ -403,10 +407,10 @@ module BattleEngine
     case ability
     #> Écaille Spéciale
     when 103
-      n *= 1.5 if target.paralyzed? or target.poisoned? or target.burn? or target.asleep?
+      n *= 1.5 if target.paralyzed? || target.poisoned? || target.burn? || target.asleep?
     end
     #>Poudre Mental
-    n *= 1.5 if @_State[:target_item] == 257 and target.id == 132
+    n *= 1.5 if @_State[:target_item] == 257 && target.id == 132
     return n
   end
   #===
@@ -421,23 +425,28 @@ module BattleEngine
   def _sp_def_mod_sp_calculation(launcher, target, skill)
     n = 1
     #>Partie environnement
-    n *= 1.5 if $env.sandstorm? and target.type_rock?
+    n *= 1.5 if $env.sandstorm? && target.type_rock?
     #>Partie capacité
     ability = @_State[:target_ability]
     case ability
     when 112 #> Don floral (2v2 !)
       n *= 1.5 if $env.sunny?
     end
+    #> Flower Gift (Don floral) 2v2 effect
+    sun_allies = get_ally(launcher)
+    check_flower_gift = false
+    sun_allies.each { |i| check_flower_gift = true if Abilities.has_ability_usable(i, 112) }
+    n *= 1.5 if $env.sunny? && $game_temp.vs_type != 1 && check_flower_gift
     #>Partie item
     #>Poudre Mental
-    n *= 1.5 if @_State[:target_item] == 257 and target.id == 132
+    n *= 1.5 if @_State[:target_item] == 257 && target.id == 132
     #> Écaille Océan
-    n *= 2 if @_State[:target_item] == 227 and target.id == 366
+    n *= 2 if @_State[:target_item] == 227 && target.id == 366
     item = GameData::Item.all[@_State[:target_item]]
     return n unless item
     imisc = item.misc_data
     return n unless imisc
-    n *= 1.5 if imisc.need_ids_sp_1_5 and imisc.need_ids_sp_1_5.include?(target.id)
+    n *= 1.5 if imisc.need_ids_sp_1_5 && imisc.need_ids_sp_1_5.include?(target.id)
     return n
   end
   #===
@@ -451,18 +460,18 @@ module BattleEngine
     n = 1
     ability = @_State[:launcher_ability]
     #>BRN / Cran
-    if(ability != 10 and launcher.burn? and skill.physical?)
+    if(ability != 10 && launcher.burn? && skill.physical?)
       n *= 0.5
     end
     #>RL
-    if(skill.physical? and @_State[target.position < 0 ? :enn_reflect : :act_reflect] > 0)
+    if(skill.physical? && @_State[target.position < 0 ? :enn_reflect : :act_reflect] > 0)
       n *= ($game_temp.vs_type == 2 ? 0.666 : 0.5)
-    elsif(skill.special? and @_State[target.position < 0 ? :enn_light_screen : :act_light_screen] > 0)
+    elsif(skill.special? && @_State[target.position < 0 ? :enn_light_screen : :act_light_screen] > 0)
       n *= ($game_temp.vs_type == 2 ? 0.666 : 0.5)
     end
     #>TVT
     if($game_temp.vs_type==2)
-      if(skill.target == :all_enemy or skill.target == :everybody)
+      if(skill.target == :all_enemy || skill.target == :everybody)
         n *= 0.75 #>Il faut vérifier si les cibles sont vivante / Présentes !!!
       end
     end
@@ -477,7 +486,7 @@ module BattleEngine
     #>FF / Torche
     if ability == 18
       last_damaging = launcher.battle_effect.last_damaging_skill
-      if(((last_damaging and last_damaging.type_fire?) or launcher.burn?) and skill.type_fire?)
+      if(((last_damaging && last_damaging.type_fire?) || launcher.burn?) && skill.type_fire?)
         n *= 1.5
       end
     end
@@ -497,18 +506,18 @@ module BattleEngine
     if(Abilities.has_abilities(target, 71, 46))
       return 1
     end
-    return 1 if skill.id == 251 and ::GameData::Flag_4G #> Baston
+    return 1 if skill.id == 251 && ::GameData::Flag_4G #> Baston
     #> Yama Arashi, Souffle Glacé
     critical_rate = Always_Crit_Atks.include?(skill.id) ? 6 : skill.critical_rate
     critical_rate += launcher.critical_modifier
     critical_rate += 2 if launcher.battle_effect.has_focus_energy_effect?
     critical_rate += 1 if @_State[:launcher_ability] == 78 #> Chanceux
-    critical_rate += 1 if launcher.id == 83 and @_State[:launcher_item] == 259 #> Bâton
+    critical_rate += 1 if launcher.id == 83 && @_State[:launcher_item] == 259 #> Bâton
     critical_rate += 1 if @_State[:launcher_item] == 326 #> Griffe Rasoir
-    critical_rate += 1 if launcher.id == 113 and @_State[:launcher_item] == 256 #> Poing Chance
+    critical_rate += 1 if launcher.id == 113 && @_State[:launcher_item] == 256 #> Poing Chance
     critical_rate += 1 if @_State[:launcher_item] == 232 #> Lentilscope 
-    n = ((rand(100_00) < Critical_Rates[critical_rate] or forced) ? 1.5 : 1)
-    n *= 1.5 if(n>1 and @_State[:launcher_ability] == 61) #> Sniper
+    n = ((rand(100_00) < Critical_Rates[critical_rate] || forced) ? 1.5 : 1)
+    n *= 1.5 if(n>1 && @_State[:launcher_ability] == 61) #> Sniper
     #>Vérifier les autres cas dans le coup critique
     @_State[:last_critical_hit] = n
     return n
@@ -532,7 +541,7 @@ module BattleEngine
       times = 10 if times > 10
       n *= (0.9 + 0.1 * times)
     end
-    n *= 1.5 if(skill.id == 382) #Moi d'abbord / Me First
+    n *= 1.5 if(skill.id == 382) #Moi d'abord / Me First
     return n
   end
   #===
@@ -545,7 +554,7 @@ module BattleEngine
   def _stab_calculation(launcher, target, skill)
     type = skill.type
     return 1 if type == 0
-    if(type == launcher.type1 or type == launcher.type2 or type == launcher.type3)
+    if(type == launcher.type1 || type == launcher.type2 || type == launcher.type3)
       ability = @_State[:launcher_ability]
       if(ability == 67) #> Adaptabilité
         n = 2
@@ -571,20 +580,20 @@ module BattleEngine
     n = 1
     ability = @_State[:target_ability]
     #SRF
-    n *= 0.75 if type_mod >= 2 and (ability == 100 or ability == 64)#> Solide Roc / Filtre
+    n *= 0.75 if type_mod >= 2 && (ability == 100 || ability == 64)#> Solide Roc / Filtre
     #>Partie item (EB)
-    n *= 1.2 if type_mod >= 2 and @_State[:launcher_item] == 268 #> Ceinture pro
+    n *= 1.2 if type_mod >= 2 && @_State[:launcher_item] == 268 #> Ceinture pro
     #TL
-    n *= 2 if type_mod <= 0.5 and @_State[:launcher_ability] == 23 #> Lentiteintée
+    n *= 2 if type_mod <= 0.5 && @_State[:launcher_ability] == 23 #> Lentiteintée
     #TRB
     item = GameData::Item.all[@_State[:target_item]] #> Cible / lanceur ?
     return n unless item
     imisc = item.misc_data
-    if imisc and berry = imisc.berry
+    if imisc && berry = imisc.berry
       #> Réduction super efficace
-      if((@_State[:target_item] >= 184 and @_State[:target_item] <= 200) or
+      if((@_State[:target_item] >= 184 && @_State[:target_item] <= 200) ||
         @_State[:target_item] == 686)
-        n *= 0.5 if type_mod >= 2 and berry[:type] == skill.type
+        n *= 0.5 if type_mod >= 2 && berry[:type] == skill.type
       end
     end
     return n
