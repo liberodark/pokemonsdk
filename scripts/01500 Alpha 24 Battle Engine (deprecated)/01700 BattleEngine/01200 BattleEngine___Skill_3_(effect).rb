@@ -193,6 +193,20 @@ module BattleEngine
     end
   end
   #===
+  #>s_happy_hour
+  # Définition de l'attaque Étrennes
+  #---
+  #E : <BE_Model1>
+  #===
+  def s_happy_hour(launcher, target, skill, msg_push = true)
+    return unless __s_beg_step(launcher, target, skill, msg_push)
+    if @_State[:happy_hour]
+      _mp(MSG_Fail)
+    else
+      _message_stack_push([:happy_hour, launcher])
+    end
+  end
+  #===
   #>s_bind
   # Définition de l'attaque Etreinte
   #---
