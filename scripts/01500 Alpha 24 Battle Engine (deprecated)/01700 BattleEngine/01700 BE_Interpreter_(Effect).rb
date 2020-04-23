@@ -79,7 +79,7 @@ module BattleEngine
       target.battle_effect.apply_perish_song unless target.battle_effect.has_perish_song_effect?
     end
     #===
-    #>Jakpot
+    #>Jackpot
     #===
     def jackpot(target)
       return if @ignore or target.hp<=0
@@ -90,9 +90,18 @@ module BattleEngine
           n *= 2
         end
         @scene.money += target.level*n
-        #>Délire à piece rune non fait !
       end
       msg(parse_text(18, 128))
+    end
+    #===
+    #> Happy Hour (Etrennes)
+    #===
+    def happy_hour(target)
+      return if @ignore or target.hp<=0
+      if(target.position > 0)
+        _mp([:set_state, :happy_hour, true])
+        msg(parse_text(18, 255))
+      end
     end
     #===
     #>Etreinte
