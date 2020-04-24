@@ -1264,6 +1264,24 @@ module BattleEngine
     _mp(MSG_Fail)
   end
   #===
+  #>s_bestow
+  # Passe-Cadeau
+  #===
+  def s_bestow(launcher, target, skill, msg_push = true)
+    return false unless __s_beg_step(launcher, target, skill, msg_push)
+    li = launcher.battle_item
+    ti = target.battle_item
+    # If the target already holds an item or is under substitute
+    if ti > 0 || li == 0 || target.battle_effect.has_substitute_effect?
+      _mp(MSG_Fail)
+    else
+      # TODO : Cristal Z - Mega Gemme - Orbes et ROM de Silvallier impossible à donner
+      _mp([:msg, parse_text_with_pokemon(19, 1117, launcher, PKNICK[0] => target.given_name, ITEM2[2] => ::GameData::Item.name(li), PKNICK[1] => launcher.given_name)])
+      _mp([:set_item, target, li])
+      _mp([:set_item, launcher, -1])
+    end
+  end
+  #===
   #>s_embargo
   # Embargo
   #===
@@ -1342,8 +1360,8 @@ module BattleEngine
       data = ::GameData::Item.misc_data(ti)
       if(data and data.berry)
         _mp([:msg, parse_text_with_pokemon(19, 776, launcher, ITEM2[1] => ::GameData::Item.name(ti))])
-        #>Faire utiliser l'objet !!!!
-        _mp([:set_item, target, -1])
+        _mp([:berry_use, launcher, true])
+        _mp([:berry_cure, launcher, ::GameData::Item.name(ti)])
       end
     end
   end
