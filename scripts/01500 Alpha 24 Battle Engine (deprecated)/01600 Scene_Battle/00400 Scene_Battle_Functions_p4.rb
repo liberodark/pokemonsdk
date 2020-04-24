@@ -173,6 +173,11 @@ class Scene_Battle
   # Selection d'un Pokémon pour l'actor
   #===
   def phase4_actor_select_pkmn(i)
+    egg_party = []
+    @actors.each { |j| egg_party << j unless BattleEngine.get_ally!(i).include?(j) }
+    egg_check = egg_party.all?(&:dead?)
+    return false if egg_check
+    
     @message_window.visible = false
     $scene = scene = GamePlay::Party_Menu.new(@actors, :battle, no_leave: true)
     scene.main#(true)
