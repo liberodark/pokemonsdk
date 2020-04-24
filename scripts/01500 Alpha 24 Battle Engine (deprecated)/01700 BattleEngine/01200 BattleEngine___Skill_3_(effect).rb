@@ -1360,7 +1360,7 @@ module BattleEngine
       data = ::GameData::Item.misc_data(ti)
       if(data and data.berry)
         _mp([:msg, parse_text_with_pokemon(19, 776, launcher, ITEM2[1] => ::GameData::Item.name(ti))])
-        _mp([:berry_use, launcher, true])
+        _mp([:berry_pluck, launcher, target])
         _mp([:berry_cure, launcher, ::GameData::Item.name(ti)])
       end
     end

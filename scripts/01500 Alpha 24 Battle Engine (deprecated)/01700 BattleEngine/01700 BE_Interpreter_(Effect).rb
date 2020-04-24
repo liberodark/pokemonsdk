@@ -321,6 +321,17 @@ module BattleEngine
       end
     end
     #===
+    #> berry_pluck : Utilise la baie via Picore (animation + marquage)
+    #===
+    def berry_pluck(launcher, target)
+      #>Animation
+      imisc = GameData::Item.misc_data(target.battle_item)
+      if(imisc and berry = imisc.berry)
+        launcher.edit_bonus(berry[:bonus])
+      end
+      target.item_holding = target.battle_item = 0
+    end
+    #===
     #> berry_cure : Soin par baie
     #===
     def berry_cure(target, iname)
