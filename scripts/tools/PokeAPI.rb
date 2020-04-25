@@ -42,118 +42,135 @@ module PokeAPI
     File.write('Data/PSDK/SkillData.rxdata.yml', YAML.dump(GameData::Skill.all))
   end
 
-  class Version
-    attr_reader :id
-    attr_reader :version_group_id
-    attr_reader :identifier
-    def initialize(row, indexes)
-      @id = row[indexes[0]].to_i
-      @version_group_id = row[indexes[1]].to_i
-      @identifier = row[indexes[2]]
+  module Attributes
+    # Function defining an attribute for the PokeAPI
+    # @param name [Symbol] name of the attribute
+    # @param cast [String, nil] cast added after initialize (@name = row[indexes[i]]cast)
+    def attr_reader(name, cast = nil)
+      @attributes ||= []
+      @attributes << [name, cast]
+      super name
     end
 
-    class << self
-      # @return [Array<Version>]
-      def load(path)
-        rows = CSV.read(File.join(path, 'versions.csv'))
-        header = rows.shift
-        indexes = [
-          header.index('id') || 0,
-          header.index('version_group_id') || 0,
-          header.index('identifier') || 0
-        ]
-        return @all = rows.map { |row| Version.new(row, indexes) }
-      end
+    # Function responsive of creating the #initialize and ClassName.load
+    # @param filename [String] name of the file in the PokeAPI
+    def commit(filename)
+      initialize_lines = @attributes.map.with_index do |attribute, index|
+        format('@%<name>s = row[indexes[%<index>d]]%<cast>s',
+               name: attribute.first,
+               index: index,
+               cast: attribute.last)
+      end.join("\n")
+      load_lines = @attributes.map do |attribute|
+        format('header.index("%<name>s") || 0', name: attribute.first)
+      end.join(',')
+      definition = format <<~CLASS_DEF, initialize_lines: initialize_lines, load_lines: load_lines
+        def initialize(row, indexes)
+          %<initialize_lines>s
+        end
+        class << self
+          def load(path)
+            rows = CSV.read(File.join(path, '#{filename}'))
+            header = rows.shift
+            indexes = [%<load_lines>s]
+            return @all = rows.map { |row| self.new(row, indexes) }
+          end
+        end
+      CLASS_DEF
+      class_eval(definition)
+    end
+  end
 
+  class Version
+    extend Attributes
+    # @return [Integer]
+    attr_reader :id, '.to_i'
+    # @return [Integer]
+    attr_reader :version_group_id, '.to_i'
+    # @return [String]
+    attr_reader :identifier, '.to_s'
+
+    commit('versions.csv')
+
+    class << self
       # All the loaded versions
       # @return [Array<Version>]
       attr_accessor :all
+      # @!method load
+      #   Load all versions
+      #   @param path [String] path to the folder containing the file
     end
   end
 
   class MoveChangeLog
-    attr_reader :id
-    attr_reader :changed_in_version_group_id
-    attr_reader :type_id
-    attr_reader :power
-    attr_reader :pp
-    attr_reader :accuracy
-    attr_reader :priority
-    attr_reader :target_id
-    attr_reader :effect_id
-    attr_reader :effect_chance
-    def initialize(row, indexes)
-      @id = row[indexes[0]].to_i
-      @changed_in_version_group_id = row[indexes[1]].to_i
-      @type_id = row[indexes[2]]&.to_i
-      @power = row[indexes[3]]&.to_i
-      @pp = row[indexes[4]]&.to_i
-      @accuracy = row[indexes[5]]&.to_i
-      @priority = row[indexes[6]]&.to_i
-      @target_id = row[indexes[7]]&.to_i
-      @effect_id = row[indexes[8]]&.to_i
-      @effect_chance = row[indexes[9]]&.to_i
-    end
+    extend Attributes
+    # @return [Integer]
+    attr_reader :id, '.to_i'
+    # @return [Integer]
+    attr_reader :changed_in_version_group_id, '.to_i'
+    # @return [Integer, nil]
+    attr_reader :type_id, '&.to_i'
+    # @return [Integer, nil]
+    attr_reader :power, '&.to_i'
+    # @return [Integer, nil]
+    attr_reader :pp, '&.to_i'
+    # @return [Integer, nil]
+    attr_reader :accuracy, '&.to_i'
+    # @return [Integer, nil]
+    attr_reader :priority, '&.to_i'
+    # @return [Integer, nil]
+    attr_reader :target_id, '&.to_i'
+    # @return [Integer, nil]
+    attr_reader :effect_id, '&.to_i'
+    # @return [Integer, nil]
+    attr_reader :effect_chance, '&.to_i'
+
+    commit('move_changelog.csv')
 
     class << self
-      # @return [Array<MoveChangeLog>]
-      def load(path)
-        rows = CSV.read(File.join(path, 'move_changelog.csv'))
-        header = rows.shift
-        indexes = [
-          header.index('id') || 0,
-          header.index('changed_in_version_group_id') || 0,
-          header.index('type_id') || 0,
-          header.index('power') || 0,
-          header.index('pp') || 0,
-          header.index('accuracy') || 0,
-          header.index('priority') || 0,
-          header.index('target_id') || 0,
-          header.index('effect_id') || 0,
-          header.index('effect_chance') || 0
-        ]
-        return @all = rows.map { |row| MoveChangeLog.new(row, indexes) }
-      end
-
       # All the loaded move changelog
       # @return [Array<MoveChangeLog>]
       attr_accessor :all
+      # @!method load
+      #   Load all move changelog
+      #   @param path [String] path to the folder containing the file
     end
   end
 
   class Move
-    attr_reader :id
-    attr_reader :identifier
-    attr_reader :generation_id
-    attr_reader :type_id
-    attr_reader :power
-    attr_reader :pp
-    attr_reader :accuracy
-    attr_reader :priority
-    attr_reader :target_id
-    attr_reader :damage_class_id
-    attr_reader :effect_id
-    attr_reader :effect_chance
-    attr_reader :contest_type_id
-    attr_reader :contest_effect_id
-    attr_reader :super_contest_effect_id
-    def initialize(row, indexes)
-      @id = row[indexes[0]].to_i
-      @identifier = row[indexes[1]]
-      @generation_id = row[indexes[2]].to_i
-      @type_id = row[indexes[3]].to_i
-      @power = row[indexes[4]].to_i
-      @pp = row[indexes[5]].to_i
-      @accuracy = row[indexes[6]].to_i
-      @priority = row[indexes[7]].to_i
-      @target_id = row[indexes[8]].to_i
-      @damage_class_id = row[indexes[9]].to_i
-      @effect_id = row[indexes[10]].to_i
-      @effect_chance = row[indexes[11]].to_i
-      @contest_type_id = row[indexes[12]].to_i
-      @contest_effect_id = row[indexes[13]].to_i
-      @super_contest_effect_id = row[indexes[14]].to_i
-    end
+    extend Attributes
+    # @return [Integer]
+    attr_reader :id, '.to_i'
+    # @return [String]
+    attr_reader :identifier, '.to_s'
+    # @return [Integer]
+    attr_reader :generation_id, '.to_i'
+    # @return [Integer]
+    attr_reader :type_id, '.to_i'
+    # @return [Integer]
+    attr_reader :power, '.to_i'
+    # @return [Integer]
+    attr_reader :pp, '.to_i'
+    # @return [Integer]
+    attr_reader :accuracy, '.to_i'
+    # @return [Integer]
+    attr_reader :priority, '.to_i'
+    # @return [Integer]
+    attr_reader :target_id, '.to_i'
+    # @return [Integer]
+    attr_reader :damage_class_id, '.to_i'
+    # @return [Integer]
+    attr_reader :effect_id, '.to_i'
+    # @return [Integer]
+    attr_reader :effect_chance, '.to_i'
+    # @return [Integer]
+    attr_reader :contest_type_id, '.to_i'
+    # @return [Integer]
+    attr_reader :contest_effect_id, '.to_i'
+    # @return [Integer]
+    attr_reader :super_contest_effect_id, '.to_i'
+
+    commit('moves.csv')
 
     # Return an updated version of the move to the said version group
     # @param version_group_id [Integer] ID of the version group
@@ -202,30 +219,6 @@ module PokeAPI
     end
 
     class << self
-      # @return [Array<Move>]
-      def load(path)
-        rows = CSV.read(File.join(path, 'moves.csv'))
-        header = rows.shift
-        indexes = [
-          header.index('id') || 0,
-          header.index('identifier') || 0,
-          header.index('generation_id') || 0,
-          header.index('type_id') || 0,
-          header.index('power') || 0,
-          header.index('pp') || 0,
-          header.index('accuracy') || 0,
-          header.index('priority') || 0,
-          header.index('target_id') || 0,
-          header.index('damage_class_id') || 0,
-          header.index('effect_id') || 0,
-          header.index('effect_chance') || 0,
-          header.index('contest_type_id') || 0,
-          header.index('contest_effect_id') || 0,
-          header.index('super_contest_effect_id') || 0
-        ]
-        return @all = rows.map { |row| Move.new(row, indexes) }
-      end
-
       # All the loaded moves
       # @return [Array<Move>]
       attr_accessor :all
@@ -237,20 +230,24 @@ module PokeAPI
           skill.db_symbol.to_s.gsub('_', '-').gsub(',', '-').gsub('’', '')
         end
       end
+      # @!method load
+      #   Load all moves
+      #   @param path [String] path to the folder containing the file
     end
   end
 
   class Type
-    attr_reader :id
-    attr_reader :identifier
-    attr_reader :generation_id
-    attr_reader :damage_class_id
-    def initialize(row, indexes)
-      @id = row[indexes[0]].to_i
-      @identifier = row[indexes[1]]
-      @generation_id = row[indexes[2]].to_i
-      @damage_class_id = row[indexes[3]].to_i
-    end
+    extend Attributes
+    # @return [Integer]
+    attr_reader :id, '.to_i'
+    # @return [String]
+    attr_reader :identifier, '.to_s'
+    # @return [Integer]
+    attr_reader :generation_id, '.to_i'
+    # @return [Integer]
+    attr_reader :damage_class_id, '.to_i'
+
+    commit('types.csv')
 
     # @return [Integer]
     def psdk_id
@@ -280,22 +277,12 @@ module PokeAPI
     }
 
     class << self
-      # @return [Array<Type>]
-      def load(path)
-        rows = CSV.read(File.join(path, 'types.csv'))
-        header = rows.shift
-        indexes = [
-          header.index('id') || 0,
-          header.index('identifier') || 0,
-          header.index('generation_id') || 0,
-          header.index('damage_class_id') || 0
-        ]
-        return @all = rows.map { |row| Type.new(row, indexes) }
-      end
-
       # All the loaded types
       # @return [Array<Type>]
       attr_accessor :all
+      # @!method load
+      #   Load all types
+      #   @param path [String] path to the folder containing the file
     end
   end
 end
