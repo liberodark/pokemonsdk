@@ -158,7 +158,7 @@ class Interpreter
   # @param party [Array<PFM::Pokemon>] the array of Pokemon to show in the menu
   # @param mode [Symbol] the mode of the Menu (:map, :menu, :item, :hold, :battle)
   # @author Nuri Yuri
-  def call_party_menu(id_var = ::Yuki::Var::TMP1, party = $actors, mode = :map)
+  def call_party_menu(id_var = ::Yuki::Var::Party_Menu_Sel, party = $actors, mode = :map)
     Graphics.freeze
     scene = GamePlay::Party_Menu.new(party, mode)
     scene.main
