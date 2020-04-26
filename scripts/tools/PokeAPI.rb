@@ -18,6 +18,9 @@ module PokeAPI
     Type.load(path)
     MoveChangeLog.load(path)
     Move.load(path)
+    MoveFlags.load(path)
+    MoveFlags.map
+    MoveFlagMap.load(path)
     process_moves(version_group_id)
   end
 
@@ -37,9 +40,37 @@ module PokeAPI
       skill.atk_class = move.atk_class
       # move.effect => convert to PSDK effect
       # skill.effect_chance = move.effect_chance # => inaccurate
+      apply_flags(move.id, skill)
     end
 
     File.write('Data/PSDK/SkillData.rxdata.yml', YAML.dump(GameData::Skill.all))
+  end
+
+  # @param id [Integer] ID of the move in PokeAPI
+  # @param skill [GameData::Skill] skill that should get the flags
+  def apply_flags(id, skill)
+    flags = MoveFlagMap.all.select { |flag| flag.move_id == id }.map(&:move_flag_id)
+    skill.contact = flags.include?(MoveFlags.contact)
+    skill.charge = flags.include?(MoveFlags.charge)
+    skill.recharge = flags.include?(MoveFlags.recharge)
+    skill.protect = flags.include?(MoveFlags.protect)
+    skill.reflectable = flags.include?(MoveFlags.reflectable)
+    skill.snatchable = flags.include?(MoveFlags.snatch)
+    skill.mirror_move = flags.include?(MoveFlags.mirror)
+    skill.punch = flags.include?(MoveFlags.punch)
+    skill.sound_attack = flags.include?(MoveFlags.sound)
+    skill.gravity = flags.include?(MoveFlags.gravity)
+    skill.unfreeze = flags.include?(MoveFlags.defrost)
+    skill.distance = flags.include?(MoveFlags.distance)
+    skill.heal = flags.include?(MoveFlags.heal)
+    skill.authentic = flags.include?(MoveFlags.authentic)
+    skill.powder = flags.include?(MoveFlags.powder)
+    skill.bite = flags.include?(MoveFlags.bite)
+    skill.pulse = flags.include?(MoveFlags.pulse)
+    skill.ballistics = flags.include?(MoveFlags.ballistics)
+    skill.mental = flags.include?(MoveFlags.mental)
+    skill.non_sky_battle = flags.include?(MoveFlags.non_sky_battle)
+    skill.dance = flags.include?(MoveFlags.dance)
   end
 
   module Attributes
@@ -232,6 +263,54 @@ module PokeAPI
       end
       # @!method load
       #   Load all moves
+      #   @param path [String] path to the folder containing the file
+    end
+  end
+
+  class MoveFlags
+    extend Attributes
+    # @return [Integer]
+    attr_reader :id, '.to_i'
+    # @return [String]
+    attr_reader :identifier, '.to_s'
+
+    commit('move_flags.csv')
+
+    class << self
+      attr_reader :contact, :charge, :recharge, :protect, :reflectable, :snatch,
+                  :mirror, :punch, :sound, :gravity, :defrost, :distance, :heal,
+                  :authentic, :powder, :bite, :pulse, :ballistics, :mental,
+                  :non_sky_battle, :dance
+      # Function that generates the flag map (MoveFlags.contact = 1)
+      def map
+        all.each do |flag|
+          instance_variable_set("@#{flag.identifier.tr('-', '_')}", flag.id)
+        end
+      end
+      # All the loaded types
+      # @return [Array<MoveFlags>]
+      attr_accessor :all
+      # @!method load
+      #   Load all move flags
+      #   @param path [String] path to the folder containing the file
+    end
+  end
+
+  class MoveFlagMap
+    extend Attributes
+    # @return [Integer]
+    attr_reader :move_id, '.to_i'
+    # @return [Integer]
+    attr_reader :move_flag_id, '.to_i'
+
+    commit('move_flag_map.csv')
+
+    class << self
+      # All the loaded types
+      # @return [Array<MoveFlagMap>]
+      attr_accessor :all
+      # @!method load
+      #   Load all move flag map
       #   @param path [String] path to the folder containing the file
     end
   end

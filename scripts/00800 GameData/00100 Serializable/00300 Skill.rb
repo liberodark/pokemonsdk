@@ -26,36 +26,103 @@ module GameData
     # Kind of move 1 = Physical, 2 = Special, 3 = Status
     # @return [Integer]
     attr_accessor :atk_class
-    # If the move is a direct move or not
-    # @return [Boolean]
-    attr_accessor :direct
     # Critical rate indicator : 0 => 0, 1 => 6.25%, 2 => 12.5%, 3 => 25%, 4 => 33%, 5 => 50%, 6 => 100%
     # @return [Integer]
     attr_accessor :critical_rate
     # Priority of the move
     # @return [Integer]
     attr_accessor :priority
+    # If the move makes conctact.
+    # PokeAPI Prose: User touches the target.  This triggers some abilities (e.g., []{ability:static}) and
+    # items (e.g., []{item:sticky-barb}).
+    # @return [Boolean]
+    attr_accessor :direct
+    alias contact direct
+    alias contact= direct=
+    # If the move is a charging move
+    # PokeAPI Prose: This move has a charging turn that can be skipped with a []{item:power-herb}.
+    # @return [Boolean]
+    attr_accessor :charge
+    # If the move requires recharging turn
+    # PokeAPI Prose : The turn after this move is used, the Pokemon's action is skipped so it can recharge.
+    # @return [Boolean]
+    attr_accessor :recharge
     # If the move is affected by Detect or Protect
+    # PokeAPI Prose : This move will not work if the target has used []{move:detect} or []{move:protect} this turn.
     # @return [Boolean]
     attr_accessor :blocable
+    alias protect blocable
+    alias protect= blocable=
     # If the move is affected by Snatch
+    # PokeAPI Prose : This move will be stolen if another Pokemon has used []{move:snatch} this turn.
     # @return [Boolean]
     attr_accessor :snatchable
     # If the move can be used by Mirror Move
+    # PokeAPI Prose : A Pokemon targeted by this move can use []{move:mirror-move} to copy it.
     # @return [Boolean]
     attr_accessor :mirror_move
+    # If the move is punch based
+    # PokeAPI Prose : This move has 1.2x its usual power when used by a Pokemon with []{ability:iron-fist}.
+    # @return [Boolean]
+    attr_accessor :punch
     # If the move is affected by Gravity
+    # PokeAPI Prose : This move cannot be used in high []{move:gravity}.
     # @return [Boolean]
     attr_accessor :gravity
     # If the move is affected by Magic Coat
+    # PokeAPI Prose : This move may be reflected back at the user with []{move:magic-coat} or []{ability:magic-bounce}.
     # @return [Boolean]
     attr_accessor :magic_coat_affected
+    alias reflectable magic_coat_affected
+    alias reflectable= magic_coat_affected=
     # If the move unfreeze the opponent Pokemon
+    # PokeAPI Prose : This move can be used while frozen to force the Pokemon to defrost.
     # @return [Boolean]
     attr_accessor :unfreeze
     # If the move is a sound attack
+    # PokeAPI Prose : Pokemon with []{ability:soundproof} are immune to this move.
     # @return [Boolean]
     attr_accessor :sound_attack
+    # If the move can reach any target of the specied side/bank
+    # PokeAPI Prose : In triple battles, this move can be used on either side to target the farthest away foe Pokemon.
+    # @return [Boolean]
+    attr_accessor :distance
+    # If the move can be blocked by Heal Block
+    # PokeAPI Prose : This move is blocked by []{move:heal-block}.
+    # @return [Boolean]
+    attr_accessor :heal
+    # If the move ignore the substitute
+    # PokeAPI Prose : This move ignores the target's []{move:substitute}.
+    # @return [Boolean]
+    attr_accessor :authentic
+    # If the move is a powder move
+    # PokeAPI Prose : Pokemon with []{ability:overcoat} and []{type:grass}-type Pokemon are immune to this move.
+    # @return [Boolean]
+    attr_accessor :powder
+    # If the move is bite based
+    # PokeAPI Prose : This move has 1.5x its usual power when used by a Pokemon with []{ability:strong-jaw}.
+    # @return [Boolean]
+    attr_accessor :bite
+    # If the move is pulse based
+    # PokeAPI Prose : This move has 1.5x its usual power when used by a Pokemon with []{ability:mega-launcher}.
+    # @return [Boolean]
+    attr_accessor :pulse
+    # If the move is a ballistics move
+    # PokeAPI Prose : This move is blocked by []{ability:bulletproof}.
+    # @return [Boolean]
+    attr_accessor :ballistics
+    # If the move has mental effect
+    # PokeAPI Prose : This move is blocked by []{ability:aroma-veil} and cured by []{item:mental-herb}.
+    # @return [Boolean]
+    attr_accessor :mental
+    # If the move cannot be used in Fly Battles
+    # PokeAPI Prose : This move is unusable during Sky Battles.
+    # @return [Boolean]
+    attr_accessor :non_sky_battle
+    # If the move is a dancing move
+    # PokeAPI Prose : This move triggers []{ability:dancer}.
+    # @return [Boolean]
+    attr_accessor :dance
     # If the move triggers King's Rock
     # @return [Boolean]
     attr_accessor :king_rock_utility
@@ -129,7 +196,7 @@ module GameData
     # Is the move a punch move ?
     # @return [Boolean]
     def punching?
-      return Punching_Moves.include?(@db_symbol)
+      return @punch || Punching_Moves.include?(@db_symbol)
     end
     class << self
       # All the skill
@@ -382,7 +449,8 @@ module GameData
       # @return [Boolean]
       def punching?(id)
         id = db_symbol(id) if id.is_a?(Integer)
-        return Punching_Moves.include?(id)
+        return @data[id].punching? if id_valid?(id)
+        return @data[0].punching?
       end
 
       # Safely return the db_symbol of an item
