@@ -348,7 +348,7 @@ module PFM
             result = false
             pkmn.skills_set.each do |skill|
               next unless skill
-              if((GameData::Skill.pp_max(skill.id) * 8 / 5) > skill.ppmax)
+              if((skill.data.pp_max * 8 / 5) > skill.ppmax)
                 result = true
                 break
               end
@@ -361,13 +361,13 @@ module PFM
           hash[:skill_message_id] = 35
           #> L'attaque choisie ne doit pas avoir les PP au max
           hash[:on_skill_choice] = proc do |skill|
-            (GameData::Skill.pp_max(skill.id) * 8 / 5) > skill.ppmax
+            (skill.data.pp_max * 8 / 5) > skill.ppmax
           end
           hash[:on_skill_use] = proc do |pkmn, skill|
             if pp == 2
-              skill.ppmax = GameData::Skill.pp_max(skill.id) * 8 / 5
+              skill.ppmax = skill.data.pp_max * 8 / 5
             else
-              skill.ppmax += GameData::Skill.pp_max(skill.id) * 1 / 5
+              skill.ppmax += skill.data.pp_max * 1 / 5
             end
             skill.pp += 99
             $scene.display_message(parse_text(22, 117, be::MOVE[0] => skill.name))

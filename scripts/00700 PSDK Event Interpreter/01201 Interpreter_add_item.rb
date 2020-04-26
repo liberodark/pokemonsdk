@@ -84,7 +84,7 @@ class Interpreter
       show_message(
         :hm_got_text,
         item_1: item_text, header: SYSTEM_MESSAGE_HEADER, PFM::Text::TRNAME[0] => $trainer.name,
-        PFM::Text::MOVE[2] => "\\c[#{color}]#{GameData::Skill.name(misc_data.skill_learn)}\\c[10]"
+        PFM::Text::MOVE[2] => "\\c[#{color}]#{GameData::Skill[misc_data.skill_learn].name}\\c[10]"
       )
     else
       MESSAGES[:item_got_text] = proc { text_get(41, text_id) }

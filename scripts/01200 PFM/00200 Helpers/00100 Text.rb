@@ -310,8 +310,7 @@ module PFM
     # @param value [String, Symbol, Integer]
     # @param index [Integer] index of the move variable
     def set_move_name(value, index = 0)
-      value = GameData::Skill.get_id(item_id) if value.is_a?(Symbol)
-      value = GameData::Skill.name(value) if value.is_a?(Integer)
+      value = GameData::Skill[value].name if value.is_a?(Integer) || value.is_a?(Symbol)
       set_variable(MOVE[index].to_s, value.to_s)
     end
 

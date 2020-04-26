@@ -92,7 +92,7 @@ class Scene_Battle
       if(i and i.hp>0 and i.battle_effect.is_locked_by_future_skill?)
         if(i.battle_effect.get_future_skill_counter==1)
           dmg=i.battle_effect.get_future_damage
-          skill_name = GameData::Skill.name(i.battle_effect.get_future_skill_id)
+          skill_name = GameData::Skill[i.battle_effect.get_future_skill_id].name
           BattleEngine::_message_stack_push([:msgf, parse_text_with_pokemon(19, 1086, i, MOVE[1] => skill_name)])
           if(dmg <= 0)
             BattleEngine::_message_stack_push([:msg_fail])

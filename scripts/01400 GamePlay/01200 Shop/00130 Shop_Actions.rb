@@ -21,7 +21,7 @@ module GamePlay
         id_text = 35
         ct_num = GameData::ItemMisc.ct_id(@list_item[@index]).to_s
         ct_num = '0' + ct_num if GameData::ItemMisc.ct_id(@list_item[@index]) < 10
-        skill_name = GameData::Skill.name(GameData::ItemMisc.skill_learn(@list_item[@index]))
+        skill_name = GameData::Skill[GameData::ItemMisc.skill_learn(@list_item[@index])].name
         hash = { NUM3[0] => ct_num.to_s, MOVE[1] => skill_name, NUM7R => price }
       else
         id_text = 94

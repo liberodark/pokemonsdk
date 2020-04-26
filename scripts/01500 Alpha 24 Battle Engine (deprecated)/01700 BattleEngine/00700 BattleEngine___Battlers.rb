@@ -110,7 +110,7 @@ module BattleEngine
     #>Si le Pokémon dort
     elsif(pkmn.asleep?)
       if(pkmn.sleep_check)
-        if(!GameData::Skill.is_sleeping_attack?(skill.db_symbol))
+        unless GameData::Skill[skill.db_symbol].sleeping_attack?
           _mp([:msg, parse_text_with_pokemon(19, 309, pkmn)])
           _mp([:animation_on, pkmn, 469 + pkmn.status])
           return false if skill.id != 173 or skill.id != 214

@@ -66,10 +66,10 @@ class Interpreter
   # @param id_skill [Integer, Symbol] the id of the skill in the database
   # @author Nuri Yuri
   def skill_learn(pokemon, id_skill)
-    id_skill = GameData::Skill.get_id(id_skill) if id_skill.is_a?(Symbol)
     raise "Database Error : Skill ##{id_skill} doesn't exists." unless GameData::Skill.id_valid?(id_skill)
+
     # Show the skill learn interface
-    GamePlay::Skill_Learn.new(pokemon, id_skill).main
+    GamePlay::Skill_Learn.new(pokemon, GameData::Skill[id_skill].id).main
     Graphics.transition
     @wait_count = 2
   end

@@ -1139,7 +1139,7 @@ module BattleEngine
     if(ls <= 0 or ls == skill.id or ls == 448 or ls == 165 or (!Abilities.has_ability_usable(target, 28) and (ls == 153 or ls == 120)))
       _mp(MSG_Fail)
     else
-      _mp([:msg, parse_text_with_pokemon(19, 691, launcher, MOVE[1] => ::GameData::Skill.name(ls))])
+      _mp([:msg, parse_text_with_pokemon(19, 691, launcher, MOVE[1] => ::GameData::Skill[ls].name)])
       _mp([:sketch, launcher, skill, ls])
     end
   end
@@ -1152,7 +1152,7 @@ module BattleEngine
     target = _magic_coat(launcher, target, skill)
     ls = target.last_skill
     if(ls > 0 and !target.battle_effect.has_disable_effect?)
-      _mp([:msg, parse_text_with_pokemon(19, 592, launcher, MOVE[1] => ::GameData::Skill.name(ls))])
+      _mp([:msg, parse_text_with_pokemon(19, 592, launcher, MOVE[1] => ::GameData::Skill[ls].name)])
       _mp([:apply_effect, target, :apply_disable, ls])
     else
       _mp(MSG_Fail)
@@ -1166,7 +1166,7 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     ls = target.last_skill
     if(ls > 0 and ls != 165 and ls != skill.id)
-      _mp([:msg, parse_text_with_pokemon(19, 688, launcher, MOVE[1] => ::GameData::Skill.name(ls))])
+      _mp([:msg, parse_text_with_pokemon(19, 688, launcher, MOVE[1] => ::GameData::Skill[ls].name)])
       _mp([:mimic, launcher, target, skill, ls])
     else
       _mp(MSG_Fail)
@@ -1181,7 +1181,7 @@ module BattleEngine
     target = _magic_coat(launcher, target, skill)
     ls = target.last_skill
     if(ls > 0 and ls != skill.id and ls != 165)
-      _mp([:msg, parse_text_with_pokemon(19, 559, target, MOVE[1] => ::GameData::Skill.name(ls))])
+      _mp([:msg, parse_text_with_pokemon(19, 559, target, MOVE[1] => ::GameData::Skill[ls].name)])
       _mp([:apply_effect, target, :apply_encore, target.find_skill(ls)])
     else
       _mp(MSG_Fail)
@@ -1198,7 +1198,7 @@ module BattleEngine
     skill = target.find_skill(ls)
     pp = skill ? (skill.pp < 4 ? skill.pp : 4) : 0
     if(ls > 0 and ls != 165 and pp > 0)
-      _mp([:msg, parse_text_with_pokemon(19, 641, target, MOVE[1] => ::GameData::Skill.name(ls), "[VAR NUM1(0002)]" => pp.to_s)])
+      _mp([:msg, parse_text_with_pokemon(19, 641, target, MOVE[1] => ::GameData::Skill[ls].name, "[VAR NUM1(0002)]" => pp.to_s)])
       _mp([:pp_down, target, skill, pp])
     else
       _mp(MSG_Fail)
@@ -1599,7 +1599,7 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     id_skill = target.last_skill
     if id_skill != 0
-      type = GameData::Skill.type(id_skill)
+      type = GameData::Skill[id_skill].type
     else
       type = launcher.type1
     end
