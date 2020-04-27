@@ -122,7 +122,7 @@ module PFM
       if (region * 8) >= @badges.size
         log_error('Le jeu ne prévoit pas de badge pour cette région. PSDK_ERR n°000_006')
       elsif badge_num < 0 || badge_num > 7
-        log_eror('Le numéro de badge indiqué est invalide, il doit être entre 1 et 8. PSDK_ERR n°000_007')
+        log_error('Le numéro de badge indiqué est invalide, il doit être entre 1 et 8. PSDK_ERR n°000_007')
       else
         @badges[(region * 8) + badge_num] = value
       end
@@ -138,7 +138,7 @@ module PFM
       if (region * 8) >= @badges.size
         log_error('Le jeu ne prévoit pas de badge pour cette région. PSDK_ERR n°000_006')
       elsif badge_num < 0 || badge_num > 7
-        log_eror('Le numéro de badge indiqué est invalide, il doit être entre 1 et 8. PSDK_ERR n°000_007')
+        log_error('Le numéro de badge indiqué est invalide, il doit être entre 1 et 8. PSDK_ERR n°000_007')
       else
         return @badges[(region * 8) + badge_num]
       end
