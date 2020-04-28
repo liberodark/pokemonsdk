@@ -403,7 +403,7 @@ class Scene_Battle
   def gr_launch_ball_to_enemy(pokemon, id)
     pokemon_sprite = gr_get_pokemon_sprite(pokemon)
     origin_sprite = pokemon.position < 0 ? @actor_sprites.first : @enemy_sprites.first
-    @ball_sprite = Sprite.new(@viewport).set_bitmap(GameData::Item.ball_data(id).img, :ball)
+    @ball_sprite = Sprite.new(@viewport).set_bitmap(GameData::Item[id].ball_data.img, :ball)
     @ball_sprite.visible = false
     @animator = Yuki::Basic_Animator.new(load_data('Data/Animations/pokeball_catch.dat'), origin_sprite, pokemon_sprite)
     @animator.parameters[:ball_sprite] = @ball_sprite
@@ -422,7 +422,7 @@ class Scene_Battle
   def gr_deflect_ball(pokemon, id)
     pokemon_sprite = gr_get_pokemon_sprite(pokemon)
     origin_sprite = pokemon.position < 0 ? @actor_sprites.first : @enemy_sprites.first
-    @ball_sprite = Sprite.new(@viewport).set_bitmap(GameData::Item.ball_data(id).img, :ball)
+    @ball_sprite = Sprite.new(@viewport).set_bitmap(GameData::Item[id].ball_data.img, :ball)
     @ball_sprite.visible = false
     @animator = Yuki::Basic_Animator.new(load_data('Data/Animations/pokeball_deflect.dat'), origin_sprite, pokemon_sprite)
     @animator.parameters[:ball_sprite] = @ball_sprite

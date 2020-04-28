@@ -120,8 +120,7 @@ module PFM
     # Method that initialize the data related to caching
     # @param opts [Hash] Hash describing optional value you want to assign to the Pokemon
     def catch_data_initialize(opts)
-      @captured_with = opts[:captured_with] || :"poké_ball"
-      @captured_with = GameData::Item.get_id(@captured_with) unless @captured_with.is_a?(Integer)
+      @captured_with = GameData::Item[opts[:captured_with] || :"poké_ball"].id
       @captured_at = (opts[:captured_at] || Time.now).to_i
       @captured_level = opts[:captured_level] || @level
       @egg_in = opts[:egg_in]
@@ -213,8 +212,7 @@ module PFM
       # Take the item according to the rng (% in item_percent_array should be higher than the rng val)
       rng = rand(100)
       @item_holding = item_id_array[item_percent_array.find_index { |value| value > rng } || 101]
-      @item_holding = opts[:item] || @item_holding.to_i
-      @item_holding = GameData::Item.get_id(@item_holding) unless @item_holding.is_a?(Integer)
+      @item_holding = GameData::Item[opts[:item] || @item_holding.to_i].id
     end
 
     # Method that initialize the ability

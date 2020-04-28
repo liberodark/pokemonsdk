@@ -77,8 +77,8 @@ module GamePlay
 
     # Method that calls all the informations updating method of the description window
     def update_item_desc
-      update_item_desc_name(GameData::Item.name(@list_item[@index]))
-      update_item_desc_text(GameData::Item.descr(@list_item[@index]))
+      update_item_desc_name(GameData::Item[@list_item[@index]].name)
+      update_item_desc_text(GameData::Item[@list_item[@index]].descr)
       update_nb_item($bag.item_quantity(@list_item[@index]))
       update_in_stock_item(@item_quantity[@index]) if @item_quantity != []
     end

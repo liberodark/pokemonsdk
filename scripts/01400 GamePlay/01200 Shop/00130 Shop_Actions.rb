@@ -7,7 +7,7 @@ module GamePlay
 
     # Launch the buy sequence
     def launch_buy_sequence
-      if GameData::Item.limited_use?(@list_item[@index]) == false
+      if GameData::Item[@list_item[@index]].limited == false
         buy_unlimited_use_item
       else
         buy_limited_use_item
@@ -17,15 +17,15 @@ module GamePlay
     # Method describing the process of buying an unlimited use item
     def buy_unlimited_use_item
       price = @list_price[@index].to_s
-      if GameData::Item.pocket(@list_item[@index]) == 3
+      item = GameData::Item[@list_item[@index]]
+      if item.socket == 3
         id_text = 35
-        ct_num = GameData::ItemMisc.ct_id(@list_item[@index]).to_s
-        ct_num = '0' + ct_num if GameData::ItemMisc.ct_id(@list_item[@index]) < 10
-        skill_name = GameData::Skill[GameData::ItemMisc.skill_learn(@list_item[@index])].name
+        ct_num = format('%<ct_num>02d', ct_num: item.misc_data&.ct_id || item.misc_data&.cs_id || 0)
+        skill_name = GameData::Skill[item.misc_data&.skill_learn || 0].name
         hash = { NUM3[0] => ct_num.to_s, MOVE[1] => skill_name, NUM7R => price }
       else
         id_text = 94
-        item_name = GameData::Item.exact_name(@list_item[@index])
+        item_name = item.exact_name
         hash = { ITEM2[0] => item_name, NUM7R => price }
       end
       c = display_message(parse_text(11, id_text, hash), 1, text_get(11, 27), text_get(11, 28))
@@ -52,7 +52,7 @@ module GamePlay
     # @return [Boolean] if the buy_item procedure should immediately exit
     def confirm_buy(price, item_id, quantity)
       if quantity > 0
-        item_str = quantity > 1 ? ext_text(9001, item_id) : ::GameData::Item.name(item_id)
+        item_str = quantity > 1 ? ext_text(9001, item_id) : ::GameData::Item[item_id].exact_name
         message = parse_text(11, 25,
                           ITEM2[0] => item_str,
                           NUM2[1] => quantity.to_s, NUM7R => (quantity * price).to_s)

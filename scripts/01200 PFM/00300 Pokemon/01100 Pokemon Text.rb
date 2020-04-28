@@ -56,7 +56,7 @@ module PFM
     # Return the name of the item the Pokemon is holding
     # @return [String]
     def item_name
-      return GameData::Item.name(item_db_symbol)
+      return GameData::Item[item_db_symbol].name
     end
 
     # Return the name of the current ability of the Pokemon

@@ -301,8 +301,7 @@ module PFM
     # @param value [String, Symbol, Integer]
     # @param index [Integer] index of the item variable
     def set_item_name(value, index = 0)
-      value = GameData::Item.get_id(item_id) if value.is_a?(Symbol)
-      value = GameData::Item.name(value) if value.is_a?(Integer)
+      value = GameData::Item[value].name if value.is_a?(Integer) || value.is_a?(Symbol)
       set_variable(ITEM2[index].to_s, value.to_s)
     end
 

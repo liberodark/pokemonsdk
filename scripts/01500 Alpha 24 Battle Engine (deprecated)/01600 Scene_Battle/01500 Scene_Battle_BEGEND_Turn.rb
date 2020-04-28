@@ -284,12 +284,12 @@ class Scene_Battle
       if(i and i.hp>0 and BattleEngine._has_item(i, i.battle_item))
         item_id = i.battle_item
         if(item_id >= 149 and item_id <= 157)
-          if(heal_data = GameData::Item.heal_data(item_id) and 
+          if(heal_data = GameData::Item[item_id].heal_data and 
               heal_data.states and heal_data.states.include?(i.status))
             BattleEngine::_mp([:berry_use, i, true])
             BattleEngine::_mp([:berry_cure, i, i.item_name])
             phase4_message_display()
-          elsif(i.confused? and heal_data = GameData::Item.heal_data(item_id) and 
+          elsif(i.confused? and heal_data = GameData::Item[item_id].heal_data and 
               heal_data.states and heal_data.states.include?(5))
             BattleEngine::_mp([:berry_use, i, true])
             BattleEngine::_mp([:confuse_cure, i, i.item_name])

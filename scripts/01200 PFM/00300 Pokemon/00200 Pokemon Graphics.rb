@@ -30,7 +30,7 @@ module PFM
     # Return the ball image of the Pokemon
     # @return [Bitmap]
     def ball_image
-      return RPG::Cache.ball(GameData::Item.ball_data(@captured_with).img)
+      return RPG::Cache.ball(ball_sprite)
     end
 
     class << self

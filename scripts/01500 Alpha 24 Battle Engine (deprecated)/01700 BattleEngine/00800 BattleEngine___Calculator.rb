@@ -156,7 +156,7 @@ module BattleEngine
   #S : n : Numeric : Multiplicateur
   #===
   def _base_power_item_calculation(launcher, skill)
-    item = GameData::Item.all[@_State[:launcher_item]]
+    item = GameData::Item[@_State[:launcher_item]]
     return 1 unless item
     imisc = item.misc_data
     return 1 unless imisc
@@ -326,7 +326,7 @@ module BattleEngine
   #S : n : Numeric : Multiplicateur
   #===
   def _sp_atk_ph_item_calculation(launcher, target, skill)
-    item = GameData::Item.all[@_State[:launcher_item]]
+    item = GameData::Item[@_State[:launcher_item]]
     n = 1
     return n unless item
     n *= 1.5 if item == 220 #> Bandeau Choix
@@ -345,7 +345,7 @@ module BattleEngine
   #S : n : Numeric : Multiplicateur
   #===
   def _sp_atk_sp_item_calculation(launcher, target, skill)
-    item = GameData::Item.all[@_State[:launcher_item]]
+    item = GameData::Item[@_State[:launcher_item]]
     n = 1
     return n unless item
     n *= 1.5 if item == 297 #> Lunettes Choix 
@@ -442,7 +442,7 @@ module BattleEngine
     n *= 1.5 if @_State[:target_item] == 257 && target.id == 132
     #> Écaille Océan
     n *= 2 if @_State[:target_item] == 227 && target.id == 366
-    item = GameData::Item.all[@_State[:target_item]]
+    item = GameData::Item[@_State[:target_item]]
     return n unless item
     imisc = item.misc_data
     return n unless imisc
@@ -586,7 +586,7 @@ module BattleEngine
     #TL
     n *= 2 if type_mod <= 0.5 && @_State[:launcher_ability] == 23 #> Lentiteintée
     #TRB
-    item = GameData::Item.all[@_State[:target_item]] #> Cible / lanceur ?
+    item = GameData::Item[@_State[:target_item]] #> Cible / lanceur ?
     return n unless item
     imisc = item.misc_data
     if imisc && berry = imisc.berry

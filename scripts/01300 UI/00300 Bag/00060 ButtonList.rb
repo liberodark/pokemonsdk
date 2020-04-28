@@ -60,7 +60,7 @@ module UI
       # @param list [Array<Integer>]
       def item_list=(list)
         @item_list = list
-        @name_list = @item_list.collect { |id| GameData::Item.exact_name(id) }
+        @name_list = @item_list.collect { |id| GameData::Item[id].exact_name }
         @name_list << text_get(22, 7)
       end
 

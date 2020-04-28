@@ -25,11 +25,12 @@ module UI
           @icon.visible = true
           return @stack.first.visible = true
         end
+        item = GameData::Item[id]
         @icon.data = id
         @quantity.text = (id == 0 ? 0 : $bag.item_quantity(id)).to_s.to_pokemon_number
-        @num_x.visible = @quantity.visible = GameData::Item.limited_use?(id)
-        @name.text = GameData::Item.exact_name(id)
-        @price_text&.text = parse_text(11, 9, /\[VAR NUM7[^\]]*\]/ => (GameData::Item.price(id) / 2).to_s)
+        @num_x.visible = @quantity.visible = item.limited
+        @name.text = item.exact_name
+        @price_text&.text = parse_text(11, 9, /\[VAR NUM7[^\]]*\]/ => (item.price / 2).to_s)
       end
     end
   end

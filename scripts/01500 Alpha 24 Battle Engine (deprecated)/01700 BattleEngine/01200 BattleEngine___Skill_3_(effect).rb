@@ -1249,10 +1249,10 @@ module BattleEngine
     ti = target.battle_item
     #>Les mega Gemme devront spéficier un utilisateur !
     if(ti > 0 and li > 0)
-      data = ::GameData::Item.misc_data(ti)
+      data = ::GameData::Item[ti].misc_data
       #> Glue / Multi-type
       if(data and data.need_user_id != target.id and !Abilities.has_abilities(target, 45, 122))
-        data = ::GameData::Item.misc_data(li)
+        data = ::GameData::Item[li].misc_data
         if(data and data.need_user_id != launcher.id)
           _mp([:msg, parse_text_with_pokemon(19, 682, launcher)])
           _mp([:set_item, target, li])
@@ -1276,7 +1276,7 @@ module BattleEngine
       _mp(MSG_Fail)
     else
       # TODO : Cristal Z - Mega Gemme - Orbes et ROM de Silvallier impossible à donner
-      _mp([:msg, parse_text_with_pokemon(19, 1117, launcher, PKNICK[0] => target.given_name, ITEM2[2] => ::GameData::Item.name(li), PKNICK[1] => launcher.given_name)])
+      _mp([:msg, parse_text_with_pokemon(19, 1117, launcher, PKNICK[0] => target.given_name, ITEM2[2] => ::GameData::Item[li].name, PKNICK[1] => launcher.given_name)])
       _mp([:set_item, target, li])
       _mp([:set_item, launcher, -1])
     end
@@ -1300,7 +1300,7 @@ module BattleEngine
     ti = target.battle_item
     #>Les mega Gemme devront spéficier un utilisateur !
     if(ti > 0 and ($game_temp.trainer_battle or launcher.position > 0))
-      data = ::GameData::Item.misc_data(ti)
+      data = ::GameData::Item[ti].misc_data
       #> Glue / Multi-type
       if(data and data.need_user_id != target.id and !Abilities.has_abilities(target, 45, 122))
         _mp([:msg, ::PFM::Text.parse_with_pokemons(19, 1063, launcher, target, ITEM2[2] => target.item_name)])
@@ -1322,7 +1322,7 @@ module BattleEngine
     ti = target.battle_item
     #>Les mega Gemme devront spéficier un utilisateur !
     if(ti > 0)
-      data = ::GameData::Item.misc_data(ti)
+      data = ::GameData::Item[ti].misc_data
       #> Glue / Multi-Type
       if(data and data.need_user_id != target.id and !Abilities.has_abilities(target, 45, 122))
         _mp([:msg, ::PFM::Text.parse_with_pokemons(19, 1056, launcher, target, ITEM2[2] => target.item_name)])
@@ -1344,7 +1344,7 @@ module BattleEngine
     if(ti == 0 and ie != 0 and !@_State[:knock_off].include?(target))
       target = _snatch_check(target, skill)
       _mp([:set_item, target, ie])
-      _mp([:msg, parse_text_with_pokemon(19, 490, target, ITEM2[1] => ::GameData::Item.name(ie))])
+      _mp([:msg, parse_text_with_pokemon(19, 490, target, ITEM2[1] => ::GameData::Item[ie].name)])
     else
       _mp(MSG_Fail)
     end
@@ -1357,11 +1357,11 @@ module BattleEngine
     return false unless s_basic(launcher, target, skill)
     ti = target.battle_item
     if(ti > 0)
-      data = ::GameData::Item.misc_data(ti)
+      data = ::GameData::Item[ti].misc_data
       if(data and data.berry)
-        _mp([:msg, parse_text_with_pokemon(19, 776, launcher, ITEM2[1] => ::GameData::Item.name(ti))])
+        _mp([:msg, parse_text_with_pokemon(19, 776, launcher, ITEM2[1] => ::GameData::Item[ti].name)])
         _mp([:berry_pluck, launcher, target])
-        _mp([:berry_cure, launcher, ::GameData::Item.name(ti)])
+        _mp([:berry_cure, launcher, ::GameData::Item[ti].name])
       end
     end
   end

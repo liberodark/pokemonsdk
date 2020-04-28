@@ -61,9 +61,10 @@ module PFM
     # @param item_id [Integer] ID of the item in the database
     # @return [Hash] the Hash descriptor defined at the top of the doc page
     def actions(item_id)
+      item = GameData::Item[item_id]
       # If the item exists
-      return NoEffect unless GameData::Item.id_valid?(item_id)
-      item = GameData::Item.all[item_id]
+      return NoEffect unless GameData::Item.id_valid?(item.id)
+
       sym = item.db_symbol
       # If the item is usable in this context
       if $game_temp.in_battle
@@ -207,7 +208,7 @@ module PFM
               #> Si c'est l'adversaire ou un sur le terrain on doit traiter la chose différement
               if(pkmn.position and pkmn.position <= $game_temp.vs_type)
                 be._mp([:status_cure, pkmn]) if states.include?(pkmn.status)
-                be._mp([:confuse_cure, pkmn, GameData::Item.name(item_id)]) if states.include?(GameData::States::CONFUSED)
+                be._mp([:confuse_cure, pkmn, GameData::Item[item_id].name]) if states.include?(GameData::States::CONFUSED)
               else
                 be._mp([:set_status, pkmn, 0])
                 be._msgp(22, BagStatesHeal[pkmn.status], nil, be::PKNICK[0] => pkmn.given_name)

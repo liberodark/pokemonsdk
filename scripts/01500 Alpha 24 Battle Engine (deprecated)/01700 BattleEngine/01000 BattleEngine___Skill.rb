@@ -501,7 +501,7 @@ module BattleEngine
   #===
   def s_fling(launcher, target, skill, msg_push = true)
     if(@_State[:launcher_item] > 0)
-      skill.power2 = GameData::Item.all[@_State[:launcher_item]].fling_power
+      skill.power2 = GameData::Item[@_State[:launcher_item]].fling_power
       if(s_basic(launcher, target, skill))
         case @_State[:launcher_item]
         when 273 #>Orbe Flame
@@ -658,7 +658,7 @@ module BattleEngine
   def s_natural_gift(launcher, target, skill, msg_push = true)
     li = launcher.battle_item
     if(li > 0)
-      data = ::GameData::Item.misc_data(li)
+      data = ::GameData::Item[li].misc_data
       if(data and data.berry)
         skill.power2 = data.berry[:power]
         skill.type2 = data.berry[:type]

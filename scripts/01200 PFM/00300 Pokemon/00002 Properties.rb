@@ -374,13 +374,13 @@ module PFM
     # Return the ball sprite name of the Pokemon
     # @return [String] Sprite to load in Graphics/ball/
     def ball_sprite
-      return GameData::Item.ball_data(@captured_with)&.img || 'ball_1'
+      return GameData::Item[@captured_with].ball_data&.img || 'ball_1'
     end
 
     # Return the ball color of the Pokemon (flash)
     # @return [Color]
     def ball_color
-      return GameData::Item.ball_data(@captured_with)&.color || Color.new(0, 0, 0)
+      return GameData::Item[@captured_with].ball_data&.color || Color.new(0, 0, 0)
     end
 
     # Return the normalized trainer id of the Pokemon

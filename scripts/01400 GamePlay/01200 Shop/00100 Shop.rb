@@ -77,9 +77,9 @@ module GamePlay
       temp_item_quantity = []
       price = 0
       @list_item.each_with_index do |item, index|
-        price = @price_overwrite.key?(item) ? @price_overwrite[item] : GameData::Item.price(item)
+        price = @price_overwrite.key?(item) ? @price_overwrite[item] : GameData::Item[item].price
         next if price <= 0
-        unless !GameData::Item.limited_use?(item) && $bag.contain_item?(item)
+        unless !GameData::Item[item].limited && $bag.contain_item?(item)
           arr << price
           temp_list_item << @list_item[index]
           temp_item_quantity << @item_quantity[index] if !@item_quantity.empty?

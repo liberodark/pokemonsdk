@@ -16,8 +16,9 @@ module Yuki
     # @param berry_id [Integer] ID of the berry Item in the database
     # @param state [Integer] the growth state of the berry
     def init_berry(map_id, event_id, berry_id, state = 4)
-      return unless berry_data = ::GameData::ItemMisc::berry(berry_id)
-      data = find_berry_data(map_id)[event_id] = Array.new(8,0)
+      return unless (berry_data = GameData::Item[berry_id].misc_data&.berry)
+
+      data = find_berry_data(map_id)[event_id] = Array.new(8, 0)
       data[0] = berry_id
       data[1] = state
       data[3] = berry_data[:time_to_grow]*15
@@ -76,7 +77,8 @@ module Yuki
     # @param berry_id [Integer] ID of the berry Item in the database
     def plant(event_id, berry_id)
       @data[event_id] = Array.new(8,0) unless @data[event_id]
-      return unless berry_data = ::GameData::ItemMisc::berry(berry_id)
+      return unless (berry_data = GameData::Item[berry_id].misc_data&.berry)
+
       data = @data[event_id]
       data[0] = berry_id
       data[1] = 0
@@ -93,7 +95,8 @@ module Yuki
     # @return [Integer] the number of berry taken from the tree
     def take(event_id)
       return unless data = @data[event_id]
-      return unless berry_data = ::GameData::ItemMisc::berry(data[0])
+      return unless (berry_data = GameData::Item[data[0]].misc_data&.berry)
+
       amount = berry_data[:min_yield]
       rand_delta = berry_data[:max_yield] - amount
       rand_sub = data[6] / 2 #>Valeur soustraite au rand pour garantir une ou deux de plus)

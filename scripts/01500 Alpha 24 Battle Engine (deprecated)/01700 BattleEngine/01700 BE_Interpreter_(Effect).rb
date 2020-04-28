@@ -310,7 +310,7 @@ module BattleEngine
     #===
     def berry_use(target, remove = false)
       #>Animation
-      imisc = GameData::Item.misc_data(target.battle_item)
+      imisc = GameData::Item[target.battle_item].misc_data
       if(imisc and berry = imisc.berry)
         target.edit_bonus(berry[:bonus])
       end
@@ -325,7 +325,7 @@ module BattleEngine
     #===
     def berry_pluck(launcher, target)
       #>Animation
-      imisc = GameData::Item.misc_data(target.battle_item)
+      imisc = GameData::Item[target.battle_item].misc_data
       if(imisc and berry = imisc.berry)
         launcher.edit_bonus(berry[:bonus])
       end

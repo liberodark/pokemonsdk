@@ -295,7 +295,7 @@ module BattleEngine
   JudgementPlates = [298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 644]
   def s_judgment(launcher, target, skill, msg_push = true)
     if(JudgementPlates.include?(@_State[:launcher_item]))
-      imisc = GameData::Item.misc_data(@_State[:launcher_item])
+      imisc = GameData::Item[@_State[:launcher_item]].misc_data
       skill.type2 = imisc.powering_skill_type1 if imisc and imisc.powering_skill_type1
     end
     s_basic(launcher, target, skill)
@@ -375,10 +375,10 @@ module BattleEngine
   #===
   def s_incinerate(launcher, target, skill, msg_push = true)
     return unless s_basic(launcher, target, skill)
-	data = ::GameData::Item.misc_data(target.battle_item)
+	  data = ::GameData::Item[target.battle_item].misc_data
     if(data and data.berry) # TODO Joyaux
       # TODO Fix msg parsing with plural
-      # _mp([:msg, parse_text_with_pokemon(19, 1114, target, PKNICK[0] => target.given_name, ITEM2[1] => ::GameData::Item.name(target.battle_item))])
+      # _mp([:msg, parse_text_with_pokemon(19, 1114, target, PKNICK[0] => target.given_name, ITEM2[1] => ::GameData::Item[target.battle_item].name)])
       _mp([:set_item, target, 0, true])
 	end
   end

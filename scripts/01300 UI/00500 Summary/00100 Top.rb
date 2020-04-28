@@ -21,7 +21,7 @@ module UI
       @gender.ox = 88 - @name.real_width
       @gender.visible = false if NO_GENDER.include?(pokemon.id) || pokemon.egg?
       @item.visible = false if pokemon.egg?
-      @ball.set_bitmap(GameData::Item.icon(pokemon.captured_with), :icon)
+      @ball.set_bitmap(GameData::Item[pokemon.captured_with].icon, :icon)
     end
 
     # Update the graphics
