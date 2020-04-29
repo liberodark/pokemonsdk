@@ -3,43 +3,44 @@ module PFM
     # Return the base HP
     # @return [Integer]
     def base_hp
-      return GameData::Pokemon.base_hp(@id, @form)
+      return data.base_hp
     end
 
     # Return the base ATK
     # @return [Integer]
     def base_atk
-      return GameData::Pokemon.base_atk(@id, @form)
+      return data.base_atk
     end
 
     # Return the base DFE
     # @return [Integer]
     def base_dfe
-      return GameData::Pokemon.base_dfe(@id, @form)
+      return data.base_dfe
     end
 
     # Return the base SPD
     # @return [Integer]
     def base_spd
-      return GameData::Pokemon.base_spd(@id, @form)
+      return data.base_spd
     end
 
     # Return the base ATS
     # @return [Integer]
     def base_ats
-      return GameData::Pokemon.base_ats(@id, @form)
+      return data.base_ats
     end
 
     # Return the base DFS
     # @return [Integer]
     def base_dfs
-      return GameData::Pokemon.base_dfs(@id, @form)
+      return data.base_dfs
     end
 
     # Return the max HP of the Pokemon
     # @return [Integer]
     def max_hp
       return 1 if db_symbol == :shedinja
+
       return ((@iv_hp + 2 * base_hp + @ev_hp / 4) * @level) / 100 + 10 + @level
     end
 

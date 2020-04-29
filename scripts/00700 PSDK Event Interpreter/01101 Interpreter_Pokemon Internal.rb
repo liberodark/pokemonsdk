@@ -35,7 +35,7 @@ class Interpreter
   def internal_add_pokemon_check_level_shiny(pokemon_id, level, shiny, method_name)
     do_not_add = false
     # Check parameters
-    if pokemon_id < 1 || pokemon_id >= GameData::Pokemon.all.size
+    if GameData::Pokemon.id_valid?(pokemon_id)
       do_not_add = "Database Error : The Pokémon ##{pokemon_id} doesn't exists."
     end
     if level < 1 || level > $pokemon_party.level_max_limit

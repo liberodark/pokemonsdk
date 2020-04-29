@@ -149,9 +149,8 @@ module PFM
     # Return the front offset y of the Pokemon
     # @return [Integer]
     def front_offset_y
-      return GameData::Pokemon.front_offset_y(id, form)
+      return data.front_offset_y
     end
-
 
     # Return the character name of the Pokemon
     # @return [String]

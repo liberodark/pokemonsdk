@@ -31,9 +31,9 @@ module GamePlay
 
     # Method that calls all the informations updating method of the description window
     def update_item_desc
-      update_item_desc_name(GameData::Pokemon.name(@list_item[@index][:id]))
+      update_item_desc_name(GameData::Pokemon[@list_item[@index][:id]].name)
       update_item_desc_text(@list_item[@index][:level])
-      update_pkm_specie_text(GameData::Pokemon.species(@list_item[@index][:id]))
+      update_pkm_specie_text(GameData::Pokemon[@list_item[@index][:id]].species)
       update_in_stock_item(@list_item[@index][:quantity]) if @symbol_or_list.class == Symbol
     end
 

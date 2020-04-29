@@ -6,7 +6,7 @@ module GamePlay
     def buy_pokemon
       price = @list_item[@index][:price].to_s
       id_text = 94
-      pkm_name = GameData::Pokemon.name(@list_item[@index][:id])
+      pkm_name = GameData::Pokemon[@list_item[@index][:id]].name
       hash = { ITEM2[0] => pkm_name, NUM7R => price }
       c = display_message(parse_text(11, id_text, hash), 1, text_get(11, 27), text_get(11, 28))
       money_checkout(1) if c == 0

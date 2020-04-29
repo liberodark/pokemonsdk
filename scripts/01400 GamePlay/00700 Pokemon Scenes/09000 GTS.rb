@@ -143,21 +143,21 @@ module GTS
     if Settings::SORT_MODE == 'Alphabetical'
       letter = index.is_a?(String) ? index : (0x40 + index).chr # index >= 1, A = 0x41
       # Select the Pokemon that start with the right letter
-      species_list.select! { |i| GameData::Pokemon.name(i).start_with?(letter) }
+      species_list.select! { |i| GameData::Pokemon[i].name.start_with?(letter) }
     elsif Settings::SORT_MODE == 'Regional'
       # /!\ PSDK has no multi-regional Dex
       real_index = index == 1 && $pokedex.national? ? -1 : 0
       if real_index != -1
         # Reject non-national Pokemon
-        species_list.reject! { |i| GameData::Pokemon.id_bis(i) == 0 }
+        species_list.reject! { |i| GameData::Pokemon[i].id_bis == 0 }
         # Sort Pokemon by their Regional ID
-        species_list.sort! { |a, b| GameData::Pokemon.id_bis(a) <=> GameData::Pokemon.id_bis(b) }
+        species_list.sort! { |a, b| GameData::Pokemon[a].id_bis <=> GameData::Pokemon[b].id_bis }
       end
     end
 
-    to_id = proc { |i| $pokedex.national? ? i : GameData::Pokemon.id_bis(i) }
+    to_id = proc { |i| $pokedex.national? ? i : GameData::Pokemon[i].id_bis }
 
-    commands.concat(species_list.collect { |i| format('%03d : %0s', to_id.call(i), GameData::Pokemon.name(i)) })
+    commands.concat(species_list.collect { |i| format('%03d : %0s', to_id.call(i), GameData::Pokemon[i].name) })
     if commands.size <= 1
       $scene.display_message(ext_text(8997, 0))
       return 0
@@ -456,7 +456,7 @@ module GTS
     end
 
     def draw_wanted_data
-      @texts[0].text = @wanted_data[0] > 0 ? GameData::Pokemon.name(@wanted_data[0]) : '????'
+      @texts[0].text = @wanted_data[0] > 0 ? GameData::Pokemon[@wanted_data[0]].name : '????'
       @texts[1].text = GTS.genders[@wanted_data[3]]
       @texts[2].text = format(ext_text(8997, 18), min: @wanted_data[1], max: @wanted_data[2])
     end
@@ -737,7 +737,7 @@ module GTS
       @win_text.add_text(2, 220, 238, 15, ext_text(8997, 43), color: 9)
 
       data = {
-        id: wanted_data[0], name: GameData::Pokemon.name(wanted_data[0]),
+        id: wanted_data[0], name: GameData::Pokemon[wanted_data[0]].name,
         from: wanted_data[1], to: wanted_data[2],
         sexe: GTS.genders[wanted_data[3]]
       }

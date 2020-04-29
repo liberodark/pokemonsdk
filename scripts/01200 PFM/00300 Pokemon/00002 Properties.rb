@@ -198,12 +198,12 @@ module PFM
     # Get the primary data of the Pokemon
     # @return [GameData::Pokemon]
     def primary_data
-      GameData::Pokemon.get_data(id, 0)
+      GameData::Pokemon[id, 0]
     end
 
     # Get the current data of the Pokemon
     def data
-      GameData::Pokemon.get_data(id, form || 0)
+      GameData::Pokemon[id, form || 0]
     end
     alias get_data data
 

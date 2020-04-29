@@ -64,7 +64,7 @@ module UI
       # @param list [Array<Integer>]
       def item_list=(list)
         @item_list = list
-        @name_list = @item_list.collect { |hash| GameData::Pokemon.name(hash[:id]) }
+        @name_list = @item_list.collect { |hash| GameData::Pokemon[hash[:id]].name }
       end
 
       # Set the price list
