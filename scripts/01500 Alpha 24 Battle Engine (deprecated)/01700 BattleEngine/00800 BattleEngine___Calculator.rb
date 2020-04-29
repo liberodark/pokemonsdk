@@ -97,9 +97,9 @@ module BattleEngine
   def _type_modifier_calculation(target, skill)
     return 2 if skill.id == 573 && target.type_water? # Lyophilisation
     type = skill.type
-    type1 = GameData::Type.multiplier(type, target.type1)
-    type2 = GameData::Type.multiplier(type, target.type2)
-    type3 = GameData::Type.multiplier(type, target.type3)
+    type1 = GameData::Type[target.type1].hit_by(type)
+    type2 = GameData::Type[target.type2].hit_by(type)
+    type3 = GameData::Type[target.type3].hit_by(type)
     return type1 * type2 * type3
   end
 

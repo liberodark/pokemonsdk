@@ -130,7 +130,7 @@ module Battle
     # @return [Numeric]
     def calc_type_n_multiplier(target, type_to_check)
       user_type = target.send(type_to_check)
-      result = GameData::Type.multiplier(type, user_type)
+      result = GameData::Type[user_type].hit_by(type)
       @effectiveness *= result
       return result
     end

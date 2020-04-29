@@ -1588,7 +1588,7 @@ module BattleEngine
       target = _snatch_check(target, skill)
       _mp([:set_type, target, type, 1])
       _mp([:msg, parse_text_with_pokemon(19,899,target, 
-      '[VAR TYPE(0001)]' => GameData::Type.name(type))])
+      '[VAR TYPE(0001)]' => GameData::Type[type].name)])
     end
   end
   #===
@@ -1608,7 +1608,7 @@ module BattleEngine
     else
       _mp([:set_type, launcher, type, 1])
       _mp([:msg, parse_text_with_pokemon(19,899,launcher, 
-      '[VAR TYPE(0001)]' => GameData::Type.name(type))])
+      '[VAR TYPE(0001)]' => GameData::Type[type].name)])
     end
   end
     #===
@@ -1629,7 +1629,7 @@ module BattleEngine
         unless target_types[i] == 0
           _mp([:set_type, launcher, target_types[i], i + 1])
           _mp([:msg, parse_text_with_pokemon(19,899,launcher, 
-          '[VAR TYPE(0001)]' => GameData::Type.name(target_types[i]))])
+          '[VAR TYPE(0001)]' => GameData::Type[target_types[i]].name)])
         else
           _mp([:set_type, launcher, target_types[i], i + 1])
         end
