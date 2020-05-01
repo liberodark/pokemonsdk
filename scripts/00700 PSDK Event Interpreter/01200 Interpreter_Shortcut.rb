@@ -263,4 +263,14 @@ class Interpreter
     $game_variables[Yuki::Var::CoinCase] = casino.coin_case
     @wait_count = 2
   end
+
+  # Open the Hall of Fame UI
+  # @param filename_bgm [String] the bgm to play during the Hall of Fame
+  # @param context_of_victory [Symbol] the symbol to put as the context of victory
+  def hall_of_fame(filename_bgm = 'audio/bgm/Hall-of-Fame', context_of_victory = :league)
+    hall_of_fame = GamePlay::Hall_of_Fame.new(filename_bgm, context_of_victory)
+    hall_of_fame.main
+    Graphics.transition
+    @wait_count = 2
+  end
 end
