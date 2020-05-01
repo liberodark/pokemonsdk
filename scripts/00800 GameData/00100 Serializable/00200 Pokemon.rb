@@ -111,7 +111,7 @@ module GameData
     attr_accessor :master_moves
     # Front offset y of the Pokemon for Summary & Dex UI
     # @return [Integer]
-    attr_accessor :front_offset_y
+    attr_writer :front_offset_y
     # Create a new GameData::Pokemon object
     def initialize
       super
@@ -157,6 +157,12 @@ module GameData
     # @return [String]
     def species
       return text_get(1, id)
+    end
+
+    # Front offset y of the Pokemon for Summary & Dex UI
+    # @return [Integer]
+    def front_offset_y
+      @front_offset_y || 0
     end
 
     class << self
