@@ -2,13 +2,13 @@ pokemonsdk/scripts/00000 PSDK_CONFIG.rb
 pokemonsdk/scripts/00001 RMXP_DATA.rb
 pokemonsdk/scripts/00002 state.rb
 pokemonsdk/scripts/00100 Yuki__EXC.rb
-pokemonsdk/scripts/00000 Dependencies/00100 _Patch_temporaire_/00200 Plane.rb
 pokemonsdk/scripts/00000 Dependencies/00200 GameData(dep)/00100 GameData__SystemTags.rb
 pokemonsdk/scripts/00000 Dependencies/00200 GameData(dep)/00900 Yuki__VD.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00200 Object.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00201 Object_validate_param.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00202 Object_Module_void.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00300 String.rb
+pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/00100 Plane.rb
 pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/00200 Bitmap.rb
 pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/00400 Graphics.rb
 pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/00401 Graphics_framerate.rb
