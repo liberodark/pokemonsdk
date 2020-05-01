@@ -310,6 +310,7 @@ pokemonsdk/scripts/01400 GamePlay/00500 Options/04800 KeyBinding.rb
 pokemonsdk/scripts/01400 GamePlay/00500 Options/04801 KeyBinding_LS.rb
 pokemonsdk/scripts/01400 GamePlay/00600 Save & Load/00100 Save.rb
 pokemonsdk/scripts/01400 GamePlay/00600 Save & Load/00200 Load.rb
+pokemonsdk/scripts/01400 GamePlay/00600 Save & Load/00300 Language_Choice.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00100 Evolve.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00200 Hatch.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00300 Skill_Learn.rb
