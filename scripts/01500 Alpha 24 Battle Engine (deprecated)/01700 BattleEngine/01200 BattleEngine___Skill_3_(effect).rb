@@ -1696,4 +1696,179 @@ module BattleEngine
       get_ally(launcher).each { |i| _mp([:hp_down, i, i.max_hp/16]) }
     end
   end
+  #==
+  #>s_origin_pulse
+  #--
+  #E : <BE_Modell>
+  #--
+  # Deals damage to all adjacent opponents. It's power is boosted by 50% when used by a Pokémon with the ability Mega Launcher
+  #--
+  def s_origin_pulse(launcher, target, skill, msg_push = true)
+    
+    #If the user has mega launcher ability
+    if launcher.ability_db_symbol == :mega_launcher
+      skill.power2 = skill.power * 1.5
+    end
+    s_basic(launcher, target, skill)
+    skill.power2 = nil
+  end
+  
+  #==
+  #>s_shore_up
+  #--
+  #E : <BE_Modell>
+  #--
+  # User regains up to half of it's max HP, or 2/3 of max HP if in a sandstorm.
+  #--
+  def s_shore_up(launcher, target, skill, msg_push=true)
+    #Message that says Pokemon used move
+    if launcher.hp != launcher.max_hp
+      return false unless __s_beg_step(launcher, target, skill, msg_push)
+      #If sandstorm heal 2/3 max HP
+      if $env.sandstorm?
+        hp = (launcher.max_hp * 2/3)
+      else
+      #If no sandstorm heal 1/2 max HP
+        hp = (launcher.max_hp * 1/2)
+      end
+      #Message that says Pokemon gained HP
+      _message_stack_push([:hp_up, launcher, hp])
+      return true
+    else
+      #Gives fail message
+      _message_stack_push([:use_skill_msg, launcher, target, skill]) if msg_push
+      _message_stack_push(MSG_Fail)
+      return false
+    end
+  end
+  
+  #==
+  #>s_first_impression
+  #--
+  #E : <BE_Modell>
+  #--
+  # The move has priority of +2, first impression fails if used after first turn.
+  #--
+  def s_first_impression(launcher, target, skill, msg_push=true)
+    #Message that says Pokemon used move
+    if(launcher.battle_effect.nb_of_turn_here == 1)
+      s_basic(launcher, target, skill)
+      return true
+    else
+      #Gives fail message
+      _message_stack_push([:use_skill_msg, launcher, target, skill]) if msg_push
+      _message_stack_push(MSG_Fail)
+      return false
+    end
+  end
+  
+  #==
+  #>s_spirit_shackle
+  #--
+  #E : <BE_Modell>
+  #--
+  # This move inflicts damage and prevents foes from fleeing or switching out UNLESS they have wimp out, emergency exit or holding a
+  # red card, shed shell, or eject button
+  #==
+  def s_spirit_shackle(launcher, target, skill, msg_push=true)
+    #If it does damage
+    if s_basic(launcher, target, skill)
+      #If they have these moves or abilities it won't trap
+      unless target.ability_db_symbol == :wimp_out || target.ability_db_symbol == :emergency_exit || target.item_db_symbol == :red_card ||
+             target.item_db_symbol == :shed_shell || target.item_db_symbol == :eject_button
+        #Trap if they don't have moves and abilities above
+        _mp([:apply_effect,target, :apply_cant_flee, launcher])
+      end
+    end
+  end
+  
+  #==
+  #>s_sparkling_aria
+  #--
+  #E : <BE_Modell>
+  #--
+  # This move inflicts damage to everyone around you (this includes allies) and cures burn if hit. If Pokémon hit has soundproof, dry skin,
+  # storm drain, or water absorbed they are not affected (burns do not get cured).
+  #==
+  def s_sparkling_aria(launcher, target, skill, msg_push=true)
+    #If it does damage
+    if s_basic(launcher, target, skill)
+      #If the target is burned
+      if target.status == 3
+        #Set status to 0 (none)
+        #target.status = 0
+        #Give the cure message
+        _mp([:status_cure, target])
+      end
+    end
+  end
+  
+  #==
+  #>s_strength_sap
+  #--
+  #E : <BE_Modell>
+  #==
+  def s_strength_sap(launcher, target, skill, msg_push = true)
+	return false unless __s_beg_step(launcher, target, skill, msg_push)
+	
+	#Checks if target's current attack is greater than it's max attack / 4 (Basically, if it's -6 attack the move fails)
+	if target.atk >= (target.atk_basis / 4 + 1)
+		#Sets hp gained to target's attack
+		hp = (target.atk).to_i
+		
+		#If you have big root increase hp gained by 30%
+		hp = hp*130/100 if(_has_item(launcher, 296))
+		
+		#If the target has liquid ooze
+		if target.ability == 36
+		  _message_stack_push([:hp_down, launcher, hp])
+		  _message_stack_push([:msg, parse_text_with_pokemon(19, 457, launcher)])
+		#Else if heal block is active
+		elsif(!launcher.battle_effect.has_heal_block_effect?)
+		  #Checks the clone (I have no idea what that means. It's used in abosrb, though.)
+		  _message_stack_push([:hp_up, launcher, hp])
+		  _message_stack_push([:msg, parse_text_with_pokemon(19, 905, target)])
+		else
+		  _mp([:msg, parse_text_with_pokemon(19,890, launcher)])
+		end
+		__s_stat_us_step(launcher, target, skill, nil, 100)
+		#Lowers the target's attack by 1
+		_message_stack_push([:change_atk, target, -1])
+		return true
+	#If the target's current attack is less than it's attack is -6 give fail message
+	else
+		#Gives fail message
+		_message_stack_push(MSG_Fail)
+        return false
+	end	
+  end
+
+  #==
+  #>s_toxic_thread
+  #--
+  #E : <Be_Modell>
+  #--
+  # Lowers the target's speed stat by one and poisons the target. If the target can't be poisoned (steel type, poison type, or 
+  # has a status condition already) it will still lower the speed and vice-versa. If speed can't be lowered because of clear body 
+  # or speed is already -6 it can still poison.
+  #==
+  def s_toxic_thread(launcher, target, skill, msg_push=true)
+    #Checks if target's speed is already -6 or has a status already
+    if target.spd >= (target.spd_basis / 4 + 1)
+      __s_stat_us_step(launcher, target, skill, nil, 100)
+      #Lowers the target's speed by 1
+      _message_stack_push([:change_spd, target, -6])
+    end
+    #Checks if target has no status and doesn't have clear body
+    if target.status == 0
+      #Applies toxic status
+      target.status = 8
+    end
+    #If target speed is -6 and has a status move fails
+    if target.spd <= (target.spd_basis / 4 + 1) && target.status != 0
+      #Gives fail message
+      _message_stack_push(MSG_Fail)
+      return false
+    end
+  end
 end
