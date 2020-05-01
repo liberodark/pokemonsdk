@@ -191,6 +191,7 @@ pokemonsdk/scripts/01200 PFM/00100 Global Systems/01300 MagnetoVS.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01400 Quest.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01500 HoneyTree.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01600 Nuzlocke.rb
+pokemonsdk/scripts/01200 PFM/00100 Global Systems/02000 Hall_of_Fame.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/00100 Text.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/00200 Choice_Helper.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/02900 IA.rb
@@ -244,6 +245,19 @@ pokemonsdk/scripts/01300 UI/00700 Shop/00060 ScrollBar.rb
 pokemonsdk/scripts/01300 UI/00800 Pokemon_Shop/00010 ItemList.rb
 pokemonsdk/scripts/01300 UI/00800 Pokemon_Shop/00020 ItemDescWindow.rb
 pokemonsdk/scripts/01300 UI/00800 Pokemon_Shop/00030 ScrollBar.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00001 Type_Background.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00002 Pokemon_Battler_Stack.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00003 Stars_Animation.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00004 Pokemon_Text_Box.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00005 Congratulation_Text_Box.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00006 Pokemon_Stars_Animation.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00010 Graveyard_Stack.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00011 Dead_Pokemon_Text.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00020 Turning_Pokeball.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00021 Party_Battler_Stack.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00022 League_Champion_Text_Box.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00023 Trainer_Infos_Text_Box.rb
+pokemonsdk/scripts/01300 UI/02000 Hall_Of_Fame/00024 End_Stars_Animation.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00100 KeyBindingViewer.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00200 QuestInformer.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00300 MenuButton.rb
@@ -327,6 +341,12 @@ pokemonsdk/scripts/01400 GamePlay/01300 Pokemon_Shop/00140 Shop_Mouse.rb
 pokemonsdk/scripts/01400 GamePlay/01400 Quest/03200 GamePlay__QuestBookMenu.rb
 pokemonsdk/scripts/01400 GamePlay/01400 Quest/03300 GamePlay__QuestBookList.rb
 pokemonsdk/scripts/01400 GamePlay/01400 Quest/03400 GamePlay__QuestBookQuest.rb
+pokemonsdk/scripts/01400 GamePlay/02000 Hall_Of_Fame/00001 Initialize.rb
+pokemonsdk/scripts/01400 GamePlay/02000 Hall_Of_Fame/00002 Graphics.rb
+pokemonsdk/scripts/01400 GamePlay/02000 Hall_Of_Fame/00003 Animation_Phase_1.rb
+pokemonsdk/scripts/01400 GamePlay/02000 Hall_Of_Fame/00004 Animation_Phase_2.rb
+pokemonsdk/scripts/01400 GamePlay/02000 Hall_Of_Fame/00005 Animation_Phase_3.rb
+pokemonsdk/scripts/01400 GamePlay/02000 Hall_Of_Fame/00006 Inputs.rb
 pokemonsdk/scripts/01400 GamePlay/09000 Games/00001 Casino__VoltorbFlip.rb
 pokemonsdk/scripts/01400 GamePlay/09000 Games/00002 Ruine_Alpha_by_FL0RENT_.rb
 pokemonsdk/scripts/01400 GamePlay/09000 Games/00003 Casino__SlotMachine.rb

@@ -1,6 +1,6 @@
 module LiteRGSS
   class Shader
-    FALBACK_SHADER = <<-EOFALLBACKSHADER
+    FALLBACK_SHADER = <<-EOFALLBACKSHADER
     // Viewport tone (required)
     uniform vec4 tone;
     // Viewport color (required)
@@ -30,7 +30,7 @@ module LiteRGSS
       return File.read("graphics/shaders/#{filename.downcase}.txt")
     rescue StandardError
       log_error("Failed to load shader #{filename}, sprite using this shader will not display correctly")
-      return FALBACK_SHADER
+      return FALLBACK_SHADER
     end
     # General Shader of Sprite that need color mix
     GeneralColorSprite = load_to_string('GenColorSprite')
