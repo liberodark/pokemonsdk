@@ -129,6 +129,7 @@ module GameData
       # Load the items
       def load
         @data = load_data('Data/PSDK/ItemData.rxdata').freeze
+        @data.each_with_index { |item, index| item&.id = index }
         GameData::Item.const_set(:LAST_ID, @data.size - 1)
       end
 

@@ -240,6 +240,9 @@ module GameData
         GameData::Pokemon.const_set(:LAST_ID, @data.size - 1)
         @data[0] = [GameData::Pokemon.new]
         @data.freeze
+        @data.each_with_index do |pokemon_arr, index|
+          pokemon_arr.each { |pokemon| pokemon&.id = index }
+        end
       end
 
       # Convert a collection to symbolized collection

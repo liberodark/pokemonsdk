@@ -73,6 +73,7 @@ module GameData
       # Load the type
       def load
         @data = load_data('Data/PSDK/Types.rxdata').freeze
+        @data.each_with_index { |type, index| type&.id = index }
       end
     end
   end

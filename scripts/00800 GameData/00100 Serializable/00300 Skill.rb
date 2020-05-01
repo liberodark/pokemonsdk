@@ -307,6 +307,7 @@ module GameData
         GameData::Skill.const_set(:LAST_ID, @data.size - 1)
         @data[0] = GameData::Skill.new
         @data.freeze
+        @data.each_with_index { |skill, index| skill&.id = index }
       end
 
       # Convert a collection to symbolized collection
