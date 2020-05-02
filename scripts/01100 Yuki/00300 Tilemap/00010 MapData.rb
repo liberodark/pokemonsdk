@@ -1,5 +1,4 @@
 module Yuki
-  # Class responsive of displaying the map
   class Tilemap
     # Class containing the map Data and its resources
     class MapData
@@ -26,6 +25,7 @@ module Yuki
       def initialize(map)
         @data = map.data
         @map = map
+        @rect = Rect.new(0, 0, 32, 32)
       end
 
       # Sets the position of the map in the 2D Space
@@ -43,6 +43,28 @@ module Yuki
       # @param z [Integer] z
       def [](x, y, z)
         @data[x + @offset_x, y + @offset_y, z]
+      end
+
+      # Draw the tile on the right layer
+      # @param x [Integer] real world x of the top left tile
+      # @param y [Integer] real world y of the top left tile
+      # @param tx [Integer] x index of the tile to draw from top left tile (0)
+      # @param ty [Integer] y index of the tile to draw from top left tile (0)
+      # @param tz [Integer] z index of the tile to draw
+      # @param layers [Array<Array<SpriteMap>>] layers of the tilemap .dig(priority, ty)
+      def draw(x, y, tx, ty, tz, layers)
+        tile_id = self[x + tx, y + ty, tz]
+        return unless tile_id && tile_id != 0
+
+        priority = @priorities[tile_id] || 0
+        if tile_id < 384 # Autotile
+          layer.dig(priority, ty).set(tx, autotiles_bmp[tile_id / 48 - 1],
+                                      @rect.set((tile_id % 48) * 32, @autotile_counter[tile_id / 48]))
+        else
+          tile_id -= 384
+          layer.dig(priority, ty).set(tx, @tilesets[0], # tile_id / 1024
+                                      @rect.set(tile_id % 8 * 32, tile_id / 8 * 32)) # tile_id % 1024 / 8 * 32
+        end
       end
 
       # Load the tileset
@@ -74,6 +96,7 @@ module Yuki
         @tilesets = [RPG::Cache.tileset(name)]
         # @type [Array<Bitmap>]
         @autotiles = @tileset.autotile_names.map { |aname| RPG::Cache.autotile(aname + '_._tiled') }
+        @autotile_counter = Array.new(@autotiles.size + 1, 0)
       end
 
       # Load the position when map is on north
