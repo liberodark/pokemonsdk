@@ -124,7 +124,7 @@ class Interpreter
     id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
     return nil if id == 0
     pokemon_id = id.is_a?(Hash) ? id[:id].to_i : id
-    raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists." if GameData::Pokemon.id_valid?(pokemon_id)
+    raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists." unless GameData::Pokemon.id_valid?(pokemon_id)
     pokemon = id.class == Hash ? PFM::Pokemon.generate_from_hash(id) : PFM::Pokemon.new(id, 1)
     pokemon.egg_init
     return add_pokemon(pokemon)
