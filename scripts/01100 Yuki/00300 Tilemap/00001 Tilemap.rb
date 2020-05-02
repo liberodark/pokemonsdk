@@ -6,10 +6,10 @@ module Yuki
     attr_reader :map_datas
     # Get the ox
     # @return [Integer]
-    attr_reader :ox
+    attr_accessor :ox
     # Get the oy
     # @return [Integer]
-    attr_reader :oy
+    attr_accessor :oy
 
     # Create a new Tilemap
     # @param viewport [LiteRGSS::Viewport]
@@ -60,7 +60,7 @@ module Yuki
     # @param map_datas [Array<Yuki::Tilemap::MapData>]
     def map_datas=(map_datas)
       @map_datas.clear
-      @map_datas << map_datas.select { |data| data.is_a?(MapData) }
+      @map_datas.concat(map_datas.select { |data| data.is_a?(MapData) })
       reset
     end
 
@@ -124,7 +124,7 @@ module Yuki
       @sprites.each_with_index do |layer, tz|
         @ny.times do |ty|
           ry = ty + y
-          @ny.times do |tx|
+          @nx.times do |tx|
             rx = tx + x
             # @type [Yuki::Tilemap::MapData]
             map = maps.find { |data| data.x_range.include?(rx) && data.y_range.include?(ry) }
@@ -132,6 +132,17 @@ module Yuki
           end
         end
       end
+    end
+  end
+
+  class Tilemap16px < Tilemap
+    private
+
+    # Generate the sprites of the tilemap with the right settings
+    # @param tile_size [Integer] the dimension of a tile
+    # @param zoom [Numeric] the global zoom of a tile
+    def create_sprites(tile_size = 16, zoom = 0.5)
+      super(tile_size, zoom)
     end
   end
 end

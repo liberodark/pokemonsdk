@@ -22,9 +22,11 @@ module Yuki
 
       # Create a new MapData
       # @param map [RPG::Map]
-      def initialize(map)
+      # @param map_id [Integer]
+      def initialize(map, map_id)
         @data = map.data
         @map = map
+        @map_id = map_id
         @rect = Rect.new(0, 0, 32, 32)
       end
 
@@ -51,8 +53,8 @@ module Yuki
       # @param tx [Integer] x index of the tile to draw from top left tile (0)
       # @param ty [Integer] y index of the tile to draw from top left tile (0)
       # @param tz [Integer] z index of the tile to draw
-      # @param layers [Array<Array<SpriteMap>>] layers of the tilemap .dig(priority, ty)
-      def draw(x, y, tx, ty, tz, layers)
+      # @param layer [Array<Array<SpriteMap>>] layers of the tilemap .dig(priority, ty)
+      def draw(x, y, tx, ty, tz, layer)
         tile_id = self[x + tx, y + ty, tz]
         return unless tile_id && tile_id != 0
 
@@ -79,7 +81,7 @@ module Yuki
 
       # Load the tileset graphics
       def load_tileset_graphics
-        $game_temp.maplinker_map_id = map_id
+        $game_temp.maplinker_map_id = @map_id
         $game_temp.tileset_temp = @tileset.tileset_name
         Scheduler.start(:on_getting_tileset_name)
         name = $game_temp.tileset_name || @tileset.tileset_name
@@ -154,6 +156,5 @@ module Yuki
         @y_range = 0...map.height
       end
     end
-
   end
 end
