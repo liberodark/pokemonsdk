@@ -188,6 +188,7 @@ class Scene_Battle
   def phase5_ramassage
     @actors.each do |pkmn|
       next unless pkmn
+      next if pkmn.egg?
       case pkmn.ability
       when 25 # Ramassage
         phase5_ramassage_take_object(pkmn) if rand(100) < 10 && pkmn.item_holding == 0
