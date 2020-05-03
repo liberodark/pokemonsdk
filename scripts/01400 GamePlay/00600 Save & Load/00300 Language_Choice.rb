@@ -54,11 +54,11 @@ module GamePlay
 
     # Update the inputs
     def update_inputs
-      if Input.repeat?(:RIGHT)
+      if Input.repeat?(:LEFT)
         @index = @index != 0 ? @index - 1 : @lang_list.size - 1
         move(false) if ANIME_CHANGE
         update_index
-      elsif Input.repeat?(:LEFT)
+      elsif Input.repeat?(:RIGHT)
         @index = @index != @lang_list.size - 1 ? @index + 1 : 0
         move(true) if ANIME_CHANGE
         update_index
