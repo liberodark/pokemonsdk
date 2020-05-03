@@ -56,6 +56,7 @@ module PFM
       @egg_in = $env.master_zone
       @egg_at = Time.new.to_i
       @step_remaining = data.hatch_step
+      @item_holding = 0
       $quests.get_egg
     end
 
