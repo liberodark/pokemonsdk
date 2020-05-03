@@ -10,15 +10,6 @@ module Battle
     # @return [Integer] maximum number of ppg the move currently has
     attr_reader :ppmax
 
-    # @return [Integer, nil] power of the move
-    attr_writer :power
-
-    # @return [Integer, nil] current type of the move
-    attr_writer :type
-
-    # @return [Integer, nil] current accuracy of the move
-    attr_writer :accuracy
-
     # @return [Boolean] if the move has been used
     attr_accessor :used
 
@@ -69,7 +60,7 @@ module Battle
     # Return the actual base power of the move
     # @return [Integer]
     def power
-      @power || data.power
+      data.power
     end
 
     # Return the text of the power of the skill (for the UI)
@@ -84,13 +75,13 @@ module Battle
     # Return the current type of the move
     # @return [Integer]
     def type
-      @type || data.type
+      data.type
     end
 
     # Return the current accuracy of the move
     # @return [Integer]
     def accuracy
-      @accuracy || data.accuracy
+      data.accuracy
     end
 
     # Return the accuracy text of the skill (for the UI)

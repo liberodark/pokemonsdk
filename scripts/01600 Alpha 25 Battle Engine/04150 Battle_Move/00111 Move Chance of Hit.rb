@@ -29,7 +29,8 @@ module Battle
     # @param target [PFM::PokemonBattler] target of the move
     # @return [Float]
     def chance_of_hit(user, target)
-      return accuracy *
+      # TODO: lock-on return 100 if target is locked by user
+      return 100 *
              accuracy_mod(user) *
              evasion_mod(target) *
              send(ACCURACY_ITEM_MULTIPLIER[user.item_db_symbol], user, target) *
