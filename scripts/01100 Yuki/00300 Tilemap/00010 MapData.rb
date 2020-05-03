@@ -19,6 +19,11 @@ module Yuki
       # Get the map Y coordinate range
       # @return [Range]
       attr_reader :y_range
+      # Get the tileset filename (to prevent unwanted dispose in the future)
+      # @return [String]
+      attr_reader :tileset_name
+      # Variable containing tileset chunks
+      @tileset_chunks = {}
 
       # Create a new MapData
       # @param map [RPG::Map]
@@ -60,12 +65,12 @@ module Yuki
 
         priority = @priorities[tile_id] || 0
         if tile_id < 384 # Autotile
-          layer.dig(priority, ty).set(tx, autotiles_bmp[tile_id / 48 - 1],
-                                      @rect.set((tile_id % 48) * 32, @autotile_counter[tile_id / 48]))
+          layer.dig(priority, ty).set(tx, @autotiles[tile_id / 48 - 1],
+                                      @rect.set((tile_id % 48) * 32, @autotile_counter[tile_id / 48] * 32))
         else
           tile_id -= 384
-          layer.dig(priority, ty).set(tx, @tilesets[0], # tile_id / 1024
-                                      @rect.set(tile_id % 8 * 32, tile_id / 8 * 32)) # tile_id % 1024 / 8 * 32
+          layer.dig(priority, ty).set(tx, @tilesets[tile_id / 256],
+                                      @rect.set(tile_id % 8 * 32, (tile_id % 256) / 8 * 32))
         end
       end
 
@@ -75,6 +80,17 @@ module Yuki
         @tileset = $data_tilesets[@map.tileset_id]
         @priorities = @tileset.priorities
         load_tileset_graphics
+      end
+
+      # Update the autotiles counter (for tilemap)
+      def update_counters
+        @autotiles.each_with_index do |autotile, index|
+          next unless autotile
+          next if autotile.height <= 32
+
+          frame_count = autotile.height / 32
+          @autotile_counter[index + 1] = (@autotile_counter[index + 1] + 1) % frame_count
+        end
       end
 
       private
@@ -95,10 +111,36 @@ module Yuki
         #   4. return the chunk names
         #   Final result : @tilesets = (MapData.tileset_chunks[tileset_name] || load_chunks(tileset_name))
         #                              .map { |filename| RPG::Cache.tileset(filename) }
-        @tilesets = [RPG::Cache.tileset(name)]
+        @tilesets = load_tileset_chunks(@tileset_name = name)
         # @type [Array<Bitmap>]
         @autotiles = @tileset.autotile_names.map { |aname| RPG::Cache.autotile(aname + '_._tiled') }
         @autotile_counter = Array.new(@autotiles.size + 1, 0)
+      end
+
+      # Load tileset chunks
+      # @param name [Filename]
+      # @return [Array<Bitmap>]
+      def load_tileset_chunks(name)
+        chunks = MapData.tileset_chunks[name]
+        return chunks if chunks&.none?(&:disposed?)
+
+        unless RPG::Cache.tileset_exist?(name)
+          return (MapData.tileset_chunks[name] = [RPG::Cache.default_bitmap])
+        end
+
+        image = RPG::Cache.tileset_image(name)
+        working_surface = Image.new(256, 1024)
+        rect = Rect.new(256, 1024)
+        chunks = (image.height / 1024.0).ceil.times.map do |i|
+          height = ((i + 1) * 1024) > image.height ? image.height - (i * 1024) : 1024
+          working_surface.blt!(0, 0, image, rect.set(0, i * 1024, 256, height))
+          bmp = Bitmap.new(256, 1024)
+          working_surface.copy_to_bitmap(bmp)
+          next bmp
+        end
+        image.dispose
+        working_surface.dispose
+        return MapData.tileset_chunks[name] = chunks
       end
 
       # Load the position when map is on north
@@ -154,6 +196,12 @@ module Yuki
         @offset_y = 0
         @x_range = 0...map.width
         @y_range = 0...map.height
+      end
+
+      class << self
+        # Get tileset chunks
+        # @return [Hash{filename => Array<Bitmap>}]
+        attr_reader :tileset_chunks
       end
     end
   end

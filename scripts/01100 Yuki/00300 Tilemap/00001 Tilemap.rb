@@ -39,7 +39,8 @@ module Yuki
       x = ox / 32 - 1
       y = oy / 32 - 1
 
-      if x != @last_x || y != @last_y || (Graphics.frame_count % @autotile_idle_count == 0)
+      if x != @last_x || y != @last_y || (update_autotile = (Graphics.frame_count % @autotile_idle_count == 0))
+        @map_datas.each(&:update_counters) if update_autotile
         draw(@last_x = x, @last_y = y)
         update_position(ox % 32, oy % 32)
       elsif ox != @last_ox || oy != @last_oy

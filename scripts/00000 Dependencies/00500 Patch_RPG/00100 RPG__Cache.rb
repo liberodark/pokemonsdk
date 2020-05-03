@@ -555,6 +555,13 @@ module RPG
       load_image(@tileset_cache, filename, Tilesets_Path, @tileset_data)
     end
 
+    # Load a tileset "Image" (to perform some background process)
+    # @param filename [String] name of the image in the folder
+    # @return [Image]
+    def tileset_image(filename)
+      load_image(@tileset_cache, filename, Tilesets_Path, @tileset_data, Image)
+    end
+
     # Load/unload the transition cache
     # @param flush_it [Boolean] if we need to flush the cache
     def load_transition(flush_it = false)

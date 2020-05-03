@@ -16,21 +16,25 @@ class NewRendererTest < GamePlay::BaseCleanUpdate
     data1 = load_data('Data/Map005.rxdata')
     data2 = load_data('Data/Map006.rxdata')
     data3 = load_data('Data/Map007.rxdata')
+    data4 = load_data('Data/Map008.rxdata')
+    data5 = load_data('Data/Map009.rxdata')
     map_array = [Yuki::Tilemap::MapData.new(data1, 5)]
     map_array.last.load_position(data1, :self, 0)
     map_array << Yuki::Tilemap::MapData.new(data2, 6)
     map_array.last.load_position(data1, :north, -10)
     map_array << Yuki::Tilemap::MapData.new(data2, 6)
     map_array.last.load_position(data1, :north, 10)
-    map_array << Yuki::Tilemap::MapData.new(data2, 6)
+    map_array << Yuki::Tilemap::MapData.new(data4, 6)
     map_array.last.load_position(data1, :east, 0)
     map_array << Yuki::Tilemap::MapData.new(data2, 6)
     map_array.last.load_position(data1, :west, 0)
-    map_array << Yuki::Tilemap::MapData.new(data2, 6)
-    map_array.last.load_position(data1, :south, -11)
     map_array << Yuki::Tilemap::MapData.new(data3, 6)
+    map_array.last.load_position(data1, :south, -11)
+    map_array << Yuki::Tilemap::MapData.new(data5, 6)
     map_array.last.load_position(data1, :south, 11)
+	t = Time.new
     map_array.each(&:load_tileset)
+	puts "Tileset loading time: #{Time.new - t}s"
     @tilemap.map_datas = map_array
   end
 
