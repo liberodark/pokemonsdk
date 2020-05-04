@@ -13,12 +13,21 @@ module Yuki
       # Get access to the original map data
       # @return [RPG::Map]
       attr_reader :map
+      # Get the map id
+      # @reutrn [Integer]
+      attr_reader :map_id
       # Get the map X coordinate range
       # @return [Range]
       attr_reader :x_range
       # Get the map Y coordinate range
       # @return [Range]
       attr_reader :y_range
+      # Get the map offset_x
+      # @return [Integer]
+      attr_reader :offset_x
+      # Get the map offset_y
+      # @return [Integer]
+      attr_reader :offset_y
       # Get the tileset filename (to prevent unwanted dispose in the future)
       # @return [String]
       attr_reader :tileset_name
