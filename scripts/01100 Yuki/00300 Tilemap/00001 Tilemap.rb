@@ -116,10 +116,10 @@ module Yuki
       end
     end
 
-    # Draw the tiles
+    # Draw the tiles (suboptimal)
     # @param x [Integer] real world x of the top left tile
     # @param y [Integer] real world y of the top left tile
-    def draw(x, y)
+    def draw_suboptimal(x, y)
       @all_sprites.each(&:reset)
       maps = map_datas
       @sprites.each_with_index do |layer, tz|
@@ -133,6 +133,16 @@ module Yuki
           end
         end
       end
+    end
+
+    # Draw the tiles
+    # @param x [Integer] real world x of the top left tile
+    # @param y [Integer] real world y of the top left tile
+    def draw(x, y)
+      @all_sprites.each(&:reset)
+      rx = x + @nx - 1
+      ry = y + @ny - 1
+      map_datas.each { |map| map.draw_map(x, y, rx, ry, @sprites) }
     end
   end
 

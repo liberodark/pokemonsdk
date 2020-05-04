@@ -74,6 +74,33 @@ module Yuki
         end
       end
 
+      # Draw the visible part of the map
+      # @param x [Integer] real world x of the top left tile
+      # @param y [Integer] real world y of the top left tile
+      # @param rx [Integer] real world x of the bottom right tile
+      # @param ry [Integer] real world y of the bottom right tile
+      # @param layers [Array<Array<Array<SpriteMap>>>] layers of the tilemap .dig(tz, priority, ty)
+      def draw_map(x, y, rx, ry, layers)
+        lx = x_range.min
+        mx = x_range.max
+        ly = y_range.min
+        my = y_range.max
+
+        bx = lx > x ? lx : x
+        ex = mx > rx ? rx : mx
+        by = ly > y ? ly : y
+        ey = my > ry ? ry : my
+        return unless bx <= ex && by <= ey
+
+        bx.upto(ex) do |ax|
+          by.upto(ey) do |ay|
+            layers.each_with_index do |layer, tz|
+              draw(x, y, ax - x, ay - y, tz, layer)
+            end
+          end
+        end
+      end
+
       # Load the tileset
       def load_tileset
         # @type [RPG::Tileset]

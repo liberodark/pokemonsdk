@@ -12,6 +12,12 @@ class NewRendererTest < GamePlay::BaseCleanUpdate
 
   def create_graphics
     create_viewport
+	if PSDK_CONFIG.debug?
+		Graphics.resize_screen(320 + 32, 240 + 32)
+		@viewport.rect.set(0, 0, Graphics.width, Graphics.height)
+		@viewport.ox = -16
+		@viewport.oy = -16
+	end
     @tilemap = Yuki::Tilemap16px.new(@viewport)
     data1 = load_data('Data/Map005.rxdata')
     data2 = load_data('Data/Map006.rxdata')
