@@ -19,12 +19,16 @@ module GamePlay
     LAST_STEP = SECOND_STEP + 60
     PI2 = Math::PI*2
 
-    def initialize(pokemon, id, forced = false)
+    def initialize(pokemon, id, form = nil, forced = false)
         super()
         @pokemon = pokemon 
         @clone = pokemon.clone
         @clone.id = id
-        @clone.form_calibrate(:evolve)
+        if form
+          @clone.form = form
+        else
+          @clone.form_calibrate(:evolve)
+        end
         @forced = forced 
         @id_bg = 0
         @evolved = false
