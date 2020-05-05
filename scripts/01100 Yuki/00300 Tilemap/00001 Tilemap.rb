@@ -65,6 +65,16 @@ module Yuki
       reset
     end
 
+    # Dispose the tilemap
+    def dispose
+      return if @disposed
+
+      @all_sprites.each(&:dispose)
+      @all_sprites = nil
+      @sprites = nil
+      @disposed = true
+    end
+
     private
 
     # Generate the sprites of the tilemap with the right settings
