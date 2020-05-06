@@ -242,3 +242,5 @@ module Yuki
     end
   end
 end
+
+require 'lib/YukiTilemapMapDataBlaster.so' if File.exist?('lib/YukiTilemapMapDataBlaster.so')
