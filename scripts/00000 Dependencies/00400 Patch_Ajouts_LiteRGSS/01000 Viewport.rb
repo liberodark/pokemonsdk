@@ -69,12 +69,15 @@ module LiteRGSS
 
     # Sort the z sprites inside the viewport
     def sort_z
+=begin
       # @__elementtable.delete_if do |el| el.disposed? end
-      @__elementtable.sort! do |a, b| 
+      @__elementtable.sort! do |a, b|
         s = a.z <=> b.z
         next(a.__index__ <=> b.__index__) if s == 0
         next(s)
       end
+=end
+      @__elementtable.sort_by!(&:z2)
       reload_stack
     end
 
@@ -118,6 +121,36 @@ module LiteRGSS
           @viewport_color = @flash_color = nil
         end
       end
+    end
+  end
+
+  class Drawable
+    def z2
+      @z2 ||= z * 10_000 + __index__
+    end
+  end
+
+  class Sprite
+    alias old_z_set z=
+    def z=(v)
+      old_z_set(v)
+      @z2 = v * 10_000 + __index__
+    end
+  end
+
+  class SpriteMap
+    alias old_z_set z=
+    def z=(v)
+      old_z_set(v)
+      @z2 = v * 10_000 + __index__
+    end
+  end
+
+  class Window
+    alias old_z_set z=
+    def z=(v)
+      old_z_set(v)
+      @z2 = v * 10_000 + __index__
     end
   end
 end

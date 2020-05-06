@@ -1,6 +1,8 @@
 module Yuki
   # Class responsive of displaying the map
   class Tilemap
+    # Array telling how much layer each priority layer can show
+    PRIORITY_LAYER_COUNT = [3, 2, 2, 1, 1, 1]
     # Get all the map data used by the tilemap
     # @return [Array<Yuki::Tilemap::MapData>]
     attr_reader :map_datas
@@ -87,22 +89,40 @@ module Yuki
       # Variable containing the sprite (in a way it's easier to access)
       @sprites = []
       nx, ny = nx_ny_configs
-      3.times do
-        priority_array = Array.new(6) do
-          priority_layer = Array.new(ny) do |y|
-            sprite = SpriteMap.new(viewport, tile_size, nx)
-            sprite.set_position(-tile_size, (y - 1) * tile_size)
-            sprite.tile_scale = zoom
-            sprite.z = 0
-            @all_sprites << sprite
-            next(sprite)
+      3.times do |z|
+        priority_array = Array.new(6) do |priority|
+          # If we are allowed to draw more layer than the current layer we add a new priority layer
+          if PRIORITY_LAYER_COUNT[priority] > z
+            priority_layer = Array.new(ny) do |y|
+              sprite = SpriteMap.new(viewport, tile_size, nx)
+              sprite.set_position(-tile_size, (y - 1) * tile_size)
+              sprite.tile_scale = zoom
+              sprite.z = 0
+              @all_sprites << sprite
+              next(sprite)
+            end
+            next(priority_layer)
+          else # Otherwise we take the last one
+            next(adjust_sprite_layer(priority, PRIORITY_LAYER_COUNT[priority]))
           end
-          next(priority_layer)
         end
         @sprites << priority_array
       end
       @nx = nx
       @ny = ny
+    end
+
+    # Adjust the sprites variable when the priority allow only two sprites => c3 c2 c3
+    # @param priority [Integer] the current priority
+    # @param count [Integer] the number of layer allowed for the priority
+    # @return [Sprite_Map]
+    def adjust_sprite_layer(priority, count)
+      return @sprites.last[priority] if count != 2
+
+      sprite_to_return = @sprites.last[priority]
+      @sprites.last[priority] = @sprites.first[priority]
+      @sprites.first[priority] = sprite_to_return
+      return sprite_to_return
     end
 
     # Get the tilemap configuration for its size
