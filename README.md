@@ -2,6 +2,11 @@
 
 `PSDK` is a Starter Kit allowing to create Pokémon Games using various tools like RPG Maker XP and custom data base editors.
 
+[![Discord](https://img.shields.io/discord/143824995867557888.svg?logo=discord&colorB=728ADA&label=Discord)](https://discord.gg/0noB0gBDd91B8pMk)
+[![Twitter PSDK](https://img.shields.io/twitter/follow/PokemonSDK?label=Twitter%20PSDK&logoColor=%23333333&style=social)](https://twitter.com/PokemonSDK)
+[![Twitter PW](https://img.shields.io/twitter/follow/PokemonWorkshop?label=Twitter%20PW&logoColor=%23333333&style=social)](https://twitter.com/PokemonWorkshop)
+
+
 ### Generic Links
 
 [Downloads](https://download.psdk.pokemonworkshop.com/)
