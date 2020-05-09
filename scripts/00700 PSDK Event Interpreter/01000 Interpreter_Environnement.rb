@@ -122,7 +122,7 @@ class Interpreter < Interpreter_RMXP
   # Delete the current event forever
   def delete_this_event_forever
     $env.set_event_delete_state(@event_id)
-    $game_map.events[@event_id].erase
+    $game_map.events[@event_id]&.erase
   end
 
   # Wait for the end of the movement of this particular character
