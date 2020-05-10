@@ -398,8 +398,8 @@ module PFM
                 end
                 pkmn.check_skill_and_learn
                 #>Vérification évolution
-                id = pkmn.evolve_check(:level_up)
-                $scene.call_scene(::GamePlay::Evolve, pkmn, id, false) if(id)
+                id, form = pkmn.evolve_check(:level_up)
+                $scene.call_scene(::GamePlay::Evolve, pkmn, id, form, false) if(id)
               end
             end
             pkmn.loyalty += heal_data.loyalty if heal_data.loyalty
@@ -466,14 +466,14 @@ module PFM
           end
           hash[:stone_evolve] = true
           hash[:on_pokemon_use] = proc do |pkmn|
-            id = pkmn.evolve_check(:stone, item_id)
+            id, form = pkmn.evolve_check(:stone, item_id)
             _last_scene = $scene
             $scene.__result_process = proc do |scene|
               _last_scene.running = false
               $bag.add_item(item_id, 1) unless scene.evolved
             end
             #$scene.call_scene(::GamePlay::Evolve, pkmn, id, true)
-            scene = ::GamePlay::Evolve.new(pkmn, id, true)
+            scene = ::GamePlay::Evolve.new(pkmn, id, form, true)
             scene.main
           end
         end

@@ -103,8 +103,8 @@ module GTS
       evo.pbEndScreen
     }
 =end
-    elv_id = new_poke.evolve_check(:trade, my_pokemon)
-    $scene.call_scene(GamePlay::Evolve, new_poke, elv_id, true) if elv_id
+    elv_id, elv_form = new_poke.evolve_check(:trade, my_pokemon)
+    $scene.call_scene(GamePlay::Evolve, new_poke, elv_id, elv_form, true) if elv_id
 
     if !new_poke.game_code || new_poke.game_code != Settings::GAME_CODE
       new_poke.flags = 0x00E9_0000 # 9 = base2 : 1,0,0,1 = ?, !FromThisGame, !CapturedByPlayer, FromPresentTime

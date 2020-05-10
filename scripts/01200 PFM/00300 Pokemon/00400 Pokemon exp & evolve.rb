@@ -164,7 +164,7 @@ module PFM
         if(reason == :trade)
           return e[:trade] if e[:trade]
         else
-          return e[:id] if e[:id]
+          return e[:id], e[:form] if e[:id]
         end
       end
       return false

@@ -68,10 +68,10 @@ class Scene_Battle
   #===
   def phase5_evolve_check
     @_Evolve.each do |i|
-      id = i.evolve_check(:level_up)
+      id, form = i.evolve_check(:level_up)
       if(id)
         @message_window.visible = false
-        GamePlay::Evolve.new(i, id).main unless i.dead?
+        GamePlay::Evolve.new(i, id, form).main unless i.dead?
       end
     end
   end
