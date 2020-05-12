@@ -160,8 +160,7 @@ module ScriptLoader
 
     # Function that fix the vsync param
     def fix_vsync
-      param = PARGV[:"no-vsync"]
-      @vsync_enabled = (param.nil? ? @vsync_enabled : !param) == true
+      @vsync_enabled = !PARGV[:"no-vsync"]
     end
 
     # Function that adjust the liteRGSS configs
