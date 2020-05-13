@@ -10,6 +10,10 @@ module LiteRGSS
     VIEWPORT_CONF_COMP = 'Data/Viewport.rxdata'
     # Filename for viewport uncompiled config
     VIEWPORT_CONF_TEXT = 'Data/Viewport.json'
+    # Tell if the viewport needs to sort
+    # @return [Boolean]
+    attr_accessor :need_to_sort
+
     class << self
       # Generating a viewport with one line of code
       # @overload create(x, y = 0, width = 1, height = 1, z = nil)
@@ -41,6 +45,7 @@ module LiteRGSS
         end
         v = Viewport.new(x + GLOBAL_OFFSET_X, y + GLOBAL_OFFSET_Y, width, height)
         v.z = z if z
+        v.need_to_sort = true
         return v
       end
 
@@ -69,16 +74,11 @@ module LiteRGSS
 
     # Sort the z sprites inside the viewport
     def sort_z
-=begin
-      # @__elementtable.delete_if do |el| el.disposed? end
-      @__elementtable.sort! do |a, b|
-        s = a.z <=> b.z
-        next(a.__index__ <=> b.__index__) if s == 0
-        next(s)
-      end
-=end
+      return unless @need_to_sort
+
       @__elementtable.sort_by!(&:z2)
       reload_stack
+      @need_to_sort = false
     end
 
     # To_S
@@ -133,14 +133,43 @@ module LiteRGSS
   class Sprite
     alias old_z_set z=
     def z=(v)
+      return if z == v
+
+      viewport&.need_to_sort = true
       old_z_set(v)
       @z2 = v * 10_000 + __index__
     end
   end
 
+  class Shape
+    alias old_z_set z=
+    def z=(v)
+      return if z == v
+
+      viewport&.need_to_sort = true
+      old_z_set(v)
+      @z2 = v * 10_000 + __index__
+    end
+  end
+
+  class Text
+    alias old_z_set z=
+    def z=(v)
+      return if z == v
+
+      viewport&.need_to_sort = true
+      old_z_set(v)
+      @z2 = v * 10_000 + __index__
+    end
+  end
+
+
   class SpriteMap
     alias old_z_set z=
     def z=(v)
+      return if z == v
+
+      viewport&.need_to_sort = true
       old_z_set(v)
       @z2 = v * 10_000 + __index__
     end
@@ -149,6 +178,9 @@ module LiteRGSS
   class Window
     alias old_z_set z=
     def z=(v)
+      return if z == v
+
+      viewport&.need_to_sort = true
       old_z_set(v)
       @z2 = v * 10_000 + __index__
     end
