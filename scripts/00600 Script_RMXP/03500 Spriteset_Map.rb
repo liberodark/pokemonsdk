@@ -47,7 +47,11 @@ class Spriteset_Map
   # Return the prefered tilemap class
   # @return [Class]
   def tilemap_class
-    return Object.const_get(PSDK_CONFIG.tilemap.tilemap_class)
+    tilemap_class = PSDK_CONFIG.tilemap.tilemap_class
+    return Object.const_get(tilemap_class) if Object.const_defined?(tilemap_class)
+    return Yuki::Tilemap16px if tilemap_class.match?(/16|Yuri_Tilemap/)
+
+    return Yuki::Tilemap
   end
 
   # Tilemap initialization
@@ -55,17 +59,14 @@ class Spriteset_Map
     tilemap_class = self.tilemap_class
     if @tilemap.class != tilemap_class
       @tilemap&.dispose
+      # @type [Yuki::Tilemap]
       @tilemap = tilemap_class.new(@viewport1)
     end
     Yuki::ElapsedTime.show(:spriteset_map, 'Creating tilemap object took')
-    # -- @tilemap.tileset = RPG::Cache.tileset($game_map.tileset_name)
-    # -- Yuki::ElapsedTime.show(:spriteset_map, 'Loading tileset took')
-    7.times do |i|
-      @tilemap.autotiles[i] = load_autotile($game_map.autotile_names[i])
-    end
-    Yuki::ElapsedTime.show(:spriteset_map, 'Loading autotiles took')
-    @tilemap.map_data = $game_map.data
-    @tilemap.priorities = $game_map.priorities
+    map_datas = Yuki::MapLinker.map_datas
+    map_datas.each(&:load_tileset)
+    Yuki::ElapsedTime.show(:spriteset_map, 'Loading tilesets took')
+    @tilemap.map_datas = map_datas
     @tilemap.reset
     Yuki::ElapsedTime.show(:spriteset_map, 'Resetting the tilemap took')
   end

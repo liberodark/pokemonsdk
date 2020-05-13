@@ -31,6 +31,9 @@ module Yuki
       # Get the tileset filename (to prevent unwanted dispose in the future)
       # @return [String]
       attr_reader :tileset_name
+      # Get the side of the map
+      # @return [Symbol]
+      attr_reader :side
       # Variable containing tileset chunks
       @tileset_chunks = {}
 
@@ -51,6 +54,7 @@ module Yuki
       def load_position(map, side, offset)
         maker_offset = MapLinker::DeltaMaker
         send(POSITION_LOADERS[side], map, offset, maker_offset)
+        @side = side
       end
 
       # Get a tile from the map

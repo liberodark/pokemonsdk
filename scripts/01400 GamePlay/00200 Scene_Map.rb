@@ -462,11 +462,4 @@ class Scene_Map
     return true if Mouse.trigger?(:left) and sp = @spriteset.game_player_sprite and sp.mouse_in?
     return false
   end
-
-  # Change the tileset
-  # @param filename [String] filename of the new tileset
-  def change_tileset(filename)
-    $game_map.tileset_name = $game_map.get_tileset_name(filename)
-    @spriteset.init_tilemap
-  end
 end

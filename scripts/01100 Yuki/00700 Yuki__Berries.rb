@@ -112,7 +112,7 @@ module Yuki
       @data.each do |event_id, data|
         update_event(event_id, data)
       end
-      MapLinker.get_added_events.each do |map_id, stack|
+      MapLinker.added_events.each do |map_id, stack|
         berry_data = find_berry_data(map_id)
         stack.each do |event|
           if data = berry_data[event.original_id]

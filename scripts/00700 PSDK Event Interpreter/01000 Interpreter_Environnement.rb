@@ -113,12 +113,6 @@ class Interpreter < Interpreter_RMXP
     return ((dx * dx) + (dy * dy)) <= r
   end
 
-  # Change the tileset
-  # @param filename [String] filename of the new tileset
-  def change_tileset(filename)
-    $scene.change_tileset(filename)
-  end
-
   # Delete the current event forever
   def delete_this_event_forever
     $env.set_event_delete_state(@event_id)

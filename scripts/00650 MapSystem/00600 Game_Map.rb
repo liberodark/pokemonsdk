@@ -210,11 +210,10 @@ class Game_Map
   def scroll_down(distance, is_priority = false)
     return if @scroll_y_priority && !is_priority
 
-    if CenterPlayer
-      @display_y += distance
-    else
+    if $game_switches[Yuki::Sw::MapLinkerDisabled]
       @display_y = (@display_y + distance).clamp(0, (height - NUM_TILE_VIEW_Y) * 128)
-      # @display_y = [@display_y + distance, (height - 15) * 128].min
+    else
+      @display_y += distance
     end
   end
 
@@ -224,11 +223,10 @@ class Game_Map
   def scroll_left(distance, is_priority = false)
     return if @scroll_x_priority && !is_priority
 
-    if CenterPlayer
-      @display_x -= distance
-    else
+    if $game_switches[Yuki::Sw::MapLinkerDisabled]
       @display_x = (@display_x - distance).clamp(0, @display_x)
-      # @display_x = [@display_x - distance, 0].max
+    else
+      @display_x -= distance
     end
   end
 
@@ -238,11 +236,10 @@ class Game_Map
   def scroll_right(distance, is_priority = false)
     return if @scroll_x_priority && !is_priority
 
-    if CenterPlayer
-      @display_x += distance
-    else
+    if $game_switches[Yuki::Sw::MapLinkerDisabled]
       @display_x = (@display_x + distance).clamp(0, (width - NUM_TILE_VIEW_X) * 128)
-      # @display_x = [@display_x + distance, (width - 20) * 128].min
+    else
+      @display_x += distance
     end
   end
 
@@ -252,11 +249,10 @@ class Game_Map
   def scroll_up(distance, is_priority = false)
     return if @scroll_y_priority && !is_priority
 
-    if CenterPlayer
-      @display_y -= distance
-    else
+    if $game_switches[Yuki::Sw::MapLinkerDisabled]
       @display_y = (@display_y - distance).clamp(0, @display_y)
-      # @display_y = [@display_y - distance, 0].max
+    else
+      @display_y -= distance
     end
   end
 
