@@ -107,7 +107,7 @@ module ProjectCompilation
     File.binwrite(File.join(RELEASE_PATH, 'Game.yarb'), Utils.compile('Game/Boot.rb', game_script))
     # Write Game.rb
     File.write(File.join(RELEASE_PATH, 'Game.rb'), <<~'SCRIPT' )
-      if File.expand_path('.').match?(%r{[^a-z0-9 _\-\\\:\./]}i) && ENV['WINDIR']
+      if File.expand_path('.').match?(%r{[^a-z0-9 _\-\\\:/\.\(\)\[\]]}i) && ENV['WINDIR']
         require File.expand_path('lib/LiteRGSS.so')
         LiteRGSS::Config::Title = "Error"
         LiteRGSS::Graphics.start
