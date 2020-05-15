@@ -81,16 +81,12 @@ module BattleEngine
     #===
     #>Jackpot
     #===
-    def jackpot(target)
-      return if @ignore or target.hp<=0
-      if(target.position > 0)
-        n = 5
-        #>Piece rune / Encens Veine
-        if(BattleEngine._has_item(target, 223) or BattleEngine._has_item(target, 319))
-          n *= 2
-        end
-        @scene.money += target.level*n
-      end
+    def jackpot(launcher)
+      return if @ignore || launcher.hp<=0
+      n = 5
+      #>Piece rune / Encens Veine
+      n *= 2 if BattleEngine._has_item(launcher, 223) || BattleEngine._has_item(launcher, 319)
+      @scene.money += launcher.level*n
       msg(parse_text(18, 128))
     end
     #===
