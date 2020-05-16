@@ -58,7 +58,7 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler] target of the move
     # @return [Numeric]
-    def calc_item_no_multplier(user, target)
+    def calc_item_no_multiplier(user, target)
       1
     end
 
