@@ -52,11 +52,11 @@ module Battle
       # IT
       result = (result * send(ITEM_MULTIPLIER[user.item_db_symbol], user, target)).floor
       # CHG
-      result *= user.last_successfull_move == :charge && type == 4 ? 2 : 1
+      result *= user.last_successfull_move == :charge && type == GameData::Types::ELECTRIC ? 2 : 1
       # MS
-      result = (result * VAL_0_5).floor if logic.global_mud_sport? && type == 4
+      result = (result * VAL_0_5).floor if logic.global_mud_sport? && type == GameData::Types::ELECTRIC
       # WS
-      result = (result * VAL_0_5).floor if logic.global_water_sport? && type == 2
+      result = (result * VAL_0_5).floor if logic.global_water_sport? && type == GameData::Types::FIRE
       # UA
       result = (result * send(USER_ABILITY_MULTIPLIER[user.ability_db_symbol], user, target)).floor
       # FA
