@@ -107,6 +107,8 @@ module GamePlay
     def register_in_pokedex
       $pokedex.mark_seen(@pokemon.id, @pokemon.form, forced: true)
       $pokedex.mark_captured(@pokemon.id)
+      $pokedex.pokemon_fought_inc(@pokemon.id)
+      $pokedex.pokemon_captured_inc(@pokemon.id)
     end
 
     def memorize_audio
