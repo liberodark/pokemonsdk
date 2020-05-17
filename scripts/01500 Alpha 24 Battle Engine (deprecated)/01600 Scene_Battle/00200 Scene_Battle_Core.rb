@@ -284,8 +284,6 @@ class Scene_Battle
   # ● Mise à jour globale
   #--------------------------------------------------------------------------
   def update
-    #> Mise à jour de la position z des sprites
-    @viewport.sort_z if @viewport
     #> Mise à jour de l'interpreter
     interpreter_running_check
     # Mises à jour de Game System / Screen (Compteur)
@@ -397,6 +395,7 @@ class Scene_Battle
   def update_animated_sprites
     return unless @viewport
     @viewport.update
+    @viewport.need_to_sort = true
     @viewport.sort_z
     @stuff_to_update.each do |i|
       i.update
