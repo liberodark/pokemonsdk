@@ -19,6 +19,7 @@ module LiteRGSS
         end
         initialize_copy(filename)
       end
+      initialize_copy(16, 16) if width == 0 || height == 0
     end
     class << self
       # Encode all the PNG files of a directory to LodePNG files

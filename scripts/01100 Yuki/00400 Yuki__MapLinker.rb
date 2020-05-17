@@ -71,6 +71,7 @@ module Yuki
     # @return [RPG::Map] the map adjusted
     def load_map(map_id)
       Yuki::ElapsedTime.start(:maplinker)
+      map_datas.first&.map&.events = @last_events if @last_events
       # @type [Array<Yuki::Tilemap::MapData>]
       map_datas = [@map_datas.find { |map| map.map_id == map_id } || Tilemap::MapData.new(load_map_data(map_id), map_id)]
       current_map = map_datas.first.map
@@ -90,6 +91,7 @@ module Yuki
       end
 
       @map_datas = map_datas
+      load_events
 
       Yuki::ElapsedTime.show(:maplinker, 'Loading the tileset & priority took')
       return current_map
@@ -104,6 +106,40 @@ module Yuki
       return load_data(format(Map_Format, map_id))
     rescue StandardError
       return RPG::Map.new(20, 15)
+    end
+
+    # Load the visible events for all maps
+    def load_events
+      @last_events = @map_datas.first.map.events.clone
+      @last_event_id = 1000 + @last_events.size
+
+      @map_datas.each do |map|
+        next if map.side == :self
+
+        load_events_loop(map)
+      end
+    end
+
+    # Load the visible event of a map
+    # @param map [Yuki::Tilemap::MapData]
+    def load_events_loop(map)
+      map_id = map.map_id
+      events = @map_datas.first.map.events
+      ox = -map.offset_x
+      oy = -map.offset_y
+      if map.side == :north
+        min = map.map.height - OffsetY - 2
+        max = map.map.height - DeltaMaker - 1
+        @last_event_id = ajust_events(map.map, min, max, ox, oy, @last_event_id, events, map_id, :y)
+      elsif map.side == :south
+        @last_event_id = ajust_events(map.map, DeltaMaker, OffsetY + 1, ox, oy, @last_event_id, events, map_id, :y)
+      elsif map.side == :east
+        @last_event_id = ajust_events(map.map, DeltaMaker, OffsetX + 1, ox, oy, @last_event_id, events, map_id, :x)
+      else
+        min = map.map.width - OffsetX - 2
+        max = map.map.width - DeltaMaker - 1
+        @last_event_id = ajust_events(map.map, min, max, ox, oy, @last_event_id, events, map_id, :x)
+      end
     end
 
     # Adjust the event position and id. Move them on the current map

@@ -65,6 +65,15 @@ module Yuki
         @data[x + @offset_x, y + @offset_y, z]
       end
 
+      # Set tile sprite to sprite
+      # @param sprite [Sprite]
+      # @param tile_id [Integer] ID of the tile the sprite wants
+      def assign_tile_to_sprite(sprite, tile_id)
+        tile_id -= 384
+        sprite.bitmap = @tilesets[tile_id / 256]
+        sprite.src_rect.set(tile_id % 8 * 32, (tile_id % 256) / 8 * 32, 32, 32)
+      end
+
       # Draw the tile on the right layer
       # @param x [Integer] real world x of the top left tile
       # @param y [Integer] real world y of the top left tile
