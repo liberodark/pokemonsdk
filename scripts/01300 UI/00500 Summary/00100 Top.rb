@@ -11,6 +11,7 @@ module UI
       @gender = push(101, 10, nil, type: GenderSprite)
       @item = push(72 + 6, 74 + 16, nil, type: RealHoldSprite)
       @ball = push(107, 11, nil, ox: 16, oy: 16)
+      @star = push(107-16,11+96,"shiny")
       push(10, 108, nil, type: StatusSprite)
     end
 
@@ -22,6 +23,8 @@ module UI
       @gender.visible = false if NO_GENDER.include?(pokemon.id) || pokemon.egg?
       @item.visible = false if pokemon.egg?
       @ball.set_bitmap(GameData::Item[pokemon.captured_with].icon, :icon)
+      @star.visible = pokemon.shiny
+      @star.visible = false if pokemon.egg?
     end
 
     # Update the graphics

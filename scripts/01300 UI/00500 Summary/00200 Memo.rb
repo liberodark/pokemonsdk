@@ -57,7 +57,7 @@ module UI
         # --- Data part ---
         with_font(20) { no_egg add_text(11, 125, 56, nil, 'EXP') }
         add_line(0, :name, 2, type: SymText, color: 1, dx: 1)
-        no_egg add_line(1, :id_text, 2, type: SymText, color: 1)
+        @id = no_egg add_line(1, :id_text, 2, type: SymText, color: 1)
         @level_value = no_egg(add_line(1, :level_text, 2, type: SymText, color: 1, dx: 1))
         no_egg add_line(3, :trainer_name, 2, type: SymText, color: 1)
         no_egg add_line(3, :trainer_id_text, 2, type: SymText, color: 1, dx: 1)
@@ -91,6 +91,7 @@ module UI
       text = parse_text(mem[0] || 28, mem[1] || 25, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i, "\\1 \n\\2:")
       text.gsub!('Level', "\nLevel") if $options.language == 'en'
       @text_info.multiline_text = text
+      @id.load_color(pokemon.shiny ? 2 : 1)
     end
 
     def create_exp_bar
