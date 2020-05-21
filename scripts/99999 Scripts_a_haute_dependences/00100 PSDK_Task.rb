@@ -158,4 +158,7 @@ module Scheduler
     }
   )
 =end
+
+  add_message(:on_dispose, Scene_Map, 'Dispose the particles', 1000, Yuki::Particles, :dispose)
+  add_message(:on_dispose, Scene_Map, 'Dispose the FollowMe', 1000, Yuki::FollowMe, :dispose)
 end

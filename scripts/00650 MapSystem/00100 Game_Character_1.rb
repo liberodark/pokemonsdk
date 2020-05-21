@@ -28,6 +28,9 @@ class Game_Character
   attr_reader :follower
   # @return [Boolean] if the character is sliding
   attr_reader :sliding
+  # If the direction is fixed
+  # @return [Boolean]
+  attr_reader :direction_fix
 
   # Default initializer
   def initialize

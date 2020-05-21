@@ -166,11 +166,9 @@ module Yuki
     def data
       @data
     end
-    # Define Scene_Map unless Scene_Map is defined
-    ::Scene_Map = Class.new unless ::Object.const_defined?(:Scene_Map)
     # Add berry related task to the Scheduler
-    ::Scheduler.add_message(:on_update, TJN, "Mise à jour des baies avec le temps", 1000, self, :update)
-    ::Scheduler.add_message(:on_warp_process, ::Scene_Map, "Init baies", 99, self, :init)
-    ::Scheduler.add_message(:on_init, ::Scene_Map, "Init baies", 99, self, :init)
+    ::Scheduler.add_message(:on_update, TJN, 'Update berries using time system', 1000, self, :update)
+    ::Scheduler.add_message(:on_warp_process, 'Scene_Map', 'Init baies', 99, self, :init)
+    ::Scheduler.add_message(:on_init, 'Scene_Map', 'Init baies', 99, self, :init)
   end
 end

@@ -130,6 +130,7 @@ module GamePlay
     # @note @viewport and @message_window will be disposed.
     def dispose
       message_soft_lock_prevent
+      Scheduler.start(:on_dispose, self.class)
       @message_window&.dispose(with_viewport: true) unless @inherited_message_window || @message_window == false
       @object_to_dispose.each { |object| object.dispose unless object.disposed? }
       instance_variables.grep(/viewport/).collect { |ivar| instance_variable_get(ivar) }.each do |vp|
@@ -149,6 +150,7 @@ module GamePlay
       # Store the last scene and store self in $scene
       @__last_scene = $scene if $scene != self
       $scene = self
+      yield if block_given? # Ensure we call the on_scene_switch in call_scene
       # Tell the interface is running
       @running = true
       # Main processing
@@ -157,6 +159,7 @@ module GamePlay
       main_end
       # Reset $scene unless it was already done
       $scene = @__last_scene if $scene == self
+      Scheduler.start(:on_scene_switch, self.class)
     end
 
     # Change the viewport visibility of the scene
@@ -222,8 +225,9 @@ module GamePlay
       self.visible = false
       result_process ||= @__result_process
       @__result_process = nil
+      # @type [GamePlay::Base]
       scene = name.new(*args)
-      scene.main
+      scene.main { Scheduler.start(:on_scene_switch, self.class) }
       # Call the result process if any
       result_process&.call(scene)
       # If the scene has changed we stop this one
