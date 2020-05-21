@@ -275,7 +275,10 @@ class Scene_Map
     ::Scheduler.start(:on_warp_start)
     # 移動先が現在のマップと異なる場合
     if $game_map.map_id != $game_temp.player_new_map_id
-      # 新しいマップをセットアップ
+      # Setting player coords to prevent glitch with events that triggers on player position
+      $game_player.x = $game_temp.player_new_x
+      $game_player.y = $game_temp.player_new_y
+      # Load new map
       $game_map.setup($game_temp.player_new_map_id)
     end
     # プレイヤー場所移動フラグをクリア
