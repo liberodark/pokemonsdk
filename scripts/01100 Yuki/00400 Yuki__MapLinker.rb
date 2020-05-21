@@ -31,6 +31,15 @@ module Yuki
     alias current_OffsetY void0
     module_function :get_OffsetX, :get_OffsetY, :current_OffsetX, :current_OffsetY
 
+    class << self
+      # Return the map datas
+      # @return [Array<Yuki::Tilemap::MapData>]
+      attr_reader :map_datas
+      # Return the SpritesetMap object used to load the map
+      # @return [Spriteset_Map]
+      attr_accessor :spriteset
+    end
+
     module_function
 
     # Get the added events
@@ -45,12 +54,6 @@ module Yuki
     def from_center_map?(event)
       return !@added_events.key?(event.original_map)
       # return !(@added_events[event.original_map].select { |e| e.id == event.original_id }).empty?
-    end
-
-    # Return the map datas
-    # @return [Array<Yuki::Tilemap::MapData>]
-    def map_datas
-      @map_datas
     end
 
     # Reset the module when the RGSS resets itself

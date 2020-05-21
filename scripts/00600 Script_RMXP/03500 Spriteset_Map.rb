@@ -64,6 +64,7 @@ class Spriteset_Map
     end
     Yuki::ElapsedTime.show(:spriteset_map, 'Creating tilemap object took')
     map_datas = Yuki::MapLinker.map_datas
+    Yuki::MapLinker.spriteset = self
     map_datas.each(&:load_tileset)
     Yuki::ElapsedTime.show(:spriteset_map, 'Loading tilesets took')
     @tilemap.map_datas = map_datas

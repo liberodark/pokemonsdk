@@ -162,7 +162,7 @@ module Yuki
         #                              .map { |filename| RPG::Cache.tileset(filename) }
         @tilesets = load_tileset_chunks(@tileset_name = name)
         # @type [Array<Bitmap>]
-        @autotiles = @tileset.autotile_names.map { |aname| RPG::Cache.autotile(aname + '_._tiled') }
+        @autotiles = @tileset.autotile_names.map { |aname| MapLinker.spriteset.load_autotile(aname) }
         @autotile_counter = Array.new(@autotiles.size + 1, 0)
       end
 
