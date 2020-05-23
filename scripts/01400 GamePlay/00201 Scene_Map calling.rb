@@ -102,7 +102,7 @@ class Scene_Map
     else
       character = actor.character_name
     end
-    call_scene(GamePlay::NameInput, actor.name, $game_temp.name_max_char, character.empty? ? nil : character) do
+    call_scene(GamePlay::NameInput, actor.name, $game_temp.name_max_char, character.empty? ? nil : character) do |scene|
       name = scene.return_name
       $trainer.name = name if $game_temp.name_actor_id == 1
       actor.name = name
