@@ -87,12 +87,12 @@ module Yuki
 
         priority = @priorities[tile_id] || 0
         if tile_id < 384 # Autotile
-          layer.dig(priority, ty).set(tx, @autotiles[tile_id / 48 - 1],
-                                      @rect.set((tile_id % 48) * 32, @autotile_counter[tile_id / 48] * 32))
+          tileset = @autotiles[tile_id / 48 - 1]
+          tileset && layer.dig(priority, ty).set(tx, tileset, @rect.set((tile_id % 48) * 32, @autotile_counter[tile_id / 48] * 32))
         else
           tile_id -= 384
-          layer.dig(priority, ty).set(tx, @tilesets[tile_id / 256],
-                                      @rect.set(tile_id % 8 * 32, (tile_id % 256) / 8 * 32))
+          tileset = @tilesets[tile_id / 256]
+          tileset && layer.dig(priority, ty).set(tx, tileset, @rect.set(tile_id % 8 * 32, (tile_id % 256) / 8 * 32))
         end
       end
 
