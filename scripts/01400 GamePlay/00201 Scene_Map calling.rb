@@ -76,6 +76,7 @@ class Scene_Map
     when 3
       $scene = Scene_Battle_Magneto.new
     end
+    @running = false
     Graphics.wait(2)
     $scene.screenshot = Graphics.snap_to_bitmap # Conflict with DynamicLight
     Yuki::FollowMe.set_battle_entry
@@ -117,11 +118,9 @@ class Scene_Map
     end
     $game_player.straighten
     menu = nil
-    call_scene(GamePlay::Menu) do |scene|
-      menu = scene
-      @cfi_param = 1
-    end
-    @cfi_param = nil
+    @cfo_param = @cfi_param = 1
+    call_scene(GamePlay::Menu) { |scene| menu = scene }
+    @cfo_param = @cfi_param = nil
     if menu.call_skill_process
       process = menu.call_skill_process.shift
       process.call(*menu.call_skill_process)

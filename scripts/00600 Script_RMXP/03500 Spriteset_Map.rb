@@ -165,6 +165,12 @@ class Spriteset_Map
     @quest_informers = []
   end
 
+  # Tell if the spriteset is disposed
+  # @return [Boolean]
+  def disposed?
+    @viewport1.disposed?
+  end
+
   # Spriteset_map dispose
   # @param from_warp [Boolean] if true, prepare a screenshot with some conditions and cancel the sprite dispose process
   # @return [Sprite, nil] a screenshot or nothing
