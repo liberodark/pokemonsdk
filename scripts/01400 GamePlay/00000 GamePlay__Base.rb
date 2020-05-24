@@ -402,6 +402,7 @@ module GamePlay
     # @param type [Symbol] type of transition
     # @param parameters [Integer, Array] parameters of the transition
     def fade_in(type, parameters)
+      Scheduler.start(:on_transition, self.class) if type != :transition # Done in Graphics.transition
       case type
       when :transition
         Graphics.brightness = 255

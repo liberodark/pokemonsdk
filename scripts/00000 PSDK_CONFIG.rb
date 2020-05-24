@@ -29,6 +29,12 @@ module ScriptLoader
     attr_reader :player_always_centered
     # @return [Boolean] if the mouse is disabled
     attr_reader :mouse_disabled
+    # If the Pokemon always rely on form 0 for evolution
+    # @return [Boolean]
+    attr_reader :always_use_form0_for_evolution
+    # If the Pokemon can use form 0 when no evolution data is found in current form
+    # @return [Boolean]
+    attr_reader :use_form0_when_no_evolution_data
     # @return [String, nil] the mouse skind to use
     attr_reader :mouse_skin
     # @return [Integer, nil] Specific zoom for overworld things
@@ -113,9 +119,7 @@ module ScriptLoader
       fix_full_screen
       fix_smooth_texture
       fix_vsync
-      @pokemon_max_level = (@pokemon_max_level || 100).to_i
-      @player_always_centered = @player_always_centered == true
-      @mouse_disabled = @mouse_disabled == true
+      save |= fix_gameplay_config
       save |= !@tilemap.is_a?(TilemapConfig)
       @tilemap = @tilemap.is_a?(TilemapConfig) ? @tilemap : TilemapConfig.new
       save |= @tilemap.fix_missing_values | !@options.is_a?(OptionsConfig) | !@layout.is_a?(LayoutConfig)
@@ -161,6 +165,24 @@ module ScriptLoader
     # Function that fix the vsync param
     def fix_vsync
       @vsync_enabled = !PARGV[:"no-vsync"]
+    end
+
+    # Function that fix the gameplay config
+    # @return [Boolean] if a save is of project_identity is required
+    def fix_gameplay_config
+      must_save = false
+      @pokemon_max_level = (@pokemon_max_level || 100).to_i
+      @player_always_centered = @player_always_centered == true
+      @mouse_disabled = @mouse_disabled == true
+      if @always_use_form0_for_evolution.nil?
+        @always_use_form0_for_evolution = false
+        must_save = true
+      end
+      if @use_form0_when_no_evolution_data.nil?
+        @use_form0_when_no_evolution_data = true
+        must_save = true
+      end
+      return must_save
     end
 
     # Function that adjust the liteRGSS configs
