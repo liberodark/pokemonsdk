@@ -249,12 +249,15 @@ class Interpreter
   alias attendre_joueur wait_for_player
   
   # Open the casino gameplay
-  # @param arg [Symbol] the mode of the casino :voltorb_flip, :cashmachine, ...
+  # @param arg [Symbol] the mode of the casino :voltorb_flip, :slotmachine, ...
+  # @param speed [Integer] speed of the slot machine
   # @author Nuri Yuri
-  def casino(arg = :voltorb_flip)
+  def casino(arg = :voltorb_flip, speed = 2)
     case arg # Anticipate the creation of other casino scenes
     when :voltorb_flip
       casino = GamePlay::Casino::VoltorbFlip.new
+    when :slotmachine
+      casino = GamePlay::Casino::SlotMachine.new(speed)
     else
       return
     end
