@@ -8,7 +8,7 @@ module GamePlay
     # Include UI classes
     include UI
     # Create a new Pokedex interface
-    # @param page_id [Integer, false] id of the page to show
+    # @param page_id [PFM::Pokemon, Integer, false] id of the page to show
     def initialize(page_id = false)
       # We call initialize from GamePlay::Base without arguments to take the default
       super()
@@ -20,7 +20,8 @@ module GamePlay
       # Current state
       @state = page_id ? 1 : 0
       # Current page id
-      @page_id = page_id
+      @page_id = page_id.is_a?(PFM::Pokemon) ? page_id.id : page_id
+      @pkmn = page_id.is_a?(PFM::Pokemon) ? page_id : nil
       # Generation of the Pokemon we can see (& adjust page id)
       generate_selected_pokemon_array(page_id)
       # Generation of the Pokemon object used to show the Pokemon info
@@ -191,7 +192,7 @@ module GamePlay
 
     # Generate the Pokemon Object
     def generate_pokemon_object
-      @pokemon = PFM::Pokemon.new(@selected_pokemons[@index].to_i, 1)
+      @pokemon = @pkmn ||= PFM::Pokemon.generate_from_hash({ id: @selected_pokemons[@index].to_i, level: 1, no_shiny: true })
       @pokemon.instance_eval do
         # Return the formated name for Pokedex
         # @return [String]
