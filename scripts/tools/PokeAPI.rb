@@ -14,6 +14,7 @@ module PokeAPI
   # @param path [String] folder containing all the PokeAPI csv files
   # @param version_groupd_id [Integer] version on which you want the data
   def update(path, version_group_id)
+    puts 'Loading data'
     Version.load(path)
     Type.load(path)
     MoveChangeLog.load(path)
@@ -21,10 +22,14 @@ module PokeAPI
     MoveFlags.load(path)
     MoveFlags.map
     MoveFlagMap.load(path)
+    PokemonMoves.load(path)
+    Pokemon.load(path)
     process_moves(version_group_id)
+    process_pokemon(version_group_id)
   end
 
   def process_moves(version_group_id)
+    puts 'Processing moves'
     # @type [Hash{ Integer => Move }]
     move_by_psdk_id = Move.all.map { |move| [move.psdk_id, move.updated_to(version_group_id)] }.to_h
     GameData::Skill.all.each do |skill|
@@ -44,6 +49,57 @@ module PokeAPI
     end
 
     File.write('Data/PSDK/SkillData.rxdata.yml', YAML.dump(GameData::Skill.all))
+  end
+
+  def process_pokemon(version_group_id)
+    puts 'Processing Pokemon'
+    pokemon_moves = PokemonMoves.all.select { |move| move.version_group_id == version_group_id }
+    psdk_pokemon = GameData::Pokemon.all
+    Pokemon.all.each do |pokemon|
+      next unless (pokemon_array = psdk_pokemon[pokemon.species_id])
+
+      form = FORM_MAPPING[pokemon.identifier]
+      # @type [GameData::Pokemon]
+      curr = (pokemon_array[form] ||= Marshal.load(Marshal.dump(pokemon_array.first)))
+      curr.form = form
+      next unless curr
+
+      curr.height = pokemon.height / 10.0
+      curr.weight = pokemon.weight / 10.0
+      curr.base_exp = pokemon.base_experience
+      process_pokemon_move(pokemon, curr, pokemon_moves)
+    end
+
+    File.write('Data/PSDK/PokemonData.rxdata.yml', YAML.dump(GameData::Pokemon.all))
+  end
+
+  # @param pokemon [Pokemon]
+  # @param curr [GameData::Pokemon]
+  # @param pokemon_moves [Array<PokemonMoves>]
+  def process_pokemon_move(pokemon, curr, pokemon_moves)
+    curr_moves = pokemon_moves.select { |move| move.pokemon_id == pokemon.id }
+    all_moves = Move.all
+    curr.move_set =
+      curr_moves.select { |move| move.pokemon_move_method_id == PokemonMoves::LEVEL_UP }
+                .sort do |a, b|
+                  v = a.level <=> b.level
+                  next v if v != 0
+
+                  a.order <=> b.order
+                end
+                .map { |move| [move.level, all_moves.find { |skill| skill.id == move.move_id }.psdk_id] }
+                .flatten
+    curr.tech_set =
+      curr_moves.select { |move| move.pokemon_move_method_id == PokemonMoves::TECH }
+                .map { |move| all_moves.find { |skill| skill.id == move.move_id }.psdk_id }
+    curr.tech_set.sort!
+    curr.breed_moves =
+      curr_moves.select { |move| move.pokemon_move_method_id == PokemonMoves::EGG }
+                .map { |move| all_moves.find { |skill| skill.id == move.move_id }.psdk_id }
+    curr.breed_moves.sort!
+    curr.master_moves =
+      curr_moves.select { |move| move.pokemon_move_method_id == PokemonMoves::TUTOR }
+                .map { |move| all_moves.find { |skill| skill.id == move.move_id }.psdk_id }
   end
 
   # @param id [Integer] ID of the move in PokeAPI
@@ -364,8 +420,75 @@ module PokeAPI
       #   @param path [String] path to the folder containing the file
     end
   end
+
+  class Pokemon
+    extend Attributes
+    # @return [Integer]
+    attr_reader :id, '.to_i'
+    # @return [String]
+    attr_reader :identifier, '.to_s'
+    # @return [Integer]
+    attr_reader :species_id, '.to_i'
+    # @return [Integer]
+    attr_reader :height, '.to_i'
+    # @return [Integer]
+    attr_reader :weight, '.to_i'
+    # @return [Integer]
+    attr_reader :base_experience, '.to_i'
+
+    commit('pokemon.csv')
+
+    class << self
+      # All the loaded Pokemon
+      # @return [Array<Pokemon>]
+      attr_accessor :all
+      # @!method load
+      #   Load all Pokemon
+      #   @param path [String] path to the folder containing the file
+    end
+  end
+
+  class PokemonMoves
+    # ID of the level up method
+    LEVEL_UP = 1
+    # ID of the egg method
+    EGG = 2
+    # ID of the tutor method
+    TUTOR = 3
+    # ID of the tech method
+    TECH = 4
+    # ID of the form change method (not implemented)
+    FORM_CHANGE = 10
+    extend Attributes
+    # @return [Integer]
+    attr_reader :pokemon_id, '.to_i'
+    # @return [String]
+    attr_reader :version_group_id, '.to_i'
+    # @return [Integer]
+    attr_reader :move_id, '.to_i'
+    # @return [Integer]
+    attr_reader :pokemon_move_method_id, '.to_i'
+    # @return [Integer]
+    attr_reader :level, '.to_i'
+    # @return [Integer]
+    attr_reader :base_experience, '.to_i'
+    # @return [Integer]
+    attr_reader :order, '.to_i'
+
+    commit('pokemon_moves.csv')
+
+    class << self
+      # All the loaded PokemonMoves
+      # @return [Array<PokemonMoves>]
+      attr_accessor :all
+      # @!method load
+      #   Load all PokemonMoves
+      #   @param path [String] path to the folder containing the file
+    end
+  end
 end
 
 # Load dependancy to properly save the output to YAML
 # (Please do the ProjectToYAML.convert before PokeAPI.update(path))
 ScriptLoader.load_tool('ProjectToYAML')
+ScriptLoader.load_tool('PokeAPILinkData')
