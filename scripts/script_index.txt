@@ -1,6 +1,7 @@
 pokemonsdk/scripts/00000 PSDK_CONFIG.rb
 pokemonsdk/scripts/00001 RMXP_DATA.rb
 pokemonsdk/scripts/00002 state.rb
+pokemonsdk/scripts/00003 SafeExec.rb
 pokemonsdk/scripts/00010 Hooks.rb
 pokemonsdk/scripts/00100 Yuki__EXC.rb
 pokemonsdk/scripts/00000 Dependencies/00200 GameData(dep)/00100 GameData__SystemTags.rb
