@@ -176,6 +176,8 @@ module LiteRGSS
   end
 
   class Window
+    # Dummy attribute to prevent crash when sprites request sorting
+    attr_accessor :need_to_sort
     alias old_z_set z=
     def z=(v)
       return if z == v
