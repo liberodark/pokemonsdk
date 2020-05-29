@@ -235,7 +235,7 @@ module UI
     def data=(pokemon)
       if (self.visible = (pokemon ? true : false))
         bmp = pokemon.icon
-        @nb_x = bmp.width / bmp.height
+        @nb_x = (bmp.width / bmp.height).clamp(1, Float::INFINITY)
         self.bitmap = bmp
         auto_align(bmp) if @auto_align
         @counter = 0
