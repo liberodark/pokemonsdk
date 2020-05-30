@@ -74,10 +74,11 @@ module LiteRGSS
 
     # Sort the z sprites inside the viewport
     def sort_z
-      return unless @need_to_sort
+      return unless @need_to_sort || @__last_size != @__elementtable.size
 
       @__elementtable.sort_by!(&:z2)
       reload_stack
+      @__last_size = @__elementtable.size
       @need_to_sort = false
     end
 
@@ -162,7 +163,6 @@ module LiteRGSS
       @z2 = v * 10_000 + __index__
     end
   end
-
 
   class SpriteMap
     alias old_z_set z=
