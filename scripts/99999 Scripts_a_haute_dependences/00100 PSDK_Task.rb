@@ -57,11 +57,6 @@ module Scheduler
     end
   end
 
-  add_proc(:on_update, ::Scene_Map, 'Ajout PSDK1', 1000) do
-    Yuki::TJN.update
-    Yuki::Particles.update
-  end
-
   add_proc(:on_scene_switch, ::Scene_Title, 'Correction du TJN', 1000) do
     Yuki::TJN.init_variables
   end

@@ -275,3 +275,9 @@ module Yuki
     end
   end
 end
+Hooks.register(Spriteset_Map, :init_psdk_add) { Yuki::FollowMe.init(@viewport1) }
+Hooks.register(Spriteset_Map, :init_player_begin) do
+  Yuki::FollowMe.update
+  Yuki::FollowMe.particle_push
+end
+Hooks.register(Spriteset_Map, :update) { Yuki::FollowMe.update }

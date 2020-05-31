@@ -36,8 +36,6 @@ class Scene_Map < GamePlay::Base
     $game_screen.update
     $game_map.refresh if $game_map.need_refresh
     @spriteset.update
-    Yuki::TJN.update
-    Yuki::Particles.update
   end
 
   # Change the spriteset visibility

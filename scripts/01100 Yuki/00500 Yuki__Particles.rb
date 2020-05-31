@@ -339,3 +339,12 @@ module Yuki
     end
   end
 end
+Hooks.register(Spriteset_Map, :init_psdk_add) do
+  Yuki::Particles.init(@viewport1)
+  Yuki::Particles.set_on_teleportation(true)
+end
+Hooks.register(Spriteset_Map, :init_player_end) do
+  Yuki::Particles.update
+  Yuki::Particles.set_on_teleportation(false)
+end
+Hooks.register(Spriteset_Map, :update) { Yuki::Particles.update }

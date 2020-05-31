@@ -252,6 +252,7 @@ module Yuki
         end
       end
     end
+    Hooks.register(Spriteset_Map, :finish_init) { Yuki::MapLinker.load_buildings }
 
     # Return the current tileset name
     def tileset_name
