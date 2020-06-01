@@ -148,9 +148,6 @@ pokemonsdk/scripts/01000 Util/00700 DragSprite.rb
 pokemonsdk/scripts/01100 Yuki/00100 Yuki__Sprite.rb
 pokemonsdk/scripts/01100 Yuki/00200 Yuki__BasicAnimator.rb
 pokemonsdk/scripts/01100 Yuki/00400 Yuki__MapLinker.rb
-pokemonsdk/scripts/01100 Yuki/00500 Yuki__Particles.rb
-pokemonsdk/scripts/01100 Yuki/00501 Particles_Def.rb
-pokemonsdk/scripts/01100 Yuki/00502 Yuki_Particles Action Handlers.rb
 pokemonsdk/scripts/01100 Yuki/00600 Yuki__TJN.rb
 pokemonsdk/scripts/01100 Yuki/00700 Yuki__Berries.rb
 pokemonsdk/scripts/01100 Yuki/00800 Yuki__Utils.rb
@@ -180,6 +177,12 @@ pokemonsdk/scripts/01100 Yuki/00200 FollowMe/00001 Config.rb
 pokemonsdk/scripts/01100 Yuki/00200 FollowMe/00300 Core.rb
 pokemonsdk/scripts/01100 Yuki/00300 Tilemap/00001 Tilemap.rb
 pokemonsdk/scripts/01100 Yuki/00300 Tilemap/00010 MapData.rb
+pokemonsdk/scripts/01100 Yuki/00400 Particles/00500 Yuki__Particles.rb
+pokemonsdk/scripts/01100 Yuki/00400 Particles/00501 Particles_Def.rb
+pokemonsdk/scripts/01100 Yuki/00400 Particles/00502 Yuki_Particles Action Handlers.rb
+pokemonsdk/scripts/01100 Yuki/00400 Particles/00503 Particle_Object.rb
+pokemonsdk/scripts/01100 Yuki/00400 Particles/00504 Parallax_Object.rb
+pokemonsdk/scripts/01100 Yuki/00400 Particles/00505 Building_Object.rb
 pokemonsdk/scripts/01200 PFM/00010 Pokemon_Party/00200 Accessors.rb
 pokemonsdk/scripts/01200 PFM/00010 Pokemon_Party/00201 Management.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/00100 Pokedex.rb
