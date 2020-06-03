@@ -106,9 +106,9 @@ module BattleEngine
         hp_up(@target, 10, 914, ITEM2[1] => @target.item_name)
       end
       if BattleEngine._has_item(@target, 639) #> Vulné assurance
-        _mp([:set_item, target, 0, true])
-        _mp([:change_atk, target, 2])
-        _mp([:change_ats, target, 2])
+        _mp([:set_item, @target, 0, true])
+        _mp([:change_atk, @target, 2])
+        _mp([:change_ats, @target, 2])
       end
     end
     def unefficient_msg
