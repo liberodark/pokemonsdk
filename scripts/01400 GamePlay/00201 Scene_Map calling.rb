@@ -143,6 +143,8 @@ class Scene_Map
 
   # Call the shortcut interface
   def call_shortcut
-    call_scene(GamePlay::Shortcut)
+    unless $game_system.menu_disabled == true
+        call_scene(GamePlay::Shortcut)
+    end
   end
 end
