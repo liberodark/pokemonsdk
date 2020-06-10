@@ -65,6 +65,10 @@ module BattleEngine
     elsif(type_mod < 2 && Abilities.has_ability_usable(target, 91))
       type_mod = 0
       _mp([:ability_display, target])
+    elsif skill.type_grass? && Abilities.has_ability_usable(target, 156) #> Herbivore
+      type_mod = 0
+      _mp([:ability_display, target])
+      _mp([:change_atk, target, 1])
     end
     @_State[:last_type_modifier] = type_mod
     #>Third modifier
