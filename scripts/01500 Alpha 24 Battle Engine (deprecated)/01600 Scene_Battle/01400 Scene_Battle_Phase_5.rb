@@ -25,16 +25,6 @@ class Scene_Battle
     else
       phase5_pokemon_end
     end
-    #>Retrait de l'état de méga évolution
-    @actors.each do |pkmn|
-      next unless pkmn
-
-      pkmn.unmega_evolve
-      pkmn.reset_stat_stage
-      pkmn.form_calibrate
-      #>Vérifications de cheniti
-      pkmn.form = pkmn.form_generation(-1) if pkmn.id == 412 || pkmn.id == 413
-    end
     phase5_ramassage
     phase5_object_actions
     phase5_evolve_check
