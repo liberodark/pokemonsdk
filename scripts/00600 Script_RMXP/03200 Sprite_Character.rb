@@ -119,7 +119,7 @@ class Sprite_Character < RPG::Sprite
       x = @character.x
       y = @character.y
       # @type [Yuki::Tilemap::MapData]
-      event_map = map_data.find { |map| map.x_range.include?(x) && map.y_range.include?(y) } || map_data.fisrt
+      event_map = map_data.find { |map| map.x_range.include?(x) && map.y_range.include?(y) } || map_data.first
       event_map.assign_tile_to_sprite(self, @tile_id)
       @height = 32
     end
