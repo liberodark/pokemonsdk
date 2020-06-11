@@ -1,7 +1,7 @@
 module Battle
   class Move
     # List of multiplier for the items
-    ITEM_MULTIPLIER = Hash.new(:calc_item_no_multplier).merge!(
+    ITEM_MULTIPLIER = Hash.new(:calc_item_no_multiplier).merge!(
       muscle_band: :calc_muscle_band_multiplier,
       wise_glasses: :calc_wise_glasses_multiplier,
       adamant_orb: :calc_adamant_orb_multiplier,

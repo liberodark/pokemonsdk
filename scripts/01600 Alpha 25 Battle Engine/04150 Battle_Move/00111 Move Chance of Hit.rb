@@ -1,22 +1,22 @@
 module Battle
   class Move
     # List of accuracy items modifier
-    ACCURACY_ITEM_MULTIPLIER = Hash.new(:calc_item_no_multplier).merge!(
+    ACCURACY_ITEM_MULTIPLIER = Hash.new(:calc_item_no_multiplier).merge!(
       wide_lens: :acc_mod_wide_lens,
       zoom_lens: :acc_mod_zoom_lens
     )
     # List of evasion item modifier
-    EVASION_ITEM_MULTIPLIER = Hash.new(:calc_item_no_multplier).merge!(
+    EVASION_ITEM_MULTIPLIER = Hash.new(:calc_item_no_multiplier).merge!(
       brightpowder: :eva_mod_brightpowder,
       lax_incense:  :eva_mod_lax_incense
     )
     # List of accuracy ability modifier
-    ACCURACY_ABILITY_MULTIPLIER = Hash.new(:calc_item_no_multplier).merge!(
+    ACCURACY_ABILITY_MULTIPLIER = Hash.new(:calc_item_no_multiplier).merge!(
       compoundeyes: :acc_mod_compoundeyes,
       hustle: :acc_mod_hustle
     )
     # List of evasion ability modifier
-    EVASION_ABILITY_MULTIPLIER = Hash.new(:calc_item_no_multplier).merge!(
+    EVASION_ABILITY_MULTIPLIER = Hash.new(:calc_item_no_multiplier).merge!(
       sand_veil: :eva_mod_sand_veil,
       snow_cloak: :eva_mod_snow_cloak,
       tangled_feet: :eva_mod_tangled_feet

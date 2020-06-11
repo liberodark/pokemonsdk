@@ -18,6 +18,8 @@ class Scene_Map < GamePlay::Base
     return false unless super # Update message window & break if messages are shown
 
     update_scene_calling
+  ensure
+    @running = false if $scene != self
   end
 
   # Section where we update the graphics of the scene (for now only spriteset)
@@ -139,11 +141,9 @@ class Scene_Map < GamePlay::Base
   def switched_to_main_rmxp_scene
     if $game_temp.gameover
       $scene = Scene_Gameover.new
-      @running = false
       return true
     elsif $game_temp.to_title
       $scene = Scene_Title.new
-      @running = false
       return true
     elsif $game_temp.transition_processing
       $game_temp.transition_processing = false

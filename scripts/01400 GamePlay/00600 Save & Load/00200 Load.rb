@@ -46,7 +46,7 @@ module GamePlay
       if index_changed(:@index, :UP, :DOWN, @max_index)
         refresh
         $game_system.se_play($data_system.cursor_se)
-      elsif Input.trigger?(:A)
+      elsif Input.trigger?(:A) || (debug? && PSDK_CONFIG.skip_title_in_debug)
         action
       elsif Mouse.trigger?(:left)
         mouse_action

@@ -8,6 +8,9 @@ module Battle
     # @return [Hash] List of the parallel animation
     attr_reader :parallel_animations
 
+    # @return [Array] List of the animation
+    attr_reader :animations
+
     # @return [Viewport] the viewport used to show the sprites
     attr_reader :viewport
 
@@ -72,6 +75,11 @@ module Battle
     # Unlock the battle scene
     def unlock
       @locking = false
+    end
+
+    # Lock the battle scene
+    def lock
+      @locking = true
     end
 
     private

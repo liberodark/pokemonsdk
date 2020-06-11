@@ -37,6 +37,10 @@ module ScriptLoader
     attr_reader :use_form0_when_no_evolution_data
     # @return [String, nil] the mouse skind to use
     attr_reader :mouse_skin
+    # @return [Boolean] if the game skips title & save loading in debug
+    attr_reader :skip_title_in_debug
+    # @return [Boolean] if the game skips battle_transition in debug
+    attr_reader :skip_battle_transition_in_debug
     # @return [Integer, nil] Specific zoom for overworld things
     attr_reader :specific_zoom
     # @return [Integer] OffsetX of all the viewports

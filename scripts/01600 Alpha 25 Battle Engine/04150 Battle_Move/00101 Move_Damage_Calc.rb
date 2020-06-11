@@ -18,7 +18,7 @@ module Battle
       @effectiveness = 1
       # (((((((Level * 2 / 5) + 2) * BasePower * [Sp]Atk / 50) / [Sp]Def) * Mod1) + 2) *
       # CH * Mod2 * R / 100) * STAB * Type1 * Type2 * Mod3)
-      damage = level * 2 / 5 + 2
+      damage = user.level * 2 / 5 + 2
       damage = (damage * calc_base_power(user, target)).floor
       damage = (damage * calc_sp_atk(user, target)).floor
       damage /= 50
@@ -47,7 +47,7 @@ module Battle
       # BP
       result = power
       # HH
-      result *= 1.5 if helping_hand?
+      result *= 1.5 if user.helping_hand?
       result = result.floor # Round down between each multiplication, the first two can be reverted.
       # IT
       result = (result * send(ITEM_MULTIPLIER[user.item_db_symbol], user, target)).floor

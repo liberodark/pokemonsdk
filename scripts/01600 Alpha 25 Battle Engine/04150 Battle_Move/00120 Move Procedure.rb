@@ -1,16 +1,19 @@
 module Battle
   class Move
+    include Hooks
     # Function starting the move procedure
     # @param user [PFM::PokemonBattler] user of the move
     # @param target_bank [Integer] bank of the target
     # @param target_position [Integer]
     # @param scene [Battle::Scene] scene responsive of holding all the battle information
     def proceed(user, target_bank, target_position, scene)
+      self.logic = scene.logic
       possible_targets = battler_targets(user, scene.logic).select { |target| target&.alive? }
+      exec_hooks(Move, :possible_targets, binding)
       possible_targets.sort_by(&:spd)
       if one_target?
-        right_target = possible_targets.find { |pokemon| pokemon.bank == target_bank && pokemon.position == position }
-        right_target ||= possible_targets.find { |pokemon| pokemon.bank == target_bank && (pokemon.position - position).abs == 1 }
+        right_target = possible_targets.find { |pokemon| pokemon.bank == target_bank && pokemon.position == target_position }
+        right_target ||= possible_targets.find { |pokemon| pokemon.bank == target_bank && (pokemon.position - target_position).abs == 1 }
         right_target ||= possible_targets.find { |pokemon| pokemon.bank == target_bank }
         return proceed_internal(user, [right_target].compact, scene)
       end
@@ -45,8 +48,8 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param scene [Battle::Scene] scene responsive of holding all the battle information
     def usage_message(user, scene)
-      PFM::Text.set_pkname(0, user)
-      scene.display_message(parse_text_with_pokemon(8999 - GameData::Text::CSV_BASE, 12, user))
+      PFM::Text.set_pkname(user)
+      scene.display_message(parse_text_with_pokemon(8999 - GameData::Text::CSV_BASE, 12, user), PFM::Text::MOVE[0] => name)
       PFM::Text.reset_variables
     end
 
@@ -61,7 +64,7 @@ module Battle
         if target_immune?(pokemon)
           scene.display_message(parse_text_with_pokemon(19, 210, pokemon))
           next false
-        elsif rand(100) >= chance_of_hit(user, target)
+        elsif rand(100) >= chance_of_hit(user, pokemon)
           scene.display_message(parse_text_with_pokemon(19, 213, pokemon))
           next false
         end
@@ -98,11 +101,60 @@ module Battle
       return true if status?
 
       rng = Random.new
-      actual_targets.each do |target|
+      fibers = actual_targets.map do |target|
         damages = self.damages(user, target, rng) # /!\ test the substitute pokemon when substitute was used
+        log_debug("#{user} inflict #{damages} HP to #{target}")
         # TODO: Manage clone, abilities like cursed_body & sturdy, then effect, berries
-        #
+        next Fiber.new do
+          Fiber.yield :wait_for_animation, Visual::HPAnimation.new(scene, target, -damages)
+          scene.display_message(parse_text_with_pokemon(19, 0, target)) if target.hp <= 0
+          Fiber.yield :kill
+        end
       end
+      process_fiber(fibers, scene)
+
+      return true
+    end
+
+    # Function that deals the status condition to the pokemon
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+    # @param scene [Battle::Scene] scene responsive of holding all the battle information
+    def deal_status(user, actual_targets, scene)
+      return true # TODO
+    end
+
+    # Function that deals the stat to the pokemon
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+    # @param scene [Battle::Scene] scene responsive of holding all the battle information
+    def deal_stats(user, actual_targets, scene)
+      return true # TODO
+    end
+
+    # Function that deals the effect to the pokemon
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+    # @param scene [Battle::Scene] scene responsive of holding all the battle information
+    def deal_effect(user, actual_targets, scene)
+      return true # TODO
+    end
+
+    # Function that deals the terrain effect to the field
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+    # @param scene [Battle::Scene] scene responsive of holding all the battle information
+    def deal_terrain_effect(user, actual_targets, scene)
+      return true # TODO
+    end
+
+    # Function that process the hooks
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+    # @param scene [Battle::Scene] scene responsive of holding all the battle information
+    def process_hooks(user, actual_targets, scene)
+      exec_hooks(Move, :process_hooks, binding)
+      return true
     end
 
     # Function that process a list of fiber
@@ -115,17 +167,21 @@ module Battle
         # Process fiber
         fibers.each do |fiber|
           result = fiber.resume
-          animation_stack << result.last if result.first == :wait_for_animation
+          animation_stack << result.last if result.is_a?(Array) && result.first == :wait_for_animation
           killed_stack << fiber if result == :kill
         end
         # Kill fibers
         fibers.reject! { |fiber| killed_stack.include?(fiber) }
         killed_stack.clear
+        scene.visual.lock
         # Play animations
         while animation_stack.any?
+          animation_stack.each(&:update)
           scene.update
+          Graphics.update
           animation_stack.reject!(&:done?)
         end
+        scene.visual.unlock
       end
     end
   end

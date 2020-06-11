@@ -449,6 +449,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00203 Visual
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00204 Visual_show_item_or_pokemon_choice.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00205 Visual_Info_Bars.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00550 Battle_Visual_Animations/00100 IdlePokemonAnimation.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00550 Battle_Visual_Animations/01001 HPAnimation.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00100 RBJ_WildTransition.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00101 RBJ_WildTransition_transition.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00102 RBJ_TrainerTransition.rb
