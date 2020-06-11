@@ -10,7 +10,8 @@ module Battle
         @scene = scene
         @target = target
         @target_hp = (target.hp + (quantity == 0 ? -1 : quantity)).clamp(0, target.max_hp)
-        super(1, target, :hp=, target.hp, @target_hp)
+        diff = (target.hp - @target_hp).to_f
+        super((diff / quantity).abs, target, :hp=, target.hp, @target_hp)
         start
       end
 
@@ -27,7 +28,6 @@ module Battle
 
         @target.hp = @target_hp while @target_hp != @target.hp
         @scene.visual.refresh_info_bar(@target)
-        @scene.visual.battler_sprite(@target.bank, @target.position).start_animation_KO if @target.hp == 0
         return true
       end
     end

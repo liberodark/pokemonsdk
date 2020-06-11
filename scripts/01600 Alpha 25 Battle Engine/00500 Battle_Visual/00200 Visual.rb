@@ -79,6 +79,13 @@ module Battle
 
     # Lock the battle scene
     def lock
+      if block_given?
+        raise 'Race condition' if locking?
+
+        @locking = true
+        yield
+        return @locking = false
+      end
       @locking = true
     end
 

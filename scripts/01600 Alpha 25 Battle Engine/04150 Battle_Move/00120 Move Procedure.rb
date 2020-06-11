@@ -49,7 +49,7 @@ module Battle
     # @param scene [Battle::Scene] scene responsive of holding all the battle information
     def usage_message(user, scene)
       PFM::Text.set_pkname(user)
-      scene.display_message(parse_text_with_pokemon(8999 - GameData::Text::CSV_BASE, 12, user), PFM::Text::MOVE[0] => name)
+      scene.display_message(parse_text_with_pokemon(8999 - GameData::Text::CSV_BASE, 12, user, PFM::Text::MOVE[0] => name))
       PFM::Text.reset_variables
     end
 
@@ -107,13 +107,28 @@ module Battle
         # TODO: Manage clone, abilities like cursed_body & sturdy, then effect, berries
         next Fiber.new do
           Fiber.yield :wait_for_animation, Visual::HPAnimation.new(scene, target, -damages)
-          scene.display_message(parse_text_with_pokemon(19, 0, target)) if target.hp <= 0
+          handle_ko(scene, target) if target.hp <= 0
           Fiber.yield :kill
         end
       end
       process_fiber(fibers, scene)
 
       return true
+    end
+
+    # Function that handle the KO part
+    # @param scene [Battle::Scene] scene responsive of holding all the battle information
+    # @param target [PFM::PokemonBattler] pokemon falling KO
+    def handle_ko(scene, target)
+      sprite = scene.visual.battler_sprite(target.bank, target.position)
+      scene.visual.lock do
+        sprite.start_animation_KO
+        scene.display_message(parse_text_with_pokemon(19, 0, target))
+        while sprite.animated?
+          scene.update
+          Graphics.update
+        end
+      end
     end
 
     # Function that deals the status condition to the pokemon
@@ -173,15 +188,15 @@ module Battle
         # Kill fibers
         fibers.reject! { |fiber| killed_stack.include?(fiber) }
         killed_stack.clear
-        scene.visual.lock
         # Play animations
-        while animation_stack.any?
-          animation_stack.each(&:update)
-          scene.update
-          Graphics.update
-          animation_stack.reject!(&:done?)
+        scene.visual.lock do
+          while animation_stack.any?
+            animation_stack.each(&:update)
+            scene.update
+            Graphics.update
+            animation_stack.reject!(&:done?)
+          end
         end
-        scene.visual.unlock
       end
     end
   end

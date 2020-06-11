@@ -387,6 +387,7 @@ module Yuki
         super
         @on = resolve(@on)
         @origin = resolve(@origin)
+        @base = @origin
         @end = resolve(@end)
         @delta = resolve(@end) - @origin + 1
         @end, @origin = @origin, @end if @end < @origin
@@ -398,7 +399,7 @@ module Yuki
       # Update the scalar animation
       # @param time_factor [Float] number between 0 & 1 indicating the progression of the animation
       def update_internal(time_factor)
-        @on.send(@property, (@origin + @delta * time_factor).to_i.clamp(@origin, @end) * @factor)
+        @on.send(@property, (@base + @delta * time_factor).to_i.clamp(@origin, @end) * @factor)
       end
     end
 
