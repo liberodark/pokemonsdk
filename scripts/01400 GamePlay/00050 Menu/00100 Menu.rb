@@ -213,6 +213,7 @@ module GamePlay
       @in_save = true
       call_scene(Save) do |scene|
         @running = false if scene.saved
+        Graphics.transition
       end
       @in_save = false
     end
