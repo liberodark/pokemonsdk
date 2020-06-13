@@ -22,6 +22,7 @@ module GamePlay
       @entering = true # Flag telling we're entering
       @counter = 0 # Animation counter
       @in_save = false
+      @mbf_type = @mef_type = :noen if $scene.is_a?(Scene_Map)
     end
 
     # Create all the graphics

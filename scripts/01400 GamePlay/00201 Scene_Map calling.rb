@@ -118,9 +118,9 @@ class Scene_Map
     end
     $game_player.straighten
     menu = nil
-    @cfo_param = @cfi_param = 1
+    @cfo_type = @cfi_type = :none
     call_scene(GamePlay::Menu) { |scene| menu = scene }
-    @cfo_param = @cfi_param = nil
+    @cfo_type = @cfi_type = nil
     if menu.call_skill_process
       process = menu.call_skill_process.shift
       process.call(*menu.call_skill_process)
