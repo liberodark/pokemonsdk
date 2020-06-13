@@ -1,5 +1,6 @@
 # The map gameplay scene
 class Scene_Map < GamePlay::Base
+  include Hooks
   # Access to the spriteset of the map
   # @return [Spriteset_Map]
   attr_reader :spriteset
@@ -91,6 +92,31 @@ class Scene_Map < GamePlay::Base
       @message_window.visible = false
       @message_window.opacity = 255
     end
+  end
+
+  # Take a snapshot of the scene
+  # @note You have to dispose the bitmap you got from this function
+  # @return [Bitmap]
+  def snap_to_bitmap
+    back_bitmap = @viewport.snap_to_bitmap
+    if (vp = NuriYuri::DynamicLight.viewport)&.visible
+      shader = vp.shader
+      vp.shader = nil
+      top_bitmap = vp.snap_to_bitmap
+      vp.shader = shader
+      vp = Viewport.create(:main)
+      back = Sprite.new(vp).set_bitmap(back_bitmap)
+      top = ShaderedSprite.new(vp).set_bitmap(top_bitmap)
+      top.shader = shader
+      exec_hooks(Scene_Map, :snap_to_bitmap, binding)
+      result = vp.snap_to_bitmap
+      exec_hooks(Scene_Map, :snaped_to_bitmap, binding)
+      vp.dispose
+      back_bitmap.dispose
+      top_bitmap.dispose
+      return result
+    end
+    return back_bitmap
   end
 
   private

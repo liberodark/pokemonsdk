@@ -260,6 +260,13 @@ module GamePlay
       return true
     end
 
+    # Take a snapshot of the scene
+    # @note You have to dispose the bitmap you got from this function
+    # @return [Bitmap]
+    def snap_to_bitmap
+      @viewport&.snap_to_bitmap || Bitmap.new(16, 16)
+    end
+
     private
 
     # The main process at the begin of scene

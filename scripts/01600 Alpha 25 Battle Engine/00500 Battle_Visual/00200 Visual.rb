@@ -27,7 +27,7 @@ module Battle
     # @param battle_scene [Scene] scene that hold the logic object
     def initialize(battle_scene)
       @battle_scene = battle_scene
-      @screenshot = ($scene.is_a?(Scene_Map) ? $scene.spriteset.map_viewport : $scene.viewport).snap_to_bitmap
+      @screenshot = $scene.snap_to_bitmap
       # All the battler by bank
       @battlers = {}
       # All the bars by bank

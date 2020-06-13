@@ -78,7 +78,7 @@ class Scene_Map
     end
     @running = false
     Graphics.wait(2)
-    $scene.screenshot = Graphics.snap_to_bitmap # Conflict with DynamicLight
+    $scene.screenshot = snap_to_bitmap
     Yuki::FollowMe.set_battle_entry
   end
 

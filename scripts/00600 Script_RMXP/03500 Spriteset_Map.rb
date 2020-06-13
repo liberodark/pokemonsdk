@@ -350,13 +350,12 @@ class Spriteset_Map
   # @return [Sprite] the snapshot ready to be used
   def take_map_snapshot
     sp = Sprite.new(@viewport3)
+    rc = @viewport3.rect
     sp.z = 10**6
-    sp.bitmap = Graphics.snap_to_bitmap
-    sp.x = Graphics.width / 2
-    sp.ox = sp.bitmap.width / 2
-    sp.y = Graphics.height / 2
-    sp.oy = sp.bitmap.height / 2
-    sp.zoom = 1.0 / Config::ScreenScale if Config.const_defined?(:ScreenScale)
+    sp.bitmap = $scene.snap_to_bitmap
+    sp.set_position(rc.width / 2, rc.height / 2)
+    sp.set_origin(sp.width / 2, sp.height / 2)
+    sp.zoom = rc.width / sp.bitmap.width.to_f
     return sp
   end
 

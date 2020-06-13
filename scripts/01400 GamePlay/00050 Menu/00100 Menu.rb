@@ -85,6 +85,7 @@ module GamePlay
       unless @running || @quiting
         @quiting = true
         @running = true
+        @__last_scene.spriteset.visible = true if @__last_scene.is_a?(Scene_Map)
       end
       # Update each animation
       if @entering
@@ -117,6 +118,8 @@ module GamePlay
         @counter = 0
         @entering = false
         update_buttons
+        @background.opacity = 255
+        @__last_scene.spriteset.visible = false if @__last_scene.is_a?(Scene_Map)
       end
     end
 
