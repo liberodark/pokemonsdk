@@ -90,6 +90,9 @@ class Game_Map
     @battleback_name = tileset.battleback_name
     @passages = tileset.passages
     @priorities = tileset.priorities
+    # Force the first tile to be properly configured
+    @passages[0] = 0
+    @priorities[0] = 5
     @terrain_tags = tileset.terrain_tags
     # 表示座標を初期化
     @display_x = 0
