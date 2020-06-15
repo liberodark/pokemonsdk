@@ -516,6 +516,24 @@ class Scene_Battle
       end
     end
   end
+
+  # Function that ask if the trainer wants to switch
+  def phase4_switch_question(new_enemy)
+    if $options.battle_mode && (@actors.count { |act| act&.alive? } > 1)
+      text = parse_text(
+        18, 21,
+        '[VAR 010E(0000)]' => GameData::Trainer.class_name(@trainer_class),
+        '[VAR TRNAME(0001)]' => @trainer_names[0],
+        '[VAR 019E(0000)]' => "#{GameData::Trainer.class_name(@trainer_class)} #{@trainer_names[0]}",
+        '[VAR PKNICK(0002)]' => (@enemies[-new_enemy[1] - 1])&.given_name.to_s
+      )
+      choice = display_message(text, true, 1, text_get(11, 27), text_get(11, 28))
+      if choice == 0
+        result = phase4_actor_select_pkmn(@actors[0])
+        phase4_switch_pokemon(result) if result
+      end
+    end
+  end
   #===
   #>_phase4_switch_check
   # Vérification des switchs à réaliser
@@ -543,7 +561,10 @@ class Scene_Battle
       if i.position<0
         new_enemy=phase4_enemie_select_pkmn(i)
         #phase4_switch_pokemon([2,-new_enemy-1,-i.position-1]) if new_enemy
-        phase4_switch_pokemon(new_enemy) if new_enemy
+        if new_enemy
+          phase4_switch_question(new_enemy) if $game_temp.vs_type == 1
+          phase4_switch_pokemon(new_enemy)
+        end
         @e_remaining_pk.redraw if $game_temp.trainer_battle
       else
         #Vérification de la possibilité de switch
