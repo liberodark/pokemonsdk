@@ -194,6 +194,7 @@ module GamePlay
         if scene.call_skill_process
           @call_skill_process = scene.call_skill_process
           @running = false
+          Graphics.transition
         end
       end
     end
@@ -201,6 +202,7 @@ module GamePlay
     # Open the Bag UI
     def open_bag
       call_scene(Bag)
+      Graphics.transition unless @running
     end
 
     # Open the TCard UI
@@ -221,7 +223,10 @@ module GamePlay
     # Open the Options UI
     def open_option
       call_scene(Options) do |scene|
-        @running = false if scene.modified_options.include?(:language)
+        if scene.modified_options.include?(:language)
+          @running = false
+          Graphics.transition
+        end
       end
     end
 
