@@ -23,7 +23,7 @@ class Game_Player < Game_Character
   # @param x [Integer] the x position on the MAP
   # @param y [Integer] the y position on the MAP
   def center(x, y)
-    if $game_switches[Yuki::Sw::MapLinkerDisabled]
+    if $game_map.maplinker_disabled
       max_x = ($game_map.width - Game_Map::NUM_TILE_VIEW_X) * 128
       max_y = ($game_map.height - Game_Map::NUM_TILE_VIEW_Y) * 128
       $game_map.display_x = (x * 128 - CENTER_X).clamp(0, max_x) # [0, [x * 128 - CENTER_X, max_x].min].max

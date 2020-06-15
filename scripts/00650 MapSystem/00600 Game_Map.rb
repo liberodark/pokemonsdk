@@ -49,21 +49,25 @@ class Game_Map
   attr_reader   :fog_ox                   # フォグ 原点 X 座標
   attr_reader   :fog_oy                   # フォグ 原点 Y 座標
   attr_reader   :fog_tone                 # フォグ 色調
+  # @return [Boolean] if the maplinker was disabled when the map was setup
+  attr_reader :maplinker_disabled
   # Initialize the default Game_Map object
   def initialize
     @map_id = 0
     @display_x = 0
     @display_y = 0
+    @maplinker_disabled = false
   end
 
   # setup the Game_Map object with the right Map data
   # @param map_id [Integer] the ID of the map
   def setup(map_id)
     Yuki::ElapsedTime.start(:map_loading)
-    # マップ ID を @map_id に記憶
     @map_id = map_id
     # We save events to make sure they'll be correctly transfered on the with the MapLinker
     save_events_offset unless @events_info
+    # We store the new state of the map linker enable state
+    @maplinker_disabled = $game_switches[Yuki::Sw::MapLinkerDisabled]
     # マップをファイルからロードし、@map に設定
     @map = Yuki::MapLinker.load_map(@map_id)
     Yuki::ElapsedTime.show(:map_loading, 'MapLinker.load_map took')
@@ -210,7 +214,7 @@ class Game_Map
   def scroll_down(distance, is_priority = false)
     return if @scroll_y_priority && !is_priority
 
-    if $game_switches[Yuki::Sw::MapLinkerDisabled]
+    if @maplinker_disabled
       @display_y = (@display_y + distance).clamp(0, (height - NUM_TILE_VIEW_Y) * 128)
     else
       @display_y += distance
@@ -223,7 +227,7 @@ class Game_Map
   def scroll_left(distance, is_priority = false)
     return if @scroll_x_priority && !is_priority
 
-    if $game_switches[Yuki::Sw::MapLinkerDisabled]
+    if @maplinker_disabled
       @display_x = (@display_x - distance).clamp(0, @display_x)
     else
       @display_x -= distance
@@ -236,7 +240,7 @@ class Game_Map
   def scroll_right(distance, is_priority = false)
     return if @scroll_x_priority && !is_priority
 
-    if $game_switches[Yuki::Sw::MapLinkerDisabled]
+    if @maplinker_disabled
       @display_x = (@display_x + distance).clamp(0, (width - NUM_TILE_VIEW_X) * 128)
     else
       @display_x += distance
@@ -249,7 +253,7 @@ class Game_Map
   def scroll_up(distance, is_priority = false)
     return if @scroll_y_priority && !is_priority
 
-    if $game_switches[Yuki::Sw::MapLinkerDisabled]
+    if @maplinker_disabled
       @display_y = (@display_y - distance).clamp(0, @display_y)
     else
       @display_y -= distance

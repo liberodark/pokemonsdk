@@ -171,6 +171,7 @@ module Yuki
       # @return [Array<Bitmap>]
       def load_tileset_chunks(name)
         chunks = MapData.tileset_chunks[name]
+        chunks&.compact!
         return chunks if chunks&.none?(&:disposed?)
 
         unless RPG::Cache.tileset_exist?(name)
