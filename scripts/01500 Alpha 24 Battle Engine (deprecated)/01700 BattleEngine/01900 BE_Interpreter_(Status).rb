@@ -5,14 +5,17 @@ module BattleEngine
   module BE_Interpreter
 	Status_Abilities = [12, 14, 21, 33, 65]
 	Status_Items = [272, 273]
+	Status_Not_Overwritten = [GameData::States::POISONED, GameData::States::BURN, GameData::States::PARALYZED, GameData::States::TOXIC]
     module_function
     #===
     #>Synchro
     #===
     def synchro_apply(target, meth)
-      return if @ignore or target.hp<=0
+      return if @ignore || target.hp<=0
       #> Synchro
-      if(@launcher != target and @launcher and BattleEngine::Abilities.has_ability_usable(target, 33))
+	  if(@launcher != target && @launcher && BattleEngine::Abilities.has_ability_usable(target, 33))
+		# Security check
+		return if Status_Not_Overwritten.include?(@launcher.status)
         @launcher.send(meth, true)
         _msgp(19, 1159, @launcher)
       #> Pied Véloce
@@ -99,7 +102,6 @@ module BattleEngine
 				  target.status_count /= 2
 				end
 				_msgp(19, 306, target)
-				synchro_apply(target, :status_sleep)
 			else
 				_msgp(19, 318, target)
 			end
@@ -148,7 +150,6 @@ module BattleEngine
 			if target.can_be_frozen?(@skill ? @skill.type : 0)
 				target.status_frozen
 				_msgp(19, 288, target)
-				synchro_apply(target, :status_frozen)
 			else
 				_msgp(19, 300, target)
 			end
