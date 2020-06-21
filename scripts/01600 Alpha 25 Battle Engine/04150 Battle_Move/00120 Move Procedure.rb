@@ -103,10 +103,18 @@ module Battle
       rng = Random.new
       fibers = actual_targets.map do |target|
         damages = self.damages(user, target, rng) # /!\ test the substitute pokemon when substitute was used
+        critical_hit = @critical
+        effectiveness = @effectiveness
         log_debug("#{user} inflict #{damages} HP to #{target}")
         # TODO: Manage clone, abilities like cursed_body & sturdy, then effect, berries
         next Fiber.new do
-          Fiber.yield :wait_for_animation, Visual::HPAnimation.new(scene, target, -damages)
+          Fiber.yield if damages <= 0
+          Fiber.yield :wait_for_animation, Visual::HPAnimation.new(scene, target, -damages, effectiveness) if damages > 0
+          if critical_hit
+            scene.display_message(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
+          elsif damages > 0
+            efficent_message(effectiveness, target, scene)
+          end
           handle_ko(scene, target) if target.hp <= 0
           Fiber.yield :kill
         end
@@ -114,6 +122,18 @@ module Battle
       process_fiber(fibers, scene)
 
       return true
+    end
+
+    # Show the effectiveness message
+    # @param effectiveness [Numeric]
+    # @param target [PFM::PokemonBattler]
+    # @param scene [Battle::Scene] scene responsive of holding all the battle information
+    def efficent_message(effectiveness, target, scene)
+      if effectiveness > 1
+        scene.display_message(parse_text_with_pokemon(19, 6, target))
+      elsif effectiveness > 0
+        scene.display_message(parse_text_with_pokemon(19, 15, target))
+      end
     end
 
     # Function that handle the KO part
