@@ -540,6 +540,11 @@ module GamePlay
   # All the update methods are optionnal but you should define at least one otherwise your Scene
   # will be useless and softlock the game
   class BaseCleanUpdate < Base
+    AIU_KEY2METHOD = {
+      A: :action_a, B: :action_b, X: :action_x, Y: :action_y, L: :action_l, R: :action_r,
+      L2: :action_l2, R2: :action_r2, L3: :action_l3, R3: :action_r3,
+      START: :action_start, SELECT: :action_select, HOME: :action_home
+    }
     # Scene update process
     # @return [Boolean] if the scene should continue the update process or abort it (message/animation etc...)
     def update
@@ -547,12 +552,34 @@ module GamePlay
       # Process message
       can_continue = false unless super
       # Update inputs
-      can_continue = false if can_continue && respond_to?(:update_inputs) && update_inputs == false
+      can_continue = false if can_continue && respond_to?(:update_inputs, true) && update_inputs == false
       # Update mouse
-      can_continue = false if can_continue && respond_to?(:update_mouse) && update_mouse(Mouse.moved) == false
+      can_continue = false if can_continue && respond_to?(:update_mouse, true) && update_mouse(Mouse.moved) == false
       # Update the graphics at the end with the correct state
-      return update_graphics && can_continue if respond_to?(:update_graphics)
+      return update_graphics && can_continue if respond_to?(:update_graphics, true)
+
       return can_continue
+    end
+
+    # Automatically detect input update and call the corresponding action method
+    # @param key2method [Hash] Hash associating Input Keys to action method name
+    # @return [Boolean] if the update_inputs should continue
+    # @example Use the generic aiu
+    #   def update_inputs
+    #     return false unless automatic_input_update
+    #     # Do something else
+    #     return true
+    #   end
+    # @example Use aiu with specific functions
+    #   return false unless automatic_input_update(A: :action_a2, B: :action_b2)
+    def automatic_input_update(key2method = AIU_KEY2METHOD)
+      key2method.each do |key, method_name|
+        if respond_to?(method_name, true) && Input.trigger?(key)
+          send(method_name)
+          return false
+        end
+      end
+      return true
     end
   end
 end
