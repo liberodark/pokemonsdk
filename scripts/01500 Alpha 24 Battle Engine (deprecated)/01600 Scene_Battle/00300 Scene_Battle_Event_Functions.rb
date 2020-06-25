@@ -84,6 +84,7 @@ class Scene_Battle
     ability = $actors[0].ability
     #>Préparation Pokémon
     enemy_party = @enemy_party.actors
+    repel_active = $pokemon_party.repel_count > 0
     args.size.times do |i|
       pkmn_id=$data_troops[@troop_id].members[i]
       next unless pkmn_id
@@ -110,6 +111,10 @@ class Scene_Battle
         @select_pokemon_chances[i] = 1.5 if enemy_party[i].type_electric?
       when 33 #> Synchro
         @select_pokemon_chances[i] = 1.5 if enemy_party[i].nature_id == $actors[0].nature_id
+      end
+      if enemy_party[i].level < $actors[0].level
+        @select_pokemon_chances[i] *= 0.33 if $bag.contain_item?(:cleanse_tag)
+        @select_pokemon_chances[i] = 0 if repel_active
       end
     end
   end
