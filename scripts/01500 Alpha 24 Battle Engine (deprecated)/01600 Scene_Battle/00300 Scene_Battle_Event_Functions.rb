@@ -113,7 +113,7 @@ class Scene_Battle
         @select_pokemon_chances[i] = 1.5 if enemy_party[i].nature_id == $actors[0].nature_id
       end
       if enemy_party[i].level < $actors[0].level
-        @select_pokemon_chances[i] *= 0.33 if $bag.contain_item?(:cleanse_tag)
+        @select_pokemon_chances[i] *= 0.33 if $actors[0].item_db_symbol == :cleanse_tag
         @select_pokemon_chances[i] = 0 if repel_active
       end
     end
