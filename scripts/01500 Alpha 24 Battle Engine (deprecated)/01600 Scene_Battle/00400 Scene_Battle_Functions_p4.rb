@@ -172,19 +172,20 @@ class Scene_Battle
   #>phase4_actor_select_pkmn
   # Selection d'un Pokémon pour l'actor
   #===
-  def phase4_actor_select_pkmn(i)
+  def phase4_actor_select_pkmn(i,forced=true)
     egg_party = []
     @actors.each { |j| egg_party << j unless BattleEngine.get_ally!(i).include?(j) }
     egg_check = egg_party.all?(&:dead?)
     return false if egg_check
     
     @message_window.visible = false
-    $scene = scene = GamePlay::Party_Menu.new(@actors, :battle, no_leave: true)
+    $scene = scene = GamePlay::Party_Menu.new(@actors, :battle, no_leave: forced)
     scene.main#(true)
     @message_window.visible = true
     $scene = self
     return_data = scene.return_data
     Graphics.transition
+    return false if return_data == -1
     return [2,return_data,i.position]
   end
   #===
@@ -529,7 +530,7 @@ class Scene_Battle
       )
       choice = display_message(text, true, 1, text_get(11, 27), text_get(11, 28))
       if choice == 0
-        result = phase4_actor_select_pkmn(@actors[0])
+        result = phase4_actor_select_pkmn(@actors[0],false)
         phase4_switch_pokemon(result) if result
       end
     end
