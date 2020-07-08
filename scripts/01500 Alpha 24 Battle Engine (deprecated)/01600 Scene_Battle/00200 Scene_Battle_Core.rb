@@ -145,16 +145,6 @@ class Scene_Battle
       $pokedex.mark_seen(pkmn.id,pkmn.form)
       $quests.see_pokemon(pkmn.id)
     end
-    #>Retrait de l'état de méga évolution
-    @actors.each do |pkmn|
-      next unless pkmn
-
-      pkmn.unmega_evolve
-      pkmn.reset_stat_stage
-      pkmn.form_calibrate
-      #>Vérifications de cheniti
-      pkmn.form = pkmn.form_generation(-1) if pkmn.id == 412 || pkmn.id == 413
-    end
     ::Scheduler.start(:on_scene_switch, ::Scene_Battle)
 =begin
     ::RPG::Cache.load_icon(true)
@@ -212,6 +202,16 @@ class Scene_Battle
 #      actor.remove_states_battle
 #    end
     # Effacement des ennemis
+    #>Retrait de l'état de méga évolution
+    @actors.each do |pkmn|
+      next unless pkmn
+
+      pkmn.unmega_evolve
+      pkmn.reset_stat_stage
+      pkmn.form_calibrate
+      #>Vérifications de cheniti
+      pkmn.form = pkmn.form_generation(-1) if pkmn.id == 412 || pkmn.id == 413
+    end
     $game_troop.enemies.clear
     # Appel de la procedure de fin de combat (pour la branche d'évent)
     if $game_temp.battle_proc != nil

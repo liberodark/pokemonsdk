@@ -262,13 +262,13 @@ module BattleEngine
   def _State_local_update_launcher(launcher)
     st = @_State
     st[:launcher_item] = _has_item(launcher, launcher.battle_item) ? launcher.battle_item : 0
-    st[:launcher_ability] = Abilities.has_ability_usable(launcher, launcher.ability) ? -1 : launcher.ability
+    st[:launcher_ability] = Abilities.has_ability_usable(launcher, launcher.ability) ? launcher.ability : -1
   end
 
   def _State_local_update_target(target)
     st = @_State
     st[:target_item] = _has_item(target, target.battle_item) ? target.battle_item : 0
-    st[:target_ability] = Abilities.has_ability_usable(target, target.ability) ? -1 : target.ability
+    st[:target_ability] = Abilities.has_ability_usable(target, target.ability) ? target.ability : -1
   end
 
   #===

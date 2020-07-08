@@ -130,6 +130,9 @@ module BattleEngine
               _msgp(19, 381, target, ::PFM::Text::ABILITY[1] => target.ability_name)
             end
           end
+		when 72 #> Pression
+		  _mp([:ability_display, pkmn])
+		  _msgp(19, 487, pkmn)
         when 107 #> Crachin
           if(::GameData::Flag_4G)
             nb_turn = 1/0.0
