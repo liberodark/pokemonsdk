@@ -563,7 +563,7 @@ class Scene_Battle
         new_enemy=phase4_enemie_select_pkmn(i)
         #phase4_switch_pokemon([2,-new_enemy-1,-i.position-1]) if new_enemy
         if new_enemy
-          phase4_switch_question(new_enemy) if $game_temp.vs_type == 1
+          phase4_switch_question(new_enemy) if $game_temp.vs_type == 1 && @actors[0].hp > 0
           phase4_switch_pokemon(new_enemy)
         end
         @e_remaining_pk.redraw if $game_temp.trainer_battle

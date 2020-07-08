@@ -84,7 +84,7 @@ module BattleEngine
       #>On fait la vérification pour les ennemis
       enemies.each do |i|
         #>On vérifie si la capacité spéciale n'est pas bloquée
-        return i if i.battle_effect.has_no_ability_effect? and i.ability==id #>Faire la vérification !
+        return i if !i.battle_effect.has_no_ability_effect? and i.ability==id #>Faire la vérification !
       end
       return false
     end
