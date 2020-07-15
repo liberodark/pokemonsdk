@@ -66,7 +66,7 @@ module Yuki
     # Get the human follower entities
     # @return [Array<#character_name>]
     def human_entities
-      human = (0...human_count).map { |i| $game_actors[i] }
+      human = (0...human_count).map { |i| $game_actors[i + 2] }
       human.compact!
       return human
     end
