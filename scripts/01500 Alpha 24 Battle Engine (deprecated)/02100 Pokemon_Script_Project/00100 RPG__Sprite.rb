@@ -233,7 +233,7 @@ module RPG
           x_compensate -= cell_data[15, 1] / 2 if position != 3
           y_compensate -= cell_data[15, 2] / 2 if position != 3
         end
-        self.zoom = cell_data[15, 3].to_i / 200.0
+        self.zoom = cell_data[15, 3].to_i / 100.0
       end
 
       15.times do |i| # for i in 0..14
