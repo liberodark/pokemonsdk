@@ -37,6 +37,19 @@ module RPG
         gl_FragColor = color * gl_Color;
       }
     EOSHADER
+    TARGET_SHADER = <<~EOSHADER
+      uniform vec4 color;
+      uniform sampler2D texture;
+
+      void main() {
+        vec4 frag = texture2D(texture, gl_TexCoord[0].xy);
+        // Tone&Color process
+        frag.rgb = mix(frag.rgb, color.rgb, color.a);
+        frag.a *= gl_Color.a;
+        // Result
+        gl_FragColor = frag;
+      }
+    EOSHADER
     @@_animations = []
     @@_reference_count = {}
     def initialize(viewport = nil)
@@ -54,6 +67,17 @@ module RPG
       @_registered_y = 0
       @_registered_ox = 0
       @_registered_oy = 0
+      @flash_duration = 0
+    end
+
+    def flash(color, duration)
+      @flash_color = color
+      @flash_duration = duration
+      @flash_total_duration = duration
+    end
+
+    def color
+      return @_color ||= Color.new(0, 0, 0, 0)
     end
 
     def register_position
@@ -90,6 +114,8 @@ module RPG
       dispose_animation
       @_animation = animation
       return if @_animation == nil
+      self.shader ||= Shader.new(TARGET_SHADER)
+      self.shader.set_float_uniform('color', color)
       @_animation_hit = hit
       @_animation_duration = @_animation.frame_max
       animation_name = @_animation.animation_name
@@ -185,6 +211,24 @@ module RPG
       end
       @@_animations.clear
       viewport&.update
+      handle_flash
+      shader.set_float_uniform('color', color)
+    end
+
+    def handle_flash
+      return if @flash_duration == 0
+
+      @flash_duration -= 1
+      if @flash_color
+        color.set(
+          @flash_color.red,
+          @flash_color.green,
+          @flash_color.blue,
+          @flash_color.alpha * @flash_duration / @flash_total_duration
+        )
+      else
+        self.visible = false
+      end
     end
 
     def animation_set_sprites(sprites, cell_data, position)
