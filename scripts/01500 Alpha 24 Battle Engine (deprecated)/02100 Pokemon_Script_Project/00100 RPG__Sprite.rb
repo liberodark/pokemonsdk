@@ -90,7 +90,6 @@ module RPG
       dispose_animation
       @_animation = animation
       return if @_animation == nil
-      p animation.name
       @_animation_hit = hit
       @_animation_duration = @_animation.frame_max
       animation_name = @_animation.animation_name
@@ -205,7 +204,7 @@ module RPG
         if position == 3
           if viewport
             self.x = viewport.rect.width / 2
-            self.y = viewport.rect.height - 48 # / 2 added here
+            self.y = viewport.rect.height - 80
           else
             self.x = Graphics.width / 2
             self.y = Graphics.height / 2
@@ -248,14 +247,14 @@ module RPG
         if position == 3
           if viewport
             sprite.x = viewport.rect.width / 2
-            sprite.y = viewport.rect.height - 48
+            sprite.y = viewport.rect.height - 80
           else
             sprite.x = Graphics.width / 2 # 320
             sprite.y = Graphics.height / 2 # 240
           end
         else
-          sprite.x = x - ox / 2 + src_rect.width / 4
-          sprite.y = y - oy / 2 + src_rect.height / 4
+          sprite.x = x - ox + src_rect.width / 2
+          sprite.y = y - oy + src_rect.height / 2
           sprite.y -= src_rect.height / 8 if position == 0
           sprite.y += src_rect.height / 8 if position == 2
         end
@@ -272,6 +271,9 @@ module RPG
           sprite.x += cell_data[i, 1] / 2 + x_compensate
           sprite.y += cell_data[i, 2] / 2 + y_compensate
         end
+
+        # Little compensation because the screen animation seem a bit too low
+        sprite.y -= 24 if position == 3
 
         sprite.z = 2000
         sprite.ox = 96
