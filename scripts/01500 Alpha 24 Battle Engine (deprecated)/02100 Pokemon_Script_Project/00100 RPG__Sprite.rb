@@ -227,7 +227,7 @@ module RPG
           @flash_color.alpha * @flash_duration / @flash_total_duration
         )
       else
-        self.visible = false
+        self.visible = @flash_duration <= 0
       end
     end
 
