@@ -487,22 +487,22 @@ class Scene_Battle
       #>Soin Poison
       if(BattleEngine::Abilities::has_ability_usable(pkmn,89))
         BattleEngine::_msgp(19, 387, pkmn)
-        BattleEngine::_message_stack_push([:hp_up, pkmn, pkmn.poison_effect, true])
+        BattleEngine::_message_stack_push([:hp_up, pkmn, pkmn.poison_effect])
       else
         BattleEngine::_msgp(19, 243, pkmn)
         BattleEngine::_mp([:animation_on, pkmn, 469 + pkmn.status])
-        BattleEngine::_message_stack_push([:hp_down, pkmn, pkmn.poison_effect, true])
+        BattleEngine::_message_stack_push([:hp_down_proto, pkmn, pkmn.poison_effect])
       end
     elsif(pkmn.burn?) #Brûlure
       hp = pkmn.burn_effect
       hp /= 2 if BattleEngine::Abilities::has_ability_usable(pkmn, 117) #> Ignifugé
       BattleEngine::_msgp(19, 261, pkmn)
       BattleEngine::_mp([:animation_on, pkmn, 469 + pkmn.status])
-      BattleEngine::_message_stack_push([:hp_down,pkmn,pkmn.burn_effect,true])
+      BattleEngine::_message_stack_push([:hp_down,pkmn,pkmn.burn_effect])
     elsif(pkmn.toxic?) #Intoxiqué
       BattleEngine::_msgp(19, 243, pkmn)
       BattleEngine::_mp([:animation_on, pkmn, 469 + pkmn.status])
-      BattleEngine::_message_stack_push([:hp_down,pkmn,pkmn.toxic_effect,true])
+      BattleEngine::_message_stack_push([:hp_down_proto,pkmn,pkmn.toxic_effect])
     end
   end
   #===
