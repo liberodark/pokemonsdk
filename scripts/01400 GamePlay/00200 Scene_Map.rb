@@ -99,7 +99,7 @@ class Scene_Map < GamePlay::Base
   # @return [Bitmap]
   def snap_to_bitmap
     back_bitmap = @viewport.snap_to_bitmap
-    if (vp = NuriYuri::DynamicLight.viewport)&.visible
+    if (vp = NuriYuri::DynamicLight.viewport) && !vp.disposed? && vp.visible
       shader = vp.shader
       vp.shader = nil
       top_bitmap = vp.snap_to_bitmap
