@@ -266,15 +266,15 @@ module RPG
         end
 
         if @_reverse
-          self.x -= cell_data[15, 1] / 2
-          self.y -= cell_data[15, 2] / 2
-          x_compensate += cell_data[15, 1] / 2 if position != 3
-          y_compensate += cell_data[15, 2] / 2 if position != 3
+          self.x -= cell_data[15, 1].to_i / 2
+          self.y -= cell_data[15, 2].to_i / 2
+          x_compensate += cell_data[15, 1].to_i / 2 if position != 3
+          y_compensate += cell_data[15, 2].to_i / 2 if position != 3
         else
-          self.x += cell_data[15, 1] / 2
-          self.y += cell_data[15, 2] / 2
-          x_compensate -= cell_data[15, 1] / 2 if position != 3
-          y_compensate -= cell_data[15, 2] / 2 if position != 3
+          self.x += cell_data[15, 1].to_i / 2
+          self.y += cell_data[15, 2].to_i / 2
+          x_compensate -= cell_data[15, 1].to_i / 2 if position != 3
+          y_compensate -= cell_data[15, 2].to_i / 2 if position != 3
         end
         self.zoom = cell_data[15, 3].to_i / 100.0
       end
@@ -309,11 +309,11 @@ module RPG
         end
 
         if @_reverse
-          sprite.x -= cell_data[i, 1] / 2 - x_compensate
-          sprite.y -= cell_data[i, 2] / 2 - y_compensate
+          sprite.x -= cell_data[i, 1].to_i / 2 - x_compensate
+          sprite.y -= cell_data[i, 2].to_i / 2 - y_compensate
         else
-          sprite.x += cell_data[i, 1] / 2 + x_compensate
-          sprite.y += cell_data[i, 2] / 2 + y_compensate
+          sprite.x += cell_data[i, 1].to_i / 2 + x_compensate
+          sprite.y += cell_data[i, 2].to_i / 2 + y_compensate
         end
 
         # Little compensation because the screen animation seem a bit too low
@@ -327,8 +327,8 @@ module RPG
         sprite.angle += 180 if @_option == 1 && @_reverse
         sprite.mirror = (cell_data[i, 5] == 1)
         sprite.mirror = (sprite.mirror == false) if @_option == 2 && @_reverse
-        sprite.opacity = cell_data[i, 6] * opacity / 255.0
-        sprite.shader.blend_type = cell_data[i, 7]
+        sprite.opacity = cell_data[i, 6].to_i * opacity / 255.0
+        sprite.shader.blend_type = cell_data[i, 7].to_i
       end
     end
   end
