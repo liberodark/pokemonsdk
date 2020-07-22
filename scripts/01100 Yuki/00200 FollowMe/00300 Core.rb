@@ -117,7 +117,7 @@ module Yuki
         character.character_name = entity.character_name
         character.is_pokemon = character.step_anime = entity.class == PFM::Pokemon
       end
-      character.move_speed = $game_player.move_speed
+      character.move_speed = $game_player.original_move_speed
       character.through = true
       character.update
       follower.update
