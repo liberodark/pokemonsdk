@@ -74,6 +74,7 @@ class Game_Character
     @prelock_direction = 0
     @surfing = false # Variable indiquant si le chara est sur l'eau
     @sliding = false # Variable indiquant si le chara slide
+    @sliding_parameter = nil # Variable giving extra information for sliding
     @pattern_state = false # Indicateur de la direction du pattern
     @can_make_footprint = true
   end
