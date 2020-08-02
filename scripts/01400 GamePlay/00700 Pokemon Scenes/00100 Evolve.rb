@@ -1,23 +1,16 @@
-#encoding : utf-8
-
-
 module GamePlay
   class Evolve < BaseCleanUpdate
     attr_accessor :evolved
-    #Name of the png background
-    BACK_NAMES=["back_building","back_grass","back_tall_grass","back_taller_grass",
-        "back_cave","back_mount","back_sand","back_pond","back_sea","back_under_water",
-        "back_snow","back_ice"]
-    #Path of the music of the pokemon in evolution    
-    EVOLVE_MUSIC = "Audio/BGM/PkmRS-Evolving.mid"
-    #Path of the music of the pokemon in evolved
-    EVOLVED_MUSIC = "Audio/BGM/XY_Trainer_Battle_Victory.ogg"
+    # Path of the music of the pokemon in evolution
+    EVOLVE_MUSIC = 'audio/bgm/pkmrs-evolving'
+    # Path of the music of the pokemon in evolved
+    EVOLVED_MUSIC = 'audio/bgm/xy_trainer_battle_victory'
 
-    #Constante for evolved animation
     FIRST_STEP = 60
-    SECOND_STEP = FIRST_STEP + 420
+    SECOND_STEP_FREQUENCY = 60
+    SECOND_STEP = FIRST_STEP + (2.5 * SECOND_STEP_FREQUENCY).to_i
     LAST_STEP = SECOND_STEP + 60
-    PI2 = Math::PI*2
+    PI2 = Math::PI * 2
 
     # Launch the Pokemon Evolution scene
     # @param pokemon [PFM::Pokemon] the evolving Pokemon
@@ -26,7 +19,7 @@ module GamePlay
     # @param forced [Boolean] if the evolution can be stopped or not
     def initialize(pokemon, id, form = nil, forced = false)
       super()
-      @pokemon = pokemon 
+      @pokemon = pokemon
       @clone = pokemon.clone
       @clone.id = id
       if form
@@ -34,7 +27,7 @@ module GamePlay
       else
         @clone.form_calibrate(:evolve)
       end
-      @forced = forced 
+      @forced = forced
       @id_bg = 0
       @evolved = false
       @counter = 0
@@ -49,25 +42,21 @@ module GamePlay
       elsif @counter >= LAST_STEP
         evolution_last_step
         update_message
-        #===
-        #> Munja évolution de Ningale
-        #> Faites avant l'évolution de Ningale
-        #===
         munja_evolution
         update_pkmn_id
-        # check_alola_evolve(@pokemon)
-        @pokemon.check_skill_and_learn # (false, -1) #(US-45) Fin de ligne commentée tant que la BDD n'aura pas les niveaux à -1 pour les attaques par évolution.
+        # Normal skill learn
+        @pokemon.check_skill_and_learn
+        # Evovolution skill learn
+        @pokemon.check_skill_and_learn(false, 0)
         restore_audio
         @running = false
         @evolved = true
         register_in_pokedex
+      elsif @counter < SECOND_STEP && !@forced && Input.trigger?(:B)
+        stop_evolution_step
+        return
       else
-        if(@counter < SECOND_STEP and (!@forced and Input.trigger?(:B)))
-          stop_evolution_step
-          return
-        else
-          update_animation
-        end
+        update_animation
       end
       @counter += 1
     end
@@ -102,12 +91,12 @@ module GamePlay
       Audio.bgm_play(EVOLVED_MUSIC)
       $game_system.cry_play(@clone.id)
       display_message(parse_text(31, 2, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
-        ::PFM::Text::PKNAME[1] => @clone.name))
+                                        ::PFM::Text::PKNAME[1] => @clone.name))
     end
 
     def munja_evolution
-      if @clone.id == 291 and $actors.size < 6 and $bag.contain_item?(4)
-        munja = PFM::Pokemon.generate_from_hash({
+      if @clone.id == 291 && $actors.size < 6 && $bag.contain_item?(4)
+        munja = PFM::Pokemon.generate_from_hash(
           id: 292,
           level: @pokemon.level,
           exp: @pokemon.exp,
@@ -128,7 +117,7 @@ module GamePlay
           ev_ats: @pokemon.ev_ats,
           ev_dfs: @pokemon.ev_dfs,
           skills_set: @pokemon.skills_set
-        })
+        )
         $actors << munja
         $bag.remove_item(4, 1)
         $pokedex.mark_seen(292, forced: true)
@@ -154,22 +143,25 @@ module GamePlay
     end
 
     def update_animation
+      # 1st step: Pokemon start glowing and emit light around
       if @counter < FIRST_STEP
         value = 255 * @counter / FIRST_STEP
         @sprite_pokemon.set_color(Color.new(value, value, value, value))
         value /= 5
         @viewport.tone.set(value, value, value, 0)
+      # 2nd step Pokemon switch between the two forms during
       elsif @counter < SECOND_STEP
-        value = (Math.cos((@counter-FIRST_STEP)*PI2/120)+1)*128
+        value = (Math.cos((@counter - FIRST_STEP) * PI2 / SECOND_STEP_FREQUENCY) + 1) * 128
         @sprite_pokemon.opacity = value
-        @sprite_clone.opacity = 255-value
+        @sprite_clone.opacity = 255 - value
+      # 3rd step Evolution unglow and shows
       elsif @counter < LAST_STEP
         value = (60 - (@counter - SECOND_STEP)) * 255 / 60
         @viewport.tone.set(value, value, value, 0)
         @sprite_clone.set_color(Color.new(value, value, value, value))
       end
     end
-    
+
     def update_pkmn_id
       @pokemon.id = @clone.id
       @pokemon.form = @clone.form
@@ -183,27 +175,22 @@ module GamePlay
     end
 
     def create_background
-        @id_bg = $env.get_zone_type(true)
-        if(@id_bg == 0 && $env.grass?)
-            @id_bg = 1
-        else
-            @id_bg += 1
-        end
-        @background = Sprite.new(@viewport).set_bitmap(BACK_NAMES[@id_bg], :battleback)
+      background_filename = Battle::Visual.allocate.send(:background_name)
+      @background = Sprite.new(@viewport).set_bitmap(background_filename, :battleback)
     end
-   
+
     def create_sprite_pkmn
       @sprite_pokemon = Sprite::WithColor.new(@viewport).set_bitmap(@pokemon.battler_face)
-      @sprite_pokemon.set_position(160,120)
-      @sprite_pokemon.set_origin_div(2,2)
+      @sprite_pokemon.set_position(160, 120)
+      @sprite_pokemon.set_origin_div(2, 2)
     end
 
     def create_sprite_pkmn_evolved
-        @sprite_clone = Sprite::WithColor.new(@viewport).set_bitmap(@clone.battler_face)
-        @sprite_clone.set_position(160,120)
-        @sprite_clone.set_origin_div(2, 2)
-        @sprite_clone.set_color([1, 1, 1, 1])
-        @sprite_clone.opacity = 0
+      @sprite_clone = Sprite::WithColor.new(@viewport).set_bitmap(@clone.battler_face)
+      @sprite_clone.set_position(160, 120)
+      @sprite_clone.set_origin_div(2, 2)
+      @sprite_clone.set_color([1, 1, 1, 1])
+      @sprite_clone.opacity = 0
     end
 
     def create_graphics
@@ -212,6 +199,5 @@ module GamePlay
       create_sprite_pkmn
       create_sprite_pkmn_evolved
     end
-
   end
 end

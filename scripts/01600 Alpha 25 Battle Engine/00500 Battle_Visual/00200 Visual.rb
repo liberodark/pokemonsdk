@@ -109,11 +109,44 @@ module Battle
     # Return the background name according to the current state of the player
     # @return [String]
     def background_name
-      return $game_temp.battleback_name unless $game_temp.battleback_name.to_s.empty?
+      return timed_background_name($game_temp.battleback_name) unless $game_temp.battleback_name.to_s.empty?
+
       zone_type = $env.get_zone_type
       zone_type += 1 if zone_type > 0 || $env.grass?
       log_debug("Background : ZoneType = #{zone_type} / BGName = #{BACKGROUND_NAMES[zone_type]}")
-      return BACKGROUND_NAMES[zone_type].to_s
+      return timed_background_name(BACKGROUND_NAMES[zone_type].to_s)
+    end
+
+    # List of of suffix for the timed background. Order is morning, day, sunset, night.
+    # @return [Array<Array<String>>]
+    TIMED_BACKGROUND_SUFFIXES = [%w[morning day], %w[day], %w[sunset night], %w[night]]
+    # Function that tries to change the background name depending on time
+    # @param background_name [String]
+    # @return [String]
+    def timed_background_name(background_name)
+      return background_name unless $game_switches[Yuki::Sw::TJN_Enabled] && $game_switches[Yuki::Sw::Env_CanFly]
+
+      if $game_switches[Yuki::Sw::TJN_MorningTime]
+        index = 0
+      elsif $game_switches[Yuki::Sw::TJN_DayTime]
+        index = 1
+      elsif $game_switches[Yuki::Sw::TJN_SunsetTime]
+        index = 2
+      elsif $game_switches[Yuki::Sw::TJN_NightTime]
+        index = 3
+      else
+        log_debug("No switch is on for Timed Background, fallback to #{background_name}")
+        return background_name
+      end
+
+      TIMED_BACKGROUND_SUFFIXES[index].each do |suffix|
+        temp_bg_name = "#{background_name}_#{suffix}"
+        log_debug("Try to find background #{temp_bg_name}")
+        return temp_bg_name if RPG::Cache.battleback_exist?(temp_bg_name)
+      end
+
+      log_debug("Fallback on #{background_name}")
+      return background_name
     end
 
     # Create the battler sprites (Trainer + Pokemon)
