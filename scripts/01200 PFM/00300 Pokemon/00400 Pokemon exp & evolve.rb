@@ -174,7 +174,7 @@ module PFM
     # Maximum level
     add_evolution_criteria(:max_level) { |value| @level <= value.to_i }
     # Holding an item
-    add_evolution_criteria(:itel_hold) { |value| value == @item_holding || value == item_db_symbol }
+    add_evolution_criteria(:item_hold) { |value| value == @item_holding || value == item_db_symbol }
     # Minimum loyalty
     add_evolution_criteria(:min_loyalty) { |value| @loyalty >= value.to_i }
     # Maximum loyalty
