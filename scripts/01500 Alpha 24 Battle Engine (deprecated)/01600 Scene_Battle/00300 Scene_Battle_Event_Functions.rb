@@ -33,7 +33,15 @@ class Scene_Battle
     enemy_party.clear
     data.team.each do |hash|
       next unless hash.class == Hash
-      enemy_party << PFM::Pokemon.generate_from_hash(hash)
+      enemy_party << (pokemon = PFM::Pokemon.generate_from_hash(hash))
+      # Remove moves that are 0
+      if $game_switches[Yuki::Sw::BT_NO_MOVE_WHEN_DEFAULT] && !hash[:moves].all?(&:zero?)
+        hash[:moves].each_with_index do |m, index|
+          pokemon.skills_set[index] = nil if m == 0
+          pokemon.skills_set.compact!
+        end
+      end
+      next
     end
     raise "Aucun Pokémon n'a été trouvé dans ce combat de dresseur..." if enemy_party.size == 0
   end
