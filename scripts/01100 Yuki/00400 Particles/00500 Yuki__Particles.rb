@@ -118,6 +118,12 @@ module Yuki
     ensure
       @stack = nil
     end
+
+    class << self
+      # Return the list of named particles
+      # @return [Hash{ Symbol => Particle_Object }]
+      attr_reader :named
+    end
   end
 end
 Hooks.register(Spriteset_Map, :init_psdk_add) do
