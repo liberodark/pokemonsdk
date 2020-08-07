@@ -31,6 +31,8 @@ module Yuki
     #       rect: Array(Integer, Integer, Integer, Integer) # the parameter of the #set function of Rect (src_rect)
     # @param on_tp [Boolean] tells the particle to skip the :enter animation or not
     # @param params [Hash] additional params for the animation
+    # @option params [Symbol] :flow define the kind of flow to use for the animation
+    # @option params [Integer] :radius define the radius to use for the :update_radius_flow flow
     def initialize(character, data, on_tp = false, params = {})
       @character = character
       init_map_data(character)
@@ -42,6 +44,7 @@ module Yuki
       @counter = 0
       @position_type = :center_pos
       @state = (on_tp ? :stay : :enter)
+      @state = params[:state] if params.key?(:state)
       init_zoom
       @ox = 0
       @oy = 0
@@ -49,6 +52,7 @@ module Yuki
       @ox_off = 0
       @wait_count = 0
       @params = params
+      @flow = params[:flow] || :update_default_flow
     end
 
     # Update the particle animation
@@ -82,17 +86,57 @@ module Yuki
       if @counter < data[:max_counter]
         (action = data[:data][@counter]) && exectute_action(action)
         @counter += 1
-      elsif @state == :enter
-        @state = :stay
-        @counter = 0
-      elsif @state == :stay
-        @state = :leave if x != @character.x || y != @character.y
-        @counter = 0
+      elsif send(@flow, data)
+        return true
       elsif !data[:loop]
         dispose
         return false
       else
         @counter = 0
+      end
+      return true
+    end
+
+    # Update the default particle state flow
+    # @param data [Hash] the data related to the current state
+    # @return [Boolean]
+    def update_default_flow(data)
+      if @state == :enter
+        @state = :stay
+        @counter = 0
+      elsif @state == :stay
+        @state = :leave if x != @character.x || y != @character.y
+        @counter = 0
+      else
+        return false
+      end
+      return true
+    end
+
+    # Update the radius particle kind flow
+    # @param data [Hash] the data related to the current state
+    # @return [Boolean]
+    def update_radius_flow(data)
+      radius = Math.sqrt(($game_player.x - @character.x)**2 + ($game_player.y - @character.y)**2)
+      if @state == :enter
+        @state = :stay
+        @counter = 0
+      elsif @state == :stay
+        return false if @map_data.map_id != $game_map.map_id
+
+        if radius > @params[:radius]
+          @state = :leave
+          @counter = 0
+        end
+      elsif @state == :leave
+        return false if @map_data.map_id != $game_map.map_id
+
+        if (@sprite.visible = (radius <= @params[:radius]))
+          @state = :enter
+          @counter = 0
+        end
+      else
+        return false
       end
       return true
     end
