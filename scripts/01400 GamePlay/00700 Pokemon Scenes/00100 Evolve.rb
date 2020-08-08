@@ -35,6 +35,8 @@ module GamePlay
     end
 
     def update_graphics
+      @pokemon_gif&.update(@sprite_pokemon.bitmap)
+      @clone_gif&.update(@sprite_clone.bitmap)
       return if $game_temp.message_window_showing
 
       if @counter == 0
@@ -180,13 +182,21 @@ module GamePlay
     end
 
     def create_sprite_pkmn
-      @sprite_pokemon = Sprite::WithColor.new(@viewport).set_bitmap(@pokemon.battler_face)
+      if (@pokemon_gif = @pokemon.gif_face)
+        add_disposable bitmap = Bitmap.new(@pokemon_gif.width, @pokemon_gif.height)
+        @pokemon_gif&.update(bitmap)
+      end
+      @sprite_pokemon = Sprite::WithColor.new(@viewport).set_bitmap(bitmap || @pokemon.battler_face)
       @sprite_pokemon.set_position(160, 120)
       @sprite_pokemon.set_origin_div(2, 2)
     end
 
     def create_sprite_pkmn_evolved
-      @sprite_clone = Sprite::WithColor.new(@viewport).set_bitmap(@clone.battler_face)
+      if (@clone_gif = @clone.gif_face)
+        add_disposable bitmap = Bitmap.new(@clone_gif.width, @clone_gif.height)
+        @clone_gif&.update(bitmap)
+      end
+      @sprite_clone = Sprite::WithColor.new(@viewport).set_bitmap(bitmap || @clone.battler_face)
       @sprite_clone.set_position(160, 120)
       @sprite_clone.set_origin_div(2, 2)
       @sprite_clone.set_color([1, 1, 1, 1])

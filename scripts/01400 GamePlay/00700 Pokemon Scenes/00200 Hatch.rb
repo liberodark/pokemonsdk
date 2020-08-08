@@ -48,6 +48,7 @@ module GamePlay
 
     # Update the hatching process
     def update
+      @pokemon_gif&.update(@pokemon_sprite.bitmap)
       # Prevent animation from continuing when message is showing
       return unless super
       update_message
@@ -162,7 +163,11 @@ module GamePlay
 
     # Create the Pokemon sprite
     def create_pokemon_sprite
-      @pokemon_sprite = Sprite::WithColor.new(@viewport).set_bitmap(@pokemon.battler_face)
+      if (@pokemon_gif = @pokemon.gif_face)
+        add_disposable bitmap = Bitmap.new(@pokemon_gif.width, @pokemon_gif.height)
+        @pokemon_gif&.update(bitmap)
+      end
+      @pokemon_sprite = Sprite::WithColor.new(@viewport).set_bitmap(bitmap || @pokemon.battler_face)
       @pokemon_sprite.set_position(@viewport.rect.width / 2, @viewport.rect.height / 2)
       @pokemon_sprite.set_origin_div(2, 1)
       @pokemon_sprite.set_color(@pokemon_color = Color.new(255, 255, 255, MAX_POKEMON_ALPHA))
