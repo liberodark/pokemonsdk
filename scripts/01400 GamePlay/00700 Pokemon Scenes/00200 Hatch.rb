@@ -156,13 +156,8 @@ module GamePlay
 
     # Create the background
     def create_background
-      id_bg = $env.get_zone_type(true)
-      if id_bg == 0
-        id_bg = 1 if $env.grass?
-      else
-        id_bg += 1
-      end
-      @background = Sprite.new(@viewport).set_bitmap(Evolve::BACK_NAMES[id_bg], :battleback)
+      background_filename = Battle::Visual.allocate.send(:background_name)
+      @background = Sprite.new(@viewport).set_bitmap(background_filename, :battleback)
     end
 
     # Create the Pokemon sprite
