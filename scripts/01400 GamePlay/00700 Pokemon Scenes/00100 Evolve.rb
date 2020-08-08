@@ -1,6 +1,8 @@
 module GamePlay
   class Evolve < BaseCleanUpdate
     attr_accessor :evolved
+    # Constant telling if you have gifs or not during the scene
+    ENABLE_GIF = true
     # Path of the music of the pokemon in evolution
     EVOLVE_MUSIC = 'audio/bgm/pkmrs-evolving'
     # Path of the music of the pokemon in evolved
@@ -182,7 +184,7 @@ module GamePlay
     end
 
     def create_sprite_pkmn
-      if (@pokemon_gif = @pokemon.gif_face)
+      if ENABLE_GIF && (@pokemon_gif = @pokemon.gif_face)
         add_disposable bitmap = Bitmap.new(@pokemon_gif.width, @pokemon_gif.height)
         @pokemon_gif&.update(bitmap)
       end
@@ -192,7 +194,7 @@ module GamePlay
     end
 
     def create_sprite_pkmn_evolved
-      if (@clone_gif = @clone.gif_face)
+      if ENABLE_GIF && (@clone_gif = @clone.gif_face)
         add_disposable bitmap = Bitmap.new(@clone_gif.width, @clone_gif.height)
         @clone_gif&.update(bitmap)
       end

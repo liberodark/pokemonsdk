@@ -1,6 +1,8 @@
 module GamePlay
   # Scene showing the Egg of a Pokemon hatching
   class Hatch < Base
+    # Constant telling if you have gifs or not during the scene
+    ENABLE_GIF = true
     # Move duration
     EGG_MOVE_DURATION = 180
     # Move period
@@ -163,7 +165,7 @@ module GamePlay
 
     # Create the Pokemon sprite
     def create_pokemon_sprite
-      if (@pokemon_gif = @pokemon.gif_face)
+      if ENABLE_GIF && (@pokemon_gif = @pokemon.gif_face)
         add_disposable bitmap = Bitmap.new(@pokemon_gif.width, @pokemon_gif.height)
         @pokemon_gif&.update(bitmap)
       end
