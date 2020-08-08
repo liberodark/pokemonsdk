@@ -253,6 +253,8 @@ class Interpreter
   # @param speed [Integer] speed of the slot machine
   # @author Nuri Yuri
   def casino(arg = :voltorb_flip, speed = 2)
+    return if $game_variables[Yuki::Var::CoinCase] <= 0
+
     case arg # Anticipate the creation of other casino scenes
     when :voltorb_flip
       casino = GamePlay::Casino::VoltorbFlip.new
@@ -263,7 +265,6 @@ class Interpreter
     end
     casino.main
     Graphics.transition
-    $game_variables[Yuki::Var::CoinCase] = casino.coin_case
     @wait_count = 2
   end
 
