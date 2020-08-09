@@ -499,7 +499,7 @@ else
 
     def se_play(*) end
 
-    def bgm_fate(time) end
+    def bgm_fade(time) end
 
     def bgs_fade(time) end
 
