@@ -22,6 +22,7 @@ module BattleEngine
     return true if be.has_mind_reader_effect? and target == be.get_mind_reader_target
     return true if be.has_lock_on_effect? and be.get_lock_on_target == target
     return true if @_State[:launcher_ability] == 34 or @_State[:target_ability] == 34 #> Annule Garde
+    return true if id == 92 && launcher.type_poison? #> Toxik 6G
     #>Fatal-Foudres et Vent Violents
     if(id == 87 or id == 542)
       move_accuracy /= 2 if($env.sunny?)
