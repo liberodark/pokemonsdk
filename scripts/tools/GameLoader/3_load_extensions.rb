@@ -11,8 +11,15 @@ begin
   require 'yaml'
   require 'rexml/document'
   require PSDK_RUNNING_UNDER_WINDOWS ? './lib/LiteRGSS.so' : 'LiteRGSS'
-  require PSDK_RUNNING_UNDER_WINDOWS ? './lib/RubyFmod.so' : 'RubyFmod'
-rescue StandardError
+  # Attempt to load audio
+  begin
+    require PSDK_RUNNING_UNDER_WINDOWS ? './lib/RubyFmod.so' : 'RubyFmod'
+  rescue LoadError
+    require PSDK_RUNNING_UNDER_WINDOWS ? './lib/SFMLAudio.so' : 'SFMLAudio'
+  rescue LoadError
+    puts 'Could not load Audio'
+  end
+rescue LoadError
   display_game_exception('An error occured during extensions loading.')
 end
 
