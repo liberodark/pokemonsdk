@@ -94,6 +94,8 @@ module Battle
     # Create the Visual viewport
     def create_viewport
       @viewport = Viewport.create(:main, 500)
+      @viewport.extend(Viewport::WithToneAndColors)
+      @viewport.shader = Shader.create(:map_shader)
       rc = @viewport.rect
       @viewport_sub = Viewport.new(rc.x, rc.y + rc.height - 48, rc.width, 48)
     end
