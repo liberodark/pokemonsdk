@@ -38,6 +38,8 @@ class Scene_Title
   # Init the title screen sprites
   def init_sprites
     @viewport = Viewport.create(:main, 100)
+    @viewport.extend(Viewport::WithToneAndColors)
+    @viewport.shader = Shader.create(:map_shader)
     #@viewport.tone.set(-255, -255, -255, 0)
     @viewport.color.set(0, 0, 0, 255)
     @main_sprite = Sprite.new(@viewport)

@@ -195,6 +195,8 @@ module GamePlay
     # Create the scene viewport
     def create_viewport
       @viewport = Viewport.create(:main, @message_window.z - 1)
+      @viewport.extend(Viewport::WithToneAndColors)
+      @viewport.shader = Shader.create(:map_shader)
     end
   end
 end

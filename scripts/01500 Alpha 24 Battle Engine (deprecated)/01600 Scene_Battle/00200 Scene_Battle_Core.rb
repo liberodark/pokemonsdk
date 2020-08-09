@@ -82,6 +82,8 @@ class Scene_Battle
     @wait_count = 0
     # Initialisation du background
     @viewport = Viewport.create(:main, 1000)
+    @viewport.extend(Viewport::WithToneAndColors)
+    @viewport.shader = Shader.create(:map_shader)
     if USE_ALPHA_25_UI
       rc = @viewport.rect
       @viewport_sub = Viewport.new(rc.x, rc.y + rc.height - 48, rc.width, 48)

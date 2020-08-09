@@ -10,9 +10,7 @@ class Spriteset_Map
     # Type of viewport the spriteset map uses
     viewport_type = :main
     exec_hooks(Spriteset_Map, :viewport_type, binding)
-    @viewport1 = Viewport.create(viewport_type, 0)
-    @viewport2 = Viewport.create(viewport_type, 200)
-    @viewport3 = Viewport.create(viewport_type, 5000)
+    init_viewports(viewport_type)
     Yuki::ElapsedTime.start(:spriteset_map)
     exec_hooks(Spriteset_Map, :initialize, binding)
     init_tilemap
@@ -23,6 +21,18 @@ class Spriteset_Map
     finish_init(zone)
   rescue ForceReturn => e
     log_error("Hooks tried to return #{e.data} in Spriteset_Map#initialize")
+  end
+
+  # Method responsive of initializing the viewports
+  # @param viewport_type [Symbol]
+  def init_viewports(viewport_type)
+    @viewport1 = Viewport.create(viewport_type, 0)
+    @viewport1.extend(Viewport::WithToneAndColors)
+    @viewport1.shader = Shader.create(:map_shader)
+    @viewport2 = Viewport.create(viewport_type, 200)
+    @viewport3 = Viewport.create(viewport_type, 5000)
+    @viewport3.extend(Viewport::WithToneAndColors)
+    @viewport3.shader = Shader.create(:map_shader)
   end
 
   # Do the same as initialize but without viewport initialization (opti)
