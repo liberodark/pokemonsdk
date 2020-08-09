@@ -160,6 +160,8 @@ module Graphics
   end
 
   def detect_gl_version
+    return if PARGV[:"ignore-gpu-issue"]
+
     version = openGL_version.join('.')
     if version < '3.1'
       @shitty_gpu = true
