@@ -15,9 +15,11 @@ begin
   begin
     require PSDK_RUNNING_UNDER_WINDOWS ? './lib/RubyFmod.so' : 'RubyFmod'
   rescue LoadError
-    require PSDK_RUNNING_UNDER_WINDOWS ? './lib/SFMLAudio.so' : 'SFMLAudio'
-  rescue LoadError
-    puts 'Could not load Audio'
+    begin
+      require PSDK_RUNNING_UNDER_WINDOWS ? './lib/SFMLAudio.so' : 'SFMLAudio'
+    rescue LoadError
+      puts 'Could not load Audio'
+    end
   end
 rescue LoadError
   display_game_exception('An error occured during extensions loading.')
