@@ -200,7 +200,7 @@ module PFM
     # On a function call
     add_evolution_criteria(:func) { |value| send(value) }
     # Being on a specific map
-    add_evolution_criteria(:maps) { |value| maps.include?($game_map.map_id) }
+    add_evolution_criteria(:maps) { |value| value.include?($game_map.map_id) }
     # Being traded
     add_evolution_criteria(:trade) { |_value, _extend_data, reason| reason == :trade }
     # ID field auto validation
