@@ -1,5 +1,6 @@
 module PFM
   class Pokemon
+    include Hooks
     # Tell if PSDK test evolve on form 0 or the current form
     EVOLVE_ON_FORM0 = PSDK_CONFIG.always_use_form0_for_evolution
     # List of key in evolution Hash that corresponds to the expected ID when evolution is valid
@@ -209,6 +210,45 @@ module PFM
     add_evolution_criteria(:form) { true }
     # On a specific switch
     add_evolution_criteria(:switch) { |value| $game_switches[value] }
+
+    # Method that actually make a Pokemon evolve
+    # @param id [Integer] ID of the Pokemon that evolve
+    # @param form [Integer, nil] form of the Pokemon that evolve
+    def evolve(id, form)
+      self.id = id
+      if form
+        self.form = form
+      else
+        form_calibrate(:evolve)
+      end
+      return unless $actors.include?(self) # Don't do te rest if the pokemon isn't in the current party
+
+      evolution_items = (data.special_evolution || []).map { |hash| hash[:item_hold] || 0 }
+      self.item_holding = 0 if evolution_items.include?(item_holding) || evolution_items.include?(item_db_symbol)
+      # Normal skill learn
+      check_skill_and_learn
+      # Evovolution skill learn
+      check_skill_and_learn(false, 0)
+      # Pokedex register (self is used to be sure we get the right information)
+      $pokedex.mark_seen(self.id, self.form, forced: true)
+      $pokedex.mark_captured(self.id)
+      $pokedex.pokemon_captured_inc(self.id)
+      exec_hooks(PFM::Pokemon, :evolution, binding)
+    end
+
+    # Add Shedinja evolution
+    Hooks.register(PFM::Pokemon, :evolution) do
+      next unless id == 291 && $actors.size < 6 && $bag.contain_item?(4)
+
+      # @type [PFM::Pokemon]
+      munja = dup
+      munja.id = 292
+      munja.hp = munja.max_hp
+      $actors << munja
+      $bag.remove_item(4, 1)
+      $pokedex.mark_seen(292, forced: true)
+      $pokedex.mark_captured(292)
+    end
 
     # Change the id of the Pokemon
     # @param new_id [Integer] the new id of the Pokemon
