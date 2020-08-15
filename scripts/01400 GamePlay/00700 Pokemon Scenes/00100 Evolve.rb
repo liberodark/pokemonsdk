@@ -21,15 +21,9 @@ module GamePlay
     # @param forced [Boolean] if the evolution can be stopped or not
     def initialize(pokemon, id, form = nil, forced = false)
       super()
-      @special_evolution_item = (pokemon.data.special_evolution || []).map { |hash| hash[:item_hold] || 0 }
       @pokemon = pokemon
       @clone = pokemon.clone
-      @clone.id = id
-      if form
-        @clone.form = form
-      else
-        @clone.form_calibrate(:evolve)
-      end
+      @clone.evolve(id, form)
       @forced = forced
       @id_bg = 0
       @evolved = false
@@ -47,20 +41,10 @@ module GamePlay
       elsif @counter >= LAST_STEP
         evolution_last_step
         update_message
-        munja_evolution
-        update_pkmn_id
-        # Normal skill learn
-        @pokemon.check_skill_and_learn
-        # Evovolution skill learn
-        @pokemon.check_skill_and_learn(false, 0)
-        # Remove item
-        if @special_evolution_item.include?(@pokemon.item_holding) || @special_evolution_item.include?(@pokemon.item_db_symbol)
-          @pokemon.item_holding = 0
-        end
+        @pokemon.evolve(@clone.id, @clone.form)
         restore_audio
         @running = false
         @evolved = true
-        register_in_pokedex
       elsif @counter < SECOND_STEP && !@forced && Input.trigger?(:B)
         stop_evolution_step
         return
@@ -103,44 +87,6 @@ module GamePlay
                                         ::PFM::Text::PKNAME[1] => @clone.name))
     end
 
-    def munja_evolution
-      if @clone.id == 291 && $actors.size < 6 && $bag.contain_item?(4)
-        munja = PFM::Pokemon.generate_from_hash(
-          id: 292,
-          level: @pokemon.level,
-          exp: @pokemon.exp,
-          shiny: @pokemon.shiny,
-          captured_in: @pokemon.captured_in,
-          trainer_id: @pokemon.trainer_id,
-          trainer_name: @pokemon.trainer_name,
-          iv_hp: @pokemon.iv_hp,
-          iv_atk: @pokemon.iv_atk,
-          iv_dfe: @pokemon.iv_dfe,
-          iv_spd: @pokemon.iv_spd,
-          iv_ats: @pokemon.iv_ats,
-          iv_dfs: @pokemon.iv_dfs,
-          ev_hp: @pokemon.ev_hp,
-          ev_atk: @pokemon.ev_atk,
-          ev_dfe: @pokemon.ev_dfe,
-          ev_spd: @pokemon.ev_spd,
-          ev_ats: @pokemon.ev_ats,
-          ev_dfs: @pokemon.ev_dfs,
-          skills_set: @pokemon.skills_set
-        )
-        $actors << munja
-        $bag.remove_item(4, 1)
-        $pokedex.mark_seen(292, forced: true)
-        $pokedex.mark_captured(292)
-      end
-    end
-
-    def register_in_pokedex
-      $pokedex.mark_seen(@pokemon.id, @pokemon.form, forced: true)
-      $pokedex.mark_captured(@pokemon.id)
-      $pokedex.pokemon_fought_inc(@pokemon.id)
-      $pokedex.pokemon_captured_inc(@pokemon.id)
-    end
-
     def memorize_audio
       $game_system.bgm_memorize2
       Audio.bgm_stop
@@ -169,11 +115,6 @@ module GamePlay
         @viewport.tone.set(value, value, value, 0)
         @sprite_clone.set_color(Color.new(value, value, value, value))
       end
-    end
-
-    def update_pkmn_id
-      @pokemon.id = @clone.id
-      @pokemon.form = @clone.form
     end
 
     def update_message
