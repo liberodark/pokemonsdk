@@ -210,6 +210,12 @@ module GamePlay
       @sprite_clone.opacity = 0
     end
 
+    def create_viewport
+      super
+      @viewport.extend(Viewport::WithToneAndColors)
+      @viewport.shader = Shader.create(:map_shader)
+    end
+
     def create_graphics
       create_viewport
       create_background
