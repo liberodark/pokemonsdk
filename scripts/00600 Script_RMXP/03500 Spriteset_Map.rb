@@ -35,6 +35,16 @@ class Spriteset_Map
     @viewport3.shader = Shader.create(:map_shader)
   end
 
+  # Take a snapshot of the spriteset
+  # @return [Array<Bitmap>]
+  def snap_to_bitmaps
+    return [
+      @viewport1.snap_to_bitmap,
+      @viewport2.snap_to_bitmap,
+      @viewport3.snap_to_bitmap
+    ]
+  end
+
   # Do the same as initialize but without viewport initialization (opti)
   # @param zone [Integer, nil] the id of the zone where the player is
   def reload(zone = nil)
