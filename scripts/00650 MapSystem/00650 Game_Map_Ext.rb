@@ -143,6 +143,7 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
       instance_variable_set(ivar_name, arr[index])
     end
     $game_player.instance_variable_set(:@follower, arr.last)
+    unsave_followers
     @events_info = nil
   end
 
@@ -168,6 +169,11 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
       event.moveto(x, y)
       $game_player.set_follower(event)
     end
+    unsave_followers
+  end
+
+  # Method that un-save the followers
+  def unsave_followers
     remove_instance_variable(:@next_setup_followers)
   end
 
