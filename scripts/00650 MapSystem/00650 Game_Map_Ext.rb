@@ -174,7 +174,7 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
 
   # Method that un-save the followers
   def unsave_followers
-    remove_instance_variable(:@next_setup_followers)
+    remove_instance_variable(:@next_setup_followers) if @next_setup_followers
   end
 
   # Method that save the event position, direction & move_route info
