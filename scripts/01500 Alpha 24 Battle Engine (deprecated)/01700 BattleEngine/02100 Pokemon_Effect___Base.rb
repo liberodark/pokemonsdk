@@ -240,7 +240,7 @@ class Pokemon_Effect
     @stat_raise.each_key do |i|
       data=@stat_raise[i]
       next unless data
-      data[1]-=1 if data[1].is_a?(Integer) and data[1]>0
+      data[1]-=1 if data[1].is_a?(Integer) && data[1]>0
       if data[1]==0
         @stat_raise[i]=nil
       end
@@ -407,7 +407,7 @@ class Pokemon_Effect
 
   #>Vérification de la présence d'un effet déclenchable plus tard
   def has_waiting_effect?()
-    return (@waiting_effect_counter==0 and @waiting_effect)
+    return (@waiting_effect_counter==0 && @waiting_effect)
   end
 
   #>Récupération de l'effet déclenchable plus tard

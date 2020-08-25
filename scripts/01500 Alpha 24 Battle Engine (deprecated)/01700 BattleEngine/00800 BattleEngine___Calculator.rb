@@ -3,15 +3,13 @@
 #noyard
 module BattleEngine
   module_function
-  #===
-  #>_damage_calculation
-  # Calcul des dégas infligés par l'attaque
-  #---
-  #E : <BE_Model1>
-  #    params : Hash/nil
-  #---
-  #Ref : http://www.smogon.com/dp/articles/damage_formula#attack
-  #===
+
+  # Calculate the damage dealt by the move
+  # @param launcher [PFM::Pokemon] user of the move
+  # @param target [PFM::Pokemon] target of the move
+  # @param skill [PFM::Skill] move that is currently used
+  # @param params [Hash, nil] the parameters needed for the calculation
+  # Ref : http://www.smogon.com/dp/articles/damage_formula#attack
   def _damage_calculation(launcher, target, skill, params = nil)
     #===
     #>Level
@@ -33,15 +31,15 @@ module BattleEngine
     mod2 = _mod2_calculation(launcher, target, skill, ch)
     #>R
     r = 100 - (@IA_flag ? 0 : rand(16)) #0..15
-    #> Normalise
-    if(Abilities.has_ability_usable(launcher, 93))
+    #> Normalize
+    if Abilities.has_ability_usable(launcher, 93)
       skill = skill.clone
       skill.type2 = 1
     end
-    #>STAB
+    #> STAB
     stab = _stab_calculation(launcher, target, skill)
     type_mod = _type_modifier_calculation(target, skill)
-    if(type_mod == 0)
+    if type_mod == 0
       #>Est au sol
       if skill.type_ground? && _is_grounded(target)
         type_mod = 1
@@ -185,9 +183,9 @@ module BattleEngine
     case ability
     when 15  #> Rivalité
       gender_coef = launcher.gender * target.gender
-      if(gender_coef == 2) #> Sexe opposé
+      if gender_coef == 2 #> Sexe opposé
         return 0.75
-      elsif(gender_coef != 0) #> Aucun des deux n'est assexué (cummulé avec la condition précédente => même sexe)
+      elsif gender_coef != 0 #> Aucun des deux n'est assexué (cummulé avec la condition précédente => même sexe)
         return 1.25
       end
     when 54 #> Téméraire
@@ -239,11 +237,11 @@ module BattleEngine
   def _sp_atk_calculation(launcher, target, skill, ch)
     id = skill.id
     if skill.physical?
-      if(id == 251 && !::GameData::Flag_4G) #> Baston
+      if id == 251 && !::GameData::Flag_4G #> Baston
         stat = launcher.base_atk
-      elsif(id == 492) #>Tricherie
+      elsif id == 492 #>Tricherie
         stat = target.atk
-      elsif ch > 1 and launcher.atk_stage < 0 # Si coup critique et attaquant débuffé
+      elsif ch > 1 && launcher.atk_stage < 0 # Si coup critique et attaquant débuffé
         stat = launcher.atk_basis
       else
         #> Lame Sainte / Inconscient
@@ -253,7 +251,7 @@ module BattleEngine
       am = _sp_atk_ph_ability_calculation(launcher, target, skill)
       im = _sp_atk_ph_item_calculation(launcher, target, skill)
     else
-      if ch > 1 and launcher.ats_stage < 0 # Si coup critique et attaquant débuffé
+      if ch > 1 && launcher.ats_stage < 0 # Si coup critique et attaquant débuffé
         stat = launcher.ats_basis
       else #> Lame Sainte / Inconscient
         stat = ((id == 533 || @_State[:target_ability] == 110) ? launcher.ats_basis : launcher.ats)
@@ -381,7 +379,7 @@ module BattleEngine
       mod = _sp_def_mod_ph_calculation(launcher, target, skill)
     else
       if Dfe_instead_of_dfs.include?(id) #>Choc Psy / Lame Ointe / Frappe Psy
-        if ch > 1 and target.dfe_stage > 0 # Si coup critique et défenseur buffé
+        if ch > 1 && target.dfe_stage > 0 # Si coup critique et défenseur buffé
           stat = target.send(dfe_basis)
         else
           stat = target.send(dfe)
@@ -448,8 +446,8 @@ module BattleEngine
     check_flower_gift = false
     sun_allies.each { |i| check_flower_gift = true if Abilities.has_ability_usable(i, 112) }
     n *= 1.5 if $env.sunny? && $game_temp.vs_type != 1 && check_flower_gift
-    #>Partie item
-    #>Poudre Mental
+    #> Items
+    #> Poudre Mental
     n *= 1.5 if @_State[:target_item] == 257 && target.id == 132
     #> Écaille Océan
     n *= 2 if @_State[:target_item] == 227 && target.id == 366
@@ -499,10 +497,7 @@ module BattleEngine
   Critical_Rates = [0, 6_25, 12_50, 25_00, 33_33, 50_00, 100_00, 100_00, 100_00, 100_00, 100_00, 100_00, 100_00, 100_00]
   Always_Crit_Atks = [480, 524]
   def _critical_calculation(launcher, target, skill, forced = false)
-    #> Armurbaston / Coque Armure
-    if(Abilities.has_abilities(target, 71, 46))
-      return 1
-    end
+    return 1 if Abilities.has_abilities(target, 71, 46) #> Armurbaston / Coque Armure
     return 1 if skill.id == 251 && ::GameData::Flag_4G #> Baston
     #> Yama Arashi, Souffle Glacé
     critical_rate = Always_Crit_Atks.include?(skill.id) ? 6 : skill.critical_rate
@@ -539,22 +534,22 @@ module BattleEngine
       end
     end
     #>SR
-    if($env.sunny?)
+    if $env.sunny?
       n *= 1.5 if skill.type_fire?
       n *= 0.5 if skill.type_water?
-    elsif($env.rain?)
+    elsif $env.rain?
       n *= 0.5 if skill.type_fire?
       n *= 1.5 if skill.type_water?
     end
     #> Orbe Vie
     n *= 1.3 if @_State[:launcher_item] == 270
     #> Métronome
-    if(@_State[:launcher_item] == 277)
+    if @_State[:launcher_item] == 277
       times = launcher.skill_use_times
       times = 10 if times > 10
       n *= (0.9 + 0.1 * times)
     end
-    n *= 1.5 if(skill.id == 382) #Moi d'abord / Me First
+    n *= 1.5 if skill.id == 382 #Moi d'abord / Me First
     return n
   end
   #===
@@ -569,7 +564,7 @@ module BattleEngine
     return 1 if type == 0
     if(type == launcher.type1 || type == launcher.type2 || type == launcher.type3)
       ability = @_State[:launcher_ability]
-      if(ability == 67) #> Adaptabilité
+      if ability == 67 #> Adaptabilité
         n = 2
       else
         n = 1.5
