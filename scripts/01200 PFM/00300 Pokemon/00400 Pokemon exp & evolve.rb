@@ -10,15 +10,26 @@ module PFM
     # List of evolution criteria
     # @return [Hash{ Symbol => Proc }]
     @evolution_criteria = {}
+    # List of evolution criteria required for specific reason
+    # @return [Hash{ Symbol => Array<Symbol> }]
+    @evolution_reason_required_criteria = {}
     class << self
       # List of evolution criteria
       # @return [Hash{ Symbol => Proc }]
       attr_reader :evolution_criteria
+      # List of evolution criteria required for specific reason
+      # @return [Hash{ Symbol => Array<Symbol> }]
+      attr_reader :evolution_reason_required_criteria
+
       # Add a new evolution criteria
       # @param key [Symbol] hash key expected in special evolution
+      # @param reasons [Array<Symbol>] evolution reasons that require this criteria in order to allow evolution
       # @param block [Proc] executed proc for special evolution test, will receive : value, extend_data, reason
-      def add_evolution_criteria(key, &block)
+      def add_evolution_criteria(key, reasons = nil, &block)
         @evolution_criteria[key] = block
+        reasons&.each do |reason|
+          (@evolution_reason_required_criteria[reason] ||= []) << key
+        end
       end
     end
 
@@ -156,9 +167,11 @@ module PFM
         return false unless data.special_evolution
       end
 
+      required_criterias = Pokemon.evolution_reason_required_criteria[reason] || []
       criteria = Pokemon.evolution_criteria
       expected_evolution = data.special_evolution.find do |evolution|
         next unless evolution.is_a?(Hash)
+        next unless (required_criterias - evolution.keys).empty?
 
         next evolution.all? { |key, value| criteria[key] && instance_exec(value, extend_data, reason, &criteria[key]) }
       end
@@ -169,7 +182,7 @@ module PFM
       return id, expected_evolution[:form]
     end
     # Exchanged with another pokemon
-    add_evolution_criteria(:trade_with) { |value, extend_data| extend_data == value }
+    add_evolution_criteria(:trade_with, [:trade]) { |value, extend_data| extend_data == value }
     # Minimum level
     add_evolution_criteria(:min_level) { |value| @level >= value.to_i }
     # Maximum level
@@ -195,7 +208,7 @@ module PFM
     # Having a specific gender
     add_evolution_criteria(:gender) { |value| @gender == value }
     # Evolving from stone
-    add_evolution_criteria(:stone) { |value, extend_data, reason| reason == :stone && value == extend_data }
+    add_evolution_criteria(:stone, [:stone]) { |value, extend_data, reason| reason == :stone && value == extend_data }
     # Evolving on a specific day/night cycle
     add_evolution_criteria(:day_night) { |value| value == $game_variables[Yuki::Var::TJN_Tone] }
     # On a function call
@@ -203,7 +216,7 @@ module PFM
     # Being on a specific map
     add_evolution_criteria(:maps) { |value| value.include?($game_map.map_id) }
     # Being traded
-    add_evolution_criteria(:trade) { |_value, _extend_data, reason| reason == :trade }
+    add_evolution_criteria(:trade, [:trade]) { |_value, _extend_data, reason| reason == :trade }
     # ID field auto validation
     add_evolution_criteria(:id) { true }
     # FORM field auto validation
