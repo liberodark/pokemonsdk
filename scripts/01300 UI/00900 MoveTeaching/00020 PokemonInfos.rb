@@ -14,6 +14,7 @@ module UI
       # Set the data of the Pokemon
       def data=(pokemon)
         super
+        @gender.x = @name.x + @name.real_width + 2
         @gender.visible = false if NO_GENDER.include?(pokemon.db_symbol)
       end
 
@@ -57,9 +58,8 @@ module UI
 
       # @return Array of coordinates of the Pokémon gender
       def gender_coordinates
-        return 2, -1
+        return 2, 0
       end
-
     end
   end
 end
