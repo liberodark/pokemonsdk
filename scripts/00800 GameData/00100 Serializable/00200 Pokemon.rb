@@ -218,7 +218,7 @@ module GameData
         result = []
         GameData::Zone.all.each_with_index do |zone, index|
           is_here = false
-          zone.groups.each do |group|
+          zone.groups&.each do |group|
             group.each do |pkm|
               next unless pkm.is_a?(Hash)
               next unless pkm[:id] == id

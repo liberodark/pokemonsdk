@@ -665,7 +665,7 @@ module GamePlay
           next if pkm_zones[x, y] > 0
 
           # Check the group
-          zone.groups.each do |group|
+          zone.groups&.each do |group|
             group.each do |pkm|
               next unless pkm.is_a?(Hash) # No hash = not a pokemon
               next unless pkm[:id] == @pokemon.id # Not the pokemon we are looking for
