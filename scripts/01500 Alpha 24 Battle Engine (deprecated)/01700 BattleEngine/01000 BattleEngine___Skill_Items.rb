@@ -223,23 +223,24 @@ module BattleEngine
   # @param skill [PFM::Skill] move that is currently used
   def s_trick(launcher, target, skill, msg_push = true)
     return false unless __s_beg_step(launcher, target, skill, msg_push)
+
     li = launcher.battle_item
     ti = target.battle_item
-    #> Mega-Gemmes will need to specify an user !
-    if ti > 0 && li > 0
-      data = ::GameData::Item[ti].misc_data
-      #> Suction Cups / Multitype
-      if data&.need_user_id != target.id && !Abilities.has_abilities(target, 45, 122)
-        data = ::GameData::Item[li].misc_data
-        if data&.need_user_id != launcher.id
-          _mp([:msg, parse_text_with_pokemon(19, 682, launcher)])
-          _mp([:set_item, target, li])
-          _mp([:set_item, launcher, ti])
-          return true
-        end
-      end
-    end
-    _mp(MSG_Fail)
-  end
+    return _mp(MSG_Fail) if ti == 0 || li == 0
 
+    data_t = ::GameData::Item[ti].misc_data
+    data_l = ::GameData::Item[li].misc_data
+
+    # Glue
+    return _mp(MSG_Fail) if Abilities.has_abilities(target, 45, 122)
+    # Multi-type
+    return _mp(MSG_Fail) if data_t && data_t.need_user_id == target.id || data_l && data_l.need_user_id == launcher.id
+
+    # Execute the effect
+    _mp([:msg, parse_text_with_pokemon(19, 682, launcher)])
+    _mp([:set_item, target, li])
+    _mp([:set_item, launcher, ti])
+
+    return true
+  end
 end

@@ -17,7 +17,7 @@ class Scene_Battle
     @phase = 3
     actor=@actors[@actor_actions.size]
     #>Test du forçage de lutte
-    if(BattleEngine::_lutte?(actor))
+    if(BattleEngine::forced_to_use_sturggle?(actor))
       @actor_actions.push([0,nil,util_targetselection_automatic(actor, phase3_struggle_move),actor])
       update_phase2_next_act
       return

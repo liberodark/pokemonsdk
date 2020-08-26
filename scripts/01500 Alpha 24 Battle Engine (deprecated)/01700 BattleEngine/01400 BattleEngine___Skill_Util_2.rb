@@ -87,35 +87,27 @@ module BattleEngine
     end
     return false
   end
-  #> Ce qui suit devra être corrigé ! (capacité spéciale)<#
-  #===
-  #>Vérification de la possibilité d'attaque
-  #===
-  def _lutte?(pkmn)
-    lutte=true
-    be=pkmn.battle_effect
-    if be.has_encore_effect? && be.has_disable_effect?
-      return true if be.encore_skill.id == be.disable_skill_id
+
+  # Check if the Pokemon is forced to use struggle
+  # @param pokemon [PFM::Pokemon]
+  # @return [Boolean]
+  def forced_to_use_sturggle?(pokemon)
+    be = pokemon.battle_effect
+    return true unless be
+    # Encore is forcing the Pokemon to use struggle if the move to use again is disabled
+    return true if be.has_encore_effect? && be.has_disable_effect? && be.encore_skill.id == be.disable_skill_id
+
+    # Pokemon has to use struggle if none of the move can be used
+    return pokemon.skills_set.none? do |move|
+      next false if move.pp <= 0
+
+      id = move.id
+      next false if be.has_cant_attack_effect? && be.get_cant_attack_id == id
+      next false if be.has_cant_use_last_skill_effect? && pokemon.last_skill.to_i.abs == id
+      next false if be.has_taunt_effect? && move.status?
+      next false if be.has_imprison_effect? && be.is_skill_imprisonned?(move)
+
+      next true # Move can be used
     end
-    4.size.times do |i|
-      skill=pkmn.skills_set[i]
-      if skill #> Check Skill && PP
-        id=skill.id
-        if skill.pp > 0
-          #> All effects check
-          unless be.has_cant_attack_effect? && be.get_cant_attack_id == id
-            unless be.has_cant_use_last_skill_effect? && pkmn.last_skill.to_i.abs == id
-              unless be.has_taunt_effect? && !skill.status?
-                unless be.has_imprison_effect? && be.is_skill_imprisonned?(skill)
-                  lutte=false
-                  break
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-    return lutte
   end
 end

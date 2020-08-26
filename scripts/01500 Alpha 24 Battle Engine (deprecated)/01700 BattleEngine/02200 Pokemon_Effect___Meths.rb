@@ -602,6 +602,7 @@ class Pokemon_Effect
     @encore = skill
   end
 
+  # @return [PFM::Skill, nil]
   def encore_skill
     @encore
   end
