@@ -9,7 +9,7 @@ module GamePlay
     ViewportsBaseZ = 51_000
     # Coord X of the map viewport
     # @return [Integer]
-    VMapX = 48
+    VMapX = 49
     # Coord Y of the map viewport
     # @return [Integer]
     VMapY = 37
