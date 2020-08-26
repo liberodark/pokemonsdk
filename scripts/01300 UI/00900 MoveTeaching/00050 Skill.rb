@@ -1,5 +1,5 @@
 module UI
-  module Skill_Learn
+  module MoveTeaching
     # UI part displaying a Skill in the Skill Learn UI
     class Skill < SpriteStack
       # Array describing the various coordinates of the skills in the UI

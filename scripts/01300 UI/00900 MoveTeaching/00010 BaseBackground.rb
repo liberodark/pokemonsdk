@@ -1,5 +1,5 @@
 module UI
-  module Skill_Learn
+  module MoveTeaching
     # UI part displaying the background of the Skill Learn scene
     class BaseBackground < SpriteStack
       # Create the Background

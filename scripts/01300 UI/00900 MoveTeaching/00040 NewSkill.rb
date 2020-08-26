@@ -1,5 +1,5 @@
 module UI
-  module Skill_Learn
+  module MoveTeaching
     # UI part displaying the new skill informations in the Skill Learn scene
     class NewSkill < SpriteStack
       # @return [Boolean] if the move is currently selected
@@ -81,6 +81,7 @@ module UI
       # Create some graphics of the new skill to learn
       def create_graphics
         @selector = push(61, -2, new_selector_name, type: Sprite::WithColor)
+        stack.rotate!(-1) # Make sure selector is first sprite in stack
         @type = add_sprite(*type_coordinates, nil, type: TypeSprite)
       end
 

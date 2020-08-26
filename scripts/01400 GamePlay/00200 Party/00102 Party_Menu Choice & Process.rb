@@ -302,10 +302,10 @@ module GamePlay
             @running = false
           end
         elsif @extend_data[:open_skill_learn]
-          scene = Skill_Learn.new(pokemon, @extend_data[:open_skill_learn])
-          scene.main
-          @return_data = @index if scene.learnt
-          @running = false
+          call_scene(MoveTeaching, pokemon, @extend_data[:open_skill_learn]) do |scene|
+            @return_data = @index if scene.learnt
+            @running = false
+          end
         elsif @extend_data[:action_to_push]
           @return_data = @index
           @running = false

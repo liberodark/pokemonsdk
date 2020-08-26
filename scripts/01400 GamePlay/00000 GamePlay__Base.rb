@@ -169,6 +169,15 @@ module GamePlay
       @message_window.viewport.visible = value if @message_window
     end
 
+    # Tell if the scene is visible
+    # @return [Boolean]
+    def visible
+      return @viewport.visible if @viewport
+      return @message_window.viewport.visible if @message_window
+
+      return true
+    end
+
     # Display a message with choice or not
     # @param message [String] the message to display
     # @param start [Integer] the start choice index (1..nb_choice)
@@ -232,6 +241,7 @@ module GamePlay
       result_process&.call(scene)
       # If the scene has changed we stop this one
       return @running = false if $scene != self || !@running
+
       self.visible = true
       fade_in(@cfi_type || DEFAULT_TRANSITION, @cfi_param || DEFAULT_TRANSITION_PARAMETER)
       return true
@@ -249,6 +259,7 @@ module GamePlay
           scene = scene.__last_scene
           break if scene == self
           next unless scene.class == name
+
           $scene = scene
           @running = false
           return true
@@ -286,7 +297,7 @@ module GamePlay
 
     # The main process at the end of the scene (when scene is not running anymore)
     def main_end
-      fade_out(@mef_type || DEFAULT_TRANSITION, @mef_param || DEFAULT_TRANSITION_PARAMETER)
+      fade_out(@mef_type || DEFAULT_TRANSITION, @mef_param || DEFAULT_TRANSITION_PARAMETER) if visible
       dispose
     end
 

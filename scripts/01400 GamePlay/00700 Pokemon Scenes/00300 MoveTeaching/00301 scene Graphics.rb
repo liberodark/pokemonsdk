@@ -1,10 +1,17 @@
 module GamePlay
-  class Skill_Learn
-    include UI::Skill_Learn
+  class MoveTeaching
+    include UI::MoveTeaching
+
+    # Update the graphics every frame
+    def update_graphics
+      # TODO
+      # New text blinking
+    end
 
     # Create the differents graphics of the UI
     def create_graphics
       super()
+      create_background
       create_window
       create_pokemon_infos
       create_skill_description
@@ -22,19 +29,17 @@ module GamePlay
 
     private
 
-    # Update the graphics every frame
-    def update_graphics
-      # TODO
-      # New text blinking
-      message_start if @state == :start
+    # Create the background
+    def create_background
+      add_disposable @background = UI::BlurScreenshot.new(@__last_scene)
     end
 
-    # Create the background
+    # Create the window background
     def create_window
       @base_ui = BaseBackground.new(@viewport)
     end
 
-    # Create the Pokémon infos
+    # Create the Pokemon infos
     def create_pokemon_infos
       @pokemon_infos = PokemonInfos.new(@viewport)
     end

@@ -1,5 +1,5 @@
 module UI
-  module Skill_Learn
+  module MoveTeaching
     # UI part displaying the Skill description in the Skill Learn scene
     class SkillDescription < SpriteStack
       # Create informations of the hovered skill

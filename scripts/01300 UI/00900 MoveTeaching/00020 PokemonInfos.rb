@@ -1,5 +1,5 @@
 module UI
-  module Skill_Learn
+  module MoveTeaching
     # UI part displaying the Pokémon informations in the Skill Learn scene
     class PokemonInfos < SpriteStack
       # List of Pokemon that shouldn't show the gender sprite
