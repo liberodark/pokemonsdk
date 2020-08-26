@@ -91,7 +91,7 @@ module BattleEngine
   # Check if the Pokemon is forced to use struggle
   # @param pokemon [PFM::Pokemon]
   # @return [Boolean]
-  def forced_to_use_sturggle?(pokemon)
+  def forced_to_use_struggle?(pokemon)
     be = pokemon.battle_effect
     return true unless be
     # Encore is forcing the Pokemon to use struggle if the move to use again is disabled
