@@ -1,6 +1,7 @@
 # Load the extensions
 begin
   $DEBUG = false
+  ENV['__GL_THREADED_OPTIMIZATIONS'] = '0'
   require 'zlib'
   require 'socket'
   require 'uri'
