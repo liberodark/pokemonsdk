@@ -31,6 +31,9 @@ class Game_Character
   # If the direction is fixed
   # @return [Boolean]
   attr_reader :direction_fix
+  # If the character has reflexion
+  # @return [Boolean]
+  attr_reader :reflection_enabled
 
   # Default initializer
   def initialize
@@ -77,6 +80,7 @@ class Game_Character
     @sliding_parameter = nil # Variable giving extra information for sliding
     @pattern_state = false # Indicateur de la direction du pattern
     @can_make_footprint = true
+    @reflection_enabled = true
   end
 
   # Set the move_frequency (and define the max_stop_count value)

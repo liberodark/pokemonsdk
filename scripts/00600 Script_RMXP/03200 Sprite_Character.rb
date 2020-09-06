@@ -10,6 +10,10 @@ class Sprite_Character < RPG::Sprite
   Shadow_File = '0 Ombre Translucide'
   # Tag that add 1 to the superiority of the Sprite_Character
   Sup_Tag = '¤'
+  # Blend mode for Reflection
+  REFLECTION_BLEND_MODE = BlendMode.new
+  REFLECTION_BLEND_MODE.alpha_dest_factor = BlendMode::One
+  REFLECTION_BLEND_MODE.alpha_src_factor = BlendMode::Zero
   # Character displayed by the Sprite_Character
   # @return [Game_Character]
   attr_accessor :character
@@ -32,8 +36,10 @@ class Sprite_Character < RPG::Sprite
   def init(character)
     @character = character
     dispose_shadow
+    dispose_reflexion
     @bush_depth_sprite.visible = false
     @bush_depth = 0
+    init_reflexion
     init_add_z_shadow
     init_zoom
     @tile_id = 0
@@ -104,6 +110,7 @@ class Sprite_Character < RPG::Sprite
       @pattern = @character.pattern
       @direction = @character.direction
     end
+    update_reflexion_graphics
   end
 
   # Update the tile graphic of the sprite
@@ -133,6 +140,7 @@ class Sprite_Character < RPG::Sprite
   # @return [Boolean] if the update can continue after the call of this function or not
   def update_position
     set_position(@character.screen_x / @zoom, @character.screen_y / @zoom)
+    @reflexion&.set_position(@character.screen_x / @zoom, (@character.screen_y + 32 * @character.z - 32) / @zoom)
     self.z = @character.screen_z(@ch) + @add_z
     return true
   end
@@ -143,11 +151,13 @@ class Sprite_Character < RPG::Sprite
     if @pattern != pattern
       src_rect.x = pattern * @cw
       @pattern = pattern
+      @reflexion&.src_rect&.x = src_rect.x
     end
     direction = @character.direction
     if @direction != direction
       src_rect.y = (direction - 2) / 2 * @ch
       @direction = direction
+      @reflexion&.src_rect&.y = src_rect.y
     end
   end
 
@@ -197,6 +207,7 @@ class Sprite_Character < RPG::Sprite
   def dispose
     super
     dispose_shadow
+    dispose_reflexion
     @bush_depth_sprite.dispose
   end
 
@@ -204,6 +215,31 @@ class Sprite_Character < RPG::Sprite
   def dispose_shadow
     @shadow&.dispose
     @shadow = nil
+  end
+
+  # Init the reflexion sprite
+  def init_reflexion
+    @reflexion = ShaderedSprite.new(viewport)
+    @reflexion.z = -1000
+    @reflexion.angle = 180
+    @reflexion.mirror = true
+    @reflexion.shader = REFLECTION_BLEND_MODE
+  end
+
+  # Update the reflexion graphics
+  def update_reflexion_graphics
+    return unless @reflexion
+
+    @reflexion.bitmap = bitmap
+    @reflexion.set_origin(ox, oy)
+    @reflexion.zoom = zoom_x
+    @reflexion.src_rect = src_rect
+  end
+
+  # Dispose the reflexion sprite
+  def dispose_reflexion
+    @reflexion&.dispose
+    @reflexion = nil
   end
 
   # Fix the animation file
