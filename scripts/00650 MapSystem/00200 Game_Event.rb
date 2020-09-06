@@ -16,8 +16,8 @@ class Game_Event < Game_Character
   NO_SPRITE_TAG = '[sprite=off]'
   # Tag that give the event an symbol alias
   SYMBOL_ALIAS_TAG = /\[alias=([a-z\-0-9\-_]+)\]/
-  # Tag enabling reflexion
-  REFLECTION_TAG = '[reflexion=on]'
+  # Tag enabling reflection
+  REFLECTION_TAG = '[reflection=on]'
   # @return [Integer, nil] Type of trigger for the event (0: Action key, 1: Player contact, 2: Event contact, 3: Autorun, 4: Parallel process)
   attr_reader :trigger
   # @return [Array<RPG::EventCommand>] list of commands that should be executed

@@ -31,7 +31,7 @@ class Game_Character
   # If the direction is fixed
   # @return [Boolean]
   attr_reader :direction_fix
-  # If the character has reflexion
+  # If the character has reflection
   # @return [Boolean]
   attr_reader :reflection_enabled
 
