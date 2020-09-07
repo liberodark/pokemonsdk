@@ -127,8 +127,8 @@ class Spriteset_Map
   rescue ForceReturn => e
     log_error("Hooks tried to return #{e.data} in Spriteset_Map#init_psdk_add")
   end
-  Hooks.register(self, :initialize) { init_psdk_add }
-  Hooks.register(self, :reload) { init_psdk_add }
+  Hooks.register(self, :initialize, 'PSDK Additional Spriteset Initialization') { init_psdk_add }
+  Hooks.register(self, :reload, 'PSDK Additional Spriteset Initialization') { init_psdk_add }
 
   # Sprite_Character initialization
   def init_characters
@@ -189,7 +189,7 @@ class Spriteset_Map
     # @type [Array<UI::QuestInformer>]
     @quest_informers = []
   end
-  Hooks.register(self, :initialize) { init_quest_informer }
+  Hooks.register(self, :initialize, 'Quest Informer') { init_quest_informer }
 
   # Tell if the spriteset is disposed
   # @return [Boolean]
@@ -310,7 +310,7 @@ class Spriteset_Map
     @sp_fg.z = 5002
     @counter = 0
   end
-  Hooks.register(self, :finish_init) { |method_binding| create_panel(method_binding[:zone]) }
+  Hooks.register(self, :finish_init, 'Zone Panel') { |method_binding| create_panel(method_binding[:zone]) }
 
   # Dispose the zone panel
   def dispose_sp_map
@@ -319,8 +319,8 @@ class Spriteset_Map
     @sp_fg&.dispose
     @sp_fg = nil
   end
-  Hooks.register(self, :reload) { dispose_sp_map }
-  Hooks.register(self, :dispose) { dispose_sp_map }
+  Hooks.register(self, :reload, 'Zone Panel') { dispose_sp_map }
+  Hooks.register(self, :dispose, 'Zone Panel') { dispose_sp_map }
 
   # Update the zone panel
   def update_panel
@@ -336,7 +336,7 @@ class Spriteset_Map
       @sp_fg.y -= 1
     end
   end
-  Hooks.register(self, :update) { update_panel }
+  Hooks.register(self, :update, 'Zone Panel') { update_panel }
 
   # Change the visible state of the Spriteset
   # @param value [Boolean] the new visibility state
@@ -384,5 +384,5 @@ class Spriteset_Map
     end
     @quest_informers.clear if @quest_informers.all?(&:done?)
   end
-  Hooks.register(self, :update) { update_quest_informer }
+  Hooks.register(self, :update, 'Quest Informer') { update_quest_informer }
 end

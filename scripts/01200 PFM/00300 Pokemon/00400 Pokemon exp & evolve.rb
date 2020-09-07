@@ -250,7 +250,7 @@ module PFM
     end
 
     # Add Shedinja evolution
-    Hooks.register(PFM::Pokemon, :evolution) do
+    Hooks.register(PFM::Pokemon, :evolution, 'Shedinja Evolution') do
       next unless id == 291 && $actors.size < 6 && $bag.contain_item?(4)
 
       # @type [PFM::Pokemon]
