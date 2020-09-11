@@ -197,7 +197,7 @@ class Pokemon_Effect
     @has_protect=false
     @has_no_aoe=false
     @has_endure=false
-    @wish=false
+    @wish==1 || @wish==false ? @wish=false : @wish-=1
     @no_pp_loose-=1 if @no_pp_loose>0
     @no_critic_count-=1 if @no_critic_count>0
     @nsm_counter-=1 if @nsm_counter>0
