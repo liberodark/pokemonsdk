@@ -112,6 +112,7 @@ pokemonsdk/scripts/00700 PSDK Event Interpreter/01300 Interpreter_Sequences.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01301 Interpreter_Shop.rb
 pokemonsdk/scripts/00800 GameData/02400 GameData__Loader.rb
 pokemonsdk/scripts/00800 GameData/00100 Serializable/00000 Base.rb
+pokemonsdk/scripts/00800 GameData/00100 Serializable/00001 DataSource.rb
 pokemonsdk/scripts/00800 GameData/00100 Serializable/00101 BallData.rb
 pokemonsdk/scripts/00800 GameData/00100 Serializable/00102 ItemHeal.rb
 pokemonsdk/scripts/00800 GameData/00100 Serializable/00103 ItemMisc.rb

@@ -2,6 +2,7 @@ module GameData
   # Data structure of Pokemon moves
   # @author Nuri Yuri
   class Skill < Base
+    extend DataSource
     # ID of the common event called when used on map
     # @return [Integer]
     attr_accessor :map_use
@@ -228,17 +229,9 @@ module GameData
     end
 
     class << self
-      # All the skill
-      # @type [Array<GameData::Skill>]
-      @data = []
-
-      # Get a move by its ID or DB Symbol
-      # @param id [Integer, Symbol] ID of the move in database
-      # @return [GameData::Skill]
-      def [](id)
-        id = get_id(id) if id.is_a?(Symbol)
-        id = 0 unless id.is_a?(Integer) && id_valid?(id)
-        return @data[id]
+      # Name of the file containing the skill
+      def data_filename
+        return 'Data/PSDK/SkillData.rxdata'
       end
 
       # Safely return the out of reach type of a move
@@ -255,6 +248,7 @@ module GameData
       # @return [Boolean]
       def can_hit_out_of_reach?(oor, id)
         return false if oor >= OutOfReach_hit.size || oor < 0
+
         id = db_symbol(id) if id.is_a?(Integer)
         return OutOfReach_hit[oor].include?(id)
       end
@@ -265,79 +259,6 @@ module GameData
       def get_2turns_announce(id)
         id = db_symbol(id) if id.is_a?(Integer)
         return Announce_2turns[id]
-      end
-
-      # Safely return the db_symbol of an item
-      # @param id [Integer] id of the item in the database
-      # @return [Symbol]
-      def db_symbol(id)
-        return (@data[id].db_symbol || :__undef__) if id_valid?(id)
-
-        return :__undef__
-      end
-
-      # Get id using symbol
-      # @param symbol [Symbol]
-      # @return [Integer]
-      def get_id(symbol)
-        return 0 if symbol == :__undef__
-
-        skill = @data.index { |data| data.db_symbol == symbol }
-        skill.to_i
-      end
-
-      # Tell if the id is valid
-      # @param id [Integer, Symbol]
-      # @return [Boolean]
-      def id_valid?(id)
-        id = get_id(id) if id.is_a?(Symbol)
-        return id.between?(1, LAST_ID)
-      end
-
-      # Return all the skill
-      # @return [Array<Skill>]
-      def all
-        return @data
-      end
-
-      # Load the skill
-      def load
-        @data = load_data('Data/PSDK/SkillData.rxdata')
-        # set the LAST_ID of the Skill data
-        GameData::Skill.const_set(:LAST_ID, @data.size - 1)
-        @data[0] = GameData::Skill.new
-        @data.freeze
-        @data.each_with_index { |skill, index| skill&.id = index }
-      end
-
-      # Convert a collection to symbolized collection
-      # @param collection [Enumerable]
-      # @param keys [Boolean] if hash keys are converted
-      # @param values [Boolean] if hash values are converted
-      # @return [Enumerable] the collection
-      def convert_to_symbols(collection, keys: false, values: false)
-        if collection.is_a?(Hash)
-          new_collection = {}
-          collection.each do |key, value|
-            key = db_symbol(key) if keys && key.is_a?(Integer)
-            if value.is_a?(Enumerable)
-              value = convert_to_symbols(value, keys: keys, values: values)
-            elsif values && value.is_a?(Integer)
-              value = db_symbol(value)
-            end
-            new_collection[key] = value
-          end
-          collection = new_collection
-        else
-          collection.each_with_index do |value, index|
-            if value.is_a?(Enumerable)
-              collection[index] = convert_to_symbols(value, keys: keys, values: values)
-            elsif value.is_a?(Integer)
-              collection[index] = db_symbol(value)
-            end
-          end
-        end
-        collection
       end
     end
   end
