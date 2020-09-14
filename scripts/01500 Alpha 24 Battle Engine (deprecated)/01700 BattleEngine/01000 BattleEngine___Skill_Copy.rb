@@ -90,7 +90,7 @@ module BattleEngine
       skill = nil unless skill&.mirror_move?
     end
     #> Skill use
-    if skill&.symbol != :s_mirror_move # && $scene.class == ::Scene_Battle
+    if skill&.symbol != :s_mirror_move && skill # && $scene.class == ::Scene_Battle
       _launch_skill(launcher, target, skill)
     else
       _message_stack_push(MSG_Fail)
