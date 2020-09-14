@@ -2,8 +2,8 @@ module Yuki
   # The object that describe a particle
   # @author Nuri Yuri
   class Particle_Object
-    # The Zoom Division info
-    ZoomDiv = Sprite_Character::ZoomDiv
+    # Zoom of a tile to adjust coordinate
+    TILE_ZOOM = PSDK_CONFIG.tilemap.character_tile_zoom
     # if the particle is disposed
     # @return [Boolean]
     attr_reader :disposed
@@ -155,25 +155,26 @@ module Yuki
     def update_sprite_position
       case @position_type
       when :center_pos, :grass_pos
-        @sprite.x = ((x * 128 - $game_map.display_x + 5) / 4 + 32) / @zoom
+        @sprite.x = (((x * 128 - $game_map.display_x + 5) / 4 + 16) * @tile_zoom).floor
         @sprite.y = ((y * 128 - $game_map.display_y + 5) / 4 + 32)
         if @position_type == :center_pos || @sprite.y >= @character.screen_y
           @sprite.z = (screen_z + @add_z)
         else
           @sprite.z = (screen_z - 1)
         end
-        @sprite.y /= @zoom
-        @sprite.ox = @ox * @zoom + @ox_off
-        @sprite.oy = @oy * @zoom + @oy_off
+        @sprite.y = (@sprite.y * @tile_zoom).floor
+        @sprite.ox = @ox + @ox_off
+        @sprite.oy = @oy + @oy_off
       when :character_pos
-        @sprite.x = @character.screen_x / @zoom
-        @sprite.y = @character.screen_y / @zoom
+        @sprite.x = @character.screen_x * @tile_zoom
+        @sprite.y = @character.screen_y * @tile_zoom
         @sprite.z = (@character.screen_z(0) + @add_z)
         @sprite.ox = @ox + @ox_off
         @sprite.oy = @oy + @oy_off
       end
     end
 
+    # Function that process screen z depending on original screen_y (without zoom)
     def screen_z
       (y * 128 - $game_map.display_y + 3) / 4 + 32 * @z + 31
     end
@@ -203,8 +204,8 @@ module Yuki
 
     # Initialize the zoom info
     def init_zoom
-      @zoom = PSDK_CONFIG.specific_zoom || ZoomDiv[1]
-      @add_z = @zoom
+      @tile_zoom = TILE_ZOOM
+      @add_z = (1 / @tile_zoom).floor
     end
   end
 end

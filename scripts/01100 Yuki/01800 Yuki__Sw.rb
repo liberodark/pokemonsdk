@@ -93,6 +93,8 @@ module Yuki
     # If the Moves are replaced by no moves when Pokemon are generated for battle
     BT_NO_MOVE_WHEN_DEFAULT = 44
 
+    # If the Water Reflection is disabled
+    WATER_REFLECTION_DISABLED = 51
     # If the player is running
     EV_Run = 52
     # If the player can run
