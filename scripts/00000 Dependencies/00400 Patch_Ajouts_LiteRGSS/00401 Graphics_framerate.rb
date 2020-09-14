@@ -5,6 +5,8 @@ module Graphics
   DT2 = DT - 1 / 600.0
   # Opposite of the time of a frame
   DTM = - DT
+  # Delta Time where frame balancing doesn't make sense at all
+  DT_NO_SENSE = 0.25
 
   @last_frame_count = 0
 
@@ -108,7 +110,9 @@ module Graphics
     dt -= DT # Substract the time of a constant frame if the result is > 0 we'll need to skip frames
     @delta_time += dt # Adding the difference
     # Try to balance the drawing
-    if @delta_time >= DT
+    if @delta_time >= DT_NO_SENSE || @delta_time < -5
+      frame_reset # In that case it makes no sense to balance FPS
+    elsif @delta_time >= DT
       @frame_to_skip = (@delta_time / DT).to_i
       @delta_time -= @frame_to_skip * DT
     elsif @delta_time <= DTM
