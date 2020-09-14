@@ -72,7 +72,6 @@ module Graphics
 
   # Make the Graphics freeze
   def freeze
-    @mouse.visible = false unless @no_mouse
     set_fps_color(1)
     wait(6)
     @freeze.call unless running_on_shitty_gpu?
@@ -85,7 +84,6 @@ module Graphics
     sort_z
     @transition.call(*args) unless running_on_shitty_gpu?
     set_fps_color(9)
-    @mouse.visible = true unless @no_mouse
     @ruby_time = Time.new
   end
 

@@ -73,7 +73,7 @@ module Yuki
       # if WARNINGS.include?(exception.class)
       #   warning(exception.class, exception.message + "\n#{extended_message}")
       # else
-      error(exception, exception.message + "\n#{extended_message}")
+      error(exception, exception.message + "\n#{extended_message}") unless exception.is_a?(Reset)
       # end
     end
   end

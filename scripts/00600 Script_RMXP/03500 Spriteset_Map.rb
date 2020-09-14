@@ -38,6 +38,9 @@ class Spriteset_Map
   # Take a snapshot of the spriteset
   # @return [Array<Bitmap>]
   def snap_to_bitmaps
+    @viewport1.sort_z
+    @viewport2.sort_z
+    @viewport3.sort_z
     return [
       @viewport1.snap_to_bitmap,
       @viewport2.snap_to_bitmap,

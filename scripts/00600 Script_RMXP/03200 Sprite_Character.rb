@@ -127,7 +127,7 @@ class Sprite_Character < RPG::Sprite
   # @return [Boolean] if the update can continue after the call of this function or not
   def update_position
     set_position((@character.screen_x * @tile_zoom).floor, (@character.screen_y * @tile_zoom).floor)
-    @reflection&.set_position(x, y + ((@character.z - 32) * @tile_zoom).floor)
+    @reflection&.set_position(x, y + ((@character.z - 1) * 32 * @tile_zoom).floor)
     self.z = @character.screen_z(@ch) + @add_z
     return true
   end

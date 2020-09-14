@@ -182,6 +182,9 @@ module Graphics
   # Change the color of the FPS texts
   # @param color [Integer] new color of the FPS texts
   def set_fps_color(color)
+    init_sprite if @ingame_fps_text.disposed?
+
+    @mouse.visible = color != 1 unless @no_mouse
     @ingame_fps_text.load_color(color)
     @gpu_fps_text.load_color(color)
     @ruby_fps_text.load_color(color)
