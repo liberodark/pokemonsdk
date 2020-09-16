@@ -106,6 +106,7 @@ module BattleEngine
       next false if be.has_cant_use_last_skill_effect? && pokemon.last_skill.to_i.abs == id
       next false if be.has_taunt_effect? && move.status?
       next false if be.has_imprison_effect? && be.is_skill_imprisonned?(move)
+      next false if be.has_encore_effect?
 
       next true # Move can be used
     end
