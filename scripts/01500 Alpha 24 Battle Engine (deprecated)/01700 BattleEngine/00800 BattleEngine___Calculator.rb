@@ -328,7 +328,7 @@ module BattleEngine
     item = GameData::Item[@_State[:launcher_item]]
     n = 1
     return n unless item
-    n *= 1.5 if item == 220 #> Bandeau Choix
+    n *= 1.5 if item.id == 220 #> Bandeau Choix
     imisc = item.misc_data
     return n unless imisc
     n *= 2 if imisc.need_ids_ph_2 && imisc.need_ids_ph_2.include?(launcher.id)
@@ -347,7 +347,7 @@ module BattleEngine
     item = GameData::Item[@_State[:launcher_item]]
     n = 1
     return n unless item
-    n *= 1.5 if item == 297 #> Lunettes Choix 
+    n *= 1.5 if item.id == 297 #> Lunettes Choix 
     imisc = item.misc_data
     return n unless imisc
     n *= 2 if imisc.need_ids_sp_2 && imisc.need_ids_sp_2.include?(launcher.id)

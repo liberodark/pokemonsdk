@@ -356,25 +356,36 @@ module BattleEngine
   #===
   def _skill_blocked?(launcher, skill, msg = true)
     id = skill.id
+    return false if id == ID_Struggle
     be = launcher.battle_effect
     #>Entrave
-    if(be.has_disable_effect? and id == be.disable_skill_id)
+    if be.has_disable_effect? && id == be.disable_skill_id
       _mp([:msg, parse_text_with_pokemon(19, 595, launcher, MOVE[1] => skill.name)]) if msg
       return true
-    elsif(skill.status? and be.has_taunt_effect?) #> Provoc
+    elsif skill.status? && be.has_taunt_effect? #> Taunt
       _mp([:msg, parse_text_with_pokemon(19, 571, launcher, MOVE[1] => skill.name)]) if msg
       return true
-    elsif(be.has_torment_effect? and skill.id == launcher.last_skill) #> Tourmente
+    elsif be.has_torment_effect? && skill.id == launcher.last_skill #> Imprison
       _mp([:msg, parse_text_with_pokemon(19, 580, launcher)]) if msg
       return true
-    elsif(be.has_imprison_effect? and be.is_skill_imprisonned?(skill)) #> Possessif
+    elsif be.has_imprison_effect? && be.is_skill_imprisonned?(skill) #> Torment
       _mp([:msg, parse_text_with_pokemon(19, 589, launcher, MOVE[1] => skill.name)]) if msg
       return true
-    elsif (skill.pp <= 0) #> Pas de PP
+    elsif blocked_by_choice_item?(launcher, id) #> Choice items
+      _mp([:msg, parse_text_with_pokemon(19, 911, launcher, MOVE[1] => skill.name)]) if msg
+      return true
+    elsif skill.pp <= 0 #> No PP
       _mp([:msg, parse_text_with_pokemon(18, 85, launcher, MOVE[1] => skill.name)]) if msg
       return true
     end
     return false
+  end
+  #===
+  #>_blocked_by_choice_item
+  # Teste si une attaque est bloquée par un objet "choix"
+  #===
+  def blocked_by_choice_item?(pokemon, move_id)
+    return _has_items(pokemon, 220, 287, 297) && pokemon.last_skill > 0 && move_id != pokemon.last_skill
   end
   #===
   #>_random_target_selection

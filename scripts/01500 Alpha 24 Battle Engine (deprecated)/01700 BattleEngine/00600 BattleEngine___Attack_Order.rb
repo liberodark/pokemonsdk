@@ -9,7 +9,8 @@ module BattleEngine
   BattlePrio = 13 * DeltaPrio
   PursuitPrio = 14 * DeltaPrio
   SpecialPriorities = [BattlePrio + 1, BattlePrio + 1000, BattlePrio + 2000, BattlePrio + 999]
-
+  ParalysisSpeedMalus = 4 # 4 up to Gen 6; 2 from Gen 7
+  
   module_function
 
   # Return the priority of the Struggle move
@@ -87,25 +88,6 @@ module BattleEngine
           i.priority = struggle_priority
         end
         i.spd = pkmn.spd
-        #> Items & abilities check (with priority)
-        if _has_items(pkmn, 316, 279) #>Encens Plein, Ralentiqueue
-          i.priority -= DeltaPrio/2
-        elsif _has_item(pkmn, 217) && rand(100) < 20 #> Vive Griffe #>Utiliser chance 20 ou rand(100)<20 ?
-          i.priority += DeltaPrio #> Attaque avant
-          i.spd = -i.spd #> Mais ne parasite pas
-          quick_claw_triggered = true
-        elsif _has_items(pkmn, 215, 278, 289, 290, 291, 292, 293, 294) #>Bracelet Macho, Iron Ball, truc Pouvoir,
-          i.spd /= 2
-        elsif pkmn.id == 132 && _has_item(pkmn, 274) #>Poudre Vite / Métamorph
-          i.spd *= 2
-        elsif pkmn.ability == 94 #>Frein
-          if !pkmn.battle_effect.has_no_ability_effect?
-            i.priority -= (DeltaPrio/4) #>Lent mais pas plus que Enscens plein et Ralentiqueue
-          end
-        elsif pkmn.battle_item_data.include?(:attack_first)
-          i.priority = BattlePrio
-          pkmn.battle_item_data.delete(:attack_first)
-        end
         #> Abilities check
         if !pkmn.battle_effect.has_no_ability_effect?
           if pkmn.ability == 60 #> Glissade
@@ -120,11 +102,32 @@ module BattleEngine
         if (pkmn.position < 0 ? enn_tailwind : act_tailwind)
           i.spd *= 2
         end
+        #> Items & abilities check (with priority)
+        if _has_items(pkmn, 316, 279) #>Encens Plein, Ralentiqueue
+          i.priority -= DeltaPrio/2
+        elsif _has_item(pkmn, 217) && rand(100) < 20 #> Vive Griffe #>Utiliser chance 20 ou rand(100)<20 ?
+          i.priority += DeltaPrio #> Attaque avant
+          i.spd = -i.spd #> Mais ne parasite pas
+          quick_claw_triggered = true
+        elsif _has_items(pkmn, 215, 278, 289, 290, 291, 292, 293, 294) #>Bracelet Macho, Iron Ball, truc Pouvoir,
+          i.spd /= 2
+        elsif pkmn.id == 132 && _has_item(pkmn, 274) #>Poudre Vite / Métamorph
+          i.spd *= 2
+        elsif _has_item(pkmn, 287) #>Mouchoir Choix
+          i.spd *= 3/2
+        elsif pkmn.ability == 94 #>Frein
+          if !pkmn.battle_effect.has_no_ability_effect?
+            i.priority -= (DeltaPrio/4) #>Lent mais pas plus que Enscens plein et Ralentiqueue
+          end
+        elsif pkmn.battle_item_data.include?(:attack_first)
+          i.priority = BattlePrio
+          pkmn.battle_item_data.delete(:attack_first)
+        end
         #> Swamp
         if @_State[pkmn.position < 0 ? :enn_swamp : :act_swamp] > 0
-          i.spd /= 2
+          i.spd /= ParalysisSpeedMalus
         end
-        i.spd /= 2 if pkmn.paralyzed?
+        i.spd /= ParalysisSpeedMalus if pkmn.paralyzed?
         i.spd *= trick_room
         #>Mitra-Poing
         if skill.id == 264

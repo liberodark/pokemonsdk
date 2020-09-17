@@ -140,18 +140,16 @@ module GameData
     SleepingAttack = %i[snore sleep_talk]
     # Out of reach moves
     #   OutOfReach[sb_symbol] => oor_type
-    OutOfReach = { dig: 1, fly: 2, dive: 3, bounce: 4, phantom_force: 5, shadow_force: 5, sky_drop: 6 }
+    OutOfReach = { dig: 1, fly: 2, dive: 3, bounce: 2, phantom_force: 4, shadow_force: 4, sky_drop: 2 }
     # List of move that can hit a Pokemon when he's out of reach
     #   OutOfReach_hit[oor_type] = [move db_symbol list]
     OutOfReach_hit = [
       [], # Nothing
-      %i[earthquake toxic], # Dig
-      %i[gust twister sky_uppercut toxic smack_down], # Fly
-      [:surf], # Dive
-      %i[gust sky_uppercut twister smack_down], # Bounce
+      %i[earthquake fissure magnitude], # Dig
+      %i[gust whirlwind thunder swift sky_uppercut twister smack_down hurricane thousand_arrows], # Fly
+      %i[surf whirlpool], # Dive
       [], # Phantom force / Shadow Force
-      [:smack_down] # Sky drop
-    ]
+      ]
     # List of specific announcement for 2 turn moves
     #   Announce_2turns[db_symbol] = text_id
     Announce_2turns = { dig: 538, fly: 529, dive: 535, bounce: 544,

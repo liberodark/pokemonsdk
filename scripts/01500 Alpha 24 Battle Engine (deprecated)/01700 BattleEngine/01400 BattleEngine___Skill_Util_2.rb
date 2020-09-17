@@ -100,8 +100,8 @@ module BattleEngine
     # Pokemon has to use struggle if none of the move can be used
     return pokemon.skills_set.none? do |move|
       next false if move.pp <= 0
-
       id = move.id
+      next false if BattleEngine::blocked_by_choice_item?(pokemon, id)
       next false if be.has_cant_attack_effect? && be.get_cant_attack_id == id
       next false if be.has_cant_use_last_skill_effect? && pokemon.last_skill.to_i.abs == id
       next false if be.has_taunt_effect? && move.status?
