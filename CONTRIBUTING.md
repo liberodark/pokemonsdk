@@ -7,7 +7,7 @@
 * In your fork
     * Click on the Settings -> Repository button
     * Go to the `Mirroring repositories` section
-    * Put this URL in the Git Repository URL : ` https://gitlab.com/NuriYuri/pokemonsdk.git`
+    * Put this URL in the Git Repository URL : ` https://gitlab.com/pokemonsdk/pokemonsdk.git`
     * Set Mirror Direction to `Pull`
     * Check `Only mirror protected branches`
 
