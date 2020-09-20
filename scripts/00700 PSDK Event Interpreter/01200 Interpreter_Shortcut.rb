@@ -37,8 +37,8 @@ class Interpreter
 
   # Start the storage PC
   def start_pc
-    pc = ::GamePlay::Storage.new
-    pc.main
+    Audio.se_play('audio/se/computeropen')
+    $scene.call_scene(GamePlay::PokemonStorage)
   end
   alias demarrer_pc start_pc
 
