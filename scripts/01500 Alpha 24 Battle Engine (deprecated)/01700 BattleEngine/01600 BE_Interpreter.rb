@@ -201,7 +201,7 @@ module BattleEngine
           elsif(item_id == 210) #> Baie Chérim
             berry_use(target)
             target.battle_item_data << :attack_first
-          elsif(heal_data = ::GameData::Item[item_id].heal_data && heal_data.battle_boost)
+          elsif((heal_data = ::GameData::Item[item_id].heal_data) && heal_data.battle_boost)
             berry_use(target)
             _mp([::PFM::ItemDescriptor::Boost[heal_data.battle_boost], target, 1])
           end
