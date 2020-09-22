@@ -21,6 +21,11 @@ module PFM
 
     # @return [Integer] number of turn the Pokemon is in battle
     attr_accessor :turn_count
+    alias battle_turns turn_count # BE24
+
+    # Last turn the Pokemon fought
+    # @return [Integer]
+    attr_accessor :last_battle_turn
 
     # @return [Battle::Move] last move that hit the pokemon
     attr_accessor :last_hit_by_move
@@ -40,6 +45,10 @@ module PFM
     # @return [Numeric] Order of the Pokemon in the action chain (the lesser the faster)
     attr_accessor :order
 
+    # Get the original Pokemon
+    # @return [PFM::Pokemon]
+    attr_reader :original
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param scene [Battle::Scene] current battle scene
@@ -55,6 +64,9 @@ module PFM
       @bank = 0
       @position = -1
       @order = -1
+      @battle_item_data = []
+      @battle_item = @item_holding
+      @last_battle_turn = -1
     end
 
     # Reload the original ability
@@ -80,6 +92,10 @@ module PFM
       "<PB:#{name},#{@bank},#{@position} lv=#{@level} hp=#{@hp_rate.round(3)} st=#{@status}>"
     end
     alias inspect to_s
+
+    def from_party?
+      $actors.include?(@original)
+    end
 
     private
 

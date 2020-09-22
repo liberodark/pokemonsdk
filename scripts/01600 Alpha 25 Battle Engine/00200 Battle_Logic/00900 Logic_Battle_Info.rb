@@ -62,6 +62,43 @@ module Battle
         @bags[bank] ||= []
         @bags[bank] << (bag || PFM::Bag.new)
       end
+
+      # Get the trainer name of a battler
+      # @param battler [PFM::PokemonBattler]
+      # @return [String]
+      def trainer_name(battler)
+        return @names[battler.bank][party_index(battler)]
+      end
+
+      # Get the trainer class of a battler
+      # @param battler [PFM::PokemonBattler]
+      # @return [String]
+      def trainer_class(battler)
+        return @classes[battler.bank][party_index(battler)]
+      end
+
+      # Get the bag of a battler
+      # @param battler [PFM::PokemonBattler]
+      # @return [PFM::Bag]
+      def bag(battler)
+        return @bags[battler.bank][party_index(battler)]
+      end
+
+      # Get the partu of a battler
+      # @param battler [PFM::PokemonBattler]
+      # @return [Array<PFM::Pokemon>]
+      def party(battler)
+        return @parties[battler.bank][party_index(battler)]
+      end
+
+      private
+
+      # Find the party index of a battler
+      # @param battler [PFM::PokemonBattler]
+      # @return [Integer]
+      def party_index(battler)
+        return @parties[battler.bank].index(battler.original) || 0
+      end
     end
   end
 end

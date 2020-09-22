@@ -422,7 +422,6 @@ pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00200 BattleEngine__Abilities___Actions.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00400 BattleEngine___Core.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00450 MegaEvolve.rb
-pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00500 BattleEngine___Accuracy.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00600 BattleEngine___Attack_Order.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00700 BattleEngine___Battlers.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01700 BattleEngine/00800 BattleEngine___Calculator.rb
@@ -472,11 +471,13 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00100 Pokem
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00200 States_1.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00300 Statistics.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00301 Statistics Speed mod.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/99999 PokemonBattler24.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00100 Logic.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00101 Logic_Battler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00102 Logic_Actions.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00102 Logic_Actions_Procedure.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00103 Logic_critical_hit.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00104 end of battle phase & switch choice.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00200 Logic_global_states.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00300 Logic_bank_states.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00900 Logic_Battle_Info.rb
@@ -498,6 +499,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00202 Visual
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00203 Visual_show_skill_or_target_choice.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00204 Visual_show_item_or_pokemon_choice.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00205 Visual_Info_Bars.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00206 Battle procedure Animation.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00550 Battle_Visual_Animations/00100 IdlePokemonAnimation.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00550 Battle_Visual_Animations/01001 HPAnimation.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00100 RBJ_WildTransition.rb
@@ -517,9 +519,16 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00109 Move_mod
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00110 Move_target.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00111 Move Chance of Hit.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00120 Move Procedure.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00121 Move Prevention.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00130 Move Type.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00131 BE24 Shit.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00200 RecoilMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00100 AI.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04400 Battle_Message/00001 BattleStart.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 BE24 Interpreter/01600 BE_Interpreter.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 BE24 Interpreter/01700 BE_Interpreter_(Effect).rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 BE24 Interpreter/01800 BE_Interpreter_(Stats).rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 BE24 Interpreter/01900 BE_Interpreter_(Status).rb
 pokemonsdk/scripts/02000 Nuri Yuri/00001 DynamicLight/00001 DynamicLight.rb
 pokemonsdk/scripts/02000 Nuri Yuri/00001 DynamicLight/00002 DynamicLightSprite.rb
 pokemonsdk/scripts/02000 Nuri Yuri/00001 DynamicLight/00003 DL PokemonParty.rb

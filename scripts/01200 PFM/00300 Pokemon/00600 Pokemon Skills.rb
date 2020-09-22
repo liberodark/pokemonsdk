@@ -155,6 +155,13 @@ module PFM
       end
     end
 
+    # Can learn skill at this level
+    # @param level [Integer]
+    def can_learn_skill_at_this_level?(level = @level)
+      data.move_set.each_slice(2).any? { |(mlevel,_)| level == mlevel }
+    end
+
+
     # Check if the Pokemon can learn a skill
     # @param skill_id [Integer, Symbol] id of the skill in the database
     # @return [Boolean, nil] nil = learnt, false = cannot learn, true = can learn

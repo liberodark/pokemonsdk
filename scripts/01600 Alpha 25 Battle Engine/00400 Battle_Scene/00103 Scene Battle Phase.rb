@@ -19,9 +19,11 @@ module Battle
     # @note Should call the after_action_dialog event
     def udpdate_battle_phase
       return if @logic.perform_next_action
+
       # If the battle logic couldn't perform the next action (ie there's nothing to do)
       # We call the after_action_dialog event, check if the battle can continue and choose the right thing to do
       call_event(:after_action_dialog)
+      @logic.battle_phase_end
       if @logic.can_battle_continue?
         @next_update = :player_action_choice
       else

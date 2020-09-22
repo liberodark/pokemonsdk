@@ -31,6 +31,7 @@ module Battle
       action = @actions.pop
       log_debug("Current action : #{action}")
       send("perform_action_#{action[:type]}", action)
+      battle_phase_switch_check
       return true
     end
 

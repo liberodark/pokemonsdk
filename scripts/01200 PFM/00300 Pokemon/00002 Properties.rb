@@ -154,7 +154,10 @@ module PFM
     attr_accessor :battle_stage
     # The Pokemon critical modifier (always 0 but usable for scenaristic reasons...)
     # @return [Integer]
-    attr_accessor :critical_modifier
+    attr_writer :critical_modifier
+    def critical_modifier
+      @critical_modifier || 0
+    end
     # Last skill ID used in battle
     # @return [Integer]
     attr_accessor :last_skill

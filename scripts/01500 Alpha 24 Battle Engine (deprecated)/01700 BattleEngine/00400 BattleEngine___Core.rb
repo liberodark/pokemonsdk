@@ -293,7 +293,13 @@ module BattleEngine
 
   def _load_ia_state
     @message_stack.clear
-    @_State, @_Enemies, @_Actors = Marshal.load(Marshal.dump([@_OriginalState, @_OriginalEnemies, @_OriginalActors]))
+    if $scene.is_a?(Battle::Scene)
+      @_State = @_State.clone
+      @_Enemies = @_Enemies.map { |e| PFM::PokemonBattler24.new(e) }
+      @_Actors = @_Actors.map { |e| PFM::PokemonBattler24.new(e) }
+    else
+      @_State, @_Enemies, @_Actors = Marshal.load(Marshal.dump([@_OriginalState, @_OriginalEnemies, @_OriginalActors]))
+    end
   end
 
   def _disable_ia

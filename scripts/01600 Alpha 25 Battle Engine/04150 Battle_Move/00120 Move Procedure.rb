@@ -6,6 +6,8 @@ module Battle
     # @param target_bank [Integer] bank of the target
     # @param target_position [Integer]
     def proceed(user, target_bank, target_position)
+      return if user.hp <= 0
+
       possible_targets = battler_targets(user, logic).select { |target| target&.alive? }
       exec_hooks(Move, :possible_targets, binding)
       possible_targets.sort_by(&:spd)
@@ -28,17 +30,28 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def proceed_internal(user, targets)
+      return unless move_usable_by_user(user, targets)
+
       usage_message(user)
       return scene.display_message(parse_text(18, 74)) if rand(100) >= accuracy
 
       actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
-      play_animation(user, targets) if actual_targets.any? # TODO: check if that works properly, eg. not playing when the move does nothing
+      return if actual_targets.none?
+
+      play_animation(user, targets) # TODO: check if that works properly, eg. not playing when the move does nothing
+
+      BattleEngine.use_skill(PFM::PokemonBattler24.new(user), actual_targets.map { |i| PFM::PokemonBattler24.new(i) }, self)
+      messages = BattleEngine._message_get_all
+      BattleEngine::MessageInterpter.new(@scene).process_messages(messages)
+      messages.clear
+=begin
       deal_damage(user, actual_targets) && # TODO: finish
         deal_status(user, actual_targets) && # TODO: DO
         deal_stats(user, actual_targets) && # TODO: DO
         deal_effect(user, actual_targets) && # TODO: DO
         deal_terrain_effect(user, actual_targets) && # TODO: DO
         process_hooks(user, actual_targets) # TODO: rocky_helmet, iron_barbs, rough_skin
+=end
     end
 
     # Show the move usage message
@@ -62,6 +75,8 @@ module Battle
         elsif rand(100) >= chance_of_hit(user, pokemon)
           scene.display_message(parse_text_with_pokemon(19, 213, pokemon))
           next false
+        elsif move_blocked_by_target?(user, pokemon)
+          next false
         end
 
         next true
@@ -83,7 +98,7 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def play_animation(user, targets)
-      # TODO
+      @scene.visual.show_move_animation(user, targets, self)
     end
 
     # Function that deals the damage to the pokemon

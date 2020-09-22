@@ -33,6 +33,16 @@ module Battle
       return (damage * calc_mod3(user, target)).floor
     end
 
+    # Function that calculate the type modifier (for specific uses)
+    # @param target [PFM::PokemonBattler]
+    # @return [Float]
+    def type_modifier(target)
+      n = calc_type_n_multiplier(target, :type1) *
+          calc_type_n_multiplier(target, :type2) *
+          calc_type_n_multiplier(target, :type3)
+      return n
+    end
+
     private
 
     # Base power calculation
@@ -69,8 +79,8 @@ module Battle
       ph_move = physical?
       # Stat
       result = ph_move ? user.atk_basis : user.ats_basis
-      # SM
-      result = (result * (ph_move ? user.atk_modifier : user.ats_modifier)).floor
+      # SM (Only if non-critical hit)
+      result = (result * (ph_move ? user.atk_modifier : user.ats_modifier)).floor unless critical_hit?
       # AM
       am = send((ph_move ? ATK_ABILITY_MODIFIER : ATS_ABILITY_MODIFIER)[user.ability_db_symbol], user, target)
       result = (result * am).floor
@@ -88,8 +98,8 @@ module Battle
       ph_move = physical?
       # Stat
       result = ph_move ? target.dfe_basis : target.dfs_basis
-      # SM
-      result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor
+      # SM (Only if non-critical hit)
+      result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor unless critical_hit?
       # Mod
       result = (result * 1.5).floor if !ph_move && $env.sandstorm? && target.type_rock?
       mod = send((ph_move ? DFE_ABILITY_MODIFIER : DFS_ABILITY_MODIFIER)[target.ability_db_symbol], user, target)

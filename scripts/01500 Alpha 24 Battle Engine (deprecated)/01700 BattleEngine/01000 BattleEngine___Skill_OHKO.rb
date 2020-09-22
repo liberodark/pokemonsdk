@@ -32,7 +32,6 @@ module BattleEngine
       _message_stack_push([:msg, parse_text(18, 74)])
       return
     end
-    return if _target_protected(launcher, target, skill)
     _message_stack_push([:OHKO, target])
   end
 

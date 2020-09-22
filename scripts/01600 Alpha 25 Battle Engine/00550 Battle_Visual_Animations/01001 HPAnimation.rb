@@ -11,8 +11,8 @@ module Battle
         @scene = scene
         @target = target
         @target_hp = (target.hp + (quantity == 0 ? -1 : quantity)).clamp(0, target.max_hp)
-        diff = (target.hp - @target_hp).to_f
-        super((diff / quantity).abs, target, :hp=, target.hp, @target_hp)
+        time = (quantity.abs.to_f / Graphics.frame_rate).clamp(0, 1)
+        super(time, target, :hp=, target.hp, @target_hp)
         start
         effectiveness_sound(effectiveness) if quantity != 0 && effectiveness
       end

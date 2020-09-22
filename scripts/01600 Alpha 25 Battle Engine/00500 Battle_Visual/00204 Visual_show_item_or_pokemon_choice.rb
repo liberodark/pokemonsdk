@@ -15,10 +15,11 @@ module Battle
     end
 
     # Method that show the pokemon choice
+    # @param forced [Boolean]
     # @return [PFM::PokemonBattler, nil]
-    def show_pokemon_choice
+    def show_pokemon_choice(forced = false)
       data_to_return = nil
-      @battle_scene.call_scene(GamePlay::Party_Menu, party = retrieve_party, :battle) do |scene|
+      @battle_scene.call_scene(GamePlay::Party_Menu, party = retrieve_party, :battle, no_leave: forced) do |scene|
         return_data = scene.return_data
         data_to_return = party[return_data] if return_data != -1
       end
@@ -31,8 +32,7 @@ module Battle
     # Method that returns the party for the Bag & Party scene
     # @return [Array<PFM::PokemonBattler>]
     def retrieve_party
-      party = BAG_PARTY_POSITIONS.collect { |i| @battle_scene.logic.battler(0, i) }
-      return party.compact!
+      return BAG_PARTY_POSITIONS.collect { |i| @battle_scene.logic.battler(0, i) }.compact
     end
   end
 end

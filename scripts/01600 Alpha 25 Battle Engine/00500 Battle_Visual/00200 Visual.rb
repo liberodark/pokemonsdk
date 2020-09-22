@@ -48,6 +48,7 @@ module Battle
       create_battlers
       create_player_choice
       create_skill_choice
+      create_battle_animation_handler
     end
 
     # Update the visuals
@@ -87,6 +88,16 @@ module Battle
         return @locking = false
       end
       @locking = true
+    end
+
+    # Display animation & stuff like that by updating the scene
+    # @yield [] yield the given block without argument
+    # @note this function raise if the visual are not locked
+    def scene_update_proc
+      raise 'Unlocked visual while trying to update scene!' unless @locking
+      yield
+      @battle_scene.update
+      Graphics.update
     end
 
     private
@@ -202,6 +213,12 @@ module Battle
     # Create the skill choice
     def create_skill_choice
       @skill_choice_ui = BattleUI::SkillChoice.new(@viewport_sub)
+    end
+
+    # Create the battle animation handler
+    def create_battle_animation_handler
+      Scene_Battle::PSP.make_sprite(@viewport)
+      @move_animator = Scene_Battle::PSP
     end
   end
 end

@@ -4,18 +4,27 @@ module Battle
     # @return [Hash{Symbol => Class}] list of the registered moves
     REGISTERED_MOVES = Hash.new(Move)
 
-    # @return [Integer] number of pp the move currently has
+    # ID of the move in the database
+    # @return [Integer]
+    attr_reader :id
+    # Number of pp the move currently has
+    # @return [Integer]
     attr_reader :pp
-    # @return [Integer] maximum number of ppg the move currently has
+    # Maximum number of ppg the move currently has
+    # @return [Integer]
     attr_reader :ppmax
-    # @return [Boolean] if the move has been used
+    # if the move has been used
+    # @return [Boolean]
     attr_accessor :used
-    # @return [Integer] Number of time the move was used consecutively
+    # Number of time the move was used consecutively
+    # @return [Integer]
     attr_accessor :consecutive_use_count
     # @return [Battle::Logic]
     attr_reader :logic
     # @return [Battle::Scene]
     attr_reader :scene
+    # @return [Battle::Move]
+    attr_accessor :original
 
     # Create a new move
     # @param id [Integer] ID of the move in the database
@@ -38,6 +47,12 @@ module Battle
     end
     alias inspect to_s
 
+    # Clone the move and give a reference to the original one
+    def clone
+      clone = super
+      clone.original ||= self
+    end
+
     # Return the data of the skill
     # @return [GameData::Skill]
     def data
@@ -46,7 +61,7 @@ module Battle
 
     # Return the name of the skill
     def name
-      text_get(6, @id)
+      return GameData::Skill[@id].name
     end
 
     # Return the skill description
@@ -54,6 +69,13 @@ module Battle
     def description
       text_get(7, @id)
     end
+
+    # Return the battle engine method of the move
+    # @return [Symbol]
+    def be_method
+      return data.be_method
+    end
+    alias symbol be_method # BE24
 
     # Return the text of the PP of the skill
     # @return [String]
@@ -66,6 +88,7 @@ module Battle
     def power
       data.power
     end
+    alias base_power power # BE24
 
     # Return the text of the power of the skill (for the UI)
     # @return [String]
@@ -150,6 +173,7 @@ module Battle
     def mirror_move_affected?
       return data.mirror_move
     end
+    alias mirror_move? mirror_move_affected? # BE24
 
     # Is the skill blocable by Protect and skill like that ?
     # @return [Boolean]
@@ -186,18 +210,21 @@ module Battle
     def trigger_king_rock?
       return data.status != 7
     end
+    alias king_rock_utility trigger_king_rock? # BE24
 
     # Is the skill snatchable ?
     # @return [Boolean]
     def snatchable?
       return data.snatchable
     end
+    alias snatchable snatchable? # BE24
 
     # Is the skill affected by magic coat ?
     # @return [Boolean]
     def magic_coat_affected?
       return data.magic_coat_affected
     end
+    alias magic_coat_affected magic_coat_affected?
 
     # Is the skill physical ?
     # @return [Boolean]

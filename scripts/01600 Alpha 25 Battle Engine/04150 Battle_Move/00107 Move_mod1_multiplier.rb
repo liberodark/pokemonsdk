@@ -11,7 +11,7 @@ module Battle
       # BRN
       result = calc_mod1_brn(user)
       # RL
-      result *= calc_mod1_rl(target)
+      result *= calc_mod1_rl(user, target)
       # TVT
       result *= calc_mod1_tvt(target)
       # SR
@@ -30,10 +30,12 @@ module Battle
     end
 
     # Calculate the RL mod
+    # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler] target of the move
     # @return [Numeric]
-    def calc_mod1_rl(target)
+    def calc_mod1_rl(user, target)
       return 1 if critical_hit?
+      return 1 if user.ability_db_symbol == :infiltrator
       if physical?
         return 1 unless logic.bank_reflect?(target.bank)
       else

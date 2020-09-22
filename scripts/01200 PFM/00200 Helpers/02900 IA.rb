@@ -371,6 +371,9 @@ module PFM
     # @param pokemon [PFM::Pokemon]
     # @return [PFM::Bag]
     def get_bag(pokemon)
+      if $scene.is_a?(Battle::Scene)
+        return $scene.logic.bags[1].first
+      end
       return $scene.enemy_party.bag
     end
     # Check if the Pokemon needs to switch

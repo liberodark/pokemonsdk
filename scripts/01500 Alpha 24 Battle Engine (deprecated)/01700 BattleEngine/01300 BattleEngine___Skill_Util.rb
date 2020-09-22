@@ -163,31 +163,6 @@ module BattleEngine
     return did_something
   end
   #===
-  #>_target_protected
-  #  Vérifie si le skill est bloqué par abris ou détection
-  #E : <BE_Model1>
-  #S : bool : si bloqué
-  #===
-  def _target_protected(launcher, target, skill)
-    if(skill.blocable?)
-      if(target.battle_effect.has_protect_effect?)
-        _message_stack_push([:msg, parse_text_with_pokemon(19, 523, target)])
-        _mp([:change_atk, launcher, -2]) if(target.last_skill == 588 and skill.direct?) #>Si pb changer contact? par direct? (Bouclier Royal)
-        _mp([:hp_down, launcher, launcher.max_hp/8]) if(target.last_skill == 596 and skill.direct?) #> Pico-Défense
-        return true if(target.last_skill != 501 or skill.priority > 7) #> Prévention (A vérifier :d)
-      end
-    end
-    #>Cible hors de portée / Annule Garde
-    if(target.battle_effect.has_out_of_reach_effect? and @_State[:launcher_ability] != 34 and @_State[:target_ability] != 34)
-      oor = target.battle_effect.get_out_of_reach
-      if(!::GameData::Skill.can_hit_out_of_reach?(oor ,skill.db_symbol))
-        _mp(MSG_Fail)
-        return true
-      end
-    end
-    return false
-  end
-  #===
   #>_skill_critical_push
   #  push l'information critical hit si l'attaque est critique
   #===
@@ -228,14 +203,6 @@ module BattleEngine
     #>Vérification de la possibilité d'attaque (sonore + Anti Bruit)
     if(skill.sound_attack? and Abilities.has_ability_usable(target, 52))
       return false if skill.id != 215 #>Glas de soin passe au travers
-    end
-
-    #>Les attaques sur les alliés ne ratent pas (sauf cas de précision à vérifier)
-    unless On_Launcher_Atk.include?(skill.target)
-      #>Vérification du blocage (abris)
-      return false if _target_protected(launcher, target, skill)
-      #>Vérification de la précision
-      return false unless _attack_hit?(launcher, target, skill)
     end
     return false if _skill_blocked?(launcher, skill)
     return true

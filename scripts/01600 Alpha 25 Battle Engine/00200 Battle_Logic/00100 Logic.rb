@@ -9,7 +9,7 @@ module Battle
     attr_reader :actions
     # @return [Integer] 0 : Victory, 1 : Defeat, 2 : Flee, -1 : undef
     attr_reader :battle_result
-    # @return [Array<PFM::Bag>] bags of each banks
+    # @return [Array<Array<PFM::Bag>>] bags of each banks
     attr_reader :bags
     # @return [Battle::Logic::BattleInfo]
     attr_reader :battle_info
@@ -22,11 +22,14 @@ module Battle
       @messages = []
       # @type [Array<Hash>]
       @actions = []
-      @bags = []
+      @bags = @battle_info.bags
       @battlers = []
       @global_states = {}
       @bank_states = Hash.new({})
       @battle_result = -1
+      @switch_request = []
+      @evolve_request = []
+      $game_temp.battle_turn = 0
     end
 
     # Return the number of bank in the current battle

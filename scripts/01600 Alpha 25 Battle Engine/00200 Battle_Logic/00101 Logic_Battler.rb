@@ -77,12 +77,34 @@ module Battle
     def load_battlers
       @battle_info.parties.each_with_index do |parties, bank|
         next unless parties
+
         parties.each_with_index do |party, index|
           load_battlers_from_party(party, bank, index)
         end
         adjust_party(@battlers[bank]) if @battle_info.vs_type > 1
         @battle_info.vs_type.times do |i|
           @battlers.dig(bank, i)&.position = i
+        end
+      end
+    end
+
+    # Add a switch request
+    # @param who [PFM::PokemonBattler]
+    # @param with [PFM::PokemonBattler, nil] if nil, ask the player
+    def request_switch(who, with)
+      @switch_request << { who: who, with: with }
+    end
+
+    # Update the turn count of all alive battler
+    def update_battler_turn_count
+      $game_temp.battle_turn += 1
+      $game_temp.vs_type.times do |position|
+        bank_count.times do |bank|
+          battler = self.battler(bank, position)
+          if battler&.alive?
+            battler.turn_count += 1
+            battler.last_battle_turn = $game_temp.battle_turn
+          end
         end
       end
     end
@@ -146,6 +168,21 @@ module Battle
       @battlers[who.bank][who_position] = with
       @battlers[with.bank][with_position] = who
       with.position, who.position = who.position, with.position
+    end
+
+    # List all dead Pokemon enemy during this turn
+    # @return [Array<PFM::PokemonBattler>]
+    def dead_enemy_battler_during_this_turn
+      turn = $game_temp.battle_turn
+      return 1.upto(bank_count - 1).flat_map do |bank|
+        next @battlers[bank].compact.select { |battler| battler.last_battle_turn == turn && battler.dead? }
+      end
+    end
+
+    # List all the trainer Pokemon
+    # @return [Array<PFM::PokemonBattler>]
+    def trainer_battlers
+      return @battlers[0].compact.select(&:from_party?)
     end
   end
 end

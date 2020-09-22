@@ -10,12 +10,14 @@ module Battle
     def one_target?
       return OneTarget.include?(target)
     end
+    alias is_one_target? one_target? # BE24
 
     # Does the skill doesn't show a target choice
     # @return [Boolean]
     def no_choice_skill?
       return TargetNoAsk.include?(target)
     end
+    alias is_no_choice_skill? no_choice_skill? # BE24
 
     # List the targets of this move
     # @param pokemon [PFM::PokemonBattler] the Pokemon using the move
