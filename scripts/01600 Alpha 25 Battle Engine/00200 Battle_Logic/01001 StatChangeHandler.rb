@@ -81,6 +81,7 @@ module Battle
         exec_hooks(StatChangeHandler, :stat_change, binding)
         amount = target.change_stat(STAT_INDEX[stat], power)
         show_stat_change_text_and_animation(stat, power, amount, target)
+        launcher&.last_successfull_move = skill.db_symbol if skill
       rescue Hooks::ForceReturn => e
         return e.data
       end

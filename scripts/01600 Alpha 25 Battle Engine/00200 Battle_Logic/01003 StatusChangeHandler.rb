@@ -24,12 +24,12 @@ module Battle
       # List of message ID when applying a status
       STATUS_APPLY_MESSAGE = { poison: 234, toxic: 237, confusion: 345, sleep: 306, freeze: 288, paralysis: 273, burn: 255 }
       # List of animation ID when applying a status
-      STATUS_APPLY_ANIMATION = { poison: 470, toxic: 477, confusion: 475, sleep: 473, freeze: 474, paralysis: 471, burn: 472 }
+      STATUS_APPLY_ANIMATION = { poison: 470, toxic: 477, confusion: 475, sleep: 473, freeze: 474, paralysis: 471, burn: 472, flinch: 476 }
       # List of messages when leaf guard is active
       STATUS_LEAF_GUARD_MSG = { poison: 252, toxic: 252, sleep: 318, freeze: 300, paralysis: 285, burn: 270 }
 
       # Function telling if a status can be applyied
-      # @param status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn
+      # @param status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :flinch
       # @param target [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
@@ -46,7 +46,7 @@ module Battle
       end
 
       # Function that actually change the status
-      # @param status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :cure
+      # @param status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :flinch, :cure
       # @param target [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
@@ -60,7 +60,7 @@ module Battle
           target.send(STATUS_APPLY_METHODS[status], true)
           @scene.visual.show_rmxp_animation(target, STATUS_APPLY_ANIMATION[status])
         end
-        @scene.display_message(parse_text_with_pokemon(19, message_overwrite, target))
+        @scene.display_message(parse_text_with_pokemon(19, message_overwrite, target)) if message_overwrite
         exec_hooks(StatusChangeHandler, :post_status_change, binding)
       rescue Hooks::ForceReturn => e
         return e.data
@@ -69,7 +69,7 @@ module Battle
       end
 
       # Function that test if the change is possible and perform the change if so
-      # @param status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :cure
+      # @param status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :flinch, :cure
       # @param target [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
@@ -77,6 +77,7 @@ module Battle
         return process_prevention_reason unless status_appliable?(status, target, launcher, skill)
 
         status_change(status, target, launcher, skill, message_overwrite: message_overwrite)
+        launcher&.last_successfull_move = skill.db_symbol if skill
       end
 
       private
@@ -99,10 +100,10 @@ module Battle
       end
 
       class << self
-        # Function that registers a post_status_change hook
-        # @param reason [String] reason of the post_status_change registration
+        # Function that registers a status_prevention hook
+        # @param reason [String] reason of the status_prevention registration
         # @yieldparam handler [StatusChangeHandler]
-        # @yieldparam status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :cure
+        # @yieldparam status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :flinch, :cure
         # @yieldparam target [PFM::PokemonBattler]
         # @yieldparam launcher [PFM::PokemonBattler, nil] Potential launcher of a move
         # @yieldparam skill [Battle::Move, nil] Potential move used
@@ -120,10 +121,10 @@ module Battle
           end
         end
 
-        # Function that registers a status_prevention hook
-        # @param reason [String] reason of the status_prevention registration
+        # Function that registers a post_status_change hook
+        # @param reason [String] reason of the post_status_change registration
         # @yieldparam handler [StatusChangeHandler]
-        # @yieldparam status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :cure
+        # @yieldparam status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :flinch, :cure
         # @yieldparam target [PFM::PokemonBattler]
         # @yieldparam launcher [PFM::PokemonBattler, nil] Potential launcher of a move
         # @yieldparam skill [Battle::Move, nil] Potential move used
@@ -138,6 +139,23 @@ module Battle
             )
           end
         end
+      end
+    end
+
+    # Steadfast ability
+    StatusChangeHandler.register_post_status_change_hook('PSDK post status: Steadfast') do |handler, status, target|
+      next if status != :flinch || target.hp <= 0 || target.ability_db_symbol != :steadfast
+
+      handler.scene.visual.show_ability(target)
+      handler.logic.stat_change_handler.stat_change_with_process(:spd, 1, target)
+    end
+
+    # Inner Focus
+    StatusChangeHandler.register_status_prevention_hook('PSDK post status: Inner Focus') do |handler, status, target|
+      next if status != :flinch || target.hp <= 0 || target.ability_db_symbol != :inner_focus
+
+      next handler.prevent_change do
+        handler.scene.visual.show_ability(target)
       end
     end
 

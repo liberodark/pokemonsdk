@@ -22,6 +22,9 @@ module Battle
     # Get the item change handler
     # @return [Battle::Logic::StatusChangeHandler]
     attr_reader :status_change_handler
+    # Get the damage handler
+    # @return [Battle::Logic::DamageHandler]
+    attr_reader :damage_handler
     # Create a new Logic instance
     # @param battle_scene [Scene] scene that hold the logic object
     def initialize(battle_scene)
@@ -42,6 +45,7 @@ module Battle
       @stat_change_handler = StatChangeHandler.new(self, battle_scene)
       @item_change_handler = ItemChangeHandler.new(self, battle_scene)
       @status_change_handler = StatusChangeHandler.new(self, battle_scene)
+      @damage_handler = DamageHandler.new(self, battle_scene)
     end
 
     # Return the number of bank in the current battle

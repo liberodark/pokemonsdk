@@ -485,6 +485,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01000 ChangeH
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01001 StatChangeHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01002 ItemChangeHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01003 StatusChangeHandler.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01004 DamageHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00100 PokemonSprite.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00101 TrainerSprite.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00102 GroundSprite.rb

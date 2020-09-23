@@ -15,6 +15,7 @@ module Battle
         target.battle_item = db_symbol == :none ? 0 : GameData::Item[db_symbol].id
         target.item_holding = target.battle_item if overwrite
         exec_hooks(ItemChangeHandler, :post_item_change, binding)
+        launcher&.last_successfull_move = skill.db_symbol if skill
       rescue Hooks::ForceReturn => e
         return e.data
       end

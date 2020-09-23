@@ -46,6 +46,12 @@ module Battle
       # TODO: Implement an animation for that & write the code
     end
 
+    # Show the pokemon switch form animation
+    # @param target [PFM::PokemonBattler]
+    def show_switch_form_animation(target)
+      # TODO: Implement an animation for that & write the code
+    end
+
     # Make a move animation
     # @param user [PFM::PokemonBattler]
     # @param targets [Array<PFM::PokemonBattler>]
