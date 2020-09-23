@@ -13,6 +13,15 @@ module Battle
     attr_reader :bags
     # @return [Battle::Logic::BattleInfo]
     attr_reader :battle_info
+    # Get the stat change handler
+    # @return [Battle::Logic::StatChangeHandler]
+    attr_reader :stat_change_handler
+    # Get the item change handler
+    # @return [Battle::Logic::ItemChangeHandler]
+    attr_reader :item_change_handler
+    # Get the item change handler
+    # @return [Battle::Logic::StatusChangeHandler]
+    attr_reader :status_change_handler
     # Create a new Logic instance
     # @param battle_scene [Scene] scene that hold the logic object
     def initialize(battle_scene)
@@ -30,6 +39,9 @@ module Battle
       @switch_request = []
       @evolve_request = []
       $game_temp.battle_turn = 0
+      @stat_change_handler = StatChangeHandler.new(self, battle_scene)
+      @item_change_handler = ItemChangeHandler.new(self, battle_scene)
+      @status_change_handler = StatusChangeHandler.new(self, battle_scene)
     end
 
     # Return the number of bank in the current battle
