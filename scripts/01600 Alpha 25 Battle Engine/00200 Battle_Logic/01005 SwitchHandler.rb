@@ -24,7 +24,10 @@ module Battle
       # @param with [PFM::PokemonBattler, nil] Pokemon who is switched in
       # @note In the event we're starting the battle who & with should be identic, this help to process effect like Intimidate
       def execute_switch_events(who, with)
-        with.battle_effect = Pokemon_Effect.new if with != who
+        if with != who
+          with.battle_effect = Pokemon_Effect.new
+          with.turn_count = 0
+        end
         exec_hooks(SwitchHandler, :switch_event, binding)
       end
 
@@ -197,11 +200,11 @@ module Battle
       end
       # If with is entering switched from another Pokemon and a foe has the ability
       if who != with
-        handler.logic.foes_of(who).each do |foe|
+        handler.logic.foes_of(with).each do |foe|
           next if foe.ability_db_symbol != :intimidate
 
           handler.scene.visual.show_ability(foe)
-          handler.logic.stat_change_handler.stat_change_with_process(:atk, -1, who)
+          handler.logic.stat_change_handler.stat_change_with_process(:atk, -1, with)
         end
       end
     end

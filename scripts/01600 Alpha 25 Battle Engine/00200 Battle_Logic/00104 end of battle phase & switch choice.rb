@@ -2,6 +2,7 @@ module Battle
   class Logic
     # Function that distribute the exp to all Pokemon and switch dead pokemon
     def battle_phase_end
+      end_turn_handler.process_events
       # Distribute exp and add all enemy that are dead to switch request
       dead_enemy_battler_during_this_turn.each do |enemy|
         distribute_exp_for(enemy)
