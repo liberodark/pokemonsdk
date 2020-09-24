@@ -224,8 +224,8 @@ module Battle
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat_decr: Flower Veil') do |handler, _, target, launcher|
       next if target == launcher
 
-      allies = handler.logic.allies_of(target)
-      fv = allies.find { |ally| ally.alive? && ally.ability_db_symbol == :flower_veil && ally.type_grass? }
+      allies = handler.logic.alive_battlers(target.bank)
+      fv = allies.find { |ally| ally.ability_db_symbol == :flower_veil && ally.type_grass? }
       next unless fv
 
       next handler.prevent_change do

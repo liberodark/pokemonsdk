@@ -46,9 +46,24 @@ module Battle
       priority_order(action_by_priority).each do |priority|
         @actions.concat(action_by_priority[priority])
       end
+      define_pokemon_action_properties
     end
 
     private
+
+    # Define all pokemon action properties based on the actions
+    def define_pokemon_action_properties
+      all_alive_battlers.each do |battler|
+        battler.attack_order = Float::INFINITY
+      end
+      index = 0
+      @actions.each do |action|
+        next unless action[:type] == :attack
+
+        action[:launcher].attack_order = index
+        index += 1
+      end
+    end
 
     # Group the action by priority
     # @return [Hash{Integer => Hash}]

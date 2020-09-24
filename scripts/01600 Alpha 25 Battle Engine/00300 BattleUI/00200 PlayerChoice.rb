@@ -21,6 +21,9 @@ module BattleUI
     POSSIBLE_RESULT = %i[attack bag pokemon flee]
     # @return [Symbol, nil] The result
     attr_reader :result
+    # Tell if the player can switch or not
+    # @return [Boolean]
+    attr_accessor :can_switch
     # Create a new PlayerChoice Window
     # @param viewport [Viewport]
     def initialize(viewport)
@@ -29,6 +32,7 @@ module BattleUI
       create_texts
       load_cursor
       @index = 0
+      @can_switch = true
       self.active = true
       self.visible = false
     end
@@ -66,6 +70,11 @@ module BattleUI
     # Validate the player choice
     def validate
       @result = POSSIBLE_RESULT[@index]
+      if @result == :pokemon && !@can_switch
+        $game_system.se_play($data_system.buzzer_se)
+        @result = nil
+        return
+      end
       $game_system.se_play($data_system.decision_se)
     end
 

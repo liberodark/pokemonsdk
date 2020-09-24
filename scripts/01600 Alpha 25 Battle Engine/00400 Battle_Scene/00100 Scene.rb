@@ -115,8 +115,16 @@ module Battle
     # @note It should call the battle_begin event
     def transition_animation
       @visual.show_transition
-      @next_update = :player_action_choice
+      @next_update = :show_enter_event
+    end
+
+    # Method that call all the switch event for the Pokemon that entered the battle in the begining
+    def show_enter_event
+      @logic.all_alive_battlers.sort_by(&:spd).reverse.each do |battler|
+        @logic.switch_handler.execute_switch_events(battler, battler)
+      end
       call_event(:battle_begin)
+      @next_update = :player_action_choice
     end
 
     # Create the message proc ensuring the scene is still updated

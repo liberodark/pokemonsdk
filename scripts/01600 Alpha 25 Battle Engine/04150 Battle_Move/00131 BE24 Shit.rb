@@ -46,6 +46,8 @@ module Battle
 
     # Reset the skill/move information
     def reset
+      return unless @id_bis
+
       @id = @id_bis
       @pp = @pp_bis if @pp_bis
       @ppmax = @pp_max_bis if @pp_max_bis

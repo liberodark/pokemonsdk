@@ -32,7 +32,6 @@ module Battle
       # @type [PFM::PokemonBattler]
       with = action[:with]
       visual = @battle_scene.visual
-      # TODO call pre-switch processor
       # @type [BattleUI::PokemonSprite]
       (sprite = visual.battler_sprite(who.bank, who.position)).start_animation_going_in
       visual.hide_info_bar(who)
@@ -50,8 +49,7 @@ module Battle
         visual.update
         Graphics.update
       end
-      # TODO switch animation
-      # TODO call post-switch processor
+      switch_handler.execute_switch_events(who, with)
     end
 
     # Perform the action of fleeing (Roaming Pokemon)

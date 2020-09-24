@@ -209,8 +209,8 @@ module Battle
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Safeguard') do |handler, status, target, launcher, skill|
       next if status == :cure || launcher == target || skill&.db_symbol == :rest
 
-      allies = handler.logic.allies_of(target)
-      fv = allies.find { |ally| ally.alive? && ally.ability_db_symbol == :flower_veil && ally.type_grass? }
+      allies = handler.logic.alive_battlers(target.bank)
+      fv = allies.find { |ally| ally.ability_db_symbol == :flower_veil && ally.type_grass? }
       next unless fv
 
       next handler.prevent_change do

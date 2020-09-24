@@ -27,9 +27,11 @@ module Battle
     # @param pokemon_index [Integer] Index of the Pokemon in the party
     def show_player_choice_begin(pokemon_index)
       @viewport.rect.height = @viewport_sub.rect.y - @viewport.rect.y
+      pokemon = @battle_scene.logic.battler(0, pokemon_index)
       @locking = true
       @player_choice_ui.reset
       @player_choice_ui.visible = true
+      @player_choice_ui.can_switch = @battle_scene.logic.switch_handler.can_switch?(pokemon)
       spc_show_message(pokemon_index)
       spc_start_bouncing_animation(pokemon_index)
     end

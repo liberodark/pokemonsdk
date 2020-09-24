@@ -31,18 +31,18 @@ module Battle
     # @return [Array<PFM::PokemonBattler>]
     def foes_of(pokemon, check_adjacent = false)
       return [] if pokemon.position.nil? || pokemon.position >= @battle_info.vs_type
-      bank = pokemon.bank
+
+      vs_type = @battle_info.vs_type
       position = pokemon.position
-      foes = []
-      @battlers.each_with_index do |battlers, index|
-        next if index == bank
-        battlers.each_with_index do |foe, foe_position|
-          break if foe_position >= @battle_info.vs_type
-          next unless foe.position
-          foes << foe if !check_adjacent || (foe.position - position).abs <= 1
+      return @battlers.flat_map.with_index do |battler_bank, bank|
+        next nil.to_a if bank == pokemon.bank
+
+        next battler_bank.select.with_index do |foe, foe_position|
+          next false unless foe&.position
+
+          next foe_position < vs_type && (!check_adjacent || (foe_position - position).abs <= 1)
         end
       end
-      return foes
     end
 
     # Return the adjacent allies
@@ -52,25 +52,34 @@ module Battle
       allies_of(pokemon, true)
     end
 
-    # Return the allies
+    # Return the allies (excluding the pokemon)
     # @param pokemon [PFM::PokemonBattler]
     # @param check_adjacent [Boolean]
     # @return [Array<PFM::PokemonBattler>]
     def allies_of(pokemon, check_adjacent = false)
       return [] if pokemon.position.nil? || pokemon.position >= @battle_info.vs_type
-      bank = pokemon.bank
+
+      vs_type = @battle_info.vs_type
       position = pokemon.position
-      allies = []
-      @battlers.each_with_index do |battlers, index|
-        next if index != bank
-        battlers.each_with_index do |ally, ally_position|
-          break if ally_position >= @battle_info.vs_type
-          next unless ally.position
-          next if position == ally_position # We don't want the pokemon
-          allies << ally if !check_adjacent || (ally.position - position).abs <= 1
-        end
+      return @battlers[pokemon.bank].select.with_index do |ally, ally_position|
+        next false unless ally&.position
+
+        next ally_position != position && ally_position < vs_type && (!check_adjacent || (ally_position - position).abs <= 1)
       end
-      return allies
+    end
+
+    # Return all the alive battler of a bank
+    # @param bank [Integer]
+    # @return [Array<PFM::PokemonBattler>]
+    def alive_battlers(bank)
+      max_pos = @battle_info.vs_type - 1
+      return @battlers[bank].select { |battler| battler&.position&.between?(0, max_pos) && battler.alive? }
+    end
+
+    # Return all alive battlers
+    # @return [Array<PFM::PokemonBattler>]
+    def all_alive_battlers
+      return @battlers.each_index.flat_map { |bank| alive_battlers(bank) }
     end
 
     # Load the battlers from the battle infos

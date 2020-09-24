@@ -64,6 +64,7 @@ module BattleUI
     # Start the going out (of ball) Animation
     def start_animation_going_out
       self.zoom = 0
+      self.visible = true
       reset_position
       @animation = proc do
         self.zoom = zoom_x + 0.1
