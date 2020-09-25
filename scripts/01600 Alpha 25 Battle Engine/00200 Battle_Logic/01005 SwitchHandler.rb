@@ -198,15 +198,6 @@ module Battle
           handler.logic.stat_change_handler.stat_change_with_process(:atk, -1, foe)
         end
       end
-      # If with is entering switched from another Pokemon and a foe has the ability
-      if who != with
-        handler.logic.foes_of(with).each do |foe|
-          next if foe.ability_db_symbol != :intimidate
-
-          handler.scene.visual.show_ability(foe)
-          handler.logic.stat_change_handler.stat_change_with_process(:atk, -1, with)
-        end
-      end
     end
 
     # Trace
