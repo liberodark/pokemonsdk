@@ -127,7 +127,7 @@ module Yuki
       text.bold = true if (style & 1) != 0
       text.italic = true if (style & 2) != 0
       if bigger_text?
-        @text.size = Font::FONT_SIZE
+        @text.size = Fonts.get_default_size(1) # Font::FONT_SIZE
         @text.y += 4
       end
     end
