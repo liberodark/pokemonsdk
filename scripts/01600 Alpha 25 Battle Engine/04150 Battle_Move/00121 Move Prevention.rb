@@ -62,6 +62,13 @@ module Battle
     end
   end
 
+  # Mold Breaker
+  Move.register_move_prevention_user_hook('PSDK Move prev user: Mold Breaker') do |user, _, _|
+    next if user.ability_db_symbol != :mold_breaker
+
+    user.ability_used = false
+  end
+
   # Torment registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Torment') do |user, _, move|
     if user.battle_effect.has_torment_effect? && move.db_symbol != user.last_successfull_move
@@ -193,6 +200,7 @@ module Battle
   # Sap Sipper registration
   Move.register_move_prevention_target_hook('PSDK Move prev target: Sap Sipper') do |user, target, move|
     next false if target.ability_db_symbol != :sap_sipper || !move.type_grass? || move.db_symbol == :aromatherapy
+    next unless user.can_be_lowered_or_canceled?
 
     move.scene.visual.show_ability(target)
     move.logic.stat_change_handler.stat_change_with_process(:atk, 1, target, user, move)

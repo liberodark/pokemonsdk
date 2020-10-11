@@ -151,8 +151,9 @@ module Battle
     end
 
     # Inner Focus
-    StatusChangeHandler.register_status_prevention_hook('PSDK post status: Inner Focus') do |handler, status, target|
+    StatusChangeHandler.register_status_prevention_hook('PSDK post status: Inner Focus') do |handler, status, target, launcher|
       next if status != :flinch || target.hp <= 0 || target.ability_db_symbol != :inner_focus
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -211,7 +212,7 @@ module Battle
 
       allies = handler.logic.alive_battlers(target.bank)
       fv = allies.find { |ally| ally.ability_db_symbol == :flower_veil && ally.type_grass? }
-      next unless fv
+      next unless fv && launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(fv)
@@ -220,8 +221,9 @@ module Battle
     end
 
     # Own Tempo
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Own Tempo') do |handler, status, target|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Own Tempo') do |handler, status, target, launcher|
       next if status != :confuse || target.ability_db_symbol != :own_tempo
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -239,11 +241,10 @@ module Battle
     end
 
     # Leaf Guard
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Leaf Guard') do |handler, status, target|
-      next if target.ability_db_symbol != :leaf_guard
-
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Leaf Guard') do |handler, status, target, launcher|
       msg_id = StatusChangeHandler::STATUS_LEAF_GUARD_MSG[status]
       next if !msg_id || !$env.sunny? || target.ability_db_symbol != :leaf_guard
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -252,8 +253,9 @@ module Battle
     end
 
     # Vital Spirit
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Vital Spirit') do |handler, status, target|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Vital Spirit') do |handler, status, target, launcher|
       next if status != :sleep || target.ability_db_symbol != :vital_spirit
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -262,8 +264,9 @@ module Battle
     end
 
     # Insomnia
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Insomnia') do |handler, status, target|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Insomnia') do |handler, status, target, launcher|
       next if status != :sleep || target.ability_db_symbol != :insomnia
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -290,8 +293,9 @@ module Battle
     end
 
     # Magma Armor
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Magma Armor') do |handler, status, target|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Magma Armor') do |handler, status, target, launcher|
       next if status != :freeze || target.ability_db_symbol != :magma_armor
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -318,8 +322,9 @@ module Battle
     end
 
     # Immunity
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Immunity') do |handler, status, target|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Immunity') do |handler, status, target, launcher|
       next if status != :poison && status != :toxic || target.ability_db_symbol != :immunity
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -346,8 +351,9 @@ module Battle
     end
 
     # Limber
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Limber') do |handler, status, target|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Limber') do |handler, status, target, launcher|
       next if status != :paralysis || target.ability_db_symbol != :limber
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -374,8 +380,9 @@ module Battle
     end
 
     # Water Veil
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Water Veil') do |handler, status, target|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Water Veil') do |handler, status, target, launcher|
       next if status != :burn || target.ability_db_symbol != :water_veil
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)

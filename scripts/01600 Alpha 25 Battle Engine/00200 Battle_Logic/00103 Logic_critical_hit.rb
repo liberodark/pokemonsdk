@@ -29,7 +29,8 @@ module Battle
     # @param initial_critical_count [Integer] Initial critical count of the move
     # @return [Integer]
     def calc_critical_count(user, target, initial_critical_count)
-      return 0 if NO_CRITICAL_ABILITIES.include?(target.ability_db_symbol)
+      return 0 if user.can_be_lowered_or_canceled?(NO_CRITICAL_ABILITIES.include?(target.ability_db_symbol))
+
       critical_count = initial_critical_count
       critical_count += 2 if user.focus_energy?
       critical_count += 1 if user.ability_db_symbol == :super_luck

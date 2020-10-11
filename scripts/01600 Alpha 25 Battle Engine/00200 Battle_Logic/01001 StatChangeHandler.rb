@@ -214,8 +214,8 @@ module Battle
     end
 
     # Register the Simple ability
-    StatChangeHandler.register_stat_change_hook('PSDK stat_change: Simple') do |_, _, power, target|
-      next power * 2 if target.ability_db_symbol == :simple
+    StatChangeHandler.register_stat_change_hook('PSDK stat_change: Simple') do |_, _, power, target, launcher|
+      next power * 2 if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :simple)
 
       next nil
     end
@@ -226,7 +226,7 @@ module Battle
 
       allies = handler.logic.alive_battlers(target.bank)
       fv = allies.find { |ally| ally.ability_db_symbol == :flower_veil && ally.type_grass? }
-      next unless fv
+      next unless fv && launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(fv)
@@ -238,7 +238,7 @@ module Battle
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Clear Body') do |handler, _, target, launcher|
       next if target == launcher
 
-      if target.ability_db_symbol == :clear_body
+      if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :clear_body)
         next handler.prevent_change do
           handler.scene.visual.show_ability(target)
           handler.scene.display_message(parse_text_with_pokemon(19, 198, target))
@@ -250,7 +250,7 @@ module Battle
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: White Smoke') do |handler, _, target, launcher|
       next if target == launcher
 
-      if target.ability_db_symbol == :white_smoke
+      if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :white_smoke)
         next handler.prevent_change do
           handler.scene.visual.show_ability(target)
           handler.scene.display_message(parse_text_with_pokemon(19, 198, target))
@@ -262,7 +262,7 @@ module Battle
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Hyper Cutter') do |handler, stat, target, launcher|
       next if target == launcher || stat != :atk
 
-      if target.ability_db_symbol == :hyper_cutter
+      if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :hyper_cutter)
         next handler.prevent_change do
           handler.scene.visual.show_ability(target)
           handler.scene.display_message(parse_text_with_pokemon(19, 201, target))
@@ -285,7 +285,7 @@ module Battle
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Keen Eye') do |handler, stat, target, launcher|
       next if target == launcher || stat != :acc
 
-      if target.ability_db_symbol == :keen_eye
+      if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :keen_eye)
         next handler.prevent_change do
           handler.scene.visual.show_ability(target)
           handler.scene.display_message(parse_text_with_pokemon(19, 207, target))

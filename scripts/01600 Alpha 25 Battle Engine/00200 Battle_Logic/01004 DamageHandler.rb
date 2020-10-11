@@ -156,8 +156,9 @@ module Battle
     end
 
     # Water Absorb
-    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Water Absorb') do |handler, _, target, _, skill|
+    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Water Absorb') do |handler, _, target, launcher, skill|
       next unless skill&.type_water? && !target.battle_effect.has_heal_block_effect? && target.ability_db_symbol == :water_absorb
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -166,8 +167,9 @@ module Battle
     end
 
     # Volt Absorb
-    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Volt Absorb') do |handler, _, target, _, skill|
+    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Volt Absorb') do |handler, _, target, launcher, skill|
       next unless skill&.type_electric? && !target.battle_effect.has_heal_block_effect? && target.ability_db_symbol == :volt_absorb
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -186,8 +188,9 @@ module Battle
     end
 
     # Lightning Rod
-    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Lightning Rod') do |handler, _, target, _, skill|
+    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Lightning Rod') do |handler, _, target, launcher, skill|
       next unless skill&.type_electric? && target.ability_db_symbol == :lightning_rod
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -196,8 +199,9 @@ module Battle
     end
 
     # Storm Drain
-    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Storm Drain') do |handler, _, target, _, skill|
+    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Storm Drain') do |handler, _, target, launcher, skill|
       next unless skill&.type_water? && target.ability_db_symbol == :storm_drain
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -206,8 +210,9 @@ module Battle
     end
 
     # Motor Drive
-    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Motor Drive') do |handler, _, target, _, skill|
+    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Motor Drive') do |handler, _, target, launcher, skill|
       next unless skill&.type_electric? && target.ability_db_symbol == :motor_drive
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -216,8 +221,9 @@ module Battle
     end
 
     # Flash Fire
-    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Flash Fire') do |handler, _, target, _, skill|
+    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Flash Fire') do |handler, _, target, launcher, skill|
       next unless skill&.type_fire? && target.ability_db_symbol == :flash_fire
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         # TODO: Apply power boost properly!
@@ -227,8 +233,9 @@ module Battle
     end
 
     # Dry Skin
-    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Dry Skin') do |handler, _, target, _, skill|
+    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Dry Skin') do |handler, _, target, launcher, skill|
       next unless skill&.type_water? && target.ability_db_symbol == :dry_skin
+      next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
@@ -422,8 +429,11 @@ module Battle
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Aftermath') do |handler, _, target, launcher, skill|
       next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.ability_db_symbol == :aftermath
       next unless launcher.max_hp >= 4
-      next if handler.logic.allies_of(target).any? { |pkmn| pkmn && pkmn.hp > 0 && pkmn.ability_db_symbol == :damp }
-      next if handler.logic.foes_of(target).any? { |pkmn| pkmn && pkmn.hp > 0 && pkmn.ability_db_symbol == :damp }
+
+      if launcher.can_be_lowered_or_canceled?
+        next if handler.logic.allies_of(target).any? { |pkmn| pkmn && pkmn.hp > 0 && pkmn.ability_db_symbol == :damp }
+        next if handler.logic.foes_of(target).any? { |pkmn| pkmn && pkmn.hp > 0 && pkmn.ability_db_symbol == :damp }
+      end
 
       handler.scene.visual.show_ability(target)
       handler.scene.visual.show_hp_animations([launcher], [launcher.max_hp / 4])

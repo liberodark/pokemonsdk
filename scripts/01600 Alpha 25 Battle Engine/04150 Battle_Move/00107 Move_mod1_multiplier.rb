@@ -17,7 +17,7 @@ module Battle
       # SR
       result *= calc_mod1_sr
       # FF
-      return result * calc_mod1_ff(user)
+      return result * calc_mod1_ff(user, target)
     end
 
     # Calculate the burn mod
@@ -77,9 +77,10 @@ module Battle
 
     # Calculate the Flash Fire mod
     # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
     # @return [Numeric]
-    def calc_mod1_ff(user)
-      if user.ability_db_symbol == :flash_fire
+    def calc_mod1_ff(user, target)
+      if target.can_be_lowered_or_canceled?(user.ability_db_symbol == :flash_fire)
         return 1.5 if user.last_hit_by_move&.type == GameData::Types::FIRE
       end
       return 1

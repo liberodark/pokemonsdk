@@ -97,6 +97,29 @@ module PFM
       $actors.include?(@original)
     end
 
+    # Test if the Pokemon can have a lowering stat or have its move canceled (return false if the Pokemon has mold breaker)
+    #
+    # List of ability that should be affected:
+    # :battle_armor|:clear_body|:damp|:dry_skin|:filter|:flash_fire|:flower_gift|:heatproof|:hyper_cutter|:immunity|:inner_focus|:insomnia|
+    # :keen_eye|:leaf_guard|:levitate|:lightning_rod|:limber|:magma_armor|:marvel_scale|:motor_drive|:oblivious|:own_tempo|:sand_veil|:shell_armor|
+    # :shield_dust|:simple|:snow_cloak|:solid_rock|:soundproof|:sticky_hold|:storm_drain|:sturdy|:suction_cups|:tangled_feet|:thick_fat|:unaware|:vital_spirit|
+    # :volt_absorb|:water_absorb|:water_veil|:white_smoke|:wonder_guard|:big_pecks|:contrary|:friend_guard|:heavy_metal|:light_metal|:magic_bounce|:multiscale|
+    # :sap_sipper|:telepathy|:wonder_skin|:aroma_veil|:bulletproof|:flower_veil|:fur_coat|:overcoat|:sweet_veil|:dazzling|:disguise|:fluffy|:queenly_majesty|
+    # :water_bubble|:mirror_armor|:punk_rock|:ice_scales|:ice_face|:pastel_veil
+    # @param test [Boolean] if the test should be done
+    # @return [Boolean] potential changed result
+    def can_be_lowered_or_canceled?(test = true)
+      return false unless test
+      return test if ability_db_symbol != :mold_breaker
+
+      unless ability_used
+        @scene.visual.show_ability(self)
+
+        self.ability_used = true
+      end
+      return false
+    end
+
     private
 
     # Copy the properties of the original pokemon
