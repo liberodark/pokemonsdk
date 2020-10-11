@@ -327,5 +327,21 @@ module Battle
       handler.scene.visual.show_ability(with)
       handler.logic.stat_change_handler.stat_change_with_process(random_foe.dfe < random_foe.dfs ? :atk : :ats, 1, with)
     end
+
+    # Air Lock
+    SwitchHandler.register_switch_event_hook('PSDK Switch: Air Lock') do |handler, _, with|
+      next if with.ability_db_symbol != :air_lock || $env.current_weather == 0
+
+      handler.scene.visual.show_ability(with)
+      handler.logic.weather_change_handler.weather_change(:none, 0)
+    end
+
+    # Cloud Nine
+    SwitchHandler.register_switch_event_hook('PSDK Switch: Cloud Nine') do |handler, _, with|
+      next if with.ability_db_symbol != :cloud_nine || $env.current_weather == 0
+
+      handler.scene.visual.show_ability(with)
+      handler.logic.weather_change_handler.weather_change(:none, 0)
+    end
   end
 end
