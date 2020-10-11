@@ -36,6 +36,7 @@ module Battle
     def battle_end
       log_info('Exiting battle')
       # TODO : battle_end procedure
+      $env.apply_weather(0, 0) unless $game_switches[Yuki::Sw::MixWeather]
       $game_temp.in_battle = false
       return_to_last_scene
     end

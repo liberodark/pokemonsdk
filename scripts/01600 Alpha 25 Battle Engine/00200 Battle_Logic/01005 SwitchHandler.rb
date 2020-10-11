@@ -224,10 +224,11 @@ module Battle
     SwitchHandler.register_switch_event_hook('PSDK switch: Drizzle') do |handler, _, with|
       next if with.ability_db_symbol != :drizzle
 
-      # TODO: WeatherHandler
-      # next unless handler.logic.weather_handler.can_change_weather?
+      weather_handler = handler.logic.weather_change_handler
+      next unless weather_handler.weather_appliable?(:rain)
+
       nb_turn = with.item_db_symbol == :damp_rock ? 8 : 5
-      # handler.logic.weather_handler.change_weather(:rain, nb_turn)
+      weather_handler.weather_change(:rain, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 493)
     end
@@ -236,10 +237,11 @@ module Battle
     SwitchHandler.register_switch_event_hook('PSDK switch: Drought') do |handler, _, with|
       next if with.ability_db_symbol != :drought
 
-      # TODO: WeatherHandler
-      # next unless handler.logic.weather_handler.can_change_weather?
+      weather_handler = handler.logic.weather_change_handler
+      next unless weather_handler.weather_appliable?(:sunny)
+
       nb_turn = with.item_db_symbol == :damp_rock ? 8 : 5
-      # handler.logic.weather_handler.change_weather(:sunny, nb_turn)
+      weather_handler.weather_change(:sunny, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 492)
     end
@@ -248,10 +250,11 @@ module Battle
     SwitchHandler.register_switch_event_hook('PSDK switch: Sand Stream') do |handler, _, with|
       next if with.ability_db_symbol != :sand_stream
 
-      # TODO: WeatherHandler
-      # next unless handler.logic.weather_handler.can_change_weather?
+      weather_handler = handler.logic.weather_change_handler
+      next unless weather_handler.weather_appliable?(:sandstorm)
+
       nb_turn = with.item_db_symbol == :damp_rock ? 8 : 5
-      # handler.logic.weather_handler.change_weather(:sandstorm, nb_turn)
+      weather_handler.weather_change(:sandstorm, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 494)
     end
@@ -260,10 +263,11 @@ module Battle
     SwitchHandler.register_switch_event_hook('PSDK switch: Snow Warning') do |handler, _, with|
       next if with.ability_db_symbol != :snow_warning
 
-      # TODO: WeatherHandler
-      # next unless handler.logic.weather_handler.can_change_weather?
+      weather_handler = handler.logic.weather_change_handler
+      next unless weather_handler.weather_appliable?(:hail)
+
       nb_turn = with.item_db_symbol == :damp_rock ? 8 : 5
-      # handler.logic.weather_handler.change_weather(:hail, nb_turn)
+      weather_handler.weather_change(:hail, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 494)
     end

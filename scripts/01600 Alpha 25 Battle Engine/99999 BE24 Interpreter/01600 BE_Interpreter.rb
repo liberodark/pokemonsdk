@@ -232,32 +232,7 @@ module BattleEngine
     # @param meteo_sym [Symbol] kind of weather (:rain, :sunny, :sandstorm, :heil, :fog, :none)
     # @param nb_turn [Integer] Number of turn the weather will be applied
     def weather_change(meteo_sym, nb_turn = 5)
-      case meteo_sym
-      when :rain
-        $env.apply_weather(1, nb_turn)
-        msg(parse_text_with_pokemon(18, 88, nil))
-      when :sunny
-        $env.apply_weather(2, nb_turn)
-        msg(parse_text_with_pokemon(18, 87, nil))
-      when :sandstorm
-        $env.apply_weather(3, nb_turn)
-        msg(parse_text_with_pokemon(18, 89, nil))
-      when :hail
-        $env.apply_weather(4, nb_turn)
-        msg(parse_text_with_pokemon(18, 90, nil))
-      when :fog
-        $env.apply_weather(5, nb_turn)
-        msg(parse_text_with_pokemon(18, 91, nil))
-      else
-        $env.apply_weather(0, nb_turn)
-      end
-      #> Display that the effect will not work
-      if($env.current_weather != 0 && BattleEngine.state[:air_lock])
-        ability_display(BattleEngine.state[:air_lock])
-        @scene.display_message(parse_text(18, 97)) # "The effects of the weather disappeared."
-      end
-      #> Weather ability
-      Abilities.on_weather_change
+      @scene.logic.weather_change_handler.weather_change_with_process(meteo_sym, nb_turn)
     end
 
     # Display an ability

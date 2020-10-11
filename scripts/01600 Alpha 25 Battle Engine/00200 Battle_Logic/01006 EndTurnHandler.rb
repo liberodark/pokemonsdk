@@ -53,9 +53,9 @@ module Battle
     EndTurnHandler.register_end_turn_event('PSDK end turn: Rain') do |logic, scene, battlers|
       next if $env.current_weather != 1
 
-      # TODO: Implement weather handler!
       if $env.decrease_weather_duration # Return true if stopping!
         scene.display_message(parse_text(18, 93))
+        logic.weather_change_handler.weather_change(:none, 0)
       else
         scene.visual.show_rmxp_animation(battlers.first || logic.battler(0, 0), 493)
       end
@@ -64,9 +64,9 @@ module Battle
     EndTurnHandler.register_end_turn_event('PSDK end turn: Sunny') do |logic, scene, battlers|
       next if $env.current_weather != 2
 
-      # TODO: Implement weather handler!
       if $env.decrease_weather_duration # Return true if stopping!
         scene.display_message(parse_text(18, 92))
+        logic.weather_change_handler.weather_change(:none, 0)
       else
         scene.visual.show_rmxp_animation(battlers.first || logic.battler(0, 0), 492)
       end
@@ -75,9 +75,9 @@ module Battle
     EndTurnHandler.register_end_turn_event('PSDK end turn: Sandstorm') do |logic, scene, battlers|
       next if $env.current_weather != 3
 
-      # TODO: Implement weather handler!
       if $env.decrease_weather_duration # Return true if stopping!
         scene.display_message(parse_text(18, 94))
+        logic.weather_change_handler.weather_change(:none, 0)
       else
         scene.visual.show_rmxp_animation(battlers.first || logic.battler(0, 0), 494)
         scene.display_message(parse_text(18, 98))
@@ -93,9 +93,9 @@ module Battle
     EndTurnHandler.register_end_turn_event('PSDK end turn: Hail') do |logic, scene, battlers|
       next if $env.current_weather != 4
 
-      # TODO: Implement weather handler!
       if $env.decrease_weather_duration # Return true if stopping!
         scene.display_message(parse_text(18, 95))
+        logic.weather_change_handler.weather_change(:none, 0)
       else
         scene.visual.show_rmxp_animation(battlers.first || logic.battler(0, 0), 495)
         scene.display_message(parse_text(18, 99))
@@ -108,13 +108,12 @@ module Battle
       end
     end
 
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Fog') do |_, scene, _|
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Fog') do |logic, scene, _|
       next if $env.current_weather != 5
 
-      # TODO: Implement weather handler!
       if $env.decrease_weather_duration # Return true if stopping!
         scene.display_message(parse_text(18, 96))
-        # Useless comment
+        logic.weather_change_handler.weather_change(:none, 0)
       end
     end
 
