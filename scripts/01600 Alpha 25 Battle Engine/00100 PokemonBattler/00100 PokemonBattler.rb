@@ -49,6 +49,10 @@ module PFM
     # @return [PFM::Pokemon]
     attr_reader :original
 
+    # Get the effect hanndler
+    # @return [Battle::Effects::EffectsHandler]
+    attr_reader :effects
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param scene [Battle::Scene] current battle scene
@@ -67,6 +71,7 @@ module PFM
       @battle_item_data = []
       @battle_item = @item_holding
       @last_battle_turn = -1
+      @effects = Battle::Effects::EffectsHandler.new
     end
 
     # Reload the original ability

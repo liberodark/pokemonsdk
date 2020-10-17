@@ -63,6 +63,18 @@ module Battle
       end
     end
 
+    # Register effects
+    ItemChangeHandler.register_post_item_change_hook('PSDK item change post: Effects') do |handler, db_symbol, target, launcher, skill|
+      handler.logic.each_effects(target, launcher) do |effect|
+        next effect.on_post_item_change(handler, db_symbol, target, launcher, skill)
+      end
+    end
+    ItemChangeHandler.register_post_item_change_hook('PSDK item change pre: Effects') do |handler, db_symbol, target, launcher, skill|
+      handler.logic.each_effects(target, launcher) do |effect|
+        next effect.on_pre_item_change(handler, db_symbol, target, launcher, skill)
+      end
+    end
+
     # Register the Unburden ablility
     ItemChangeHandler.register_post_item_change_hook('PSDK item change post: Unburden') do |handler, db_symbol, target|
       next if db_symbol != :none || target.ability_db_symbol != :unburden

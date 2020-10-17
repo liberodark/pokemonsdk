@@ -197,6 +197,25 @@ module Battle
       end
     end
 
+    # Register the effects
+    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Effects') do |handler, stat, target, launcher, skill|
+      next handler.logic.each_effects(target, launcher) do |effect|
+        next effect.on_stat_decrease_prevention(handler, stat, target, launcher, skill)
+      end
+    end
+    StatChangeHandler.register_stat_increase_prevention_hook('PSDK stat incr: Effects') do |handler, stat, target, launcher, skill|
+      next handler.logic.each_effects(target, launcher) do |effect|
+        next effect.on_stat_decrease_prevention(handler, stat, target, launcher, skill)
+      end
+    end
+    StatChangeHandler.register_stat_change_hook('PSDK stat_change: Effects') do |handler, stat, power, target, launcher|
+      handler.logic.each_effects(target, launcher) do |effect|
+        result = effect.on_stat_change(handler, stat, power, target, launcher, skill)
+        power = result if result.is_a?(Integer)
+      end
+      next power
+    end
+
     # Register the no stat change effect
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: No Stat Change') do |_, _, target|
       next :prevent if target.battle_effect.has_no_stat_change_effect?

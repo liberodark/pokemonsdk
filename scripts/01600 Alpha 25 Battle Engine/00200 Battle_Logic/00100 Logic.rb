@@ -13,6 +13,15 @@ module Battle
     attr_reader :bags
     # @return [Battle::Logic::BattleInfo]
     attr_reader :battle_info
+    # Get the terrain effects
+    # @return [Effects::EffectsHandler]
+    attr_reader :terrain_effects
+    # Get the bank effects
+    # @return [Array<Effects::EffectsHandler>]
+    attr_reader :bank_effects
+    # Get the position effects
+    # @return [Array<Array<Effects::EffectsHandler>>]
+    attr_reader :position_effects
     # Create a new Logic instance
     # @param battle_scene [Scene] scene that hold the logic object
     def initialize(battle_scene)
@@ -24,6 +33,10 @@ module Battle
       @actions = []
       @bags = @battle_info.bags
       @battlers = []
+      @terrain_effects = Effects::EffectsHandler.new
+      @bank_effects = Array.new(@bags.size) { Effects::EffectsHandler.new }
+      @position_effects = Array.new(@bags.size) { Array.new(@battle_info.vs_type) { Effects::EffectsHandler.new } }
+      # TODO: Remove global_states bank_states
       @global_states = {}
       @bank_states = Hash.new({})
       @battle_result = -1
@@ -72,6 +85,29 @@ module Battle
         move_critical_rng: @move_critical_rng.seed,
         move_accuracy_rng: @move_accuracy_rng.seed
       }
+    end
+
+    # Execute a block on each effect depending on what to select as effect
+    # @param pokemons [Array<PFM::PokemonBattler>] list of battlers we want to see their effect executed
+    # @yieldparam [Effects::EffectBase]
+    # @return [Symbol, Integer, nil] the first block return that was a symbol
+    def each_effects(*pokemons)
+      # Define the proc that will ensure effects are properly called and stop the function if the result is a Symbol
+      yielder = proc do |e|
+        r = yield(e)
+        return r if r.is_a?(Symbol)
+      end
+      # Terrain effect
+      @terrain_effects.each(&yielder)
+      # Effect on Pokemon & their position
+      pokemons.each do |pokemon|
+        next unless pokemon
+        pokemon.effects.each(&yielder)
+        @position_effects[pokemon.bank][pokemon.position]&.each(&yielder)
+      end
+      # Effect on banks
+      pokemons.compact.map(&:bank).uniq.each { |bank| @bank_effects[bank]&.each(&yielder) }
+      return nil
     end
   end
 end

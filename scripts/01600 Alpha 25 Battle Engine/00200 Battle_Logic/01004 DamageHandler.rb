@@ -111,6 +111,25 @@ module Battle
       end
     end
 
+    # Effects
+    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Effects') do |handler, hp, target, launcher, skill|
+      next handler.logic.each_effects(launcher, target) do |e|
+        result = e.on_damage_prevention(handler, hp, target, launcher, skill)
+        hp = result if result.is_a?(Integer)
+        next result
+      end || hp
+    end
+    DamageHandler.register_post_damage_hook('PSDK post damage: Effects') do |handler, hp, target, launcher, skill|
+      handler.logic.each_effects(launcher, target) do |e|
+        e.on_post_damage(handler, hp, target, launcher, skill)
+      end
+    end
+    DamageHandler.register_post_damage_death_hook('PSDK post damage: Effects') do |handler, hp, target, launcher, skill|
+      handler.logic.each_effects(launcher, target) do |e|
+        e.on_post_damage(handler, hp, target, launcher, skill)
+      end
+    end
+
     # Substitute
     DamageHandler.register_damage_prevention_hook('PSDK damage perv: Substitute') do |handler, hp, target, _, skill|
       next if !skill || skill.sound_attack? || !target.battle_effect.has_substitute_effect?

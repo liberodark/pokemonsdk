@@ -39,6 +39,12 @@ module Battle
       end
     end
 
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Effects') do |logic, scene, battlers|
+      logic.each_effects(*battlers) do |e|
+        e.on_end_turn_event(logic, scene, battlers)
+      end
+    end
+
     EndTurnHandler.register_end_turn_event('PSDK end turn: Perish Song') do |logic, scene, battlers|
       battlers.each do |battler|
         next unless battler.battle_effect.has_perish_song_effect?

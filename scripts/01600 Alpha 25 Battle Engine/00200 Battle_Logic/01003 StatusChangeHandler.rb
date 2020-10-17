@@ -142,6 +142,18 @@ module Battle
       end
     end
 
+    # Effects
+    StatusChangeHandler.register_post_status_change_hook('PSDK post status: Effects') do |handler, status, target, launcher, skill|
+      handler.logic.each_effects(target, launcher) do |effect|
+        next effect.on_post_status_change(handler, status, target, launcher, skill)
+      end
+    end
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Effects') do |handler, status, target, launcher, skill|
+      next handler.logic.each_effects(target, launcher) do |effect|
+        next effect.on_status_prevention(handler, status, target, launcher, skill)
+      end
+    end
+
     # Steadfast ability
     StatusChangeHandler.register_post_status_change_hook('PSDK post status: Steadfast') do |handler, status, target|
       next if status != :flinch || target.hp <= 0 || target.ability_db_symbol != :steadfast

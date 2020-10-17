@@ -83,6 +83,23 @@ module Battle
       end
     end
 
+    # Effects
+    SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: Effects') do |handler, pokemon, skill|
+      next handler.logic.each_effects(pokemon) do |e|
+        next e.on_switch_passthrough(handler, pokemon, skill)
+      end
+    end
+    SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Effects') do |handler, pokemon, skill|
+      next handler.logic.each_effects(pokemon) do |e|
+        next e.on_switch_prevention(handler, pokemon, skill)
+      end
+    end
+    SwitchHandler.register_switch_event_hook('PSDK switch: Effects') do |handler, who, with|
+      next handler.logic.each_effects(who, with) do |e|
+        next e.on_switch_event(handler, who, with)
+      end
+    end
+
     # Shed Shell
     SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: Shed Shell') do |_, pokemon|
       next :passthrough if pokemon.item_db_symbol == :shed_shell

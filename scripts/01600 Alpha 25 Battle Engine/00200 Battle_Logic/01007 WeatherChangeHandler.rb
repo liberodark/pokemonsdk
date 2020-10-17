@@ -106,6 +106,17 @@ module Battle
       end
     end
 
+    WeatherChangeHandler.register_weather_prevention_hook('PSDK prev weather: Effects') do |handler, weather_type, last_weather|
+      next handler.logic.each_effects do |e|
+        next e.on_weather_prevention(handler, weather_type, last_weather)
+      end
+    end
+    WeatherChangeHandler.register_post_weather_change_hook('PSDK post weather: Effects') do |handler, weather_type, last_weather|
+      next handler.logic.each_effects do |e|
+        next e.on_post_weather_change(handler, weather_type, last_weather)
+      end
+    end
+
     WeatherChangeHandler.register_weather_prevention_hook('PSDK prev weather: Duplicate weather') do |_, weather, prev|
       next if weather != prev
 
