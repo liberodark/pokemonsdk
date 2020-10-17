@@ -1,6 +1,10 @@
 AllCops:
   TargetRubyVersion: "2.5"
 
+# Make sure we don't get issues with git
+Layout/EndOfLine:
+  EnforcedStyle: lf
+
 # PSDK is not a gem
 Naming/FileName:
   Enabled: false
