@@ -233,9 +233,20 @@ module Battle
     end
 
     # Register the Simple ability
-    StatChangeHandler.register_stat_change_hook('PSDK stat_change: Simple') do |_, _, power, target, launcher|
-      next power * 2 if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :simple)
+    StatChangeHandler.register_stat_change_hook('PSDK stat_change: Simple') do |handler, _, power, target, launcher|
+      if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :simple)
+        handler.scene.visual.show_ability(target)
+        next power * 2
+      end
+      next nil
+    end
 
+    # Register the Contrary ability
+    StatChangeHandler.register_stat_change_hook('PSDK stat_change: Contrary') do |handler, _, power, target, launcher|
+      if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :contrary)
+        handler.scene.visual.show_ability(target)
+        next -power
+      end
       next nil
     end
 
