@@ -121,15 +121,7 @@ module BattleEngine
     # @param target [PFM::PokemonBattler]
     # @param launcher [PFM::PokemonBattler]
     def leech_seed(target, launcher)
-      return if @ignore || target.hp <= 0
-
-      if BattleEngine::Abilities.has_ability_usable(target, 156) # Sap Sipper
-        ability_display(target)
-        change_atk(target, 1)
-        return
-      end
-      msg(parse_text_with_pokemon(19, 607, target))
-      target.battle_effect.apply_leech_seed(launcher)
+      raise 'This effect is not supposed to be called!'
     end
 
     # Apply future skill effect

@@ -208,7 +208,7 @@ module Battle
         next effect.on_stat_decrease_prevention(handler, stat, target, launcher, skill)
       end
     end
-    StatChangeHandler.register_stat_change_hook('PSDK stat_change: Effects') do |handler, stat, power, target, launcher|
+    StatChangeHandler.register_stat_change_hook('PSDK stat_change: Effects') do |handler, stat, power, target, launcher, skill|
       handler.logic.each_effects(target, launcher) do |effect|
         result = effect.on_stat_change(handler, stat, power, target, launcher, skill)
         power = result if result.is_a?(Integer)

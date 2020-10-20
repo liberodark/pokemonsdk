@@ -273,23 +273,6 @@ module Battle
       end
     end
 
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Leech Seed') do |logic, scene, battlers|
-      battlers.each do |battler|
-        next if !battler.battle_effect.has_leech_seed_effect? || battler.ability_db_symbol == :magic_guard
-
-        scene.display_message(parse_text_with_pokemon(19, 610, battler))
-        logic.damage_handler.damage_change(hp = (battler.max_hp / 8).clamp(1, Float::INFINITY), battler)
-        receiver = battler.battle_effect.get_leech_seed_receiver
-        if receiver.battle_effect.has_heal_block_effect?
-          scene.display_message(parse_text_with_pokemon(19, 890, receiver))
-          next
-        end
-
-        hp = hp * 130 / 100 if receiver.item_db_symbol == :big_root
-        scene.visual.show_hp_animations([battler], [hp])
-      end
-    end
-
     EndTurnHandler.register_end_turn_event('PSDK end turn: Poison') do |logic, scene, battlers|
       battlers.each do |battler|
         next if !battler.poisoned? || battler.ability_db_symbol == :magic_guard

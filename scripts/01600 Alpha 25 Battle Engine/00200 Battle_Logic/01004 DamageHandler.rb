@@ -48,6 +48,39 @@ module Battle
         damage_change(hp, target, launcher, skill)
       end
 
+      # Function that drains a certain quantity of HP from the target and give it to the user
+      # @param hp_factor [Integer] the division factor of HP to drain
+      # @param target [PFM::PokemonBattler] target that get HP drained
+      # @param launcher [PFM::PokemonBattler] launcher of a draining move/effect
+      # @param skill [Battle::Move, nil] Potential move used
+      # @param hp_overwrite [Integer, nil] for the number of hp drained by the move
+      def drain(hp_factor, target, launcher, skill = nil, hp_overwrite: nil)
+        hp = hp_overwrite || (target.max_hp / hp_factor).clamp(0, Float::INFINITY)
+        damage_change(hp, target, launcher, skill)
+        # TODO: Add hooks for all those stuff
+        if target.ability_db_symbol == :liquid_ooze
+          @scene.visual.show_ability(target)
+          damage_change(hp, launcher, launcher, nil)
+        elsif launcher.effects.has?(:heal_block)
+          @scene.display_message(parse_text_with_pokemon(19, 890, launcher))
+        else
+          hp = hp * 130 / 100 if launcher.item_db_symbol == :big_root
+          @scene.visual.show_hp_animations([launcher], [hp])
+        end
+      end
+
+      # Function that test if the drain damages can be dealt and perform the drain if so
+      # @param hp_factor [Integer] the division factor of HP to drain
+      # @param target [PFM::PokemonBattler]
+      # @param launcher [PFM::PokemonBattler] Potential launcher of a move
+      # @param skill [Battle::Move, nil] Potential move used
+      def drain_with_process(hp_factor, target, launcher, skill = nil)
+        hp = (target.max_hp / hp_factor).clamp(0, Float::INFINITY)
+        return process_prevention_reason unless (hp = damage_appliable(hp, target, launcher, skill))
+
+        drain(hp_factor, target, launcher, skill, hp_overwrite: hp)
+      end
+
       class << self
         # Function that registers a damage_prevention hook
         # @param reason [String] reason of the damage_prevention registration

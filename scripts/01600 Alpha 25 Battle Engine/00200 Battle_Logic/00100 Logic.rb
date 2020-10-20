@@ -20,7 +20,7 @@ module Battle
     # @return [Array<Effects::EffectsHandler>]
     attr_reader :bank_effects
     # Get the position effects
-    # @return [Array<Array<Effects::EffectsHandler>>]
+    # @return [Array<Array<Battle::Effects::EffectsHandler>>]
     attr_reader :position_effects
     # Create a new Logic instance
     # @param battle_scene [Scene] scene that hold the logic object
@@ -35,6 +35,7 @@ module Battle
       @battlers = []
       @terrain_effects = Effects::EffectsHandler.new
       @bank_effects = Array.new(@bags.size) { Effects::EffectsHandler.new }
+      # @type [Array<Array<Battle::Effects::EffectsHandler>>]
       @position_effects = Array.new(@bags.size) { Array.new(@battle_info.vs_type) { Effects::EffectsHandler.new } }
       # TODO: Remove global_states bank_states
       @global_states = {}
@@ -108,6 +109,17 @@ module Battle
       # Effect on banks
       pokemons.compact.map(&:bank).uniq.each { |bank| @bank_effects[bank]&.each(&yielder) }
       return nil
+    end
+
+    # Add an effect on a position
+    # @param effect [Battle::Effects::PositionTiedEffectBase]
+    def add_position_effect(effect)
+      bank = effect.bank
+      position = effect.position
+      # Safety code
+      @position_effects[bank] ||= []
+      @position_effects[bank][position] ||= Effects::EffectsHandler.new
+      @position_effects[bank][position].add(effect)
     end
   end
 end
