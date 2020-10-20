@@ -471,10 +471,23 @@ module Battle
     # Rough Skin
     DamageHandler.register_post_damage_hook('PSDK Post damage: Rough Skin') do |handler, _, target, launcher, skill|
       next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.ability_db_symbol == :rough_skin
-      next unless launcher.max_hp >= 8
+      damages = launcher.max_hp >= 8 ? launcher.max_hp/8 : 1
 
       handler.scene.visual.show_ability(target)
-      handler.scene.visual.show_hp_animations([launcher], [launcher.max_hp / 8])
+      handler.scene.visual.show_hp_animations([launcher], [damages])
+      text = parse_text_with_pokemon(19, 430, launcher, PFM::Text::PKNICK[0] => launcher.given_name)
+      handler.scene.display_message(text)
+    end
+
+    # Iron Barbs
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Iron Barbs') do |handler, _, target, launcher, skill|
+      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.ability_db_symbol == :iron_barbs
+      damages = launcher.max_hp >= 8 ? launcher.max_hp/8 : 1
+
+      handler.scene.visual.show_ability(target)
+      handler.scene.visual.show_hp_animations([launcher], [damages])
+      text = parse_text_with_pokemon(19, 430, launcher, PFM::Text::PKNICK[0] => launcher.given_name)
+      handler.scene.display_message(text)
     end
 
     # Aftermath
