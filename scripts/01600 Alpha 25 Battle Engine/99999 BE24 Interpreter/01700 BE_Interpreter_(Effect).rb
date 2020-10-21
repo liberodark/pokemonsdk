@@ -7,21 +7,7 @@ module BattleEngine
     # @param target [PFM::PokemonBattler]
     # @param nb_turn [Integer, Float::INFINITY]
     def attract_effect(launcher, target, nb_turn = Float::INFINITY)
-      return if @ignore || target.hp <= 0
-
-      be = target.battle_effect
-      if be.has_attract_effect? && nb_turn > 0
-        msg_fail
-      elsif nb_turn > 0 && BattleEngine._has_item(target, 219) # Mental Herb
-        msg_fail
-        set_item(target, 0, true)
-      elsif ((target.gender * launcher.gender) == 2 && !Abilities.has_ability_usable(target, 39)) || nb_turn == 0 # Oblivious
-        # m * m = 1, f * f = 4, m * f = 2, i * m = 0, i * f = 0, i * i = 0
-        be.apply_attract(launcher, nb_turn)
-        launcher.battle_effect.apply_attract(target, nb_turn) if nb_turn > 0 && BattleEngine._has_item(target, 280) # Destiny Knot
-      else
-        msg_fail
-      end
+      raise 'This effect should not be called like that'
     end
 
     # Apply flinch effect

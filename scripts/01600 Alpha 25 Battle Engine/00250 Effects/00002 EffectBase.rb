@@ -202,6 +202,24 @@ module Battle
       def on_post_weather_change(handler, weather_type, last_weather)
         nil && handler && weather_type && last_weather
       end
+
+      # Function called when we try to use a move as the user (returns :prevent if user fails)
+      # @param user [PFM::PokemonBattler]
+      # @param targets [Array<PFM::PokemonBattler>]
+      # @param move [Battle::Move]
+      # @return [:prevent, nil] :prevent if the move cannot continue
+      def on_move_prevention_user(user, targets, move)
+        nil && user && targets && move
+      end
+
+      # Function called when we try to check if the target evades the move
+      # @param user [PFM::PokemonBattler]
+      # @param target [PFM::PokemonBattler] expected target
+      # @param move [Battle::Move]
+      # @return [Boolean] if the target is evading the move
+      def on_move_prevention_target(user, target, move)
+        nil && user && target && move
+      end
     end
   end
 end

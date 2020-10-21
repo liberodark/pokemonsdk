@@ -40,18 +40,19 @@ module Battle
 
       play_animation(user, targets) # TODO: check if that works properly, eg. not playing when the move does nothing
 
-      BattleEngine.use_skill(PFM::PokemonBattler24.new(user), actual_targets.map { |i| PFM::PokemonBattler24.new(i) }, self)
-      messages = BattleEngine._message_get_all
-      BattleEngine::MessageInterpter.new(@scene).process_messages(messages)
-      messages.clear
-=begin
-      deal_damage(user, actual_targets) && # TODO: finish
-        deal_status(user, actual_targets) && # TODO: DO
-        deal_stats(user, actual_targets) && # TODO: DO
-        deal_effect(user, actual_targets) && # TODO: DO
-        deal_terrain_effect(user, actual_targets) && # TODO: DO
-        process_hooks(user, actual_targets) # TODO: rocky_helmet, iron_barbs, rough_skin
-=end
+      if self.class == Battle::Move || self.class == Battle::RecoilMove
+        BattleEngine.use_skill(PFM::PokemonBattler24.new(user), actual_targets.map { |i| PFM::PokemonBattler24.new(i) }, self)
+        messages = BattleEngine._message_get_all
+        BattleEngine::MessageInterpter.new(@scene).process_messages(messages)
+        messages.clear
+      else
+        deal_damage(user, actual_targets) && # TODO: DO
+          deal_status(user, actual_targets) && # TODO: DO
+          deal_stats(user, actual_targets) && # TODO: DO
+          deal_effect(user, actual_targets) && # TODO: DO
+          deal_terrain_effect(user, actual_targets) && # TODO: DO
+          process_hooks(user, actual_targets) # TODO: rocky_helmet, iron_barbs, rough_skin
+      end
     end
 
     # Show the move usage message
@@ -69,7 +70,7 @@ module Battle
     # @return [Array<PFM::PokemonBattler>]
     def accuracy_immunity_test(user, targets)
       return targets.select do |pokemon|
-        if target_immune?(pokemon)
+        if target_immune?(user, pokemon)
           scene.display_message(parse_text_with_pokemon(19, 210, pokemon))
           next false
         elsif rand(100) >= chance_of_hit(user, pokemon)
@@ -84,9 +85,10 @@ module Battle
     end
 
     # Test if the target is immune
+    # @param user [PFM::PokemonBattler]
     # @param target [PFM::PokemonBattler]
     # @return [Boolean]
-    def target_immune?(target)
+    def target_immune?(user, target)
       # TODO: foresight / odor_sleuth effect on target (ghost type)
       # TODO: miracle eye effect on target (dark type not immue to psy)
       return calc_type_n_multiplier(target, :type1) == 0 ||
@@ -108,6 +110,7 @@ module Battle
       # Status move does not deal damages
       return true if status?
 
+=begin
       rng = Random.new
       fibers = actual_targets.map do |target|
         damages = self.damages(user, target, rng) # /!\ test the substitute pokemon when substitute was used
@@ -128,6 +131,7 @@ module Battle
         end
       end
       process_fiber(fibers)
+=end
 
       return true
     end

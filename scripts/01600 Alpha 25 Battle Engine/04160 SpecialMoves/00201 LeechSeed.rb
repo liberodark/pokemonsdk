@@ -5,31 +5,13 @@ module Battle
       private
 
       # Test if the target is immune
+      # @param user [PFM::PokemonBattler]
       # @param target [PFM::PokemonBattler]
       # @return [Boolean]
-      def target_immune?(target)
+      def target_immune?(user, target)
         return true if target.effects.has?(:leech_seed_mark) || target.type_grass?
 
         return super
-      end
-
-      # Internal procedure of the move
-      # @param user [PFM::PokemonBattler] user of the move
-      # @param targets [Array<PFM::PokemonBattler>] expected targets
-      # @note THIS IS REWRITTEN BECAUSE THE NORMAL PROCEDURE IS NOT DONE!
-      # @todo remove this and rely on super class
-      def proceed_internal(user, targets)
-        return unless move_usable_by_user(user, targets)
-
-        usage_message(user)
-        return scene.display_message(parse_text(18, 74)) if rand(100) >= accuracy
-
-        actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
-        return if actual_targets.none?
-
-        play_animation(user, targets)
-
-        deal_effect(user, actual_targets)
       end
 
       # Function that deals the effect to the pokemon

@@ -449,10 +449,10 @@ module Battle
     # Cute Charm
     DamageHandler.register_post_damage_hook('PSDK Post damage: Cute Charm') do |handler, _, target, launcher, skill|
       next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.ability_db_symbol == :cute_charm
-      next unless launcher.gender * target.gender == 2
+      next unless launcher.gender * target.gender == 2 && launcher.effects.has?(:attract)
 
       handler.scene.visual.show_ability(target)
-      launcher.battle_effect.apply_attract(target, Float::INFINITY)
+      launcher.effects.add(Effects::Attract.new(handler.logic, launcher, target))
       handler.scene.display_message(parse_text_with_pokemon(19, 327, launcher))
     end
 

@@ -62,6 +62,19 @@ module Battle
     end
   end
 
+  # Effects
+  Move.register_move_prevention_user_hook('PSDK Move prev user: Effects') do |user, targets, move|
+    next move.logic.each_effects(user, *targets) do |effect|
+      result = effect.on_move_prevention_user(user, targets, move)
+      break result if result
+    end
+  end
+  Move.register_move_prevention_target_hook('PSDK Move prev target: Effects') do |user, target, move|
+    next move.logic.each_effects(user, target) do |effect|
+      break true if effect.on_move_prevention_target(user, target, move) == true
+    end == true
+  end
+
   # Mold Breaker
   Move.register_move_prevention_user_hook('PSDK Move prev user: Mold Breaker') do |user, _, _|
     next if user.ability_db_symbol != :mold_breaker
@@ -144,18 +157,6 @@ module Battle
       else
         move.scene.visual.refresh_info_bar(user)
         move.scene.display_message(parse_text_with_pokemon(19, 312, user))
-      end
-    end
-  end
-
-  # Attract registration
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Attract') do |user, targets, move|
-    be = user.battle_effect
-    if be.has_attract_effect? && targets.include?(be.attracted_to)
-      move.scene.display_message(parse_text_with_pokemon(19, 333, user, PFM::Text::PKNICK[1] => be.attracted_to.given_name))
-      if rand(2) == 1
-        move.scene.display_message(parse_text_with_pokemon(19, 336, user))
-        next :prevent
       end
     end
   end
