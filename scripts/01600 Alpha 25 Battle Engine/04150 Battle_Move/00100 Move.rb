@@ -282,11 +282,8 @@ module Battle
       @effectiveness > 0 && @effectiveness < 1
     end
 
-    # Was the move not affective
-    # @return [Boolean]
-    def not_affective?
-      @effectiveness == 0
-    end
+    # Get the effectiveness
+    attr_reader :effectiveness
 
     class << self
       # Retrieve a registered move

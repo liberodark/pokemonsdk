@@ -47,11 +47,10 @@ module Battle
         messages.clear
       else
         deal_damage(user, actual_targets) && # TODO: DO
+          effect_working?(user, actual_targets) &&
           deal_status(user, actual_targets) && # TODO: DO
           deal_stats(user, actual_targets) && # TODO: DO
-          deal_effect(user, actual_targets) && # TODO: DO
-          deal_terrain_effect(user, actual_targets) && # TODO: DO
-          process_hooks(user, actual_targets) # TODO: rocky_helmet, iron_barbs, rough_skin
+          deal_effect(user, actual_targets) # TODO: DO
       end
     end
 
@@ -161,18 +160,42 @@ module Battle
       end
     end
 
+    # Test if the effect is working
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+    # @return [Boolean]
+    def effect_working?(user, actual_targets)
+      return user && actual_targets && false || true
+    end
+
+    # Array mapping the status effect to an action
+    STATUS_EFFECT_MAPPING = %i[nothing poison paralysis burn sleep freeze confusion flinch toxic]
+
     # Function that deals the status condition to the pokemon
     # @param user [PFM::PokemonBattler] user of the move
     # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
     def deal_status(user, actual_targets)
-      return true # TODO
+      return true if status_effect.to_i <= 0
+
+      status = STATUS_EFFECT_MAPPING[status_effect]
+      actual_targets.each do |target|
+        @logic.status_change_handler.status_change_with_process(status, target, user, self)
+      end
     end
 
     # Function that deals the stat to the pokemon
     # @param user [PFM::PokemonBattler] user of the move
     # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
     def deal_stats(user, actual_targets)
-      return true # TODO
+      return true if battle_stage_mod.all?(&:zero?)
+
+      actual_targets.each do |target|
+        Logic::StatChangeHandler::STAT_INDEX.each do |stat, index|
+          next if (power = battle_stage_mod[index]) == 0
+
+          @logic.stat_change_handler.stat_change_with_process(stat, power, target, user, self)
+        end
+      end
     end
 
     # Function that deals the effect to the pokemon
@@ -180,21 +203,6 @@ module Battle
     # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
     def deal_effect(user, actual_targets)
       return true # TODO
-    end
-
-    # Function that deals the terrain effect to the field
-    # @param user [PFM::PokemonBattler] user of the move
-    # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
-    def deal_terrain_effect(user, actual_targets)
-      return true # TODO
-    end
-
-    # Function that process the hooks
-    # @param user [PFM::PokemonBattler] user of the move
-    # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
-    def process_hooks(user, actual_targets)
-      exec_hooks(Move, :process_hooks, binding)
-      return true
     end
 
     # Function that process a list of fiber

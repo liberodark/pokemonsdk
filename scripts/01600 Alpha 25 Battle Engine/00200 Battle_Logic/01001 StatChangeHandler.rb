@@ -16,6 +16,7 @@ module Battle
       # ID of the animation depending on the stat
       ANIMATION = { atk: 478, dfe: 480, spd: 482, dfs: 486, ats: 484, eva: 488, acc: 490 }
       # Index of the stages depending on the stat to change
+      # @return [Hash{ Symbol => Integer }]
       STAT_INDEX = safe_const(:STAT_INDEX) do
         {
           atk: GameData::Stages::ATK_STAGE,
