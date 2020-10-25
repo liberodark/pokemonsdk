@@ -121,5 +121,13 @@ module Battle
       @position_effects[bank][position] ||= Effects::EffectsHandler.new
       @position_effects[bank][position].add(effect)
     end
+
+    # Delete all the dead effect by updating counters & removing them
+    def delete_dead_effects
+      @terrain_effects.update_counter
+      @bank_effects.each(&:update_counter)
+      @position_effects.each { |bank| bank.each { |position| position&.update_counter } }
+      all_alive_battlers.map(&:effects).each(&:update_counter)
+    end
   end
 end

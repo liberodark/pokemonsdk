@@ -246,16 +246,4 @@ module Battle
     end
     next true
   end
-
-  # Out of reach registration
-  Move.register_move_prevention_target_hook('PSDK Move prev target: OOR') do |user, target, move|
-    if target.battle_effect.has_out_of_reach_effect? && user.ability_db_symbol != :no_guard
-      oor = target.battle_effect.get_out_of_reach
-      next false if GameData::Skill.can_hit_out_of_reach?(oor, move.db_symbol)
-
-      move.scene.display_message(parse_text(18, 74))
-      next true
-    end
-    next false
-  end
 end

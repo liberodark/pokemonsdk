@@ -22,6 +22,7 @@ module Battle
         @alive_battlers.each do |battler|
           battler.battle_effect.update_counter(battler)
         end
+        @logic.delete_dead_effects
       end
 
       class << self

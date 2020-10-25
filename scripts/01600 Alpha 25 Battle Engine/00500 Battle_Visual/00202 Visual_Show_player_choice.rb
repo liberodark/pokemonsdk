@@ -4,6 +4,8 @@ module Battle
     # @param pokemon_index [Integer] Index of the Pokemon in the party
     # @return [Symbol, nil] :attack, :bag, :pokemon, :flee, :cancel, :try_next
     def show_player_choice(pokemon_index)
+      return :attack if @battle_scene.logic.battler(0, pokemon_index).effects.has?(:forced_next_move)
+
       # return :try_next if spc_cannot_use_this_pokemon?(pokemon_index)
       show_player_choice_begin(pokemon_index)
       show_player_choice_loop

@@ -5,6 +5,12 @@ module Battle
     # @return [Boolean] if the player has choose a skill
     def show_skill_choice(pokemon_index)
       return :try_next if spc_cannot_use_this_pokemon?(pokemon_index)
+
+      if @battle_scene.logic.battler(0, pokemon_index).effects.has?(:forced_next_move)
+        @skill_choice_ui.reset(@battle_scene.logic.battler(0, pokemon_index))
+        return true
+      end
+
       show_skill_choice_begin(pokemon_index)
       show_skill_choice_loop
       show_skill_choice_end(pokemon_index)
@@ -14,7 +20,13 @@ module Battle
     # Method that show the target choice once the skill was choosen
     # @return [Array<PFM::PokemonBattler, Battle::Move, Integer(bank), Integer(position)>, nil]
     def show_target_choice
+      if @skill_choice_ui.pokemon.effects.has?(:forced_next_move)
+        # @type [Effects::ForcedNextMove]
+        effect = @skill_choice_ui.pokemon.effects.get(:forced_next_move)
+        return [@skill_choice_ui.pokemon, effect.move, effect.targets.first.bank, effect.targets.first.position]
+      end
       return stc_result if stc_cannot_choose_target?
+
       show_target_choice_begin
       show_target_choice_loop
       show_target_choice_end
