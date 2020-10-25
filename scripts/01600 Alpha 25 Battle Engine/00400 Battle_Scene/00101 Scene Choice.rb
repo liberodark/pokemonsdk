@@ -129,12 +129,15 @@ module Battle
 
     # Method that checks if the flee is possible
     def flee_attempt
-      result = @logic.flee_attempt_from_player
+      @message_window.width = @visual.viewport.rect.width
+      @message_window.wait_input = true
+      result = @logic.flee_handler.attempt(@player_actions.size)
       if result == :success
         @battle_result = :flee
         @next_update = :battle_end
+      elsif result == :blocked
+        @next_update = :player_action_choice
       else
-        display_message(result)
         @next_update = :trigger_all_AI
       end
     end

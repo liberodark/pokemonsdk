@@ -22,6 +22,9 @@ module Battle
       attr_accessor :trainer_is_couple
       # @return [Integer] ID of the battle (for event loading)
       attr_accessor :battle_id
+      # Get the number of time the player tried to flee
+      # @return [Integer]
+      attr_accessor :flee_attempt_count
 
       # Create a new Battle Info
       # @param hash [Hash] basic info about the battle
@@ -35,6 +38,7 @@ module Battle
         @vs_type = hash[:vs_type] || 1
         @trainer_is_couple = hash[:couple] || false
         @battle_id = hash[:battle_id] || -1
+        @flee_attempt_count = 0
       end
 
       # Tell if the battle is a trainer battle

@@ -41,5 +41,11 @@ module Battle
     def weather_change_handler
       return WeatherChangeHandler.new(self, @battle_scene)
     end
+
+    # Get the flee handler
+    # @return [Battle::Logic::FleeHandler]
+    def flee_handler
+      return FleeHandler.new(self, @battle_scene)
+    end
   end
 end

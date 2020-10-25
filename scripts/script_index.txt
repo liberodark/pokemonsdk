@@ -490,6 +490,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01004 DamageH
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01005 SwitchHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01006 EndTurnHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01007 WeatherChangeHandler.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01008 FleeHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 EffectsHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00002 EffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00003 PositionTiedEffectBase.rb

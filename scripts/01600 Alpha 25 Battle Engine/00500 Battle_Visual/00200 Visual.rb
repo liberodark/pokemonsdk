@@ -66,6 +66,7 @@ module Battle
       @animations.clear
       @parallel_animations.clear
       @viewport.dispose
+      @viewport_sub&.dispose
     end
 
     # Tell if the visual are locking the battle update (for transition purpose)
