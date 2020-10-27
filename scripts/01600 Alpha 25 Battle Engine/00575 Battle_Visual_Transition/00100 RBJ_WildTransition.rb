@@ -3,15 +3,15 @@ module Battle
     # Show the Wild Battle transtion
     class RBJ_WildTransition
       # Create a new Wild Transition
-      # @param battle_scene [Battle::Scene]
+      # @param scene [Battle::Scene]
       # @param screenshot [Bitmap]
       # @param viewport [Viewport]
-      def initialize(battle_scene, screenshot, viewport)
+      def initialize(scene, screenshot, viewport)
         @viewport = viewport
         @done = false
         create_screenshot(screenshot)
-        @battle_scene = battle_scene
-        @grounds = battle_scene.visual.grounds
+        @scene = scene
+        @grounds = scene.visual.grounds
         Graphics.transition(1)
       end
 
@@ -70,7 +70,7 @@ module Battle
           @viewport.color.set(0, 0, 0, 255)
           dispose_pre_transition
         elsif @counter == BLACK_TRANSITION_END
-          @battle_scene&.visual&.unlock
+          @scene&.visual&.unlock
           @done = true
         end
         @counter += 1

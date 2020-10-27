@@ -1,9 +1,9 @@
 module Battle
   class AI
     # Create a new Logic instance
-    # @param battle_scene [Scene] scene that hold the logic object
-    def initialize(battle_scene)
-      @battle_scene = battle_scene
+    # @param scene [Scene] scene that hold the logic object
+    def initialize(scene)
+      @scene = scene
     end
 
     # Trigger the AI work
@@ -66,8 +66,8 @@ module Battle
     def translate_item(type, (id, extend_data, position))
       bank = position < 0 ? 1 : 0
       position = position < 0 ? -position - 1 : position
-      target = @battle_scene.logic.battler(bank, position)
-      bag = @battle_scene.logic.bags[bank].first
+      target = @scene.logic.battler(bank, position)
+      bag = @scene.logic.bags[bank].first
       return {
         type: :item,
         item_id: id,
@@ -85,8 +85,8 @@ module Battle
       position2 = new_index < 0 ? -new_index - 1 : new_index
       return {
         type: :switch,
-        who: @battle_scene.logic.battler(1, position1),
-        with: @battle_scene.logic.battler(1, position2)
+        who: @scene.logic.battler(1, position1),
+        with: @scene.logic.battler(1, position2)
       }
     end
 

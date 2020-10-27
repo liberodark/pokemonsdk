@@ -31,7 +31,7 @@ module Battle
       who = action[:who]
       # @type [PFM::PokemonBattler]
       with = action[:with]
-      visual = @battle_scene.visual
+      visual = @scene.visual
       # @type [BattleUI::PokemonSprite]
       (sprite = visual.battler_sprite(who.bank, who.position)).start_animation_going_in
       visual.hide_info_bar(who)

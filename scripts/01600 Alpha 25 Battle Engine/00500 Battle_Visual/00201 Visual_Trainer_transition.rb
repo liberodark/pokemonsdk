@@ -4,7 +4,7 @@ module Battle
     def show_pre_transition
       return if debug? && PSDK_CONFIG.skip_battle_transition_in_debug
       # @type [Battle::Visual::RBJ_WildTransition]
-      @transition = battle_transition.new(@battle_scene, @screenshot, @viewport)
+      @transition = battle_transition.new(@scene, @screenshot, @viewport)
       @animations << @transition
       @transition.pre_transition
       @locking = true
@@ -23,7 +23,7 @@ module Battle
       @animations << @transition
       @transition.transition
       @locking = true
-      @battle_scene.message_window.visible = true
+      @scene.message_window.visible = true
     end
 
     # Function storing a battler sprite in the battler Hash
@@ -58,7 +58,7 @@ module Battle
     def show_debug_transition
       show_info_bars
       2.times do |bank|
-        @battle_scene.battle_info.battlers[bank].each_with_index do |battler, position|
+        @scene.battle_info.battlers[bank].each_with_index do |battler, position|
           battler_sprite(bank, -position - 1)&.visible = false
         end
       end

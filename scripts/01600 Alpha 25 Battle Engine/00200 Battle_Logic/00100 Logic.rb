@@ -23,10 +23,10 @@ module Battle
     # @return [Array<Array<Battle::Effects::EffectsHandler>>]
     attr_reader :position_effects
     # Create a new Logic instance
-    # @param battle_scene [Scene] scene that hold the logic object
-    def initialize(battle_scene)
-      @battle_scene = battle_scene
-      @battle_info = battle_scene.battle_info
+    # @param scene [Scene] scene that hold the logic object
+    def initialize(scene)
+      @scene = scene
+      @battle_info = scene.battle_info
       Message.setup(self)
       @messages = []
       # @type [Array<Hash>]

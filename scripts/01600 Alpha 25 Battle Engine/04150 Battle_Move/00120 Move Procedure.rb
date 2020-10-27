@@ -1,6 +1,5 @@
 module Battle
   class Move
-    include Hooks
     # Function starting the move procedure
     # @param user [PFM::PokemonBattler] user of the move
     # @param target_bank [Integer] bank of the target

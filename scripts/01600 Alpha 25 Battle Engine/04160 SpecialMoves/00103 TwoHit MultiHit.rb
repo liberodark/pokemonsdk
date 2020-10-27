@@ -13,7 +13,7 @@ module Battle
           super
           next true
         end
-        @scene.display_message(parse_text(18, 33, NUMB[1] => nb_hit.to_s))
+        @scene.display_message(parse_text(18, 33, PFM::Text::NUMB[1] => nb_hit.to_s))
       end
 
       private

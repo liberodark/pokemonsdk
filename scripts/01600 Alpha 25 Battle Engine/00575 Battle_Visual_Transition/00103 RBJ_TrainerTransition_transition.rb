@@ -9,9 +9,9 @@ module Battle
       def enemy_sprites
         sprites = []
         $game_temp.vs_type.times do |i|
-          sprite = @battle_scene.visual.battler_sprite(1, i)
+          sprite = @scene.visual.battler_sprite(1, i)
           sprite&.zoom = 0
-          sprite = @battle_scene.visual.battler_sprite(1, -i - 1)
+          sprite = @scene.visual.battler_sprite(1, -i - 1)
           sprites << sprite if sprite
         end
         return sprites
@@ -50,7 +50,7 @@ module Battle
       # Function that start the enemy pokemon going out of ball animation
       def start_enemy_mon_going_out_animation
         $game_temp.vs_type.times do |i|
-          @battle_scene.visual.battler_sprite(1, i)&.start_animation_going_out
+          @scene.visual.battler_sprite(1, i)&.start_animation_going_out
         end
       end
     end

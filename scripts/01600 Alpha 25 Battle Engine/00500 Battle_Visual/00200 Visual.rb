@@ -24,9 +24,9 @@ module Battle
     attr_reader :to_dispose
 
     # Create a new visual instance
-    # @param battle_scene [Scene] scene that hold the logic object
-    def initialize(battle_scene)
-      @battle_scene = battle_scene
+    # @param scene [Scene] scene that hold the logic object
+    def initialize(scene)
+      @scene = scene
       @screenshot = $scene.snap_to_bitmap
       # All the battler by bank
       @battlers = {}
@@ -97,7 +97,7 @@ module Battle
     def scene_update_proc
       raise 'Unlocked visual while trying to update scene!' unless @locking
       yield
-      @battle_scene.update
+      @scene.update
       Graphics.update
     end
 
@@ -115,7 +115,7 @@ module Battle
     # Create the default background & the grounds that comes with it
     def create_background
       @background = ShaderedSprite.new(@viewport).set_bitmap(name = background_name, :battleback)
-      @grounds = Array.new(@battle_scene.logic.bank_count) do |bank|
+      @grounds = Array.new(@scene.logic.bank_count) do |bank|
         BattleUI::GroundSprite.new(@viewport, name, bank)
       end
     end
@@ -165,8 +165,8 @@ module Battle
 
     # Create the battler sprites (Trainer + Pokemon)
     def create_battlers
-      infos = @battle_scene.battle_info
-      (logic = @battle_scene.logic).bank_count.times do |bank|
+      infos = @scene.battle_info
+      (logic = @scene.logic).bank_count.times do |bank|
         # create the trainer sprites
         infos.battlers[bank].each_with_index do |battler, position|
           sprite = BattleUI::TrainerSprite.new(@viewport, battler, bank, position, infos)
@@ -202,7 +202,7 @@ module Battle
     # @param position [Integer]
     def create_info_bar(bank, position)
       info_bars = (@info_bars[bank] ||= [])
-      pokemon = @battle_scene.logic.battler(bank, position)
+      pokemon = @scene.logic.battler(bank, position)
       info_bars[position] = BattleUI::InfoBar.new(@viewport, pokemon)
     end
 

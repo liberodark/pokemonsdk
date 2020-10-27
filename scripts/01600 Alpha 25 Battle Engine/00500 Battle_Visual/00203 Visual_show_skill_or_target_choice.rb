@@ -6,8 +6,8 @@ module Battle
     def show_skill_choice(pokemon_index)
       return :try_next if spc_cannot_use_this_pokemon?(pokemon_index)
 
-      if @battle_scene.logic.battler(0, pokemon_index).effects.has?(:forced_next_move)
-        @skill_choice_ui.reset(@battle_scene.logic.battler(0, pokemon_index))
+      if @scene.logic.battler(0, pokemon_index).effects.has?(:forced_next_move)
+        @skill_choice_ui.reset(@scene.logic.battler(0, pokemon_index))
         return true
       end
 
@@ -42,9 +42,9 @@ module Battle
     # @param pokemon_index [Integer] Index of the Pokemon in the party
     def show_skill_choice_begin(pokemon_index)
       @locking = true
-      @skill_choice_ui.reset(@battle_scene.logic.battler(0, pokemon_index))
+      @skill_choice_ui.reset(@scene.logic.battler(0, pokemon_index))
       @skill_choice_ui.visible = true
-      @battle_scene.message_window.visible = false
+      @scene.message_window.visible = false
       @player_choice_ui.visible = false
       spc_start_bouncing_animation(pokemon_index)
     end
@@ -52,7 +52,7 @@ module Battle
     # Loop of the skill_choice
     def show_skill_choice_loop
       loop do
-        @battle_scene.update
+        @scene.update
         @skill_choice_ui.update
         Graphics.update
         break if @skill_choice_ui.validated?
@@ -63,7 +63,7 @@ module Battle
     # @param pokemon_index [Integer] Index of the Pokemon in the party
     def show_skill_choice_end(pokemon_index)
       spc_stop_bouncing_animation(pokemon_index)
-      @battle_scene.message_window.visible = true
+      @scene.message_window.visible = true
       @skill_choice_ui.visible = false
       @locking = false
     end
@@ -72,17 +72,17 @@ module Battle
     def show_target_choice_begin
       @locking = true
       @skill_choice_ui.visible = true
-      @battle_scene.message_window.visible = false
+      @scene.message_window.visible = false
       # @type [BattleUI::TargetSelection]
       @target_selection_window =
-        BattleUI::TargetSelection.new(@viewport, @skill_choice_ui.pokemon, @skill_choice_ui.result, @battle_scene.logic)
+        BattleUI::TargetSelection.new(@viewport, @skill_choice_ui.pokemon, @skill_choice_ui.result, @scene.logic)
       spc_start_bouncing_animation(@skill_choice_ui.pokemon.position)
     end
 
     # Loop of the target choice
     def show_target_choice_loop
       loop do
-        @battle_scene.update
+        @scene.update
         @target_selection_window.update
         Graphics.update
         break if @target_selection_window.validated?
@@ -92,7 +92,7 @@ module Battle
     # End of the target choice
     def show_target_choice_end
       spc_stop_bouncing_animation(@skill_choice_ui.pokemon.position)
-      @battle_scene.message_window.visible = true
+      @scene.message_window.visible = true
       @skill_choice_ui.visible = false
       @locking = false
     end
@@ -105,7 +105,7 @@ module Battle
       if result.is_a?(Array)
         arr.concat(result)
       elsif result == :auto
-        targets = @skill_choice_ui.result.battler_targets(@skill_choice_ui.pokemon, @battle_scene.logic)
+        targets = @skill_choice_ui.result.battler_targets(@skill_choice_ui.pokemon, @scene.logic)
         if targets.empty?
           return nil
         else
@@ -121,13 +121,13 @@ module Battle
     # Tell if the Pokemon can be used or not
     # @return [Boolean] if the Pokemon cannot be used
     def spc_cannot_use_this_pokemon?(pokemon_index)
-      return @battle_scene.logic.battler(0, pokemon_index)&.party_id != 0
+      return @scene.logic.battler(0, pokemon_index)&.party_id != 0
     end
 
     # Tell if we can choose a target
     # @return [Boolean]
     def stc_cannot_choose_target?
-      return @battle_scene.logic.battle_info.vs_type == 1
+      return @scene.logic.battle_info.vs_type == 1
     end
   end
 end

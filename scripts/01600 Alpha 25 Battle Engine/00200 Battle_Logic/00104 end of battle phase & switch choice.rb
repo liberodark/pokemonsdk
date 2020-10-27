@@ -43,7 +43,7 @@ module Battle
       if who.from_party?
         return nil if trainer_battlers.all?(&:dead?)
 
-        return @battle_scene.visual.show_pokemon_choice(true)
+        return @scene.visual.show_pokemon_choice(true)
       end
       new_enemy = PFM::IA.request_switch(who) # BE24
       return nil unless new_enemy
@@ -63,8 +63,8 @@ module Battle
           '[VAR 019E(0000)]' => "#{@battle_info.trainer_class(enemy)} #{@battle_info.trainer_name(enemy)}",
           '[VAR PKNICK(0002)]' => enemy.given_name
         )
-        choice = @battle_scene.display_message(text, 1, text_get(11, 27), text_get(11, 28))
-        if choice == 0 && (result = @battle_scene.visual.show_pokemon_choice)
+        choice = @scene.display_message(text, 1, text_get(11, 27), text_get(11, 28))
+        if choice == 0 && (result = @scene.visual.show_pokemon_choice)
           with = battlers.find { |battler| battler.original == result }
           who = battlers[0]
           perform_action_switch(type: :switch, with: result, who: who) if with != who
@@ -147,7 +147,7 @@ module Battle
       target_exp = receiver.exp + exp
       while target_exp > receiver.exp
         next_exp_value = receiver.exp_lvl.clamp(0, target_exp)
-        @battle_scene.visual.show_exp_animation(receiver, next_exp_value) if show_animation # Show exp progression animation
+        @scene.visual.show_exp_animation(receiver, next_exp_value) if show_animation # Show exp progression animation
         receiver.exp = next_exp_value
         next if receiver.exp < receiver.exp_lvl
 
@@ -161,12 +161,12 @@ module Battle
     # @param list [Array]
     def level_up_message(receiver, list)
       PFM::Text.set_num3(receiver.level.to_s, 1)
-      @battle_scene.visual.show_rmxp_animation(receiver, 497) if receiver.position < @battle_info.vs_type
+      @scene.visual.show_rmxp_animation(receiver, 497) if receiver.position < @battle_info.vs_type
       Audio.me_play('audio/me/rosa_levelup')
-      @battle_scene.display_message(parse_text(18, 62, '[VAR 010C(0000)]' => receiver.given_name))
-      @battle_scene.visual.refresh_info_bar(receiver) if receiver.position < @battle_info.vs_type
+      @scene.display_message(parse_text(18, 62, '[VAR 010C(0000)]' => receiver.given_name))
+      @scene.visual.refresh_info_bar(receiver) if receiver.position < @battle_info.vs_type
       PFM::Text.reset_variables
-      receiver.level_up_window_call(list[0], list[1], @battle_scene.message_window.z + 5)
+      receiver.level_up_window_call(list[0], list[1], @scene.message_window.z + 5)
       receiver.check_skill_and_learn
       @evolve_request << receiver unless @evolve_request.include?(receiver)
     end
@@ -180,7 +180,7 @@ module Battle
         '[VAR 010C(0000)]' => receiver.given_name,
         PFM::Text::NUM7R => exp.to_s
       )
-      @battle_scene.display_message(text)
+      @scene.display_message(text)
     end
   end
 end

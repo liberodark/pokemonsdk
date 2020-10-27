@@ -1,6 +1,7 @@
 module Battle
   # Generic class describing a move
   class Move
+    include Hooks
     # @return [Hash{Symbol => Class}] list of the registered moves
     REGISTERED_MOVES = Hash.new(Move)
 

@@ -7,7 +7,7 @@ module Battle
     def show_hp_animations(targets, hps, effectiveness = [])
       lock do
         animations = targets.map.with_index do |target, index|
-          Battle::Visual::HPAnimation.new(@battle_scene, target, hps[index], effectiveness[index]) if hps[index]
+          Battle::Visual::HPAnimation.new(@scene, target, hps[index], effectiveness[index]) if hps[index]
         end
         scene_update_proc { animations.each(&:update) } until animations.all?(&:done?)
         show_kos(targets)
@@ -28,7 +28,7 @@ module Battle
       end
       # Show messages
       targets.each do |target|
-        @battle_scene.display_message(parse_text_with_pokemon(19, 0, target, PFM::Text::PKNICK[0] => target.given_name))
+        @scene.display_message(parse_text_with_pokemon(19, 0, target, PFM::Text::PKNICK[0] => target.given_name))
         target.reset_stat_stage
         target.status = 0
       end

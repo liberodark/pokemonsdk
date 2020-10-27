@@ -8,9 +8,9 @@ module Battle
       # Set the Transition in Transition mode
       def transition
         Graphics.freeze
-        @battle_scene.message_window.visible = true
-        @battle_scene.message_window.blocking = true
-        @battle_scene.message_window.wait_input = true
+        @scene.message_window.visible = true
+        @scene.message_window.blocking = true
+        @scene.message_window.wait_input = true
         @update_method = :update_transition
         @counter = 0
         @viewport.color.set(0, 0, 0, 0)
@@ -39,8 +39,8 @@ module Battle
         end
         @counter += 1
         unless @counter < SPRITE_MOVE_DURATION + 4
-          @battle_scene.visual.unlock
-          @battle_scene.visual.show_info_bars
+          @scene.visual.unlock
+          @scene.visual.show_info_bars
           @done = true
         end
       end
@@ -59,8 +59,8 @@ module Battle
           sprite.shader = nil
           sprite.cry if sprite.is_a?(BattleUI::PokemonSprite)
         end
-        @battle_scene.display_message(first_message)
-        @battle_scene.message_window.blocking = false
+        @scene.display_message(first_message)
+        @scene.message_window.blocking = false
       end
 
       # Execute the part where the enemy (trainer) is sending its pokemon out
@@ -69,7 +69,7 @@ module Battle
         if message
           @counter2 = 0
           @update_method = :update_enemy_sending_pokemon
-          @battle_scene.display_message(message)
+          @scene.display_message(message)
         end
       end
 
@@ -85,7 +85,7 @@ module Battle
           @actor_sprites.each(&:show_next_frame)
           spawn_player_balls
           @counter2 += 1
-          @battle_scene.display_message(third_message)
+          @scene.display_message(third_message)
         elsif @counter2 == 60
           start_actor_mon_going_out_animation
         elsif @counter2 > 70
@@ -110,7 +110,7 @@ module Battle
       def enemy_sprites
         sprites = []
         $game_temp.vs_type.times do |i|
-          sprite = @battle_scene.visual.battler_sprite(1, i)
+          sprite = @scene.visual.battler_sprite(1, i)
           sprites << sprite if sprite
         end
         return sprites
@@ -130,9 +130,9 @@ module Battle
       def actor_sprites
         sprites = []
         $game_temp.vs_type.times do |i|
-          sprite = @battle_scene.visual.battler_sprite(0, i)
+          sprite = @scene.visual.battler_sprite(0, i)
           sprite&.zoom = 0
-          sprite = @battle_scene.visual.battler_sprite(0, -i - 1)
+          sprite = @scene.visual.battler_sprite(0, -i - 1)
           sprites << sprite if sprite
         end
         return sprites
@@ -142,7 +142,7 @@ module Battle
       def spawn_player_balls
 =begin
         @balls = Array.new($game_temp.vs_type) do |index|
-          if (pokemon = @battle_scene.logic.battler(0, index))
+          if (pokemon = @scene.logic.battler(0, index))
             sprite = Sprite.new(@viewport)
             sprite.bitmap = pokemon.ball_image
             sprite.src_rect.set(0, 3 * 26, nil, 26)
@@ -159,7 +159,7 @@ module Battle
       # Function that start the Actor pokemon going out of ball animation
       def start_actor_mon_going_out_animation
         $game_temp.vs_type.times do |i|
-          @battle_scene.visual.battler_sprite(0, i)&.start_animation_going_out
+          @scene.visual.battler_sprite(0, i)&.start_animation_going_out
         end
       end
 

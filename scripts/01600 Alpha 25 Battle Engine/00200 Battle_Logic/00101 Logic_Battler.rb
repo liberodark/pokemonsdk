@@ -129,7 +129,7 @@ module Battle
       battlers = (@battlers[bank] ||= [])
       max_level = @battle_info.max_level
       party.each do |pokemon|
-        battler = max_level ? PFM::PokemonBattler.new(pokemon, @battle_scene, max_level) : PFM::PokemonBattler.new(pokemon, @battle_scene)
+        battler = max_level ? PFM::PokemonBattler.new(pokemon, @scene, max_level) : PFM::PokemonBattler.new(pokemon, @scene)
         battler.bank = bank
         battler.party_id = index
         battlers << battler

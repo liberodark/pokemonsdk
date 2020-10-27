@@ -38,7 +38,7 @@ module Battle
           @viewport.color.set(0, 0, 0, 255)
           dispose_pre_transition
         else
-          @battle_scene&.visual&.unlock
+          @scene&.visual&.unlock
           @done = true # We're done
         end
         @counter += 1
