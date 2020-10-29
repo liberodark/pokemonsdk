@@ -107,29 +107,29 @@ module Yuki
       # Add a parallel animation
       # @param other [TimedAnimation] the parallel animation to add
       # @return [self]
-      def |(other)
+      def parallel_add(other)
         @parallel_animations << other
         return self
       end
 
-      alias_method :<<, :|
-      alias_method :parallel_add, :|
-      alias_method :parallel_play, :|
+      alias_method :<<, :parallel_add
+      alias_method :|, :parallel_add
+      alias_method :parallel_play, :parallel_add
 
       # Add this animation in parallel of another animation
       # @param other [TimedAnimation] the parallel animation to add
       # @return [TimedAnimation] the animation parameter
-      def >>(other)
+      def in_parallel_of(other)
         other.parallel_add(self)
         return other
       end
 
-      alias_method :in_parallel_of, :>>
+      alias_method :>>, :in_parallel_of
 
       # Add a sub animation
       # @param other [TimedAnimation]
       # @return [TimedAnimation] the animation parameter
-      def >(other)
+      def play_before(other)
         if @sub_animation
           @sub_animation.play_before(other)
         else
@@ -139,7 +139,7 @@ module Yuki
         return other
       end
 
-      alias_method :play_before, :>
+      alias_method :>, :play_before
 
       # Define the resolver (and transmit it to all the childs / parallel)
       # @param resolver [#call] callable that takes 1 parameter and return an object
