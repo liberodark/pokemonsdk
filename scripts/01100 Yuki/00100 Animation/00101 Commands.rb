@@ -239,6 +239,7 @@ module Yuki
       # @param begin_offset [Float] offset that prevents the animation from starting before now + begin_offset seconds
       def start(begin_offset = 0)
         super
+        @animation_commands.each { |cmd| cmd.start(begin_offset) }
         @last_command = nil
       end
 
