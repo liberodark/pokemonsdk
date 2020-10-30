@@ -36,7 +36,7 @@ module Yuki
     #   # Note that if 2 has sub animation, its sub animation has to finish in order to see animation 3
     class TimedAnimation
       # @return [Array<TimedAnimation>] animation playing in parallel
-      attr_reader :parallel_animation
+      attr_reader :parallel_animations
       # @return [TimedAnimation, nil] animation that plays after
       attr_reader :sub_animation
       # @return [TimedAnimation] the root animation
@@ -93,7 +93,7 @@ module Yuki
         # Update the sub animation if the current animation is actually done
         if private_done?
           unless @played_until_end
-            update_internal(1)
+            update_internal(@distortion.call(1))
             @played_until_end = true
           end
           return unless @parallel_animations.all?(&:done?)

@@ -115,7 +115,7 @@ module Yuki
         @type = type
         @args = args
         @args.each_with_index { |arg, i| @args[i] = resolve(arg) }
-        @args[0] = 'Audio/' + @type.to_s.sub('_play', '') + '/' + @args.first
+        @args[0] &&= 'Audio/' + @type.to_s.sub('_play', '') + '/' + @args.first
       end
 
       private
