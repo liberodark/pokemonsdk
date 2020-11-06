@@ -1,23 +1,9 @@
 module Battle
   class Move
     # List of user ability multiplier
-    USER_ABILITY_MULTIPLIER = Hash.new(:calc_ua_1).merge!(
-      rivalry: :calc_ua_rivalry,
-      reckless: :calc_ua_reckless,
-      iron_fist: :calc_ua_iron_fist,
-      technician: :calc_ua_technician,
-      pixilate: :calc_ua_pixilate,
-      refrigerate: :calc_ua_pixilate,
-      aerilate: :calc_ua_pixilate,
-      galvanize: :calc_ua_pixilate
-    )
+    USER_ABILITY_MULTIPLIER = Hash.new(:calc_ua_1)
     # List of ability that power specific move types when the user only has 1/3 (rounded down) of its HP
-    POWERING_TYPE_USER_ABILITY = {
-      blaze: GameData::Types::FIRE,
-      overgrow: GameData::Types::GRASS,
-      torrent: GameData::Types::WATER,
-      swarm: GameData::Types::BUG
-    }
+    POWERING_TYPE_USER_ABILITY = {}
 
     private
 
@@ -80,8 +66,35 @@ module Battle
       return 1.5 if POWERING_TYPE_USER_ABILITY[user.ability_db_symbol] == type
       return 1
     end
-    POWERING_TYPE_USER_ABILITY.each_key do |ability|
-      USER_ABILITY_MULTIPLIER[ability] = :calc_ua_type_1_3
+
+    class << self
+      # Define a user ability that powers a type of move in bad condition (1/3 of hp remaining)
+      # @param db_symbol [Symbol] db_symbol of the ability
+      # @param type [Integer] type of the move that should be powered (x1.5)
+      def define_boosting_type_ability(db_symbol, type)
+        POWERING_TYPE_USER_ABILITY[db_symbol] = type
+        USER_ABILITY_MULTIPLIER[db_symbol] = :calc_ua_type_1_3
+      end
+
+      # Define a user ability that power a move on certain conditions
+      # @param db_symbol [Symbol] db_symbol of the ability
+      # @param method_sym [Symbol] name of the method to use
+      def define_boosting_ability(db_symbol, method_sym)
+        USER_ABILITY_MULTIPLIER[db_symbol] = method_sym
+      end
     end
+
+    define_boosting_type_ability(:blaze, GameData::Types::FIRE)
+    define_boosting_type_ability(:overgrow, GameData::Types::GRASS)
+    define_boosting_type_ability(:torrent, GameData::Types::WATER)
+    define_boosting_type_ability(:swarm, GameData::Types::BUG)
+    define_boosting_ability(:rivalry, :calc_ua_rivalry)
+    define_boosting_ability(:reckless, :calc_ua_reckless)
+    define_boosting_ability(:iron_fist, :calc_ua_iron_fist)
+    define_boosting_ability(:technician, :calc_ua_technician)
+    define_boosting_ability(:pixilate, :calc_ua_pixilate)
+    define_boosting_ability(:refrigerate, :calc_ua_pixilate)
+    define_boosting_ability(:aerilate, :calc_ua_pixilate)
+    define_boosting_ability(:galvanize, :calc_ua_pixilate)
   end
 end

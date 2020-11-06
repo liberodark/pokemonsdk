@@ -664,3 +664,186 @@ module Battle
   end
 end
 ```
+
+### How to define an item that powers a move
+
+There's two way to power move with items:
+- Define a method that gives the multiplier depending on some criteria
+- Define a specific type the item powers
+
+For those way there's a method.
+
+#### Item that powers move of certain type
+
+Please note that it's not taking in account the definitive type of the move (normalize, electrify...).
+
+Item affected by this:  `sea_incense`, `odd_incense`, `rock_incense`, `wave_incense`, `rose_incense`, `flame_plate`, `splash_plate`, `zap_plate`, `meadow_plate`, `icicle_plate`, `fist_plate `, `toxic_plate`, `earth_plate`, `sky_plate`, `mind_plate `, `insect_plate`, `stone_plate`, `spooky_plate`, `draco_plate`, `dread_plate`, `iron_plate `, `pixie_plat`.
+
+Function to use: `Battle::Move.define_boosting_type_item(db_symbol, type)`
+
+Example: `Battle::Move.define_boosting_type_item(:iron_plate, GameData::Types::STEEL)`
+
+#### Item that powers a move on specific conditions
+
+In order to specify the specific condition you will have to write a method in Battle::Move that takes the user and the target as parameter and returns a number.
+
+Item affected by this: `muscle_band`, `wise_glasses`, `adamant_orb `, `lustrous_orb`, `griseous_orb`.
+
+Function to use: `Battle::Move.define_boosting_item(db_symbol, method_sym)`
+
+Example:
+```ruby
+module Battle
+  class Move
+    # Calc the Muscle Band multiplier
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
+    # @return [Numeric]
+    def calc_muscle_band_multiplier(user, target)
+      physical? ? 1.1 : 1
+    end
+    define_boosting_item(:muscle_band, :calc_muscle_band_multiplier)
+  end
+end
+```
+
+### How to define user ability that powers a move
+
+Some abilities are able to improve the power of the move, there's two way to define them:
+- Using a method that calculate the multiplier
+- Using a type when user is in bad condition
+
+#### Ability that powers the user move in bad condition
+
+Please note that it's not taking in account the definitive type of the move (normalize, electrify...).
+
+Abilities affected by this: `blaze`, `overgrow`, `torrent`, `swarm`.
+
+Function to use: `Battle::Move.define_boosting_type_ability(db_symbol, type)`
+
+Example: `Battle::Move.define_boosting_type_ability(:swarm, GameData::Types::BUG)`
+
+#### User ability that powers a move on specific condition
+
+In order to specify the specific condition you will have to write a method in Battle::Move that takes the user and the target as parameter and returns a number.
+
+Abilities affected by this: `rivalry`, `reckless`, `iron_fist`, `technician`, `pixilate`, `refrigerate`, `aerilate`, `galvanize`.
+
+Function to use: `Battle::Move.define_boosting_ability(db_symbol, method_sym)`
+
+Example:
+```ruby
+module Battle
+  class Move
+    # Technicien user ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_technician(user, target)
+      power <= 60 ? 1.5 : 1
+    end
+    define_boosting_ability(:technician, :calc_ua_technician)
+  end
+end
+```
+
+### How to define a target ability that deplete a move
+
+Some abilities of the target are able to make a move less powerfull, to define them you should use the following function: `Battle::Move.define_depleting_ability(db_symbol, method_sym)`
+
+List of abilities affected by this: `thick_fat`, `heatproof`, `dry_skin`.
+
+Example: 
+```ruby
+module Battle
+  class Move
+    # Thick Fat foe ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_fa_thick_fat(user, target)
+      THICK_FAT_TYPES.include?(type) ? 0.5 : 1
+    end
+    define_depleting_ability(:thick_fat, :calc_fa_thick_fat)
+  end
+end
+```
+
+Note: the multiplier is below 1 to deplete, meaning you can cover cases like dry_skin where the effect is the opposite, the move is powered if it is Fire type.
+
+
+### How to define an Ability / Item that improve Attack / Spe Attack
+
+In some case it is possible to improve the attack or spe attack statistic of a Pokemon when a move is used. To do so, you can define a method that takes user & target and that returns the factor applied to the statistic.
+
+Here's the methods that helps you to define the abilities/items:
+- Ability improving `atk`: `Battle::Move.define_ability_atk_modifier(db_symbol, method_sym)`
+- Ability improving `ats`: `Battle::Move.define_ability_ats_modifier(db_symbol, method_sym)`
+- Item improving `atk`: `Battle::Move.define_item_atk_modifier(db_symbol, method_sym)`
+- Item improving `ats`: `Battle::Move.define_item_ats_modifier(db_symbol, method_sym)`
+
+Note: this only applies to user ability / item !
+
+List of abilities affected by this:
+- atk => `pure_power`, `huge_power`, `flower_gif`, `guts`, `hustle`, `slow_start`
+- ats => `solar_power`, `plus`, `minus`
+
+List of items affected by this:
+- atk => `choice_band`, `thick_club`
+- ats => `choice_specs`, `soul_dew`, `deep_sea_tooth`
+
+### How to define an Ability / Item that improve Defense / Spe Defense
+
+In some case it is possible to improve the defense or spe defense statistic of a Pokemon when a move is used. To do so, you can define a method that takes user & target and that returns the factor applied to the statistic.
+
+Here's the methods that helps you to define the abilities/items:
+- Ability improving `dfe`: `Battle::Move.define_ability_dfe_modifier(db_symbol, method_sym)`
+- Ability improving `dfs`: `Battle::Move.define_ability_dfs_modifier(db_symbol, method_sym)`
+- Item improving `dfe`: `Battle::Move.define_item_dfe_modifier(db_symbol, method_sym)`
+- Item improving `dfs`: `Battle::Move.define_item_dfs_modifier(db_symbol, method_sym)`
+
+Note: this only applies to target ability / item !
+
+List of abilities affected by this:
+- dfe => `marvel_scale`
+- dfs => `flower_gift`
+
+List of items affected by this:
+- dfe => `metal_powder`
+- dfs => `metal_powder`, `deep_sea_scale`, `soul_dew`
+
+### Things that are handled differently
+
+- Ability `guts`: defined inside `calc_mod1_brn`
+- Ability `infiltrator`: defined inside `calc_mod1_rl`
+- Sunny & raining weather mods: defined inside `calc_mod1_sr`
+- Ability `flash_fire`: defined inside `calc_mod1_ff`
+- Item `life_orb`: defined inside `calc_mod2`
+- Item `metronome`: defined inside `calc_mod2`
+- Move rate of `me_first`: defined inside `calc_mod2`
+- Ability `solid_rock` & `filter`: Stored inside `Battle::Move::SUPER_EFFECTIVE_REDUCTION` array and used into `calc_mod3`
+- Item `expert_belt`: defined inside `calc_mod3`
+- Item `tinted_lens`: defined inside `calc_mod3`
+- Item `chilan_berry`: defined inside `calc_trb`
+
+Note: all of those definition will be improved in the futur.
+
+### Define evasion & accuracy modifier
+
+In some case it is possible to improve the accuracy or evasion of a Pokemon when a move is used. To do so, you can define a method that takes user & target and that returns the factor applied to the statistic.
+
+Here's the methods that helps you to define the abilities/items:
+- Ability improving `accuracy`: `Battle::Move.define_ability_accuracy_modifier(db_symbol, method_sym)`
+- Ability improving `evasion`: `Battle::Move.define_ability_evasion_modifier(db_symbol, method_sym)`
+- Item improving `accuracy`: `Battle::Move.define_item_accuracy_modifier(db_symbol, method_sym)`
+- Item improving `evasion`: `Battle::Move.define_item_evasion_modifier(db_symbol, method_sym)`
+
+Note: Evasion only applies to target and accuracy only applies to target
+
+List of abilities affected by this:
+- accuracy => `compoundeyes`, `hustle`
+- evasion => `sand_veil`, `snow_cloak`, `tangled_feet`
+
+List of items affected by this:
+- accuracy => `wide_lens`, `zoom_lens`
+- evasion => `brightpowder`, `lax_incense`

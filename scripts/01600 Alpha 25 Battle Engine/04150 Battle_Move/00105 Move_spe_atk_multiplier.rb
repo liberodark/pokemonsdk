@@ -1,31 +1,13 @@
 module Battle
   class Move
     # List of atk modifier method from ability
-    ATK_ABILITY_MODIFIER = Hash.new(:calc_ua_1).merge!(
-      pure_power: :calc_am_pure_power,
-      huge_power: :calc_am_pure_power,
-      flower_gift: :calc_am_flower_gift,
-      guts: :calc_am_guts,
-      hustle: :calc_am_hustle,
-      slow_start: :calc_am_slow_start
-    )
+    ATK_ABILITY_MODIFIER = Hash.new(:calc_ua_1)
     # List of ats modifier method from ability
-    ATS_ABILITY_MODIFIER = Hash.new(:calc_ua_1).merge!(
-      solar_power: :calc_am_flower_gift,
-      plus: :calc_am_plus_minus,
-      minus: :calc_am_plus_minus
-    )
+    ATS_ABILITY_MODIFIER = Hash.new(:calc_ua_1)
     # List of atk modifier method from item
-    ATK_ITEM_MODIFIER = Hash.new(:calc_ua_1).merge!(
-      choice_band: :calc_im_choice_band,
-      thick_club: :calc_im_thick_club
-    )
+    ATK_ITEM_MODIFIER = Hash.new(:calc_ua_1)
     # List of ats modifier method from item
-    ATS_ITEM_MODIFIER = Hash.new(:calc_ua_1).merge!(
-      choice_specs: :calc_im_choice_band,
-      soul_dew: :calc_im_soul_dew,
-      deep_sea_tooth: :calc_im_deep_sea_tooth
-    )
+    ATS_ITEM_MODIFIER = Hash.new(:calc_ua_1)
     # Pokemon that can hold the thick club and get the bonus
     THICK_CLUB_POKEMON = %i[cubone marowak]
     # Ability that interact with plus & minus
@@ -124,5 +106,49 @@ module Battle
     def calc_im_deep_sea_tooth(user, target)
       user.db_symbol == :clamperl ? 2 : 1
     end
+
+    class << self
+      # Define an ability that modifies atk
+      # @param db_symbol [Symbol] db_symbol of the ability
+      # @param method_sym [Symbol] name of the method to call
+      def define_ability_atk_modifier(db_symbol, method_sym)
+        ATK_ABILITY_MODIFIER[db_symbol] = method_sym
+      end
+
+      # Define an ability that modifies ats
+      # @param db_symbol [Symbol] db_symbol of the ability
+      # @param method_sym [Symbol] name of the method to call
+      def define_ability_ats_modifier(db_symbol, method_sym)
+        ATS_ABILITY_MODIFIER[db_symbol] = method_sym
+      end
+
+      # Define an item that modifies atk
+      # @param db_symbol [Symbol] db_symbol of the ability
+      # @param method_sym [Symbol] name of the method to call
+      def define_item_atk_modifier(db_symbol, method_sym)
+        ATK_ITEM_MODIFIER[db_symbol] = method_sym
+      end
+
+      # Define an item that modifies ats
+      # @param db_symbol [Symbol] db_symbol of the ability
+      # @param method_sym [Symbol] name of the method to call
+      def define_item_ats_modifier(db_symbol, method_sym)
+        ATS_ITEM_MODIFIER[db_symbol] = method_sym
+      end
+    end
+    define_ability_atk_modifier(:pure_power, :calc_am_pure_power)
+    define_ability_atk_modifier(:huge_power, :calc_am_pure_power)
+    define_ability_atk_modifier(:flower_gift, :calc_am_flower_gift)
+    define_ability_atk_modifier(:guts, :calc_am_guts)
+    define_ability_atk_modifier(:hustle, :calc_am_hustle)
+    define_ability_atk_modifier(:slow_start, :calc_am_slow_start)
+    define_ability_ats_modifier(:solar_power, :calc_am_flower_gift)
+    define_ability_ats_modifier(:plus, :calc_am_plus_minus)
+    define_ability_ats_modifier(:minus, :calc_am_plus_minus)
+    define_item_atk_modifier(:choice_band, :calc_im_choice_band)
+    define_item_atk_modifier(:thick_club, :calc_im_thick_club)
+    define_item_ats_modifier(:choice_specs, :calc_im_choice_band)
+    define_item_ats_modifier(:soul_dew, :calc_im_soul_dew)
+    define_item_ats_modifier(:deep_sea_tooth, :calc_im_deep_sea_tooth)
   end
 end

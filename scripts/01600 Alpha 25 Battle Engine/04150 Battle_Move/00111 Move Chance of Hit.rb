@@ -1,26 +1,13 @@
 module Battle
   class Move
     # List of accuracy items modifier
-    ACCURACY_ITEM_MULTIPLIER = Hash.new(:calc_item_no_multiplier).merge!(
-      wide_lens: :acc_mod_wide_lens,
-      zoom_lens: :acc_mod_zoom_lens
-    )
+    ACCURACY_ITEM_MULTIPLIER = Hash.new(:calc_item_no_multiplier)
     # List of evasion item modifier
-    EVASION_ITEM_MULTIPLIER = Hash.new(:calc_item_no_multiplier).merge!(
-      brightpowder: :eva_mod_brightpowder,
-      lax_incense:  :eva_mod_lax_incense
-    )
+    EVASION_ITEM_MULTIPLIER = Hash.new(:calc_item_no_multiplier)
     # List of accuracy ability modifier
-    ACCURACY_ABILITY_MULTIPLIER = Hash.new(:calc_item_no_multiplier).merge!(
-      compoundeyes: :acc_mod_compoundeyes,
-      hustle: :acc_mod_hustle
-    )
+    ACCURACY_ABILITY_MULTIPLIER = Hash.new(:calc_item_no_multiplier)
     # List of evasion ability modifier
-    EVASION_ABILITY_MULTIPLIER = Hash.new(:calc_item_no_multiplier).merge!(
-      sand_veil: :eva_mod_sand_veil,
-      snow_cloak: :eva_mod_snow_cloak,
-      tangled_feet: :eva_mod_tangled_feet
-    )
+    EVASION_ABILITY_MULTIPLIER = Hash.new(:calc_item_no_multiplier)
     # @return [Float] Modifier of Gravity
     GRAVITY_MODIFIER = 5.0 / 3
 
@@ -127,5 +114,45 @@ module Battle
     def eva_mod_tangled_feet(user, target)
       return target.confused? ? VAL_0_5 : 1
     end
+
+    class << self
+      # Define an ability that modifies accuracy
+      # @param db_symbol [Symbol] db_symbol of the ability
+      # @param method_sym [Symbol] name of the method to call
+      def define_ability_accuracy_modifier(db_symbol, method_sym)
+        ACCURACY_ABILITY_MULTIPLIER[db_symbol] = method_sym
+      end
+
+      # Define an ability that modifies evasion
+      # @param db_symbol [Symbol] db_symbol of the ability
+      # @param method_sym [Symbol] name of the method to call
+      def define_ability_evasion_modifier(db_symbol, method_sym)
+        EVASION_ABILITY_MULTIPLIER[db_symbol] = method_sym
+      end
+
+      # Define an item that modifies accuracy
+      # @param db_symbol [Symbol] db_symbol of the ability
+      # @param method_sym [Symbol] name of the method to call
+      def define_item_accuracy_modifier(db_symbol, method_sym)
+        ACCURACY_ITEM_MULTIPLIER[db_symbol] = method_sym
+      end
+
+      # Define an item that modifies evasion
+      # @param db_symbol [Symbol] db_symbol of the ability
+      # @param method_sym [Symbol] name of the method to call
+      def define_item_evasion_modifier(db_symbol, method_sym)
+        EVASION_ITEM_MULTIPLIER[db_symbol] = method_sym
+      end
+    end
+
+    define_ability_accuracy_modifier(:compoundeyes, :acc_mod_compoundeyes)
+    define_ability_accuracy_modifier(:hustle, :acc_mod_hustle)
+    define_ability_evasion_modifier(:sand_veil, :eva_mod_sand_veil)
+    define_ability_evasion_modifier(:snow_cloak, :eva_mod_snow_cloak)
+    define_ability_evasion_modifier(:tangled_feet, :eva_mod_tangled_feet)
+    define_item_accuracy_modifier(:wide_lens, :acc_mod_wide_lens)
+    define_item_accuracy_modifier(:zoom_lens, :acc_mod_zoom_lens)
+    define_item_evasion_modifier(:brightpowder, :eva_mod_brightpowder)
+    define_item_evasion_modifier(:lax_incense, :eva_mod_lax_incense)
   end
 end
