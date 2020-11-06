@@ -27,19 +27,22 @@ module Battle
       damage *= rng.rand(calc_r_range)
       damage /= 100
       damage = (damage * calc_stab(user)).floor
-      damage = (damage * calc_type_n_multiplier(target, :type1)).floor
-      damage = (damage * calc_type_n_multiplier(target, :type2)).floor
-      damage = (damage * calc_type_n_multiplier(target, :type3)).floor
+      types = definitive_types(user, target)
+      damage = (damage * calc_type_n_multiplier(target, :type1, types)).floor
+      damage = (damage * calc_type_n_multiplier(target, :type2, types)).floor
+      damage = (damage * calc_type_n_multiplier(target, :type3, types)).floor
       return (damage * calc_mod3(user, target)).floor
     end
 
     # Function that calculate the type modifier (for specific uses)
+    # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler]
     # @return [Float]
-    def type_modifier(target)
-      n = calc_type_n_multiplier(target, :type1) *
-          calc_type_n_multiplier(target, :type2) *
-          calc_type_n_multiplier(target, :type3)
+    def type_modifier(user, target)
+      types = definitive_types(user, target)
+      n = calc_type_n_multiplier(target, :type1, types) *
+          calc_type_n_multiplier(target, :type2, types) *
+          calc_type_n_multiplier(target, :type3, types)
       return n
     end
 
@@ -134,18 +137,76 @@ module Battle
     # Calc TypeN multiplier of the move
     # @param target [PFM::PokemonBattler] target of the move
     # @param type_to_check [Symbol] type to check on the target
+    # @param types [Array<Integer>] list of types the move has
     # @return [Numeric]
-    def calc_type_n_multiplier(target, type_to_check)
+    def calc_type_n_multiplier(target, type_to_check, types)
       user_type = target.send(type_to_check)
-      result = GameData::Type[user_type].hit_by(type)
+      result = types.inject(1) { |product, type| product * GameData::Type[user_type].hit_by(type) }
       @effectiveness *= result
       return result
+    end
+
+    # Get the types of the move with 1st type being affected by effects
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
+    # @return [Array<Integer>] list of types of the move
+    def definitive_types(user, target)
+      type = self.type
+      exec_hooks(Move, :move_type_change, binding)
+      return [type]
     end
 
     # "Calc" the R range value
     # @return [Range]
     def calc_r_range
       R_RANGE
+    end
+
+    class << self
+      # Function that registers a move_type_change hook
+      # @param reason [String] reason of the move_type_change registration
+      # @yieldparam user [PFM::PokemonBattler]
+      # @yieldparam target [PFM::PokemonBattler]
+      # @yieldparam move [Battle::Move]
+      # @yieldparam type [Integer] current type of the move
+      # @yieldreturn [Integer, nil] new move type
+      def register_move_type_change_hook(reason)
+        Hooks.register(Move, :move_type_change, reason) do |hook_binding|
+          result = yield(hook_binding.local_variable_get(:user), hook_binding.local_variable_get(:target), self,
+                         hook_binding.local_variable_get(:type))
+          hook_binding.local_variable_set(:type, result) if result.is_a?(Integer)
+        end
+      end
+    end
+
+    # Not added before effects to let it being overwritten by effects ;)
+    Move.register_move_type_change_hook('PSDK Normalize Ability') do |user|
+      next user.ability_db_symbol == :normalize ? GameData::Types::NORMAL : nil
+    end
+
+    Move.register_move_type_change_hook('PSDK Effect process') do |user, target, move, type|
+      move.logic.each_effects(user, target) do |e|
+        result = e.on_move_type_change(user, target, move, type)
+        type = result if result.is_a?(Integer)
+      end
+      next type
+    end
+
+    # Note: added after effect to overwrite move effects ;)
+    Move.register_move_type_change_hook('PSDK Pixilate Ability') do |user, _, move|
+      next user.ability_db_symbol == :pixilate && move.type_normal? ? GameData::Types::FAIRY : nil
+    end
+
+    Move.register_move_type_change_hook('PSDK Refrigerate Ability') do |user, _, move|
+      next user.ability_db_symbol == :refrigerate && move.type_normal? ? GameData::Types::ICE : nil
+    end
+
+    Move.register_move_type_change_hook('PSDK Aerilate Ability') do |user, _, move|
+      next user.ability_db_symbol == :aerilate && move.type_normal? ? GameData::Types::FLYING : nil
+    end
+
+    Move.register_move_type_change_hook('PSDK Galvanize Ability') do |user, _, move|
+      next user.ability_db_symbol == :galvanize && move.type_normal? ? GameData::Types::ELECTRIC : nil
     end
   end
 end

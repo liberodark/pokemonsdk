@@ -295,7 +295,7 @@ module Battle
 
       handler.logic.foes_of(with).each do |foe|
         next false if foe.dead?
-        next false if foe.moveset.none? { |move| move.type_modifier(with) >= 2 }
+        next false if foe.moveset.none? { |move| move.type_modifier(foe, with) >= 2 }
 
         handler.scene.visual.show_ability(with)
         handler.scene.display_message(parse_text_with_pokemon(19, 436, with))

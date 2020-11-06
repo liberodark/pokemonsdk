@@ -5,7 +5,11 @@ module Battle
       rivalry: :calc_ua_rivalry,
       reckless: :calc_ua_reckless,
       iron_fist: :calc_ua_iron_fist,
-      technician: :calc_ua_technician
+      technician: :calc_ua_technician,
+      pixilate: :calc_ua_pixilate,
+      refrigerate: :calc_ua_pixilate,
+      aerilate: :calc_ua_pixilate,
+      galvanize: :calc_ua_pixilate
     )
     # List of ability that power specific move types when the user only has 1/3 (rounded down) of its HP
     POWERING_TYPE_USER_ABILITY = {
@@ -23,6 +27,14 @@ module Battle
     # @return [Numeric]
     def calc_ua_1(user, target)
       1
+    end
+
+    # Calculate the rate of pixilate / refrigerate / aerilate
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_pixilate(user, target)
+      return type_normal? ? 1.3 : 1
     end
 
     # Rivalry user ability multiplier

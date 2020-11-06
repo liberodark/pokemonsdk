@@ -528,6 +528,7 @@ Here's the list of methods you can define to hook something on an effect:
 - `on_post_weather_change(handler, weather_type, last_weather)`
 - `on_move_prevention_user(user, targets, move)`
 - `on_move_prevention_target(user, target, move)`
+- `on_move_type_change(user, target, move, type)`
 
 Here's an example of effect that defines a behaviour:
 ```ruby
@@ -599,9 +600,10 @@ Once you did this, all the move whose be_method correspond to the first paramete
 Here's the list of important methods you'll find in the moves:
 
 - `damages(user, target, rng)` : Calculate the damages the move will deal to target, sets the `effectiveness` factor and the `critical` boolean attribute. This method should remain silent so abilities & items involved in rate modification should not be shown during the calculation. We will not detail all the methods involved in the calculation in this chapter.
-- `type_modifier(target)` : Calculate the effectiveness of the move against a target. **This method is not called in damages**.
+- `type_modifier(user, target)` : Calculate the effectiveness of the move against a target. **This method is not called in damages**.
 - `calc_stab(user)` : Gives the stab of the move with a specific user.
-- `calc_type_n_multiplier(target, type_to_check)` : Gives the type modifier of the wanted type_to_check (`:type1`, `:type2`, `:type3`) on target when the move will hit the target.
+- `calc_type_n_multiplier(target, type_to_check, types)` : Gives the type modifier of the wanted type_to_check (`:type1`, `:type2`, `:type3`) on target when the move will hit the target. `types` correspond to the move types.
+- `definitive_types(user, target)` : Gives the list of types the move has once all effect that change types were processed.
 - `one_target?` : Tells if the move can hit only one target each time it's used.
 - `no_choice_skill?` : Tell if the move let the player choose the target.
 - `battler_targets(pokemon, logic)` : List all the possible targets of the move depending on the pokemon who use the move.

@@ -87,11 +87,12 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Boolean]
     def target_immune?(user, target)
+      types = definitive_types(user, target)
       # TODO: foresight / odor_sleuth effect on target (ghost type)
       # TODO: miracle eye effect on target (dark type not immue to psy)
-      return calc_type_n_multiplier(target, :type1) == 0 ||
-             calc_type_n_multiplier(target, :type2) == 0 ||
-             calc_type_n_multiplier(target, :type3) == 0
+      return calc_type_n_multiplier(target, :type1, types) == 0 ||
+             calc_type_n_multiplier(target, :type2, types) == 0 ||
+             calc_type_n_multiplier(target, :type3, types) == 0
     end
 
     # Play the move animation

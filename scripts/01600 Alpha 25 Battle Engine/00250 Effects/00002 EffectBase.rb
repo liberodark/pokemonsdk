@@ -220,6 +220,16 @@ module Battle
       def on_move_prevention_target(user, target, move)
         nil && user && target && move
       end
+
+      # Function called when we try to get the definitive type of a move
+      # @param user [PFM::PokemonBattler]
+      # @param target [PFM::PokemonBattler] expected target
+      # @param move [Battle::Move]
+      # @param type [Integer] current type of the move (potentially after effects)
+      # @return [Integer, nil] new type of the move
+      def on_move_type_change(user, target, move, type)
+        nil && user && target && move && type
+      end
     end
   end
 end

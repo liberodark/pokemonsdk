@@ -6,7 +6,7 @@ module BattleEngine
   # @param skill [Battle::Move] move that is currently used
   # @return [Float]
   def _type_modifier_calculation(target, skill)
-    return skill.type_modifier(target)
+    return skill.type_modifier(target, target)
   end
 
   # Calculate the damage dealt by the move
