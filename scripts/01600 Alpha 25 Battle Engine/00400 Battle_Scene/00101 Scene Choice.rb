@@ -6,8 +6,8 @@ module Battle
     def player_action_choice
       # If the method was called and the player cannot make another choice it's a bug so we end the battle
       return @next_update = :battle_end unless can_player_make_another_action_choice?
-      choice = @visual.show_player_choice(@player_actions.size)
-      log_debug("Player action choice : #{choice}")
+      choice, forced_action = @visual.show_player_choice(@player_actions.size)
+      log_debug("Player action choice : #{choice} / #{forced_action}")
       case choice
       when :attack
         # The player choose to attack, at next update will be skill_choice
@@ -31,6 +31,10 @@ module Battle
       when :try_next
         # The visual interface detected that the current Pokemon is dead
         @player_actions << {}
+      when :action
+        # The player choice returned an action to use
+        @player_actions << forced_action
+        @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else
         # The visual interface detected an anomaly, we go to the end of the battle
         @next_update = :battle_end

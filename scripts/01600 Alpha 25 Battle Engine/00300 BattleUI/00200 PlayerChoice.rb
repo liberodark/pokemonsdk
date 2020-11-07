@@ -21,6 +21,8 @@ module BattleUI
     POSSIBLE_RESULT = %i[attack bag pokemon flee]
     # @return [Symbol, nil] The result
     attr_reader :result
+    # @return [Hash, nil] the forced action
+    attr_reader :action
     # Tell if the player can switch or not
     # @return [Boolean]
     attr_accessor :can_switch
@@ -33,6 +35,7 @@ module BattleUI
       load_cursor
       @index = 0
       @can_switch = true
+      @action = nil
       self.active = true
       self.visible = false
     end
@@ -57,9 +60,17 @@ module BattleUI
     # Reset the choice
     def reset
       @result = nil
+      @action = nil
     end
 
     private
+
+    # Force an action
+    # @param action [Hash] action to do
+    def force_action(action)
+      @action = action
+      @result = :action
+    end
 
     # Update the cursor position
     def update_cursor

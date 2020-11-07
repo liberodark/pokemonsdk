@@ -2,15 +2,20 @@ module Battle
   class Visual
     # Method that shows the trainer choice
     # @param pokemon_index [Integer] Index of the Pokemon in the party
-    # @return [Symbol, nil] :attack, :bag, :pokemon, :flee, :cancel, :try_next
+    # @return [Symbol, Array(Symbol, Hash), nil] :attack, :bag, :pokemon, :flee, :cancel, :try_next
     def show_player_choice(pokemon_index)
-      return :attack if @scene.logic.battler(0, pokemon_index).effects.has?(:forced_next_move)
+      if (pokemon = @scene.logic.battler(0, pokemon_index)).effects.has?(:forced_next_move)
+        # @type [Effects::ForcedNextMove]
+        effect = pokemon.effects.get(:forced_next_move)
+        target = effect.targets.first
+        return :action, { type: :attack, launcher: pokemon, skill: effect.move, target_bank: target.bank, target_position: target.position }
+      end
 
       # return :try_next if spc_cannot_use_this_pokemon?(pokemon_index)
       show_player_choice_begin(pokemon_index)
       show_player_choice_loop
       show_player_choice_end(pokemon_index)
-      return @player_choice_ui.result
+      return @player_choice_ui.result, @player_choice_ui.action
     end
 
     # Show the message "What will X do"
