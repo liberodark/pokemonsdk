@@ -62,7 +62,7 @@ module Battle
       # IT
       result = (result * send(ITEM_MULTIPLIER[user.battle_item_db_symbol], user, target)).floor
       # CHG
-      result *= user.last_successfull_move == :charge && type == GameData::Types::ELECTRIC ? 2 : 1
+      result *= user.last_successfull_move_is?(:charge) && type == GameData::Types::ELECTRIC ? 2 : 1
       # MS
       result = (result * VAL_0_5).floor if logic.global_mud_sport? && type == GameData::Types::ELECTRIC
       # WS

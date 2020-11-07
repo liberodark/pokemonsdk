@@ -77,7 +77,6 @@ module Battle
         return process_prevention_reason unless status_appliable?(status, target, launcher, skill)
 
         status_change(status, target, launcher, skill, message_overwrite: message_overwrite)
-        launcher&.last_successfull_move = skill.db_symbol if skill
       end
 
       private

@@ -16,9 +16,6 @@ module PFM
     # @return [Array<Battle::Move>] the moveset of the Pokemon
     attr_reader :moveset
 
-    # @return [Symbol, nil] the last successfull move (during the previous turn)
-    attr_accessor :last_successfull_move
-
     # @return [Integer] number of turn the Pokemon is in battle
     attr_accessor :turn_count
     alias battle_turns turn_count # BE24
@@ -53,6 +50,10 @@ module PFM
     # @return [Battle::Effects::EffectsHandler]
     attr_reader :effects
 
+    # Get the move history
+    # @return [Array<MoveHistory>]
+    attr_reader :move_history
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param scene [Battle::Scene] current battle scene
@@ -72,6 +73,7 @@ module PFM
       @battle_item = @item_holding
       @last_battle_turn = -1
       @effects = Battle::Effects::EffectsHandler.new
+      @move_history = []
     end
 
     # Reload the original ability
@@ -108,6 +110,20 @@ module PFM
       return :__undef__ if ability_db_symbol == :klutz
 
       return item_db_symbol
+    end
+
+    # Add a move to the move history
+    # @note This method should only be used for sucessfull moves!!!
+    # @param move [Battle::Move]
+    # @param targets [Array<PFM::PokemonBattler>]
+    def add_move_to_history(move, targets)
+      @move_history << MoveHistory.new(move, targets)
+    end
+
+    # Test if the last move was of a certain symbol
+    # @param db_symbol [Symbol] symbol of the move
+    def last_successfull_move_is?(db_symbol)
+      return @move_history.last&.db_symbol == db_symbol
     end
 
     # Test if the Pokemon can have a lowering stat or have its move canceled (return false if the Pokemon has mold breaker)

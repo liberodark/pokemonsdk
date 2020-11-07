@@ -37,6 +37,7 @@ module Battle
       actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
       return if actual_targets.none?
 
+      user.add_move_to_history(self, actual_targets)
       play_animation(user, targets) # TODO: check if that works properly, eg. not playing when the move does nothing
 
       if self.class == Battle::Move

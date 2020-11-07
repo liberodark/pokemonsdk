@@ -30,7 +30,6 @@ module Battle
         @scene.visual.show_hp_animations([target], [-hp], [skill&.effectiveness]) # TODO: pass skill.effectiveness
         exec_hooks(DamageHandler, :post_damage, binding) if target.hp > 0
         exec_hooks(DamageHandler, :post_damage_death, binding) if target.hp <= 0
-        launcher&.last_successfull_move = skill.db_symbol if skill
         recoil(hp, launcher) if hp > 0 && launcher && skill&.recoil?
       rescue Hooks::ForceReturn => e
         return e.data
@@ -357,7 +356,7 @@ module Battle
 
     # Destiny Bond
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Destiny Bond') do |handler, _, target, launcher, skill|
-      next unless skill && target.last_successfull_move == :destiny_bond && launcher != target && launcher
+      next unless skill && target.last_successfull_move_is?(:destiny_bond) && launcher != target && launcher
 
       handler.scene.display_message(parse_text_with_pokemon(19, 629, target))
       handler.scene.visual.show_hp_animations([launcher], [-launcher.hp])

@@ -167,7 +167,8 @@ module Battle
 
     # Lunar Dance
     SwitchHandler.register_switch_event_hook('PSDK switch: Lunar Dance') do |handler, who, with|
-      next if who.last_successfull_move != :lunar_dance || who.last_battle_turn != $game_temp.battle_turn
+      last_move = who.move_history.last
+      next if !last_move || last_move.db_symbol != :lunar_dance || !last_move.current_turn?
 
       handler.scene.display_message(parse_text_with_pokemon(19, 694, with))
       handler.scene.visual.show_hp_animations([with], [with.max_hp])
@@ -176,7 +177,8 @@ module Battle
 
     # Healing Wish
     SwitchHandler.register_switch_event_hook('PSDK switch: Healing Wish') do |handler, who, with|
-      next if who.last_successfull_move != :healing_wish || who.last_battle_turn != $game_temp.battle_turn
+      last_move = who.move_history.last
+      next if !last_move || last_move.db_symbol != :healing_wish || !last_move.current_turn?
 
       handler.scene.display_message(parse_text_with_pokemon(19, 697, with))
       handler.scene.visual.show_hp_animations([with], [with.max_hp])
@@ -197,7 +199,8 @@ module Battle
 
     # Baton Pass
     SwitchHandler.register_switch_event_hook('PSDK switch: Baton Pass') do |handler, who, with|
-      next if who.last_successfull_move != :baton_pass || who.last_battle_turn != $game_temp.battle_turn
+      last_move = who.move_history.last
+      next if !last_move || last_move.db_symbol != :baton_pass || !last_move.current_turn?
 
       with.battle_effect.transmit_bind(who.battle_effect) if who.battle_effect.has_bind_effect?
       handler.logic.status_change_handler(:confuse, with) if who.confused?

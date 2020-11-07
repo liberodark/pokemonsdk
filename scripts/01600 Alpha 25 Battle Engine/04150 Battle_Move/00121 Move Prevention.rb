@@ -32,7 +32,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @param symbol [Symbol]
     def blocked_by?(target, symbol)
-      return blocable? && target.battle_effect.has_protect_effect? && target.last_successfull_move == symbol
+      return blocable? && target.battle_effect.has_protect_effect? && target.last_successfull_move_is?(symbol)
     end
 
     class << self
@@ -84,7 +84,7 @@ module Battle
 
   # Torment registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Torment') do |user, _, move|
-    if user.battle_effect.has_torment_effect? && move.db_symbol != user.last_successfull_move
+    if user.battle_effect.has_torment_effect? && !user.last_successfull_move_is?(move.db_symbol)
       move.scene.display_message(parse_text_with_pokemon(19, 580, user))
       next :prevent
     end
