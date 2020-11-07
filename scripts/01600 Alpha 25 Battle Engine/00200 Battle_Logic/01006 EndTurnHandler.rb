@@ -217,7 +217,7 @@ module Battle
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Black Sludge') do |logic, scene, battlers|
       battlers.each do |battler|
-        next if battler.item_db_symbol != :black_sludge
+        next if battler.battle_item_db_symbol != :black_sludge
 
         if battler.type_poison?
           scene.visual.show_item(battler)
@@ -231,7 +231,7 @@ module Battle
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Flame Orb') do |logic, scene, battlers|
       battlers.each do |battler|
-        next if battler.item_db_symbol != :flame_orb || battler.turn_count > 0 || battler.ability_db_symbol == :magic_guard
+        next if battler.battle_item_db_symbol != :flame_orb || battler.turn_count > 0 || battler.ability_db_symbol == :magic_guard
 
         scene.display_message(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
         logic.status_change_handler.status_change(:burn, battler)
@@ -240,7 +240,7 @@ module Battle
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Toxic Orb') do |logic, scene, battlers|
       battlers.each do |battler|
-        next if battler.item_db_symbol != :toxic_orb || battler.turn_count > 0 || battler.ability_db_symbol == :magic_guard
+        next if battler.battle_item_db_symbol != :toxic_orb || battler.turn_count > 0 || battler.ability_db_symbol == :magic_guard
 
         scene.display_message(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
         logic.status_change_handler.status_change(:toxic, battler)
@@ -249,7 +249,7 @@ module Battle
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Life Orb') do |logic, scene, battlers|
       battlers.each do |battler|
-        next if battler.item_db_symbol != :life_orb || battler.attack_order.is_a?(Integer) || battler.ability_db_symbol == :magic_guard
+        next if battler.battle_item_db_symbol != :life_orb || battler.attack_order.is_a?(Integer) || battler.ability_db_symbol == :magic_guard
 
         scene.display_message(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
         logic.damage_handler.damage_change(-(battler.max_hp / 8).clamp(1, Float::INFINITY), battler)
@@ -258,7 +258,7 @@ module Battle
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Sticky Barb') do |logic, scene, battlers|
       battlers.each do |battler|
-        next if battler.item_db_symbol != :sticky_barb || battler.ability_db_symbol == :magic_guard
+        next if battler.battle_item_db_symbol != :sticky_barb || battler.ability_db_symbol == :magic_guard
 
         scene.display_message(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
         logic.damage_handler.damage_change(-(battler.max_hp / 8).clamp(1, Float::INFINITY), battler)
@@ -267,7 +267,7 @@ module Battle
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Leftovers') do |_, scene, battlers|
       battlers.each do |battler|
-        next if battler.item_db_symbol != :leftovers
+        next if battler.battle_item_db_symbol != :leftovers
 
         scene.display_message(parse_text_with_pokemon(19, 918, battler, PFM::Text::ITEM2[1] => battler.item_name))
         scene.visual.show_hp_animations([battle], [-(battler.max_hp / 8).clamp(1, Float::INFINITY)])

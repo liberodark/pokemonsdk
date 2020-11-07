@@ -43,7 +43,7 @@ module Battle
     # @param user [PFM::PokemonBattler]
     # @return [Boolean]
     def calc_critical_count_item(user)
-      item = user.item_db_symbol
+      item = user.battle_item_db_symbol
       return true if UNCONDITIONAL_CRITICAL_ITEMS.include?(item)
       return true if item == :stick && user.db_symbol == :"farfetch’d"
       return true if item == :lucky_punch && user.db_symbol == :chansey

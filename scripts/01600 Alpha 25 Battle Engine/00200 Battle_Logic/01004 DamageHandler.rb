@@ -65,7 +65,7 @@ module Battle
         elsif launcher.effects.has?(:heal_block)
           @scene.display_message(parse_text_with_pokemon(19, 890, launcher))
         else
-          hp = hp * 130 / 100 if launcher.item_db_symbol == :big_root
+          hp = hp * 130 / 100 if launcher.battle_item_db_symbol == :big_root
           @scene.visual.show_hp_animations([launcher], [hp])
         end
       end
@@ -196,13 +196,13 @@ module Battle
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Focus Band') do |_, hp, target, _, skill|
       next unless skill
 
-      next target.hp - 1 if hp >= target.hp && target.item_db_symbol == :focus_band && rand(10) == 1
+      next target.hp - 1 if hp >= target.hp && target.battle_item_db_symbol == :focus_band && rand(10) == 1
     end
 
     # Focus Sash
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Focus Sash') do |handler, hp, target, _, skill|
       next unless skill
-      next if hp < target.hp || target.hp != target.max_hp || target.item_db_symbol != :focus_sash
+      next if hp < target.hp || target.hp != target.max_hp || target.battle_item_db_symbol != :focus_sash
 
       handler.logic.item_change_handler.change_item(:none, true, target)
       next target.hp - 1
@@ -298,7 +298,7 @@ module Battle
 
     # Oran Berry
     DamageHandler.register_post_damage_hook('PSDK post damage: Oran Berry') do |handler, _, target|
-      next unless target.item_db_symbol == :oran_berry
+      next unless target.battle_item_db_symbol == :oran_berry
 
       if target.hp_rate <= 0.5
         handler.scene.visual.show_item(target)
@@ -310,7 +310,7 @@ module Battle
 
     # Sitrus Berry
     DamageHandler.register_post_damage_hook('PSDK post damage: Sitrus Berry') do |handler, _, target|
-      next unless target.item_db_symbol == :sitrus_berry
+      next unless target.battle_item_db_symbol == :sitrus_berry
 
       if target.hp_rate <= 0.5
         handler.scene.visual.show_item(target)
@@ -322,7 +322,7 @@ module Battle
 
     # Air Balloon
     DamageHandler.register_post_damage_hook('PSDK post damage: Air Balloon') do |handler, _, target|
-      next unless target.item_db_symbol == :air_balloon
+      next unless target.battle_item_db_symbol == :air_balloon
 
       handler.scene.display_message(parse_text_with_pokemon(19, 411, target))
       handler.logic.item_change_handler.change_item(:none, true, target)
@@ -330,7 +330,7 @@ module Battle
 
     # Luminous Moss
     DamageHandler.register_post_damage_hook('PSDK Post damage: Luminous Moss') do |handler, _, target, _, skill|
-      next unless skill&.type_water? && target.item_db_symbol == :luminous_moss
+      next unless skill&.type_water? && target.battle_item_db_symbol == :luminous_moss
 
       handler.scene.visual.show_item(target)
       handler.logic.stat_change_handler.stat_change_with_process(:dfs, 1, target)
@@ -339,7 +339,7 @@ module Battle
 
     # Snowball
     DamageHandler.register_post_damage_hook('PSDK Post damage: Luminous Moss') do |handler, _, target, _, skill|
-      next unless skill&.type_ice? && target.item_db_symbol == :snowball
+      next unless skill&.type_ice? && target.battle_item_db_symbol == :snowball
 
       handler.scene.visual.show_item(target)
       handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, target)
@@ -381,7 +381,7 @@ module Battle
 
     # Shell Bell
     DamageHandler.register_post_damage_hook('PSDK Post damage: Shell Bell') do |handler, hp, target, launcher, skill|
-      next unless skill && launcher&.item_db_symbol == :shell_bell && hp >= 8 && launcher != target
+      next unless skill && launcher&.battle_item_db_symbol == :shell_bell && hp >= 8 && launcher != target
 
       handler.scene.visual.show_item(launcher)
       handler.scene.visual.show_hp_animations([launcher], [hp / 8])
@@ -389,7 +389,7 @@ module Battle
 
     # Sticky Barb
     DamageHandler.register_post_damage_hook('PSDK Post damage: Sticky Barb') do |handler, _, target, launcher, skill|
-      next unless skill && target&.item_db_symbol == :sticky_barb && launcher != target
+      next unless skill && target&.battle_item_db_symbol == :sticky_barb && launcher != target
 
       # TODO: Dont forget to add damage of Sticky Barb in the end turn procedure ;)
       if launcher.item_db_symbol == :__undef__
@@ -400,14 +400,14 @@ module Battle
 
     # King's Rock
     DamageHandler.register_post_damage_hook('PSDK Post damage: King’s Rock') do |handler, _, target, launcher, skill|
-      next unless skill&.trigger_king_rock? && launcher&.item_db_symbol == :king’s_rock && launcher != target && rand(10) == 0
+      next unless skill&.trigger_king_rock? && launcher&.battle_item_db_symbol == :king’s_rock && launcher != target && rand(10) == 0
 
       handler.logic.status_change_handler.status_change_with_process(:flinch, target)
     end
 
     # Razor Fang
     DamageHandler.register_post_damage_hook('PSDK Post damage: Razor Fang') do |handler, _, target, launcher, skill|
-      next unless skill && launcher&.item_db_symbol == :razor_fang && launcher != target && rand(10) == 0
+      next unless skill && launcher&.battle_item_db_symbol == :razor_fang && launcher != target && rand(10) == 0
 
       handler.logic.status_change_handler.status_change_with_process(:flinch, target)
     end

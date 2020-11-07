@@ -8,7 +8,7 @@ module Battle
     # @return [Numeric]
     def calc_mod2(user, target)
       update_use_count(user)
-      item = user.item_db_symbol
+      item = user.battle_item_db_symbol
       result = 1
       result *= VAL_1_3 if item == :life_orb
       result *= calc_mod2_metronome if item == :metronome

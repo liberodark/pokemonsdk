@@ -102,6 +102,14 @@ module PFM
       $actors.include?(@original)
     end
 
+    # Get the item for battle
+    # @return [Symbol]
+    def battle_item_db_symbol
+      return :__undef__ if ability_db_symbol == :klutz
+
+      return item_db_symbol
+    end
+
     # Test if the Pokemon can have a lowering stat or have its move canceled (return false if the Pokemon has mold breaker)
     #
     # List of ability that should be affected:

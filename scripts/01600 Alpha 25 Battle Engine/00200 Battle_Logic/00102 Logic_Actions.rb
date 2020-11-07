@@ -115,8 +115,8 @@ module Battle
       attacks = actions.select { |action| action[:type] == :attack }
       return if attacks.size <= 1
       triggered_action = attacks.find do |action|
-        message = ITEM_PRIORITY_BOOST_IN_PRIORITY[action[:launcher].item_db_symbol]
-        log_debug("#{action[:launcher].item_db_symbol} held by #{action[:launcher]}") if message
+        message = ITEM_PRIORITY_BOOST_IN_PRIORITY[action[:launcher].battle_item_db_symbol]
+        log_debug("#{action[:launcher].battle_item_db_symbol} held by #{action[:launcher]}") if message
         result = (message ? send(message, action[:launcher]) : false)
         log_debug("#{message} returned #{result}") if message
         next(result)

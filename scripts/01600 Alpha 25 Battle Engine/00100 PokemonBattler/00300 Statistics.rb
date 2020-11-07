@@ -22,7 +22,7 @@ module PFM
     def spd
       raw_spd = (spd_basis * spd_modifier).floor
       ability_spd = (raw_spd * send(SPEED_MODIFIER_ABILITY[ability_db_symbol])).floor
-      item_spd = (ability_spd * send(SPEED_MODIFIER_ITEM[item_db_symbol])).floor
+      item_spd = (ability_spd * send(SPEED_MODIFIER_ITEM[battle_item_db_symbol])).floor
       paralysis_spd = paralyzed? ? item_spd * PARALYSIS_MODIFIER : item_spd
       # TODO : Implement tailwind
       tailwind_spd = false ? 2 * paralysis_spd : paralysis_spd

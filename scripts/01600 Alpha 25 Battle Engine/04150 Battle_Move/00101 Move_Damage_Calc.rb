@@ -60,7 +60,7 @@ module Battle
       result *= 1.5 if user.helping_hand?
       result = result.floor # Round down between each multiplication, the first two can be reverted.
       # IT
-      result = (result * send(ITEM_MULTIPLIER[user.item_db_symbol], user, target)).floor
+      result = (result * send(ITEM_MULTIPLIER[user.battle_item_db_symbol], user, target)).floor
       # CHG
       result *= user.last_successfull_move == :charge && type == GameData::Types::ELECTRIC ? 2 : 1
       # MS
@@ -88,7 +88,7 @@ module Battle
       am = send((ph_move ? ATK_ABILITY_MODIFIER : ATS_ABILITY_MODIFIER)[user.ability_db_symbol], user, target)
       result = (result * am).floor
       # IM
-      return (result * send((ph_move ? ATK_ITEM_MODIFIER : ATS_ITEM_MODIFIER)[user.item_db_symbol], user, target)).floor
+      return (result * send((ph_move ? ATK_ITEM_MODIFIER : ATS_ITEM_MODIFIER)[user.battle_item_db_symbol], user, target)).floor
     end
 
     EXPLOSION_SELF_DESTRUCT_MOVE = %i[explosion self-destruct]
@@ -107,7 +107,7 @@ module Battle
       result = (result * 1.5).floor if !ph_move && $env.sandstorm? && target.type_rock?
       mod = send((ph_move ? DFE_ABILITY_MODIFIER : DFS_ABILITY_MODIFIER)[target.ability_db_symbol], user, target)
       result = (result * mod).floor
-      mod = send((ph_move ? DFE_ITEM_MODIFIER : DFS_ITEM_MODIFIER)[target.item_db_symbol], user, target)
+      mod = send((ph_move ? DFE_ITEM_MODIFIER : DFS_ITEM_MODIFIER)[target.battle_item_db_symbol], user, target)
       result = (result * mod).floor
       # SX
       result = (result * VAL_0_5).floor if EXPLOSION_SELF_DESTRUCT_MOVE.include?(db_symbol)

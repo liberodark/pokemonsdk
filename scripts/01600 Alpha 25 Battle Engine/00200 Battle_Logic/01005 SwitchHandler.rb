@@ -102,7 +102,7 @@ module Battle
 
     # Shed Shell
     SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: Shed Shell') do |_, pokemon|
-      next :passthrough if pokemon.item_db_symbol == :shed_shell
+      next :passthrough if pokemon.battle_item_db_symbol == :shed_shell
     end
 
     # Shadow Tag
@@ -244,7 +244,7 @@ module Battle
       weather_handler = handler.logic.weather_change_handler
       next unless weather_handler.weather_appliable?(:rain)
 
-      nb_turn = with.item_db_symbol == :damp_rock ? 8 : 5
+      nb_turn = with.battle_item_db_symbol == :damp_rock ? 8 : 5
       weather_handler.weather_change(:rain, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 493)
@@ -257,7 +257,7 @@ module Battle
       weather_handler = handler.logic.weather_change_handler
       next unless weather_handler.weather_appliable?(:sunny)
 
-      nb_turn = with.item_db_symbol == :damp_rock ? 8 : 5
+      nb_turn = with.battle_item_db_symbol == :damp_rock ? 8 : 5
       weather_handler.weather_change(:sunny, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 492)
@@ -270,7 +270,7 @@ module Battle
       weather_handler = handler.logic.weather_change_handler
       next unless weather_handler.weather_appliable?(:sandstorm)
 
-      nb_turn = with.item_db_symbol == :damp_rock ? 8 : 5
+      nb_turn = with.battle_item_db_symbol == :damp_rock ? 8 : 5
       weather_handler.weather_change(:sandstorm, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 494)
@@ -283,7 +283,7 @@ module Battle
       weather_handler = handler.logic.weather_change_handler
       next unless weather_handler.weather_appliable?(:hail)
 
-      nb_turn = with.item_db_symbol == :damp_rock ? 8 : 5
+      nb_turn = with.battle_item_db_symbol == :damp_rock ? 8 : 5
       weather_handler.weather_change(:hail, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 494)
@@ -323,7 +323,7 @@ module Battle
     end
 
     # Frisk
-    SwitchHandler.register_switch_event_hook('PSDK switch: Forewarn') do |handler, _, with|
+    SwitchHandler.register_switch_event_hook('PSDK switch: Frisk') do |handler, _, with|
       next if with.ability_db_symbol != :frisk
 
       foe_item = handler.logic.foes_of(with).find { |foe| foe.alive? && foe.item_db_symbol != :__undef__ }

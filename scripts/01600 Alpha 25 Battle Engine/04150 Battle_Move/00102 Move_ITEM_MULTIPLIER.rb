@@ -81,7 +81,7 @@ module Battle
     # @param target [PFM::PokemonBattler] target of the move
     # @return [Numeric]
     def calc_item_boost_type_multiplier(user, target)
-      BOOSTING_TYPE_ITEMS[user.item_db_symbol] == type ? 1.2 : 1
+      BOOSTING_TYPE_ITEMS[user.battle_item_db_symbol] == type ? 1.2 : 1
     end
 
     class << self

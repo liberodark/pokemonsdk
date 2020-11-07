@@ -307,7 +307,7 @@ module Battle
 
     # Register the White Herb item
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: White Herb') do |handler, _, target, launcher, skill|
-      if target.item_db_symbol == :white_herb
+      if target.battle_item_db_symbol == :white_herb
         next handler.prevent_change do # NOT FINISHED!
           handler.scene.visual.show_item(target)
           handler.scene.display_message(parse_text_with_pokemon(19, 198, target))

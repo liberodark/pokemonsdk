@@ -1,6 +1,6 @@
 module Battle
   class Move
-    # Move that inflict electrify to the ennemy
+    # Move that inflict Magic Coat to the user
     class MagicCoat < Move
       # Function that tests if the user is able to use the move
       # @param user [PFM::PokemonBattler] user of the move
