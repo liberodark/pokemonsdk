@@ -122,6 +122,14 @@ module Battle
       @position_effects[bank][position].add(effect)
     end
 
+    # Add an effect on a bank
+    # @param effect [Battle::Effects::PositionTiedEffectBase]
+    def add_bank_effect(effect)
+      bank = effect.bank
+      @bank_effects[bank] ||= Effects::EffectsHandler.new
+      @bank_effects[bank].add(effect)
+    end
+
     # Delete all the dead effect by updating counters & removing them
     def delete_dead_effects
       @terrain_effects.update_counter
