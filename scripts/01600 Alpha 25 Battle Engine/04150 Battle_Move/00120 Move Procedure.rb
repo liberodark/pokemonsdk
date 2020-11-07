@@ -32,14 +32,14 @@ module Battle
       return unless move_usable_by_user(user, targets)
 
       usage_message(user)
-      return scene.display_message(parse_text(18, 74)) if rand(100) >= accuracy
+      return scene.display_message(parse_text(18, 74)) if accuracy > 0 && rand(100) >= accuracy
 
       actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
       return if actual_targets.none?
 
       play_animation(user, targets) # TODO: check if that works properly, eg. not playing when the move does nothing
 
-      if self.class == Battle::Move || self.class == Battle::RecoilMove
+      if self.class == Battle::Move
         BattleEngine.use_skill(PFM::PokemonBattler24.new(user), actual_targets.map { |i| PFM::PokemonBattler24.new(i) }, self)
         messages = BattleEngine._message_get_all
         BattleEngine::MessageInterpter.new(@scene).process_messages(messages)
@@ -135,6 +135,14 @@ module Battle
       return true
     end
 
+    # Function applying recoil damage to the user
+    # @param hp [Integer]
+    # @param user [PFM::PokemonBattler]
+    def recoil(hp, user)
+      @logic.damage_handler.damage_change(hp / recoil_factor, user)
+      @scene.display_message(parse_text_with_pokemon(19, 378, user))
+    end
+
     # Show the effectiveness message
     # @param effectiveness [Numeric]
     # @param target [PFM::PokemonBattler]
@@ -165,6 +173,7 @@ module Battle
     # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
     # @return [Boolean]
     def effect_working?(user, actual_targets)
+      exec_hooks(Move, :effect_working, binding)
       return user && actual_targets && false || true
     end
 

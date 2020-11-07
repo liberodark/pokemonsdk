@@ -118,6 +118,45 @@ module Battle
       end
     end
 
+    # Test if the battler attacks before another
+    # @param battler [PFM::PokemonBattler]
+    # @param other [PFM::PokemonBattler]
+    # @return [Boolean]
+    def battler_attacks_before?(battler, other)
+      return false unless battler.attack_order.integer? && other.attack_order.integer?
+      return false if other.dead?
+
+      return battler.attack_order < other.attack_order
+    end
+
+    # Test if the battler attacks after another
+    # @param battler [PFM::PokemonBattler]
+    # @param other [PFM::PokemonBattler]
+    # @return [Boolean]
+    def battler_attacks_after?(battler, other)
+      return false unless battler.attack_order.integer? && other.attack_order.integer?
+
+      return battler.attack_order > other.attack_order
+    end
+
+    # Test if the battler attacks first
+    # @param battler [PFM::PokemonBattler]
+    # @return [Boolean]
+    def battler_attacks_first?(battler)
+      return battler.attack_order == 0
+    end
+
+    # Test if the battler attacks last
+    # @param battler [PFM::PokemonBattler]
+    # @return [Boolean]
+    def battler_attacks_last?(battler)
+      last_order = all_alive_battlers.map(&:attack_order).reject { |i| i == Float::INFINITY }.max
+      p last_order
+      p all_alive_battlers.map(&:attack_order)
+      p battler, battler.attack_order
+      return battler.attack_order == last_order
+    end
+
     private
 
     # Load the battlers from a party

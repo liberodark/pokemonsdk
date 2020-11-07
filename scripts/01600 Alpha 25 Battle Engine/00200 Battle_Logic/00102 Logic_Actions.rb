@@ -56,12 +56,12 @@ module Battle
       all_alive_battlers.each do |battler|
         battler.attack_order = Float::INFINITY
       end
-      index = 0
+      index = @actions.count { |action| action[:type] == :attack } - 1
       @actions.each do |action|
         next unless action[:type] == :attack
 
         action[:launcher].attack_order = index
-        index += 1
+        index -= 1
       end
     end
 

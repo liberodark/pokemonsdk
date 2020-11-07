@@ -19,6 +19,7 @@ module Battle
           elsif hp > 0
             efficent_message(effectiveness, target)
           end
+          recoil(hp, user) if recoil?
         end
 
         return true
@@ -40,7 +41,7 @@ module Battle
           n = 1
         end
 
-        return rand(100) < (effect_chance * n)
+        return rand(100) < (effect_chance * n) && super # super ensure that the magic_bounce & magic_coat effect works
       end
     end
 

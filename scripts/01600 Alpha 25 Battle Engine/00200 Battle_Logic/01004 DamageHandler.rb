@@ -31,6 +31,7 @@ module Battle
         exec_hooks(DamageHandler, :post_damage, binding) if target.hp > 0
         exec_hooks(DamageHandler, :post_damage_death, binding) if target.hp <= 0
         launcher&.last_successfull_move = skill.db_symbol if skill
+        recoil(hp, launcher) if hp > 0 && launcher && skill&.recoil?
       rescue Hooks::ForceReturn => e
         return e.data
       ensure

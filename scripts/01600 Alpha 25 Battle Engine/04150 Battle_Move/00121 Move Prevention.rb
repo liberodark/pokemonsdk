@@ -246,4 +246,52 @@ module Battle
     end
     next true
   end
+
+  # Registers the magic bounce ability
+  Hooks.register(Move, :effect_working, 'Magic Bounce Ability') do |move_binding|
+    # @type [Battle::Move]
+    move = self
+    # @type [PFM::PokemonBattler]
+    user = move_binding.local_variable_get(:user)
+    # @type [Array<PFM::PokemonBattler>]
+    actual_targets = move_binding.local_variable_get(:actual_targets)
+
+    next if move.db_symbol == :memento
+    next unless user.can_be_lowered_or_canceled?(move.status? && actual_targets.any? { |target| target.ability_db_symbol == :magic_bounce })
+
+    if move.affects_bank? # Send move back to user if affects the bank in order to apply the effect to the bank
+      blocker = actual_targets.find { |target| target.ability_db_symbol == :magic_bounce }
+      move.scene.visual.show_ability(blocker)
+      actual_targets.clear << user
+      next
+    end
+
+    # Send the moves back to the user if target has magic bounce
+    actual_targets.map! do |target|
+      next target unless target.ability_db_symbol == :magic_bounce
+
+      move.scene.visual.show_ability(target)
+      next user
+    end
+  end
+
+  Hooks.register(Move, :effect_working, 'Magic Coat effect') do |move_binding|
+    # @type [Battle::Move]
+    move = self
+    # @type [PFM::PokemonBattler]
+    user = move_binding.local_variable_get(:user)
+    # @type [Array<PFM::PokemonBattler>]
+    actual_targets = move_binding.local_variable_get(:actual_targets)
+
+    next unless move.magic_coat_affected?
+    next unless user.can_be_lowered_or_canceled?(move.status? && actual_targets.any? { |target| target.effects.has?(:magic_coat) })
+
+    if move.affects_bank? # Send move back to user if affects the bank in order to apply the effect to the bank
+      actual_targets.clear << user
+      next
+    end
+
+    # Send the moves back to the user if target has magic bounce
+    actual_targets.map! { |target| target.effects.has?(:magic_coat) ? user : target }
+  end
 end

@@ -188,6 +188,12 @@ module Battle
       false
     end
 
+    # Returns the recoil factor
+    # @return [Integer]
+    def recoil_factor
+      4
+    end
+
     # Is the skill a punching move ?
     # @return [Boolean]
     def punching?

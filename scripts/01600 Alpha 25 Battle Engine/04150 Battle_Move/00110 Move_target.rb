@@ -19,6 +19,10 @@ module Battle
     end
     alias is_no_choice_skill? no_choice_skill? # BE24
 
+    # Does the move affect the whole bank (in order to manage Magic Bounce)
+    # @return [Boolean]
+    alias affects_bank? void_false
+
     # List the targets of this move
     # @param pokemon [PFM::PokemonBattler] the Pokemon using the move
     # @param logic [Battle::Logic] the battle logic allowing to find the targets

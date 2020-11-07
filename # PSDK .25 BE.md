@@ -825,6 +825,8 @@ List of items affected by this:
 - Item `expert_belt`: defined inside `calc_mod3`
 - Item `tinted_lens`: defined inside `calc_mod3`
 - Item `chilan_berry`: defined inside `calc_trb`
+- Ability `magic_bounce`: defined inside `effect_working?`.
+- Effect `magic_coat`: defined inside `effect_working?`.
 
 Note: all of those definition will be improved in the futur.
 
