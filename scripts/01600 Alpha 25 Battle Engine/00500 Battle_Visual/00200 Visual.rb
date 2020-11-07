@@ -43,11 +43,7 @@ module Battle
       # Is the visual locking the update of the battle
       @locking = false
       # Create all the sprites
-      create_viewport
-      create_background
-      create_battlers
-      create_player_choice
-      create_skill_choice
+      create_graphics
       create_battle_animation_handler
     end
 
@@ -102,6 +98,15 @@ module Battle
     end
 
     private
+
+    # Create all the graphics for the visuals
+    def create_graphics
+      create_viewport
+      create_background
+      create_battlers
+      create_player_choice
+      create_skill_choice
+    end
 
     # Create the Visual viewport
     def create_viewport
