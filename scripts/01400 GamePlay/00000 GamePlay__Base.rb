@@ -519,6 +519,21 @@ module GamePlay
     def play_cancel_se
       $game_system&.se_play($data_system&.cancel_se)
     end
+
+    # Find a parent scene
+    # @param klass [Class<GamePlay::Base>] criteria passed to .is_a?()
+    # @param fallback [GamePlay::Base] result if the scene was not found
+    def find_parent(klass, fallback = self)
+      scene = self
+      while scene.is_a?(Base)
+        scene = scene.__last_scene
+        break if scene == self
+        next unless scene.is_a?(klass)
+
+        return scene
+      end
+      return false
+    end
   end
 
   # Base Scene where you should not define update but dedicated update methods :

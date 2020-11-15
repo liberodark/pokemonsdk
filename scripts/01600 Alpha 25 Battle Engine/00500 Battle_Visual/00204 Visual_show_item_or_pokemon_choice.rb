@@ -3,12 +3,11 @@ module Battle
     # Variable giving the position of the battlers to show from bank 0 in bag UI
     BAG_PARTY_POSITIONS = 0..5
     # Method that show the item choice
-    # @return [Array<Integer, PFM::PokemonBattler>, nil]
+    # @return [PFM::ItemDescriptor::Wrapper, nil]
     def show_item_choice
       data_to_return = nil
-      @scene.call_scene(GamePlay::Battle_Bag, party = retrieve_party) do |scene|
-        return_data = scene.return_data
-        data_to_return = [return_data.first, party[return_data.last]] if return_data.is_a?(Array)
+      @scene.call_scene(GamePlay::Battle_Bag, retrieve_party) do |scene|
+        data_to_return = GamePlay::Battle_Bag.from(scene).battle_item_wrapper
       end
       log_debug("show_item_choice returned #{data_to_return}")
       return data_to_return

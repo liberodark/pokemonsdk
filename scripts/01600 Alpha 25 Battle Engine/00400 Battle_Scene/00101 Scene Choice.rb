@@ -92,10 +92,19 @@ module Battle
 
     # Method that asks the item to use
     def item_choice
-      item_id, target = @visual.show_item_choice
-      if item_id
+      item_wrapper = @visual.show_item_choice
+      if item_wrapper
+        if item_wrapper.item.is_a?(GameData::FleeingItem)
+          @battle_result = :flee
+          @next_update = :battle_end
+        elsif item_wrapper.item.is_a?(GameData::BallItem)
+          # TODO
+          puts 'Catch handler called'
+          return @next_update = :trigger_all_AI
+        end
+
         # The player made a choice we store the action and we check if he can make other choices
-        @player_actions << { type: :item, item_id: item_id, target: target, bag: @logic.bags[0] }
+        @player_actions << { type: :item, item_wrapper: item_wrapper, bag: @logic.bags[0][0] }
         log_debug("Action : #{@player_actions.last}") if debug? # To prevent useless overhead outside debug
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else

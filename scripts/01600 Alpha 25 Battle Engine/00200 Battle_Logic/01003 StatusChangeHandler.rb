@@ -46,7 +46,7 @@ module Battle
       end
 
       # Function that actually change the status
-      # @param status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :flinch, :cure
+      # @param status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :flinch, :cure, :confuse_cure
       # @param target [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
@@ -55,6 +55,8 @@ module Battle
         if status == :cure
           message_overwrite ||= cure_message_id(target)
           target.send(STATUS_APPLY_METHODS[status])
+        elsif status == :confuse_cure
+          target.confuse = false
         else
           message_overwrite ||= STATUS_APPLY_MESSAGE[status]
           target.send(STATUS_APPLY_METHODS[status], true)

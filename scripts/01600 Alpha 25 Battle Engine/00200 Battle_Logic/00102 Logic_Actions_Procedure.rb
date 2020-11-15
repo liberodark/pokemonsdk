@@ -17,11 +17,12 @@ module Battle
     # Perform the action of using an item
     # @param action [Hash] action data
     def perform_action_item(action)
-      item_id = action[:item_id]
+      # @type [PFM::ItemDescriptor::Wrapper]
+      item_wrapper = action[:item_wrapper]
+      # @type [PFM::Bag]
       bag = action[:bag]
-      target = action[:target]
-      process = PFM::ItemDescriptor.actions(item_id)
-      # TODO call the action emulator
+      bag.remove_item(item_wrapper.item.id, 1) if item_wrapper.item.limited
+      item_wrapper.execute_battle_action
     end
 
     # Perform the action of switching

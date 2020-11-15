@@ -118,7 +118,7 @@ module GamePlay
 
     # Action of launching the Pokemon Summary
     # @param mode [Symbol] mode used to launch the summary
-    # @param extend_data [Hash, nil] the extended data used to launch the summary
+    # @param extend_data [PFM::ItemDescriptor::Wrapper, nil] the extended data used to launch the summary
     def launch_summary(mode = :view, extend_data = nil)
       @base_ui.hide_win_text
       call_scene(Summary, @party[@index], mode, @party, extend_data)
@@ -232,32 +232,30 @@ module GamePlay
         .register_choice(text_get(23, 1), on_validate: @base_ui.method(:hide_win_text)) # Cancel
       @base_ui.show_win_text(parse_text(23, 30, ::PFM::Text::PKNICK[0] => pokemon.given_name))
       x, y = get_choice_coordinates(choices)
-      choice = choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
+      choices.display_choice(@viewport, x, y, nil, choices, on_update: method(:update_menu_choice))
       hide_black_frame
-      @base_ui.show_win_text(text_get(23, 24)) if choice != 0
+      @base_ui.show_win_text(text_get(23, 24))
     end
 
     # Event that triggers when the player choose on which pokemon to use the item
     def on_item_use_choice
       # @type [PFM::Pokemon]
       pokemon = @party[@index]
-      if @extend_data[:on_pokemon_choice].call(pokemon)
-        if @extend_data[:on_pokemon_use]
-          @extend_data[:on_pokemon_use].call(pokemon)
-          @return_data = @index
-          @running = false
-        elsif @extend_data[:open_skill]
+      if @extend_data.on_pokemon_choice(pokemon, self)
+        if @extend_data.open_skill
           launch_summary(:skill, @extend_data)
-          if @extend_data[:skill_selected]
+          if @extend_data.skill
             @return_data = @index
             @running = false
           end
-        elsif @extend_data[:open_skill_learn]
-          call_scene(MoveTeaching, pokemon, @extend_data[:open_skill_learn]) do |scene|
-            @return_data = @index if scene.learnt
+        elsif @extend_data.open_skill_learn
+          call_scene(MoveTeaching, pokemon, @extend_data.open_skill_learn) do |scene|
+            @return_data = @index if MoveTeaching.from(scene).learnt
             @running = false
           end
-        elsif @extend_data[:action_to_push]
+        else
+          @extend_data.on_pokemon_use(pokemon, self)
+          @extend_data.bind(find_parent(Battle::Scene), pokemon)
           @return_data = @index
           @running = false
         end

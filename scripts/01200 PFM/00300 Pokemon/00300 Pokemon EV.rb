@@ -44,13 +44,14 @@ module PFM
     # Automatic ev adder using an index
     # @param index [Integer] ev index (see GameData::EV), should add 10. If index > 10 take index % 10 and add only 1 EV.
     # @param apply [Boolean] if the ev change is applied
+    # @param count [Integer] number of EV to add
     # @return [Integer, false] if not false, the value of the current EV depending on the index
-    def ev_check(index, apply = false)
+    def ev_check(index, apply = false, count = 1)
       evs = self.total_ev
       return false if evs >= 510
       if index >= 10
         index = index % 10
-        return (ev_var(index, evs, apply ? 1 : 0) < 252)
+        return (ev_var(index, evs, apply ? count : 0) < 252)
       else
         return (ev_var(index, evs, apply ? 10 : 0) < 100)
       end

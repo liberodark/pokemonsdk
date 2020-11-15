@@ -5,6 +5,10 @@ AllCops:
 Layout/EndOfLine:
   EnforcedStyle: lf
 
+# This rule make no sense
+Lint/UselessSetterCall:
+  Enabled: false
+
 # PSDK is not a gem
 Naming/FileName:
   Enabled: false

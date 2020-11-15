@@ -47,6 +47,12 @@ module Battle
       create_battle_animation_handler
     end
 
+    # Safe to_s & inspect
+    def to_s
+      format('#<%<class>s:%<id>08X>', class: self.class, id: __id__)
+    end
+    alias inspect to_s
+
     # Update the visuals
     def update
       @animations.each(&:update)

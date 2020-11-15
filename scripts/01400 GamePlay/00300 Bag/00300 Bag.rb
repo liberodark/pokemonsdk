@@ -34,6 +34,8 @@ module GamePlay
     FAVORITE_POCKET_ID = 8
     # @return [Integer] ID of the item selected
     attr_accessor :return_data
+    # @return [PFM::ItemDescriptor::Wrapper, nil] wrapper of the choosen item in battle
+    attr_accessor :battle_item_wrapper
     # Create a new Bag Scene
     # @param mode [Symbol] mode of the bag scene allowing to choose the pocket to show
     def initialize(mode = :menu)

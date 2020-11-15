@@ -44,6 +44,12 @@ module Battle
       call_event(:logic_init)
     end
 
+    # Safe to_s & inspect
+    def to_s
+      format('#<%<class>s:%<id>08X visual=%<visual>s logic=%<logic>s>', class: self.class, id: __id__, visual: @visual.inspect, logic: @logic.inspect)
+    end
+    alias inspect to_s
+
     # Disable the Graphics.transition
     def main_begin() end
 

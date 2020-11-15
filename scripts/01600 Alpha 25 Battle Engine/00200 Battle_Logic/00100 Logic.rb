@@ -46,6 +46,12 @@ module Battle
       $game_temp.battle_turn = 0
     end
 
+    # Safe to_s & inspect
+    def to_s
+      format('#<%<class>s:%<id>08X>', class: self.class, id: __id__)
+    end
+    alias inspect to_s
+
     # Return the number of bank in the current battle
     # @return [Integer]
     def bank_count
