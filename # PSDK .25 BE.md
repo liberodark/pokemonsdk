@@ -850,3 +850,20 @@ List of abilities affected by this:
 List of items affected by this:
 - accuracy => `wide_lens`, `zoom_lens`
 - evasion => `brightpowder`, `lax_incense`
+
+### Define type resistant berry
+
+To define a type resistant berry you will use the following function:
+```ruby
+Battle::Move.define_type_resisting_berry(db_symbol, type, effectiveness)
+```
+
+Effectiveness can be set to one of the following values:
+- `0` The berry check uneffective moves
+- `1` The berry doesn't check effectiveness
+- `2` The berry check super effective moves
+
+Example:
+```ruby
+Battle::Move.define_type_resisting_berry(:babiri_berry, GameData::Types::STEEL, 2)
+```
