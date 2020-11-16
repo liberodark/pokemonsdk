@@ -176,14 +176,14 @@ module PFM
     # Method that initialize the IV data
     # @param opts [Hash] Hash describing optional value you want to assign to the Pokemon
     def iv_data_initialize(opts)
-      iv_base = (Shiny_IV && shiny? ? 15 : 0)
-      iv_rand = (Shiny_IV && shiny? ? 17 : 32)
-      @iv_hp = opts.dig(:stats, GameData::EV::HP) || (Random::IV_HP.rand(iv_rand) + iv_base)
-      @iv_atk = opts.dig(:stats, GameData::EV::ATK) || (Random::IV_ATK.rand(iv_rand) + iv_base)
-      @iv_dfe = opts.dig(:stats, GameData::EV::DFE) || (Random::IV_DFE.rand(iv_rand) + iv_base)
-      @iv_spd = opts.dig(:stats, GameData::EV::SPD) || (Random::IV_SPD.rand(iv_rand) + iv_base)
-      @iv_ats = opts.dig(:stats, GameData::EV::ATS) || (Random::IV_ATS.rand(iv_rand) + iv_base)
-      @iv_dfs = opts.dig(:stats, GameData::EV::DFS) || (Random::IV_DFS.rand(iv_rand) + iv_base)
+      iv_base = (Shiny_IV && shiny? ? 16 : 0)
+      iv_rand = (Shiny_IV && shiny? ? 16 : 32)
+      @iv_hp = (opts.dig(:stats, GameData::EV::HP) || (Random::IV_HP.rand(iv_rand) + iv_base)).clamp(0, 31)
+      @iv_atk = (opts.dig(:stats, GameData::EV::ATK) || (Random::IV_ATK.rand(iv_rand) + iv_base)).clamp(0, 31)
+      @iv_dfe = (opts.dig(:stats, GameData::EV::DFE) || (Random::IV_DFE.rand(iv_rand) + iv_base)).clamp(0, 31)
+      @iv_spd = (opts.dig(:stats, GameData::EV::SPD) || (Random::IV_SPD.rand(iv_rand) + iv_base)).clamp(0, 31)
+      @iv_ats = (opts.dig(:stats, GameData::EV::ATS) || (Random::IV_ATS.rand(iv_rand) + iv_base)).clamp(0, 31)
+      @iv_dfs = (opts.dig(:stats, GameData::EV::DFS) || (Random::IV_DFS.rand(iv_rand) + iv_base)).clamp(0, 31)
     end
 
     # Method that initialize the moveset
