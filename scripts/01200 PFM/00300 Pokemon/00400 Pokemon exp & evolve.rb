@@ -182,7 +182,7 @@ module PFM
       return id, expected_evolution[:form]
     end
     # Exchanged with another pokemon
-    add_evolution_criteria(:trade_with, [:trade]) { |value, extend_data| extend_data == value }
+    add_evolution_criteria(:trade_with, [:trade_with]) { |value, extend_data| extend_data == value }
     # Minimum level
     add_evolution_criteria(:min_level) { |value| @level >= value.to_i }
     # Maximum level

@@ -108,7 +108,7 @@ module GamePlay
         party = @party
       end
 
-      call_scene(GamePlay::Summary, @current_pokemon, :view, party)
+      call_scene(GamePlay::Summary, @current_pokemon, :view, party.compact)
     end
 
     # Give an item to a Pokemon

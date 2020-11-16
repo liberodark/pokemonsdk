@@ -71,7 +71,7 @@ class Interpreter
 
     @wait_count = 2
     # Show the skill learn interface
-    $scene.call_scene(MoveTeaching, pokemon, GameData::Skill[id_skill].id) do |scene|
+    $scene.call_scene(GamePlay::MoveTeaching, pokemon, GameData::Skill[id_skill].id) do |scene|
       return scene.learnt
     end
   end
