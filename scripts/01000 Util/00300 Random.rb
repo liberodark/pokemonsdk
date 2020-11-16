@@ -18,4 +18,10 @@ class Random
   IV_ATS = Random.new
   # IV dfs random generator
   IV_DFS = Random.new
+  # Mining Game's items random generator
+  MiningGameItem = Random.new
+  # Mining Game's tiles random generator
+  MiningGameTiles = Random.new
+  # Mining Game's obstacles random generator
+  MiningGameObstacles = Random.new
 end

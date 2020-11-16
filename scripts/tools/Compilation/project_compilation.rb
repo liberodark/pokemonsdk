@@ -152,6 +152,7 @@ module ProjectCompilation
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'bgs'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'se', 'cries'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'se', 'voltorbflip')) if Dir.exist?('audio/se/voltorbflip')
+    Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'se', 'mining_game')) if Dir.exist?('audio/se/mining_game')
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'me'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'particles'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'graphics', 'shaders'))

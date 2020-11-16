@@ -410,6 +410,25 @@ pokemonsdk/scripts/01450 Systems/00010 Storage/00003 GamePlay_Storage/00004 Mous
 pokemonsdk/scripts/01450 Systems/00010 Storage/00003 GamePlay_Storage/00005 Choice.rb
 pokemonsdk/scripts/01450 Systems/00010 Storage/00003 GamePlay_Storage/00006 Actions.rb
 pokemonsdk/scripts/01450 Systems/00010 Storage/00003 GamePlay_Storage/00100 Trade.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00010 GameData_Mining_Game/00001 GameData_MiningGame.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00020 PFM_Mining_Game/00001 MiningGame.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00020 PFM_Mining_Game/00002 MiningGame_GridHandler.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00030 UI_Mining_Game/00001 Background.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00030 UI_Mining_Game/00002 Diggable_Sprite.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00030 UI_Mining_Game/00003 Diggable_Stack.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00030 UI_Mining_Game/00004 Hit_Counter_Sprite.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00030 UI_Mining_Game/00005 Hit_Counter_Stack.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00030 UI_Mining_Game/00006 Tiles.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00030 UI_Mining_Game/00007 Tiles_Stack.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00030 UI_Mining_Game/00008 Tool_Sprite.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00030 UI_Mining_Game/00009 Tool_Buttons.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00030 UI_Mining_Game/00010 Tool_Hit_Sprite.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00001 MiningGame_Initialize.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00002 MiningGame_Graphics.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00003 MiningGame_Actions.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00004 MiningGame_Animations.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00005 MiningGame_Logic.rb
+pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00006 MiningGame_Mouse.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01500 GamePlay__Battle_xxx/00100 GamePlay__BattleAbilityDisplayer.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01500 GamePlay__Battle_xxx/00200 GamePlay__BattleBalls.rb
 pokemonsdk/scripts/01500 Alpha 24 Battle Engine (deprecated)/01500 GamePlay__Battle_xxx/00300 GamePlay__BattleBar.rb
