@@ -11,7 +11,7 @@ class Game_Character
   def follower_move
     return unless @follower
     return if @sliding && @follower.sliding
-    return if $game_variables[Yuki::Var::FM_Sel_Foll] > 0
+    return if $game_variables[Yuki::Var::FM_Sel_Foll] > 0 && @follower.class == Game_Character
 
     if @memorized_move
       @memorized_move_arg ? @follower.send(@memorized_move, *@memorized_move_arg) : @follower.send(@memorized_move)
