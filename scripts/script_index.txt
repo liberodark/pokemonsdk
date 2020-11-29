@@ -196,6 +196,7 @@ pokemonsdk/scripts/01100 Yuki/02402 Debug_SystemTags.rb
 pokemonsdk/scripts/01100 Yuki/02403 Debug_Groups.rb
 pokemonsdk/scripts/01100 Yuki/00100 Animation/00100 Animation.rb
 pokemonsdk/scripts/01100 Yuki/00100 Animation/00101 Commands.rb
+pokemonsdk/scripts/01100 Yuki/00100 Animation/00102 MessageLocked.rb
 pokemonsdk/scripts/01100 Yuki/00200 FollowMe/00001 Config.rb
 pokemonsdk/scripts/01100 Yuki/00200 FollowMe/00300 Core.rb
 pokemonsdk/scripts/01100 Yuki/00300 Tilemap/00001 Tilemap.rb
@@ -563,10 +564,9 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00205 Visual
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00206 Battle procedure Animation.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00550 Battle_Visual_Animations/00100 IdlePokemonAnimation.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00550 Battle_Visual_Animations/01001 HPAnimation.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00100 RBJ_WildTransition.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00101 RBJ_WildTransition_transition.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00102 RBJ_TrainerTransition.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00103 RBJ_TrainerTransition_transition.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00000 Transition.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00100 RBYTrainer.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00100 RBYWild.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00100 Move.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00101 Move_Damage_Calc.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00102 Move_ITEM_MULTIPLIER.rb

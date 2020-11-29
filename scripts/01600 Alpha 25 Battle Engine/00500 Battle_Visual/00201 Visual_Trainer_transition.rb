@@ -4,7 +4,7 @@ module Battle
     def show_pre_transition
       return if debug? && PSDK_CONFIG.skip_battle_transition_in_debug
       # @type [Battle::Visual::RBJ_WildTransition]
-      @transition = battle_transition.new(@scene, @screenshot, @viewport)
+      @transition = battle_transition.new(@scene, @screenshot)
       @animations << @transition
       @transition.pre_transition
       @locking = true
@@ -49,7 +49,7 @@ module Battle
     # @return [Class]
     def battle_transition
       collection = $game_temp.trainer_battle ? TRAINER_TRANSITIONS : WILD_TRANSITIONS
-      transition_class = collection[$game_variables[Yuki::Var::Trainer_Battle_ID]]
+      transition_class = collection[$game_variables[Yuki::Var::TrainerTransitionType]]
       log_debug("Choosen transition class : #{transition_class}")
       return transition_class
     end
@@ -66,11 +66,11 @@ module Battle
     end
 
     # List of Wild Transitions
-    # @return [Hash{ Integer => Class }]
+    # @return [Hash{ Integer => Class<Transition::Base> }]
     WILD_TRANSITIONS = {}
 
     # List of Trainer Transitions
-    # @return [Hash{ Integer => Class }]
+    # @return [Hash{ Integer => Class<Transition::Base> }]
     TRAINER_TRANSITIONS = {}
   end
 end

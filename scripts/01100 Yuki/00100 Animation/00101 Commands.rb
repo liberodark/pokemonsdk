@@ -32,8 +32,8 @@ module Yuki
         # Update the sub animation if the current animation is actually done
         if private_done?
           unless @played_until_end
-            update_internal
             @played_until_end = true
+            update_internal
           end
           return unless @parallel_animations.all?(&:done?)
           return @sub_animation&.update

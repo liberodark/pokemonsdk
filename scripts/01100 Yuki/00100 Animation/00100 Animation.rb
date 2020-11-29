@@ -485,5 +485,47 @@ module Yuki
         @on.send(@property, (@origin_x + @delta_x * time_factor).to_i, (@origin_y + @delta_y * time_factor).to_i)
       end
     end
+
+    # Class that describe a SpriteSheet animation
+    class SpriteSheetAnimation < TimedAnimation
+      # Create a new ScalarAnimation
+      # @param time_to_process [Float] number of seconds (with generic time) to process the animation
+      # @param on [SpriteSheet, Symbol] object that will receive the property
+      # @param cells [Array<Array<Integer>>, Symbol] all the select arguments that should be sent during the animation
+      # @param rounding [Symbol] kind of rounding, can be: :ceil, :round, :floor
+      # @param distortion [#call, Symbol] callable taking one paramater (between 0 & 1) and
+      # convert it to another number (between 0 & 1) in order to distord time
+      # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
+      def initialize(time_to_process, on, cells, rounding = :round, distortion: :UNICITY_DISTORTION,
+                     time_source: :GENERIC_TIME_SOURCE)
+        super(time_to_process, distortion, time_source)
+        @cells_param = cells
+        @on_param = on
+        @rounding = rounding
+      end
+
+      # Start the animation (initialize it)
+      # @param begin_offset [Float] offset that prevents the animation from starting before now + begin_offset seconds
+      def start(begin_offset = 0)
+        super
+        # @type [SpriteSheet]
+        @on = resolve(@on_param)
+        @cells = resolve(@cells_param)
+        @delta_time = 1.0 / (@cells.size - 1)
+        @last_cell = nil
+      end
+
+      private
+
+      # Update the scalar animation
+      # @param time_factor [Float] number between 0 & 1 indicating the progression of the animation
+      def update_internal(time_factor)
+        current_cell = (time_factor / @delta_time).send(@rounding)
+        return if current_cell == @last_cell
+
+        @on.select(*@cells[current_cell]) if @cells[current_cell]
+        @last_cell = current_cell
+      end
+    end
   end
 end
