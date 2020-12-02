@@ -29,6 +29,12 @@ class Interpreter
     $game_player
   end
 
+  # Return the $game_map.events[id]
+  # @return [Game_Event]
+  def ge(id = @event_id)
+    gm.events[id]
+  end
+
   # Return the $pokemon_party
   # @return [PFM::Pokemon_Party]
   def party
