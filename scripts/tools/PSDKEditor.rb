@@ -161,7 +161,7 @@ module PSDKEditor
   def build_moveset(pokemon)
     # @type [Array]
     moveset = pokemon.move_set.each_slice(2).select { |(level, _)| level > 0 }
-                     .map { |(level, id)| { klass: 'LevelLearnableMove', leve: level, move: id.to_i } }
+                     .map { |(level, id)| { klass: 'LevelLearnableMove', level: level, move: id.to_i } }
     moveset.concat(pokemon.master_moves.map { |id| { klass: 'TutorLearnableMove', move: id.to_i } })
     moveset.concat(pokemon.tech_set.map { |id| { klass: 'TechLearnableMove', move: id } })
     moveset.concat(pokemon.move_set.each_slice(2).select { |(level, _)| level <= 0 }
