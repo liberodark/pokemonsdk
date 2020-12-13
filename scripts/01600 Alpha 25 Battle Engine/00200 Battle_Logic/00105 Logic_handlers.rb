@@ -47,5 +47,11 @@ module Battle
     def flee_handler
       return FleeHandler.new(self, @scene)
     end
+
+    # Get the catch handler
+    # @return [Battle::Logic::CatchHandler]
+    def catch_handler
+      return CatchHandler.new(self, @scene)
+    end
   end
 end

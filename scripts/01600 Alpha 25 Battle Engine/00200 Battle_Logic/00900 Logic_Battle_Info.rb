@@ -25,6 +25,12 @@ module Battle
       # Get the number of time the player tried to flee
       # @return [Integer]
       attr_accessor :flee_attempt_count
+      # Tell if the battle follows a fishing attempt
+      # @return [Boolean]
+      attr_accessor :fishing
+      # Get the caught Pokemon
+      # @return [PFM::PokemonBattler]
+      attr_accessor :caught_pokemon
 
       # Create a new Battle Info
       # @param hash [Hash] basic info about the battle
@@ -39,6 +45,7 @@ module Battle
         @trainer_is_couple = hash[:couple] || false
         @battle_id = hash[:battle_id] || -1
         @flee_attempt_count = 0
+        @fishing = hash[:fishing] || false #TODO Add the fishing attribute to the BattleInfo initialization
       end
 
       # Tell if the battle is a trainer battle

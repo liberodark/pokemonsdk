@@ -278,6 +278,21 @@ module GamePlay
       @viewport&.snap_to_bitmap || Bitmap.new(16, 16)
     end
 
+    # Find a parent scene
+    # @param klass [Class<GamePlay::Base>] criteria passed to .is_a?()
+    # @param fallback [GamePlay::Base] result if the scene was not found
+    def find_parent(klass, fallback = self)
+      scene = self
+      while scene.is_a?(Base)
+        scene = scene.__last_scene
+        break if scene == self
+        next unless scene.is_a?(klass)
+
+        return scene
+      end
+      return false
+    end
+
     private
 
     # The main process at the begin of scene
@@ -518,21 +533,6 @@ module GamePlay
     # Play cancel SE
     def play_cancel_se
       $game_system&.se_play($data_system&.cancel_se)
-    end
-
-    # Find a parent scene
-    # @param klass [Class<GamePlay::Base>] criteria passed to .is_a?()
-    # @param fallback [GamePlay::Base] result if the scene was not found
-    def find_parent(klass, fallback = self)
-      scene = self
-      while scene.is_a?(Base)
-        scene = scene.__last_scene
-        break if scene == self
-        next unless scene.is_a?(klass)
-
-        return scene
-      end
-      return false
     end
   end
 

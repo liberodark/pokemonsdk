@@ -57,7 +57,7 @@ module Util
     # @return [PFM::ItemDescriptor::Wrapper, false]
     def util_item_on_use_sequence(extend_data)
       message = parse_text(22, 46, PFM::Text::TRNAME[0] => $trainer.name,
-                                   PFM::Text::ITEM2[1] => item.exact_name)
+                                   PFM::Text::ITEM2[1] => extend_data.item.exact_name)
 
       if extend_data.use_before_telling
         if extend_data.on_use(self) != :unused

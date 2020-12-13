@@ -10,6 +10,8 @@ module Battle
     attr_reader :battle_info
     # @return [Scene_Battle::Message]
     attr_reader :message_window
+    # @return [Array]
+    attr_reader :player_actions
 
     # Create a new Battle Scene
     # @param battle_info [Battle::Logic::BattleInfo] informations about the battle
