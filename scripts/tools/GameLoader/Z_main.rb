@@ -8,7 +8,7 @@ rgss_main do
   end
   need_to_open_window = false
   # Check project integrity
-  puts 'Some resources of your project are missing!' unless File.exist?('audio/se/cries/001cry.wav')
+  puts 'Some resources of your project are missing!' unless File.exist?('audio/se/cries/001cry.ogg')
   GC.start
   # Prepare for transition
   Graphics.freeze
