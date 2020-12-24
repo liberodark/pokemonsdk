@@ -54,6 +54,10 @@ module PFM
     # @return [Array<MoveHistory>]
     attr_reader :move_history
 
+    # Get the information if the Pokemon is actually a follower or not (changing its go-in-out animation)
+    # @return [Boolean]
+    attr_accessor :is_follower
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param scene [Battle::Scene] current battle scene
@@ -74,6 +78,7 @@ module PFM
       @last_battle_turn = -1
       @effects = Battle::Effects::EffectsHandler.new
       @move_history = []
+      initialize_set_is_follower
     end
 
     # Reload the original ability
@@ -166,6 +171,14 @@ module PFM
         @moveset[index] = Battle::Move[skill.symbol].new(skill.id, skill.pp, skill.ppmax, @scene)
       end
       @skills_set = @moveset
+    end
+
+    # Function that sets the is_follower variable (for animation purpose)
+    def initialize_set_is_follower
+      return @is_follower = false unless $actors.include?(original) && defined?(Yuki::FollowMe)
+      return @is_follower = false unless Yuki::FollowMe.enabled
+
+      @is_follower = $actors.index(original).to_i < Yuki::FollowMe.pokemon_count
     end
   end
 end

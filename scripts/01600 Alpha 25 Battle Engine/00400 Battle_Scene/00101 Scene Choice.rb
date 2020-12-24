@@ -95,7 +95,7 @@ module Battle
       item_wrapper = @visual.show_item_choice
       if item_wrapper
         if item_wrapper.item.is_a?(GameData::FleeingItem)
-          @battle_result = :flee
+          @logic.battle_result = 2
           @next_update = :battle_end
         elsif item_wrapper.item.is_a?(GameData::BallItem)
           puts 'Catch handler called'

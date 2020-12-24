@@ -34,7 +34,7 @@ module Battle
       with = action[:with]
       visual = @scene.visual
       # @type [BattleUI::PokemonSprite]
-      (sprite = visual.battler_sprite(who.bank, who.position)).start_animation_going_in
+      (sprite = visual.battler_sprite(who.bank, who.position)).go_out
       visual.hide_info_bar(who)
       until sprite.done?
         visual.update

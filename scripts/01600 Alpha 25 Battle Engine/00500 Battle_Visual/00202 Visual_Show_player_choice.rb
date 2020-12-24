@@ -21,11 +21,11 @@ module Battle
     # Show the message "What will X do"
     # @param pokemon_index [Integer]
     def spc_show_message(pokemon_index)
-      pokemon = @scene.logic.battler(0, pokemon_index)
-      (window = @scene.message_window).wait_input = false
-      window.width = @viewport.rect.width - @player_choice_ui.width
-      text_to_show = parse_text(18, 71, '[VAR 010C(0000)]' => pokemon.given_name)
-      @scene.display_message(text_to_show) if @scene.message_window.last_text != text_to_show
+      # pokemon = @scene.logic.battler(0, pokemon_index)
+      @scene.message_window.wait_input = false
+      @scene.message_window.visible = false # new UI change
+      # text_to_show = parse_text(18, 71, '[VAR 010C(0000)]' => pokemon.given_name)
+      # @scene.display_message(text_to_show) if @scene.message_window.last_text != text_to_show
     end
 
     private
@@ -33,7 +33,6 @@ module Battle
     # Begining of the show_player_choice
     # @param pokemon_index [Integer] Index of the Pokemon in the party
     def show_player_choice_begin(pokemon_index)
-      @viewport.rect.height = @viewport_sub.rect.y - @viewport.rect.y
       pokemon = @scene.logic.battler(0, pokemon_index)
       @locking = true
       @player_choice_ui.reset

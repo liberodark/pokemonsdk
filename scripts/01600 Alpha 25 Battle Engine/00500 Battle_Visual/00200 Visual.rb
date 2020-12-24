@@ -17,9 +17,6 @@ module Battle
     # @return [Viewport] the viewport used to show some UI part
     attr_reader :viewport_sub
 
-    # @return [Array<BattleUI::GroundSprite>] the ground sprites
-    attr_reader :grounds
-
     # @return [Array] the element to dispose on #dispose
     attr_reader :to_dispose
 
@@ -34,6 +31,12 @@ module Battle
       @info_bars = {}
       # All the team info bar by bank
       @team_info = {}
+      # All the ability bar by bank
+      # @type [Hash{ Integer => Array<BattleUI::AbilityBar> }]
+      @ability_bars = {}
+      # All the item bar by bank
+      # @type [Hash{ Integer => Array<BattleUI::ItemBar> }]
+      @item_bars = {}
       # All the animation currently being processed (automatically removed)
       @animations = []
       # All the parallel animations (manually removed)
@@ -60,6 +63,9 @@ module Battle
       @parallel_animations.each_value(&:update)
       update_battlers
       update_info_bars
+      update_team_info
+      update_ability_bars
+      update_item_bars
     end
 
     # Dispose the visuals
@@ -68,7 +74,7 @@ module Battle
       @animations.clear
       @parallel_animations.clear
       @viewport.dispose
-      @viewport_sub&.dispose
+      @viewport_sub.dispose
     end
 
     # Tell if the visual are locking the battle update (for transition purpose)
@@ -119,16 +125,12 @@ module Battle
       @viewport = Viewport.create(:main, 500)
       @viewport.extend(Viewport::WithToneAndColors)
       @viewport.shader = Shader.create(:map_shader)
-      rc = @viewport.rect
-      @viewport_sub = Viewport.new(rc.x, rc.y + rc.height - 48, rc.width, 48)
+      @viewport_sub = Viewport.create(:main, 501)
     end
 
-    # Create the default background & the grounds that comes with it
+    # Create the default background
     def create_background
-      @background = ShaderedSprite.new(@viewport).set_bitmap(name = background_name, :battleback)
-      @grounds = Array.new(@scene.logic.bank_count) do |bank|
-        BattleUI::GroundSprite.new(@viewport, name, bank)
-      end
+      @background = ShaderedSprite.new(@viewport).set_bitmap(background_name, :battleback)
     end
 
     # Return the background name according to the current state of the player
@@ -180,16 +182,20 @@ module Battle
       (logic = @scene.logic).bank_count.times do |bank|
         # create the trainer sprites
         infos.battlers[bank].each_with_index do |battler, position|
-          sprite = BattleUI::TrainerSprite.new(@viewport, battler, bank, position, infos)
+          sprite = BattleUI::TrainerSprite.new(@viewport, @scene, battler, bank, position, infos)
           store_battler_sprite(bank, -position - 1, sprite)
         end
         # Create the Pokemon sprites
         infos.vs_type.times do |position|
-          sprite = BattleUI::PokemonSprite.new(@viewport)
+          sprite = BattleUI::PokemonSprite.new(@viewport, @scene)
           sprite.pokemon = logic.battler(bank, position)
           store_battler_sprite(bank, position, sprite)
           create_info_bar(bank, position)
+          create_ability_bar(bank, position)
+          create_item_bar(bank, position)
         end
+        # Create the Team Info
+        create_team_info(bank)
       end
       hide_info_bars(true)
     end
@@ -208,23 +214,66 @@ module Battle
       end
     end
 
+    # Create an ability bar
+    # @param bank [Integer]
+    # @param position [Integer]
+    def create_ability_bar(bank, position)
+      @ability_bars[bank] ||= []
+      @ability_bars[bank][position] = sprite = BattleUI::AbilityBar.new(@viewport_sub, @scene, bank, position)
+      sprite.go_out(3600)
+    end
+
+    # Update the Ability bars
+    def update_ability_bars
+      @ability_bars.each_value do |ability_bars|
+        ability_bars.each(&:update)
+      end
+    end
+
+    # Update the item bars
+    def update_item_bars
+      @item_bars.each_value do |item_bars|
+        item_bars.each(&:update)
+      end
+    end
+
+    # Create an item bar
+    # @param bank [Integer]
+    # @param position [Integer]
+    def create_item_bar(bank, position)
+      @item_bars[bank] ||= []
+      @item_bars[bank][position] = sprite = BattleUI::ItemBar.new(@viewport_sub, @scene, bank, position)
+      sprite.go_out(3600)
+    end
+
     # Create the info bar for a bank
     # @param bank [Integer]
     # @param position [Integer]
     def create_info_bar(bank, position)
       info_bars = (@info_bars[bank] ||= [])
       pokemon = @scene.logic.battler(bank, position)
-      info_bars[position] = BattleUI::InfoBar.new(@viewport, pokemon)
+      info_bars[position] = BattleUI::InfoBar.new(@viewport, @scene, pokemon, bank, position)
+    end
+
+    # Create the Trainer Party Ball
+    # @param bank [Integer]
+    def create_team_info(bank)
+      @team_info[bank] = BattleUI::TrainerPartyBalls.new(@viewport, @scene, bank)
+    end
+
+    # Update the team info
+    def update_team_info
+      @team_info.each_value(&:update)
     end
 
     # Create the player choice
     def create_player_choice
-      @player_choice_ui = BattleUI::PlayerChoice.new(@viewport_sub)
+      @player_choice_ui = BattleUI::PlayerChoice.new(@viewport_sub, @scene)
     end
 
     # Create the skill choice
     def create_skill_choice
-      @skill_choice_ui = BattleUI::SkillChoice.new(@viewport_sub)
+      @skill_choice_ui = BattleUI::SkillChoice.new(@viewport_sub, @scene)
     end
 
     # Create the battle animation handler

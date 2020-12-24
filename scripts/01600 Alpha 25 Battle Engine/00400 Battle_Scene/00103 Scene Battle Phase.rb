@@ -28,13 +28,13 @@ module Battle
         @next_update = :player_action_choice
       else
         @next_update = :battle_end
-        @battle_result = @logic.battle_result
       end
     end
 
     # Method that perform everything that needs to be performed at battle end (phrases etc...) and gives back the master to Scene_Map
     def battle_end
       log_info('Exiting battle')
+      @battle_result = @logic.battle_result
       # TODO : battle_end procedure
       $env.apply_weather(0, 0) unless $game_switches[Yuki::Sw::MixWeather]
       $game_temp.in_battle = false

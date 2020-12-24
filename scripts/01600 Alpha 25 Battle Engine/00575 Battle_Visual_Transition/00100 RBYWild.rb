@@ -126,7 +126,7 @@ module Battle
           animation = animations.pop
           animations.each { |anim| animation.parallel_add(anim) }
           actor_pokemon_sprites.each do |sp|
-            animation.play_before(ya.send_command_to(sp, :start_animation_going_out))
+            animation.play_before(ya.send_command_to(sp, :go_in))
           end
           animation.play_before(ya.wait(0.2))
           return animation

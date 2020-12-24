@@ -80,25 +80,26 @@ module Battle
       global_multi_exp_factor = $bag.contain_item?(:"exp._share")
 
       if global_multi_exp_factor
-        expable.each do |receiver|
+        exp_data = expable.map do |receiver|
           exp = (base_exp * exp_multipliers(receiver)).floor
           exp /= (receiver.last_battle_turn != $game_temp.battle_turn ? 14 : 7)
-          distribute_exp_to(receiver, exp)
+          next [receiver, exp]
         end
       else
         fought_count = expable.count { |battler| battler.last_battle_turn == $game_temp.battle_turn && battler.alive? }.clamp(1, 6)
         multi_exp_count = expable.count { |battler| battler.item_db_symbol == :"exp._share" && battler.alive? } # TODO: Implement a switch for that: && GLOBAL_MULTI_EXP_ENABLED
         multi_exp_factor = exp_multi_exp_factor(multi_exp_count)
         fought_exp_factor = exp_fought_factor(multi_exp_count, fought_count)
-        expable.each do |receiver|
+        exp_data = expable.map do |receiver|
           exp = (base_exp * exp_multipliers(receiver)).floor
           if receiver.last_battle_turn != $game_temp.battle_turn # Did not fight this turn
-            distribute_exp_to(receiver, (exp / multi_exp_factor).to_i) if receiver.item_db_symbol == :"exp._share"
+            next [receiver, (exp / multi_exp_factor).to_i]
           else
-            distribute_exp_to(receiver, (exp / fought_exp_factor).to_i + (receiver.item_db_symbol == :"exp._share" ? exp / multi_exp_factor : 0).to_i)
+            next [receiver, (exp / fought_exp_factor).to_i + (receiver.item_db_symbol == :"exp._share" ? exp / multi_exp_factor : 0).to_i]
           end
         end
       end
+      @scene.visual.show_exp_distribution(exp_data.to_h)
     end
 
     # TODO: Move experience distribution in a dedicated class
@@ -125,7 +126,7 @@ module Battle
     # @param multi_exp_count [Integer] number of Pokemon with multi_exp
     # @return [Integer]
     def exp_multi_exp_factor(multi_exp_count)
-      return 14 * multi_exp_count
+      return 14 * (multi_exp_count + 1)
     end
 
     # Get the fought factor
@@ -133,54 +134,6 @@ module Battle
     # @param fought [Integer] number of Pokemon that fought
     def exp_fought_factor(multi_exp_count, fought)
       return (multi_exp_count > 0 ? 14.0 : 7.0) / fought
-    end
-
-    # Apply the last factor to
-
-    # Function that perform the distribute exp phase to a receiver
-    # @param receiver [PFM::PokemonBattler]
-    # @param exp [Integer]
-    def distribute_exp_to(receiver, exp)
-      exp = exp.to_i
-      display_exp_message(receiver, exp)
-      show_animation = receiver.position < @battle_info.vs_type
-      target_exp = receiver.exp + exp
-      while target_exp > receiver.exp
-        next_exp_value = receiver.exp_lvl.clamp(0, target_exp)
-        @scene.visual.show_exp_animation(receiver, next_exp_value) if show_animation # Show exp progression animation
-        receiver.exp = next_exp_value
-        next if receiver.exp < receiver.exp_lvl
-
-        list = receiver.level_up_stat_refresh
-        level_up_message(receiver, list) if show_animation || receiver.exp == target_exp || receiver.can_learn_skill_at_this_level?
-      end
-    end
-
-    # Show the level up message
-    # @param receiver [PFM::PokemonBattler]
-    # @param list [Array]
-    def level_up_message(receiver, list)
-      PFM::Text.set_num3(receiver.level.to_s, 1)
-      @scene.visual.show_rmxp_animation(receiver, 497) if receiver.position < @battle_info.vs_type
-      Audio.me_play('audio/me/rosa_levelup')
-      @scene.display_message(parse_text(18, 62, '[VAR 010C(0000)]' => receiver.given_name))
-      @scene.visual.refresh_info_bar(receiver) if receiver.position < @battle_info.vs_type
-      PFM::Text.reset_variables
-      receiver.level_up_window_call(list[0], list[1], @scene.message_window.z + 5)
-      receiver.check_skill_and_learn
-      @evolve_request << receiver unless @evolve_request.include?(receiver)
-    end
-
-    # Function that display the "X received Y exp"
-    # @param receiver [PFM::PokemonBattler]
-    # @param exp [Integer]
-    def display_exp_message(receiver, exp)
-      text = parse_text(
-        18, receiver.item_db_symbol == :"exp._share" ? 44 : 43,
-        '[VAR 010C(0000)]' => receiver.given_name,
-        PFM::Text::NUM7R => exp.to_s
-      )
-      @scene.display_message(text)
     end
   end
 end

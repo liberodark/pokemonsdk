@@ -7,8 +7,9 @@ module Battle
     attr_reader :messages
     # @return [Array<Hash>] list of the current actions to proccess during the scene
     attr_reader :actions
-    # @return [Integer] 0 : Victory, 1 : Defeat, 2 : Flee, -1 : undef
-    attr_reader :battle_result
+    # 0 : Victory, 1 : Defeat, 2 : Flee, -1 : undef
+    # @return [Integer]
+    attr_accessor :battle_result
     # @return [Array<Array<PFM::Bag>>] bags of each banks
     attr_reader :bags
     # @return [Battle::Logic::BattleInfo]
@@ -22,6 +23,9 @@ module Battle
     # Get the position effects
     # @return [Array<Array<Battle::Effects::EffectsHandler>>]
     attr_reader :position_effects
+    # Get the evolve requests
+    # @return [Array<PFM::PokemonBattler>]
+    attr_reader :evolve_request
     # Create a new Logic instance
     # @param scene [Scene] scene that hold the logic object
     def initialize(scene)

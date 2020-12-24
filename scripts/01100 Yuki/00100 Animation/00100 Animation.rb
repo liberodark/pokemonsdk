@@ -42,6 +42,15 @@ module Yuki
       # @return [TimedAnimation] the root animation
       #   (to retreive the right animation to play when building animation using operators)
       attr_accessor :root
+      # Get the begin time of the animation (if started)
+      # @return [Time, nil]
+      attr_reader :begin_time
+      # Get the end time of the animation (if started)
+      # @return [Time, nil]
+      attr_reader :end_time
+      # Get the time source of the animation (if started)
+      # @return [#call, nil]
+      attr_reader :time_source
       # Create a new TimedAnimation
       # @param time_to_process [Float] number of seconds (with generic time) to process the animation
       # @param distortion [#call, Symbol] callable taking one paramater (between 0 & 1) and

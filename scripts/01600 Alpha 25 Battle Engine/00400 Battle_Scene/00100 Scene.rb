@@ -12,6 +12,9 @@ module Battle
     attr_reader :message_window
     # @return [Array]
     attr_reader :player_actions
+    # Set the next update from outside (flee)
+    # @return [Symbol]
+    attr_accessor :next_update
 
     # Create a new Battle Scene
     # @param battle_info [Battle::Logic::BattleInfo] informations about the battle
@@ -34,11 +37,12 @@ module Battle
       # List of the player actions
       @player_actions = []
       # Battle result
-      @battle_result = :draw
+      @battle_result = -1
       # All the event procs
       @battle_events = {}
       # Skip the next frame to go faster in the next update
       @skip_frame = false
+      @viewport = @visual.viewport
       # Create the message proc
       create_message_proc
       # Init & call first event
@@ -150,7 +154,7 @@ module Battle
     # Return the message class used by this scene
     # @return [Class]
     def message_class
-      return Scene_Battle::Message
+      return Message
     end
   end
 end

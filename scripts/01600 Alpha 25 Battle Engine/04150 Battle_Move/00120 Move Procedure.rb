@@ -155,20 +155,6 @@ module Battle
       end
     end
 
-    # Function that handle the KO part
-    # @param target [PFM::PokemonBattler] pokemon falling KO
-    def handle_ko(target)
-      sprite = scene.visual.battler_sprite(target.bank, target.position)
-      scene.visual.lock do
-        sprite.start_animation_KO
-        scene.display_message(parse_text_with_pokemon(19, 0, target))
-        while sprite.animated?
-          scene.update
-          Graphics.update
-        end
-      end
-    end
-
     # Test if the effect is working
     # @param user [PFM::PokemonBattler] user of the move
     # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move

@@ -1,20 +1,50 @@
-# Module that hold all the Battle UI elements
 module BattleUI
   # Sprite of a Pokemon in the battle
   class PokemonSprite < ShaderedSprite
-    # @return [Boolean] if the sprite is currently selected
+    include GoingInOut
+    include MultiplePosition
+    # Constant giving the deat Delta Y (you need to adjust that so your screen animation are OK when Pokemon are KO)
+    DELTA_DEATH_Y = 32
+    # Tell if the sprite is currently selected
+    # @return [Boolean]
     attr_accessor :selected
-    # @return [PFM::PokemonBattler] the Pokemon shown by the sprite
+    # Get the Pokemon shown by the sprite
+    # @return [PFM::PokemonBattler]
     attr_reader :pokemon
-    # @return [Proc] the current animation on the sprite
-    attr_reader :animation
+    # Get the animation handler
+    # @return [Yuki::Animation::Handler{ Symbol => Yuki::Animation::TimedAnimation}]
+    attr_reader :animation_handler
+    # Get the position of the pokemon shown by the sprite
+    # @return [Integer]
+    attr_reader :position
+    # Get the bank of the pokemon shown by the sprite
+    # @return [Integer]
+    attr_reader :bank
+    # Get the scene linked to this object
+    # @return [Battle::Scene]
+    attr_reader :scene
+
+    # Create a new PokemonSprite
+    # @param viewport [Viewport]
+    # @param scene [Battle::Scene]
+    def initialize(viewport, scene)
+      super(viewport)
+      @animation_handler = Yuki::Animation::Handler.new
+      @bank = 0
+      @position = 0
+      @scene = scene
+    end
 
     # Update the sprite
     def update
-      return unless prior_update_check
-      update_selected_animation if @selected
-      @gif&.update(bitmap)
-      @animation&.call
+      @animation_handler.update
+      @gif&.update(bitmap) unless pokemon&.dead?
+    end
+
+    # Tell if the sprite animations are done
+    # @return [Boolean]
+    def done?
+      return @animation_handler.done?
     end
 
     # Set the Pokemon
@@ -22,132 +52,28 @@ module BattleUI
     def pokemon=(pokemon)
       @pokemon = pokemon
       if pokemon
+        @position = pokemon.position
+        @bank = pokemon.bank
         load_battler
         reset_position
-      end
-    end
-
-    # Return if the sprite is still animated
-    def animated?
-      !@animation.nil?
-    end
-
-    # Return if the animation is done
-    def done?
-      @animation.nil?
-    end
-
-    # Dispose the sprite
-    def dispose
-      if @gif
-        remove_instance_variable(:@gif)
-        bitmap.dispose
-      end
-      super
-    end
-
-    # Start the KO animation
-    def start_animation_KO
-      cry(true)
-      @animation = proc do
-        src_rect.height -= 2
-        self.y += 2
-        self.opacity -= 15
-        if opacity <= 0
-          @animation = nil
-          reset_position
-          src_rect.height = bitmap.height
-        end
-      end
-    end
-
-    # Start the going out (of ball) Animation
-    def start_animation_going_out
-      self.zoom = 0
-      self.visible = true
-      reset_position
-      @animation = proc do
-        self.zoom = zoom_x + 0.1
-        if zoom_x >= 1
-          cry
-          @animation = nil
-          self.zoom = 1
-        end
-      end
-    end
-
-    # Start the going in (ball) Animation
-    def start_animation_going_in
-      self.zoom = 1
-      reset_position
-      @animation = proc do
-        self.zoom = zoom_x - 0.1
-        if zoom_x <= 0
-          @animation = nil
-          self.zoom = 0
-        end
       end
     end
 
     # Play the cry of the Pokemon
     # @param dying [Boolean] if the Pokemon is dying
     def cry(dying = false)
-      return unless @pokemon
-      Audio.se_play(@pokemon.cry, 100, dying ? 80 : 100)
-    end
+      return unless pokemon
 
-    # Reset the battler position
-    def reset_position
-      set_position(basic_x_position, basic_y_position)
-      self.z = basic_z_position
-      self.ox = width / 2
-      self.oy = height
+      Audio.se_play(pokemon.cry, 100, dying ? 80 : 100)
     end
-
-    # Affect the zoom property
-    # @param value [Numeric] the new zoom
-    def zoom=(value)
-      super(@pokemon&.bank == 0 ? 2 * value : value)
-    end
-
-    # Return the zoom_x value
-    # @return [Numeric]
-    def zoom_x
-      @pokemon&.bank == 0 ? super / 2 : super
-    end
-
-    alias zoom_y zoom_x
 
     private
 
-    # Return the basic x position
-    # @return [Integer]
-    def basic_x_position
-      # @pokemon.bank == 0 means the Pokemon is in the actor bank
-      x = @pokemon.bank == 0 ? 88 : 233
-      # We adjust the position if we're in a multi-battle
-      x -= (@pokemon.bank == 0 ? 48 : 24) if $game_temp.vs_type != 1
-      x += @pokemon.position * (@pokemon.bank == 0 ? 96 : 48)
-      return x
-    end
-
-    # Return the basic y position
-    # @return [Integer]
-    def basic_y_position
-      # @pokemon.bank == 0 means the Pokemon is in the actor bank
-      y = @pokemon.bank == 0 ? 202 : 94
-      y += offset_y
-      if $game_temp.vs_type != 1
-        y -= @pokemon.bank == 0 ? 0 : 4
-        y += @pokemon.position * (@pokemon.bank == 0 ? 16 : 8)
-      end
-      return y
-    end
-
-    # Return the offset_y of the battler
-    # @return [Integer]
-    def offset_y
-      0
+    # Reset the battler position
+    def reset_position
+      set_position(*sprite_position)
+      self.z = basic_z_position
+      set_origin(width / 2, height)
     end
 
     # Return the basic z position of the battler
@@ -157,22 +83,26 @@ module BattleUI
       return z
     end
 
-    # Update the selected animation
-    def update_selected_animation
-      @selected_counter = @selected_counter.to_i + 1
-      self.y = basic_y_position + (@selected_counter / 20 % 2)
-      @selected_counter = 0 if @selected_counter >= 40 # 2 * 20
+    # Get the base position of the Pokemon in 1v1
+    # @return [Array(Integer, Integer)]
+    def base_position_v1
+      return 242, 138 if enemy?
+
+      return 78, 184
     end
 
-    # Function that check prior thing before allowing the sprite to update
-    # @return [Boolean] if update can continue
-    def prior_update_check
-      unless @pokemon
-        self.visible = false if visible
-        return false
-      end
-      self.visible = true unless visible
-      return true
+    # Get the base position of the Pokemon in 2v2+
+    # @return [Array(Integer, Integer)]
+    def base_position_v2
+      return 202, 133 if enemy?
+
+      return 58, 179
+    end
+
+    # Get the offset position of the Pokemon in 2v2+
+    # @return [Array(Integer, Integer)]
+    def offset_position_v2
+      return 60, 10
     end
 
     # Load the battler of the Pokemon
@@ -190,6 +120,75 @@ module BattleUI
         end
       end
       @last_pokemon = @pokemon
+    end
+
+    # Creates the go_in animation (Exiting the ball)
+    # @return [Yuki::Animation::TimedAnimation]
+    def go_in_animation
+      return follower_go_in_animation if pokemon.is_follower
+
+      return regular_go_in_animation
+    end
+
+    # Creates the go_out animation (Entering the ball if not KO, shading out if KO)
+    # @return [Yuki::Animation::TimedAnimation]
+    def go_out_animation
+      return ko_go_out_animation if pokemon.dead?
+      return follower_go_out_animation if pokemon.is_follower
+
+      return regular_go_out_animation
+    end
+
+    # Creates the go_in animation of a "follower" pokemon
+    # @return [Yuki::Animation::TimedAnimation]
+    def follower_go_in_animation
+      x, y = sprite_position
+      bx = enemy? ? viewport.rect.width + width : -width
+      animation = Yuki::Animation.move(1, self, bx, y, x, y)
+      animation.play_before(Yuki::Animation.send_command_to(self, :cry))
+      return animation
+    end
+
+    # Creates the regular go in animation (not follower)
+    # @return [Yuki::Animation::TimedAnimation]
+    def regular_go_in_animation
+      ya = Yuki::Animation
+      animation = ya.send_command_to(self, :zoom=, 0)
+      animation.play_before(ya.send_command_to(self, :set_position, *sprite_position))
+      animation.play_before(ya::ScalarAnimation.new(1, self, :zoom=, 0, 1))
+      animation.play_before(ya.send_command_to(self, :cry))
+
+      return animation
+    end
+
+    # Creates the go_out animation of a "follower" pokemon
+    # @return [Yuki::Animation::TimedAnimation]
+    def follower_go_out_animation
+      x, y = sprite_position
+      bx = enemy? ? viewport.rect.width + width : -width
+      return Yuki::Animation.move(1, self, x, y, bx, y)
+    end
+
+    # Creates the regular go out animation (not follower)
+    # @return [Yuki::Animation::TimedAnimation]
+    def regular_go_out_animation
+      ya = Yuki::Animation
+      animation = ya.send_command_to(self, :zoom=, 1)
+      animation.play_before(ya::ScalarAnimation.new(1, self, :zoom=, 1, 0))
+
+      return animation
+    end
+
+    # Create the go_out animation of a KO pokemon
+    # @return [Yuki::Animation::TimedAnimation]
+    def ko_go_out_animation
+      ya = Yuki::Animation
+      animation = ya.send_command_to(self, :cry, true)
+      going_down = ya.opacity_change(0.5, self, opacity, 0)
+      animation.play_before(going_down)
+      going_down.parallel_add(ya.move(0.5, self, x, y, x, y + DELTA_DEATH_Y))
+
+      return animation
     end
   end
 end

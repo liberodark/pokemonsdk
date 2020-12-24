@@ -7,32 +7,50 @@ module BattleUI
   # The object should be updated through #update otherwise no validation is possible
   #
   # When result was taken, the scene should call #reset to undo the validated state
-  class SkillChoice
-    # @return [Battle::Move, :cancel] the selected move
+  class SkillChoice < UI::SpriteStack
+    # Offset X of the cursor compared to the element it shows
+    CURSOR_OFFSET_X = -10
+    # Offset Y of the cursor compared to the element it shows
+    CURSOR_OFFSET_Y = 6
+    # Coordinate of each buttons
+    BUTTON_COORDINATE = [[198, 124], [198, 153], [198, 182], [198, 211]]
+    # The selected move
+    # @return [Battle::Move, :cancel]
     attr_reader :result
-    # @return [PFM::PokemonBattler] the pokemon the player choosed a move
+    # The pokemon the player choosed a move
+    # @return [PFM::PokemonBattler]
     attr_reader :pokemon
+    # Get the index of the choice
+    # @return [Integer]
+    attr_reader :index
     # Create a new SkillChoice UI
     # @param viewport [Viewport]
-    def initialize(viewport)
-      @skills = SkillWindow.new(viewport)
-      @info = SkillInfoWindow.new(viewport)
+    # @param scene [Battle::Scene]
+    def initialize(viewport, scene)
+      super(viewport)
+      @scene = scene
+      @index = 0
       # List of last index according to the pokemon that was used
       # @type [Hash{ PFM::PokemonBattler => Integer }]
       @last_indexes = {}
+      create_sprites
+      self.visible = false
     end
 
     # Update the window cursor
     def update
       return if validated?
-      return validate if Input.trigger?(:A) || (Mouse.trigger?(:left) && @skills.simple_mouse_in?)
-      return cancel if Input.trigger?(:B)
-      last_index = @skills.index
-      update_key_index(last_index)
+      return special_validate if special_validating?
+      return if @move_description.visible
+      return validate if validating?
+      return cancel if canceling?
+
+      last_index = @index
+      update_key_index
       update_mouse_index
-      if last_index != @skills.index
-        @skills.update_cursor
-        @info.data = @pokemon.moveset[@skills.index]
+      if last_index != @index
+        update_cursor
+        @info.data = @pokemon
       end
     end
 
@@ -46,27 +64,82 @@ module BattleUI
     # @param pokemon [PFM::PokemonBattler]
     def reset(pokemon)
       @pokemon = pokemon
-      @skills.data = pokemon
-      @skills.index = @last_indexes[pokemon] || 0
-      @skills.update_cursor
-      @info.data = @pokemon.moveset[@skills.index]
-      @result = nil
-    end
-
-    # Set the UI visibility
-    # @param value [Boolean]
-    def visible=(value)
-      @info.visible = value
-      @skills.visible = value
+      @mega_enabled = false
+      self.data = pokemon
+      update_cursor(true)
     end
 
     private
 
+    def create_sprites
+      create_buttons
+      create_info
+      create_special_buttons
+      create_cursor
+      create_move_description
+    end
+
+    def create_buttons
+      # @type [Array<MoveButton>]
+      @buttons = 4.times.map do |i|
+        add_sprite(*BUTTON_COORDINATE[i], NO_INITIAL_IMAGE, i, type: MoveButton)
+      end
+    end
+
+    def create_info
+      # @type [MoveInfo]
+      @info = add_sprite(0, 0, NO_INITIAL_IMAGE, self, type: MoveInfo)
+    end
+
+    def create_special_buttons
+      @descr_button = add_sprite(12, 214, NO_INITIAL_IMAGE, :descr, type: SpecialButton)
+      @mega_button = add_sprite(2, 188, NO_INITIAL_IMAGE, :mega, type: SpecialButton)
+    end
+
+    def create_cursor
+      @cursor = add_sprite(0, 0, 'battle/arrow')
+    end
+
+    def create_move_description
+      # Not added in the stack so it can be independant
+      @move_description = MoveDescription.new(@viewport)
+    end
+
+    # Update the cursor position
+    # @param silent [Boolean] if the update shouldn't make noise
+    def update_cursor(silent = false)
+      @cursor.set_position(@buttons[@index].x + CURSOR_OFFSET_X, @buttons[@index].y + CURSOR_OFFSET_Y)
+      $game_system.se_play($data_system.cursor_se) unless silent
+    end
+
     # Validate the user choice
     def validate
-      @result = @pokemon.moveset[@skills.index]
-      @last_indexes[@pokemon] = @skills.index
+      @result = @pokemon.moveset[@index]
+      @last_indexes[@pokemon] = @index
       $game_system.se_play($data_system.decision_se)
+    end
+
+    # Tell if the player is validating his choice
+    def validating?
+      return Input.trigger?(:A) || (Mouse.trigger?(:LEFT) && @buttons.any?(:simple_mouse_in?))
+    end
+
+    # Tell if the player is trying to use one of the special button
+    # @return [Boolean]
+    def special_validating?
+      return true if Input.trigger?(:X) || Input.trigger?(:Y)
+
+      return Mouse.trigger?(:LEFT) && (@descr_button.simple_mouse_in? || @mega_button.simple_mouse_in?)
+    end
+
+    # Do the special validation (saved actions)
+    def special_validate
+      if Input.trigger?(:Y) || (Mouse.trigger?(:LEFT) && @descr_button.simple_mouse_in?) || @move_description.visible
+        @move_description.visible = !@move_description.visible
+        # TODO: add go-ing go-out
+      else
+        # TODO : Add Mega action
+      end
     end
 
     # Cancel the player choice
@@ -75,115 +148,143 @@ module BattleUI
       $game_system.se_play($data_system.cancel_se)
     end
 
+    # Tell if the player is canceling his choice
+    def canceling?
+      return Input.trigger?(:B) || Mouse.trigger?(:RIGHT)
+    end
+
     # Update the mouse index if the mouse moved
     def update_mouse_index
       return unless Mouse.moved
-      return unless @skills.simple_mouse_in?
-      @skills.stack.each_with_index do |text, index|
-        break @skills.index = index if text.simple_mouse_in?
+
+      @buttons.each do |sp|
+        break @index = sp.index if sp.simple_mouse_in?
       end
     end
 
     # Update the index if a key was pressed
-    def update_key_index(last_index)
-      case Input.dir4
-      when 6
-        @skills.index = last_index < 2 ? 1 : 3
-      when 4
-        @skills.index = last_index < 2 ? 0 : 2
-      when 2
-        @skills.index = last_index.odd? ? 3 : 2
-      when 8
-        @skills.index = last_index.odd? ? 1 : 0
+    def update_key_index
+      if Input.repeat?(:UP)
+        @index = (@index - 1) % @buttons.count(&:visible)
+      elsif Input.repeat?(:DOWN)
+        @index = (@index + 1) % @buttons.count(&:visible)
       end
     end
 
-    # Window allowing to select the skill
-    class SkillWindow < UI::Window
-      # @return [Integer] current index
+    # Button of a move
+    class MoveButton < UI::SpriteStack
+      # Get the index
+      # @return [Integer]
       attr_reader :index
-      # Total width of the window
-      WINDOW_WIDTH = 220
-      # Total height of the window
-      WINDOW_HEIGHT = 48
-      # Delta in X between two options
-      DELTA_X = 96
-      # Delta in Y between two options
-      DELTA_Y = 16
-      # Offset X of the text to let the cursor display
-      TEXT_OX = 16
-      # Create the new SkillWindow
+
+      # Create a new Move button
       # @param viewport [Viewport]
-      def initialize(viewport)
-        super(viewport, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
-        create_texts
-        load_cursor
-        @index = 0
-        self.active = true
-        self.visible = false
+      # @param index [Integer]
+      def initialize(viewport, index)
+        super(viewport)
+        @index = index
+        create_sprites
       end
 
-      # Set the Pokemon seen in the UI
+      # Set the data
       # @param pokemon [PFM::PokemonBattler]
       def data=(pokemon)
-        @moveset = pokemon.moveset
-        4.times do |index|
-          @stack.stack[index].data = @moveset[index]
+        move = pokemon.moveset[@index]
+        if (self.visible = move)
+          @background.sy = move.type
+          @text.data = move
         end
       end
 
-      # Set the index
-      # @param value [Integer]
-      def index=(value)
-        @index = value if @moveset[value]
-      end
-
-      # Update the cursor position
-      def update_cursor
-        cursor_rect.set((@index % 2) * DELTA_X, (@index / 2) * DELTA_Y)
-        $game_system.se_play($data_system.cursor_se)
-      end
-
       private
 
-      def create_texts
-        add_text(TEXT_OX, 0, DELTA_X - TEXT_OX, DELTA_Y, :name, type: UI::SymText)
-        add_text(TEXT_OX + DELTA_X, 0, DELTA_X - TEXT_OX, DELTA_Y, :name, type: UI::SymText)
-        add_text(TEXT_OX, DELTA_Y, DELTA_X - TEXT_OX, DELTA_Y, :name, type: UI::SymText)
-        add_text(TEXT_OX + DELTA_X, DELTA_Y, DELTA_X - TEXT_OX, DELTA_Y, :name, type: UI::SymText)
+      def create_sprites
+        # TODO: separate in methods
+        @background = add_sprite(0, 0, 'battle/types', 1, GameData::Type.all.size, type: SpriteSheet)
+        @text = add_text(28, 8, 0, 16, :name, color: 10, type: UI::SymText)
       end
     end
 
-    # Window showing the skill info
-    class SkillInfoWindow < UI::Window
-      # @return [Integer] current index
-      attr_reader :index
-      # Total width of the window
-      WINDOW_WIDTH = 100
-      # Total height of the window
-      WINDOW_HEIGHT = 48
-      # Create the new SkillWindow
+    # Element showing the information of the current move
+    class MoveInfo < UI::SpriteStack
+      # Create a new MoveInfo
       # @param viewport [Viewport]
-      def initialize(viewport)
-        rc = viewport.rect
-        super(viewport, rc.width - WINDOW_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
-        self.visible = false
-        create_stack
+      # @param move_choice [SkillChoice]
+      def initialize(viewport, move_choice)
+        super(viewport)
+        @move_choice = move_choice
+        create_sprites
       end
 
-      # Set the skill data
-      # @param move [Battle::Move]
-      def data=(move)
-        @stack.data = move
+      # Set the move shown by the UI
+      # @param pokemon [PFM::PokemonBattler]
+      def data=(pokemon)
+        super(pokemon.moveset[@move_choice.index])
       end
 
       private
 
-      def create_stack
-        add_text(0, 0, 40, 16, text_get(27, 32))
-        add_text(0, 0, 64, 16, :pp_text, 2, type: UI::SymText)
-        push(0, 16, nil, type: UI::TypeSprite)
-        push(33, 16, nil, type: UI::CategorySprite)
+      def create_sprites
+        @pp_background = add_sprite(122, 214, 'battle/pp_box', 1, 3, type: SpriteSheet)
+        @pp_text = add_text(132, 220, 0, 16, :pp_text, 1, color: 10, type: UI::SymText)
+        @move_category = add_sprite(122, 198, NO_INITIAL_IMAGE, type: UI::CategorySprite)
+      end
+    end
+
+    # Element showing the full description about the currently selected move
+    class MoveDescription < UI::SpriteStack
+      # Create a new MoveDescription
+      # @param viewport [Viewport]
+      def initialize(viewport)
+        super(viewport)
+        create_sprites
+        self.visible = false
+      end
+
+      private
+
+      def create_sprites
+        @background = add_background('battle/background')
+        @box = add_sprite(0, 71, 'battle/description_box')
+        @skill_name = add_text(14, 15, 0, 16, :name, type: UI::SymText)
+        @power_text = add_text(133, 15, 0, 16, text_get(27, 37), color: 10)
+        @power_value = add_text(193, 15, 0, 16, :power_text, 2, type: UI::SymText)
+        @accuracy_text = add_text(229, 15, 0, 16, text_get(27, 39), color: 10)
+        @accuracy_value = add_text(289, 15, 0, 16, :accuracy_text, 2, type: UI::SymText)
+        @description = add_text(14, 36, 284, 16, :description, color: 0, type: UI::SymMultilineText)
+      end
+    end
+
+    # Element showing a special button
+    class SpecialButton < UI::SpriteStack
+      # Create a new special button
+      # @param viewport [Viewport]
+      # @param type [Symbol] :mega or :descr
+      def initialize(viewport, type)
+        super(viewport)
+        @type = type
+        create_sprites
+      end
+
+      # Set the data of the button
+      # @param pokemon [PFM::PokemonBattler]
+      def data=(pokemon)
+        # TODO: Add mega tool check!!!
+        self.visible = @type == :descr || pokemon.can_mega_evolve?
+      end
+
+      # Update the special button content
+      def refresh
+        @text.text = @type == :descr ? 'Description' : 'Mega evolution'
+      end
+
+      private
+
+      def create_sprites
+        # TODO: separate in methods
+        add_background(@type == :descr ? 'battle/button_x' : 'battle/button_mega')
+        @text = add_text(23, 6, 0, 16, nil.to_s, color: 10)
+        add_sprite(5, 5, @type == :descr ? 'battle/icon_x_triggered' : 'battle/icon_y_triggered')
       end
     end
   end

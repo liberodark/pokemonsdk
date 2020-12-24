@@ -23,7 +23,7 @@ module Battle
       Audio.se_play('Audio/SE/Down.wav', 100, 80)
       # Start all animations
       targets.each do |target|
-        battler_sprite(target.bank, target.position).start_animation_KO
+        battler_sprite(target.bank, target.position).go_out
         hide_info_bar(target)
       end
       # Show messages
@@ -37,13 +37,32 @@ module Battle
     # Show the ability animation
     # @param target [PFM::PokemonBattler]
     def show_ability(target)
-      # TODO: write the code
+      ability_bar = @ability_bars[target.bank][target.position]
+      item_bar = @item_bars[target.bank][target.position]
+      return unless ability_bar
+
+      ability_bar.go_in
+      if !item_bar || item_bar.done?
+        ability_bar.z = 0
+      else
+        ability_bar.z = item_bar.z + 1
+      end
     end
 
     # Show the item user animation
     # @param target [PFM::PokemonBattler]
     def show_item(target)
-      # TODO: Implement an animation for that & write the code
+      ability_bar = @ability_bars[target.bank][target.position]
+      item_bar = @item_bars[target.bank][target.position]
+      return unless item_bar
+
+      item_bar.go_in
+      item_bar.z = ability_bar.z + 1 unless !ability_bar || ability_bar.done?
+      if !ability_bar || ability_bar.done?
+        item_bar.z = 0
+      else
+        item_bar.z = ability_bar.z + 1
+      end
     end
 
     # Show the pokemon switch form animation
@@ -77,28 +96,6 @@ module Battle
 
       $data_animations ||= load_data('Data/Animations.rxdata')
       lock { @move_animator.animation(battler_sprite(target.bank, target.position), id, target.bank != 0) }
-    end
-
-    # Show the distribute exp animation
-    # @param target [PFM::PokemonBattler]
-    # @param target_exp [Integer] exp the Pokemon should get
-    def show_exp_animation(target, target_exp)
-      original_exp = target.exp
-      exp_rate = target.exp_rate
-      target.exp = target_exp
-      time_to_process = (target.exp_rate - exp_rate) * 2
-      lock do
-        animation = Yuki::Animation::DiscreetAnimation.new(time_to_process, target, :exp=, original_exp, target_exp)
-        animation.start
-        Audio.se_play('audio/se/exp_sound')
-        until animation.done?
-          scene_update_proc do
-            animation.update
-            refresh_info_bar(target)
-          end
-        end
-        Audio.se_stop
-      end
     end
   end
 end

@@ -17,7 +17,7 @@ module Battle
       @info_bars.each_value do |info_bars|
         info_bars.each do |bar|
           bar.pokemon = bar.pokemon
-          bar.come_back
+          bar.go_in
         end
       end
     end
@@ -29,7 +29,7 @@ module Battle
       bar = @info_bars.dig(pokemon.bank, pokemon.position)
       return log_error("No battle bar at position #{pokemon.bank}, #{pokemon.position}") unless bar
       bar.pokemon = pokemon
-      bar.come_back
+      bar.go_in
     end
 
     # Show a specific bar
@@ -46,8 +46,19 @@ module Battle
     def refresh_info_bar(pokemon)
       # @type [BattleUI::InfoBar]
       bar = @info_bars.dig(pokemon.bank, pokemon.position)
+      @team_info[pokemon.bank]&.refresh
       return log_error("No battle bar at position #{pokemon.bank}, #{pokemon.position}") unless bar
       bar.refresh
+    end
+
+    # Show team info
+    def show_team_info
+      @team_info.each_value(&:go_in)
+    end
+
+    # Hide team info
+    def hide_team_info
+      @team_info.each_value(&:go_out)
     end
   end
 end
