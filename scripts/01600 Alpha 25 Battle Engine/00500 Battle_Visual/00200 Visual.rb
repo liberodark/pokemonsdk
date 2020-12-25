@@ -48,6 +48,8 @@ module Battle
       # Create all the sprites
       create_graphics
       create_battle_animation_handler
+      # Remove the viewport.sort_z line when LiteRGSS2 will be out
+      @viewport.sort_z
     end
 
     # Safe to_s & inspect

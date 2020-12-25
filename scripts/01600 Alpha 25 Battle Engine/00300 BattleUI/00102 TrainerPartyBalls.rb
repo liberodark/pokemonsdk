@@ -38,6 +38,8 @@ module BattleUI
       create_graphics
       set_position(*sprite_position)
       refresh
+      go_out(-999)
+      update
     end
 
     # Update all the animation of this UI element

@@ -85,7 +85,7 @@ module BattleUI
     def base_position_v1
       return 242, 138 if enemy?
 
-      return 78, 184
+      return 78, 188
     end
 
     # Get the base position of the Pokemon in 2v2+
@@ -93,7 +93,7 @@ module BattleUI
     def base_position_v2
       return 202, 133 if enemy?
 
-      return 58, 189
+      return 58, 188
     end
 
     # Get the offset position of the Pokemon in 2v2+

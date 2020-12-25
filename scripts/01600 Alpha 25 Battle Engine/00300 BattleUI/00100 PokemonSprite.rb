@@ -144,7 +144,7 @@ module BattleUI
     def follower_go_in_animation
       x, y = sprite_position
       bx = enemy? ? viewport.rect.width + width : -width
-      animation = Yuki::Animation.move(1, self, bx, y, x, y)
+      animation = Yuki::Animation.move(0.1, self, bx, y, x, y)
       animation.play_before(Yuki::Animation.send_command_to(self, :cry))
       return animation
     end
@@ -155,7 +155,7 @@ module BattleUI
       ya = Yuki::Animation
       animation = ya.send_command_to(self, :zoom=, 0)
       animation.play_before(ya.send_command_to(self, :set_position, *sprite_position))
-      animation.play_before(ya::ScalarAnimation.new(1, self, :zoom=, 0, 1))
+      animation.play_before(ya::ScalarAnimation.new(0.1, self, :zoom=, 0, 1))
       animation.play_before(ya.send_command_to(self, :cry))
 
       return animation
@@ -166,7 +166,7 @@ module BattleUI
     def follower_go_out_animation
       x, y = sprite_position
       bx = enemy? ? viewport.rect.width + width : -width
-      return Yuki::Animation.move(1, self, x, y, bx, y)
+      return Yuki::Animation.move(0.1, self, x, y, bx, y)
     end
 
     # Creates the regular go out animation (not follower)
@@ -174,7 +174,7 @@ module BattleUI
     def regular_go_out_animation
       ya = Yuki::Animation
       animation = ya.send_command_to(self, :zoom=, 1)
-      animation.play_before(ya::ScalarAnimation.new(1, self, :zoom=, 1, 0))
+      animation.play_before(ya::ScalarAnimation.new(0.1, self, :zoom=, 1, 0))
 
       return animation
     end
@@ -184,9 +184,9 @@ module BattleUI
     def ko_go_out_animation
       ya = Yuki::Animation
       animation = ya.send_command_to(self, :cry, true)
-      going_down = ya.opacity_change(0.5, self, opacity, 0)
+      going_down = ya.opacity_change(0.1, self, opacity, 0)
       animation.play_before(going_down)
-      going_down.parallel_add(ya.move(0.5, self, x, y, x, y + DELTA_DEATH_Y))
+      going_down.parallel_add(ya.move(0.1, self, x, y, x, y + DELTA_DEATH_Y))
 
       return animation
     end
