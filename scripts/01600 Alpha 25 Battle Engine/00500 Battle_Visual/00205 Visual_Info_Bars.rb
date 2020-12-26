@@ -2,22 +2,27 @@ module Battle
   class Visual
     # Hide all the bars
     # @param no_animation [Boolean] skip the going out animation
-    def hide_info_bars(no_animation = false)
-      @info_bars.each_value do |info_bars|
+    # @param bank [Integer, nil] bank where the info bar should be hidden
+    def hide_info_bars(no_animation = false, bank: nil)
+      enum = bank ? [@info_bars[bank]].each : @info_bars.each_value
+
+      enum.each do |info_bars|
         if no_animation
           info_bars.each { |bar| bar.visible = false }
         else
-          info_bars.each(&:go_out)
+          info_bars.each { |bar| bar.go_out unless bar.out? }
         end
       end
     end
 
     # Show all the bars
-    def show_info_bars
-      @info_bars.each_value do |info_bars|
+    # @param bank [Integer, nil] bank where the info bar should be hidden
+    def show_info_bars(bank: nil)
+      enum = bank ? [@info_bars[bank]].each : @info_bars.each_value
+      enum.each do |info_bars|
         info_bars.each do |bar|
           bar.pokemon = bar.pokemon
-          bar.go_in
+          bar.go_in unless bar.in?
         end
       end
     end

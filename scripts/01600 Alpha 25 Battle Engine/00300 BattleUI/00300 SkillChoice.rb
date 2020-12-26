@@ -63,8 +63,10 @@ module BattleUI
     # Reset the Skill choice
     # @param pokemon [PFM::PokemonBattler]
     def reset(pokemon)
+      @result = nil
       @pokemon = pokemon
       @mega_enabled = false
+      @index = @last_indexes[pokemon].to_i
       self.data = pokemon
       update_cursor(true)
     end

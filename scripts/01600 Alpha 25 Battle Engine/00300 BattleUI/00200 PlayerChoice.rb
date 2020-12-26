@@ -34,7 +34,6 @@ module BattleUI
       @index = 0
       @can_switch = true
       create_sprites
-      reset
       self.visible = false
     end
 
@@ -63,6 +62,7 @@ module BattleUI
       @result = nil
       @action = nil
       @last_item_button.refresh
+      @scene.visual.hide_info_bars(bank: 0)
       update_cursor(true)
     end
 
@@ -170,13 +170,13 @@ module BattleUI
     # Update the index if a key was pressed
     def update_key_index
       if Input.trigger?(:UP)
-        @index = (@index - 1).clamp(0, POSSIBLE_RESULT.size - 1)
+        @index = (@index - 2).clamp(0, POSSIBLE_RESULT.size - 1)
       elsif Input.trigger?(:LEFT)
-        @index = @index == 2 ? 0 : 2
+        @index = (@index - 1).clamp(0, POSSIBLE_RESULT.size - 1)
       elsif Input.trigger?(:RIGHT)
-        @index = @index == 1 ? 3 : 1
-      elsif Input.trigger?(:DOWN)
         @index = (@index + 1).clamp(0, POSSIBLE_RESULT.size - 1)
+      elsif Input.trigger?(:DOWN)
+        @index = (@index + 2).clamp(0, POSSIBLE_RESULT.size - 1)
       end
     end
 
