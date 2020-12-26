@@ -41,7 +41,13 @@ class Spriteset_Map
     @viewport1.sort_z
     @viewport2.sort_z
     @viewport3.sort_z
+    background = Bitmap.new(@viewport1.rect.width, @viewport2.rect.width)
+    background_image = Image.new(background.width, background.height)
+    background_image.fill_rect(0, 0, background.width, background.height, Color.new(0, 0, 0))
+    background_image.copy_to_bitmap(background)
+    background_image.dispose
     return [
+      background,
       @viewport1.snap_to_bitmap,
       @viewport2.snap_to_bitmap,
       @viewport3.snap_to_bitmap

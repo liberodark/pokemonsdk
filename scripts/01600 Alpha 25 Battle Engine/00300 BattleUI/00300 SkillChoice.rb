@@ -7,11 +7,7 @@ module BattleUI
   # The object should be updated through #update otherwise no validation is possible
   #
   # When result was taken, the scene should call #reset to undo the validated state
-  class SkillChoice < UI::SpriteStack
-    # Offset X of the cursor compared to the element it shows
-    CURSOR_OFFSET_X = -10
-    # Offset Y of the cursor compared to the element it shows
-    CURSOR_OFFSET_Y = 6
+  class SkillChoice < GenericChoice
     # Coordinate of each buttons
     BUTTON_COORDINATE = [[198, 124], [198, 153], [198, 182], [198, 211]]
     # The selected move
@@ -27,59 +23,23 @@ module BattleUI
     # @param viewport [Viewport]
     # @param scene [Battle::Scene]
     def initialize(viewport, scene)
-      super(viewport)
-      @scene = scene
-      @index = 0
       # List of last index according to the pokemon that was used
       # @type [Hash{ PFM::PokemonBattler => Integer }]
       @last_indexes = {}
-      create_sprites
-      self.visible = false
-    end
-
-    # Update the window cursor
-    def update
-      return if validated?
-      return special_validate if special_validating?
-      return if @move_description.visible
-      return validate if validating?
-      return cancel if canceling?
-
-      last_index = @index
-      update_key_index
-      update_mouse_index
-      if last_index != @index
-        update_cursor
-        @info.data = @pokemon
-      end
-    end
-
-    # Tell if the player made a choice
-    # @return [Boolean]
-    def validated?
-      !@result.nil?
+      super(viewport, scene)
     end
 
     # Reset the Skill choice
     # @param pokemon [PFM::PokemonBattler]
     def reset(pokemon)
-      @result = nil
       @pokemon = pokemon
       @mega_enabled = false
       @index = @last_indexes[pokemon].to_i
       self.data = pokemon
-      update_cursor(true)
+      super()
     end
 
     private
-
-    def create_sprites
-      create_buttons
-      create_info
-      create_special_buttons
-      create_cursor
-      create_move_description
-    end
 
     def create_buttons
       # @type [Array<MoveButton>]
@@ -98,70 +58,17 @@ module BattleUI
       @mega_button = add_sprite(2, 188, NO_INITIAL_IMAGE, :mega, type: SpecialButton)
     end
 
-    def create_cursor
-      @cursor = add_sprite(0, 0, 'battle/arrow')
-    end
-
     def create_move_description
       # Not added in the stack so it can be independant
       @move_description = MoveDescription.new(@viewport)
     end
 
-    # Update the cursor position
-    # @param silent [Boolean] if the update shouldn't make noise
-    def update_cursor(silent = false)
-      @cursor.set_position(@buttons[@index].x + CURSOR_OFFSET_X, @buttons[@index].y + CURSOR_OFFSET_Y)
-      $game_system.se_play($data_system.cursor_se) unless silent
-    end
-
     # Validate the user choice
     def validate
+      # TODO make sure the player cannot choose locked skills
       @result = @pokemon.moveset[@index]
       @last_indexes[@pokemon] = @index
       $game_system.se_play($data_system.decision_se)
-    end
-
-    # Tell if the player is validating his choice
-    def validating?
-      return Input.trigger?(:A) || (Mouse.trigger?(:LEFT) && @buttons.any?(:simple_mouse_in?))
-    end
-
-    # Tell if the player is trying to use one of the special button
-    # @return [Boolean]
-    def special_validating?
-      return true if Input.trigger?(:X) || Input.trigger?(:Y)
-
-      return Mouse.trigger?(:LEFT) && (@descr_button.simple_mouse_in? || @mega_button.simple_mouse_in?)
-    end
-
-    # Do the special validation (saved actions)
-    def special_validate
-      if Input.trigger?(:Y) || (Mouse.trigger?(:LEFT) && @descr_button.simple_mouse_in?) || @move_description.visible
-        @move_description.visible = !@move_description.visible
-        # TODO: add go-ing go-out
-      else
-        # TODO : Add Mega action
-      end
-    end
-
-    # Cancel the player choice
-    def cancel
-      @result = :cancel
-      $game_system.se_play($data_system.cancel_se)
-    end
-
-    # Tell if the player is canceling his choice
-    def canceling?
-      return Input.trigger?(:B) || Mouse.trigger?(:RIGHT)
-    end
-
-    # Update the mouse index if the mouse moved
-    def update_mouse_index
-      return unless Mouse.moved
-
-      @buttons.each do |sp|
-        break @index = sp.index if sp.simple_mouse_in?
-      end
     end
 
     # Update the index if a key was pressed

@@ -1,0 +1,151 @@
+module BattleUI
+  # Class that allow a choice do be made
+  #
+  # The object tells the player validated on #validated? and the result is stored inside #result
+  #
+  # The object should be updated through #update otherwise no validation is possible
+  #
+  # When result was taken, the scene should call #reset to undo the validated state
+  #
+  # The goal of this class is to provide the cursor handling. You have to define the buttons!
+  # Here's the list of methods you should define
+  #   - create_buttons
+  #   - create_sub_choice (add the subchoice as a stack item! & store it in @sub_choice)
+  #   - validate (set the result to the proper value)
+  #   - update_key_index
+  #
+  # To allow flexibility (sub actions) this generic choice allow you to define a "sub generic" choice
+  # that only needs to responds to #update, #reset and #done? in @sub_choice
+  class GenericChoice < UI::SpriteStack
+    include UI
+    include HideShow
+    # Offset X of the cursor compared to the element it shows
+    CURSOR_OFFSET_X = -10
+    # Offset Y of the cursor compared to the element it shows
+    CURSOR_OFFSET_Y = 6
+    # Get the animation handler
+    # @return [Yuki::Animation::Handler{ Symbol => Yuki::Animation::TimedAnimation}]
+    attr_reader :animation_handler
+    # The result
+    # @return [Symbol, nil]
+    attr_reader :result
+    # Create a new GenericChoice
+    # @param viewport [Viewport]
+    # @param scene [Battle::Scene]
+    def initialize(viewport, scene)
+      super(viewport)
+      @scene = scene
+      @animation_handler = Yuki::Animation::Handler.new
+      @index = 0
+      create_sprites
+      self.visible = false
+    end
+
+    # Update the Window cursor
+    def update
+      @animation_handler.update
+      super
+      return unless done?
+      return if validated?
+      return validate if validating?
+      return cancel if canceling?
+
+      last_index = @index
+      update_key_index
+      update_mouse_index
+      update_cursor if last_index != @index
+    end
+
+    # Tell if all animations are done
+    # @return [Boolean]
+    def done?
+      return false if @sub_choice && !@sub_choice.done?
+
+      return @animation_handler.done?
+    end
+
+    # If the player made a choice
+    # @return [Boolean]
+    def validated?
+      !@result.nil? && done?
+    end
+
+    # Reset the choice
+    def reset
+      @result = nil
+      @sub_choice&.reset
+      update_cursor(true)
+    end
+
+    private
+
+    def create_sprites
+      create_buttons
+      create_sub_choice
+      create_cursor
+    end
+
+    def create_sub_choice
+      return nil
+    end
+
+    def create_cursor
+      # @type [Cursor]
+      @cursor = add_sprite(0, 0, 'battle/arrow', type: Cursor)
+    end
+
+    # Get the buttons
+    # @return [Array<Sprite>]
+    def buttons
+      return @buttons
+    end
+
+    # Update the cursor position
+    # @param silent [Boolean] if the update shouldn't make noise
+    def update_cursor(silent = false)
+      if silent
+        @cursor.set_position(buttons[@index].x + CURSOR_OFFSET_X, buttons[@index].y + CURSOR_OFFSET_Y)
+        @cursor.start_animation
+        update_button_opacity
+      else
+        root = (ya = Yuki::Animation).send_command_to(@cursor, :stop_animation)
+        root.play_before(ya.move(0.1, @cursor, @cursor.x, @cursor.y, buttons[@index].x + CURSOR_OFFSET_X, buttons[@index].y + CURSOR_OFFSET_Y))
+        root.play_before(ya.send_command_to(@cursor, :start_animation))
+        root.play_before(ya.send_command_to(self, :update_button_opacity))
+        root.start
+        animation_handler[:cursor] = root
+        $game_system.se_play($data_system.cursor_se)
+      end
+    end
+
+    # Set the button opacity
+    def update_button_opacity
+      buttons.each_with_index { |button, index| button.opacity = index == @index ? 255 : 204 }
+    end
+
+    # Tell if the player is validating his choice
+    def validating?
+      return Input.trigger?(:A) || (Mouse.trigger?(:LEFT) && @buttons.any?(&:simple_mouse_in?))
+    end
+
+    # Cancel the player choice
+    def cancel
+      @result = :cancel
+      $game_system.se_play($data_system.cancel_se)
+    end
+
+    # Tell if the player is canceling his choice
+    def canceling?
+      return Input.trigger?(:B) || Mouse.trigger?(:RIGHT)
+    end
+
+    # Update the mouse index if the mouse moved
+    def update_mouse_index
+      return unless Mouse.moved
+
+      @buttons.each_with_index do |sp, index|
+        break @index = index if sp.simple_mouse_in?
+      end
+    end
+  end
+end

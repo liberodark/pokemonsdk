@@ -48,14 +48,14 @@ module BattleUI
     def hide_show_delta
       return 0 if animation_handler[:hide_show]&.done?
 
-      delta = (animation_handler[:hide_show] ? animation_handler[:hide_show].time_source.call - animation_handler[:hide_show].end_time : 0)
+      delta = (animation_handler[:hide_show]&.end_time ? animation_handler[:hide_show].time_source.call - animation_handler[:hide_show].end_time : 0)
       return delta.clamp(-Float::INFINITY, 0)
     end
 
     # get the duration of the hide show animation
     # @return [Float]
     def hide_show_duration
-      return 0.5
+      return 0.1
     end
   end
 end

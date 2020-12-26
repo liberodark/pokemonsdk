@@ -4,7 +4,7 @@ module Battle
       # Pixel offset for each index of the sprite
       OFFSET_SPRITE = [0, 1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0]
       # Pixel offset for each index of the bar
-      OFFSET_BAR = [0, 1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0]
+      OFFSET_BAR = [0, -1, -2, -3, -4, -5, -5, -4, -3, -2, -1, 0]
       # Create a new IdlePokemonAnimation
       # @param visual [Battle::Visual]
       # @param pokemon [BattleUI::PokemonSprite]

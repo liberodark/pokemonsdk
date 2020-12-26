@@ -58,12 +58,12 @@ module Battle
 
     # Show team info
     def show_team_info
-      @team_info.each_value(&:go_in)
+      @team_info.each_value { |info| info.go_in unless info.in? }
     end
 
     # Hide team info
     def hide_team_info
-      @team_info.each_value(&:go_out)
+      @team_info.each_value { |info| info.go_out unless info.out? }
     end
   end
 end

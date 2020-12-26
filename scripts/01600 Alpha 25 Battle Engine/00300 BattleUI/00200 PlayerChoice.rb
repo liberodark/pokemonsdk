@@ -6,19 +6,12 @@ module BattleUI
   # The object should be updated through #update otherwise no validation is possible
   #
   # When result was taken, the scene should call #reset to undo the validated state
-  class PlayerChoice < UI::SpriteStack
+  class PlayerChoice < GenericChoice
     include UI
-    # Offset X of the cursor compared to the element it shows
-    CURSOR_OFFSET_X = -10
-    # Offset Y of the cursor compared to the element it shows
-    CURSOR_OFFSET_Y = 6
     # Coordinate of each buttons
     BUTTON_COORDINATE = [[172, 172], [246, 182], [162, 201], [236, 211]]
     # List of the possible result on validation (according to the index)
     POSSIBLE_RESULT = %i[attack bag pokemon flee]
-    # The result
-    # @return [Symbol, nil]
-    attr_reader :result
     # The possible action made by the player (other than choosing a sub action)
     # @return [Battle::Actions::Base]
     attr_reader :action
@@ -29,51 +22,28 @@ module BattleUI
     # @param viewport [Viewport]
     # @param scene [Battle::Scene]
     def initialize(viewport, scene)
-      super(viewport)
-      @scene = scene
-      @index = 0
       @can_switch = true
-      create_sprites
-      self.visible = false
-    end
-
-    # Update the Window cursor
-    def update
-      return if validated?
-      return special_validate if special_validating?
-      return if @item_info.visible
-      return validate if validating?
-      return cancel if canceling?
-
-      last_index = @index
-      update_key_index
-      update_mouse_index
-      update_cursor if last_index != @index
-    end
-
-    # If the player made a choice
-    # @return [Boolean]
-    def validated?
-      !@result.nil?
+      super(viewport, scene)
     end
 
     # Reset the choice
     def reset
-      @result = nil
       @action = nil
-      @last_item_button.refresh
-      @scene.visual.hide_info_bars(bank: 0)
-      update_cursor(true)
+      @scene.visual.hide_info_bars
+      @scene.visual.show_team_info
+      super
+    end
+
+    # Force the action to use an item
+    # @param item [GameData::Item]
+    def use_item(item)
+      @result = :other
+      item_wrapper = PFM::ItemDescriptor.actions(item.id)
+      user = @scene.logic.battler(0, @scene.player_actions.size)
+      @action = Battle::Actions::Item.new(@scene, item_wrapper, $bag, user)
     end
 
     private
-
-    def create_sprites
-      create_buttons
-      create_special_buttons
-      create_cursor
-      create_item_info
-    end
 
     def create_buttons
       # @type [Array<Button>]
@@ -82,88 +52,22 @@ module BattleUI
       end
     end
 
-    def create_special_buttons
-      @last_item_button = add_sprite(12, 214, NO_INITIAL_IMAGE, :last_item, type: SpecialButton)
-      @info_button = add_sprite(2, 188, NO_INITIAL_IMAGE, :info, type: SpecialButton)
-    end
-
-    def create_cursor
-      @cursor = add_sprite(0, 0, 'battle/arrow')
-    end
-
-    def create_item_info
-      @item_info = ItemInfo.new(@viewport)
-      @item_info.visible = false
-    end
-
-    # Update the cursor position
-    # @param silent [Boolean] if the update shouldn't make noise
-    def update_cursor(silent = false)
-      @cursor.set_position(@buttons[@index].x + CURSOR_OFFSET_X, @buttons[@index].y + CURSOR_OFFSET_Y)
-      $game_system.se_play($data_system.cursor_se) unless silent
+    def create_sub_choice
+      @sub_choice = add_sprite(0, 0, NO_INITIAL_IMAGE, @scene, self, type: SubChoice)
     end
 
     # Validate the player choice
     def validate
-      @result = POSSIBLE_RESULT[@index]
-      if @result == :pokemon && !@can_switch
+      result = POSSIBLE_RESULT[@index]
+      if (result == :pokemon || result == :flee) && !@can_switch
         $game_system.se_play($data_system.buzzer_se)
-        return reset
+        hide
+        (handler = @scene.logic.switch_handler).can_switch?
+        handler.process_prevention_reason
+        show
       else
+        @result = result
         $game_system.se_play($data_system.decision_se)
-      end
-    end
-
-    # Tell if the player is validating his choice
-    def validating?
-      return Input.trigger?(:A) || (Mouse.trigger?(:LEFT) && @buttons.any?(:simple_mouse_in?))
-    end
-
-    # Tell if the player is trying to use one of the special button
-    # @return [Boolean]
-    def special_validating?
-      return true if Input.trigger?(:X) || Input.trigger?(:Y)
-
-      return Mouse.trigger?(:LEFT) && (@info_button.simple_mouse_in? || @last_item_button.simple_mouse_in?)
-    end
-
-    # Do the special validation (saved actions)
-    def special_validate
-      if Input.trigger?(:Y) || (Mouse.trigger?(:LEFT) && @info_button.simple_mouse_in?)
-        # TODO : Show Info
-      else
-        id = $bag.last_battle_item.id
-        return $game_system.se_play($data_system.buzzer_se) unless $bag.contain_item?(id)
-
-        if @item_info.visible
-          # TODO: cancelation
-          user = @scene.logic.battler(0, @scene.player_actions.size)
-          @action = Battle::Actions::Item.new(@scene, PFM::ItemDescriptor.actions(id), $bag, user)
-          @result = :other
-          @item_info.visible = false
-        else
-          @item_info.visible = true
-        end
-      end
-    end
-
-    # Cancel the player choice
-    def cancel
-      @result = :cancel
-      $game_system.se_play($data_system.cancel_se)
-    end
-
-    # Tell if the player is canceling his choice
-    def canceling?
-      return Input.trigger?(:B) || Mouse.trigger?(:RIGHT)
-    end
-
-    # Update the mouse index if the mouse moved
-    def update_mouse_index
-      return unless Mouse.moved
-
-      @buttons.each do |sp|
-        break @index = sp.index if sp.simple_mouse_in?
       end
     end
 
@@ -229,10 +133,15 @@ module BattleUI
 
     # UI showing the info about the last used item
     class ItemInfo < UI::SpriteStack
+      include HideShow
+      # Get the animation handler
+      # @return [Yuki::Animation::Handler{ Symbol => Yuki::Animation::TimedAnimation}]
+      attr_reader :animation_handler
       # Create a new Item Info box
       # @param viewport [Viewport]
       def initialize(viewport)
         super(viewport)
+        @animation_handler = Yuki::Animation::Handler.new
         create_sprites
       end
 
@@ -243,17 +152,128 @@ module BattleUI
         @remaining.text = $bag.item_quantity(item.id).to_s
       end
 
+      # Update the sprite
+      def update
+        @animation_handler.update
+      end
+
+      # Tell if the animation is done
+      # @return [Boolean]
+      def done?
+        return @animation_handler.done?
+      end
+
       private
 
       def create_sprites
         @background = add_background('battle/background')
         @item_box = add_sprite(0, 61, 'battle/last_item_box')
+        @y = 61
         @item_name = add_text(14, 15, 0, 16, :exact_name, color: 0, type: UI::SymText)
         @item_icon = add_sprite(240, 2, NO_INITIAL_IMAGE, type: UI::ItemSprite)
         @remaining = add_text(289, 15, 0, 16, nil.to_s, 2)
         @description = add_text(14, 36, 284, 16, :descr, color: 0, type: UI::SymMultilineText)
         @use_text = add_text(151, 90, 0, 16, text_get(22, 0), color: 10)
         @icon = add_sprite(131, 90, 'battle/icon_x_triggered')
+      end
+    end
+
+    # UI element showing the sub_choice and interacting with the parent choice
+    class SubChoice < UI::SpriteStack
+      # Create the sub choice
+      # @param viewport [Viewport]
+      # @param scene [Battle::Scene]
+      # @param choice [PlayerChoice]
+      def initialize(viewport, scene, choice)
+        super(viewport)
+        @scene = scene
+        @choice = choice
+        create_sprites
+      end
+
+      # Update the button
+      def update
+        super
+        @item_info.update
+        done? ? update_done : update_not_done
+      end
+
+      # Tell if the choice is done
+      def done?
+        return !@item_info.visible
+      end
+
+      # Reset the sub choice
+      def reset
+        @item_info.visible = false
+        @bar_visibility = false
+        @last_item_button.refresh
+        @info_button.refresh
+      end
+
+      private
+
+      # Update the button when it's done letting the player choose
+      def update_done
+        action_y if Input.trigger?(:Y)
+        action_x if Input.trigger?(:X)
+      end
+
+      # Update the button when it's waiting for player actions
+      def update_not_done
+        return unless @item_info.done?
+
+        action_b if Input.trigger?(:B) || Input.trigger?(:X)
+        action_a if Input.trigger?(:A)
+      end
+
+      # Action triggered when pressing Y
+      def action_y
+        @bar_visibility ? @scene.visual.show_info_bars : @scene.visual.hide_info_bars
+        @bar_visibility = !@bar_visibility
+      end
+
+      # Action triggered when pressing X
+      def action_x
+        item = $bag.last_battle_item
+        if item.id == 0 || !$bag.contain_item?(item.id)
+          $game_system.se_play($data_system.buzzer_se)
+          return
+        end
+        @item_info.data = item
+        @item_info.show
+        @choice.hide
+        $game_system.se_play($data_system.decision_se)
+      end
+
+      # Action triggered when pressing A
+      def action_a
+        $game_system.se_play($data_system.decision_se)
+        @choice.use_item(item)
+        @item_info.hide
+        @choice.show
+      end
+
+      # Action triggered when pressing B
+      def action_b
+        @item_info.hide
+        @choice.show
+        $game_system.se_play($data_system.cancel_se)
+      end
+
+      def create_sprites
+        create_special_buttons
+        create_item_info
+      end
+
+      def create_special_buttons
+        @last_item_button = add_sprite(12, 214, NO_INITIAL_IMAGE, :last_item, type: SpecialButton)
+        @info_button = add_sprite(2, 188, NO_INITIAL_IMAGE, :info, type: SpecialButton)
+      end
+
+      def create_item_info
+        @item_info = ItemInfo.new(@viewport)
+        @item_info.visible = false
       end
     end
   end

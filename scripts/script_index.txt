@@ -554,6 +554,8 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00102 TrainerPart
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00103 TrainerSprite.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00104 AbilityBar.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00105 ItemBar.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00106 Cursor.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00107 GenericChoice.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00200 PlayerChoice.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00300 SkillChoice.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00400 TargetSelection.rb
