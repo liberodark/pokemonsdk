@@ -12,6 +12,7 @@ module BattleUI
       delta = go_in_out_delta
       animation_handler[:in_out] ||= go_in_animation
       animation_handler[:in_out].start(delta)
+      @__in_out = :in
     end
 
     # Tell the element to go out of the scene
@@ -20,6 +21,20 @@ module BattleUI
       delta = forced_delta || go_in_out_delta
       animation_handler[:in_out] ||= go_out_animation
       animation_handler[:in_out].start(delta)
+      @__in_out = :out
+    end
+
+    # Tell if the UI element is in
+    # @note By default a UI element is considered as in because it's initialized in its in position
+    # @return [Boolean]
+    def in?
+      return !out?
+    end
+
+    # Tell if the UI element is out
+    # @return [Boolean]
+    def out?
+      return @__in_out == :out
     end
 
     private

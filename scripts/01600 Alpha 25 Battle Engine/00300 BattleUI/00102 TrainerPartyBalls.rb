@@ -57,6 +57,7 @@ module BattleUI
     # Get the base position of the Pokemon in 1v1
     # @return [Array(Integer, Integer)]
     def base_position_v1
+      return @viewport.rect.width, 0 if enemy? && !@scene.battle_info.trainer_battle?
       return 227, 48 if enemy?
 
       return 0, 173

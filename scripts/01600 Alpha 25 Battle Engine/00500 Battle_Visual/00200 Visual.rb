@@ -254,13 +254,13 @@ module Battle
     def create_info_bar(bank, position)
       info_bars = (@info_bars[bank] ||= [])
       pokemon = @scene.logic.battler(bank, position)
-      info_bars[position] = BattleUI::InfoBar.new(@viewport, @scene, pokemon, bank, position)
+      info_bars[position] = BattleUI::InfoBar.new(@viewport_sub, @scene, pokemon, bank, position)
     end
 
     # Create the Trainer Party Ball
     # @param bank [Integer]
     def create_team_info(bank)
-      @team_info[bank] = BattleUI::TrainerPartyBalls.new(@viewport, @scene, bank)
+      @team_info[bank] = BattleUI::TrainerPartyBalls.new(@viewport_sub, @scene, bank)
     end
 
     # Update the team info

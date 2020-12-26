@@ -60,10 +60,10 @@ module BattleUI
 
     # Refresh the bar contents
     def refresh
-      if @pokemon && !pokemon.dead?
+      if @pokemon
         self.visible = true
         self.data = @pokemon
-        set_position(*sprite_position)
+        set_position(*sprite_position) if in?
       else
         self.visible = false
       end

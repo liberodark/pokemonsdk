@@ -71,6 +71,7 @@ module Battle
           # Appearing section
           main.play_before(ya.message_locked_animation)
               .play_before(ya.send_command_to(self, :show_appearing_message))
+              .play_before(ya.send_command_to(@scene.visual, :show_team_info))
               .play_before(ya.send_command_to(self, :start_enemy_send_animation))
           @animations.each(&:start)
         end

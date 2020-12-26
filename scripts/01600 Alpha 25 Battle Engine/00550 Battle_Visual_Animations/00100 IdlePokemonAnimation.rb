@@ -27,7 +27,7 @@ module Battle
           @counter = 0
           @state = (@state + 1) % STATE_OFFSET_SPRITE.size
           @pokemon.y = @pokemon_y + STATE_OFFSET_SPRITE[@state]
-          @bar.y = @bar_y + STATE_OFFSET_BAR[@state]
+          # @bar.y = @bar_y + STATE_OFFSET_BAR[@state]
         end
       end
 
