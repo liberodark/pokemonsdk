@@ -111,14 +111,14 @@ module BattleUI
       exp_rate = pokemon.exp_rate
       pokemon.exp = next_exp_value
       time_to_process = (pokemon.exp_rate - exp_rate) * 2
-      animation = Yuki::Animation::DiscreetAnimation.new(time_to_process, pokemon, :exp=, original_exp, target_exp)
+      animation = Yuki::Animation::DiscreetAnimation.new(time_to_process, pokemon, :exp=, original_exp, next_exp_value)
       return [animation, pokemon.exp == pokemon.exp_lvl ? pokemon : nil]
     end
 
     # UI element showing the basic information
     class PokemonInfo < UI::SpriteStack
       # The information of the Exp Bar
-      EXP_BAR_INFO = [88, 2, 0, 2, 1]
+      EXP_BAR_INFO = [88, 2, 0, 0, 1]
       # Tell if the pokemon is leveling up or not
       # @return [Boolean]
       attr_reader :leveling_up
@@ -163,6 +163,7 @@ module BattleUI
       private
 
       def create_sprites
+        @background = add_background('expbar')
         @name = add_text(37, 5, 0, 16, :given_name, color: 10, type: UI::SymText)
         @gender = add_sprite(5, 6, NO_INITIAL_IMAGE, type: UI::GenderSprite)
         @level = add_text(37, 20, 0, 13, :level_text2, color: 10, type: UI::SymText)
@@ -173,7 +174,7 @@ module BattleUI
       end
 
       def create_exp_bar
-        @exp_bar = UI::Bar.new(@viewport, 37, 29, RPG::Cache.interface('battle/bars_exp'), *EXP_BAR_INFO)
+        @exp_bar = push_sprite UI::Bar.new(@viewport, @x + 37, @y + 29, RPG::Cache.interface('battle/bars_exp'), *EXP_BAR_INFO)
         @exp_bar.data_source = :exp_rate
       end
 
@@ -212,9 +213,11 @@ module BattleUI
       # Create all the stats texts
       def create_stats_texts
         6.times do |i|
-          add_text(13, 33, 0, 16, text_get(22, 121 + i), color: 10)
-          add_text(130, 33, 0, 16, @list1[i].to_s, 2, color: 0)
-          add_text(139, 33, 0, 16, "+#{@list1[i] - @list0[i]}", color: 16)
+          ox = 156 * (i / 3)
+          oy = 19 * (i % 3)
+          add_text(13 + ox, 33 + oy, 0, 16, text_get(22, 121 + i), color: 10)
+          add_text(130 + ox, 33 + oy, 0, 16, @list1[i].to_s, 2, color: 0)
+          add_text(139 + ox, 33 + oy, 0, 16, "+#{@list1[i] - @list0[i]}", color: 16)
         end
       end
     end

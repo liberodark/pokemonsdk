@@ -6,9 +6,9 @@ module BattleUI
     include GoingInOut
     include MultiplePosition
     # The information of the HP Bar
-    HP_BAR_INFO = [92, 4, 0, 4, 6] # bw, bh, bx, by, nb_states
+    HP_BAR_INFO = [92, 4, 0, 0, 6] # bw, bh, bx, by, nb_states
     # The information of the Exp Bar
-    EXP_BAR_INFO = [88, 2, 0, 2, 1]
+    EXP_BAR_INFO = [88, 2, 0, 0, 1]
     # Get the Pokemon shown by the InfoBar
     # @return [PFM::PokemonBattler]
     attr_reader :pokemon
@@ -90,7 +90,9 @@ module BattleUI
     # Get the offset position of the Pokemon in 2v2+
     # @return [Array(Integer, Integer)]
     def offset_position_v2
-      return 136, 3
+      return 136, 3 if enemy?
+
+      return 136, -3
     end
 
     def create_sprites
@@ -121,7 +123,7 @@ module BattleUI
 
       add_sprite(36, 30, 'battle/battlebar_exp')
       # @type [UI::Bar]
-      @exp_bar = Bar.new(@viewport, 37, 31, RPG::Cache.interface('battle/bars_exp'), *EXP_BAR_INFO)
+      @exp_bar = push_sprite Bar.new(@viewport, 37, 31, RPG::Cache.interface('battle/bars_exp'), *EXP_BAR_INFO)
       @exp_bar.data_source = :exp_rate
     end
 

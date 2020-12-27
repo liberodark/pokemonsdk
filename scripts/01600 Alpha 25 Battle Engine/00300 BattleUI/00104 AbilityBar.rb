@@ -25,6 +25,8 @@ module BattleUI
     def initialize(viewport, scene, bank, position)
       super(viewport)
       @scene = scene
+      @bank = bank
+      @position = position
       @animation_handler = Yuki::Animation::Handler.new
       create_sprites
       set_position(*sprite_position)

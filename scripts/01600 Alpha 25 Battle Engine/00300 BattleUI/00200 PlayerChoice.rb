@@ -29,7 +29,7 @@ module BattleUI
     # Reset the choice
     def reset
       @action = nil
-      @scene.visual.hide_info_bars
+      @scene.visual.hide_info_bars(bank: 0)
       @scene.visual.show_team_info
       super
     end
@@ -223,13 +223,13 @@ module BattleUI
       def update_not_done
         return unless @item_info.done?
 
-        action_b if Input.trigger?(:B) || Input.trigger?(:X)
-        action_a if Input.trigger?(:A)
+        action_b if Input.trigger?(:B)
+        action_a if Input.trigger?(:A) || Input.trigger?(:X)
       end
 
       # Action triggered when pressing Y
       def action_y
-        @bar_visibility ? @scene.visual.show_info_bars : @scene.visual.hide_info_bars
+        @bar_visibility ? @scene.visual.show_info_bars(bank: 0) : @scene.visual.hide_info_bars(bank: 0)
         @bar_visibility = !@bar_visibility
       end
 
@@ -243,6 +243,7 @@ module BattleUI
         @item_info.data = item
         @item_info.show
         @choice.hide
+        @scene.visual.show_info_bars(bank: 0) unless @bar_visibility
         $game_system.se_play($data_system.decision_se)
       end
 
@@ -258,6 +259,7 @@ module BattleUI
       def action_b
         @item_info.hide
         @choice.show
+        @scene.visual.hide_info_bars(bank: 0) unless @bar_visibility
         $game_system.se_play($data_system.cancel_se)
       end
 

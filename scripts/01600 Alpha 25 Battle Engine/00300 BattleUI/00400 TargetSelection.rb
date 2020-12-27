@@ -95,6 +95,16 @@ module BattleUI
       $game_system.se_play($data_system.cursor_se) unless silent
     end
 
+    # Generate the list of mons shown by the UI
+    # @return [Array<PFM::PokemonBattler>]
+    def generate_mon_list
+      2.times.map do |bank|
+        @logic.battle_info.vs_type.times.map do |position|
+          @logic.battler(bank, position)
+        end
+      end.reverse.flatten
+    end
+
     # Find the best possible index as default index
     # @return [Integer]
     def find_best_index
@@ -139,7 +149,7 @@ module BattleUI
 
       def create_sprites
         @background = add_background(NO_INITIAL_IMAGE, type: Background)
-        @icon = add_sprite(1, 1, NO_INITIAL_IMAGE, type: PokeIconSprite)
+        @icon = add_sprite(1, 1, NO_INITIAL_IMAGE, false, type: UI::PokemonIconSprite)
         @name = add_text(41, 16, 0, 16, :name, color: 10, type: UI::SymText)
         @gender = add_sprite(5, 16, NO_INITIAL_IMAGE, type: UI::GenderSprite)
         @efficiency_text = add_text(18, 35, 102, 16, '"efficiency"', 1, color: 10)

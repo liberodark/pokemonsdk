@@ -48,19 +48,10 @@ module BattleUI
       end
     end
 
-    def create_info
+    def create_sub_choice
       # @type [MoveInfo]
       @info = add_sprite(0, 0, NO_INITIAL_IMAGE, self, type: MoveInfo)
-    end
-
-    def create_special_buttons
-      @descr_button = add_sprite(12, 214, NO_INITIAL_IMAGE, :descr, type: SpecialButton)
-      @mega_button = add_sprite(2, 188, NO_INITIAL_IMAGE, :mega, type: SpecialButton)
-    end
-
-    def create_move_description
-      # Not added in the stack so it can be independant
-      @move_description = MoveDescription.new(@viewport)
+      @sub_choice = add_sprite(0, 0, NO_INITIAL_IMAGE, @scene, self, type: SubChoice)
     end
 
     # Validate the user choice
@@ -136,18 +127,21 @@ module BattleUI
       def create_sprites
         @pp_background = add_sprite(122, 214, 'battle/pp_box', 1, 3, type: SpriteSheet)
         @pp_text = add_text(132, 220, 0, 16, :pp_text, 1, color: 10, type: UI::SymText)
-        @move_category = add_sprite(122, 198, NO_INITIAL_IMAGE, type: UI::CategorySprite)
       end
     end
 
     # Element showing the full description about the currently selected move
     class MoveDescription < UI::SpriteStack
+      include HideShow
+      # Get the animation handler
+      # @return [Yuki::Animation::Handler{ Symbol => Yuki::Animation::TimedAnimation}]
+      attr_reader :animation_handler
       # Create a new MoveDescription
       # @param viewport [Viewport]
       def initialize(viewport)
         super(viewport)
+        @animation_handler = Yuki::Animation::Handler.new
         create_sprites
-        self.visible = false
       end
 
       private
@@ -155,11 +149,13 @@ module BattleUI
       def create_sprites
         @background = add_background('battle/background')
         @box = add_sprite(0, 71, 'battle/description_box')
+        @y = 71
         @skill_name = add_text(14, 15, 0, 16, :name, type: UI::SymText)
         @power_text = add_text(133, 15, 0, 16, text_get(27, 37), color: 10)
         @power_value = add_text(193, 15, 0, 16, :power_text, 2, type: UI::SymText)
         @accuracy_text = add_text(229, 15, 0, 16, text_get(27, 39), color: 10)
         @accuracy_value = add_text(289, 15, 0, 16, :accuracy_text, 2, type: UI::SymText)
+        @move_category = add_sprite(213, 15, NO_INITIAL_IMAGE, type: UI::CategorySprite)
         @description = add_text(14, 36, 284, 16, :description, color: 0, type: UI::SymMultilineText)
       end
     end
@@ -194,6 +190,105 @@ module BattleUI
         add_background(@type == :descr ? 'battle/button_x' : 'battle/button_mega')
         @text = add_text(23, 6, 0, 16, nil.to_s, color: 10)
         add_sprite(5, 5, @type == :descr ? 'battle/icon_x_triggered' : 'battle/icon_y_triggered')
+      end
+    end
+
+    # UI element showing the sub_choice and interacting with the parent choice
+    class SubChoice < UI::SpriteStack
+      # Create the sub choice
+      # @param viewport [Viewport]
+      # @param scene [Battle::Scene]
+      # @param choice [SkillChoice]
+      def initialize(viewport, scene, choice)
+        super(viewport)
+        @scene = scene
+        @choice = choice
+        create_sprites
+      end
+
+      # Update the button
+      def update
+        super
+        @move_description.update
+        done? ? update_done : update_not_done
+      end
+
+      # Tell if the choice is done
+      def done?
+        return !@move_description.visible
+      end
+
+      # Reset the sub choice
+      def reset
+        @move_description.visible = false
+        @bar_visibility = false
+        @descr_button.refresh
+        @mega_button.refresh
+      end
+
+      private
+
+      # Update the button when it's done letting the player choose
+      def update_done
+        action_y if Input.trigger?(:Y)
+        action_x if Input.trigger?(:X)
+      end
+
+      # Update the button when it's waiting for player actions
+      def update_not_done
+        return unless @move_description.done?
+
+        action_b if Input.trigger?(:B)
+        action_a if Input.trigger?(:A) || Input.trigger?(:X)
+      end
+
+      # Action triggered when pressing Y
+      def action_y
+        @bar_visibility ? @scene.visual.show_info_bars : @scene.visual.hide_info_bars
+        @bar_visibility = !@bar_visibility
+      end
+
+      # Action triggered when pressing X
+      def action_x
+        unless (move = @choice.pokemon.moveset[@choice.index])
+          $game_system.se_play($data_system.buzzer_se)
+          return
+        end
+        @move_description.data = move
+        @move_description.show
+        @choice.hide
+        $game_system.se_play($data_system.decision_se)
+      end
+
+      # Action triggered when pressing A
+      def action_a
+        $game_system.se_play($data_system.decision_se)
+        @choice.use_item(item)
+        @move_description.hide
+        @choice.show
+      end
+
+      # Action triggered when pressing B
+      def action_b
+        @move_description.hide
+        @choice.show
+        $game_system.se_play($data_system.cancel_se)
+      end
+
+      def create_sprites
+        create_special_buttons
+        create_move_description
+      end
+
+      def create_special_buttons
+        @descr_button = add_sprite(12, 214, NO_INITIAL_IMAGE, :descr, type: SpecialButton)
+        @mega_button = add_sprite(2, 188, NO_INITIAL_IMAGE, :mega, type: SpecialButton)
+      end
+
+      def create_move_description
+        # Not added in the stack so it can be independant
+        @move_description = MoveDescription.new(@viewport)
+        @move_description.visible = false
       end
     end
   end
