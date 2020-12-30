@@ -29,6 +29,8 @@ module BattleUI
     # @param scene [Battle::Scene]
     def initialize(viewport, scene)
       super(viewport)
+      @shadow = ShaderedSprite.new(viewport)
+      @shadow.shader = Shader.create(:battle_shadow)
       @animation_handler = Yuki::Animation::Handler.new
       @bank = 0
       @position = 0
@@ -65,6 +67,66 @@ module BattleUI
       return unless pokemon
 
       Audio.se_play(pokemon.cry, 100, dying ? 80 : 100)
+    end
+
+    # Set the origin of the sprite & the shadow
+    # @param ox [Numeric]
+    # @param oy [Numeric]
+    # @return [self]
+    def set_origin(ox, oy)
+      @shadow.set_origin(ox, oy)
+      super
+    end
+
+    # Set the zoom of the sprite
+    # @param zoom [Float]
+    def zoom=(zoom)
+      @shadow.zoom = zoom
+      super
+    end
+
+    # Set the position of the sprite
+    # @param x [Numeric]
+    # @param y [Numeric]
+    # @return [self]
+    def set_position(x, y)
+      @shadow.set_position(x, y)
+      super
+    end
+
+    # Set the y position of the sprite
+    # @param y [Numeric]
+    def y=(y)
+      @shadow.y = y
+      super
+    end
+
+    # Set the x position of the sprite
+    # @param x [Numeric]
+    def x=(x)
+      @shadow.x = x
+      super
+    end
+
+    # Set the opacity of the sprite
+    # @param opacity [Integer]
+    def opacity=(opacity)
+      @shadow.opacity = opacity
+      super
+    end
+
+    # Set the bitmap of the sprite
+    # @param bitmap [Bitmap]
+    def bitmap=(bitmap)
+      @shadow.bitmap = bitmap
+      super
+    end
+
+    # Set the visibility of the sprite
+    # @param visible [Boolean]
+    def visible=(visible)
+      @shadow.visible = visible
+      super
     end
 
     private
