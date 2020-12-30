@@ -34,8 +34,8 @@ module BattleUI
     def reset(pokemon)
       @pokemon = pokemon
       @mega_enabled = false
-      @index = @last_indexes[pokemon].to_i
       self.data = pokemon
+      @index = @last_indexes[pokemon].to_i.clamp(0, @buttons.rindex(&:visible))
       super()
     end
 
@@ -48,6 +48,23 @@ module BattleUI
       end
     end
 
+    # Set the button opacity
+    def update_button_opacity
+      buttons.each_with_index do |button, index|
+        button.opacity = index == @index ? 255 : 204
+        x, y = *BUTTON_COORDINATE[index]
+        button.set_position(x + (@index == index ? -10 : 0) + @x, y + @y)
+      end
+    end
+
+    # Get the cursor offset_x
+    # @return [Integer]
+    def cursor_offset_x
+      return super if @buttons[@index].x != (BUTTON_COORDINATE[@index].first + @x)
+
+      super - 10
+    end
+
     def create_sub_choice
       # @type [MoveInfo]
       @info = add_sprite(0, 0, NO_INITIAL_IMAGE, self, type: MoveInfo)
@@ -56,6 +73,7 @@ module BattleUI
 
     # Validate the user choice
     def validate
+      bounce_button
       # TODO make sure the player cannot choose locked skills
       @result = @pokemon.moveset[@index]
       @last_indexes[@pokemon] = @index
@@ -89,11 +107,17 @@ module BattleUI
       # Set the data
       # @param pokemon [PFM::PokemonBattler]
       def data=(pokemon)
-        move = pokemon.moveset[@index]
+        @data = move = pokemon.moveset[@index]
         if (self.visible = move)
           @background.sy = move.type
           @text.data = move
         end
+      end
+
+      # Make sure sprite is visible only if the data is right
+      # @param visible [Boolean]
+      def visible=(visible)
+        super(visible && @data)
       end
 
       private
@@ -119,7 +143,15 @@ module BattleUI
       # Set the move shown by the UI
       # @param pokemon [PFM::PokemonBattler]
       def data=(pokemon)
-        super(pokemon.moveset[@move_choice.index])
+        super(move = pokemon.moveset[@move_choice.index])
+        return unless move
+        if move.pp == 0
+          @pp_background.sy = 0
+        elsif move.pp <= move.ppmax / 2
+          @pp_background.sy = 1
+        else
+          @pp_background.sy = 2
+        end
       end
 
       private
@@ -183,13 +215,19 @@ module BattleUI
         @text.text = @type == :descr ? 'Description' : 'Mega evolution'
       end
 
+      # Set the visibility of the button
+      # @param visible [Boolean]
+      def visible=(visible)
+        super(visible && (@type == :descr || @data&.can_mega_evolve?))
+      end
+
       private
 
       def create_sprites
         # TODO: separate in methods
         add_background(@type == :descr ? 'battle/button_x' : 'battle/button_mega')
-        @text = add_text(23, 6, 0, 16, nil.to_s, color: 10)
-        add_sprite(5, 5, @type == :descr ? 'battle/icon_x_triggered' : 'battle/icon_y_triggered')
+        @text = add_text(23, @type == :descr ? 6 : 11, 0, 16, nil.to_s, color: 10)
+        add_sprite(5, @type == :descr ? 5 : 10, NO_INITIAL_IMAGE, @type == :descr ? :X : :Y, type: UI::KeyShortcut)
       end
     end
 
@@ -282,7 +320,7 @@ module BattleUI
 
       def create_special_buttons
         @descr_button = add_sprite(12, 214, NO_INITIAL_IMAGE, :descr, type: SpecialButton)
-        @mega_button = add_sprite(2, 188, NO_INITIAL_IMAGE, :mega, type: SpecialButton)
+        @mega_button = add_sprite(2, 183, NO_INITIAL_IMAGE, :mega, type: SpecialButton)
       end
 
       def create_move_description

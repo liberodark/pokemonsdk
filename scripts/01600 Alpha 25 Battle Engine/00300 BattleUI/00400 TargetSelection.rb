@@ -153,7 +153,7 @@ module BattleUI
         @name = add_text(41, 16, 0, 16, :name, color: 10, type: UI::SymText)
         @gender = add_sprite(5, 16, NO_INITIAL_IMAGE, type: UI::GenderSprite)
         @efficiency_text = add_text(18, 35, 102, 16, '"efficiency"', 1, color: 10)
-        @cursor = add_sprite(-10, 12, 'arrow')
+        @cursor = add_sprite(-10, 12, 'battle/arrow')
       end
 
       def process_coordinates(index, row_size)

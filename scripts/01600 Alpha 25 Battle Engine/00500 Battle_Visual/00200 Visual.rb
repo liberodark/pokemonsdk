@@ -39,6 +39,8 @@ module Battle
       @item_bars = {}
       # All the animation currently being processed (automatically removed)
       @animations = []
+      # All the animatable object
+      @animatable = []
       # All the parallel animations (manually removed)
       @parallel_animations = {}
       # All the thing to dispose on #dispose
@@ -109,6 +111,16 @@ module Battle
       yield
       @scene.update
       Graphics.update
+    end
+
+    # Wait for all animation to end (non parallel one)
+    def wait_for_animation
+      log_debug('Entring wait_for_animation')
+      was_locked = @locking
+      lock unless was_locked
+      scene_update_proc { update } until @animations.all?(&:done?) && @animatable.all?(&:done?)
+      unlock unless was_locked
+      log_debug('Leaving wait_for_animation')
     end
 
     private
@@ -191,6 +203,7 @@ module Battle
         infos.vs_type.times do |position|
           sprite = BattleUI::PokemonSprite.new(@viewport, @scene)
           sprite.pokemon = logic.battler(bank, position)
+          @animatable << sprite
           store_battler_sprite(bank, position, sprite)
           create_info_bar(bank, position)
           create_ability_bar(bank, position)
@@ -222,7 +235,8 @@ module Battle
     def create_ability_bar(bank, position)
       @ability_bars[bank] ||= []
       @ability_bars[bank][position] = sprite = BattleUI::AbilityBar.new(@viewport_sub, @scene, bank, position)
-      sprite.go_out(3600)
+      @animatable << sprite
+      sprite.go_out(-3600)
     end
 
     # Update the Ability bars
@@ -245,7 +259,8 @@ module Battle
     def create_item_bar(bank, position)
       @item_bars[bank] ||= []
       @item_bars[bank][position] = sprite = BattleUI::ItemBar.new(@viewport_sub, @scene, bank, position)
-      sprite.go_out(3600)
+      @animatable << sprite
+      sprite.go_out(-3600)
     end
 
     # Create the info bar for a bank
@@ -254,13 +269,15 @@ module Battle
     def create_info_bar(bank, position)
       info_bars = (@info_bars[bank] ||= [])
       pokemon = @scene.logic.battler(bank, position)
-      info_bars[position] = BattleUI::InfoBar.new(@viewport_sub, @scene, pokemon, bank, position)
+      info_bars[position] = sprite = BattleUI::InfoBar.new(@viewport_sub, @scene, pokemon, bank, position)
+      @animatable << sprite
     end
 
     # Create the Trainer Party Ball
     # @param bank [Integer]
     def create_team_info(bank)
-      @team_info[bank] = BattleUI::TrainerPartyBalls.new(@viewport_sub, @scene, bank)
+      @team_info[bank] = sprite = BattleUI::TrainerPartyBalls.new(@viewport_sub, @scene, bank)
+      @animatable << sprite
     end
 
     # Update the team info

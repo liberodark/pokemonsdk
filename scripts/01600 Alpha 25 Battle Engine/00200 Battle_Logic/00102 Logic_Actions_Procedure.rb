@@ -44,7 +44,7 @@ module Battle
       switch_battlers(who, with)
       # Switching the sprite
       sprite.pokemon = with
-      sprite.start_animation_going_out
+      sprite.go_in
       visual.show_info_bar(with)
       until sprite.done?
         visual.update

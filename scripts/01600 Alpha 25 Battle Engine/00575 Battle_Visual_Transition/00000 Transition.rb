@@ -78,12 +78,12 @@ module Battle
 
         # Function that starts the Enemy send animation
         def start_enemy_send_animation
+          log_debug('start_enemy_send_animation')
           ya = Yuki::Animation
           animation = create_enemy_send_animation
           # Add message display in parallel
-          animation.parallel_add(
-            ya.message_locked_animation.play_before(ya.send_command_to(self, :show_enemy_send_message))
-          )
+          animation.parallel_add(ya.send_command_to(self, :show_enemy_send_message))
+          animation.play_before(ya.message_locked_animation)
           # Once everything is done, start the actor sending Pokemon animation
           animation.play_before(ya.send_command_to(self, :start_actor_send_animation))
           animation.start
@@ -92,6 +92,7 @@ module Battle
 
         # Function that starts the Actor send animation
         def start_actor_send_animation
+          log_debug('start_actor_send_animation')
           ya = Yuki::Animation
           animation = create_player_send_animation
           # Add message display in parallel

@@ -52,6 +52,12 @@ module BattleUI
       self.data = 6.times.map { |i| @scene.logic.battler(@bank, i) }
     end
 
+    # Tell if the UI has done displaying its animation
+    # @return [Boolean]
+    def done?
+      return @animation_handler.done?
+    end
+
     private
 
     # Get the base position of the Pokemon in 1v1

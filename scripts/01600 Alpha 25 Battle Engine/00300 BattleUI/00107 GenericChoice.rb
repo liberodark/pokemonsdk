@@ -19,6 +19,7 @@ module BattleUI
   class GenericChoice < UI::SpriteStack
     include UI
     include HideShow
+    include GoingInOut
     # Offset X of the cursor compared to the element it shows
     CURSOR_OFFSET_X = -10
     # Offset Y of the cursor compared to the element it shows
@@ -33,17 +34,19 @@ module BattleUI
     # @param viewport [Viewport]
     # @param scene [Battle::Scene]
     def initialize(viewport, scene)
-      super(viewport)
+      super(viewport, viewport.rect.width)
       @scene = scene
       @animation_handler = Yuki::Animation::Handler.new
       @index = 0
       create_sprites
-      self.visible = false
+      @__in_out = :out
     end
 
     # Update the Window cursor
     def update
       @animation_handler.update
+      return unless in?
+
       super
       return unless done?
       return if validated?
@@ -104,23 +107,35 @@ module BattleUI
     # @param silent [Boolean] if the update shouldn't make noise
     def update_cursor(silent = false)
       if silent
-        @cursor.set_position(buttons[@index].x + CURSOR_OFFSET_X, buttons[@index].y + CURSOR_OFFSET_Y)
-        @cursor.start_animation
+        @cursor.set_position(buttons[@index].x + cursor_offset_x, buttons[@index].y + cursor_offset_y)
         update_button_opacity
       else
         root = (ya = Yuki::Animation).send_command_to(@cursor, :stop_animation)
-        root.play_before(ya.move(0.1, @cursor, @cursor.x, @cursor.y, buttons[@index].x + CURSOR_OFFSET_X, buttons[@index].y + CURSOR_OFFSET_Y))
+        root.play_before(ya.move(0.1, @cursor, @cursor.x, @cursor.y, buttons[@index].x + cursor_offset_x, buttons[@index].y + cursor_offset_y))
         root.play_before(ya.send_command_to(@cursor, :start_animation))
         root.play_before(ya.send_command_to(self, :update_button_opacity))
         root.start
         animation_handler[:cursor] = root
         $game_system.se_play($data_system.cursor_se)
       end
+      self.data = @data
     end
 
     # Set the button opacity
     def update_button_opacity
-      buttons.each_with_index { |button, index| button.opacity = index == @index ? 255 : 204 }
+      buttons.each_with_index { |button, index| button.opacity = index == @index ? 255 : 179 }
+    end
+
+    # Get the cursor offset x
+    # @return [Integer]
+    def cursor_offset_x
+      return CURSOR_OFFSET_X
+    end
+
+    # Get the cursor offset y
+    # @return [Integer]
+    def cursor_offset_y
+      return CURSOR_OFFSET_Y
     end
 
     # Tell if the player is validating his choice
@@ -146,6 +161,35 @@ module BattleUI
       @buttons.each_with_index do |sp, index|
         break @index = index if sp.simple_mouse_in?
       end
+    end
+
+    # Creates the go_in animation
+    # @return [Yuki::Animation::TimedAnimation]
+    def go_in_animation
+      ya = Yuki::Animation
+      root = ya.move_discreet(0.1, self, @viewport.rect.width, y, 0, y)
+      root.play_before(ya.send_command_to(@cursor, :start_animation))
+      return root
+    end
+
+    # Creates the go_out animation
+    # @return [Yuki::Animation::TimedAnimation]
+    def go_out_animation
+      ya = Yuki::Animation
+      root = ya.send_command_to(@cursor, :stop_animation)
+      root.play_before(ya.move_discreet(0.1, self, 0, y, @viewport.rect.width, y))
+      return root
+    end
+
+    # Make the button bounce
+    def bounce_button
+      button = buttons[@index]
+      ya = Yuki::Animation
+      ttl = 0.05
+      root = ya.move_discreet(ttl, button, button.x, button.y, button.x, button.y - 3)
+      root.play_before(ya.move_discreet(ttl, button, button.x, button.y - 3, button.x, button.y))
+      root.start
+      animation_handler[:button_bounce] = root
     end
   end
 end

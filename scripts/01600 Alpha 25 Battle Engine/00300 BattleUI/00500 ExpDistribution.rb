@@ -110,7 +110,7 @@ module BattleUI
       original_exp = pokemon.exp
       exp_rate = pokemon.exp_rate
       pokemon.exp = next_exp_value
-      time_to_process = (pokemon.exp_rate - exp_rate) * 2
+      time_to_process = ((pokemon.exp_rate - exp_rate) * 2).clamp(0, (next_exp_value - original_exp).abs / 60.0)
       animation = Yuki::Animation::DiscreetAnimation.new(time_to_process, pokemon, :exp=, original_exp, next_exp_value)
       return [animation, pokemon.exp == pokemon.exp_lvl ? pokemon : nil]
     end

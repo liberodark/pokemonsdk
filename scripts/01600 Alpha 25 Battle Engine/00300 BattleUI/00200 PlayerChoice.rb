@@ -59,6 +59,7 @@ module BattleUI
     # Validate the player choice
     def validate
       result = POSSIBLE_RESULT[@index]
+      bounce_button
       if (result == :pokemon || result == :flee) && !@can_switch
         $game_system.se_play($data_system.buzzer_se)
         hide
@@ -69,6 +70,13 @@ module BattleUI
         @result = result
         $game_system.se_play($data_system.decision_se)
       end
+    end
+
+    # Cancel the player choice
+    def cancel
+      return $game_system.se_play($data_system.buzzer_se) if @scene.player_actions.empty?
+
+      super
     end
 
     # Update the index if a key was pressed
@@ -127,7 +135,7 @@ module BattleUI
         # TODO: separate in methods
         add_background(@type == :info ? 'battle/button_y' : 'battle/button_x')
         @text = add_text(23, 6, 0, 16, nil.to_s, color: 10)
-        add_sprite(5, 5, @type == :info ? 'battle/icon_y_triggered' : 'battle/icon_x_triggered')
+        add_sprite(5, 5, NO_INITIAL_IMAGE, @type == :info ? :Y : :X, type: UI::KeyShortcut)
       end
     end
 
@@ -174,7 +182,7 @@ module BattleUI
         @remaining = add_text(289, 15, 0, 16, nil.to_s, 2)
         @description = add_text(14, 36, 284, 16, :descr, color: 0, type: UI::SymMultilineText)
         @use_text = add_text(151, 90, 0, 16, text_get(22, 0), color: 10)
-        @icon = add_sprite(131, 90, 'battle/icon_x_triggered')
+        @icon = add_sprite(131, 90, NO_INITIAL_IMAGE, :X, type: UI::KeyShortcut)
       end
     end
 

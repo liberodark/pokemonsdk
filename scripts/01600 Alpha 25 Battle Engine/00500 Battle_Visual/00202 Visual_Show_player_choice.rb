@@ -23,7 +23,6 @@ module Battle
     def spc_show_message(pokemon_index)
       # pokemon = @scene.logic.battler(0, pokemon_index)
       @scene.message_window.wait_input = false
-      @scene.message_window.visible = false # new UI change
       # text_to_show = parse_text(18, 71, '[VAR 010C(0000)]' => pokemon.given_name)
       # @scene.display_message(text_to_show) if @scene.message_window.last_text != text_to_show
     end
@@ -35,9 +34,14 @@ module Battle
     def show_player_choice_begin(pokemon_index)
       pokemon = @scene.logic.battler(0, pokemon_index)
       @locking = true
+      @scene.message_window.visible = false
       @player_choice_ui.reset
-      @player_choice_ui.visible = true
       @player_choice_ui.can_switch = @scene.logic.switch_handler.can_switch?(pokemon)
+      if @player_choice_ui.out?
+        @player_choice_ui.go_in
+        @animations << @player_choice_ui
+        wait_for_animation
+      end
       spc_show_message(pokemon_index)
       spc_start_bouncing_animation(pokemon_index)
     end
@@ -55,14 +59,19 @@ module Battle
     # End of the show_player_choice
     # @param pokemon_index [Integer] Index of the Pokemon in the party
     def show_player_choice_end(pokemon_index)
-      spc_stop_bouncing_animation(pokemon_index)
-      # @player_choice_ui.visible = false
+      @player_choice_ui.go_out
+      @animations << @player_choice_ui
+      if @player_choice_ui.result != :attack
+        spc_stop_bouncing_animation(pokemon_index)
+        wait_for_animation
+      end
       @locking = false
     end
 
     # Start the IdlePokemonAnimation (bouncing)
     # @param pokemon_index [Integer] Index of the Pokemon in the party
     def spc_start_bouncing_animation(pokemon_index)
+      return if @parallel_animations[IdlePokemonAnimation]
       sprite = battler_sprite(0, pokemon_index)
       bar = @info_bars.dig(0, pokemon_index)
       @parallel_animations[IdlePokemonAnimation] = IdlePokemonAnimation.new(self, sprite, bar)

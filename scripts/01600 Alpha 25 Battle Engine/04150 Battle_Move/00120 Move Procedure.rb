@@ -101,10 +101,11 @@ module Battle
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def play_animation(user, targets)
       @scene.visual.hide_info_bars
-      # TODO make sure it's hidden before continuing
+      @scene.visual.wait_for_animation
       @scene.visual.show_move_animation(user, targets, self)
       @scene.visual.show_info_bar(user)
       targets.each { |target| @scene.visual.show_info_bar(target) }
+      @scene.visual.wait_for_animation
     end
 
     # Function that deals the damage to the pokemon

@@ -7,9 +7,10 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_damage(user, actual_targets)
-        nb_hit = hit_amount(user, actual_targets).times.count do
+        nb_hit = hit_amount(user, actual_targets).times.count do |i|
           next false unless actual_targets.all?(&:alive?)
 
+          play_animation(user, actual_targets) if i > 0
           super
           next true
         end
