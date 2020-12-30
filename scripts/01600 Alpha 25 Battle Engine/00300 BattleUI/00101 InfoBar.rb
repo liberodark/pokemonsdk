@@ -159,14 +159,14 @@ module BattleUI
     # @return [Yuki::Animation::TimedAnimation]
     def go_in_animation
       origin_y = enemy? ? -@background.height : @viewport.rect.height + @background.height
-      return Yuki::Animation.move_discreet(0.5, self, x, origin_y, *sprite_position)
+      return Yuki::Animation.move_discreet(0.2, self, x, origin_y, *sprite_position)
     end
 
     # Creates the go_out animation
     # @return [Yuki::Animation::TimedAnimation]
     def go_out_animation
       target_y = enemy? ? -@background.height : @viewport.rect.height + @background.height
-      return Yuki::Animation.move_discreet(0.5, self, *sprite_position, x, target_y)
+      return Yuki::Animation.move_discreet(0.2, self, *sprite_position, x, target_y)
     end
 
     # Class showing the ball sprite if the Pokemon is enemy and caught

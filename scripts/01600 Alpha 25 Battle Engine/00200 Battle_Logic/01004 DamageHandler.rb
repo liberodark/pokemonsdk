@@ -26,11 +26,11 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
-      def damage_change(hp, target, launcher = nil, skill = nil)
-        @scene.visual.show_hp_animations([target], [-hp], [skill&.effectiveness]) # TODO: pass skill.effectiveness
+      # @param messages [Proc] messages shown right before the post processing
+      def damage_change(hp, target, launcher = nil, skill = nil, &messages)
+        @scene.visual.show_hp_animations([target], [-hp], [skill&.effectiveness], &messages)
         exec_hooks(DamageHandler, :post_damage, binding) if target.hp > 0
         exec_hooks(DamageHandler, :post_damage_death, binding) if target.hp <= 0
-        recoil(hp, launcher) if hp > 0 && launcher && skill&.recoil?
       rescue Hooks::ForceReturn => e
         return e.data
       ensure
@@ -42,10 +42,11 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
-      def damage_change_with_process(hp, target, launcher = nil, skill = nil)
+      # @param messages [Proc] messages shown right before the post processing
+      def damage_change_with_process(hp, target, launcher = nil, skill = nil, &messages)
         return process_prevention_reason unless (hp = damage_appliable(hp, target, launcher, skill))
 
-        damage_change(hp, target, launcher, skill)
+        damage_change(hp, target, launcher, skill, &messages)
       end
 
       # Function that drains a certain quantity of HP from the target and give it to the user
@@ -54,9 +55,10 @@ module Battle
       # @param launcher [PFM::PokemonBattler] launcher of a draining move/effect
       # @param skill [Battle::Move, nil] Potential move used
       # @param hp_overwrite [Integer, nil] for the number of hp drained by the move
-      def drain(hp_factor, target, launcher, skill = nil, hp_overwrite: nil)
+      # @param messages [Proc] messages shown right before the post processing
+      def drain(hp_factor, target, launcher, skill = nil, hp_overwrite: nil, &messages)
         hp = hp_overwrite || (target.max_hp / hp_factor).clamp(0, Float::INFINITY)
-        damage_change(hp, target, launcher, skill)
+        damage_change(hp, target, launcher, skill, &messages)
         # TODO: Add hooks for all those stuff
         if target.ability_db_symbol == :liquid_ooze
           @scene.visual.show_ability(target)

@@ -23,6 +23,7 @@ module BattleUI
 
     # Update the Window cursor
     def update
+      super
       return if validated?
       return validate if Input.trigger?(:A)
       return cancel if Input.trigger?(:B)
@@ -45,11 +46,11 @@ module BattleUI
     def update_key_index
       if Input.repeat?(:UP)
         @index = (@index - @row_size) % @buttons.size
-      elsif Input.repeat?(:DOWN)
+      elsif Input.repeat?(:RIGHT)
         @index = (@index + 1) % @buttons.size
       elsif Input.repeat?(:LEFT)
         @index = (@index - 1) % @buttons.size
-      elsif Input.repeat?(:RIGHT)
+      elsif Input.repeat?(:DOWN)
         @index = (@index + @row_size) % @buttons.size
       end
     end
@@ -65,7 +66,7 @@ module BattleUI
     def create_sprites
       add_background('battle/background')
       @buttons = @mons.map.with_index do |pokemon, index|
-        push_sprite(Button.new(@viewport, index, @row_size, pokemon, @move))
+        push_sprite(Button.new(@viewport, index, @row_size, pokemon, @move, @targets.include?(pokemon)))
       end
     end
 
@@ -73,7 +74,7 @@ module BattleUI
     def validate
       return @result = [1, 0] if @targets.empty?
 
-      target = @allow_selection ? @targets.first : @targets[@index]
+      target = @allow_selection ? @targets[@index] : @targets.first
       if @targets.include?(target)
         @result = [target.bank, target.position]
         $game_system.se_play($data_system.decision_se)
@@ -122,11 +123,13 @@ module BattleUI
       # @param row_size [Integer]
       # @param pokemon [PFM::PokemonBattler]
       # @param move [Battle::Move]
-      def initialize(viewport, index, row_size, pokemon, move)
+      # @parma is_target [Boolean]
+      def initialize(viewport, index, row_size, pokemon, move, is_target)
         super(viewport, *process_coordinates(index, row_size))
         create_sprites
         @move = move
-        @selected = true
+        @selected = is_target
+        @is_target = is_target
         self.data = pokemon
       end
 
@@ -134,7 +137,8 @@ module BattleUI
       # @param selected [Boolean]
       def selected=(selected)
         @selected = selected
-        @cursor.visible = false
+        @cursor.set_position(@x - 10, @y + 12)
+        @cursor.visible = selected
       end
 
       # Set the Pokemon shown
@@ -142,6 +146,7 @@ module BattleUI
       def data=(pokemon)
         super(pokemon)
         @gender.x = @name.x + @name.real_width + 5
+        @icon.opacity = @is_target ? 255 : 128
         self.selected = @selected
       end
 
@@ -153,7 +158,8 @@ module BattleUI
         @name = add_text(41, 16, 0, 16, :name, color: 10, type: UI::SymText)
         @gender = add_sprite(5, 16, NO_INITIAL_IMAGE, type: UI::GenderSprite)
         @efficiency_text = add_text(18, 35, 102, 16, '"efficiency"', 1, color: 10)
-        @cursor = add_sprite(-10, 12, 'battle/arrow')
+        @cursor = add_sprite(-10, 12, 'battle/arrow', type: Cursor)
+        @cursor.visible = false
       end
 
       def process_coordinates(index, row_size)

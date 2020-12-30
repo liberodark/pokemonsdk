@@ -4,9 +4,11 @@ module Battle
     # @param exp_data [Hash{ PFM::PokemonBattler => Integer }] info about experience each pokemon should receive
     def show_exp_distribution(exp_data)
       lock do
+        @scene.message_window.visible = false
         exp_ui = BattleUI::ExpDistribution.new(@viewport_sub, @scene, exp_data)
         exp_ui.start_animation
         scene_update_proc { exp_ui.update } until exp_ui.done?
+        exp_ui.dispose
       end
       exp_data.each_key { |pokemon| refresh_info_bar(pokemon) if @scene.battle_info.vs_type > pokemon.position }
     end

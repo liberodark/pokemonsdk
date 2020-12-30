@@ -13,11 +13,12 @@ module Battle
         rng = Random.new
         actual_targets.each do |target|
           hp = damages(user, target, rng)
-          @logic.damage_handler.damage_change_with_process(hp, target, user, self)
-          if critical_hit?
-            scene.display_message(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
-          elsif hp > 0
-            efficent_message(effectiveness, target)
+          @logic.damage_handler.damage_change_with_process(hp, target, user, self) do
+            if critical_hit?
+              scene.display_message(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
+            elsif hp > 0
+              efficent_message(effectiveness, target)
+            end
           end
           recoil(hp, user) if recoil?
         end

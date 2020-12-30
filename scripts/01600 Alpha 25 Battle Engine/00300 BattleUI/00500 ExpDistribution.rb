@@ -41,24 +41,29 @@ module BattleUI
       @animation.play_before(Yuki::Animation.send_command_to(Audio, :se_stop))
       animations.each do |(_, pokemon)|
         @animation.play_before(Yuki::Animation.send_command_to(self, :show_level_up, pokemon)) if pokemon
-        index = @pokemon.index(pokemon)
-        @bars[index].leveling_up = true if index
       end
       @animation.play_before(Yuki::Animation.send_command_to(self, :start_animation))
       @animation.start
+      @animation.update
     end
 
     private
 
     def update_statistics
+      @bars.each(&:update)
       return if $game_temp.message_window_showing
       return unless Input.trigger?(:A)
 
+      @statistics.go_out
+      @scene.visual.animations << @statistics
+      @scene.visual.wait_for_animation
+      @bars.each { |bar| bar.leveling_up = false }
       @statistics.dispose
       @statistics = nil
     end
 
     def create_sprites
+      push_sprite(BlurScreenshot.new(@scene))
       # @type [Array<PokemonInfo>]
       @bars = @pokemon.map.with_index do |pokemon, index|
         push_sprite(PokemonInfo.new(@viewport, index, pokemon, @exp_data[pokemon].to_i))
@@ -77,10 +82,16 @@ module BattleUI
     # @param pokemon [PFM::PokemonBattler]
     def show_level_up(pokemon)
       list = pokemon.level_up_stat_refresh
+      Audio.me_play('audio/me/rosa_levelup')
+      index = @pokemon.index(pokemon)
+      @bars[index].leveling_up = true if index
       @statistics = Statistics.new(@viewport, pokemon, list[0], list[1])
+      @statistics.go_in
+      @scene.visual.animations << @statistics
       index = @pokemon.index(pokemon)
       @bars[index].data = pokemon if index
       level_up_message(pokemon) if @exp_data[pokemon].to_i == 0 || pokemon.can_learn_skill_at_this_level?
+      @scene.visual.scene_update_proc { update_statistics } while @statistics
     end
 
     # Show the level up message
@@ -88,10 +99,10 @@ module BattleUI
     # @param list [Array]
     def level_up_message(receiver)
       PFM::Text.set_num3(receiver.level.to_s, 1)
-      Audio.me_play('audio/me/rosa_levelup')
       @scene.display_message(parse_text(18, 62, '[VAR 010C(0000)]' => receiver.given_name))
       PFM::Text.reset_variables
       receiver.check_skill_and_learn
+      @scene.message_window.visible = false
       @scene.logic.evolve_request << receiver unless @scene.logic.evolve_request.include?(receiver)
     end
 
@@ -149,7 +160,7 @@ module BattleUI
       def data=(pokemon)
         @pokemon = pokemon
         super(pokemon)
-        @gender.x = 42 + @name.real_width
+        @gender.x = @x + 42 + @name.real_width
         @level_up_arrow.visible = leveling_up
       end
 
@@ -163,14 +174,16 @@ module BattleUI
       private
 
       def create_sprites
-        @background = add_background('expbar')
+        @background = add_background('battle/expbar')
         @name = add_text(37, 5, 0, 16, :given_name, color: 10, type: UI::SymText)
         @gender = add_sprite(5, 6, NO_INITIAL_IMAGE, type: UI::GenderSprite)
-        @level = add_text(37, 20, 0, 13, :level_text2, color: 10, type: UI::SymText)
-        @exp_obtained = add_text(116, 20, 0, 13, "+#{@exp_received}", 2, color: 10) if @exp_received > 0
+        with_font(20) do
+          @level = add_text(37, 20, 0, 13, :level_text2, color: 10, type: UI::SymText)
+          @exp_obtained = add_text(116, 20, 0, 13, "+#{@exp_received}", 2, color: 10) if @exp_received > 0
+        end
         create_exp_bar
         @level_up_arrow = add_sprite(124, 7, 'battle/exp_level_up', 3, 1, type: SpriteSheet)
-        @pokemon_icon = add_sprite(1, 2, NO_INITIAL_IMAGE, type: UI::PokemonIconSprite)
+        @pokemon_icon = add_sprite(1, 2, NO_INITIAL_IMAGE, false, type: UI::PokemonIconSprite)
       end
 
       def create_exp_bar
@@ -179,8 +192,8 @@ module BattleUI
       end
 
       def create_animation
-        animation = Yuki::Animation::TimedLoopAnimation.new(0.5)
-        animation.play_before(Yuki::Animation::DiscreetAnimation.new(0.5, @level_up_arrow, :sx=, 0, 2))
+        animation = Yuki::Animation::TimedLoopAnimation.new(1)
+        animation.play_before(Yuki::Animation::DiscreetAnimation.new(1, @level_up_arrow, :sx=, 0, 2))
         animation.start
         @animation = animation
       end
@@ -188,17 +201,36 @@ module BattleUI
 
     # UI element showing the new statistics
     class Statistics < UI::SpriteStack
+      include GoingInOut
+      # Get the animation handler
+      # @return [Yuki::Animation::Handler{ Symbol => Yuki::Animation::TimedAnimation}]
+      attr_reader :animation_handler
+      # Position of the sprite when it's in
+      IN_POSITION = [0, 144]
       # Create a new Statistics UI
       # @param viewport [Viewport]
       # @param pokemon [PFM::Pokemon] Pokemon that is currently leveling up
       # @param list0 [Array<Integer>] old basis stats
       # @param list1 [Array<Integer>] new basis stats
       def initialize(viewport, pokemon, list0, list1)
-        super(viewport, 0, 144)
+        super(viewport, 0, viewport.rect.height)
+        @animation_handler = Yuki::Animation::Handler.new
         @list0 = list0
         @list1 = list1
         create_sprites
+        @__in_out = :out
         self.data = pokemon
+      end
+
+      # Tell if the animation is done
+      # @return [Boolean]
+      def done?
+        @animation_handler.done?
+      end
+
+      # Update the animation
+      def update
+        @animation_handler.update
       end
 
       private
@@ -219,6 +251,18 @@ module BattleUI
           add_text(130 + ox, 33 + oy, 0, 16, @list1[i].to_s, 2, color: 0)
           add_text(139 + ox, 33 + oy, 0, 16, "+#{@list1[i] - @list0[i]}", color: 16)
         end
+      end
+
+      # Creates the go_in animation
+      # @return [Yuki::Animation::TimedAnimation]
+      def go_in_animation
+        return Yuki::Animation.move_discreet(0.1, self, x, @viewport.rect.height, *IN_POSITION)
+      end
+
+      # Creates the go_out animation
+      # @return [Yuki::Animation::TimedAnimation]
+      def go_out_animation
+        return Yuki::Animation.move_discreet(0.1, self, *IN_POSITION, x, @viewport.rect.height)
       end
     end
   end

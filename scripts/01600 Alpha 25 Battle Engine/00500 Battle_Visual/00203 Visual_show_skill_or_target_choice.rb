@@ -67,7 +67,7 @@ module Battle
       @scene.message_window.visible = false
       # @type [BattleUI::TargetSelection]
       @target_selection_window =
-        BattleUI::TargetSelection.new(@viewport, @skill_choice_ui.pokemon, @skill_choice_ui.result, @scene.logic)
+        BattleUI::TargetSelection.new(@viewport_sub, @skill_choice_ui.pokemon, @skill_choice_ui.result, @scene.logic)
       spc_start_bouncing_animation(@skill_choice_ui.pokemon.position)
     end
 

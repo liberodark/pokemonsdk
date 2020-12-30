@@ -81,7 +81,7 @@ module BattleUI
     def go_in_animation
       origin_x = enemy? ? @viewport.rect.width : -@background.width
 
-      return Yuki::Animation.move_discreet(0.5, self, origin_x, y, *sprite_position)
+      return Yuki::Animation.move_discreet(0.2, self, origin_x, y, *sprite_position)
     end
 
     # Creates the go_out animation
@@ -89,7 +89,7 @@ module BattleUI
     def go_out_animation
       target_x = enemy? ? @viewport.rect.width : -@background.width
 
-      return Yuki::Animation.move_discreet(0.5, self, *sprite_position, target_x, y)
+      return Yuki::Animation.move_discreet(0.2, self, *sprite_position, target_x, y)
     end
 
     def create_graphics

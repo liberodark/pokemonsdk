@@ -57,6 +57,7 @@ module Battle
     # Show the move usage message
     # @param user [PFM::PokemonBattler] user of the move
     def usage_message(user)
+      @scene.visual.hide_team_info
       PFM::Text.set_pkname(user)
       scene.display_message(parse_text_with_pokemon(8999 - GameData::Text::CSV_BASE, 12, user, PFM::Text::MOVE[0] => name))
       PFM::Text.reset_variables
