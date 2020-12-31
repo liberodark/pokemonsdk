@@ -43,6 +43,7 @@ module Battle
       item_bar = @item_bars[target.bank][target.position]
       return unless ability_bar
 
+      ability_bar.data = target
       ability_bar.go_in
       if !item_bar || item_bar.done?
         ability_bar.z = 0
@@ -58,6 +59,7 @@ module Battle
       item_bar = @item_bars[target.bank][target.position]
       return unless item_bar
 
+      item_bar.data = target
       item_bar.go_in
       item_bar.z = ability_bar.z + 1 unless !ability_bar || ability_bar.done?
       if !ability_bar || ability_bar.done?
@@ -96,8 +98,22 @@ module Battle
     def show_rmxp_animation(target, id)
       return unless $options.show_animation
 
+      wait_for_animation
       $data_animations ||= load_data('Data/Animations.rxdata')
       lock { @move_animator.animation(battler_sprite(target.bank, target.position), id, target.bank != 0) }
+    end
+
+    # Show the exp distribution
+    # @param exp_data [Hash{ PFM::PokemonBattler => Integer }] info about experience each pokemon should receive
+    def show_exp_distribution(exp_data)
+      lock do
+        @scene.message_window.visible = false
+        exp_ui = BattleUI::ExpDistribution.new(@viewport_sub, @scene, exp_data)
+        exp_ui.start_animation
+        scene_update_proc { exp_ui.update } until exp_ui.done?
+        exp_ui.dispose
+      end
+      exp_data.each_key { |pokemon| refresh_info_bar(pokemon) if @scene.battle_info.vs_type > pokemon.position }
     end
   end
 end

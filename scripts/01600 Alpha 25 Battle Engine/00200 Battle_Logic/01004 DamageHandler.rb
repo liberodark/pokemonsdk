@@ -427,7 +427,7 @@ module Battle
       next unless launcher.can_be_paralyzed?
 
       handler.scene.visual.show_ability(target)
-      handler.logic.status_change_handler.status_change_with_process(:paralysis, target)
+      handler.logic.status_change_handler.status_change_with_process(:paralysis, launcher)
     end
 
     # Poison Point
@@ -436,7 +436,7 @@ module Battle
       next unless launcher.can_be_poisoned?
 
       handler.scene.visual.show_ability(target)
-      handler.logic.status_change_handler.status_change_with_process(:poison, target)
+      handler.logic.status_change_handler.status_change_with_process(:poison, launcher)
     end
 
     # Flame Body
@@ -445,7 +445,7 @@ module Battle
       next unless launcher.can_be_burn?
 
       handler.scene.visual.show_ability(target)
-      handler.logic.status_change_handler.status_change_with_process(:burn, target)
+      handler.logic.status_change_handler.status_change_with_process(:burn, launcher)
     end
 
     # Cute Charm
@@ -466,7 +466,7 @@ module Battle
       status = %i[poison sleep paralysis][n]
       if handler.logic.status_change_handler.status_appliable?(status, target)
         handler.scene.visual.show_ability(target)
-        handler.logic.status_change_handler.status_change(status, target)
+        handler.logic.status_change_handler.status_change(status, launcher)
       end
     end
 
