@@ -19,6 +19,9 @@ module BattleUI
     # Get the index of the choice
     # @return [Integer]
     attr_reader :index
+    # Tell if the mega evolution is enabled
+    # @return [Boolean]
+    attr_accessor :mega_enabled
     # Create a new SkillChoice UI
     # @param viewport [Viewport]
     # @param scene [Battle::Scene]
@@ -26,6 +29,7 @@ module BattleUI
       # List of last index according to the pokemon that was used
       # @type [Hash{ PFM::PokemonBattler => Integer }]
       @last_indexes = {}
+      @mega_enabled = false
       super(viewport, scene)
     end
 
@@ -176,6 +180,17 @@ module BattleUI
         create_sprites
       end
 
+      # Update the sprite
+      def update
+        @animation_handler.update
+      end
+
+      # Tell if the animation is done
+      # @return [Boolean]
+      def done?
+        return @animation_handler.done?
+      end
+
       private
 
       def create_sprites
@@ -211,8 +226,10 @@ module BattleUI
       end
 
       # Update the special button content
-      def refresh
+      # @param mega [Boolean]
+      def refresh(mega = false)
         @text.text = @type == :descr ? 'Description' : 'Mega evolution'
+        @background.set_bitmap(mega ? 'battle/button_mega_activated' : 'battle/button_mega', :interface) if @type == :mega
       end
 
       # Set the visibility of the button
@@ -225,7 +242,7 @@ module BattleUI
 
       def create_sprites
         # TODO: separate in methods
-        add_background(@type == :descr ? 'battle/button_x' : 'battle/button_mega')
+        @background = add_background(@type == :descr ? 'battle/button_x' : 'battle/button_mega')
         @text = add_text(23, @type == :descr ? 6 : 11, 0, 16, nil.to_s, color: 10)
         add_sprite(5, @type == :descr ? 5 : 10, NO_INITIAL_IMAGE, @type == :descr ? :X : :Y, type: UI::KeyShortcut)
       end
@@ -259,9 +276,8 @@ module BattleUI
       # Reset the sub choice
       def reset
         @move_description.visible = false
-        @bar_visibility = false
         @descr_button.refresh
-        @mega_button.refresh
+        @mega_button.refresh(@choice.mega_enabled)
       end
 
       private
@@ -276,8 +292,7 @@ module BattleUI
       def update_not_done
         return unless @move_description.done?
 
-        action_b if Input.trigger?(:B)
-        action_a if Input.trigger?(:A) || Input.trigger?(:X)
+        action_b if Input.trigger?(:B) || Input.trigger?(:X)
       end
 
       # Action triggered when pressing Y
@@ -295,21 +310,15 @@ module BattleUI
         @move_description.data = move
         @move_description.show
         @choice.hide
+        @scene.visual.show_info_bars(bank: 0)
         $game_system.se_play($data_system.decision_se)
-      end
-
-      # Action triggered when pressing A
-      def action_a
-        $game_system.se_play($data_system.decision_se)
-        @choice.use_item(item)
-        @move_description.hide
-        @choice.show
       end
 
       # Action triggered when pressing B
       def action_b
         @move_description.hide
         @choice.show
+        @scene.visual.hide_info_bars(bank: 0)
         $game_system.se_play($data_system.cancel_se)
       end
 

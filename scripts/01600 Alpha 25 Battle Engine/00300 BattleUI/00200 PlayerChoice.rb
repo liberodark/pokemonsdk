@@ -29,6 +29,7 @@ module BattleUI
     # Reset the choice
     def reset
       @action = nil
+      @index = 0
       @scene.visual.hide_info_bars(bank: 0)
       @scene.visual.show_team_info
       super
@@ -90,6 +91,15 @@ module BattleUI
       elsif Input.trigger?(:DOWN)
         @index = (@index + 2).clamp(0, POSSIBLE_RESULT.size - 1)
       end
+    end
+
+    # Creates the show animation
+    # @param target_opacity [Integer] the desired opacity (if you need non full opacity)
+    # @return [Yuki::Animation::TimedAnimation]
+    def show_animation(target_opacity = 255)
+      animation = super
+      animation.play_before(Yuki::Animation.send_command_to(self, :update_button_opacity))
+      return animation
     end
 
     # Button of the player choice
@@ -208,7 +218,7 @@ module BattleUI
 
       # Tell if the choice is done
       def done?
-        return !@item_info.visible
+        return !@item_info.visible && !@bar_visibility
       end
 
       # Reset the sub choice
@@ -224,11 +234,13 @@ module BattleUI
       # Update the button when it's done letting the player choose
       def update_done
         action_y if Input.trigger?(:Y)
-        action_x if Input.trigger?(:X)
+        action_x if Input.trigger?(:X) && !@bar_visibility
       end
 
       # Update the button when it's waiting for player actions
       def update_not_done
+        return action_y if @bar_visibility && (Input.trigger?(:Y) || Input.trigger?(:A))
+
         return unless @item_info.done?
 
         action_b if Input.trigger?(:B)
@@ -237,7 +249,13 @@ module BattleUI
 
       # Action triggered when pressing Y
       def action_y
-        @bar_visibility ? @scene.visual.show_info_bars(bank: 0) : @scene.visual.hide_info_bars(bank: 0)
+        if @bar_visibility
+          @choice.show
+          @scene.visual.hide_info_bars(bank: 0)
+        else
+          @choice.hide
+          @scene.visual.show_info_bars(bank: 0)
+        end
         @bar_visibility = !@bar_visibility
       end
 
