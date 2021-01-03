@@ -108,7 +108,7 @@ module Battle
         end
 
         # The player made a choice we store the action and we check if he can make other choices
-        @player_actions << { type: :item, item_wrapper: item_wrapper, bag: @logic.bags[0][0] }
+        @player_actions << { type: :item, item_wrapper: item_wrapper, bag: @logic.battler(0, @player_actions.size).bag }
         log_debug("Action : #{@player_actions.last}") if debug? # To prevent useless overhead outside debug
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else

@@ -151,9 +151,6 @@ module Battle
     # @return [Boolean]
     def battler_attacks_last?(battler)
       last_order = all_alive_battlers.map(&:attack_order).reject { |i| i == Float::INFINITY }.max
-      p last_order
-      p all_alive_battlers.map(&:attack_order)
-      p battler, battler.attack_order
       return battler.attack_order == last_order
     end
 
@@ -171,6 +168,7 @@ module Battle
         battler = max_level ? PFM::PokemonBattler.new(pokemon, @scene, max_level) : PFM::PokemonBattler.new(pokemon, @scene)
         battler.bank = bank
         battler.party_id = index
+        battler.bag = @bags[bank][index] || PFM::Bag.new
         battlers << battler
       end
     end

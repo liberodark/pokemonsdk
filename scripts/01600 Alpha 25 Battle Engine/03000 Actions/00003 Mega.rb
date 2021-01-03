@@ -8,11 +8,9 @@ module Battle
       # Create a new mega evolution action
       # @param scene [Battle::Scene]
       # @param user [PFM::PokemonBattler]
-      # @param mega_tool [Symbol] tool used to allow the trainer to use Mega
-      def initialize(scene, user, mega_tool)
+      def initialize(scene, user)
         super(scene)
         @user = user
-        @mega_tool = mega_tool
       end
 
       # Compare this action with another
@@ -30,7 +28,25 @@ module Battle
 
       # Execute the action
       def execute
+        @scene.logic.mega_evolve.mark_as_mega_evolved(@user)
+        @scene.display_message(message)
+        @user.mega_evolve
+        @scene.visual.show_switch_form_animation(@user)
         # TODO!
+      end
+
+      private
+
+      # Get the mega evolve message
+      # @return [String]
+      def message
+        return parse_text_with_pokemon(
+          19, 1165, @user,
+          PKNICK[0] => @user.given_name,
+          ITEM2[2] => @user.item_name,
+          TRNAME[1] => @user.trainer_name,
+          ITEM2[3] => @scene.logic.mega_evolve.mega_tool_name(@user)
+        )
       end
     end
   end

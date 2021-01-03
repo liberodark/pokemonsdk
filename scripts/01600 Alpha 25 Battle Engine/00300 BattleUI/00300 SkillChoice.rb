@@ -211,9 +211,11 @@ module BattleUI
     class SpecialButton < UI::SpriteStack
       # Create a new special button
       # @param viewport [Viewport]
+      # @param scene [Battle::Scene]
       # @param type [Symbol] :mega or :descr
-      def initialize(viewport, type)
+      def initialize(viewport, scene, type)
         super(viewport)
+        @scene = scene
         @type = type
         create_sprites
       end
@@ -222,7 +224,7 @@ module BattleUI
       # @param pokemon [PFM::PokemonBattler]
       def data=(pokemon)
         # TODO: Add mega tool check!!!
-        self.visible = @type == :descr || pokemon.can_mega_evolve?
+        self.visible = @type == :descr || @scene.logic.mega_evolve.can_pokemon_mega_evolve?(pokemon)
       end
 
       # Update the special button content
@@ -235,7 +237,7 @@ module BattleUI
       # Set the visibility of the button
       # @param visible [Boolean]
       def visible=(visible)
-        super(visible && (@type == :descr || @data&.can_mega_evolve?))
+        super(visible && (@type == :descr || (@data && @scene.logic.mega_evolve.can_pokemon_mega_evolve?(@data))))
       end
 
       private
@@ -297,8 +299,11 @@ module BattleUI
 
       # Action triggered when pressing Y
       def action_y
-        @bar_visibility ? @scene.visual.show_info_bars : @scene.visual.hide_info_bars
-        @bar_visibility = !@bar_visibility
+        return $game_system.se_play($data_system.buzzer_se) unless @mega_button.visible
+
+        @choice.mega_enabled = !@choice.mega_enabled
+        @mega_button.refresh(@choice.mega_enabled)
+        $game_system.se_play($data_system.decision_se)
       end
 
       # Action triggered when pressing X
@@ -328,8 +333,8 @@ module BattleUI
       end
 
       def create_special_buttons
-        @descr_button = add_sprite(12, 214, NO_INITIAL_IMAGE, :descr, type: SpecialButton)
-        @mega_button = add_sprite(2, 183, NO_INITIAL_IMAGE, :mega, type: SpecialButton)
+        @descr_button = add_sprite(12, 214, NO_INITIAL_IMAGE, @scene, :descr, type: SpecialButton)
+        @mega_button = add_sprite(2, 183, NO_INITIAL_IMAGE, @scene, :mega, type: SpecialButton)
       end
 
       def create_move_description

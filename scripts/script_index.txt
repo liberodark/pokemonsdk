@@ -523,6 +523,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00104 end of 
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00105 Logic_handlers.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00200 Logic_global_states.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00300 Logic_bank_states.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00400 MegaEvolve.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00900 Logic_Battle_Info.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01000 ChangeHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01001 StatChangeHandler.rb

@@ -26,6 +26,9 @@ module Battle
     # Get the evolve requests
     # @return [Array<PFM::PokemonBattler>]
     attr_reader :evolve_request
+    # Get the Mega Evolve helper
+    # @return [MegaEvolve]
+    attr_reader :mega_evolve
     # Create a new Logic instance
     # @param scene [Scene] scene that hold the logic object
     def initialize(scene)
@@ -41,6 +44,8 @@ module Battle
       @bank_effects = Array.new(@bags.size) { Effects::EffectsHandler.new }
       # @type [Array<Array<Battle::Effects::EffectsHandler>>]
       @position_effects = Array.new(@bags.size) { Array.new(@battle_info.vs_type) { Effects::EffectsHandler.new } }
+      # Mega Evolve helper
+      @mega_evolve = MegaEvolve.new
       # TODO: Remove global_states bank_states
       @global_states = {}
       @bank_states = Hash.new({})

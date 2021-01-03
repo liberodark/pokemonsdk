@@ -58,6 +58,10 @@ module PFM
     # @return [Boolean]
     attr_accessor :is_follower
 
+    # Get the bag of the battler
+    # @return [PFM::Bag]
+    attr_accessor :bag
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param scene [Battle::Scene] current battle scene
