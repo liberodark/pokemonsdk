@@ -29,6 +29,8 @@ module PFM
     # Return the db_symbol of the current ability of the Pokemon
     # @return [Symbol]
     def ability_db_symbol
+      return :__undef__ if @effects.has?(:ability_suppressed) && $scene.is_a?(Battle::Scene)
+
       GameData::Abilities.db_symbol(@ability_current || -1)
     end
 

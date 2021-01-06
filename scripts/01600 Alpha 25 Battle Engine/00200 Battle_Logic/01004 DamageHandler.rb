@@ -2,8 +2,6 @@ module Battle
   class Logic
     class DamageHandler < ChangeHandlerBase
       include Hooks
-      # List of abilities that are not affected by Mummy
-      NO_MUMMY_ABILITIES = %i[schooling shields_down stance_change disguise comatose multitype zen_mode battle_bond rks_system mummy]
       # Function telling if a damage can be applied and how much
       # @param hp [Integer] number of hp (damage) dealt
       # @param target [PFM::PokemonBattler]
@@ -509,11 +507,11 @@ module Battle
     # Mummy
     DamageHandler.register_post_damage_hook('PSDK Post damage: Mummy') do |handler, _, target, launcher, skill|
       next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.ability_db_symbol == :mummy
-      next if DamageHandler::NO_MUMMY_ABILITIES.include?(launcher.ability_db_symbol)
+      next unless handler.logic.ability_change_handler.can_change_ability?(launcher, :mummy)
 
       handler.scene.visual.show_ability(target)
-      handler.scene.display_message(parse_text_with_pokemon(19, 405, launcher, ::PFM::Text::ABILITY[1] => target.ability_name))
-      launcher.ability_current = GameData::Abilities.find_using_symbol(:mummy)
+      handler.scene.display_message(parse_text_with_pokemon(19, 405, launcher, PFM::Text::ABILITY[1] => target.ability_name))
+      handler.logic.ability_change_handler.change_ability(launcher, :mummy)
     end
 
     # Color Change

@@ -52,6 +52,7 @@ module BattleEngine
     end
   end
 
+=begin
   # Role Play skill definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move
@@ -83,4 +84,5 @@ module BattleEngine
       _message_stack_push(MSG_Fail)
     end
   end
+=end
 end

@@ -53,5 +53,11 @@ module Battle
     def catch_handler
       return CatchHandler.new(self, @scene)
     end
+
+    # Get the ability change handler
+    # @return [Battle::Logic::AbilityChangeHandler]
+    def ability_change_handler
+      return AbilityChangeHandler.new(self, @scene)
+    end
   end
 end

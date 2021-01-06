@@ -11,8 +11,7 @@ module Battle
         return false unless super
 
         if @logic.battler_attacks_last?(user)
-          usage_message(user)
-          scene.display_message(parse_text(18, 74))
+          show_usage_failure(user)
           return false
         end
 

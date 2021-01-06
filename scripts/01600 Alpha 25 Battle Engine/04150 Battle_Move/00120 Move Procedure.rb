@@ -54,6 +54,13 @@ module Battle
       end
     end
 
+    # Show the usage failure when move is not usable by user
+    # @param user [PFM::PokemonBattler] user of the move
+    def show_usage_failure(user)
+      usage_message(user)
+      scene.display_message(parse_text(18, 74))
+    end
+
     # Show the move usage message
     # @param user [PFM::PokemonBattler] user of the move
     def usage_message(user)

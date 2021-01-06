@@ -224,11 +224,14 @@ module Battle
     SwitchHandler.register_switch_event_hook('PSDK switch: Trace') do |handler, _, with|
       next if with.ability_db_symbol != :trace
 
-      foes = handler.logic.foes_of(with).select { |foe| foe.alive? && foe.ability_db_symbol != :__undef__ }
+      foes = handler.logic.foes_of(with).select do |foe|
+        next foe.alive? && foe.ability_db_symbol != :__undef__ &&
+          handler.logic.ability_change_handler.can_change_ability?(with, foe.ability_db_symbol) # Checking if with can change to foe ability
+      end
       next if foes.none?
 
       handler.scene.visual.show_ability(with)
-      with.ability_current = foes.sample.ability_current
+      handler.logic.ability_change_handler.change_ability(with, foes.sample.ability_db_symbol)
       handler.scene.display_message(parse_text_with_pokemon(19, 381, with, PFM::Text::ABILITY[1] => with.ability_name))
     end
 

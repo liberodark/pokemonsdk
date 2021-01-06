@@ -15,8 +15,7 @@ module Battle
         return true unless (effect = @logic.bank_effects[bank]&.get(:spikes))
 
         if effect.max_power?
-          usage_message(user)
-          scene.display_message(parse_text(18, 74))
+          show_usage_failure(user)
           return false
         end
 
