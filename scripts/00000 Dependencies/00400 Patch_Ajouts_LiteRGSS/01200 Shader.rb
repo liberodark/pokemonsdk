@@ -120,6 +120,7 @@ The game will sleep 10 seconds to make sure you see this message')
         register(:yuki_weird, 'graphics/shaders/yuki_transition_weird.txt')
         register(:blur, 'graphics/shaders/blur.txt')
         register(:battle_shadow, 'graphics/shaders/battle_shadow.frag', 'graphics/shaders/battle_shadow.vert')
+        register(:battle_backout, 'graphics/shaders/battle_backout.frag')
       end
     end
   end

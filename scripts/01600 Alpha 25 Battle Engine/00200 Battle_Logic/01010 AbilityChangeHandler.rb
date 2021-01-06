@@ -3,12 +3,12 @@ module Battle
     # Handler responsive of answering properly ability changes requests
     class AbilityChangeHandler < ChangeHandlerBase
       include Hooks
-      
+
       CANT_OVERWRITE_ABILITIES = %i[battle_bond comatose disguise multitype power_construct rks_system schooling shields_down stance_change zen_mode]
       # Case of a move that fail if the target has this ability
       SKILL_BLOCKING_ABILITIES = {
         entrainment: %i[truant],
-        role_play: %i[flower_gift forecast illusion imposter power_of_alchemy receiver trace wonder_guard]
+        role_play: %i[flower_gift forecast illusion imposter power_of_alchemy receiver trace wonder_guard],
         simple_beam: %i[simple truant],
         skill_swap: %i[illusion wonder_guard]
       }
@@ -21,7 +21,7 @@ module Battle
       USER_BLOCKING_ABILITIES = {
         # TODO: Gestion des cas d'un fail de l'attaque si l'utilisateur possède tel talent
         entrainment: %i[disguise forecast flower_gift illusion imposter power_construct power_of_alchemy receiver trace zen_mode],
-        role_play: FIRST_BLOCKING_ABILITIES
+        role_play: CANT_OVERWRITE_ABILITIES
       }
 
       # Function that change the ability of a Pokemon

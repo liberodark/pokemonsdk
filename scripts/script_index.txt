@@ -534,12 +534,14 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01006 EndTurn
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01007 WeatherChangeHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01008 FleeHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01009 CatchHandler.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01010 AbilityChangeHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 EffectsHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00002 EffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00003 PositionTiedEffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00004 PokemonTiedEffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00100 ForcedNextMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00101 OutOfReach.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 AbilitySuppressed.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Attract.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Electrify.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 LeechSeed.rb
@@ -578,6 +580,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00550 Battle_Visual_Animations/0
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00000 Transition.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00100 RBYTrainer.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00100 RBYWild.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00200 Gen6Trainer.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00001 Actions.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00002 Attack.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00003 Mega.rb
@@ -614,6 +617,8 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00203 Electri
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00204 MagicCoat.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00205 KnockOff.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00206 Spikes.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 AbilityChanging.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00301 GastroAcid.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00100 AI.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04400 Battle_Message/00001 BattleStart.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 BE24 Interpreter/01600 BE_Interpreter.rb
