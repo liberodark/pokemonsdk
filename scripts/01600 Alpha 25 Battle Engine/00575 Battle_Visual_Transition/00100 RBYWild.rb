@@ -135,5 +135,6 @@ module Battle
     end
 
     WILD_TRANSITIONS[2] = Transition::RBYWild
+    WILD_TRANSITIONS[0] = Transition::RBYWild
   end
 end
