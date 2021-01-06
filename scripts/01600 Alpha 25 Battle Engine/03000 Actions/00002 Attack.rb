@@ -47,6 +47,18 @@ module Battle
         return attack.launcher.spd <=> @launcher.spd # <= Invert result here if Trick Room is enabled!!
       end
 
+      # Get the priority of the move
+      # @return [Integer]
+      def priority
+        return @pursuit_enabled ? 999 : @move.priority
+      end
+
+      # Get the target of the move
+      # @return [PFM::PokemonBattler, nil]
+      def target
+        @move.battler_targets(@launcher, @scene.logic).select(&:alive?).first
+      end
+
       # Execute the action
       def execute
         @move.proceed(@launcher, @target_bank, @target_position)

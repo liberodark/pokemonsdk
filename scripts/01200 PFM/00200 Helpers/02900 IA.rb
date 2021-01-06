@@ -43,6 +43,9 @@ module PFM
       if BattleEngine.can_pokemon_mega_evolve?(launcher, get_bag(launcher))
         BattleEngine.prepare_mega_evolve(launcher, get_bag(launcher))
       end
+      # @type [Battle::Scene]
+      scene = $scene
+      @results << [:mega, launcher] if scene.logic.mega_evolve.can_pokemon_mega_evolve?(launcher)
       @results << [0, skill_index, target, launcher]
     end
     # Add a switch action to the stack
@@ -372,7 +375,7 @@ module PFM
     # @return [PFM::Bag]
     def get_bag(pokemon)
       if $scene.is_a?(Battle::Scene)
-        return $scene.logic.bags[1].first
+        return pokemon.bag || $scene.logic.bags[1].first
       end
       return $scene.enemy_party.bag
     end

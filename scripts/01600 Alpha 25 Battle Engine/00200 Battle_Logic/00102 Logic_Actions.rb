@@ -16,21 +16,21 @@ module Battle
     # Value that contains 0.25
     VAL_0_25 = 0.25
     # Add actions to process in the next step
-    # @param actions [Array<Hash>] the list of the actions
+    # @param actions [Array<Actions::Base>] the list of the actions
     def add_actions(actions)
-      # Remove the empty action (dead pokemon)
-      actions.delete_if(&:empty?)
-      # Merge the actions
-      @actions.concat(actions)
+      # Select the usefull action & merge them
+      @actions.concat(actions.select(&:valid?))
     end
 
     # Execute the next action
     # @return [Boolean] if there was an action or not
     def perform_next_action
       return false if @actions.empty?
+
+      # @type [Actions::Base]
       action = @actions.pop
       log_debug("Current action : #{action}")
-      send("perform_action_#{action[:type]}", action)
+      action.execute
       battle_phase_switch_check
       return true
     end
@@ -38,14 +38,9 @@ module Battle
     # Sort the actions
     # @note The last action in the stack is the first action to pop out from the stack
     def sort_actions
-      action_by_priority = group_action_by_priority
-      action_by_priority.each_value do |actions|
-        sort_action_in_priority(actions)
-      end
+      sorted_actions = sort_action_and_add_effects
       @actions.clear
-      priority_order(action_by_priority).each do |priority|
-        @actions.concat(action_by_priority[priority])
-      end
+      @actions.concat(sorted_actions.reverse)
       define_pokemon_action_properties
     end
 
@@ -53,81 +48,61 @@ module Battle
 
     # Define all pokemon action properties based on the actions
     def define_pokemon_action_properties
-      all_alive_battlers.each do |battler|
-        battler.attack_order = Float::INFINITY
-      end
-      index = @actions.count { |action| action[:type] == :attack } - 1
+      # Set all alive battler as attacking last
+      all_alive_battlers.each { |battler| battler.attack_order = Float::INFINITY }
+      # Getting index of last attack action
+      index = @actions.count { |action| action.is_a?(Actions::Attack) } - 1
       @actions.each do |action|
-        next unless action[:type] == :attack
+        next unless action.is_a?(Actions::Attack)
 
-        action[:launcher].attack_order = index
+        Actions::Attack.from(action).launcher.attack_order = index
         index -= 1
       end
     end
 
     # Group the action by priority
-    # @return [Hash{Integer => Hash}]
-    def group_action_by_priority
-      # Retrieve the pursuit action with priority boost
-      switching = @actions.any? { |action| action[:type] == :switch }
-      pursuit_actions = retrieve_prioritary_pursuit_actions if switching
-      # Group action by priority
-      actions = @actions.group_by do |action|
-        next(action[:skill].priority + MOVE_PRIORITY_OFFSET) if action[:type] == :attack
-        next(MEGA_PRIORITY) if action[:type] == :mega
-        next(OTHER_PRIORITY)
-      end
-      # Add pursuit with priority boost to the hash (if any)
-      (actions[PURSUIT_PRIORITY] ||= []).concat(pursuit_actions) if pursuit_actions
-      return actions
-    end
+    # @return [Array<Actions::Base>]
+    def sort_action_and_add_effects
+      highest_priority = @actions.reject { |action| action.is_a?(Actions::Attack) }
+      switching = highest_priority.select { |action| action.is_a?(Actions::Switch) && action.who }
+      # @type [Array<Actions::Attack>]
+      move_action = @actions.select { |action| action.is_a?(Actions::Attack) }
+      # Setting pursuit priority
+      if switching.any?
+        move_action.each do |action|
+          next unless action.move.db_symbol == :pursuit
 
-    # Get the pursuit actions that got priority boost
-    # @return [Array<Hash>]
-    def retrieve_prioritary_pursuit_actions
-      pursuit_selector = proc { |action| action[:type] == :attack && action[:skill].db_symbol == :pursuit }
-      pursuit_actions = @actions.select(&pursuit_selector)
-      @actions.reject!(&pursuit_selector)
-      non_prio_pursuit = pursuit_actions.select! do |action|
-        !battler(action[:target_bank], action[:target_position]).switching?
+          target = action.target
+          action.pursuit_enabled = switching.any? { |switch| switch.who == target }
+        end
       end
-      @actions.concat(non_prio_pursuit || [])
-      return pursuit_actions
-    end
-
-    # Sort the action by user speed in a priority array
-    # @param actions [Array<Hash>]
-    def sort_action_in_priority(actions)
-      actions.sort! do |a, b|
-        # @type [PFM::PokemonBattler]
-        pokemon_a = a[:launcher] || a[:target] || a[:who]
-        # @type [PFM::PokemonBattler]
-        pokemon_b = b[:launcher] || b[:target] || b[:who]
-        next(pokemon_a.spd <=> pokemon_b.spd)
-      end
-      actions.reverse! if global_trick_room?
-      check_priority_item_trigger(actions)
+      # Setting the high priority items
+      move_by_priority = move_action.group_by(&:priority)
+      move_by_priority.each { |_, attacks| check_priority_item_trigger(attacks) }
+      # Sort actions
+      actions = highest_priority.concat(move_by_priority.values.flatten)
+      return actions.sort
     end
 
     # Check for item held that gives more priority and put the pokemon on top
-    # @param actions [Array<Hash>]
+    # @param actions [Array<Actions::Attack>]
     def check_priority_item_trigger(actions)
-      attacks = actions.select { |action| action[:type] == :attack }
-      return if attacks.size <= 1
-      triggered_action = attacks.find do |action|
-        message = ITEM_PRIORITY_BOOST_IN_PRIORITY[action[:launcher].battle_item_db_symbol]
-        log_debug("#{action[:launcher].battle_item_db_symbol} held by #{action[:launcher]}") if message
-        result = (message ? send(message, action[:launcher]) : false)
+      return if actions.size <= 1
+
+      # @type [Actions::Attack]
+      triggered_action = actions[1..-1].find do |action|
+        message = ITEM_PRIORITY_BOOST_IN_PRIORITY[action.launcher.battle_item_db_symbol]
+        log_debug("#{action.launcher.battle_item_db_symbol} held by #{action.launcher}") if message
+        result = (message ? send(message, action.launcher) : false)
         log_debug("#{message} returned #{result}") if message
         next(result)
       end
       return unless triggered_action
-      # Add the triggered action at first in the priority stack with the right message
-      if attacks.index(triggered_action) != attacks.size - 1 # <= Prevent dumb activation
-        actions.delete(triggered_action)
-        item_triger_action = { type: :high_priority_item, who: triggered_action[:launcher] }
-        actions.push(triggered_action, item_triger_action)
-      end
+
+      # Make sure the action will get highest speed inside the priority
+      triggered_action.ignore_speed = true
+      # Add the message of the item activation
+      actions << Actions::HighPriorityItem.new(@scene, triggered_action.launcher)
     end
 
     # Test the quick claw trigger
@@ -142,13 +117,6 @@ module Battle
     # @return [Boolean] if the item triggered
     def check_priority_trigger_custap_berry(pokemon)
       return pokemon.hp_rate < VAL_0_25
-    end
-
-    # Retrieve the priority order according to the group of action by priority
-    # @param action_by_priority [Hash]
-    # @return [Array<Integer>]
-    def priority_order(action_by_priority)
-      action_by_priority.keys.sort
     end
   end
 end

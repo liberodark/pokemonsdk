@@ -35,6 +35,7 @@ module Battle
       # Next method called in update
       @next_update = :pre_transition
       # List of the player actions
+      # @type [Array<Actions::Base>]
       @player_actions = []
       # Battle result
       @battle_result = -1

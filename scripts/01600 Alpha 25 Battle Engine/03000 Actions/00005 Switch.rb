@@ -5,6 +5,9 @@ module Battle
       # Get the Pokemon who's being switched
       # @return [PFM::PokemonBattler]
       attr_reader :who
+      # Get the Pokemon with the Pokemon is being switched
+      # @return [PFM::PokemonBattler]
+      attr_reader :with
       # Create a new switch action
       # @param scene [Battle::Scene]
       # @param who [PFM::PokemonBattler] who's being switched out

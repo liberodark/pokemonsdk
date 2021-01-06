@@ -8,7 +8,7 @@ module Battle
         # @type [Effects::ForcedNextMove]
         effect = pokemon.effects.get(:forced_next_move)
         target = effect.targets.first
-        return :action, { type: :attack, launcher: pokemon, skill: effect.move, target_bank: target.bank, target_position: target.position }
+        return :action, Actions::Attack.new(@scene, effect.move, pokemon, target.bank, target.position)
       end
 
       # return :try_next if spc_cannot_use_this_pokemon?(pokemon_index)

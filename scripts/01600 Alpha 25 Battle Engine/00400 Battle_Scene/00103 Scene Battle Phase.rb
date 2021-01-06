@@ -6,7 +6,7 @@ module Battle
     def start_battle_phase
       log_info('Starting battle phase')
       # Add player actions
-      @logic.add_actions(@player_actions)
+      @logic.add_actions(@player_actions.flatten)
       @player_actions.clear
       @logic.sort_actions
       @message_window.width = @visual.viewport.rect.width

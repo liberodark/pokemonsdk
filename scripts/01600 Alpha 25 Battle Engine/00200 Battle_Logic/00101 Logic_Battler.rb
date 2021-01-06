@@ -154,6 +154,17 @@ module Battle
       return battler.attack_order == last_order
     end
 
+    # Switch two pokemon (logically)
+    # @param who [PFM::PokemonBattler] Pokemon being switched
+    # @param with [PFM::PokemonBattler] Pokemon comming on the ground
+    def switch_battlers(who, with)
+      with_position = @battlers[who.bank].index(with)
+      who_position = @battlers[who.bank].index(who)
+      @battlers[who.bank][who_position] = with
+      @battlers[with.bank][with_position] = who
+      with.position, who.position = who.position, with.position
+    end
+
     private
 
     # Load the battlers from a party
@@ -203,17 +214,6 @@ module Battle
         end
         i += 1
       end
-    end
-
-    # Switch two pokemon (logically)
-    # @param who [PFM::PokemonBattler] Pokemon being switched
-    # @param with [PFM::PokemonBattler] Pokemon comming on the ground
-    def switch_battlers(who, with)
-      with_position = @battlers[who.bank].index(with)
-      who_position = @battlers[who.bank].index(who)
-      @battlers[who.bank][who_position] = with
-      @battlers[with.bank][with_position] = who
-      with.position, who.position = who.position, with.position
     end
 
     # List all dead Pokemon enemy during this turn

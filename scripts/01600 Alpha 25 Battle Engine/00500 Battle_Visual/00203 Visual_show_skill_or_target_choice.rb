@@ -13,7 +13,7 @@ module Battle
     end
 
     # Method that show the target choice once the skill was choosen
-    # @return [Array<PFM::PokemonBattler, Battle::Move, Integer(bank), Integer(position)>, nil]
+    # @return [Array<PFM::PokemonBattler, Battle::Move, Integer(bank), Integer(position), Boolean(mega)>, nil]
     def show_target_choice
       return stc_result if stc_cannot_choose_target?
 
@@ -92,6 +92,7 @@ module Battle
     # @param result [Array, :auto, :cancel]
     def stc_result(result = :auto)
       return nil if result == :cancel
+
       arr = [@skill_choice_ui.pokemon, @skill_choice_ui.result]
       if result.is_a?(Array)
         arr.concat(result)
@@ -106,6 +107,7 @@ module Battle
       else
         return nil
       end
+      arr << @skill_choice_ui.mega_enabled
       return arr
     end
 

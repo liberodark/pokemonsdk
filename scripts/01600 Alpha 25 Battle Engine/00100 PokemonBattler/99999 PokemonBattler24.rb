@@ -13,6 +13,7 @@ module PFM
       end
 
       @moveset.map!(&:clone)
+      @bag = battler.bag
     end
 
     # Return the .24 position

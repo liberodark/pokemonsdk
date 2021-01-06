@@ -15,6 +15,7 @@ module Battle
       )
       @switch_request.uniq! { |who:| who }
       battle_phase_switch_check
+      all_alive_battlers.each { |pokemon| pokemon.switching = false }
     end
 
     # Function that process the switches
@@ -23,13 +24,13 @@ module Battle
 
       during_end_of_turn = @actions.empty?
       @switch_request.each do |who:, with: nil|
-        next perform_action_switch(type: :switch, with: with, who: who) if who && with
+        next Actions::Switch.new(@scene, who, with).execute if who && with
 
         with = switch_choose_with(who)
         next unless with
 
         request_switch_to_trainer(who) if who.bank != 0 && during_end_of_turn
-        perform_action_switch(type: :switch, with: with, who: who)
+        Actions::Switch.new(@scene, who, with).execute
       end
       @switch_request.clear
     end
@@ -67,7 +68,7 @@ module Battle
         if choice == 0 && (result = @scene.visual.show_pokemon_choice)
           with = battlers.find { |battler| battler.original == result }
           who = battlers[0]
-          perform_action_switch(type: :switch, with: result, who: who) if with != who
+          Actions::Switch.new(@scene, who, with).execute if with != who
         end
       end
     end

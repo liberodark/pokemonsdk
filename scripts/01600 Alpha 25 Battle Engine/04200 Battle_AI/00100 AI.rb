@@ -27,6 +27,8 @@ module Battle
           next translate_item(*action)
         when 2 # Switch
           next translate_switch(*action)
+        when :mega # Mega
+          next Actions::Mega.new(@scene, action.last)
         else
           next translate_flee(*action)
         end
@@ -49,13 +51,7 @@ module Battle
       end
       target_bank = target_position24 < 0 ? 1 : 0
       target_position = target_position24 < 0 ? -target_position24 - 1 : target_position24
-      return {
-        type: :attack,
-        skill: launcher.skills_set[skill_index],
-        target_bank: target_bank,
-        target_position: target_position,
-        launcher: launcher.pokemon_battler
-      }
+      return Actions::Attack.new(@scene, launcher.skills_set[skill_index], launcher.pokemon_battler, target_bank, target_position)
     end
 
     # Translate item
@@ -67,13 +63,7 @@ module Battle
       bank = position < 0 ? 1 : 0
       position = position < 0 ? -position - 1 : position
       target = @scene.logic.battler(bank, position)
-      bag = @scene.logic.bags[bank].first
-      return {
-        type: :item,
-        item_id: id,
-        bag: bag,
-        target: target
-      }
+      return Actions::Item.new(@scene, PFM::ItemDescriptor.actions(id), target.bag, target)
     end
 
     # Translate switch
@@ -83,20 +73,12 @@ module Battle
     def translate_switch(type, new_index, index)
       position1 = index < 0 ? -index - 1 : index
       position2 = new_index < 0 ? -new_index - 1 : new_index
-      return {
-        type: :switch,
-        who: @scene.logic.battler(1, position1),
-        with: @scene.logic.battler(1, position2)
-      }
+      return Actions::Switch.new(@scene, @scene.logic.battler(1, position1), @scene.logic.battler(1, position2))
     end
 
     # Translate flee
     def translate_flee(type, pokemon, reason)
-      return {
-        type: :flee,
-        target: pokemon,
-        reason: reason
-      }
+      return Actions::Flee.new(@scene, pokemon)
     end
   end
 end

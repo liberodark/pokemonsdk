@@ -517,7 +517,6 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/99999 Pokem
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00100 Logic.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00101 Logic_Battler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00102 Logic_Actions.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00102 Logic_Actions_Procedure.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00103 Logic_critical_hit.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00104 end of battle phase & switch choice.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00105 Logic_handlers.rb

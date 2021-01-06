@@ -6,6 +6,7 @@ module Battle
     def player_action_choice
       # If the method was called and the player cannot make another choice it's a bug so we end the battle
       return @next_update = :battle_end unless can_player_make_another_action_choice?
+
       choice, forced_action = @visual.show_player_choice(@player_actions.size)
       log_debug("Player action choice : #{choice} / #{forced_action}")
       case choice
@@ -26,11 +27,11 @@ module Battle
         while (action = @player_actions.pop)
           clean_action(action)
           # If the action is not empty it was a Pokemon we could control so we stop poping
-          break unless action.empty?
+          break unless action&.is_a?(Actions::Base)
         end
       when :try_next
         # The visual interface detected that the current Pokemon is dead
-        @player_actions << {}
+        @player_actions << Actions::Base.new(self)
       when :action
         # The player choice returned an action to use
         @player_actions << forced_action
@@ -58,10 +59,14 @@ module Battle
 
     # Method that asks the target of the choosen move
     def target_choice
-      launcher, skill, target_bank, target_position = @visual.show_target_choice
+      launcher, skill, target_bank, target_position, mega = @visual.show_target_choice
       if launcher
-        # The player made a choice we store the action and check if he can make other choices
-        @player_actions << { type: :attack, launcher: launcher, skill: skill, target_bank: target_bank, target_position: target_position }
+        next_action = Actions::Attack.new(self, skill, launcher, target_bank, target_position)
+        if mega
+          @player_actions << [next_action, Actions::Mega.new(self, launcher)]
+        else
+          @player_actions << next_action
+        end
         log_debug("Action : #{@player_actions.last}") if debug? # To prevent useless overhead outside debug
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else
@@ -76,6 +81,17 @@ module Battle
     # @note push empty hash where Pokemon cannot be controlled
     # @return [Boolean]
     def can_player_make_another_action_choice?
+      next_relative_mon = @player_actions.size.upto(@battle_info.vs_type - 1).find_index do |position|
+        next false unless (pokemon = @logic.battler(0, position))
+
+        next pokemon.alive? && pokemon.from_party?
+      end
+      return false unless next_relative_mon
+
+      # We fill actions that player cannot control
+      next_relative_mon.times { @player_actions << Actions::Base.new(self) }
+      return true
+=begin
       @player_actions.size.upto(@logic.battle_info.vs_type - 1) do |position|
         next_pokemon = @logic.battler(0, position)
         # If there's no Pokemon at this position, then it's probably the end of the team
@@ -88,6 +104,7 @@ module Battle
         return true
       end
       return false
+=end
     end
 
     # Method that asks the item to use
@@ -108,7 +125,7 @@ module Battle
         end
 
         # The player made a choice we store the action and we check if he can make other choices
-        @player_actions << { type: :item, item_wrapper: item_wrapper, bag: @logic.battler(0, @player_actions.size).bag }
+        @player_actions << Actions::Item.new(self, item_wrapper, @logic.battler(0, @player_actions.size).bag, @logic.battler(0, @player_actions.size))
         log_debug("Action : #{@player_actions.last}") if debug? # To prevent useless overhead outside debug
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else
@@ -157,7 +174,7 @@ module Battle
       if pokemon_to_send
         pokemon_to_switch = @logic.battler(0, @player_actions.size)
         # The player made a choice we store the action and we check if he can make other choices
-        @player_actions << { type: :switch, who: pokemon_to_switch, with: pokemon_to_send }
+        @player_actions << Actions::Switch.new(self, pokemon_to_switch, pokemon_to_send)
         pokemon_to_send.switching = true
         pokemon_to_switch.switching = true
         log_debug("Action : #{@player_actions.last}") if debug? # To prevent useless overhead outside debug
@@ -171,10 +188,11 @@ module Battle
     # Clean the action that was removed from the stack (Make sure we don't lock things)
     def clean_action(action)
       return unless action
-      case action[:type]
-      when :switch
-        action[:who].switching = false
-        action[:with].switching = false
+
+      if action.is_a?(Actions::Switch)
+        action = Actions::Switch.from(action)
+        action.who.switching = false
+        action.with.switching = false
       end
     end
 
