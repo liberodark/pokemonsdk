@@ -269,7 +269,7 @@ module PFM
       return if cant_process_event_tasks?
       encounter_count = $game_player.encounter_count
       if !$game_system.encounter_disabled && ((@steps % encounter_count) == 0) && @wild_battle.available?
-        $game_system.map_interpreter.launch_common_event(1) unless $game_system.map_interpreter.running?
+        @wild_battle.setup unless $game_system.map_interpreter.running?
       end
     end
 

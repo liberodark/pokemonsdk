@@ -74,6 +74,31 @@ class Interpreter
     end
   end
 
+  # Start a trainer battle
+  # @param trainer_id [Integer] ID of the trainer in Ruby Host
+  # @param trainer_id_2 [Integer] ID of the second trainer in Ruby Host
+  # @param bgm [String, Array] BGM to play for battle
+  # @param disable [String] Name of the local switch to disable (if defeat)
+  # @param enable [String] Name of the local switch to enable (if victory)
+  # @param troop_id [Integer] ID of the troop to use : 3 = trainer, 4 = Gym Leader, 5 = Elite, 6 = Champion
+  def start_double_trainer_battle(trainer_id, second_trainer_id, bgm: DEFAULT_TRAINER_BGM, disable: 'A', enable: 'B', troop_id: 3, &block)
+    start_trainer_battle(trainer_id, bgm: bgm, disable: disable, enable: enable, troop_id: troop_id, &block)
+    $game_variables[Yuki::Var::Second_Trainer_ID] = second_trainer_id
+  end
+
+  # Start a trainer battle
+  # @param trainer_id [Integer] ID of the trainer in Ruby Host
+  # @param trainer_id_2 [Integer] ID of the second trainer in Ruby Host
+  # @param bgm [String, Array] BGM to play for battle
+  # @param disable [String] Name of the local switch to disable (if defeat)
+  # @param enable [String] Name of the local switch to enable (if victory)
+  # @param troop_id [Integer] ID of the troop to use : 3 = trainer, 4 = Gym Leader, 5 = Elite, 6 = Champion
+  def start_double_trainer_battle_with_friend(trainer_id, second_trainer_id, friend_trainer_id, bgm: DEFAULT_TRAINER_BGM, disable: 'A', enable: 'B', troop_id: 3, &block)
+    start_trainer_battle(trainer_id, bgm: bgm, disable: disable, enable: enable, troop_id: troop_id, &block)
+    $game_variables[Yuki::Var::Second_Trainer_ID] = second_trainer_id
+    $game_variables[Yuki::Var::Allied_Trainer_ID] = friend_trainer_id
+  end
+
   # Sequence to call before start trainer battle
   # @param phrase [String] the full speech of the trainer
   # @param eye_bgm [String, Array] BGM to play during the speech

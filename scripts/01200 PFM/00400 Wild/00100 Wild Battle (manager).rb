@@ -65,32 +65,6 @@ module PFM
       end
     end
 
-    # Set the battle up with the right parameter
-    # @note Must be called in Scene_Battle as the current $scene
-    def setup
-      return if $scene.class != Scene_Battle
-      # If it was a forced battle
-      if @forced_wild_battle
-        $scene.enemy_party.actors.clear
-        $scene.enemy_party.actors = @forced_wild_battle
-        $scene.setup_battle(@forced_wild_battle.size, 1, 1)
-        @forced_wild_battle = false
-        return
-      end
-      wi = @fish_battle || @remaining_pokemons[$env.get_zone_type][$game_player.terrain_tag]
-      return unless wi
-      troop = $data_troops[1].members
-      wi.ids.each_index do |i|
-        troop[i] = RPG::Troop::Member.new unless troop[i]
-        troop[i].enemy_id = wi.ids[i]
-      end
-      $scene.setup_battle(wi.vs_type, 1, 1)
-      $scene.configure_pokemons(*wi.levels)
-      $scene.select_pokemon(*wi.chances)
-      $scene.fished = (@fish_battle ? @fished : false)
-      @fish_battle = nil
-    end
-
     # Is a wild battle available ?
     # @return [Boolean]
     def available?
@@ -99,7 +73,7 @@ module PFM
       # Check roaming pokemon
       @roaming_pokemons.each do |roaming_info|
         if roaming_info.appearing?
-          PFM::Wild_RoamingInfo.unlock  # Allow Roaming pokemon update at the end of the battle
+          PFM::Wild_RoamingInfo.unlock # Allow Roaming pokemon update at the end of the battle
           roaming_info.spotted = true
           init_battle(roaming_info.pokemon)
           return true
@@ -173,7 +147,6 @@ module PFM
     end
 
     # Start a wild battle
-    # @note call the common event 1 to start the battle
     # @overload start_battle(id, level, *args)
     #   @param id [PFM::Pokemon] First Pokemon in the wild battle.
     #   @param level [Object] ignored
@@ -182,9 +155,9 @@ module PFM
     #   @param id [Integer] id of the Pokemon in the database
     #   @param level [Integer] level of the first Pokemon
     #   @param args [Array<Integer, Integer>] array of id, level of the other Pokemon in the wild battle.
-    def start_battle(id, level = 70, *others)
+    def start_battle(id, level = 70, *others, battle_id: 1)
       init_battle(id, level, *others)
-      $game_system.map_interpreter.launch_common_event(1)
+      setup(battle_id)
     end
 
     # Init a wild battle
@@ -208,6 +181,154 @@ module PFM
           @forced_wild_battle << PFM::Pokemon.new(others[i], others[i + 1])
         end
       end
+    end
+
+    # Set the Battle::Info with the right information
+    def setup(battle_id = 1)
+      # If it was a forced battle
+      if @forced_wild_battle
+        configure_battle(@forced_wild_battle, battle_id)
+        @forced_wild_battle = false
+        return
+      end
+      wi = @fish_battle || @remaining_pokemons[$env.get_zone_type][$game_player.terrain_tag]
+      return unless wi
+      @troop = $data_troops[1].members
+      wi.ids.each_index do |i|
+        @troop[i] = RPG::Troop::Member.new unless @troop[i]
+        @troop[i].enemy_id = wi.ids[i]
+      end
+      configure_pokemon(*wi.levels)
+      select_pokemon(wi, *wi.chances)
+      configure_battle(@wild_battle, battle_id)
+      @wild_battle = @fish_battle = nil
+    end
+
+    # Hash describing which method to seek to change the Pokemon chances depending on the player's leading Pokemon's talent
+    CHANGE_POKEMON_CHANCE = {
+      11 => :intimidate_keen_eye,
+      7 => :intimidate_keen_eye,
+      16 => :cute_charm,
+      92 => :magnet_pull,
+      5 => :compound_eyes,
+      12 => :static,
+      33 => :synchronize
+    }
+
+    # Configure the Pokemon array for later selection
+    # @overload configure_pokemon(*args)
+    #   @param args [Array<Integer>] the levels of the Pokemon in the group
+    # @overload configure_pokemon(*args)
+    #   @param args [Array<Hash>] the array containing the hashes describing the Pokemon in the group
+    def configure_pokemon(*args)
+      @select_pokemon_chances = Array.new(args.size, 1)
+      ability = $actors[0].ability
+      @wild_battle = []
+      repel_active = $pokemon_party.repel_count > 0
+      args.size.times do |i|
+        pkmn_id = @troop[i]
+        next unless pkmn_id
+
+        pkmn_id = pkmn_id.enemy_id
+        if args[i].is_a?(Integer)
+          @wild_battle[i] = PFM::Pokemon.new(pkmn_id, args[i])
+        else
+          arg = args[i]
+          arg[:id] = pkmn_id unless arg[:id]
+          @wild_battle[i] = PFM::Pokemon.generate_from_hash(arg)
+        end
+        send(CHANGE_POKEMON_CHANCE[ability], i) if respond_to? CHANGE_POKEMON_CHANCE[ability]
+        if @wild_battle[i].level < $actors[0].level
+          @select_pokemon_chances[i] *= 0.33 if $actors[0].item_db_symbol == :cleanse_tag
+          @select_pokemon_chances[i] = 0 if repel_active
+        end
+      end
+    end
+
+    # Verify chance changing for Intimidate/Keen Eye cases
+    def intimidate_keen_eye(i)
+      @select_pokemon_chances[i] = 0.5 if (@wild_battle[i].level + 5) < $actors[0].level
+    end
+
+    # Verify chance changing for Cute Charm case
+    def cute_charm(i)
+      @select_pokemon_chances[i] = 1.5 if ($actors[0].gender * @wild_battle[i].gender) == 2
+    end
+
+    # Verify chance changing for Magnet Pull case
+    def magnet_pull(i)
+      @select_pokemon_chances[i] = 1.5 if @wild_battle[i].type_steel?
+    end
+
+    # Verify chance changing for Compound Eyes case
+    def compound_eyes(i)
+      @select_pokemon_chances[i] = 1.5 if @wild_battle[i].item_holding != 0
+    end
+
+    # Verify chance changing for Statik case
+    def static(i)
+      @select_pokemon_chances[i] = 1.5 if @wild_battle[i].type_electric?
+    end
+
+    # Verify chance changing for Synchronize case
+    def synchronize(i)
+      @select_pokemon_chances[i] = 1.5 if @wild_battle[i].nature_id == $actors[0].nature_id
+    end
+
+    # Array listing the ids of the talents that change the way the level is calculated
+    MaxEcart = [74, 30, 72]
+
+    # Select the Pokemon that will be in the battle
+    # @param wi [PFM::Wild_Info] the descriptor of the Wild group
+    # @param ecart [Integer] the gap between lowest and highest level
+    # @param rareness [Array<Integer>] array containing the initial chance for each Pokemon
+    def select_pokemon(wi, ecart, *rareness)
+      max_rand = 0
+      p rareness
+      rareness.each_index do |i|
+        @select_pokemon_chances[i] ||= 1
+        max_rand += rareness[i] * @select_pokemon_chances[i]
+      end
+      selected = []
+      wi.vs_type.times do |i|
+        nb = Random::WildBattle.rand(max_rand.to_i)
+        puts "Generated number : #{nb} / #{max_rand.to_i}"
+        count = 0
+        rareness.each_index do |j|
+          count += (rareness[j] * @select_pokemon_chances[j])
+          if nb < count
+            selected.push(@wild_battle[j].clone)
+            break
+          end
+        end
+        selected.push(@wild_battle[rand(@wild_battle.size)].clone) if selected.size <= i
+      end
+      @wild_battle = []
+      wi.vs_type.times do |i|
+        @wild_battle.push(selected[i])
+        if MaxEcart.include?($actors[0].ability) && rand(100) < 50
+          lvl = selected[i].level - ecart / 2 + ecart - 1
+        else
+          lvl = selected[i].level - ecart / 2 + rand(ecart)
+        end
+        lvl = 1 if lvl < 1
+        selected[i].level = lvl
+        selected[i].captured_level = lvl
+        selected[i].exp = selected[i].exp_list[lvl]
+        selected[i].hp = selected[i].max_hp
+      end
+    end
+
+    def configure_battle(enemy_arr, battle_id)
+      return if (!enemy_arr.is_a? Array) || !enemy_arr || enemy_arr&.empty?
+
+      info = Battle::Logic::BattleInfo.new
+      info.add_party(0, *info.player_basic_info)
+      info.add_party(1, enemy_arr)
+      info.battle_id = battle_id
+      info.vs_type = 2 if enemy_arr.size >= 2
+      Graphics.freeze
+      $scene = Battle::Scene.new(info)
     end
 
     # Define a group of remaining wild battle
