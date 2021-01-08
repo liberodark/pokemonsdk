@@ -1,4 +1,6 @@
 class Scene_Map
+  # List of RMXP Group that should be treated as "wild battle"
+  RMXP_WILD_BATTLE_GROUPS = [1, 30]
   @triggers = {}
   class << self
     # List of call_xxx trigger
@@ -67,27 +69,25 @@ class Scene_Map
     $game_system.se_play($data_system.battle_start_se)
     $game_player.straighten
     case $game_variables[::Yuki::Var::BT_Mode]
-    when 0
-      p $game_temp.battle_troop_id
-      if [1, 30].include? $game_temp.battle_troop_id
+    when 1
+      raise 'Battle server not yet implemented in .25'
+    when 2
+      raise 'Battle client not yet implemented in .25'
+    when 3
+      raise 'Battle magneto not yet implement in .25'
+    else # Regular battle
+      if RMXP_WILD_BATTLE_GROUPS.include?($game_temp.battle_troop_id)
         battle_info = $wild_battle.setup
       else
         battle_info = Battle::Logic::BattleInfo.from_old_psdk_settings($game_variables[Yuki::Var::Trainer_Battle_ID],
                                                                        $game_variables[Yuki::Var::Second_Trainer_ID],
                                                                        $game_variables[Yuki::Var::Allied_Trainer_ID])
-        $scene = Battle::Scene.new(battle_info)
-        $game_variables[Yuki::Var::Second_Trainer_ID] = $game_variables[Yuki::Var::Allied_Trainer_ID] = 0
       end
-    when 1
-      #$scene = Scene_Battle_Server.new
-    when 2
-      #$scene = Scene_Battle_Client.new
-    when 3
-      #$scene = Scene_Battle_Magneto.new
+      Graphics.freeze
+      $scene = Battle::Scene.new(battle_info)
+      $game_variables[Yuki::Var::Second_Trainer_ID] = $game_variables[Yuki::Var::Allied_Trainer_ID] = 0
     end
     @running = false
-    Graphics.wait(2)
-    #$scene.screenshot = snap_to_bitmap
     Yuki::FollowMe.set_battle_entry
   end
 

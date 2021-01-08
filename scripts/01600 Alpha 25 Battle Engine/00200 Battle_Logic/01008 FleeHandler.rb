@@ -15,7 +15,7 @@ module Battle
           switch_handler.process_prevention_reason
           return :failure
         end
-        value = switch_value(index)
+        value = flee_value(index)
         @logic.battle_info.flee_attempt_count += 1
         result = rand(256) < value ? :success : :failure
         @scene.display_message(parse_text(18, result == :success ? 75 : 76))
@@ -27,16 +27,17 @@ module Battle
 
       private
 
-      # Get the value used to test if the switch is successfull
+      # Get the value used to test if the flee is successfull
       # @param index [Integer] index of the Pokemon on the trainer bank
       # @return [Integer]
-      def switch_value(index)
+      def flee_value(index)
         trainer_poke = @logic.battler(0, index)
         enemy_poke = @logic.battler(1, index) || @logic.battler(1, 0)
 
         a = trainer_poke&.base_spd || 1
         b = (enemy_poke&.base_spd || 1).clamp(1, Float::INFINITY)
         c = @logic.battle_info.flee_attempt_count + 1
+        log_debug("flee_value: a = #{a}, b = #{b}, c = #{c}")
         return ((a * 128 / b) + 30 * c) % 256
       end
 

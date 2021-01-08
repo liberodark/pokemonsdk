@@ -220,7 +220,7 @@ module Battle
     end
 
     # Flower Veil ability
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Safeguard') do |handler, status, target, launcher, skill|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Flower Veil') do |handler, status, target, launcher, skill|
       next if status == :cure || launcher == target || skill&.db_symbol == :rest
 
       allies = handler.logic.alive_battlers(target.bank)

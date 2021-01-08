@@ -26,7 +26,7 @@ module Battle
     def load_events(id)
       return if id < 0
       id = format('%05d', id)
-      PSDK_CONFIG.release? ? load_ruby_events(id) : load_yarb_events(id)
+      PSDK_CONFIG.release? ? load_yarb_events(id) : load_ruby_events(id)
     end
 
     if PSDK_CONFIG.release?

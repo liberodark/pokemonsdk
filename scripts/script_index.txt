@@ -243,6 +243,7 @@ pokemonsdk/scripts/01200 PFM/00300 Pokemon/01000 Pokemon Params (generate).rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/01100 Pokemon Text.rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/90000 Skill.rb
 pokemonsdk/scripts/01200 PFM/00400 Wild/00100 Wild Battle (manager).rb
+pokemonsdk/scripts/01200 PFM/00400 Wild/00101 Wild Battle (configuration).rb
 pokemonsdk/scripts/01200 PFM/00400 Wild/00200 Wild_Info.rb
 pokemonsdk/scripts/01200 PFM/00400 Wild/00300 Wild_RoamingInfo.rb
 pokemonsdk/scripts/01300 UI/00100 Generic/00100 SpriteStack.rb

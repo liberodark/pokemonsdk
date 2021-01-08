@@ -60,7 +60,7 @@ module Battle
         def from_old_psdk_settings(id_trainer1, id_trainer2 = 0, id_friend = 0)
           battle_info = BattleInfo.new
           # Add Player party
-          battle_info.add_party(0, *player_basic_info)
+          battle_info.add_party(0, *battle_info.player_basic_info)
           # Add 1st enemy
           add_trainer(battle_info, 1, id_trainer1)
           # Add 2nd enemy
@@ -68,17 +68,6 @@ module Battle
           # Add friend
           add_trainer(battle_info, 0, id_friend) if id_friend != 0
           battle_info.vs_type = 2 if battle_info.trainer_is_couple || battle_info.parties[1]&.size == 2
-          return battle_info
-        end
-
-        # Configure a PSDK battle for wild battle
-        # @param wild_group [Array<PFM::Pokemon>]
-        # @return battle_info [Battle::Logic::BattleInfo]
-        def wild_battle_info(wild_group)
-          battle_info = Battle::Logic::BattleInfo.new
-          battle_info.add_party(0, *player_basic_info)
-          battle_info.add_party(1, wild_group)
-          battle_info.vs_type = 2 if wild_group.size >= 2
           return battle_info
         end
 
