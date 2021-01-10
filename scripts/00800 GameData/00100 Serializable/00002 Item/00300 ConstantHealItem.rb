@@ -34,6 +34,7 @@ safe_code('Define ConstantHealItem ItemDescriptor') do
   PFM::ItemDescriptor.define_on_pokemon_battler_use(GameData::ConstantHealItem) do |item, pokemon, scene|
     battle_item = GameData::ConstantHealItem.from(item)
     pokemon.loyalty -= battle_item.loyalty_malus
+    scene.display_message_and_wait(parse_text_with_pokemon(19, 387, pokemon))
     scene.logic.damage_handler.damage_change(-battle_item.hp_count, pokemon)
   end
 end

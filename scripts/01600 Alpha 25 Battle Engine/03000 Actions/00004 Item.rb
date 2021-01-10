@@ -9,7 +9,7 @@ module Battle
       # @param scene [Battle::Scene]
       # @param item_wrapper [PFM::ItemDescriptor::Wrapper]
       # @param bag [PFM::Bag]
-      # @param user [PFM::Pokemon] pokemon responsive of the usage of the item (to help sorting alg.)
+      # @param user [PFM::PokemonBattler] pokemon responsive of the usage of the item (to help sorting alg.)
       def initialize(scene, item_wrapper, bag, user)
         super(scene)
         @item_wrapper = item_wrapper
@@ -30,6 +30,10 @@ module Battle
 
       # Execute the action
       def execute
+        names = @scene.battle_info.names
+        trname = names.dig(@user.bank, @user.party_id) || names.dig(@user.bank, 0) || names.dig(0, 0)
+        message = parse_text(18, 34, PFM::Text::ITEM2[1] => @item_wrapper.item.name, PFM::Text::TRNAME[0] => trname)
+        @scene.display_message_and_wait(message)
         @bag.remove_item(@item_wrapper.item.id, 1) if @item_wrapper.item.limited
         @item_wrapper.execute_battle_action
       end

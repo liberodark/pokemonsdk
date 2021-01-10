@@ -34,7 +34,7 @@ module Battle
       bar = @info_bars.dig(pokemon.bank, pokemon.position)
       return log_error("No battle bar at position #{pokemon.bank}, #{pokemon.position}") unless bar
       bar.pokemon = pokemon
-      bar.go_in
+      bar.go_in unless bar.in?
     end
 
     # Show a specific bar

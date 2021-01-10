@@ -8,8 +8,10 @@ module Battle
     def show_hp_animations(targets, hps, effectiveness = [], &messages)
       lock do
         animations = targets.map.with_index do |target, index|
-          Battle::Visual::HPAnimation.new(@scene, target, hps[index], effectiveness[index]) if hps[index]
+          show_info_bar(target)
+          next Battle::Visual::HPAnimation.new(@scene, target, hps[index], effectiveness[index]) if hps[index]
         end
+        wait_for_animation
         scene_update_proc { animations.each(&:update) } until animations.all?(&:done?)
         messages&.call
         show_kos(targets)
