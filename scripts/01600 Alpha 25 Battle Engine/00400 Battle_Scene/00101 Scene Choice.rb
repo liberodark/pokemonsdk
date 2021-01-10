@@ -115,11 +115,10 @@ module Battle
           @logic.battle_result = 2
           @next_update = :battle_end
         elsif item_wrapper.item.is_a?(GameData::BallItem)
-          puts 'Catch handler called'
-          caught = logic.catch_handler.try_to_catch_pokemon(logic.alive_battlers(1)[0], logic.alive_battlers(0)[0], item_wrapper.item)
-          if caught
-            logic.battle_info.caught_pokemon = logic.alive_battlers(1)[0] 
-            give_pokemon_procedure(logic.battle_info.caught_pokemon, item_wrapper.item)
+          if (caught = logic.catch_handler.try_to_catch_pokemon(logic.alive_battlers(1)[0], logic.alive_battlers(0)[0], item_wrapper.item))
+            logic.battle_info.caught_pokemon = logic.alive_battlers(1)[0]
+            give_pokemon_procedure(logic.battle_info.caught_pokemon.original, item_wrapper.item)
+            @logic.battle_phase_end_caught
           end
           return @next_update = caught ? :battle_end : :trigger_all_AI
         end
@@ -135,33 +134,27 @@ module Battle
     end
 
     # Begin the Pokemon giving procedure
+    # @param pkmn [PFM::Pokemon] pokemon that was just caught
+    # @param ball [GameData::BallItem]
     def give_pokemon_procedure(pkmn, ball)
-      if pkmn.sub_id != nil
-        pkmn.id = pkmn.sub_id
-        pkmn.code = pkmn.sub_code
-        pkmn.form = pkmn.sub_form
-      end
       $quests.catch_pokemon(pkmn)
       $wild_battle.remove_roaming_pokemon(pkmn)
       display_message(parse_text(18, 67, PKNAME[0] => pkmn.name))
       unless $pokedex.pokemon_caught?(pkmn.id)
         $pokedex.mark_captured(pkmn.id)
-        if $game_switches[::Yuki::Sw::Pokedex]
+        if $pokedex.enabled?
           display_message(parse_text(18, 68, PKNAME[0] => pkmn.name))
-          Graphics.freeze
-          GamePlay::Dex.new(pkmn).main
-          Graphics.transition
+          call_scene(GamePlay::Dex, pkmn)
         end
       end
       $pokedex.pokemon_captured_inc(pkmn.id)
-      $game_system.battle_interpreter.add_pokemon(pkmn)
       # Rename
       if display_message(parse_text(30, 0, PKNAME[0] => pkmn.name), 0, text_get(25, 20), text_get(25, 21)) == 0
-        scene = GamePlay::NameInput.new(pkmn.name, 12, pkmn)
-        scene.main
-        pkmn.given_name = scene.return_name
-        Graphics.transition
+        call_scene(GamePlay::NameInput, pkmn.name, 12, pkmn) do |scene|
+          pkmn.given_name = scene.return_name
+        end
       end
+      $game_system.map_interpreter.add_pokemon(pkmn)
       # Stocked
       if $game_switches[Yuki::Sw::SYS_Stored]
         display_message(parse_text(30, 1, PKNICK[0] => pkmn.given_name, '[VAR BOX(0001)]' => $storage.get_box_name($storage.current_box)))

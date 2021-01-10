@@ -35,6 +35,13 @@ module Battle
       @switch_request.clear
     end
 
+    # Function that process the battle end when Pokemon was caught
+    def battle_phase_end_caught
+      alive_battlers(1).each do |enemy|
+        distribute_exp_for(enemy) if @battle_info.caught_pokemon == enemy
+      end
+    end
+
     private
 
     # Function that guess who we should switch the pokemon with
