@@ -16,6 +16,15 @@ module PFM
       update_confuse_count update_helping_hand update_switching
     ]
 
+    # Apply the flinch effect
+    # @param forced [Boolean] this parameter is ignored since flinch effect is volatile
+    def apply_flinch(forced = false)
+      old_effect = @effects.get(:flinch)
+      return if old_effect && !old_effect.dead?
+
+      @effects.add(Battle::Effects::Flinch.new(@scene.logic, self))
+    end
+
     # Initialize the states of the Pokemon
     def init_states
       @status_count = 0 if toxic?

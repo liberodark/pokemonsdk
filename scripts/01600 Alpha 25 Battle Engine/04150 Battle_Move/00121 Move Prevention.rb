@@ -98,15 +98,6 @@ module Battle
     end
   end
 
-  # Flinch registration
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Flinch') do |user, _, move|
-    if user.battle_effect.has_afraid_effect?
-      move.scene.visual.show_rmxp_animation(user, 476)
-      move.scene.display_message(parse_text_with_pokemon(19, 363, user))
-      next :prevent
-    end
-  end
-
   # Truant registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Truant') do |user, _, move|
     if user.ability_db_symbol == :truant && user.ability_used

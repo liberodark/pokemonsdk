@@ -545,6 +545,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00101 OutOfReach.r
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 AbilitySuppressed.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Attract.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Electrify.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Flinch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 LeechSeed.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 MagicCoat.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Spikes.rb

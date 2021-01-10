@@ -19,7 +19,8 @@ module Battle
         freeze: :status_frozen,
         paralysis: :status_paralyze,
         burn: :status_burn,
-        cure: :cure
+        cure: :cure,
+        flinch: :apply_flinch
       }
       # List of message ID when applying a status
       STATUS_APPLY_MESSAGE = { poison: 234, toxic: 237, confusion: 345, sleep: 306, freeze: 288, paralysis: 273, burn: 255 }
