@@ -23,8 +23,8 @@ module Battle
       # If the battle logic couldn't perform the next action (ie there's nothing to do)
       # We call the after_action_dialog event, check if the battle can continue and choose the right thing to do
       call_event(:after_action_dialog)
-      @logic.battle_phase_end
       if @logic.can_battle_continue?
+        @logic.battle_phase_end
         @next_update = :player_action_choice
       else
         @next_update = :battle_end
@@ -35,8 +35,7 @@ module Battle
     def battle_end
       log_info('Exiting battle')
       @battle_result = @logic.battle_result
-      # TODO : battle_end procedure
-      $env.apply_weather(0, 0) unless $game_switches[Yuki::Sw::MixWeather]
+      @logic.battle_end_handler.process
       $game_temp.in_battle = false
       return_to_last_scene
     end

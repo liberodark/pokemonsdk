@@ -7,11 +7,23 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_damage(user, actual_targets)
-        nb_hit = hit_amount(user, actual_targets).times.count do |i|
+        rng = Random.new
+        hit_amount = hit_amount(user, actual_targets)
+        nb_hit = hit_amount.times.count do |i|
           next false unless actual_targets.all?(&:alive?)
 
           play_animation(user, actual_targets) if i > 0
-          super
+          actual_targets.each do |target|
+            hp = damages(user, target, rng)
+            @logic.damage_handler.damage_change_with_process(hp, target, user, self) do
+              if critical_hit?
+                scene.display_message(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
+              elsif hp > 0 && i == hit_amount - 1
+                efficent_message(effectiveness, target)
+              end
+            end
+            recoil(hp, user) if recoil?
+          end
           next true
         end
         @scene.display_message(parse_text(18, 33, PFM::Text::NUMB[1] => nb_hit.to_s))

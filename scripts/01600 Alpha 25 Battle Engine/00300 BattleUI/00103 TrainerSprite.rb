@@ -111,7 +111,7 @@ module BattleUI
     # Creates the go_in animation
     # @return [Yuki::Animation::TimedAnimation]
     def go_in_animation
-      origin_x = sprite_position[0] + enemy? ? FADE_AWAY_PIXEL_COUNT : -FADE_AWAY_PIXEL_COUNT
+      origin_x = sprite_position[0] + (enemy? ? FADE_AWAY_PIXEL_COUNT : -FADE_AWAY_PIXEL_COUNT)
 
       return Yuki::Animation.move_discreet(0.5, self, origin_x, y, *sprite_position)
     end
@@ -119,7 +119,7 @@ module BattleUI
     # Creates the go_out animation
     # @return [Yuki::Animation::TimedAnimation]
     def go_out_animation
-      target_x = sprite_position[0] + enemy? ? FADE_AWAY_PIXEL_COUNT : -FADE_AWAY_PIXEL_COUNT
+      target_x = sprite_position[0] + (enemy? ? FADE_AWAY_PIXEL_COUNT : -FADE_AWAY_PIXEL_COUNT)
 
       return Yuki::Animation.move_discreet(0.5, self, *sprite_position, target_x, y)
     end

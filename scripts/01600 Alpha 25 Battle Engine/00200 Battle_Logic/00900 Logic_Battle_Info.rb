@@ -2,6 +2,8 @@ module Battle
   class Logic
     # Class describing the informations about the battle
     class BattleInfo
+      # List of item decupling money
+      MONEY_ITEMS = %i[amulet_coin luck_incense]
       # @return [Array<Array<String>>] List of the name of the battlers according to the bank & their position
       attr_accessor :names
       # @return [Array<Array<String>>] List of the classes of the battlers according to the bank & their position
@@ -33,6 +35,15 @@ module Battle
       # Get the caught Pokemon
       # @return [PFM::PokemonBattler]
       attr_accessor :caught_pokemon
+      # Get the victory BGM
+      # @return [String]
+      attr_accessor :victory_bgm
+      # Get the battle bgm
+      # @return [String]
+      attr_accessor :battle_bgm
+      # Get the additionnal money
+      # @return [Integer]
+      attr_accessor :additional_money
 
       # Create a new Battle Info
       # @param hash [Hash] basic info about the battle
@@ -49,6 +60,15 @@ module Battle
         @battle_id = hash[:battle_id] || -1
         @flee_attempt_count = 0
         @fishing = hash[:fishing] || false #TODO Add the fishing attribute to the BattleInfo initialization
+        @victory_bgm = hash[:victory_bgm] || 'audio/bgm/xy_trainer_battle_victory'
+        @battle_bgm = hash[:battle_bgm] || 'audio/bgm/rosa_wild_battle'
+        @additional_money = 0
+      end
+
+      # Tell if the battle allow exp
+      # @return [Boolean]
+      def disallow_exp?
+        return @max_level || $game_switches[Yuki::Sw::BT_NoExp]
       end
 
       class << self
@@ -153,7 +173,18 @@ module Battle
       # @param battler [PFM::PokemonBattler]
       # @return [Integer]
       def base_money(battler)
-        return @base_money[battler.bank][party_index(battler)]
+        return @base_moneys.dig(battler.bank, party_index(battler)) || 1
+      end
+
+      # Get the total money
+      # @param logic [Battle::Logic]
+      def total_money(logic)
+        # @type [Array<PFM::PokemonBattler>]
+        pokemon = $game_temp.vs_type.times.map { |i| logic.battler(1, i) }.compact
+        money = additional_money + pokemon.reduce(0) { |acc, curr| curr.level * base_money(curr) + acc }
+        money *= 2 if logic.terrain_effects.has?(:happy_hour)
+        money *= 2 if $game_temp.vs_type.times.any? { |i| MONEY_ITEMS.include?(logic.battler(0, i)&.item_db_symbol) }
+        return money
       end
 
       private

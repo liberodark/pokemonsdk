@@ -2,6 +2,7 @@ module Battle
   class Logic
     # Function that distribute the exp to all Pokemon and switch dead pokemon
     def battle_phase_end
+      @scene.message_window.blocking = true
       end_turn_handler.process_events
       # Distribute exp and add all enemy that are dead to switch request
       dead_enemy_battler_during_this_turn.each do |enemy|
@@ -84,6 +85,8 @@ module Battle
     # Function that distribute experience for a dead Enemy Pokemon
     # @param enemy [PFM::PokemonBattler]
     def distribute_exp_for(enemy)
+      return if @battle_info.disallow_exp?
+
       expable = trainer_battlers.reject { |receiver| receiver.max_level == receiver.level }
       base_exp = exp_base(enemy)
       global_multi_exp_factor = $bag.contain_item?(:"exp._share")

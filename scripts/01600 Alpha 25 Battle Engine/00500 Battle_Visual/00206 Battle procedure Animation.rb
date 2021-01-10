@@ -7,12 +7,15 @@ module Battle
     # @param messages [Proc] messages shown right before the post processing
     def show_hp_animations(targets, hps, effectiveness = [], &messages)
       lock do
+        message_visibility = @scene.message_window.visible
+        @scene.message_window.visible = false if targets.any? { |target| target.bank == 0 }
         animations = targets.map.with_index do |target, index|
           show_info_bar(target)
           next Battle::Visual::HPAnimation.new(@scene, target, hps[index], effectiveness[index]) if hps[index]
         end
         wait_for_animation
         scene_update_proc { animations.each(&:update) } until animations.all?(&:done?)
+        @scene.message_window.visible = message_visibility
         messages&.call
         show_kos(targets)
       end

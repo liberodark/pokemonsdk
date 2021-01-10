@@ -120,6 +120,7 @@ module Battle
 
     # Method that call @visual.show_pre_transition and change @next_update to :transition_animation
     def pre_transition
+      Audio.bgm_play(*@battle_info.battle_bgm)
       @visual.show_pre_transition
       @next_update = :transition_animation
     end

@@ -1,0 +1,226 @@
+module Battle
+  class Logic
+    # Handler responsive of handling the end of the battle
+    class BattleEndHandler < ChangeHandlerBase
+      include Hooks
+
+      # Process the battle end
+      def process
+        @scene.message_window.blocking = true
+        @logic.all_battlers(&:copy_properties_back_to_original)
+        players_pokemon = @logic.all_battlers.select(&:from_party?)
+        exec_hooks(BattleEndHandler, :battle_end, binding)
+        exec_hooks(BattleEndHandler, :battle_end_no_defeat, binding) if @logic.battle_result != 1
+        $game_map.autoplay unless $scene.is_a?(Yuki::SoftReset) || $scene.is_a?(Scene_Title)
+      end
+
+      # Get the item to pick up
+      # @return [Integer]
+      def pickup_item(pokemon)
+        off = (((pkmn.level - 1.0) / GameData::MAX_LEVEL) * 10).to_i # Offset should always depends on the final max level
+        ind = pickup_index(rand(100))
+        env = $env
+        return GameData::GrassItem[off][ind] if env.tall_grass? || env.grass?
+        return GameData::CaveItem[off][ind] if env.cave? || env.mount?
+        return GameData::WaterItem[off][ind] if env.sea? || env.pond?
+
+        return GameData::CommonItem[off][ind]
+      end
+
+      private
+
+      # Get the right pickup index
+      # @param seed [Integer]
+      # @return [Integer]
+      def pickup_index(seed)
+        return 0 if seed < 30
+        return (1 + (seed - 30) / 10) if seed < 80
+        return 6 if seed < 88
+        return 7 if seed < 94
+        return 8 if seed < 99
+
+        return 9
+      end
+
+      class << self
+        # Function that registers a battle end procedure
+        # @param reason [String] reason of the battle_end registration
+        # @yieldparam handler [BattleEndHandler]
+        # @yieldparam players_pokemon [Array<PFM::PokemonBattler>]
+        def register(reason)
+          Hooks.register(BattleEndHandler, :battle_end, reason) do |hook_binding|
+            yield(self, hook_binding.local_variable_get(:players_pokemon))
+          end
+        end
+
+        # Function that registers a battle end procedure when it's not a defeat
+        # @param reason [String] reason of the battle_end_no_defeat registration
+        # @yieldparam handler [BattleEndHandler]
+        # @yieldparam players_pokemon [Array<PFM::PokemonBattler>]
+        def register_no_defeat(reason)
+          Hooks.register(BattleEndHandler, :battle_end_no_defeat, reason) do |hook_binding|
+            yield(self, hook_binding.local_variable_get(:players_pokemon))
+          end
+        end
+      end
+    end
+
+    BattleEndHandler.register('PSDK set switches') do |handler|
+      $game_switches[Yuki::Sw::BT_Catch] = !handler.logic.battle_info.caught_pokemon.nil?
+      $game_switches[Yuki::Sw::BT_Defeat] = handler.logic.battle_result == 1
+      $game_switches[Yuki::Sw::BT_Victory] = handler.logic.battle_result == 0
+      $game_switches[Yuki::Sw::BT_NoEscape] = false
+    end
+
+    BattleEndHandler.register('PSDK reset weather to normal') do
+      $env.apply_weather(0, 0) unless $game_switches[Yuki::Sw::MixWeather]
+    end
+
+    BattleEndHandler.register('PSDK trainer messages') do |handler|
+      next unless $game_temp.trainer_battle
+
+      # Showing trainers
+      $game_temp.vs_type.times.map do |i|
+        next handler.scene.visual.battler_sprite(1, -i - 1)
+      end.compact.each(&:go_in)
+      ids = [$game_variables[Yuki::Var::Trainer_Battle_ID], $game_variables[Yuki::Var::Second_Trainer_ID]].select { |i| i > 0 }
+      if handler.logic.battle_result == 0
+        Audio.bgm_play(*handler.scene.battle_info.victory_bgm)
+        # Victory message
+        ids.each do |id|
+          handler.scene.display_message_and_wait(text_get(47, id))
+        end
+        # Add money
+        v = handler.scene.battle_info.total_money(handler.logic)
+        $pokemon_party.add_money(v)
+        handler.scene.display_message(parse_text(18, 60, PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => v.to_s))
+      else
+        # Defeat message
+        ids.each do |id|
+          handler.scene.display_message_and_wait(text_get(48, id))
+        end
+      end
+    end
+
+    BattleEndHandler.register('PSDK wild victory') do |handler|
+      next if $game_temp.trainer_battle || handler.logic.battle_result == 1
+
+      Audio.bgm_play(*handler.scene.battle_info.victory_bgm)
+      handler.logic.battle_phase_end
+      if (v = handler.scene.battle_info.additional_money) > 0
+        $pokemon_party.add_money(v)
+        handler.scene.display_message(parse_text(18, 61, PFM::Text::TRNAME[0] => $trainer.name, '[VAR NUM6(0001,E07F)]' => v.to_s))
+      end
+    end
+
+    BattleEndHandler.register_no_defeat('PSDK natural cure') do |_, players_pokemon|
+      players_pokemon.each do |pokemon|
+        pokemon.original.cure if pokemon.original.ability_db_symbol == :natural_cure
+      end
+    end
+
+    BattleEndHandler.register_no_defeat('PSDK honey gather') do |_, players_pokemon|
+      players_pokemon.each do |pokemon|
+        next unless pokemon.original.ability_db_symbol == :honey_gather && pokemon.original.item_holding == 0 && rand(100) < (pokemon.level / 2)
+
+        pokemon.original.item_holding = GameData::Item[:honey].id
+      end
+    end
+
+    BattleEndHandler.register_no_defeat('PSDK pickup') do |handler, players_pokemon|
+      players_pokemon.each do |pokemon|
+        next unless pokemon.original.ability_db_symbol == :pickup && pokemon.original.item_holding == 0 && rand(100) < 10
+
+        pokemon.original.item_holding = handler.pickup_item(pokemon.original)
+      end
+    end
+
+    BattleEndHandler.register_no_defeat('PSDK power band') do |_, players_pokemon|
+      players_pokemon.each do |pokemon|
+        next unless pokemon.original.item_db_symbol == :power_band
+
+        pokemon.original.add_ev_dfs(4, pokemon.original.total_ev)
+      end
+    end
+
+    BattleEndHandler.register_no_defeat('PSDK power belt') do |_, players_pokemon|
+      players_pokemon.each do |pokemon|
+        next unless pokemon.original.item_db_symbol == :power_belt
+
+        pokemon.original.add_ev_dfe(4, pokemon.original.total_ev)
+      end
+    end
+
+    BattleEndHandler.register_no_defeat('PSDK power anklet') do |_, players_pokemon|
+      players_pokemon.each do |pokemon|
+        next unless pokemon.original.item_db_symbol == :power_anklet
+
+        pokemon.original.add_ev_spd(4, pokemon.original.total_ev)
+      end
+    end
+
+    BattleEndHandler.register_no_defeat('PSDK power lens') do |_, players_pokemon|
+      players_pokemon.each do |pokemon|
+        next unless pokemon.original.item_db_symbol == :power_lens
+
+        pokemon.original.add_ev_ats(4, pokemon.original.total_ev)
+      end
+    end
+
+    BattleEndHandler.register_no_defeat('PSDK power weight') do |_, players_pokemon|
+      players_pokemon.each do |pokemon|
+        next unless pokemon.original.item_db_symbol == :power_weight
+
+        pokemon.original.add_ev_hp(4, pokemon.original.total_ev)
+      end
+    end
+
+    BattleEndHandler.register_no_defeat('PSDK power bracer') do |_, players_pokemon|
+      players_pokemon.each do |pokemon|
+        next unless pokemon.original.item_db_symbol == :power_bracer
+
+        pokemon.original.add_ev_atk(4, pokemon.original.total_ev)
+      end
+    end
+
+    BattleEndHandler.register('PSDK form calibration') do |_, players_pokemon|
+      players_pokemon.each { |pokemon| pokemon.original.form_calibrate }
+    end
+
+    BattleEndHandler.register('PSDK burmy & wormadam calibration') do |_, players_pokemon|
+      players_pokemon.each do |pokemon|
+        next unless pokemon.original.db_symbol == :burmy || pokemon.original.db_symbol == :wormadam
+
+        pokemon.original.form = pokemon.original.form_generation(-1)
+      end
+    end
+
+    BattleEndHandler.register_no_defeat('PSDK Evolve') do |handler, players_pokemon|
+      players_pokemon.each do |pokemon|
+        next unless pokemon.check_evolution && pokemon.alive?
+
+        id, form = pokemon.original.evolve_check(:level_up)
+        handler.scene.instance_variable_set(:@cfi_type, :none) # Prevent fade in in case of multiple evolution
+        handler.scene.call_scene(GamePlay::Evolve, pokemon.original, id, form) if id
+      end
+    end
+
+    BattleEndHandler.register('PSDK stop cycling') do |_, players_pokemon|
+      $game_player.leave_cycling_state if players_pokemon.all?(&:dead?) && !$game_temp.battle_can_lose
+    end
+
+    BattleEndHandler.register('PSDK send player back to Pokemon Center') do |_, players_pokemon|
+      next unless players_pokemon.all?(&:dead?)
+
+      unless $game_temp.battle_can_lose
+        $wild_battle.reset
+        $game_temp.player_transferring = true
+        $game_map.setup($game_temp.player_new_map_id = $game_variables[::Yuki::Var::E_Return_ID])
+        $game_temp.player_new_x = $game_variables[::Yuki::Var::E_Return_X] + ::Yuki::MapLinker.get_OffsetX
+        $game_temp.player_new_y = $game_variables[::Yuki::Var::E_Return_Y] + ::Yuki::MapLinker.get_OffsetY
+        $game_temp.player_new_direction = 8
+        $game_switches[Yuki::Sw::FM_NoReset] = true
+      end
+    end
+  end
+end

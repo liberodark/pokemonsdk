@@ -85,7 +85,6 @@ class Scene_Map
       end
       Graphics.freeze
       $scene = Battle::Scene.new(battle_info)
-      $game_variables[Yuki::Var::Second_Trainer_ID] = $game_variables[Yuki::Var::Allied_Trainer_ID] = 0
     end
     @running = false
     Yuki::FollowMe.set_battle_entry

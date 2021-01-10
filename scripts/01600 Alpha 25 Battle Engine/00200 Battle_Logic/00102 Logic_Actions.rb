@@ -30,6 +30,7 @@ module Battle
       # @type [Actions::Base]
       action = @actions.pop
       log_debug("Current action : #{action}")
+      @scene.message_window.blocking = false
       action.execute
       battle_phase_switch_check
       return true

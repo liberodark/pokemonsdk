@@ -137,6 +137,8 @@ module Battle
     # @param pkmn [PFM::Pokemon] pokemon that was just caught
     # @param ball [GameData::BallItem]
     def give_pokemon_procedure(pkmn, ball)
+      Audio.bgm_play(*@battle_info.victory_bgm)
+      @scene.message_window.blocking = true
       $quests.catch_pokemon(pkmn)
       $wild_battle.remove_roaming_pokemon(pkmn)
       display_message(parse_text(18, 67, PKNAME[0] => pkmn.name))

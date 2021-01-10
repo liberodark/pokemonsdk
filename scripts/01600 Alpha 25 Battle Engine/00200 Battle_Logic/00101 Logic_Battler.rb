@@ -165,6 +165,16 @@ module Battle
       with.position, who.position = who.position, with.position
     end
 
+    # Iterate through all battlers
+    # @yieldparam battler [PFM::PokemonBattler]
+    def all_battlers
+      if block_given?
+        @battlers.flatten.each { |battler| yield(battler) }
+      else
+        return @battlers.flatten.each
+      end
+    end
+
     private
 
     # Load the battlers from a party

@@ -59,5 +59,11 @@ module Battle
     def ability_change_handler
       return AbilityChangeHandler.new(self, @scene)
     end
+
+    # Get the battle end handler
+    # @return [Battle::Logic::BattleEndHandler]
+    def battle_end_handler
+      return BattleEndHandler.new(self, @scene)
+    end
   end
 end

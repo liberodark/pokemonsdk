@@ -12,6 +12,15 @@ module PFM
       @gender @skill_learnt @ribbons
       @exp_rate @hp_rate @egg_at @egg_in
     ]
+    # List of properties to copy back to original
+    BACK_PROPETIES = %i[
+      @given_name @ability @level
+      @ev_hp @ev_atk @ev_dfe @ev_spd @ev_ats @ev_dfs
+      @trainer_id @trainer_name @step_remaining @loyalty
+      @exp @hp @status @status_count @item_holding
+      @captured_with @captured_in @captured_at @captured_level
+      @gender @exp_rate @hp_rate
+    ]
 
     # @return [Array<Battle::Move>] the moveset of the Pokemon
     attr_reader :moveset
@@ -62,6 +71,10 @@ module PFM
     # @return [PFM::Bag]
     attr_accessor :bag
 
+    # Tell if evolution should be checked
+    # @return [Boolean]
+    attr_accessor :check_evolution
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param scene [Battle::Scene] current battle scene
@@ -82,6 +95,7 @@ module PFM
       @last_battle_turn = -1
       @effects = Battle::Effects::EffectsHandler.new
       @move_history = []
+      @check_evolution = false
       initialize_set_is_follower
     end
 
@@ -158,6 +172,28 @@ module PFM
       return false
     end
 
+    # Let the Pokemon learn skill when leveling up
+    # @param silent [Boolean] if the skill is automatically learnt or not (false = show skill learn interface & messages)
+    # @param level [Integer] The level to check in order to learn the moves
+    def check_skill_and_learn(silent = false, level = @level)
+      copy_properties_back_to_original
+      @original.check_skill_and_learn(silent, level)
+      copy_moveset
+    end
+
+    # Copy all the properties back to the original pokemon
+    def copy_properties_back_to_original
+      return if @scene.battle_info.max_level
+
+      original = @original
+      BACK_PROPETIES.each do |ivar_name|
+        original.instance_variable_set(ivar_name, instance_variable_get(ivar_name))
+      end
+      @moveset.each_with_index do |move, i|
+        @original.skills_set[i]&.pp = move.pp
+      end
+    end
+
     private
 
     # Copy the properties of the original pokemon
@@ -170,11 +206,9 @@ module PFM
 
     # Copy the moveset of the original Pokemon
     def copy_moveset
-      @moveset = Array.new(@original.skills_set.size)
-      @original.skills_set.each_with_index do |skill, index|
-        @moveset[index] = Battle::Move[skill.symbol].new(skill.id, skill.pp, skill.ppmax, @scene)
+      @skills_set = @moveset = @original.skills_set.map do |skill|
+        Battle::Move[skill.symbol].new(skill.id, skill.pp, skill.ppmax, @scene)
       end
-      @skills_set = @moveset
     end
 
     # Function that sets the is_follower variable (for animation purpose)
