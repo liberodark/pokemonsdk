@@ -111,7 +111,7 @@ module BattleUI
     # @param exp [Integer] total exp he should receive
     # @return [Array(Yuki::Animation::TimedAnimation, PFM::PokemonBattler), nil]
     def create_exp_animation_for(pokemon, exp)
-      return nil if exp <= 0
+      return nil if exp <= 0 || pokemon.max_level == pokemon.level
 
       target_exp = pokemon.exp + exp
       next_exp_value = pokemon.exp_lvl.clamp(0, target_exp)

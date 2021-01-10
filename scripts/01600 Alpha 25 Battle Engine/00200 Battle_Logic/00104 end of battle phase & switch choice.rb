@@ -29,7 +29,7 @@ module Battle
         with = switch_choose_with(who)
         next unless with
 
-        request_switch_to_trainer(who) if who.bank != 0 && during_end_of_turn
+        request_switch_to_trainer(with) if who.bank != 0 && during_end_of_turn
         Actions::Switch.new(@scene, who, with).execute
       end
       @switch_request.clear
@@ -53,6 +53,8 @@ module Battle
 
         return @scene.visual.show_pokemon_choice(true)
       end
+      BattleEngine.set_actors(6.times.map { |i| battler(0, i) }.compact.map { |i| PFM::PokemonBattler24.new(i) }) # BE24
+      BattleEngine.set_enemies(6.times.map { |i| battler(1, i) }.compact.map { |i| PFM::PokemonBattler24.new(i) }) # BE24
       new_enemy = PFM::IA.request_switch(who) # BE24
       return nil unless new_enemy
 
@@ -73,9 +75,8 @@ module Battle
         )
         choice = @scene.display_message(text, 1, text_get(11, 27), text_get(11, 28))
         if choice == 0 && (result = @scene.visual.show_pokemon_choice)
-          with = battlers.find { |battler| battler.original == result }
           who = battlers[0]
-          Actions::Switch.new(@scene, who, with).execute if with != who
+          Actions::Switch.new(@scene, who, result).execute if result != who
         end
       end
     end
@@ -83,7 +84,7 @@ module Battle
     # Function that distribute experience for a dead Enemy Pokemon
     # @param enemy [PFM::PokemonBattler]
     def distribute_exp_for(enemy)
-      expable = trainer_battlers
+      expable = trainer_battlers.reject { |receiver| receiver.max_level == receiver.level }
       base_exp = exp_base(enemy)
       global_multi_exp_factor = $bag.contain_item?(:"exp._share")
 
@@ -107,6 +108,8 @@ module Battle
           end
         end
       end
+      return if exp_data.empty?
+
       @scene.visual.show_exp_distribution(exp_data.to_h)
     end
 

@@ -163,7 +163,7 @@ module Yuki
       # Indicate if this animation in particular is done (not the parallel, not the sub, this one)
       # @return [Boolean]
       def private_done?
-        @time_source.call > @end_time
+        @time_source.call >= @end_time
       end
 
       # Indicate if this animation in particular has started

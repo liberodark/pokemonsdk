@@ -416,8 +416,8 @@ module PFM
       return false unless $game_temp.trainer_battle
       return false unless BattleEngine::_can_switch(pokemon = get_pokemon(pokemon)) or pokemon.dead?
       potential_switch = @enemies[$game_temp.vs_type..-1]
-      trainer_id = pokemon.trainer_id
-      potential_switch.delete_if { |pkmn| pkmn.dead? or trainer_id != pkmn.trainer_id }
+      party_id = pokemon.party_id
+      potential_switch.delete_if { |pkmn| pkmn.dead? or party_id != pkmn.party_id }
       if potential_switch.size > 0
         $game_temp.vs_type.times do |j|
           next unless (enemy = @actors[j]) and !enemy.dead? or pokemon.dead?

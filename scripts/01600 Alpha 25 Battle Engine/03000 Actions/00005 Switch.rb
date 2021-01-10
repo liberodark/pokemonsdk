@@ -36,6 +36,7 @@ module Battle
         # @type [BattleUI::PokemonSprite]
         (sprite = visual.battler_sprite(@who.bank, @who.position)).go_out
         visual.hide_info_bar(@who)
+        switch_out_message
         wait_for(sprite, visual)
         # Logically switching the Pokemon
         @scene.logic.switch_battlers(@who, @with)
@@ -43,6 +44,7 @@ module Battle
         sprite.pokemon = @with
         sprite.go_in
         visual.show_info_bar(@with)
+        switch_in_message
         wait_for(sprite, visual)
         @scene.logic.switch_handler.execute_switch_events(@who, @with)
       end
@@ -57,6 +59,32 @@ module Battle
           visual.update
           Graphics.update
         end
+      end
+
+      # Show the switch out message
+      def switch_out_message
+        return if @who.dead?
+
+        msg_id = @who.from_party? ? (26 + @who.hp % 5) : 32
+        hash = {
+          PFM::Text::TRNAME[0] => @scene.battle_info.trainer_name(@who),
+          PFM::Text::PKNICK[0] => @who.given_name,
+          PFM::Text::PKNICK[1] => @who.given_name
+        }
+        message = parse_text(18, msg_id, hash)
+        @scene.display_message_and_wait(message)
+      end
+
+      # Show the switch in message
+      def switch_in_message
+        msg_id = @with.from_party? ? (22 + @with.hp % 2) : 18
+        hash = {
+          PFM::Text::TRNAME[0] => @scene.battle_info.trainer_name(@with),
+          PFM::Text::PKNICK[0] => @with.given_name,
+          PFM::Text::PKNICK[1] => @with.given_name
+        }
+        message = parse_text(18, msg_id, hash)
+        @scene.display_message_and_wait(message)
       end
     end
   end

@@ -80,18 +80,22 @@ module BattleUI
       return z
     end
 
-    # Get the base position of the Pokemon in 1v1
+    # Get the base position of the Trainer in 1v1
     # @return [Array(Integer, Integer)]
     def base_position_v1
-      return 242, 138 if enemy?
+      return 242, 108 if enemy?
 
       return 78, 188
     end
 
-    # Get the base position of the Pokemon in 2v2+
+    # Get the base position of the Trainer in 2v2+
     # @return [Array(Integer, Integer)]
     def base_position_v2
-      return 202, 133 if enemy?
+      if enemy?
+        return 202, 103 if @scene.battle_info.battlers[1].size >= 2
+
+        return 242, 108
+      end
 
       return 58, 188
     end

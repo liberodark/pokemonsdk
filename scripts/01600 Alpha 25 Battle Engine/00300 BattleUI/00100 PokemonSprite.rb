@@ -169,7 +169,7 @@ module BattleUI
 
     # Load the battler of the Pokemon
     def load_battler
-      if @last_pokemon&.id != @pokemon.id || @last_pokemon&.form != @pokemon.form
+      if @last_pokemon&.id != @pokemon.id || @last_pokemon&.form != @pokemon.form || @last_pokemon&.code != @pokemon.code
         bitmap.dispose if @gif
         remove_instance_variable(:@gif) if instance_variable_defined?(:@gif)
         gif = pokemon.bank != 0 ? pokemon.gif_face : pokemon.gif_back
@@ -181,7 +181,7 @@ module BattleUI
           self.bitmap = pokemon.bank != 0 ? pokemon.battler_face : pokemon.battler_back
         end
       end
-      @last_pokemon = @pokemon
+      @last_pokemon = @pokemon.clone
     end
 
     # Creates the go_in animation (Exiting the ball)
@@ -206,7 +206,10 @@ module BattleUI
     def follower_go_in_animation
       x, y = sprite_position
       bx = enemy? ? viewport.rect.width + width : -width
-      animation = Yuki::Animation.move(0.1, self, bx, y, x, y)
+      animation = ya.send_command_to(self, :visible=, true)
+      animation.play_before(ya.send_command_to(self, :zoom=, 1))
+      animation.play_before(ya.send_command_to(self, :opacity=, 255))
+      animation.play_before(Yuki::Animation.move(0.1, self, bx, y, x, y))
       animation.play_before(Yuki::Animation.send_command_to(self, :cry))
       return animation
     end
@@ -215,7 +218,9 @@ module BattleUI
     # @return [Yuki::Animation::TimedAnimation]
     def regular_go_in_animation
       ya = Yuki::Animation
-      animation = ya.send_command_to(self, :zoom=, 0)
+      animation = ya.send_command_to(self, :visible=, true)
+      animation.play_before(ya.send_command_to(self, :zoom=, 0))
+      animation.play_before(ya.send_command_to(self, :opacity=, 255))
       animation.play_before(ya.send_command_to(self, :set_position, *sprite_position))
       animation.play_before(ya::ScalarAnimation.new(0.1, self, :zoom=, 0, 1))
       animation.play_before(ya.send_command_to(self, :cry))
