@@ -176,11 +176,11 @@ module BattleUI
 
       def create_sprites
         @background = add_background('battle/expbar')
-        @name = add_text(37, 5, 0, 16, :given_name, color: 10, type: UI::SymText)
+        @name = add_text(37, 3, 0, 16, :given_name, color: 10, type: UI::SymText)
         @gender = add_sprite(5, 6, NO_INITIAL_IMAGE, type: UI::GenderSprite)
         with_font(20) do
-          @level = add_text(37, 20, 0, 13, :level_text2, color: 10, type: UI::SymText)
-          @exp_obtained = add_text(116, 20, 0, 13, "+#{@exp_received}", 2, color: 10) if @exp_received > 0
+          @level = add_text(37, 18, 0, 13, :level_text2, color: 10, type: UI::SymText)
+          @exp_obtained = add_text(116, 18, 0, 13, "+#{@exp_received}", 2, color: 10) if @exp_received > 0
         end
         create_exp_bar
         @level_up_arrow = add_sprite(124, 7, 'battle/exp_level_up', 3, 1, type: SpriteSheet)
@@ -238,7 +238,7 @@ module BattleUI
 
       def create_sprites
         @background = add_background('battle/exp_stats_bar')
-        @name = add_text(160, 11, 0, 16, :given_name, 1, color: 0, type: UI::SymText)
+        @name = add_text(160, 9, 0, 16, :given_name, 1, color: 0, type: UI::SymText)
         @gender = add_sprite(220, 11, NO_INITIAL_IMAGE, type: UI::GenderSprite)
         create_stats_texts
       end
@@ -248,9 +248,9 @@ module BattleUI
         6.times do |i|
           ox = 156 * (i / 3)
           oy = 19 * (i % 3)
-          add_text(13 + ox, 33 + oy, 0, 16, text_get(22, 121 + i), color: 10)
-          add_text(130 + ox, 33 + oy, 0, 16, @list1[i].to_s, 2, color: 0)
-          add_text(139 + ox, 33 + oy, 0, 16, "+#{@list1[i] - @list0[i]}", color: 16)
+          add_text(13 + ox, 31 + oy, 0, 16, text_get(22, 121 + i), color: 10)
+          add_text(130 + ox, 31 + oy, 0, 16, @list1[i].to_s, 2, color: 0)
+          add_text(139 + ox, 31 + oy, 0, 16, "+#{@list1[i] - @list0[i]}", color: 16)
         end
       end
 

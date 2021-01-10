@@ -15,9 +15,10 @@ module Battle
       end
 
       # Get the item to pick up
+      # @param pokemon [PFM::Pokemon]
       # @return [Integer]
       def pickup_item(pokemon)
-        off = (((pkmn.level - 1.0) / GameData::MAX_LEVEL) * 10).to_i # Offset should always depends on the final max level
+        off = (((pokemon.level - 1.0) / GameData::MAX_LEVEL) * 10).to_i # Offset should always depends on the final max level
         ind = pickup_index(rand(100))
         env = $env
         return GameData::GrassItem[off][ind] if env.tall_grass? || env.grass?

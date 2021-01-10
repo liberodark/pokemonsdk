@@ -95,7 +95,7 @@ module BattleUI
     end
 
     def text_coordinates
-      return enemy? ? [41, 12] : [14, 12]
+      return enemy? ? [41, 10] : [14, 10]
     end
 
     def create_icon

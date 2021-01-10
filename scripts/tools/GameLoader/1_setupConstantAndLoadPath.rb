@@ -25,4 +25,9 @@ rescue Exception
   PSDK_Version = 6197
 end
 # Display PSDK version
-puts("\e[31mPSDK Version : #{[PSDK_Version].pack('I>').unpack('C*').join('.')}\e[37m")
+arr = [PSDK_Version].pack('I>').unpack('C*')
+if arr[2] == 24 && arr[3] >= 128
+  arr[2] = 25
+  arr[3] -= 256
+end
+puts("\e[31mPSDK Version : #{arr.join('.').gsub(/^(0\.)+/, '')}\e[37m") # [PSDK_Version].pack('I>').unpack('C*').join('.')

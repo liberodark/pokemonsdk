@@ -144,8 +144,8 @@ module BattleUI
       def create_sprites
         # TODO: separate in methods
         add_background(@type == :info ? 'battle/button_y' : 'battle/button_x')
-        @text = add_text(23, 6, 0, 16, nil.to_s, color: 10)
-        add_sprite(5, 5, NO_INITIAL_IMAGE, @type == :info ? :Y : :X, type: UI::KeyShortcut)
+        @text = add_text(23, 4, 0, 16, nil.to_s, color: 10)
+        add_sprite(3, 3, NO_INITIAL_IMAGE, @type == :info ? :Y : :X, type: UI::KeyShortcut)
       end
     end
 
@@ -187,11 +187,11 @@ module BattleUI
         @background = add_background('battle/background')
         @item_box = add_sprite(0, 61, 'battle/last_item_box')
         @y = 61
-        @item_name = add_text(14, 15, 0, 16, :exact_name, color: 0, type: UI::SymText)
+        @item_name = add_text(14, 13, 0, 16, :exact_name, color: 0, type: UI::SymText)
         @item_icon = add_sprite(240, 2, NO_INITIAL_IMAGE, type: UI::ItemSprite)
-        @remaining = add_text(289, 15, 0, 16, nil.to_s, 2)
-        @description = add_text(14, 36, 284, 16, :descr, color: 0, type: UI::SymMultilineText)
-        @use_text = add_text(151, 90, 0, 16, text_get(22, 0), color: 10)
+        @remaining = add_text(289, 13, 0, 16, nil.to_s, 2)
+        @description = add_text(14, 34, 284, 16, :descr, color: 0, type: UI::SymMultilineText)
+        @use_text = add_text(151, 88, 0, 16, text_get(22, 0), color: 10)
         @icon = add_sprite(131, 90, NO_INITIAL_IMAGE, :X, type: UI::KeyShortcut)
       end
     end

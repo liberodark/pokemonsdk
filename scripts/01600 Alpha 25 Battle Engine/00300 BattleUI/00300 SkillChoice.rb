@@ -129,7 +129,7 @@ module BattleUI
       def create_sprites
         # TODO: separate in methods
         @background = add_sprite(0, 0, 'battle/types', 1, GameData::Type.all.size, type: SpriteSheet)
-        @text = add_text(28, 8, 0, 16, :name, color: 10, type: UI::SymText)
+        @text = add_text(28, 6, 0, 16, :name, color: 10, type: UI::SymText)
       end
     end
 
@@ -162,7 +162,7 @@ module BattleUI
 
       def create_sprites
         @pp_background = add_sprite(122, 214, 'battle/pp_box', 1, 3, type: SpriteSheet)
-        @pp_text = add_text(132, 220, 0, 16, :pp_text, 1, color: 10, type: UI::SymText)
+        @pp_text = add_text(146, 218, 0, 16, :pp_text, 1, color: 10, type: UI::SymText)
       end
     end
 
@@ -197,13 +197,13 @@ module BattleUI
         @background = add_background('battle/background')
         @box = add_sprite(0, 71, 'battle/description_box')
         @y = 71
-        @skill_name = add_text(14, 15, 0, 16, :name, type: UI::SymText)
-        @power_text = add_text(133, 15, 0, 16, text_get(27, 37), color: 10)
-        @power_value = add_text(193, 15, 0, 16, :power_text, 2, type: UI::SymText)
-        @accuracy_text = add_text(229, 15, 0, 16, text_get(27, 39), color: 10)
-        @accuracy_value = add_text(289, 15, 0, 16, :accuracy_text, 2, type: UI::SymText)
-        @move_category = add_sprite(213, 15, NO_INITIAL_IMAGE, type: UI::CategorySprite)
-        @description = add_text(14, 36, 284, 16, :description, color: 0, type: UI::SymMultilineText)
+        @skill_name = add_text(14, 13, 0, 16, :name, type: UI::SymText)
+        @power_text = add_text(133, 13, 0, 16, text_get(27, 37), color: 10)
+        @power_value = add_text(193, 13, 0, 16, :power_text, 2, type: UI::SymText)
+        @accuracy_text = add_text(229, 13, 0, 16, text_get(27, 39), color: 10)
+        @accuracy_value = add_text(289, 13, 0, 16, :accuracy_text, 2, type: UI::SymText)
+        @move_category = add_sprite(213, 13, NO_INITIAL_IMAGE, type: UI::CategorySprite)
+        @description = add_text(14, 34, 284, 16, :description, color: 0, type: UI::SymMultilineText)
       end
     end
 
@@ -245,8 +245,8 @@ module BattleUI
       def create_sprites
         # TODO: separate in methods
         @background = add_background(@type == :descr ? 'battle/button_x' : 'battle/button_mega')
-        @text = add_text(23, @type == :descr ? 6 : 11, 0, 16, nil.to_s, color: 10)
-        add_sprite(5, @type == :descr ? 5 : 10, NO_INITIAL_IMAGE, @type == :descr ? :X : :Y, type: UI::KeyShortcut)
+        @text = add_text(23, @type == :descr ? 4 : 9, 0, 16, nil.to_s, color: 10)
+        add_sprite(3, @type == :descr ? 3 : 8, NO_INITIAL_IMAGE, @type == :descr ? :X : :Y, type: UI::KeyShortcut)
       end
     end
 

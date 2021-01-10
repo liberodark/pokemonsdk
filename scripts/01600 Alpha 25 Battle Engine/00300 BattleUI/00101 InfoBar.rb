@@ -115,7 +115,7 @@ module BattleUI
       # @type [UI::Bar]
       @hp_bar = push_sprite Bar.new(@viewport, *hp_bar_coordinates, RPG::Cache.interface('battle/bars_hp'), *HP_BAR_INFO)
       @hp_bar.data_source = :hp_rate
-      @hp_text = add_text(66, 19, 0, 10, enemy? ? :void_string : :hp_pokemon_number, type: SymText, color: 10)
+      @hp_text = add_text(66, 17, 0, 10, enemy? ? :void_string : :hp_pokemon_number, type: SymText, color: 10)
     end
 
     def create_exp
@@ -136,7 +136,9 @@ module BattleUI
     end
 
     def create_name
-      @name = add_text(8, -4, 0, 16, :given_name, color: 10, type: SymText)
+      with_font(20) do
+        @name = add_text(8, -4, 0, 16, :given_name, 0, 1, color: 10, type: SymText)
+      end
     end
 
     def create_catch_sprite
@@ -148,7 +150,7 @@ module BattleUI
     end
 
     def create_level
-      add_text(91, -4, 0, 16, :level_text, color: 10, type: SymText)
+      add_text(91, -6, 0, 16, :level_pokemon_number, 0, 1, color: 10, type: SymText)
     end
 
     def create_status
