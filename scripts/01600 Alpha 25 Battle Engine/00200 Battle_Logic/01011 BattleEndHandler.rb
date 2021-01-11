@@ -87,24 +87,24 @@ module Battle
       ids = [$game_variables[Yuki::Var::Trainer_Battle_ID], $game_variables[Yuki::Var::Second_Trainer_ID]].select { |i| i > 0 }
       if handler.logic.battle_result == 0
         Audio.bgm_play(*handler.scene.battle_info.victory_bgm)
-        # Victory message
+        # Defeat message
         ids.each do |id|
-          handler.scene.display_message_and_wait(text_get(47, id))
+          handler.scene.display_message_and_wait(text_get(48, id))
         end
         # Add money
         v = handler.scene.battle_info.total_money(handler.logic)
         $pokemon_party.add_money(v)
         handler.scene.display_message(parse_text(18, 60, PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => v.to_s))
       else
-        # Defeat message
+        # Victory message
         ids.each do |id|
-          handler.scene.display_message_and_wait(text_get(48, id))
+          handler.scene.display_message_and_wait(text_get(47, id))
         end
       end
     end
 
     BattleEndHandler.register('PSDK wild victory') do |handler|
-      next if $game_temp.trainer_battle || handler.logic.battle_result == 1
+      next if $game_temp.trainer_battle || handler.logic.battle_result.between?(1, 2)
 
       Audio.bgm_play(*handler.scene.battle_info.victory_bgm)
       handler.logic.battle_phase_end

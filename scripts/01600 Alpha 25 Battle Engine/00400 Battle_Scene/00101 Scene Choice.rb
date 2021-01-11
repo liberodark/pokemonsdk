@@ -197,7 +197,7 @@ module Battle
       @message_window.wait_input = true
       result = @logic.flee_handler.attempt(@player_actions.size)
       if result == :success
-        @battle_result = :flee
+        @logic.battle_result = 2
         @next_update = :battle_end
       elsif result == :blocked
         @next_update = :player_action_choice

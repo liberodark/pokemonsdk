@@ -37,6 +37,8 @@ module Battle
       @battle_result = @logic.battle_result
       @logic.battle_end_handler.process
       $game_temp.in_battle = false
+      $game_temp.battle_proc&.call(@battle_result)
+      $game_temp.battle_proc = nil
       return_to_last_scene
     end
 
