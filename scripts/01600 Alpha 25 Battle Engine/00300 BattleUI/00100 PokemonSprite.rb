@@ -206,11 +206,12 @@ module BattleUI
     def follower_go_in_animation
       x, y = sprite_position
       bx = enemy? ? viewport.rect.width + width : -width
+      ya = Yuki::Animation
       animation = ya.send_command_to(self, :visible=, true)
       animation.play_before(ya.send_command_to(self, :zoom=, 1))
       animation.play_before(ya.send_command_to(self, :opacity=, 255))
-      animation.play_before(Yuki::Animation.move(0.1, self, bx, y, x, y))
-      animation.play_before(Yuki::Animation.send_command_to(self, :cry))
+      animation.play_before(ya.move(0.1, self, bx, y, x, y))
+      animation.play_before(ya.send_command_to(self, :cry))
       return animation
     end
 
