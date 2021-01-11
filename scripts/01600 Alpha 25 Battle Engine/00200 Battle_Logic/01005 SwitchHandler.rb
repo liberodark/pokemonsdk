@@ -332,7 +332,7 @@ module Battle
     SwitchHandler.register_switch_event_hook('PSDK switch: Frisk') do |handler, _, with|
       next if with.ability_db_symbol != :frisk
 
-      foe_item = handler.logic.foes_of(with).find { |foe| foe.alive? && foe.item_db_symbol != :__undef__ }
+      foe_item = handler.logic.foes_of(with).find { |foe| foe.alive? && foe.battle_item_db_symbol != :__undef__ }
       next unless foe_item
 
       handler.scene.visual.show_ability(with)

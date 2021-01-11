@@ -87,7 +87,7 @@ module Battle
     def distribute_exp_for(enemy)
       return if @battle_info.disallow_exp?
 
-      expable = trainer_battlers.reject { |receiver| receiver.max_level == receiver.level }
+      expable = trainer_battlers.reject { |receiver| receiver.max_level == receiver.level || receiver.dead? }
       base_exp = exp_base(enemy)
       global_multi_exp_factor = $bag.contain_item?(:"exp._share")
 
