@@ -59,9 +59,9 @@ module Battle
         @trainer_is_couple = hash[:couple] || false
         @battle_id = hash[:battle_id] || -1
         @flee_attempt_count = 0
-        @fishing = hash[:fishing] || false #TODO Add the fishing attribute to the BattleInfo initialization
-        @victory_bgm = hash[:victory_bgm] || 'audio/bgm/xy_trainer_battle_victory'
-        @battle_bgm = hash[:battle_bgm] || 'audio/bgm/rosa_wild_battle'
+        @fishing = hash[:fishing] || false
+        @victory_bgm = hash[:victory_bgm] || guess_victory_bgm
+        @battle_bgm = hash[:battle_bgm] || guess_battle_bgm
         @additional_money = 0
       end
 
@@ -188,6 +188,25 @@ module Battle
       end
 
       private
+
+      # Function that guess the battle bgm
+      # @return [Array, String]
+      def guess_battle_bgm
+        audio_file = $game_system.battle_bgm || $game_system.playing_bgm
+        return 'audio/bgm/rosa_wild_battle' if audio_file.name.empty?
+
+        return ["audio/bgm/#{audio_file.name}", audio_file.volume, audio_file.pitch]
+      end
+
+      # Function that guess the victory bgm
+      # @return [Array, String]
+      def guess_victory_bgm
+        audio_file = $game_system.battle_end_me
+        filename = "audio/bgm/#{audio_file.name}"
+        return 'audio/bgm/xy_trainer_battle_victory' unless File.exist?(filename)
+
+        return [filename, audio_file.volume, audio_file.pitch]
+      end
 
       # Find the party index of a battler
       # @param battler [PFM::PokemonBattler]

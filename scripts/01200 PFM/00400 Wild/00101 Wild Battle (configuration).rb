@@ -113,6 +113,7 @@ module PFM
       info.add_party(0, *info.player_basic_info)
       info.add_party(1, enemy_arr)
       info.battle_id = battle_id
+      info.fishing = !@fish_battle.nil?
       info.vs_type = 2 if enemy_arr.size >= 2
       return info
     end
