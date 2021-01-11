@@ -17,118 +17,6 @@ module Battle
       end
       BALL_RATE_CALCULATION = {}
 
-      class << self
-        # Define a new ball rate calculation in BALL_RATE_CALCULATION
-        # @param ball_name [Symbol] the DB_symbol of the ball
-        # @yieldparam target [PFM::PokemonBattler]
-        # @yieldparam pkm_ally [PFM::PokemonBattler]
-        # @yieldreturn [Integer] the new catch_rate
-        def add_ball_rate_calculation(ball_name, &block)
-          BALL_RATE_CALCULATION[ball_name] = block if block
-        end
-      end
-
-      add_ball_rate_calculation(:dive_ball) do |target, _pkm_ally|
-        return (target.rareness * 3.5) if @scene.battle_info.fishing
-        return (target.rareness * 3.5) if $game_player.surfing?
-
-        return target.rareness
-      end
-
-      add_ball_rate_calculation(:dusk_ball) do |target, _pkm_ally|
-        return (target.rareness * 3.5) if $env.cave?
-        return (target.rareness * 3.5) if $env.night?
-
-        return target.rareness
-      end
-
-      add_ball_rate_calculation(:fast_ball) do |target, _pkm_ally|
-        return target.rareness * (target.base_spd >= 100 ? 4 : 1)
-      end
-
-      add_ball_rate_calculation(:heavy_ball) do |target, _pkm_ally|
-        modifier = target.rareness
-        weight = GameData::Pokemon[target.id].weight
-        if weight.between?(0, 204.7)
-          modifier -= 20
-        elsif weight.between?(204.8, 307.1)
-          modifier += 20
-        elsif weight.between?(307.2, 409.5)
-          modifier += 30
-        elsif weight >= 409.6
-          modifier += 40
-        end
-        return modifier.clamp(1, 255)
-      end
-
-      add_ball_rate_calculation(:level_ball) do |target, _pkm_ally|
-        e_level = target.level
-        p_level = pkm_ally.level
-        case
-        when (e_level * 4) <= p_level
-          return target.rareness * 8
-        when (e_level * 2) <= p_level
-          return target.raress * 4
-        when e_level < p_level
-          return target.rareness * 2
-        when e_level >= p_level
-          return target.rareness
-        end
-      end
-
-      add_ball_rate_calculation(:love_ball) do |target, _pkm_ally|
-        if target.id == pkm_ally.id
-          return target.rareness * 8 if (target.gender != pkm_ally.gender) && [target.gender, pkm_ally.gender].none? { |pkm| pkm.gender == 0 }
-        end
-        return target.rareness
-      end
-
-      add_ball_rate_calculation(:lure_ball) do |target, _pkm_ally|
-        return target.rareness * (@scene.battle_info.fishing ? 3 : 1)
-      end
-
-      add_ball_rate_calculation(:moon_ball) do |target, _pkm_ally|
-        data = GameData::Pokemon[target.id].special_evolution
-        return target.rareness * (data[:stone] == 81 ? 4 : 1)
-      end
-
-      add_ball_rate_calculation(:nest_ball) do |target, _pkm_ally|
-        case
-        when target.level >= 30
-          return target.rareness
-        when target.level >= 20
-          return target.rareness * 2
-        when target.level <= 19
-          return target.rareness * 3
-        end
-      end
-
-      add_ball_rate_calculation(:net_ball) do |target, _pkm_ally|
-        check = [target.type1, target.type2, target.type3].any? { |type| [3, 12].include? type }
-        return targer.rareness * (check ? 3 : 1)
-      end
-
-      add_ball_rate_calculation(:quick_ball) do |target, _pkm_ally|
-        return target.rareness * ($game_temp.battle_turn == 0 ? 4 : 1)
-      end
-
-      add_ball_rate_calculation(:repeat_ball) do |target, _pkm_ally|
-        return target.rareness * ($pokedex.has_captured?(target.id) ? 3 : 1)
-      end
-
-      add_ball_rate_calculation(:timer_ball) do |target, _pkm_ally|
-        case
-        when $game_temp.battle_turn > 30
-          return target.rareness * 4
-        when $game_temp.battle_turn >= 21
-          return target.rareness * 3
-        when $game_temp.battle_turn >= 11
-          return targer.rareness * 2
-        when $game_temp.battle_turn <= 10
-          return targer.rareness
-        end
-      end
-
       # ID of the catching text in the text database
       # @return [Array<Array<Integer>>]
       TEXT_CATCH = [[18, 63], [18, 64], [18, 65], [18, 66], [18, 67], [18, 68]]
@@ -153,6 +41,115 @@ module Battle
       # @return [Boolean]
       def caught?
         return @bounces == 4 || @critical_capture
+      end
+
+      class << self
+        # Define a new ball rate calculation in BALL_RATE_CALCULATION
+        # @param ball_name [Symbol] the DB_symbol of the ball
+        # @yieldparam target [PFM::PokemonBattler]
+        # @yieldparam pkm_ally [PFM::PokemonBattler]
+        # @yieldreturn [Integer] the new catch_rate
+        def add_ball_rate_calculation(ball_name, &block)
+          BALL_RATE_CALCULATION[ball_name] = block if block
+        end
+      end
+
+      add_ball_rate_calculation(:dive_ball) do |target, _pkm_ally|
+        next (target.rareness * 3.5) if @scene.battle_info.fishing
+        next (target.rareness * 3.5) if $game_player.surfing?
+
+        next target.rareness
+      end
+
+      add_ball_rate_calculation(:dusk_ball) do |target, _pkm_ally|
+        next (target.rareness * 3.5) if $env.cave?
+        next (target.rareness * 3.5) if $env.night?
+
+        next target.rareness
+      end
+
+      add_ball_rate_calculation(:fast_ball) do |target, _pkm_ally|
+        next target.rareness * (target.base_spd >= 100 ? 4 : 1)
+      end
+
+      add_ball_rate_calculation(:heavy_ball) do |target, _pkm_ally|
+        modifier = target.rareness
+        weight = GameData::Pokemon[target.id].weight
+        if weight.between?(0, 204.7)
+          modifier -= 20
+        elsif weight.between?(204.8, 307.1)
+          modifier += 20
+        elsif weight.between?(307.2, 409.5)
+          modifier += 30
+        elsif weight >= 409.6
+          modifier += 40
+        end
+        next modifier.clamp(1, 255)
+      end
+
+      add_ball_rate_calculation(:level_ball) do |target, pkm_ally|
+        e_level = target.level
+        p_level = pkm_ally.level
+        if (e_level * 4) <= p_level
+          next target.rareness * 8
+        elsif (e_level * 2) <= p_level
+          next target.raress * 4
+        elsif e_level < p_level
+          next target.rareness * 2
+        end
+
+        next target.rareness
+      end
+
+      add_ball_rate_calculation(:love_ball) do |target, pkm_ally|
+        if target.id == pkm_ally.id
+          next target.rareness * 8 if (target.gender != pkm_ally.gender) && [target.gender, pkm_ally.gender].none? { |pkm| pkm.gender == 0 }
+        end
+        next target.rareness
+      end
+
+      add_ball_rate_calculation(:lure_ball) do |target, _pkm_ally|
+        next target.rareness * (@scene.battle_info.fishing ? 3 : 1)
+      end
+
+      add_ball_rate_calculation(:moon_ball) do |target, _pkm_ally|
+        data = GameData::Pokemon[target.id].special_evolution
+        next target.rareness * (data[:stone] == 81 ? 4 : 1)
+      end
+
+      add_ball_rate_calculation(:nest_ball) do |target, _pkm_ally|
+        if target.level >= 30
+          next target.rareness
+        elsif target.level >= 20
+          next target.rareness * 2
+        else
+          next target.rareness * 3
+        end
+      end
+
+      add_ball_rate_calculation(:net_ball) do |target, _pkm_ally|
+        check = [target.type1, target.type2, target.type3].any? { |type| [3, 12].include? type }
+        next targer.rareness * (check ? 3 : 1)
+      end
+
+      add_ball_rate_calculation(:quick_ball) do |target, _pkm_ally|
+        next target.rareness * ($game_temp.battle_turn == 0 ? 4 : 1)
+      end
+
+      add_ball_rate_calculation(:repeat_ball) do |target, _pkm_ally|
+        next target.rareness * ($pokedex.has_captured?(target.id) ? 3 : 1)
+      end
+
+      add_ball_rate_calculation(:timer_ball) do |target, _pkm_ally|
+        if $game_temp.battle_turn > 30
+          next target.rareness * 4
+        elsif $game_temp.battle_turn >= 21
+          next target.rareness * 3
+        elsif $game_temp.battle_turn >= 11
+          next targer.rareness * 2
+        else
+          next targer.rareness
+        end
       end
 
       private
@@ -207,26 +204,24 @@ module Battle
       # Check if a Critical capture ensue
       # @return [Boolean]
       def check_critical_capture(a)
-        count = 0
-        GameData::Pokemon.all.size.times { |i| count += 1 if $pokedex.pokemon_caught? i }
-        case
-        when count > 600
+        count = $pokedex.pokemon_captured
+        if count > 600
           a *= 2.5
-        when count >= 451
+        elsif count >= 451
           a *= 2
-        when count >= 301
+        elsif count >= 301
           a *= 1.5
-        when count >= 151
+        elsif count >= 151
           a *= 1
-        when count >= 31
+        elsif count >= 31
           a *= 0.5
-        when count <= 30
+        else
           a *= 0
         end
         c = a / 6
         log_debug("c = #{c}")
         if rand(0..255) < c
-          @critical_capture = true 
+          @critical_capture = true
           @bounces = 1
         end
       end

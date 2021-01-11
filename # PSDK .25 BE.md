@@ -97,6 +97,9 @@ In order to get the thing clean, we use handlers to handle the generic things th
 - `EndTurnHandler` : Manage the end of turn sequence, can be accessed through `logic.end_turn_handler`. **This is not a change handler, this mean it doesn't act as the other handlers!**
 - `WeatherChangeHandler` : Manage the weather condition changes, can be accessed through `logic.weather_change_handler`
 - `FleeHandler` : Manage the flee sequence (& calculation), can be accessed through `logic.flee_handler`
+- `CatchHandler` : Manage the calculations related to catching the Pokemon, can be accessed through `logic.catch_handler`
+- `AbilityChangeHandler` : Manage the change ability procedure, can be accessed through `logic.ability_change_handler`
+- `BattleEndHandler` : Manage the everything that happends at the end of the battle
 - New handlers ???
 
 **Important note about the handlers**: the logic instanciate a new handler everytime you call the function that give access to the handler. If you need to show the prevention reason when you don't call the `*_with_process` function but use the test function instead, it's recommanded to store the handler in a local variable.
@@ -473,6 +476,100 @@ Battle::Logic::FleeHandler.register_flee_block_hook('No flee when BT_NoEscape is
 
   handler.prevent_change do
     handler.scene.display_message(parse_text(18, 77))
+  end
+end
+```
+
+### CatchHandler
+
+This handler is responsive of calculating of the enemy Pokémon can be caught and showing the sequence of catching the Pokémon (including animation & message).
+
+#### How to define a new ball
+
+It is possible to have specific calculation depending on the type of ball, to do so, call `Battle::Logic::CatchHandler.add_ball_rate_calculation(db_symbol)`
+
+This function takes `db_symbol` as the db_symbol of the ball item and a block that is feeded with the following arguments:
+- `target` : The PFM::PokemonBattler object of the Pokémon that should be caught
+- `pkm_ally` : The PFM::PokemonBattler object of the Player's Pokémon.
+
+The block should return the final rate of the ball (so you should return a modified version of target.rareness).
+
+Example:
+```ruby
+Battle::Logic::CatchHandler.add_ball_rate_calculation(:dive_ball) do |target, _pkm_ally|
+  next (target.rareness * 3.5) if @scene.battle_info.fishing
+  next (target.rareness * 3.5) if $game_player.surfing?
+
+  next target.rareness
+end
+```
+
+Note: Beast ball is not implement through add_ball_rate_calculation!
+
+#### How to define a beast Pokémon
+
+Add its db_symbol to `Battle::Logic::CatchHandler::ULTRA_BEAST`.
+
+Example:
+```ruby
+Battle::Logic::CatchHandler::ULTRA_BEAST << :pheromosa
+```
+
+### AbilityChangeHandler
+
+This handler is responsive of checking if an ability can be changed on the Pokemon and perform the change if requested.
+
+There's several kind of change that can be prevented.
+
+#### Ability on the target that cannot be changed
+
+If a Pokemon hold any of the ability defined in `Battle::Logic::AbilityChangeHandler::CANT_OVERWRITE_ABILITIES` you cannot change its ability to another ability.
+
+To define such ability, just add its db_symbol to the constant. Example:
+```ruby
+Battle::Logic::AbilityChangeHandler::CANT_OVERWRITE_ABILITIES << :multitype
+```
+
+#### Target ability that cannot be changed depending on the move
+
+When a Pokemon use a move against a target, it is possible that some ability of the target prevents the target ability to be changed. To do so, define the list a target ability that prevent a move from changing the ability this way:
+
+```ruby
+Battle::Logic::AbilityChangeHandler::SKILL_BLOCKING_ABILITIES[mov_db_symbol] = [ability_db_symbol1, ability_db_symbol2, ...]
+```
+
+#### Abilities that cannot overwrite target ability
+
+Sometimes you need to specify a list of abilities that cannot be overwritten if you want to change target ability with this ability. To do so define the list this way:
+```ruby
+Battle::Logic::AbilityChangeHandler::ABILITY_BLOCKING_ABILITIES[ability_to_change_db_symbol] = [target_ability_db_symbol1, target_ability_db_symbol2, ...]
+```
+
+Example:
+```ruby
+Battle::Logic::AbilityChangeHandler::ABILITY_BLOCKING_ABILITIES[:trace] = %i[flower_gift forecast illusion imposter trace]
+```
+
+Don't forget that some cases are already handled by `Battle::Logic::AbilityChangeHandler::CANT_OVERWRITE_ABILITIES`.
+
+### BattleEndHandler
+
+This handler handle every actions that happends at the end of the battle. For example, the trigger of the pickup ability, returning to the Pokemon Center when defeated, etc...
+
+You can define stuff that happens at the end of the battle using those two methods:
+- `Battle::Logic::BattleEndHandler.register('Reason') do |handler, players_pokemon| end`
+- `Battle::Logic::BattleEndHandler.register_no_defeat('Reason') do |handler, players_pokemon| end`
+
+The block sent to `register_no_defeat` are not called if the result is defeat.
+The variable `handler` allows you to access the battle scene and the variable `players_pokemon` contains the PokemonBattler of the Player. You will need to call the `.original` method to get the actual Pokemon in the party in case you want to change something on the Pokemon.
+
+Example:
+```ruby
+Battle::Logic::BattleEndHandler.register_no_defeat('PSDK honey gather') do |_, players_pokemon|
+  players_pokemon.each do |pokemon|
+    next unless pokemon.original.ability_db_symbol == :honey_gather && pokemon.original.item_holding == 0 && rand(100) < (pokemon.level / 2)
+
+    pokemon.original.item_holding = GameData::Item[:honey].id
   end
 end
 ```
