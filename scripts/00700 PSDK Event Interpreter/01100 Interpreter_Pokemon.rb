@@ -70,10 +70,12 @@ class Interpreter
     raise "Database Error : Skill ##{id_skill} doesn't exists." unless GameData::Skill.id_valid?(id_skill)
 
     @wait_count = 2
+    result = nil
     # Show the skill learn interface
     $scene.call_scene(GamePlay::MoveTeaching, pokemon, GameData::Skill[id_skill].id) do |scene|
-      return scene.learnt
+      result = scene.learnt
     end
+    return result
   end
   alias enseigner_capacite skill_learn
 
