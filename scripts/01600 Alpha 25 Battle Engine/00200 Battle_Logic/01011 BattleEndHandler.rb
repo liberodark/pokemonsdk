@@ -87,6 +87,7 @@ module Battle
       ids = [$game_variables[Yuki::Var::Trainer_Battle_ID], $game_variables[Yuki::Var::Second_Trainer_ID]].select { |i| i > 0 }
       if handler.logic.battle_result == 0
         Audio.bgm_play(*handler.scene.battle_info.victory_bgm)
+        handler.logic.battle_phase_end
         # Defeat message
         ids.each do |id|
           handler.scene.display_message_and_wait(text_get(48, id))

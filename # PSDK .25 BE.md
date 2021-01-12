@@ -707,7 +707,7 @@ Here's the list of important methods you'll find in the moves:
 - `chance_of_hit(user, target)` : Give the chance the user has to hit the target (after the move accuracy was tested).
 - `proceed(user, target_bank, target_position)` : Execute the move.
 - `move_usable_by_user(user, targets)` : Test if the user is able to use the move (not frozen etc...). This method invokes the `move_prevention_user` hook and is called before testing the move accuracy.
-- `disabled?` : Tell if the move cannot be choosen from the choice because it's disabled by an effect.
+- `disabled?(user)` : Tell if the move cannot be choosen from the choice because it's disabled by an effect.
 - `target_immune?(user, target)` : Test if the target is immune (type). This method can be overwritten to prevent effects like LeechSeed on Grass Pokémon. If this method returns true, the following message will be shown: `The {target} is not affected`.
 - `move_blocked_by_target?(user, target)` : Test if the move is blocked by the target thanks to a specific effect (protect). This method calls the move_prevention_target hook and this hook should return true if the target blocks the move. This method doesn't prevent the move from working on other targets if they didn't block the move.
 - `blocked_by?(target, symbol)` : Test if the target is blocking the move using a specific move described by symbol (the move db_symbol). This method should be used inside move_prevention_target hooks.

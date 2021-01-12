@@ -19,14 +19,16 @@ module Battle
     end
 
     # Function that tells if the move is disabled
+    # @param user [PFM::PokemonBattler] user of the move
     # @return [Boolean]
-    def disabled?
-      disable_reason ? true : false
+    def disabled?(user)
+      disable_reason(user) ? true : false
     end
 
     # Get the reason why the move is disabled
+    # @param user [PFM::PokemonBattler] user of the move
     # @return [#call] Block that should be called when the move is disabled
-    def disable_reason
+    def disable_reason(user)
       return proc {} if pp == 0
 
       exec_hooks(Move, :move_disabled_check, binding)

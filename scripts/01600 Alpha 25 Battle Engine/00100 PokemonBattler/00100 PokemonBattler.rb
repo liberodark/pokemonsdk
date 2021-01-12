@@ -153,7 +153,7 @@ module PFM
     # Test if the Pokemon can use a move
     # @return [Boolean]
     def can_move?
-      return false if moveset.all? { |move| move.pp == 0 || move.disabled? }
+      return false if moveset.all? { |move| move.pp == 0 || move.disabled?(self) }
 
       return true
     end

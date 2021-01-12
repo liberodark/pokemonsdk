@@ -111,6 +111,7 @@ module Battle
     def show_exp_distribution(exp_data)
       lock do
         exp_ui = BattleUI::ExpDistribution.new(@viewport_sub, @scene, exp_data)
+        @scene.display_message_and_wait(ext_text(8999, 21))
         exp_ui.start_animation
         scene_update_proc { exp_ui.update } until exp_ui.done?
         exp_ui.dispose

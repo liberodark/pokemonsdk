@@ -79,7 +79,7 @@ module BattleUI
     def validate
       bounce_button
       move = @pokemon.moveset[@index]
-      if (blocked = move.disable_reason)
+      if (blocked = move.disable_reason(@pokemon))
         $game_system.se_play($data_system.buzzer_se)
         return blocked.call
       end
