@@ -1,5 +1,7 @@
 module Battle
   class Move
+    # List of choice item
+    CHOICE_ITEMS = %i[choice_band choice_specs choice_scarf]
     # Function that tests if the user is able to use the move
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
@@ -102,6 +104,14 @@ module Battle
     next move.logic.each_effects(user, target) do |effect|
       break true if effect.on_move_prevention_target(user, target, move) == true
     end == true
+  end
+
+  # Choice item
+  Move.register_move_disabled_check_hook('PSDK Move Disabled: Choice item') do |user, move|
+    next unless Move::CHOICE_ITEMS.include?(user.battle_item_db_symbol) && user.move_history.any?
+    next if user.move_history.last.db_symbol == move.db_symbol
+
+    next proc {}
   end
 
   # Mold Breaker
