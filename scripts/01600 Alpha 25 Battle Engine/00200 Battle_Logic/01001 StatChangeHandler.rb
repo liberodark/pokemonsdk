@@ -256,7 +256,7 @@ module Battle
 
     # Register the Flower Veil ability
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat_decr: Flower Veil') do |handler, _, target, launcher|
-      next if target == launcher
+      next if target == launcher || !launcher
 
       allies = handler.logic.alive_battlers(target.bank)
       fv = allies.find { |ally| ally.ability_db_symbol == :flower_veil && ally.type_grass? }
@@ -270,7 +270,7 @@ module Battle
 
     # Register the Clear Body ability
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Clear Body') do |handler, _, target, launcher|
-      next if target == launcher
+      next if target == launcher || !launcher
 
       if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :clear_body)
         next handler.prevent_change do
@@ -282,7 +282,7 @@ module Battle
 
     # Register the White Smoke ability
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: White Smoke') do |handler, _, target, launcher|
-      next if target == launcher
+      next if target == launcher || !launcher
 
       if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :white_smoke)
         next handler.prevent_change do
@@ -294,7 +294,7 @@ module Battle
 
     # Register the Hyper Cutter ability
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Hyper Cutter') do |handler, stat, target, launcher|
-      next if target == launcher || stat != :atk
+      next if target == launcher || stat != :atk || !launcher
 
       if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :hyper_cutter)
         next handler.prevent_change do
@@ -317,7 +317,7 @@ module Battle
 
     # Register the Keen Eye ability
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Keen Eye') do |handler, stat, target, launcher|
-      next if target == launcher || stat != :acc
+      next if target == launcher || stat != :acc || !launcher
 
       if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :keen_eye)
         next handler.prevent_change do
