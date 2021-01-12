@@ -167,12 +167,24 @@ module Battle
 
     # Iterate through all battlers
     # @yieldparam battler [PFM::PokemonBattler]
+    # @return [Enumerable<PFM::PokemonBattler>]
     def all_battlers
       if block_given?
         @battlers.flatten.each { |battler| yield(battler) }
       else
         return @battlers.flatten.each
       end
+    end
+
+    # Test if the battler can be replaced
+    # @param who [PFM::PokemonBattler]
+    # @return [Boolean]
+    def can_battler_be_replaced?(who)
+      bank = who.bank
+      party_id = who.party_id
+      allies = allies_of(who)
+      number = all_battlers.count { |pokemon| pokemon.alive? && pokemon.bank == bank && pokemon.party_id == party_id && !allies.include?(pokemon) }
+      return number > 0
     end
 
     private

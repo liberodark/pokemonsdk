@@ -26,6 +26,7 @@ module Battle
       during_end_of_turn = @actions.empty?
       @switch_request.each do |who:, with: nil|
         next Actions::Switch.new(@scene, who, with).execute if who && with
+        next unless can_battler_be_replaced?(who)
 
         with = switch_choose_with(who)
         next unless with
@@ -66,7 +67,8 @@ module Battle
     # @param enemy [PFM::PokemonBattler]
     def request_switch_to_trainer(enemy)
       battlers = trainer_battlers
-      if $options.battle_mode && @battle_info.vs_type == 1 && battlers.count(&:alive?) > 1
+      who = battlers[0]
+      if $options.battle_mode && @battle_info.vs_type == 1 && battlers.count(&:alive?) > 1 && can_battler_be_replaced?(who)
         text = parse_text(
           18, 21,
           '[VAR 010E(0000)]' => @battle_info.trainer_class(enemy),
@@ -76,7 +78,6 @@ module Battle
         )
         choice = @scene.display_message(text, 1, text_get(11, 27), text_get(11, 28))
         if choice == 0 && (result = @scene.visual.show_pokemon_choice)
-          who = battlers[0]
           Actions::Switch.new(@scene, who, result).execute if result != who
         end
       end
