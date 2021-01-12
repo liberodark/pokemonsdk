@@ -14,7 +14,7 @@ module LiteRGSS
   #     This function instanciate a shader by it's name_sym so you don't have to load the files several time and you have all the correct data
   # @note `#version 120` will be automatically added to the begining of the file if not present
   class Shader
-    SHADER_VERSION = "#version 120\n"
+    SHADER_VERSION = "#version 130\n"
     COLOR_UNIFORM = "\\0uniform vec4 color;\n"
     COLOR_PROCESS = "\n  frag.rgb = mix(frag.rgb, color.rgb, color.a);\\0"
     TONE_UNIFORM = "\\0uniform vec4 tone;\nconst vec3 lumaF = vec3(.299, .587, .114);\n"
