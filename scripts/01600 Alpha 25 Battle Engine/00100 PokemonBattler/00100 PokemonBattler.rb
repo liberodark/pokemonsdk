@@ -150,6 +150,14 @@ module PFM
       return @move_history.last&.db_symbol == db_symbol
     end
 
+    # Test if the Pokemon can use a move
+    # @return [Boolean]
+    def can_move?
+      return false if moveset.all? { |move| move.pp == 0 || move.disabled? }
+
+      return true
+    end
+
     # Test if the Pokemon can have a lowering stat or have its move canceled (return false if the Pokemon has mold breaker)
     #
     # List of ability that should be affected:

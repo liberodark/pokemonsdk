@@ -295,7 +295,7 @@ module Battle
     class << self
       # Retrieve a registered move
       # @param symbol [Symbol] be_method of the move
-      # @return [Class]
+      # @return [Class<Battle::Move>]
       def [](symbol)
         REGISTERED_MOVES[symbol]
       end

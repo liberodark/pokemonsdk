@@ -16,6 +16,23 @@ module Battle
       PFM::Text.reset_variables
     end
 
+    # Function that tells if the move is disabled
+    # @return [Boolean]
+    def disabled?
+      disable_reason ? true : false
+    end
+
+    # Get the reason why the move is disabled
+    # @return [#call] Block that should be called when the move is disabled
+    def disable_reason
+      return proc {} if pp == 0
+
+      exec_hooks(Move, :move_disabled_check, binding)
+      return nil
+    rescue Hooks::ForceReturn => e
+      return e.data
+    end
+
     # Function that tests if the targets blocks the move
     # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler] expected target
@@ -45,6 +62,18 @@ module Battle
       def register_move_prevention_user_hook(reason)
         Hooks.register(Move, :move_prevention_user, reason) do |hook_binding|
           force_return(false) if yield(hook_binding.local_variable_get(:user), hook_binding.local_variable_get(:targets), self) == :prevent
+        end
+      end
+
+      # Function that registers a move_disabled_check hook
+      # @param reason [String] reason of the move_disabled_check registration
+      # @yieldparam user [PFM::PokemonBattler]
+      # @yieldparam move [Battle::Move]
+      # @yieldreturn [Proc, nil] the code to execute if the move is disabled
+      def register_move_disabled_check_hook(reason)
+        Hooks.register(Move, :move_disabled_check, reason) do |hook_binding|
+          result = yield(hook_binding.local_variable_get(:user), self)
+          force_return(result) if result.respond_to?(:call)
         end
       end
 
@@ -88,6 +117,11 @@ module Battle
       move.scene.display_message_and_wait(parse_text_with_pokemon(19, 580, user))
       next :prevent
     end
+  end
+  Move.register_move_disabled_check_hook('PSDK Move disabled: Torment') do |user, move|
+    next unless user.battle_effect.has_torment_effect? && !user.last_successfull_move_is?(move.db_symbol)
+
+    return proc { move.scene.display_message_and_wait(parse_text_with_pokemon(19, 580, user)) }
   end
 
   # Gravity registration

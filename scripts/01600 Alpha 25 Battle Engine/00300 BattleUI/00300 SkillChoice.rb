@@ -78,8 +78,12 @@ module BattleUI
     # Validate the user choice
     def validate
       bounce_button
-      # TODO make sure the player cannot choose locked skills
-      @result = @pokemon.moveset[@index]
+      move = @pokemon.moveset[@index]
+      if (blocked = move.disable_reason)
+        $game_system.se_play($data_system.buzzer_se)
+        return blocked.call
+      end
+      @result = move
       @last_indexes[@pokemon] = @index
       $game_system.se_play($data_system.decision_se)
     end

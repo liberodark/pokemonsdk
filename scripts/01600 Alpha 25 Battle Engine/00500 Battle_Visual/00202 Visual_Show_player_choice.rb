@@ -9,6 +9,9 @@ module Battle
         effect = pokemon.effects.get(:forced_next_move)
         target = effect.targets.first
         return :action, Actions::Attack.new(@scene, effect.move, pokemon, target.bank, target.position)
+      elsif !pokemon.can_move?
+        move = Battle::Move[:s_struggle].new(GameData::Skill[:struggle].id, 1, 1, @scene)
+        return :action, Actions::Attack.new(@scene, move, pokemon, 1, pokemon.position)
       end
 
       # return :try_next if spc_cannot_use_this_pokemon?(pokemon_index)
