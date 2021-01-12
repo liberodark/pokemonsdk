@@ -96,6 +96,7 @@ module PFM
       @effects = Battle::Effects::EffectsHandler.new
       @move_history = []
       @check_evolution = false
+      @mega_evolved = false
       initialize_set_is_follower
     end
 
@@ -209,6 +210,7 @@ module PFM
       @skills_set = @moveset = @original.skills_set.map do |skill|
         Battle::Move[skill.symbol].new(skill.id, skill.pp, skill.ppmax, @scene)
       end
+      @moveset << Battle::Move.new(0, 0, 9001, @scene) if @moveset.empty?
     end
 
     # Function that sets the is_follower variable (for animation purpose)

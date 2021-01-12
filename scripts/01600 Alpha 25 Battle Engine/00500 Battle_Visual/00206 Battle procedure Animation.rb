@@ -74,6 +74,7 @@ module Battle
     # Show the pokemon switch form animation
     # @param target [PFM::PokemonBattler]
     def show_switch_form_animation(target)
+      battler_sprite(target.bank, target.position)&.pokemon = target
       # TODO: Implement an animation for that & write the code
     end
 

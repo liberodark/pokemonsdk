@@ -42,10 +42,10 @@ module Battle
       def message
         return parse_text_with_pokemon(
           19, 1165, @user,
-          PKNICK[0] => @user.given_name,
-          ITEM2[2] => @user.item_name,
-          TRNAME[1] => @user.trainer_name,
-          ITEM2[3] => @scene.logic.mega_evolve.mega_tool_name(@user)
+          PFM::Text::PKNICK[0] => @user.given_name,
+          PFM::Text::ITEM2[2] => @user.item_name,
+          PFM::Text::TRNAME[1] => @user.trainer_name,
+          PFM::Text::ITEM2[3] => @scene.logic.mega_evolve.mega_tool_name(@user)
         )
       end
     end

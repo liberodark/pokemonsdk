@@ -31,6 +31,8 @@ module PFM
     # Check if the Pokemon can mega evolve
     # @return [Integer, false] form index if the Pokemon can mega evolve, false otherwise
     def can_mega_evolve?
+      return false if mega_evolved?
+
       data = GameData::Pokemon.get_forms(@id)
       item_id = @item_holding
       if data.size > 30

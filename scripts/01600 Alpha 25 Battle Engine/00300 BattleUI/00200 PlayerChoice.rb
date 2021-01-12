@@ -239,7 +239,7 @@ module BattleUI
 
       # Update the button when it's waiting for player actions
       def update_not_done
-        return action_y if @bar_visibility && (Input.trigger?(:Y) || Input.trigger?(:A))
+        return action_y if @bar_visibility && (Input.trigger?(:Y) || Input.trigger?(:A) || Input.trigger?(:B))
 
         return unless @item_info.done?
 
@@ -276,7 +276,7 @@ module BattleUI
       # Action triggered when pressing A
       def action_a
         $game_system.se_play($data_system.decision_se)
-        @choice.use_item(item)
+        @choice.use_item($bag.last_battle_item)
         @item_info.hide
         @choice.show
       end

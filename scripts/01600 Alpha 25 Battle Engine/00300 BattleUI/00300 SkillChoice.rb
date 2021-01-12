@@ -223,8 +223,8 @@ module BattleUI
       # Set the data of the button
       # @param pokemon [PFM::PokemonBattler]
       def data=(pokemon)
-        # TODO: Add mega tool check!!!
-        self.visible = @type == :descr || @scene.logic.mega_evolve.can_pokemon_mega_evolve?(pokemon)
+        super
+        self.visible = (@type == :descr || @scene.logic.mega_evolve.can_pokemon_mega_evolve?(pokemon)) && true
       end
 
       # Update the special button content
