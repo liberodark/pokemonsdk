@@ -3,6 +3,7 @@ module Battle
     # Message Window of the Battle
     class Message < Yuki::Message
       MAX_WAIT = 120
+      WINDOW_SKIN = 'message_box'
 
       # @return [Boolean] if the message will wait user to validate the message forever
       attr_accessor :blocking
@@ -29,13 +30,6 @@ module Battle
         return :bottom
       end
 
-      # Fade the window message out
-      # @return [Boolean] if the update function skips
-      def update_fade_out
-        $game_temp.message_window_showing = false if visible
-        return false
-      end
-
       # Generate the choice window
       def generate_choice_window
         super
@@ -47,12 +41,6 @@ module Battle
       def update_input_number
         @waiter += 1 if @waiter < MAX_WAIT
         return super
-      end
-
-      # Show the fade in during the update
-      # @return [Boolean] if the update function skips
-      def update_fade_in
-        return false
       end
 
       # Skip the choice during update
@@ -71,6 +59,7 @@ module Battle
         return (!$game_system.battle_interpreter.running? && @waiter >= MAX_WAIT && !@blocking)
       end
 
+=begin
       # Show the message text
       # @return [Boolean] if the update function skips
       def update_text_draw
@@ -86,36 +75,44 @@ module Battle
         end
         return false
       end
-
+=end
       # Battle Windowskin
       # @return [String]
       def current_windowskin
-        'message_box'
+        @windowskin_overwrite || WINDOW_SKIN
       end
 
       # Retrieve the current window_builder
       # @return [Array]
       def current_window_builder
-        return [16, 10, 288, 30, 16, 10]
+        return [16, 10, 288, 30, 16, 10] if current_windowskin == WINDOW_SKIN
+
+        return super
       end
 
       # Translate the color according to the layout configuration
       # @param color [Integer] color to translate
       # @return [Integer] translated color
       def translate_color(color)
-        current_layout.color_mapping[color] || 10 + color
+        return current_layout.color_mapping[color] || 10 + color if current_windowskin == WINDOW_SKIN
+
+        return super
       end
 
       # Return the default horizontal margin
       # @return [Integer]
       def default_horizontal_margin
-        return 0
+        return 0 if current_windowskin == WINDOW_SKIN
+
+        return super
       end
 
       # Return the default vertical margin
       # @return [Integer]
       def default_vertical_margin
-        return 0
+        return 0 if current_windowskin == WINDOW_SKIN
+
+        return super
       end
     end
   end

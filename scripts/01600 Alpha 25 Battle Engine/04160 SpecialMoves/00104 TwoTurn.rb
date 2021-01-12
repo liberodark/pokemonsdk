@@ -29,7 +29,7 @@ module Battle
         oor_type = Effects::OutOfReach::TYPES[db_symbol]
         user.effects.add(Effects::OutOfReach.new(@logic, user, oor_type)) if oor_type
         id_txt = ANNOUNCES[db_symbol]
-        @scene.display_message(parse_text_with_pokemon(19, id_txt, user)) if id_txt
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, id_txt, user)) if id_txt
         # TODO: please make a subclass for that specific move and link it in the DB!
         @logic.stat_change_handler.stat_change_with_process(:dfe, 1, user) if db_symbol == :skull_bash
         return false

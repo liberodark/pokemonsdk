@@ -29,7 +29,7 @@ module Battle
       # Execute the action
       def execute
         @scene.logic.mega_evolve.mark_as_mega_evolved(@user)
-        @scene.display_message(message)
+        @scene.display_message_and_wait(message)
         @user.mega_evolve
         @scene.visual.show_switch_form_animation(@user)
         # TODO!

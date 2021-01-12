@@ -1,6 +1,6 @@
 module Yuki
   class Message
-    # Update the Window_Message processing
+    # Update the message processing
     def update
       super
       return if update_fade_in

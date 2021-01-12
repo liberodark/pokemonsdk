@@ -28,7 +28,7 @@ module Battle
         return if dead?
         return if @target.ability_db_symbol == :magic_guard
 
-        scene.display_message(parse_text_with_pokemon(19, 610, @target))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 610, @target))
         # TODO: Add an animation
         logic.damage_handler.drain(8, @target, user)
       end

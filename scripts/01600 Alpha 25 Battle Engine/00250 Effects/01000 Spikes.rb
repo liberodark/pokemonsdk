@@ -40,7 +40,7 @@ module Battle
         factor = 10 - power * 2 # 8 -> 6 -> 4
         hp = (with.max_hp / factor).clamp(1, Float::INFINITY)
         handler.logic.damage_handler.damage_change(hp, with)
-        handler.scene.display_message(parse_text_with_pokemon(19, 854, with))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 854, with))
       end
     end
   end

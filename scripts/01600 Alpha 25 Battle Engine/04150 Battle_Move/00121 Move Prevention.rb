@@ -85,7 +85,7 @@ module Battle
   # Torment registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Torment') do |user, _, move|
     if user.battle_effect.has_torment_effect? && !user.last_successfull_move_is?(move.db_symbol)
-      move.scene.display_message(parse_text_with_pokemon(19, 580, user))
+      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 580, user))
       next :prevent
     end
   end
@@ -93,7 +93,7 @@ module Battle
   # Gravity registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Gravity') do |user, _, move|
     if move.scene.logic.global_gravity? && move.gravity_affected?
-      move.scene.display_message(parse_text_with_pokemon(19, 1092, user))
+      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 1092, user))
       next :prevent
     end
   end
@@ -101,7 +101,7 @@ module Battle
   # Truant registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Truant') do |user, _, move|
     if user.ability_db_symbol == :truant && user.ability_used
-      move.scene.display_message(parse_text_with_pokemon(19, 445, user))
+      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 445, user))
       user.ability_used = false
       next :prevent
     end
@@ -114,14 +114,14 @@ module Battle
 
     if user.froze_check
       if move.unfreeze?
-        move.scene.display_message(parse_text_with_pokemon(19, 303, user))
+        move.scene.display_message_and_wait(parse_text_with_pokemon(19, 303, user))
       else
         move.scene.visual.show_rmxp_animation(user, 469 + user.status)
-        move.scene.display_message(parse_text_with_pokemon(19, 288, user))
+        move.scene.display_message_and_wait(parse_text_with_pokemon(19, 288, user))
         next :prevent
       end
     else
-      move.scene.display_message(parse_text_with_pokemon(19, 294, user))
+      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 294, user))
     end
     user.cure
     move.scene.visual.refresh_info_bar(user)
@@ -131,7 +131,7 @@ module Battle
   Move.register_move_prevention_user_hook('PSDK Move prev user: Paralysis') do |user, _, move|
     if user.paralyzed? && user.paralysis_check
       move.scene.visual.show_rmxp_animation(user, 469 + user.status)
-      move.scene.display_message(parse_text_with_pokemon(19, 276, user))
+      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 276, user))
       next :prevent
     end
   end
@@ -141,13 +141,13 @@ module Battle
     if user.asleep?
       if user.sleep_check
         move.scene.visual.show_rmxp_animation(user, 469 + user.status)
-        move.scene.display_message(parse_text_with_pokemon(19, 309, user))
+        move.scene.display_message_and_wait(parse_text_with_pokemon(19, 309, user))
         next if GameData::Skill[move.db_symbol].sleeping_attack?
 
         next :prevent
       else
         move.scene.visual.refresh_info_bar(user)
-        move.scene.display_message(parse_text_with_pokemon(19, 312, user))
+        move.scene.display_message_and_wait(parse_text_with_pokemon(19, 312, user))
       end
     end
   end
@@ -157,10 +157,10 @@ module Battle
     if user.battle_effect.has_powder_effect? && move.type_fire?
       move.send(:usage_message, user)
       if user.ability_db_symbol == :magic_guard
-        move.scene.display_message(parse_text(18, 74))
+        move.scene.display_message_and_wait(parse_text(18, 74))
       else
         move.scene.visual.show_hp_animations([user], [-user.max_hp / 4])
-        move.scene.display_message(parse_text(18, 259, PFM::Text::MOVE[0] => move.name))
+        move.scene.display_message_and_wait(parse_text(18, 259, PFM::Text::MOVE[0] => move.name))
       end
       next :prevent
     end
@@ -171,11 +171,11 @@ module Battle
     if user.confused?
       stat = user.confuse_check
       move.scene.visual.show_rmxp_animation(user, 475)
-      move.scene.display_message(parse_text_with_pokemon(19, (stat == :cured ? 351 : 348), user))
+      move.scene.display_message_and_wait(parse_text_with_pokemon(19, (stat == :cured ? 351 : 348), user))
       if stat == true
         hp = user.confuse_damage
         move.scene.visual.show_hp_animations([user], [-hp])
-        move.scene.display_message(parse_text(18, 83))
+        move.scene.display_message_and_wait(parse_text(18, 83))
         next :prevent
       end
     end
@@ -185,7 +185,7 @@ module Battle
   Move.register_move_prevention_target_hook('PSDK Move prev target: Protect') do |_, target, move|
     next false unless move.blocked_by?(target, :protect)
 
-    move.scene.display_message(parse_text_with_pokemon(19, 523, target))
+    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
     next true
   end
 
@@ -203,7 +203,7 @@ module Battle
   Move.register_move_prevention_target_hook('PSDK Move prev target: Detect') do |_, target, move|
     next false unless move.blocked_by?(target, :detect)
 
-    move.scene.display_message(parse_text_with_pokemon(19, 523, target))
+    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
     next true
   end
 
@@ -211,7 +211,7 @@ module Battle
   Move.register_move_prevention_target_hook('PSDK Move prev target: Spiky Shield') do |user, target, move|
     next false unless move.blocked_by?(target, :spiky_shield)
 
-    move.scene.display_message(parse_text_with_pokemon(19, 523, target))
+    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
     move.scene.visual.show_hp_animations([user], [-hp]) if move.direct?
     next true
   end
@@ -220,7 +220,7 @@ module Battle
   Move.register_move_prevention_target_hook('PSDK Move prev target: King\'s Shield') do |user, target, move|
     next false unless move.blocked_by?(target, :king’s_shield)
 
-    move.scene.display_message(parse_text_with_pokemon(19, 523, target))
+    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
     move.scene.logic.stat_change_handler.stat_change_with_process(:atk, -1, target, user, skill) if move.direct?
     next true
   end
@@ -229,11 +229,11 @@ module Battle
   Move.register_move_prevention_target_hook('PSDK Move prev target: Baneful Bunker') do |user, target, move|
     next false unless move.blocked_by?(target, :baneful_bunker)
 
-    move.scene.display_message(parse_text_with_pokemon(19, 523, target))
+    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
     # TODO: Make a utility for changing status and use it!
     if move.direct? && user.can_be_poisoned? && user.status_poison
       move.scene.visual.show_rmxp_animation(user, 470)
-      move.scene.display_message(parse_text_with_pokemon(19, 234, user))
+      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 234, user))
     end
     next true
   end

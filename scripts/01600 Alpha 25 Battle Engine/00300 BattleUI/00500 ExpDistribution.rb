@@ -100,10 +100,9 @@ module BattleUI
     # @param list [Array]
     def level_up_message(receiver)
       PFM::Text.set_num3(receiver.level.to_s, 1)
-      @scene.display_message(parse_text(18, 62, '[VAR 010C(0000)]' => receiver.given_name))
+      @scene.display_message_and_wait(parse_text(18, 62, '[VAR 010C(0000)]' => receiver.given_name))
       PFM::Text.reset_variables
       receiver.check_skill_and_learn
-      @scene.message_window.visible = false
       @scene.logic.evolve_request << receiver unless @scene.logic.evolve_request.include?(receiver)
     end
 

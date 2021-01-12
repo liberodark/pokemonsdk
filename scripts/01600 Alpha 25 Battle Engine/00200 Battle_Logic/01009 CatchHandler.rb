@@ -241,14 +241,14 @@ module Battle
       def show_message_and_animation(target, ball, nb_bounce, caught)
         # @scene.visual.catch_animation(target, ball, nb_bounce, caught)
         # @scene.visual.update until @scene.visual.animations.done? #Not sure about that one
-        @scene.display_message(parse_text(*TEXT_CATCH[nb_bounce], PFM::Text::PKNAME[0] => target.name)) unless caught
+        @scene.display_message_and_wait(parse_text(*TEXT_CATCH[nb_bounce], PFM::Text::PKNAME[0] => target.name)) unless caught
         return caught
       end
 
       Hooks.register(Battle::Logic::CatchHandler, :ball_blocked, 'Check if the initial rareness of the Pokemon is 0') do |hook_binding|
         if hook_binding[:target].rareness == 0
           # @scene.visual.ball_deflect_animation(target, ball)
-          @scene.display_message(parse_text(18, 69)) #TODO Write the text for a Pokémon with rareness 0
+          @scene.display_message_and_wait(parse_text(18, 69)) #TODO Write the text for a Pokémon with rareness 0
           force_return(false)
         end
       end
@@ -256,7 +256,7 @@ module Battle
       Hooks.register(Battle::Logic::CatchHandler, :ball_blocked, 'Check if catching is forbidden in this battle') do |_hook_binding|
         if $game_switches[Yuki::Sw::BT_NoCatch]
           # @scene.visual.ball_deflect_animation(target, ball)
-          @scene.display_message(parse_text(18, 69)) #TODO Write the text for forbidding catching in this battle
+          @scene.display_message_and_wait(parse_text(18, 69)) #TODO Write the text for forbidding catching in this battle
           force_return(false)
         end
       end
@@ -264,7 +264,7 @@ module Battle
       Hooks.register(Battle::Logic::CatchHandler, :ball_blocked, 'Check if the battle is a Trainer battle') do |hook_binding|
         if logic.battle_info.trainer_battle? && hook_binding[:ball].db_symbol != :rocket_ball
           # @scene.visual.ball_deflect_animation(target, ball)
-          @scene.display_message(parse_text(18, 69)) #TODO Write the text for a Pokémon owned by a Trainer that can't be caught
+          @scene.display_message_and_wait(parse_text(18, 69)) #TODO Write the text for a Pokémon owned by a Trainer that can't be caught
           force_return(false)
         end
       end

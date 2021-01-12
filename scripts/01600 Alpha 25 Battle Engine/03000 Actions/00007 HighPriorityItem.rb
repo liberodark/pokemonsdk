@@ -21,7 +21,7 @@ module Battle
 
       # Execute the action
       def execute
-        @scene.display_message(parse_text_with_pokemon(19, 1031, @holder, PFM::Text::ITEM2[1] => @holder.item_name))
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, 1031, @holder, PFM::Text::ITEM2[1] => @holder.item_name))
       end
     end
   end

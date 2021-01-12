@@ -20,7 +20,7 @@ module Battle
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
           @logic.add_position_effect(Effects::LeechSeed.new(@logic, user, target))
-          @scene.display_message(parse_text_with_pokemon(19, 607, target))
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 607, target))
         end
       end
     end

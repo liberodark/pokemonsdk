@@ -65,9 +65,9 @@ module Battle
         return if last_weather == current_weather
 
         if last_weather == :none
-          @scene.display_message(parse_text(18, WEATHER_SYM_TO_MSG[current_weather]))
+          @scene.display_message_and_wait(parse_text(18, WEATHER_SYM_TO_MSG[current_weather]))
         elsif current_weather == :none
-          @scene.display_message(parse_text(18, WEATHER_SYM_TO_MSG[current_weather]))
+          @scene.display_message_and_wait(parse_text(18, WEATHER_SYM_TO_MSG[current_weather]))
         end
       end
 

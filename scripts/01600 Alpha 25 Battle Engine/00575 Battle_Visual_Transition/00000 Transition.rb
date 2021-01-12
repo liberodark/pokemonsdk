@@ -61,6 +61,7 @@ module Battle
           @animations.clear
           @scene.message_window.visible = true
           @scene.message_window.blocking = true
+          @scene.message_window.stay_visible = true
           @scene.message_window.wait_input = true
           ya = Yuki::Animation
           main = create_fade_out_animation
@@ -189,6 +190,7 @@ module Battle
 
         # Function that shows the message about player sending its Pokemon
         def show_player_send_message
+          @scene.message_window.stay_visible = false
           @scene.display_message(player_send_message)
         end
 

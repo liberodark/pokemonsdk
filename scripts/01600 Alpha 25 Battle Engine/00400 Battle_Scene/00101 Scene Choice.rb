@@ -141,17 +141,17 @@ module Battle
       @scene.message_window.blocking = true
       $quests.catch_pokemon(pkmn)
       $wild_battle.remove_roaming_pokemon(pkmn)
-      display_message(parse_text(18, 67, PKNAME[0] => pkmn.name))
+      display_message_and_wait(parse_text(18, 67, PKNAME[0] => pkmn.name))
       unless $pokedex.pokemon_caught?(pkmn.id)
         $pokedex.mark_captured(pkmn.id)
         if $pokedex.enabled?
-          display_message(parse_text(18, 68, PKNAME[0] => pkmn.name))
+          display_message_and_wait(parse_text(18, 68, PKNAME[0] => pkmn.name))
           call_scene(GamePlay::Dex, pkmn)
         end
       end
       $pokedex.pokemon_captured_inc(pkmn.id)
       # Rename
-      if display_message(parse_text(30, 0, PKNAME[0] => pkmn.name), 0, text_get(25, 20), text_get(25, 21)) == 0
+      if display_message_and_wait(parse_text(30, 0, PKNAME[0] => pkmn.name), 0, text_get(25, 20), text_get(25, 21)) == 0
         call_scene(GamePlay::NameInput, pkmn.name, 12, pkmn) do |scene|
           pkmn.given_name = scene.return_name
         end
@@ -159,7 +159,7 @@ module Battle
       $game_system.map_interpreter.add_pokemon(pkmn)
       # Stocked
       if $game_switches[Yuki::Sw::SYS_Stored]
-        display_message(parse_text(30, 1, PKNICK[0] => pkmn.given_name, '[VAR BOX(0001)]' => $storage.get_box_name($storage.current_box)))
+        display_message_and_wait(parse_text(30, 1, PKNICK[0] => pkmn.given_name, '[VAR BOX(0001)]' => $storage.get_box_name($storage.current_box)))
       end
     end
 

@@ -32,7 +32,6 @@ module Battle
     # @param pokemon_index [Integer] Index of the Pokemon in the party
     def show_skill_choice_begin(pokemon_index)
       @locking = true
-      @scene.message_window.visible = false
       wait_for_animation
       @skill_choice_ui.reset(@scene.logic.battler(0, pokemon_index))
       @skill_choice_ui.go_in
@@ -57,14 +56,12 @@ module Battle
       @skill_choice_ui.go_out
       @animations << @skill_choice_ui
       wait_for_animation
-      @scene.message_window.visible = true
       @locking = false
     end
 
     # Show the Target Selection Window
     def show_target_choice_begin
       @locking = true
-      @scene.message_window.visible = false
       # @type [BattleUI::TargetSelection]
       @target_selection_window =
         BattleUI::TargetSelection.new(@viewport_sub, @skill_choice_ui.pokemon, @skill_choice_ui.result, @scene.logic)
@@ -84,7 +81,6 @@ module Battle
     # End of the target choice
     def show_target_choice_end
       spc_stop_bouncing_animation(@skill_choice_ui.pokemon.position)
-      @scene.message_window.visible = true
       @locking = false
     end
 

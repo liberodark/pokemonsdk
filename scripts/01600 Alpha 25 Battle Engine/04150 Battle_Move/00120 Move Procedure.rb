@@ -32,7 +32,7 @@ module Battle
       return unless move_usable_by_user(user, targets)
 
       usage_message(user)
-      return scene.display_message(parse_text(18, 74)) if accuracy > 0 && rand(100) >= accuracy
+      return scene.display_message_and_wait(parse_text(18, 74)) if accuracy > 0 && rand(100) >= accuracy
 
       actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
       return if actual_targets.none?
@@ -58,7 +58,7 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     def show_usage_failure(user)
       usage_message(user)
-      scene.display_message(parse_text(18, 74))
+      scene.display_message_and_wait(parse_text(18, 74))
     end
 
     # Show the move usage message
@@ -66,7 +66,7 @@ module Battle
     def usage_message(user)
       @scene.visual.hide_team_info
       PFM::Text.set_pkname(user)
-      scene.display_message(parse_text_with_pokemon(8999 - GameData::Text::CSV_BASE, 12, user, PFM::Text::MOVE[0] => name))
+      scene.display_message_and_wait(parse_text_with_pokemon(8999 - GameData::Text::CSV_BASE, 12, user, PFM::Text::MOVE[0] => name))
       PFM::Text.reset_variables
     end
 
@@ -78,10 +78,10 @@ module Battle
     def accuracy_immunity_test(user, targets)
       return targets.select do |pokemon|
         if target_immune?(user, pokemon)
-          scene.display_message(parse_text_with_pokemon(19, 210, pokemon))
+          scene.display_message_and_wait(parse_text_with_pokemon(19, 210, pokemon))
           next false
         elsif rand(100) >= chance_of_hit(user, pokemon)
-          scene.display_message(parse_text_with_pokemon(19, 213, pokemon))
+          scene.display_message_and_wait(parse_text_with_pokemon(19, 213, pokemon))
           next false
         elsif move_blocked_by_target?(user, pokemon)
           next false
@@ -135,7 +135,7 @@ module Battle
           Fiber.yield if damages <= 0
           Fiber.yield :wait_for_animation, Visual::HPAnimation.new(scene, target, -damages, effectiveness) if damages > 0
           if critical_hit
-            scene.display_message(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
+            scene.display_message_and_wait(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
           elsif damages > 0
             efficent_message(effectiveness, target)
           end
@@ -154,7 +154,7 @@ module Battle
     # @param user [PFM::PokemonBattler]
     def recoil(hp, user)
       @logic.damage_handler.damage_change(hp / recoil_factor, user)
-      @scene.display_message(parse_text_with_pokemon(19, 378, user))
+      @scene.display_message_and_wait(parse_text_with_pokemon(19, 378, user))
     end
 
     # Show the effectiveness message
@@ -162,9 +162,9 @@ module Battle
     # @param target [PFM::PokemonBattler]
     def efficent_message(effectiveness, target)
       if effectiveness > 1
-        scene.display_message(parse_text_with_pokemon(19, 6, target))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 6, target))
       elsif effectiveness > 0
-        scene.display_message(parse_text_with_pokemon(19, 15, target))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 15, target))
       end
     end
 

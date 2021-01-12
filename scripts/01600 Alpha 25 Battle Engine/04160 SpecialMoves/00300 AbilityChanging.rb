@@ -31,7 +31,7 @@ module Battle
           @scene.visual.wait_for_animation
           @logic.ability_change_handler.change_ability(user, ability_symbol(user, target), user, self)
           @scene.visual.show_ability(user)
-          @scene.display_message(parse_text_with_pokemon(19, 619, user, ABILITY[2] => target.ability_name, PKNICK[1] => target.given_name))
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 619, user, ABILITY[2] => target.ability_name, PKNICK[1] => target.given_name))
         end
       end
 
@@ -76,7 +76,7 @@ module Battle
           @scene.visual.wait_for_animation
           @logic.ability_change_handler.change_ability(target, ability_symbol(user, target), user, self)
           @scene.visual.show_ability(target)
-          @scene.display_message(parse_text_with_pokemon(19, 405, target, ABILITY[1] => target.ability_name))
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 405, target, ABILITY[1] => target.ability_name))
         end
       end
     end
@@ -134,7 +134,7 @@ module Battle
           @logic.ability_change_handler.change_ability(target, user_ability, user, self)
           @scene.visual.show_ability(user)
           @scene.visual.show_ability(target)
-          @scene.display_message(parse_text_with_pokemon(19, 508, user))
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 508, user))
         end
       end
     end

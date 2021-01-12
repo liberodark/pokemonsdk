@@ -224,7 +224,7 @@ module PFM
     end
 
     # The \\ temporary replacement
-    S_000 = ::Window_Message::S_000
+    S_000 = "\x00"
     # Parse a string for a message
     # @param text [String] the message
     # @return [String] the parsed message

@@ -16,7 +16,7 @@ module Yuki
     MaxChoice = 9
     # Index that tells the system to scroll up or down everychoice (relative display)
     DeltaChoice = (MaxChoice / 2.0).round
-    # Create a new Window_Choice with the right parameters
+    # Create a new ChoiceWindow with the right parameters
     # @param width [Integer, nil] width of the window; if nil => automatically calculated
     # @param choices [Array<String>] list of choices
     # @param viewport [Viewport, nil] viewport in which the window is displayed
@@ -222,7 +222,7 @@ module Yuki
 
     # Function that creates a new ChoiceWindow for Yuki::Message
     # @param window [Game_Window] a window that has the right window_builder (to calculate the width)
-    # @return [Window_Choice] the choice window.
+    # @return [ChoiceWindow] the choice window.
     def self.generate_for_message(window)
       choice_window = new(nil, $game_temp.choices, window.viewport)
       choice_window.z = window.z + 1

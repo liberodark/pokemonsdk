@@ -26,7 +26,7 @@ module Battle
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
           target.effects.add(Effects::MagicCoat.new(@logic, target))
-          @scene.display_message(parse_text_with_pokemon(19, 761, target))
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 761, target))
         end
       end
     end

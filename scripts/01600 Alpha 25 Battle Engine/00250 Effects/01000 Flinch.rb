@@ -19,7 +19,7 @@ module Battle
         return if user != @pokemon
 
         move.scene.visual.show_rmxp_animation(user, 476)
-        move.scene.display_message(parse_text_with_pokemon(19, 363, user))
+        move.scene.display_message_and_wait(parse_text_with_pokemon(19, 363, user))
         return :prevent
       end
 

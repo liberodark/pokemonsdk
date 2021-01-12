@@ -170,7 +170,7 @@ module Battle
       last_move = who.move_history.last
       next if !last_move || last_move.db_symbol != :lunar_dance || !last_move.current_turn?
 
-      handler.scene.display_message(parse_text_with_pokemon(19, 694, with))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 694, with))
       handler.scene.visual.show_hp_animations([with], [with.max_hp])
       handler.logic.status_change_handler.status_change_with_process(:cure, with)
     end
@@ -180,7 +180,7 @@ module Battle
       last_move = who.move_history.last
       next if !last_move || last_move.db_symbol != :healing_wish || !last_move.current_turn?
 
-      handler.scene.display_message(parse_text_with_pokemon(19, 697, with))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 697, with))
       handler.scene.visual.show_hp_animations([with], [with.max_hp])
       handler.logic.status_change_handler.status_change_with_process(:cure, with)
     end
@@ -232,7 +232,7 @@ module Battle
 
       handler.scene.visual.show_ability(with)
       handler.logic.ability_change_handler.change_ability(with, foes.sample.ability_db_symbol)
-      handler.scene.display_message(parse_text_with_pokemon(19, 381, with, PFM::Text::ABILITY[1] => with.ability_name))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 381, with, PFM::Text::ABILITY[1] => with.ability_name))
     end
 
     # Pressure
@@ -240,7 +240,7 @@ module Battle
       next if with.ability_db_symbol != :pressure
 
       handler.scene.visual.show_ability(with)
-      handler.scene.display_message(parse_text_with_pokemon(19, 487, with))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 487, with))
     end
 
     # Drizzle
@@ -304,7 +304,7 @@ module Battle
         next false if foe.moveset.none? { |move| move.type_modifier(foe, with) >= 2 }
 
         handler.scene.visual.show_ability(with)
-        handler.scene.display_message(parse_text_with_pokemon(19, 436, with))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 436, with))
       end
     end
 
@@ -325,7 +325,7 @@ module Battle
       next if danger_move.power <= 0
 
       handler.scene.visual.show_ability(with)
-      handler.scene.display_message(parse_text_with_pokemon(19, 433, danger_foe, PFM::Text::MOVE[1] => danger_move.name))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 433, danger_foe, PFM::Text::MOVE[1] => danger_move.name))
     end
 
     # Frisk
@@ -336,7 +336,7 @@ module Battle
       next unless foe_item
 
       handler.scene.visual.show_ability(with)
-      handler.scene.display_message(parse_text_with_pokemon(19, 439, with, PFM::Text::PKNICK[1] => foe_item.given_name,
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 439, with, PFM::Text::PKNICK[1] => foe_item.given_name,
                                                                            PFM::Text::ITEM2[2] => foe_item.item_name))
     end
 

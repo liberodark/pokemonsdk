@@ -2,7 +2,6 @@ module Battle
   class Logic
     # Function that distribute the exp to all Pokemon and switch dead pokemon
     def battle_phase_end
-      @scene.message_window.blocking = true
       end_turn_handler.process_events
       # Distribute exp and add all enemy that are dead to switch request
       dead_enemy_battler_during_this_turn.each do |enemy|
@@ -76,7 +75,7 @@ module Battle
           '[VAR 019E(0000)]' => "#{@battle_info.trainer_class(enemy)} #{@battle_info.trainer_name(enemy)}",
           '[VAR PKNICK(0002)]' => enemy.given_name
         )
-        choice = @scene.display_message(text, 1, text_get(11, 27), text_get(11, 28))
+        choice = @scene.display_message_and_wait(text, 1, text_get(11, 27), text_get(11, 28))
         if choice == 0 && (result = @scene.visual.show_pokemon_choice)
           Actions::Switch.new(@scene, who, result).execute if result != who
         end

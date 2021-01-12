@@ -52,7 +52,7 @@ module Battle
 
         battler.battle_effect.dec_perish_song_counter
         counter = battler.battle_effect.get_perish_song_counter
-        scene.display_message(parse_text_with_pokemon(19, 863, battler, PFM::Text::NUMB[2] => counter.to_s))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 863, battler, PFM::Text::NUMB[2] => counter.to_s))
         logic.damage_handler.damage_change(-battler.hp, battler) if counter == 0 # We purposedly ignore stuff that could prevent HP from going down
       end
     end
@@ -61,7 +61,7 @@ module Battle
       next if $env.current_weather != 1
 
       if $env.decrease_weather_duration # Return true if stopping!
-        scene.display_message(parse_text(18, 93))
+        scene.display_message_and_wait(parse_text(18, 93))
         logic.weather_change_handler.weather_change(:none, 0)
       else
         scene.visual.show_rmxp_animation(battlers.first || logic.battler(0, 0), 493)
@@ -72,7 +72,7 @@ module Battle
       next if $env.current_weather != 2
 
       if $env.decrease_weather_duration # Return true if stopping!
-        scene.display_message(parse_text(18, 92))
+        scene.display_message_and_wait(parse_text(18, 92))
         logic.weather_change_handler.weather_change(:none, 0)
       else
         scene.visual.show_rmxp_animation(battlers.first || logic.battler(0, 0), 492)
@@ -83,11 +83,11 @@ module Battle
       next if $env.current_weather != 3
 
       if $env.decrease_weather_duration # Return true if stopping!
-        scene.display_message(parse_text(18, 94))
+        scene.display_message_and_wait(parse_text(18, 94))
         logic.weather_change_handler.weather_change(:none, 0)
       else
         scene.visual.show_rmxp_animation(battlers.first || logic.battler(0, 0), 494)
-        scene.display_message(parse_text(18, 98))
+        scene.display_message_and_wait(parse_text(18, 98))
         battlers.each do |battler|
           next if battler.type_rock? || battler.type_ground? || battler.type_steel?
           next if EndTurnHandler::SANDSTORM_BLOCKING_ABILITIES.include?(battler.ability_db_symbol)
@@ -101,11 +101,11 @@ module Battle
       next if $env.current_weather != 4
 
       if $env.decrease_weather_duration # Return true if stopping!
-        scene.display_message(parse_text(18, 95))
+        scene.display_message_and_wait(parse_text(18, 95))
         logic.weather_change_handler.weather_change(:none, 0)
       else
         scene.visual.show_rmxp_animation(battlers.first || logic.battler(0, 0), 495)
-        scene.display_message(parse_text(18, 99))
+        scene.display_message_and_wait(parse_text(18, 99))
         battlers.each do |battler|
           next if battler.type_ice?
           next if EndTurnHandler::HAIL_BLOCKING_ABILITIES.include?(battler.ability_db_symbol)
@@ -119,7 +119,7 @@ module Battle
       next if $env.current_weather != 5
 
       if $env.decrease_weather_duration # Return true if stopping!
-        scene.display_message(parse_text(18, 96))
+        scene.display_message_and_wait(parse_text(18, 96))
         logic.weather_change_handler.weather_change(:none, 0)
       end
     end
@@ -147,7 +147,7 @@ module Battle
       battlers.each do |battler|
         next unless battler.battle_effect.has_wish_effect?
 
-        scene.display_message(parse_text_with_pokemon(19, 700, battler.battle_effect.get_wisher))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 700, battler.battle_effect.get_wisher))
         scene.visual.show_hp_animations([battler], [(battler.max_hp / 2).clamp(1, Float::INFINITY)])
       end
     end
@@ -156,7 +156,7 @@ module Battle
       battlers.each do |battler|
         next unless battler.battle_effect.has_ingrain_effect?
 
-        scene.display_message(parse_text_with_pokemon(19, 739, battler))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 739, battler))
         scene.visual.show_hp_animations([battler], [(battler.max_hp / 16).clamp(1, Float::INFINITY)])
       end
     end
@@ -165,7 +165,7 @@ module Battle
       battlers.each do |battler|
         next unless battler.battle_effect.has_aqua_ring_effect?
 
-        scene.display_message(parse_text_with_pokemon(19, 604, battler))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 604, battler))
         scene.visual.show_hp_animations([battler], [(battler.max_hp / 16).clamp(1, Float::INFINITY)])
       end
     end
@@ -223,7 +223,7 @@ module Battle
           scene.visual.show_item(battler)
           scene.visual.show_hp_animations([battler], [(battler.max_hp / 16).clamp(1, Float::INFINITY)])
         elsif battler.ability_db_symbol != :magic_guard
-          scene.display_message(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
+          scene.display_message_and_wait(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
           logic.damage_handler.damage_change(-(battler.max_hp / 8).clamp(1, Float::INFINITY), battler)
         end
       end
@@ -233,7 +233,7 @@ module Battle
       battlers.each do |battler|
         next if battler.battle_item_db_symbol != :flame_orb || battler.turn_count > 0 || battler.ability_db_symbol == :magic_guard
 
-        scene.display_message(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
         logic.status_change_handler.status_change(:burn, battler)
       end
     end
@@ -242,7 +242,7 @@ module Battle
       battlers.each do |battler|
         next if battler.battle_item_db_symbol != :toxic_orb || battler.turn_count > 0 || battler.ability_db_symbol == :magic_guard
 
-        scene.display_message(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
         logic.status_change_handler.status_change(:toxic, battler)
       end
     end
@@ -251,7 +251,7 @@ module Battle
       battlers.each do |battler|
         next if battler.battle_item_db_symbol != :life_orb || battler.attack_order.is_a?(Integer) || battler.ability_db_symbol == :magic_guard
 
-        scene.display_message(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
         logic.damage_handler.damage_change(-(battler.max_hp / 8).clamp(1, Float::INFINITY), battler)
       end
     end
@@ -260,7 +260,7 @@ module Battle
       battlers.each do |battler|
         next if battler.battle_item_db_symbol != :sticky_barb || battler.ability_db_symbol == :magic_guard
 
-        scene.display_message(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
         logic.damage_handler.damage_change(-(battler.max_hp / 8).clamp(1, Float::INFINITY), battler)
       end
     end
@@ -269,7 +269,7 @@ module Battle
       battlers.each do |battler|
         next if battler.battle_item_db_symbol != :leftovers
 
-        scene.display_message(parse_text_with_pokemon(19, 918, battler, PFM::Text::ITEM2[1] => battler.item_name))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 918, battler, PFM::Text::ITEM2[1] => battler.item_name))
         scene.visual.show_hp_animations([battle], [-(battler.max_hp / 8).clamp(1, Float::INFINITY)])
       end
     end
@@ -280,15 +280,15 @@ module Battle
 
         if battler.ability_db_symbol == :poison_heal
           if battler.battle_effect.has_heal_block_effect?
-            scene.display_message(parse_text_with_pokemon(19, 890, battler))
+            scene.display_message_and_wait(parse_text_with_pokemon(19, 890, battler))
             next
           end
-          scene.display_message(parse_text_with_pokemon(19, 387, battler))
+          scene.display_message_and_wait(parse_text_with_pokemon(19, 387, battler))
           scene.visual.show_hp_animations([battler], [battler.poison_effect])
           next
         end
 
-        scene.display_message(parse_text_with_pokemon(19, 243, battler))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 243, battler))
         scene.visual.show_rmxp_animation(battler, 469 + battler.status)
         logic.damage_handler.damage_change(battler.poison_effect, battler)
       end
@@ -298,7 +298,7 @@ module Battle
       battlers.each do |battler|
         next if !battler.toxic? || battler.ability_db_symbol == :magic_guard
 
-        scene.display_message(parse_text_with_pokemon(19, 243, battler))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 243, battler))
         scene.visual.show_rmxp_animation(battler, 469 + battler.status)
         logic.damage_handler.damage_change(battler.toxic_effect, battler)
       end
@@ -310,7 +310,7 @@ module Battle
 
         hp = battler.burn_effect
         hp /= 2 if battler.ability_db_symbol == :heatproof
-        scene.display_message(parse_text_with_pokemon(19, 261, battler))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 261, battler))
         scene.visual.show_rmxp_animation(battler, 469 + battler.status)
         logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), battler)
       end
@@ -321,7 +321,7 @@ module Battle
         next if !battler.battle_effect.has_bind_effect? || battler.ability_db_symbol == :magic_guard
 
         hp = battler.battle_effect.get_bide_power(battler)
-        scene.display_message(parse_text_with_pokemon(19, 1086, battler, PFM::Text::MOVE[1] => battler.battle_effect.get_bind_skill_name))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 1086, battler, PFM::Text::MOVE[1] => battler.battle_effect.get_bind_skill_name))
         logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), battler)
       end
     end
@@ -332,7 +332,7 @@ module Battle
 
         if battler.asleep?
           hp = battler.max_hp / 4
-          scene.display_message(parse_text_with_pokemon(19, 324, battler))
+          scene.display_message_and_wait(parse_text_with_pokemon(19, 324, battler))
           logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), battler)
         else
           battler.battle_effect.apply_nightmare(false)
@@ -345,7 +345,7 @@ module Battle
         next if !battler.battle_effect.has_curse_effect? || battler.ability_db_symbol == :magic_guard
 
         hp = battler.max_hp / 4
-        scene.display_message(parse_text_with_pokemon(19, 1077, battler))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 1077, battler))
         logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), battler)
       end
     end

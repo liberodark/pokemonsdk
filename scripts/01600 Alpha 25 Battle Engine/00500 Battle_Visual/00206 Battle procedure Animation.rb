@@ -7,15 +7,12 @@ module Battle
     # @param messages [Proc] messages shown right before the post processing
     def show_hp_animations(targets, hps, effectiveness = [], &messages)
       lock do
-        message_visibility = @scene.message_window.visible
-        @scene.message_window.visible = false if targets.any? { |target| target.bank == 0 }
         animations = targets.map.with_index do |target, index|
           show_info_bar(target)
           next Battle::Visual::HPAnimation.new(@scene, target, hps[index], effectiveness[index]) if hps[index]
         end
         wait_for_animation
         scene_update_proc { animations.each(&:update) } until animations.all?(&:done?)
-        @scene.message_window.visible = message_visibility
         messages&.call
         show_kos(targets)
       end
@@ -35,7 +32,7 @@ module Battle
       end
       # Show messages
       targets.each do |target|
-        @scene.display_message(parse_text_with_pokemon(19, 0, target, PFM::Text::PKNICK[0] => target.given_name))
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, 0, target, PFM::Text::PKNICK[0] => target.given_name))
         target.reset_stat_stage
         target.status = 0
       end
@@ -112,7 +109,6 @@ module Battle
     # @param exp_data [Hash{ PFM::PokemonBattler => Integer }] info about experience each pokemon should receive
     def show_exp_distribution(exp_data)
       lock do
-        @scene.message_window.visible = false
         exp_ui = BattleUI::ExpDistribution.new(@viewport_sub, @scene, exp_data)
         exp_ui.start_animation
         scene_update_proc { exp_ui.update } until exp_ui.done?

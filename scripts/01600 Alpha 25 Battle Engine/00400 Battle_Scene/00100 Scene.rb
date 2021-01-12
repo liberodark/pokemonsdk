@@ -148,7 +148,7 @@ module Battle
           should_unlock = true
           @visual.lock
         end
-        update if $game_temp.message_window_showing && !@message_window.drawing_message
+        @visual.update if $game_temp.message_window_showing && !@message_window.drawing_message
         @visual.unlock if should_unlock
       end
     end

@@ -126,7 +126,7 @@ module Battle
       def show_stat_change_text_and_animation(stat, power, amount, target)
         text_index = stat_text_index(amount, power)
         @scene.visual.show_rmxp_animation(target, ANIMATION[stat] + (power < 0 ? 1 : 0)) if amount != 0
-        @scene.display_message(parse_text_with_pokemon(19, TEXT_POS[stat][text_index], target))
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, TEXT_POS[stat][text_index], target))
       end
 
       class << self
@@ -264,7 +264,7 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(fv)
-        handler.scene.display_message(parse_text_with_pokemon(19, 198, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 198, target))
       end
     end
 
@@ -275,7 +275,7 @@ module Battle
       if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :clear_body)
         next handler.prevent_change do
           handler.scene.visual.show_ability(target)
-          handler.scene.display_message(parse_text_with_pokemon(19, 198, target))
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 198, target))
         end
       end
     end
@@ -287,7 +287,7 @@ module Battle
       if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :white_smoke)
         next handler.prevent_change do
           handler.scene.visual.show_ability(target)
-          handler.scene.display_message(parse_text_with_pokemon(19, 198, target))
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 198, target))
         end
       end
     end
@@ -299,7 +299,7 @@ module Battle
       if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :hyper_cutter)
         next handler.prevent_change do
           handler.scene.visual.show_ability(target)
-          handler.scene.display_message(parse_text_with_pokemon(19, 201, target))
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 201, target))
         end
       end
     end
@@ -309,7 +309,7 @@ module Battle
       if target.battle_item_db_symbol == :white_herb
         next handler.prevent_change do # NOT FINISHED!
           handler.scene.visual.show_item(target)
-          handler.scene.display_message(parse_text_with_pokemon(19, 198, target))
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 198, target))
           handler.logic.item_change_handler.change_item(:white_herb, true, target, launcher, skill)
         end
       end
@@ -322,7 +322,7 @@ module Battle
       if launcher.can_be_lowered_or_canceled?(target.ability_db_symbol == :keen_eye)
         next handler.prevent_change do
           handler.scene.visual.show_ability(target)
-          handler.scene.display_message(parse_text_with_pokemon(19, 207, target))
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 207, target))
         end
       end
     end

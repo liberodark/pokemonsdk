@@ -327,13 +327,8 @@ module GamePlay
       elsif no_message
         @message_window = false
       else
-        # if $game_temp.in_battle
-        #  @message_window = ::Scene_Battle::Window_Message.new
-        #  @message_window.wait_input = true
-        # else
         message_viewport_args = [:main, message_z] if message_viewport_args.empty?
         @message_window = message_class.new(Viewport.create(*message_viewport_args), self)
-        # end
         @message_window.z = message_z
       end
     end

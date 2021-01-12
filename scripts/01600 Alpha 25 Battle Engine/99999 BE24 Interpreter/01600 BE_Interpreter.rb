@@ -58,13 +58,13 @@ module BattleEngine
     # Display a message
     # @param message [String]
     def msg(message)
-      @scene.display_message(message, true) unless @no_more_msg
+      @scene.display_message_and_wait(message, true) unless @no_more_msg
     end
 
     # Force display a message
     # @param message [String]
     def msgf(message)
-      @scene.display_message(message, true)
+      @scene.display_message_and_wait(message, true)
     end
 
     # Update the hp bar of a Pokemon

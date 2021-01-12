@@ -23,7 +23,6 @@ module Battle
       @animations << @transition
       @transition.transition
       @locking = true
-      @scene.message_window.visible = true
     end
 
     # Function storing a battler sprite in the battler Hash

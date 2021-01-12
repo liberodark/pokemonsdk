@@ -17,7 +17,7 @@ module Battle
             hp = damages(user, target, rng)
             @logic.damage_handler.damage_change_with_process(hp, target, user, self) do
               if critical_hit?
-                scene.display_message(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
+                scene.display_message_and_wait(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
               elsif hp > 0 && i == hit_amount - 1
                 efficent_message(effectiveness, target)
               end
@@ -26,7 +26,7 @@ module Battle
           end
           next true
         end
-        @scene.display_message(parse_text(18, 33, PFM::Text::NUMB[1] => nb_hit.to_s))
+        @scene.display_message_and_wait(parse_text(18, 33, PFM::Text::NUMB[1] => nb_hit.to_s))
       end
 
       private

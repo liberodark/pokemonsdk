@@ -63,7 +63,7 @@ module Battle
           target.send(STATUS_APPLY_METHODS[status], true)
           @scene.visual.show_rmxp_animation(target, STATUS_APPLY_ANIMATION[status])
         end
-        @scene.display_message(parse_text_with_pokemon(19, message_overwrite, target)) if message_overwrite
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, message_overwrite, target)) if message_overwrite
         exec_hooks(StatusChangeHandler, :post_status_change, binding)
       rescue Hooks::ForceReturn => e
         return e.data
@@ -181,7 +181,7 @@ module Battle
       next unless StatusChangeHandler::SYNCHRONIZED_STATUS.include?(status)
 
       launcher.send(StatusChangeHandler::STATUS_APPLY_METHODS[status], true)
-      handler.scene.display_message(parse_text_with_pokemon(19, 1159, launcher))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1159, launcher))
     end
 
     # Quick Feet ability
@@ -198,7 +198,7 @@ module Battle
       next if status != :confuse || !target.confused?
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 354, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 354, target))
       end
     end
 
@@ -207,7 +207,7 @@ module Battle
       next if status == :cure || launcher == target || !skill || !target.battle_effect.has_substitute_effect?
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 24, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 24, target))
       end
     end
 
@@ -216,7 +216,7 @@ module Battle
       next true if status == :cure || launcher == target || !skill || !target.battle_effect.has_safe_guard_effect?
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 842, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 842, target))
       end
     end
 
@@ -230,7 +230,7 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(fv)
-        handler.scene.display_message(parse_text_with_pokemon(19, 1180, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1180, target))
       end
     end
 
@@ -241,7 +241,7 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
-        handler.scene.display_message(parse_text_with_pokemon(19, 357, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 357, target))
       end
     end
 
@@ -250,7 +250,7 @@ module Battle
       next if status != :sleep || !target.asleep?
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 315, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 315, target))
       end
     end
 
@@ -262,7 +262,7 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
-        handler.scene.display_message(parse_text_with_pokemon(19, msg_id, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, msg_id, target))
       end
     end
 
@@ -273,7 +273,7 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
-        handler.scene.display_message(parse_text_with_pokemon(19, 318, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 318, target))
       end
     end
 
@@ -284,7 +284,7 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
-        handler.scene.display_message(parse_text_with_pokemon(19, 318, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 318, target))
       end
     end
 
@@ -293,7 +293,7 @@ module Battle
       next if status != :sleep || target.can_be_asleep? || skill&.db_symbol == :rest
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 318, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 318, target))
       end
     end
 
@@ -302,7 +302,7 @@ module Battle
       next if status != :freeze || !target.frozen?
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 297, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 297, target))
       end
     end
 
@@ -313,7 +313,7 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
-        handler.scene.display_message(parse_text_with_pokemon(19, 300, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 300, target))
       end
     end
 
@@ -322,7 +322,7 @@ module Battle
       next if status != :freeze || target.can_be_frozen?(skill&.type || 0)
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 300, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 300, target))
       end
     end
 
@@ -331,7 +331,7 @@ module Battle
       next if status != :poison && status != :toxic || !target.poisoned?
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 249, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 249, target))
       end
     end
 
@@ -342,7 +342,7 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
-        handler.scene.display_message(parse_text_with_pokemon(19, 252, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 252, target))
       end
     end
 
@@ -351,7 +351,7 @@ module Battle
       next if status != :poison && status != :toxic || target.can_be_poisoned?
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 252, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 252, target))
       end
     end
 
@@ -360,7 +360,7 @@ module Battle
       next if status != :paralysis || !target.paralyzed?
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 282, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 282, target))
       end
     end
 
@@ -371,7 +371,7 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
-        handler.scene.display_message(parse_text_with_pokemon(19, 285, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 285, target))
       end
     end
 
@@ -380,7 +380,7 @@ module Battle
       next if status != :paralysis || target.can_be_paralyzed? || skill&.db_symbol == :body_slam
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 285, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 285, target))
       end
     end
 
@@ -389,7 +389,7 @@ module Battle
       next if status != :burn || !target.burn?
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 267, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 267, target))
       end
     end
 
@@ -400,7 +400,7 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
-        handler.scene.display_message(parse_text_with_pokemon(19, 270, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 270, target))
       end
     end
 
@@ -409,7 +409,7 @@ module Battle
       next if status != :burn || target.can_be_burn?
 
       next handler.prevent_change do
-        handler.scene.display_message(parse_text_with_pokemon(19, 270, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 270, target))
       end
     end
   end

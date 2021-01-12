@@ -62,7 +62,7 @@ module Battle
           @scene.visual.show_ability(target)
           damage_change(hp, launcher, launcher, nil)
         elsif launcher.effects.has?(:heal_block)
-          @scene.display_message(parse_text_with_pokemon(19, 890, launcher))
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 890, launcher))
         else
           hp = hp * 130 / 100 if launcher.battle_item_db_symbol == :big_root
           @scene.visual.show_hp_animations([launcher], [hp])
@@ -173,10 +173,10 @@ module Battle
         target.battle_effect.substitute_hp -= hp
         if hp > 0
           handler.scene.visual.show_switch_form_animation(target)
-          handler.scene.display_message(parse_text_with_pokemon(19, 794, target))
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 794, target))
         else
           target.battle_effect.last_damaging_skill = nil
-          handler.scene.display_message(parse_text_with_pokemon(19, 791, target))
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 791, target))
         end
       end
 
@@ -214,7 +214,7 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
-        handler.scene.display_message(parse_text_with_pokemon(19, 387, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 387, target))
       end
     end
 
@@ -226,7 +226,7 @@ module Battle
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
         handler.scene.visual.show_hp_animations([target], [target.max_hp / 4])
-        handler.scene.display_message(parse_text_with_pokemon(19, 387, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 387, target))
       end
     end
 
@@ -303,7 +303,7 @@ module Battle
         handler.scene.visual.show_item(target)
         # TODO: Use item handler
         handler.scene.visual.show_hp_animations([target], [10])
-        handler.scene.display_message(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => target.item_name))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => target.item_name))
       end
     end
 
@@ -315,7 +315,7 @@ module Battle
         handler.scene.visual.show_item(target)
         # TODO: Use item handler
         handler.scene.visual.show_hp_animations([target], [target.max_hp / 4])
-        handler.scene.display_message(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => target.item_name))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => target.item_name))
       end
     end
 
@@ -323,7 +323,7 @@ module Battle
     DamageHandler.register_post_damage_hook('PSDK post damage: Air Balloon') do |handler, _, target|
       next unless target.battle_item_db_symbol == :air_balloon
 
-      handler.scene.display_message(parse_text_with_pokemon(19, 411, target))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 411, target))
       handler.logic.item_change_handler.change_item(:none, true, target)
     end
 
@@ -358,7 +358,7 @@ module Battle
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Destiny Bond') do |handler, _, target, launcher, skill|
       next unless skill && target.last_successfull_move_is?(:destiny_bond) && launcher != target && launcher
 
-      handler.scene.display_message(parse_text_with_pokemon(19, 629, target))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 629, target))
       handler.scene.visual.show_hp_animations([launcher], [-launcher.hp])
     end
 
@@ -366,7 +366,7 @@ module Battle
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Grudge') do |handler, _, target, launcher, skill|
       next unless skill && target.battle_effect.has_grudge_effect? && launcher != target && launcher
 
-      handler.scene.display_message(parse_text_with_pokemon(19, 635, launcher, PFM::Text::MOVE[1] => skill.name))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 635, launcher, PFM::Text::MOVE[1] => skill.name))
       skill.pp = 0
     end
 
@@ -374,7 +374,7 @@ module Battle
     DamageHandler.register_post_damage_hook('PSDK Post damage: Rage') do |handler, _, target, _, skill|
       next unless skill && target.battle_effect.has_rage_effect?
 
-      handler.scene.display_message(parse_text_with_pokemon(19, 536, target))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 536, target))
       handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, target)
     end
 
@@ -453,7 +453,7 @@ module Battle
 
       handler.scene.visual.show_ability(target)
       launcher.effects.add(Effects::Attract.new(handler.logic, launcher, target))
-      handler.scene.display_message(parse_text_with_pokemon(19, 327, launcher))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 327, launcher))
     end
 
     # Effect Spore
@@ -476,7 +476,7 @@ module Battle
       handler.scene.visual.show_ability(target)
       handler.scene.visual.show_hp_animations([launcher], [damages])
       text = parse_text_with_pokemon(19, 430, launcher, PFM::Text::PKNICK[0] => launcher.given_name)
-      handler.scene.display_message(text)
+      handler.scene.display_message_and_wait(text)
     end
 
     # Iron Barbs
@@ -487,7 +487,7 @@ module Battle
       handler.scene.visual.show_ability(target)
       handler.scene.visual.show_hp_animations([launcher], [damages])
       text = parse_text_with_pokemon(19, 430, launcher, PFM::Text::PKNICK[0] => launcher.given_name)
-      handler.scene.display_message(text)
+      handler.scene.display_message_and_wait(text)
     end
 
     # Aftermath
@@ -510,7 +510,7 @@ module Battle
       next unless handler.logic.ability_change_handler.can_change_ability?(launcher, :mummy)
 
       handler.scene.visual.show_ability(target)
-      handler.scene.display_message(parse_text_with_pokemon(19, 405, launcher, PFM::Text::ABILITY[1] => target.ability_name))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 405, launcher, PFM::Text::ABILITY[1] => target.ability_name))
       handler.logic.ability_change_handler.change_ability(launcher, :mummy)
     end
 
@@ -523,7 +523,7 @@ module Battle
       target.type1 = skill.type
       text = parse_text_with_pokemon(19, 899, target, PFM::Text::PKNICK[0] => target.given_name,
                                                       '[VAR TYPE(0001)]' => GameData::Type[skill.type].name)
-      handler.scene.display_message(text)
+      handler.scene.display_message_and_wait(text)
     end
   end
 end

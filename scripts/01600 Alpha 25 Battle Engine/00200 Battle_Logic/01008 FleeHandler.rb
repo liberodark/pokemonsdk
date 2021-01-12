@@ -18,7 +18,7 @@ module Battle
         value = flee_value(index)
         @logic.battle_info.flee_attempt_count += 1
         result = rand(256) < value ? :success : :failure
-        @scene.display_message(parse_text(18, result == :success ? 75 : 76))
+        @scene.display_message_and_wait(parse_text(18, result == :success ? 75 : 76))
         return result
       rescue Hooks::ForceReturn => e
         process_prevention_reason
@@ -60,7 +60,7 @@ module Battle
         next unless handler.logic.battle_info.trainer_battle?
 
         next handler.prevent_change do
-          handler.scene.display_message(parse_text(18, 79))
+          handler.scene.display_message_and_wait(parse_text(18, 79))
         end
       end
 
@@ -68,7 +68,7 @@ module Battle
         next unless $game_switches[Yuki::Sw::BT_NoEscape]
 
         handler.prevent_change do
-          handler.scene.display_message(parse_text(18, 77))
+          handler.scene.display_message_and_wait(parse_text(18, 77))
         end
       end
     end

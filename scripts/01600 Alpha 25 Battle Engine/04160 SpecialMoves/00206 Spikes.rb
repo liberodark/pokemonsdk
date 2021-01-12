@@ -36,7 +36,7 @@ module Battle
         else
           @logic.add_bank_effect(Effects::Spikes.new(@logic, bank))
         end
-        @scene.display_message(parse_text(18, bank != 0 ? 155 : 154))
+        @scene.display_message_and_wait(parse_text(18, bank != 0 ? 155 : 154))
       end
     end
 
