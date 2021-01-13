@@ -18,7 +18,7 @@ module LiteRGSS
     COLOR_UNIFORM = "\\0uniform vec4 color;\n"
     COLOR_PROCESS = "\n  frag.rgb = mix(frag.rgb, color.rgb, color.a);\\0"
     TONE_UNIFORM = "\\0uniform vec4 tone;\nconst vec3 lumaF = vec3(.299, .587, .114);\n"
-    TONE_PROCESS = "\n  float luma = dot(frag.rgb, lumaF);\n  frag.rgb += tone.rgb;\n  frag.rgb = mix(frag.rgb, vec3(luma), tone.w);\\0"
+    TONE_PROCESS = "\n  float luma = dot(frag.rgb, lumaF);\n  frag.rgb = mix(frag.rgb, vec3(luma), tone.w);\n  frag.rgb += tone.rgb;\\0"
     ALPHA_PROCESS = "\n  frag.a *= gl_Color.a;\\0"
     DEFAULT_SHADER = <<~EODEFAULTSHADER
       #{SHADER_VERSION}
