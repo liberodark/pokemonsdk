@@ -33,7 +33,7 @@ module Battle
         return e.data
       end
 
-      # Function that actually change the status
+      # Function that actually change the weather
       # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
       # @param nb_turn [Integer, nil] Number of turn, use nil for Infinity
       def weather_change(weather_type, nb_turn)
@@ -51,9 +51,9 @@ module Battle
       # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
       # @param nb_turn [Integer, nil] Number of turn, use nil for Infinity
       def weather_change_with_process(weather_type, nb_turn)
-        return process_prevention_reason unless status_appliable?(status, target, launcher, skill)
+        return process_prevention_reason unless weather_appliable?(weather_type)
 
-        weather_change(status, target, launcher, skill, message_overwrite: message_overwrite)
+        weather_change(weather_type, nb_turn)
       end
 
       private
