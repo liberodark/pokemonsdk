@@ -6,7 +6,9 @@ module Battle
                              mega_cuff]
 
       # Create the MegaEvolve checker
-      def initialize
+      # @param scene [Battle::Scene]
+      def initialize(scene)
+        @scene = scene
         # List of bags that already used the mega evolution
         # @type [Array<PFM::Bag>]
         @used_mega_tool_bags = []
@@ -18,6 +20,7 @@ module Battle
       def can_pokemon_mega_evolve?(pokemon)
         bag = pokemon.bag
         return false unless MEGA_EVOLVE_TOOLS.any? { |item_db_symbol| bag.contain_item?(item_db_symbol) }
+        return false if pokemon.from_party? && any_mega_player_action?
 
         return !@used_mega_tool_bags.include?(bag) && pokemon.can_mega_evolve?
       end
@@ -35,6 +38,14 @@ module Battle
         bag = pokemon.bag
         symbol = MEGA_EVOLVE_TOOLS.find { |item_db_symbol| bag.contain_item?(item_db_symbol) }
         return GameData::Item[symbol || 0].name
+      end
+
+      private
+
+      # Function that checks if any action of the player is a mega evolve
+      # @return [Boolean]
+      def any_mega_player_action?
+        @scene.player_actions.any? { |actions| actions.is_a?(Array) }
       end
     end
   end

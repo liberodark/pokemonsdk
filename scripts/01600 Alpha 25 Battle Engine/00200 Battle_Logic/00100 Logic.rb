@@ -45,7 +45,7 @@ module Battle
       # @type [Array<Array<Battle::Effects::EffectsHandler>>]
       @position_effects = Array.new(@bags.size) { Array.new(@battle_info.vs_type) { Effects::EffectsHandler.new } }
       # Mega Evolve helper
-      @mega_evolve = MegaEvolve.new
+      @mega_evolve = MegaEvolve.new(scene)
       # TODO: Remove global_states bank_states
       @global_states = {}
       @bank_states = Hash.new({})
