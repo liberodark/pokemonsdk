@@ -123,6 +123,12 @@ module Battle
       # log_debug('Leaving wait_for_animation') # uncomment for deep debug
     end
 
+    # Snap all viewports to bitmap
+    # @return [Array<Bitmap>]
+    def snap_to_bitmaps
+      return [@viewport, @viewport_sub].map(&:snap_to_bitmap)
+    end
+
     private
 
     # Create all the graphics for the visuals

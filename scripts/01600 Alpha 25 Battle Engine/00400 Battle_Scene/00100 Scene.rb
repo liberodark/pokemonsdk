@@ -87,6 +87,21 @@ module Battle
       @visual.dispose
     end
 
+    # Take a snapshot of the scene
+    # @note You have to dispose the bitmap you got from this function
+    # @return [Bitmap]
+    def snap_to_bitmap
+      temp_view = Viewport.create(:main)
+      # Snapshot of spriteset
+      bitmaps = @visual.snap_to_bitmaps
+      bitmaps.map { |bmp| Sprite.new(temp_view).set_bitmap(bmp) }
+      result = temp_view.snap_to_bitmap
+      bitmaps.each(&:dispose)
+      temp_view.dispose
+      # Return actual snapshot
+      return result
+    end
+
     private
 
     # Create a new logic object

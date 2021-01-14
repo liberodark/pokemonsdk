@@ -90,7 +90,7 @@ module BattleUI
       @scene.visual.animations << @statistics
       index = @pokemon.index(pokemon)
       @bars[index].data = pokemon if index
-      level_up_message(pokemon) if @exp_data[pokemon].to_i == 0 || pokemon.can_learn_skill_at_this_level?
+      level_up_message(pokemon) if pokemon.can_learn_skill_at_this_level?
       pokemon.check_evolution = true
       @scene.visual.scene_update_proc { update_statistics } while @statistics
     end
@@ -100,7 +100,7 @@ module BattleUI
     # @param list [Array]
     def level_up_message(receiver)
       PFM::Text.set_num3(receiver.level.to_s, 1)
-      @scene.display_message_and_wait(parse_text(18, 62, '[VAR 010C(0000)]' => receiver.given_name))
+      # @scene.display_message_and_wait(parse_text(18, 62, '[VAR 010C(0000)]' => receiver.given_name))
       PFM::Text.reset_variables
       receiver.check_skill_and_learn
       @scene.logic.evolve_request << receiver unless @scene.logic.evolve_request.include?(receiver)
