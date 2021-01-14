@@ -13,7 +13,7 @@ module BattleUI
       @move = move
       @logic = logic
       @row_size = logic.battle_info.vs_type
-      @targets = move.battler_targets(launcher, logic)
+      @targets = move.battler_targets(launcher, logic).select(&:alive?)
       @allow_selection = !move.no_choice_skill?
       @mons = generate_mon_list
       @index = find_best_index
@@ -66,7 +66,7 @@ module BattleUI
     def create_sprites
       add_background('battle/background')
       @buttons = @mons.map.with_index do |pokemon, index|
-        push_sprite(Button.new(@viewport, index, @row_size, pokemon, @move, @targets.include?(pokemon)))
+        push_sprite(Button.new(@viewport, index, @row_size, pokemon, @launcher, @move, @targets.include?(pokemon)))
       end
     end
 
@@ -74,7 +74,7 @@ module BattleUI
     def validate
       return @result = [1, 0] if @targets.empty?
 
-      target = @allow_selection ? @targets[@index] : @targets.first
+      target = @allow_selection ? @buttons[@index].data : @targets.first
       if @targets.include?(target)
         @result = [target.bank, target.position]
         $game_system.se_play($data_system.decision_se)
@@ -122,14 +122,16 @@ module BattleUI
       # @param index [Integer]
       # @param row_size [Integer]
       # @param pokemon [PFM::PokemonBattler]
+      # @param launcher [PFM::PokemonBattler]
       # @param move [Battle::Move]
       # @parma is_target [Boolean]
-      def initialize(viewport, index, row_size, pokemon, move, is_target)
+      def initialize(viewport, index, row_size, pokemon, launcher, move, is_target)
         super(viewport, *process_coordinates(index, row_size))
         create_sprites
         @move = move
         @selected = is_target
         @is_target = is_target
+        @launcher = launcher
         self.data = pokemon
       end
 
@@ -145,8 +147,16 @@ module BattleUI
       # @param pokemon [PFM::PokemonBattler]
       def data=(pokemon)
         super(pokemon)
+        self.visible = pokemon&.alive?
+        unless visible
+          @background.visible = true
+          return
+        end
+
         @gender.x = @name.x + @name.real_width + 5
         @icon.opacity = @is_target ? 255 : 128
+        @efficiency_text.text = load_efficiency_text(pokemon)
+        @efficiency_text.visible = @is_target
         self.selected = @selected
       end
 
@@ -157,9 +167,20 @@ module BattleUI
         @icon = add_sprite(1, 1, NO_INITIAL_IMAGE, false, type: UI::PokemonIconSprite)
         @name = add_text(41, 16, 0, 16, :name, color: 10, type: UI::SymText)
         @gender = add_sprite(5, 16, NO_INITIAL_IMAGE, type: UI::GenderSprite)
-        @efficiency_text = add_text(18, 35, 102, 16, '"efficiency"', 1, color: 10)
+        @efficiency_text = add_text(18, 35, 102, 16, nil.to_s, 1, color: 10)
         @cursor = add_sprite(-10, 12, 'battle/arrow', type: Cursor)
         @cursor.visible = false
+      end
+
+      # @param pokemon [PFM::PokemonBattler]
+      # @return [String]
+      def load_efficiency_text(pokemon)
+        efficiency = @move.type_modifier(@launcher, pokemon)
+        return ext_text(8999, 23) if efficiency >= 2
+        return ext_text(8999, 24) if efficiency == 0
+        return ext_text(8999, 25) if efficiency < 1
+
+        return ext_text(8999, 22)
       end
 
       def process_coordinates(index, row_size)
