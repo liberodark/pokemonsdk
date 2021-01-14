@@ -32,8 +32,10 @@ module Battle
       return unless move_usable_by_user(user, targets)
 
       usage_message(user)
+      return scene.display_message_and_wait(parse_text(18, 85)) if pp == 0
       return scene.display_message_and_wait(parse_text(18, 74)) if accuracy > 0 && rand(100) >= accuracy
 
+      decrese_pp(user, targets)
       actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
       return if actual_targets.none?
 
@@ -101,6 +103,14 @@ module Battle
       return calc_type_n_multiplier(target, :type1, types) == 0 ||
              calc_type_n_multiplier(target, :type2, types) == 0 ||
              calc_type_n_multiplier(target, :type3, types) == 0
+    end
+
+    # Decrese the PP of the move
+    # @param user [PFM::PokemonBattler]
+    # @param targets [Array<PFM::PokemonBattler>] expected targets
+    def decrese_pp(user, targets)
+      self.pp -= 1
+      self.pp -= 1 if @logic.foes_of(user).any? { |foe| foe.alive? && foe.ability_db_symbol == :pressure }
     end
 
     # Play the move animation
