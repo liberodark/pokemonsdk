@@ -55,6 +55,7 @@ module Battle
           deal_effect(user, actual_targets) # TODO: DO
       end
       @scene.visual.set_info_state(:move_animation)
+      @scene.visual.wait_for_animation
     end
 
     # Show the usage failure when move is not usable by user

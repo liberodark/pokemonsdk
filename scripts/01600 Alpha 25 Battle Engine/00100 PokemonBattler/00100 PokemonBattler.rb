@@ -71,9 +71,9 @@ module PFM
     # @return [PFM::Bag]
     attr_accessor :bag
 
-    # Tell if evolution should be checked
+    # Tell if the Pokemon already distributed its experience during the battle
     # @return [Boolean]
-    attr_accessor :check_evolution
+    attr_accessor :exp_distributed
 
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
@@ -95,8 +95,8 @@ module PFM
       @last_battle_turn = -1
       @effects = Battle::Effects::EffectsHandler.new
       @move_history = []
-      @check_evolution = false
       @mega_evolved = false
+      @exp_distributed = false
       initialize_set_is_follower
     end
 

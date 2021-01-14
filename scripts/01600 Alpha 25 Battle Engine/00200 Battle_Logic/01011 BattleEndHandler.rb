@@ -87,7 +87,7 @@ module Battle
       ids = [$game_variables[Yuki::Var::Trainer_Battle_ID], $game_variables[Yuki::Var::Second_Trainer_ID]].select { |i| i > 0 }
       if handler.logic.battle_result == 0
         Audio.bgm_play(*handler.scene.battle_info.victory_bgm)
-        handler.logic.battle_phase_end
+        handler.logic.battle_phase_exp
         # Defeat message
         ids.each do |id|
           handler.scene.display_message_and_wait(text_get(48, id))
@@ -108,7 +108,7 @@ module Battle
       next if $game_temp.trainer_battle || handler.logic.battle_result.between?(1, 2)
 
       Audio.bgm_play(*handler.scene.battle_info.victory_bgm)
-      handler.logic.battle_phase_end
+      handler.logic.battle_phase_exp
       if (v = handler.scene.battle_info.additional_money) > 0
         $pokemon_party.add_money(v)
         handler.scene.display_message_and_wait(parse_text(18, 61, PFM::Text::TRNAME[0] => $trainer.name, '[VAR NUM6(0001,E07F)]' => v.to_s))

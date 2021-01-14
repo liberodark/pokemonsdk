@@ -25,14 +25,14 @@ module Battle
     # Execute the next action
     # @return [Boolean] if there was an action or not
     def perform_next_action
-      return false if @actions.empty?
+      return false if @actions.empty? || !can_battle_continue?
 
       # @type [Actions::Base]
       action = @actions.pop
       log_debug("Current action : #{action}")
       @scene.message_window.blocking = false
       action.execute
-      battle_phase_switch_check
+      battle_phase_switch_exp_check
       return true
     end
 

@@ -3,25 +3,41 @@ module Battle
     # Function that distribute the exp to all Pokemon and switch dead pokemon
     def battle_phase_end
       end_turn_handler.process_events
-      # Distribute exp and add all enemy that are dead to switch request
-      dead_enemy_battler_during_this_turn.each do |enemy|
-        distribute_exp_for(enemy)
-        @switch_request << { who: enemy }
-      end
-      # Add all actors to switch request
+      # Add all dead enemy to the switch request
+      @switch_request.concat(
+        dead_enemy_battler_during_this_turn.map { |battler| { who: battler } }
+      )
+      # Add all dead actors to switch request
       turn = $game_temp.battle_turn
       @switch_request.concat(
         trainer_battlers.select { |battler| battler.last_battle_turn == turn && battler.dead? }.map { |battler| { who: battler } }
       )
       @switch_request.uniq! { |who:| who }
-      battle_phase_switch_check
+      battle_phase_switch_exp_check
       all_alive_battlers.each { |pokemon| pokemon.switching = false }
     end
 
-    # Function that process the switches
-    def battle_phase_switch_check
+    # Function that test the experience distribution
+    def battle_phase_exp
+      exp_distributions = {}
+      # Distribute exp and add all enemy that are dead to switch request
+      dead_enemy_battler_during_this_turn.each do |enemy|
+        next if enemy.exp_distributed
+
+        exp_distributions.merge!(distribute_exp_for(enemy)) do |_, old_val, new_val|
+          old_val + new_val
+        end
+        enemy.exp_distributed = true
+      end
+
+      @scene.visual.show_exp_distribution(exp_distributions) if exp_distributions.any?
+    end
+
+    # Function that process the switches and give exp
+    def battle_phase_switch_exp_check
       return unless can_battle_continue?
 
+      battle_phase_exp
       during_end_of_turn = @actions.empty?
       @switch_request.each do |who:, with: nil|
         next Actions::Switch.new(@scene, who, with).execute if who && with
@@ -38,9 +54,8 @@ module Battle
 
     # Function that process the battle end when Pokemon was caught
     def battle_phase_end_caught
-      alive_battlers(1).each do |enemy|
-        distribute_exp_for(enemy) if @battle_info.caught_pokemon == enemy
-      end
+      pokemon = alive_battlers(1).find { |enemy| @battle_info.caught_pokemon == enemy }
+      @scene.visual.show_exp_distribution(distribute_exp_for(pokemon))
     end
 
     private
@@ -84,8 +99,9 @@ module Battle
 
     # Function that distribute experience for a dead Enemy Pokemon
     # @param enemy [PFM::PokemonBattler]
+    # @return [Hash{ PFM::PokemonBattler => Integer }]
     def distribute_exp_for(enemy)
-      return if @battle_info.disallow_exp?
+      return {} if @battle_info.disallow_exp?
 
       expable = trainer_battlers.reject { |receiver| receiver.max_level == receiver.level || receiver.dead? }
       base_exp = exp_base(enemy)
@@ -111,9 +127,7 @@ module Battle
           end
         end
       end
-      return if exp_data.empty?
-
-      @scene.visual.show_exp_distribution(exp_data.to_h)
+      return exp_data.to_h
     end
 
     # TODO: Move experience distribution in a dedicated class
