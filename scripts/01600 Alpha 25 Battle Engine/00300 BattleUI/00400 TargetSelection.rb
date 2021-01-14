@@ -193,6 +193,7 @@ module BattleUI
         # Set the Pokemon shown
         # @param pokemon [PFM::PokemonBattler]
         def data=(pokemon)
+          return unless pokemon
           set_bitmap(image_name(pokemon), :interface)
         end
 

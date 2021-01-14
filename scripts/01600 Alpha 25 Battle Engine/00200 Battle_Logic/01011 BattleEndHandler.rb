@@ -28,6 +28,16 @@ module Battle
         return GameData::CommonItem[off][ind]
       end
 
+      # Process the loose sequence when the battle doesn't allow defeat
+      def player_loose_sequence
+        lost_money = calculate_lost_money
+        variables = { PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => lost_money.to_s }
+        @scene.message_window.stay_visible = true
+        @scene.display_message(parse_text(18, 56, variables))
+        @scene.display_message(parse_text(18, @scene.battle_info.trainer_battle? ? 58 : 57, variables))
+        @scene.display_message(parse_text(18, 59, variables))
+      end
+
       private
 
       # Get the right pickup index
@@ -41,6 +51,18 @@ module Battle
         return 8 if seed < 99
 
         return 9
+      end
+
+      # Get the money the player looses when he lose a battle
+      # @return [Integer]
+      def calculate_lost_money
+        base_payout * @logic.battler(0, 0).level
+      end
+
+      # Get the base payout to calculate the lost money
+      # @return [Integer]
+      def base_payout
+        return [8, 16, 24, 36, 48, 64, 80, 100, 120][$trainer.badge_counter] || 120
       end
 
       class << self
@@ -211,10 +233,11 @@ module Battle
       $game_player.leave_cycling_state if players_pokemon.all?(&:dead?) && !$game_temp.battle_can_lose
     end
 
-    BattleEndHandler.register('PSDK send player back to Pokemon Center') do |_, players_pokemon|
+    BattleEndHandler.register('PSDK send player back to Pokemon Center') do |handler, players_pokemon|
       next unless players_pokemon.all?(&:dead?)
 
       unless $game_temp.battle_can_lose
+        handler.player_loose_sequence
         $wild_battle.reset
         $game_temp.player_transferring = true
         $game_map.setup($game_temp.player_new_map_id = $game_variables[::Yuki::Var::E_Return_ID])
@@ -222,6 +245,7 @@ module Battle
         $game_temp.player_new_y = $game_variables[::Yuki::Var::E_Return_Y] + ::Yuki::MapLinker.get_OffsetY
         $game_temp.player_new_direction = 8
         $game_switches[Yuki::Sw::FM_NoReset] = true
+        $game_temp.common_event_id = 3
       end
     end
   end

@@ -204,7 +204,7 @@ module Battle
         def enemy_pokemon_sprites
           sprites = $game_temp.vs_type.times.map do |i|
             @scene.visual.battler_sprite(1, i)
-          end.compact
+          end.compact.select(&:pokemon).select { |sprite| sprite.pokemon.alive? }
           return sprites
         end
 
@@ -223,7 +223,7 @@ module Battle
         def actor_pokemon_sprites
           sprites = $game_temp.vs_type.times.map do |i|
             @scene.visual.battler_sprite(0, i)
-          end.compact
+          end.compact.select(&:pokemon).select { |sprite| sprite.pokemon.alive? }
           return sprites
         end
 
