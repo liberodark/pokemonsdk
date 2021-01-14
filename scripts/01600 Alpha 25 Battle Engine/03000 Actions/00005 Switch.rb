@@ -34,10 +34,13 @@ module Battle
       def execute
         visual = @scene.visual
         # @type [BattleUI::PokemonSprite]
-        (sprite = visual.battler_sprite(@who.bank, @who.position)).go_out
-        visual.hide_info_bar(@who)
-        switch_out_message
-        wait_for(sprite, visual)
+        sprite = visual.battler_sprite(@who.bank, @who.position)
+        if @who.alive?
+          sprite.go_out
+          visual.hide_info_bar(@who)
+          switch_out_message
+          wait_for(sprite, visual)
+        end
         # Logically switching the Pokemon
         @scene.logic.switch_battlers(@who, @with)
         # Switching the sprite
