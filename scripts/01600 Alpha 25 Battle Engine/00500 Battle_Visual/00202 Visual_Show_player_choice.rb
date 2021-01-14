@@ -82,7 +82,7 @@ module Battle
     # Stop the IdlePokemonAnimation (bouncing)
     # @param _pokemon_index [Integer] Index of the Pokemon in the party
     def spc_stop_bouncing_animation(_pokemon_index)
-      @parallel_animations[IdlePokemonAnimation].remove
+      @parallel_animations[IdlePokemonAnimation]&.remove
     end
   end
 end

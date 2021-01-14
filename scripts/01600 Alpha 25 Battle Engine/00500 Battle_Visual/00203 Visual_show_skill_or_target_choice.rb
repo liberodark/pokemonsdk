@@ -31,6 +31,7 @@ module Battle
     # Begin of the skill_choice
     # @param pokemon_index [Integer] Index of the Pokemon in the party
     def show_skill_choice_begin(pokemon_index)
+      spc_start_bouncing_animation(pokemon_index)
       @locking = true
       wait_for_animation
       @skill_choice_ui.reset(@scene.logic.battler(0, pokemon_index))

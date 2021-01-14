@@ -71,7 +71,7 @@ module Battle
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else
         # If the player canceled we return to the player action
-        @next_update = :player_action_choice
+        @next_update = :skill_choice
       end
     ensure
       @skip_frame = true
