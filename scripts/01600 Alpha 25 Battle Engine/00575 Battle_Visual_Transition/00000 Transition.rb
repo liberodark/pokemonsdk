@@ -102,7 +102,6 @@ module Battle
           )
           # Once everything is done, unlock everything
           animation.play_before(ya.send_command_to(@visual, :unlock))
-                   .play_before(ya.send_command_to(@visual, :show_info_bars))
                    .play_before(ya.send_command_to(self, :dispose))
           animation.start
           @animations << animation

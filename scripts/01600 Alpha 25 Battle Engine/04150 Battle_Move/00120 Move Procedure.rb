@@ -54,6 +54,7 @@ module Battle
           deal_stats(user, actual_targets) && # TODO: DO
           deal_effect(user, actual_targets) # TODO: DO
       end
+      @scene.visual.set_info_state(:move_animation)
     end
 
     # Show the usage failure when move is not usable by user
@@ -117,11 +118,10 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def play_animation(user, targets)
-      @scene.visual.hide_info_bars
+      @scene.visual.set_info_state(:move_animation)
       @scene.visual.wait_for_animation
       @scene.visual.show_move_animation(user, targets, self)
-      @scene.visual.show_info_bar(user)
-      targets.each { |target| @scene.visual.show_info_bar(target) }
+      @scene.visual.set_info_state(:move, targets + [user])
       @scene.visual.wait_for_animation
     end
 

@@ -30,8 +30,7 @@ module BattleUI
     def reset
       @action = nil
       @index = 0
-      @scene.visual.hide_info_bars(bank: 0)
-      @scene.visual.show_team_info
+      @scene.visual.set_info_state(:choice)
       super
     end
 

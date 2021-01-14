@@ -55,7 +55,6 @@ module Battle
 
     # Show the debug transition
     def show_debug_transition
-      show_info_bars
       2.times do |bank|
         @scene.battle_info.battlers[bank].each_with_index do |battler, position|
           battler_sprite(bank, -position - 1)&.visible = false
