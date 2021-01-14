@@ -43,8 +43,6 @@ module Battle
         exec_hooks(WeatherChangeHandler, :post_weather_change, binding)
       rescue Hooks::ForceReturn => e
         return e.data
-      ensure
-        @scene.visual.refresh_info_bar(target)
       end
 
       # Function that test if the change is possible and perform the change if so
