@@ -52,7 +52,7 @@ module BattleUI
     def update_statistics
       @bars.each(&:update)
       return if $game_temp.message_window_showing
-      return unless Input.trigger?(:A)
+      return unless Input.trigger?(:A) || Mouse.trigger?(:LEFT)
 
       @statistics.go_out
       @scene.visual.animations << @statistics
