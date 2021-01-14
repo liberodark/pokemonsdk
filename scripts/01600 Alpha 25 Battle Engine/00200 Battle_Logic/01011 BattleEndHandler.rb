@@ -199,7 +199,7 @@ module Battle
 
     BattleEndHandler.register_no_defeat('PSDK Evolve') do |handler, players_pokemon|
       players_pokemon.each do |pokemon|
-        next unless pokemon.check_evolution && pokemon.alive?
+        next unless handler.logic.evolve_request.include?(pokemon) && pokemon.alive?
 
         id, form = pokemon.original.evolve_check(:level_up)
         handler.scene.instance_variable_set(:@cfi_type, :none) # Prevent fade in in case of multiple evolution

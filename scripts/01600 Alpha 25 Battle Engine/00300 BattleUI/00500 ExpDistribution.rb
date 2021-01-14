@@ -91,7 +91,6 @@ module BattleUI
       index = @pokemon.index(pokemon)
       @bars[index].data = pokemon if index
       level_up_message(pokemon) if pokemon.can_learn_skill_at_this_level?
-      pokemon.check_evolution = true
       @scene.visual.scene_update_proc { update_statistics } while @statistics
     end
 
