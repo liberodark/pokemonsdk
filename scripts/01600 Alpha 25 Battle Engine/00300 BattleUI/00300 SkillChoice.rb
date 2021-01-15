@@ -199,15 +199,16 @@ module BattleUI
 
       def create_sprites
         @background = add_background('battle/background')
-        @box = add_sprite(0, 71, 'battle/description_box')
-        @y = 71
+        @box = add_sprite(0, 61, 'battle/description_box')
+        @y = 61
         @skill_name = add_text(14, 13, 0, 16, :name, type: UI::SymText)
         @power_text = add_text(133, 13, 0, 16, text_get(27, 37), color: 10)
-        @power_value = add_text(193, 13, 0, 16, :power_text, 2, type: UI::SymText)
+        @power_value = add_text(210, 13, 0, 16, :power_text, 2, type: UI::SymText)
         @accuracy_text = add_text(229, 13, 0, 16, text_get(27, 39), color: 10)
-        @accuracy_value = add_text(289, 13, 0, 16, :accuracy_text, 2, type: UI::SymText)
-        @move_category = add_sprite(213, 13, NO_INITIAL_IMAGE, type: UI::CategorySprite)
+        @accuracy_value = add_text(306, 13, 0, 16, :accuracy_text, 2, type: UI::SymText)
         @description = add_text(14, 34, 284, 16, :description, color: 0, type: UI::SymMultilineText)
+        @category_text = add_text(117, 88, 0, 16, text_get(27, 36), color: 10)
+        @move_category = add_sprite(175, 89, NO_INITIAL_IMAGE, type: UI::CategorySprite)
       end
     end
 
