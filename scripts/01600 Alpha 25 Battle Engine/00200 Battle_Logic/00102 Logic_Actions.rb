@@ -31,6 +31,7 @@ module Battle
       action = @actions.pop
       log_debug("Current action : #{action}")
       @scene.message_window.blocking = false
+      PFM::Text.reset_variables # Prevent wrong pokemon name from being shown
       action.execute
       battle_phase_switch_exp_check
       return true

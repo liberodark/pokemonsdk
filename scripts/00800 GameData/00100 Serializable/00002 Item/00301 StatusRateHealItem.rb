@@ -18,9 +18,13 @@ end
 
 safe_code('Define StatusRateHealItem ItemDescriptor') do
   PFM::ItemDescriptor.define_on_pokemon_usability(GameData::StatusRateHealItem) do |item, pokemon|
-    next false if pokemon.dead?
+    next false if pokemon.egg?
 
     states = GameData::StatusRateHealItem.from(item).status_list
+    include_death = states.include?(GameData::States::DEATH)
+    next false if pokemon.dead? && !include_death
+    next false if pokemon.alive? && include_death && states.size == 1
+
     next pokemon.hp < pokemon.max_hp || (pokemon.confused? && states.include?(GameData::States::CONFUSED)) || states.include?(pokemon.status)
   end
 
@@ -42,10 +46,15 @@ safe_code('Define StatusRateHealItem ItemDescriptor') do
   end
 
   PFM::ItemDescriptor.define_on_pokemon_battler_use(GameData::StatusRateHealItem) do |item, pokemon, scene|
-    battle_item = GameData::ConstantHealItem.from(item)
+    battle_item = GameData::StatusRateHealItem.from(item)
     pokemon.loyalty -= battle_item.loyalty_malus
+    was_dead = pokemon.dead?
     scene.display_message_and_wait(parse_text_with_pokemon(19, 387, pokemon))
-    scene.logic.damage_handler.damage_change(-(pokemon.max_hp * GameData::StatusRateHealItem.from(item).hp_rate).to_i, pokemon)
+    scene.logic.damage_handler.damage_change(-(pokemon.max_hp * battle_item.hp_rate).to_i, pokemon)
+    if was_dead && pokemon.position && pokemon.position < scene.battle_info.vs_type
+      scene.visual.battler_sprite(pokemon.bank, pokemon.position).go_in
+      scene.visual.show_info_bar(pokemon)
+    end
     states = battle_item.status_list
     scene.logic.status_change_handler.status_change(:cure, pokemon) if states.include?(pokemon.status)
     if states.include?(GameData::States::CONFUSED) && pokemon.confused?
