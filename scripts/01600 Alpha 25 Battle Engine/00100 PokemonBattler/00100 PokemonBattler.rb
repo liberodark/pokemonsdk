@@ -14,7 +14,7 @@ module PFM
     ]
     # List of properties to copy back to original
     BACK_PROPETIES = %i[
-      @given_name @ability @level
+      @id @form @given_name @ability @level
       @ev_hp @ev_atk @ev_dfe @ev_spd @ev_ats @ev_dfs
       @trainer_id @trainer_name @step_remaining @loyalty
       @exp @hp @status @status_count @item_holding

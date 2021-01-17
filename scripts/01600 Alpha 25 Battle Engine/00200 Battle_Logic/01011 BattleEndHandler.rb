@@ -7,10 +7,10 @@ module Battle
       # Process the battle end
       def process
         @scene.message_window.blocking = true
-        @logic.all_battlers(&:copy_properties_back_to_original)
         players_pokemon = @logic.all_battlers.select(&:from_party?)
         exec_hooks(BattleEndHandler, :battle_end, binding)
         exec_hooks(BattleEndHandler, :battle_end_no_defeat, binding) if @logic.battle_result != 2
+        @logic.all_battlers(&:copy_properties_back_to_original)
         $game_map.autoplay unless $scene.is_a?(Yuki::SoftReset) || $scene.is_a?(Scene_Title)
       end
 
@@ -139,23 +139,23 @@ module Battle
 
     BattleEndHandler.register_no_defeat('PSDK natural cure') do |_, players_pokemon|
       players_pokemon.each do |pokemon|
-        pokemon.original.cure if pokemon.original.ability_db_symbol == :natural_cure
+        pokemon.cure if pokemon.original.ability_db_symbol == :natural_cure
       end
     end
 
     BattleEndHandler.register_no_defeat('PSDK honey gather') do |_, players_pokemon|
       players_pokemon.each do |pokemon|
-        next unless pokemon.original.ability_db_symbol == :honey_gather && pokemon.original.item_holding == 0 && rand(100) < (pokemon.level / 2)
+        next unless pokemon.original.ability_db_symbol == :honey_gather && pokemon.item_holding == 0 && rand(100) < (pokemon.level / 2)
 
-        pokemon.original.item_holding = GameData::Item[:honey].id
+        pokemon.item_holding = GameData::Item[:honey].id
       end
     end
 
     BattleEndHandler.register_no_defeat('PSDK pickup') do |handler, players_pokemon|
       players_pokemon.each do |pokemon|
-        next unless pokemon.original.ability_db_symbol == :pickup && pokemon.original.item_holding == 0 && rand(100) < 10
+        next unless pokemon.original.ability_db_symbol == :pickup && pokemon.item_holding == 0 && rand(100) < 10
 
-        pokemon.original.item_holding = handler.pickup_item(pokemon.original)
+        pokemon.item_holding = handler.pickup_item(pokemon.original)
       end
     end
 
@@ -163,7 +163,7 @@ module Battle
       players_pokemon.each do |pokemon|
         next unless pokemon.original.item_db_symbol == :power_band
 
-        pokemon.original.add_ev_dfs(4, pokemon.original.total_ev)
+        pokemon.add_ev_dfs(4, pokemon.original.total_ev)
       end
     end
 
@@ -171,7 +171,7 @@ module Battle
       players_pokemon.each do |pokemon|
         next unless pokemon.original.item_db_symbol == :power_belt
 
-        pokemon.original.add_ev_dfe(4, pokemon.original.total_ev)
+        pokemon.add_ev_dfe(4, pokemon.original.total_ev)
       end
     end
 
@@ -179,7 +179,7 @@ module Battle
       players_pokemon.each do |pokemon|
         next unless pokemon.original.item_db_symbol == :power_anklet
 
-        pokemon.original.add_ev_spd(4, pokemon.original.total_ev)
+        pokemon.add_ev_spd(4, pokemon.original.total_ev)
       end
     end
 
@@ -187,7 +187,7 @@ module Battle
       players_pokemon.each do |pokemon|
         next unless pokemon.original.item_db_symbol == :power_lens
 
-        pokemon.original.add_ev_ats(4, pokemon.original.total_ev)
+        pokemon.add_ev_ats(4, pokemon.original.total_ev)
       end
     end
 
@@ -195,7 +195,7 @@ module Battle
       players_pokemon.each do |pokemon|
         next unless pokemon.original.item_db_symbol == :power_weight
 
-        pokemon.original.add_ev_hp(4, pokemon.original.total_ev)
+        pokemon.add_ev_hp(4, pokemon.original.total_ev)
       end
     end
 
@@ -203,19 +203,20 @@ module Battle
       players_pokemon.each do |pokemon|
         next unless pokemon.original.item_db_symbol == :power_bracer
 
-        pokemon.original.add_ev_atk(4, pokemon.original.total_ev)
+        pokemon.add_ev_atk(4, pokemon.original.total_ev)
       end
     end
 
     BattleEndHandler.register('PSDK form calibration') do |_, players_pokemon|
-      players_pokemon.each { |pokemon| pokemon.original.form_calibrate }
+      players_pokemon.each(&:unmega_evolve)
+      players_pokemon.each(&:form_calibrate)
     end
 
     BattleEndHandler.register('PSDK burmy & wormadam calibration') do |_, players_pokemon|
       players_pokemon.each do |pokemon|
-        next unless pokemon.original.db_symbol == :burmy || pokemon.original.db_symbol == :wormadam
+        next unless pokemon.db_symbol == :burmy || pokemon.db_symbol == :wormadam
 
-        pokemon.original.form = pokemon.original.form_generation(-1)
+        pokemon.form = pokemon.form_generation(-1)
       end
     end
 
@@ -223,9 +224,9 @@ module Battle
       players_pokemon.each do |pokemon|
         next unless handler.logic.evolve_request.include?(pokemon) && pokemon.alive?
 
-        id, form = pokemon.original.evolve_check(:level_up)
+        id, form = pokemon.evolve_check(:level_up)
         handler.scene.instance_variable_set(:@cfi_type, :none) # Prevent fade in in case of multiple evolution
-        handler.scene.call_scene(GamePlay::Evolve, pokemon.original, id, form) if id
+        handler.scene.call_scene(GamePlay::Evolve, pokemon, id, form) if id
       end
     end
 

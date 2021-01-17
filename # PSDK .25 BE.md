@@ -575,15 +575,15 @@ You can define stuff that happens at the end of the battle using those two metho
 - `Battle::Logic::BattleEndHandler.register_no_defeat('Reason') do |handler, players_pokemon| end`
 
 The block sent to `register_no_defeat` are not called if the result is defeat.
-The variable `handler` allows you to access the battle scene and the variable `players_pokemon` contains the PokemonBattler of the Player. You will need to call the `.original` method to get the actual Pokemon in the party in case you want to change something on the Pokemon.
+The variable `handler` allows you to access the battle scene and the variable `players_pokemon` contains the PokemonBattler of the Player. You will need to call the `.original` method to get the actual Pokemon in the party in case you want to read something unchanged on the Pokemon.
 
 Example:
 ```ruby
 Battle::Logic::BattleEndHandler.register_no_defeat('PSDK honey gather') do |_, players_pokemon|
   players_pokemon.each do |pokemon|
-    next unless pokemon.original.ability_db_symbol == :honey_gather && pokemon.original.item_holding == 0 && rand(100) < (pokemon.level / 2)
+    next unless pokemon.original.ability_db_symbol == :honey_gather && pokemon.item_holding == 0 && rand(100) < (pokemon.level / 2)
 
-    pokemon.original.item_holding = GameData::Item[:honey].id
+    pokemon.item_holding = GameData::Item[:honey].id
   end
 end
 ```
