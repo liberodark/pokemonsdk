@@ -10,6 +10,7 @@ module Battle
       # @return [Symbol] if success :success, if failure :failure, if blocked (trainer battle) :blocked
       def attempt(index)
         exec_hooks(FleeHandler, :flee_block, binding)
+        exec_hooks(FleeHandler, :flee_passthrough, binding)
         switch_handler = @logic.switch_handler
         unless switch_handler.can_switch?(@logic.battler(0, index))
           switch_handler.process_prevention_reason
@@ -29,16 +30,17 @@ module Battle
 
       # Get the value used to test if the flee is successfull
       # @param index [Integer] index of the Pokemon on the trainer bank
+      # @note formula ajusted according to: https://docs.google.com/document/d/1Jv-hDNpeEU-cLTiy1c1b3YSRgSEDt2ffbgk5vkPhkKE
       # @return [Integer]
       def flee_value(index)
         trainer_poke = @logic.battler(0, index)
         enemy_poke = @logic.battler(1, index) || @logic.battler(1, 0)
 
-        a = trainer_poke&.base_spd || 1
-        b = (enemy_poke&.base_spd || 1).clamp(1, Float::INFINITY)
-        c = @logic.battle_info.flee_attempt_count + 1
+        a = trainer_poke&.spd_basis || 1
+        b = (enemy_poke&.spd_basis || 4).clamp(4, Float::INFINITY) # clamped with 4 to prevent zero division
+        c = @logic.battle_info.flee_attempt_count
         log_debug("flee_value: a = #{a}, b = #{b}, c = #{c}")
-        return ((a * 128 / b) + 30 * c) % 256
+        return ((a * 32 / (b / 4)) + 30 * c)
       end
 
       class << self
@@ -54,6 +56,38 @@ module Battle
             force_return(:blocked) if result == :prevent
           end
         end
+
+        # Function that registers a flee_passthrough hook
+        # @param reason [String] reason of the flee_passthrough registration
+        # @yieldparam handler [FleeHandler]
+        # @yieldparam pokemon [PFM::PokemonBattler] pokemon attempting to flee
+        # @yieldreturn [:prevent, nil] :prevent if the stat increase cannot apply
+        def register_flee_passthrough_hook(reason)
+          Hooks.register(FleeHandler, :flee_passthrough, reason) do |hook_binding|
+            result = yield(
+              self,
+              logic.battler(0, hook_binding.local_variable_get(:index))
+            )
+            force_return(:success) if result == :success
+          end
+        end
+      end
+
+      FleeHandler.register_flee_passthrough_hook('PSDK smoke ball') do |handler, pokemon|
+        next if pokemon.item_db_symbol != :smoke_ball
+
+        # Play smokeball animation over pokemon
+        message = parse_text_with_pokemon(19, 1010, pokemon, PFM::Text::ITEM2[1] => pokemon.item_name)
+        handler.scene.display_message_and_wait(message)
+        next :success
+      end
+
+      FleeHandler.register_flee_passthrough_hook('PSDK run away') do |handler, pokemon|
+        next if pokemon.item_db_symbol != :run_away
+
+        message = parse_text_with_pokemon(19, 872, pokemon, PFM::Text::ABILITY[1] => pokemon.ability_name)
+        handler.scene.display_message_and_wait(message)
+        next :success
       end
 
       FleeHandler.register_flee_block_hook('No flee in trainer battle') do |handler|

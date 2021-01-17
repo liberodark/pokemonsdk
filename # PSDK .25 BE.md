@@ -480,6 +480,20 @@ Battle::Logic::FleeHandler.register_flee_block_hook('No flee when BT_NoEscape is
 end
 ```
 
+If you want the player to be able to flee (eg, having the Pokemon holding smoke ball) you can use the `flee_passthrough` block. If this block returns :success, the rate calculation & the switch handler will not be invoked!
+
+Here's an example:
+```ruby
+Battle::Logic::FleeHandler.register_flee_passthrough_hook('PSDK smoke ball') do |handler, pokemon|
+    next if pokemon.item_db_symbol != :smoke_ball
+
+    # Play smokeball animation over pokemon
+    message = parse_text_with_pokemon(19, 1010, pokemon, PFM::Text::ITEM2[1] => pokemon.item_name)
+    handler.scene.display_message_and_wait(message)
+    next :success
+  end
+end
+
 ### CatchHandler
 
 This handler is responsive of calculating of the enemy Pokémon can be caught and showing the sequence of catching the Pokémon (including animation & message).
