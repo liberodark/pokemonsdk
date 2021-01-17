@@ -112,7 +112,7 @@ module Battle
       item_wrapper = @visual.show_item_choice
       if item_wrapper
         if item_wrapper.item.is_a?(GameData::FleeingItem)
-          @logic.battle_result = 2
+          @logic.battle_result = 1
           @next_update = :battle_end
         elsif item_wrapper.item.is_a?(GameData::BallItem)
           if (caught = logic.catch_handler.try_to_catch_pokemon(logic.alive_battlers(1)[0], logic.alive_battlers(0)[0], item_wrapper.item))
@@ -197,7 +197,7 @@ module Battle
       @message_window.wait_input = true
       result = @logic.flee_handler.attempt(@player_actions.size)
       if result == :success
-        @logic.battle_result = 2
+        @logic.battle_result = 1
         @next_update = :battle_end
       elsif result == :blocked
         @next_update = :player_action_choice

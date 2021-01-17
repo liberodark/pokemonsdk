@@ -27,7 +27,7 @@ module Battle
           execute_from_scene
         elsif @scene.logic.switch_handler.can_switch?(@target)
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 767, @target))
-          @scene.logic.battle_result = 2
+          @scene.logic.battle_result = 1
           @scene.next_update = :battle_end
         end
       end
@@ -36,11 +36,9 @@ module Battle
 
       # Execute the action if the pokemon is from party
       def execute_from_scene
-        log_error('Flee action is badly implemented! It should be about any pokemon fleeing not only the trainer\'s pokemon!')
-        return
-        result = @scene.logic.flee_handler.attempt(@target.position, @target.bank)
+        result = @scene.logic.flee_handler.attempt(@target.position)
         if result == :success
-          @scene.logic.battle_result = 2
+          @scene.logic.battle_result = 1
           @scene.next_update = :battle_end
         end
       end

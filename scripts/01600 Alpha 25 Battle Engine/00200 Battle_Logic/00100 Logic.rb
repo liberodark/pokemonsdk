@@ -7,7 +7,7 @@ module Battle
     attr_reader :messages
     # @return [Array<Hash>] list of the current actions to proccess during the scene
     attr_reader :actions
-    # 0 : Victory, 1 : Defeat, 2 : Flee, -1 : undef
+    # 0 : Victory, 1 : Flee, 2 : Defeat, -1 : undef
     # @return [Integer]
     attr_accessor :battle_result
     # @return [Array<Array<PFM::Bag>>] bags of each banks
@@ -79,7 +79,7 @@ module Battle
       end
       # It's a victory if the player still have a Pokemon on its bank
       if banks_that_can_fight.size <= 1
-        @battle_result = banks_that_can_fight.include?(0) ? 0 : 1
+        @battle_result = banks_that_can_fight.include?(0) ? 0 : 2
         return false
       end
       return true

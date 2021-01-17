@@ -10,7 +10,7 @@ module Battle
         @logic.all_battlers(&:copy_properties_back_to_original)
         players_pokemon = @logic.all_battlers.select(&:from_party?)
         exec_hooks(BattleEndHandler, :battle_end, binding)
-        exec_hooks(BattleEndHandler, :battle_end_no_defeat, binding) if @logic.battle_result != 1
+        exec_hooks(BattleEndHandler, :battle_end_no_defeat, binding) if @logic.battle_result != 2
         $game_map.autoplay unless $scene.is_a?(Yuki::SoftReset) || $scene.is_a?(Scene_Title)
       end
 
@@ -90,7 +90,7 @@ module Battle
 
     BattleEndHandler.register('PSDK set switches') do |handler|
       $game_switches[Yuki::Sw::BT_Catch] = !handler.logic.battle_info.caught_pokemon.nil?
-      $game_switches[Yuki::Sw::BT_Defeat] = handler.logic.battle_result == 1
+      $game_switches[Yuki::Sw::BT_Defeat] = handler.logic.battle_result == 2
       $game_switches[Yuki::Sw::BT_Victory] = handler.logic.battle_result == 0
       $game_switches[Yuki::Sw::BT_NoEscape] = false
     end
