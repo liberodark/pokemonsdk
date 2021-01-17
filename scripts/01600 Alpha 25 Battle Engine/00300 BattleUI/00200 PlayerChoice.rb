@@ -274,8 +274,13 @@ module BattleUI
 
       # Action triggered when pressing A
       def action_a
+        item = $bag.last_battle_item
+        if item.id == 0 || !$bag.contain_item?(item.id)
+          $game_system.se_play($data_system.buzzer_se)
+          return
+        end
         $game_system.se_play($data_system.decision_se)
-        @choice.use_item($bag.last_battle_item)
+        @choice.use_item(item)
         @item_info.hide
         @choice.show
       end

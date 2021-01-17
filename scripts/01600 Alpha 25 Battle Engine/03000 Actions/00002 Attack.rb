@@ -62,7 +62,7 @@ module Battle
       # Execute the action
       def execute
         # Reset flee attempt count
-        @logic.battle_info.flee_attempt_count = 0 if @launcher.from_party?
+        @scene.battle_info.flee_attempt_count = 0 if @launcher.from_party?
         @move.proceed(@launcher, @target_bank, @target_position)
       end
     end
