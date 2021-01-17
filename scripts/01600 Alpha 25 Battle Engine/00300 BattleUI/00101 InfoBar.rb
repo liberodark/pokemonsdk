@@ -194,7 +194,7 @@ module BattleUI
         return 'battle/battlebar_enemy' if pokemon.bank != 0
         return 'battle/battlebar_actor' if pokemon.from_party?
 
-        return 'battle/battlebar_actor_ally'
+        return 'battle/battlebar_ally'
       end
     end
   end
