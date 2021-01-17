@@ -31,7 +31,8 @@ module Battle
       # @param skill [Battle::Move, nil] Potential move used
       def change_ability(target, ability_symbol, launcher = nil, skill = nil)
         return unless can_change_ability?(target, ability_symbol, launcher, skill)
-        target.ability_current = ability_symbol == :none ? 0 : GameData::Abilities[ability_symbol].id
+
+        target.ability_current = (ability_symbol == :none ? 0 : GameData::Abilities.get_id(ability_symbol)) || 0
       end
 
       # Function that tell if this is possible to change the ability of a Pokemon
