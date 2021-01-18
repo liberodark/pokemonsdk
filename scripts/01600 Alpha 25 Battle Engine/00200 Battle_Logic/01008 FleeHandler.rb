@@ -40,6 +40,8 @@ module Battle
         b = (enemy_poke&.spd_basis || 4).clamp(4, Float::INFINITY) # clamped with 4 to prevent zero division
         c = @logic.battle_info.flee_attempt_count
         log_debug("flee_value: a = #{a}, b = #{b}, c = #{c}")
+        return 256 if a > b # Faster mon always flee
+
         return ((a * 32 / (b / 4)) + 30 * c)
       end
 
