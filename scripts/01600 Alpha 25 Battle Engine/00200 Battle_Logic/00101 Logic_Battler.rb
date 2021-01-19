@@ -163,6 +163,8 @@ module Battle
       @battlers[who.bank][who_position] = with
       @battlers[with.bank][with_position] = who
       with.position, who.position = who.position, with.position
+      # Ensure the newly comming pokemon gets the right battle turn
+      with.last_battle_turn = $game_temp.battle_turn
     end
 
     # Iterate through all battlers
