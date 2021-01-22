@@ -366,5 +366,24 @@ module Battle
       handler.scene.visual.show_ability(with)
       handler.logic.weather_change_handler.weather_change(:none, 0)
     end
+
+    #Zen Mode
+    SwitchHandler.register_switch_event_hook('PSDK Switch: Zen Mode') do |handler, _, with|
+      next if with.ability_db_symbol != :zen_mode
+
+      original_form = with.form
+      with.form_calibrate(:battle)
+      if with.form != original_form
+        handler.scene.visual.show_ability(with)
+        handler.scene.visual.show_switch_form_animation(with)
+        handler.scene.display_message_and_wait(parse_text(18, with.form.odd? ? 191 : 192))
+      end
+    end
+
+    SwitchHandler.register_switch_event_hook('PSDK Switch: Zen Mode going out') do |_, who|
+      next if who.ability_db_symbol != :zen_mode
+
+      who.form_calibrate # No argument here to force back the original form
+    end
   end
 end

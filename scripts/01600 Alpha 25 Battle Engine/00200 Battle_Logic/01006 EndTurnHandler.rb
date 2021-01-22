@@ -381,5 +381,20 @@ module Battle
         end
       end
     end
+
+    #Zen Mode
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Zen Mode') do |_, scene, battlers|
+      battlers.each do |battler|
+        next if battler.ability_db_symbol != :zen_mode
+
+        original_form = battler.form
+        battler.form_calibrate(:battle)
+        next if battler.form == original_form
+
+        scene.visual.show_ability(battler)
+        scene.visual.show_switch_form_animation(battler)
+        scene.display_message_and_wait(parse_text(18, battler.form.odd? ? 191 : 192))
+      end
+    end
   end
 end
