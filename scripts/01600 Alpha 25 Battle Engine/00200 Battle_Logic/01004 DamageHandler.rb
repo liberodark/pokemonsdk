@@ -525,5 +525,28 @@ module Battle
                                                       '[VAR TYPE(0001)]' => GameData::Type[skill.type].name)
       handler.scene.display_message_and_wait(text)
     end
+
+    # Disguise
+    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Disguise') do |handler, _, target, launcher, skill|
+      next unless !target.battle_effect.has_heal_block_effect? && target.ability_db_symbol == :disguise && launcher.ability_db_symbol != :mold_breaker && !skill.status?
+      next unless launcher.can_be_lowered_or_canceled?
+      original_form = target.form
+      target.form_calibrate(:battle)
+
+      if target.form != original_form
+        next handler.prevent_change do
+          handler.scene.visual.show_ability(target)
+          handler.scene.visual.show_switch_form_animation(target)
+          handler.scene.visual.show_hp_animations([target], [-target.max_hp / 8])
+        end
+      end
+    end
+
+    # Disguise - Back to form 0 after death
+    DamageHandler.register_post_damage_death_hook('PSDK Post damage: Disguise') do |handler, _, target, launcher, skill|
+      next unless target.ability_db_symbol == :disguise
+
+      target.form = 0
+    end
   end
 end
