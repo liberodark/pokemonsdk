@@ -58,13 +58,13 @@ module Battle
         hp = hp_overwrite || (target.max_hp / hp_factor).clamp(0, Float::INFINITY)
         damage_change(hp, target, launcher, skill, &messages)
         # TODO: Add hooks for all those stuff
-        if target.ability_db_symbol == :liquid_ooze
+        if target.has_ability?(:liquid_ooze)
           @scene.visual.show_ability(target)
           damage_change(hp, launcher, launcher, nil)
         elsif launcher.effects.has?(:heal_block)
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 890, launcher))
         else
-          hp = hp * 130 / 100 if launcher.battle_item_db_symbol == :big_root
+          hp = hp * 130 / 100 if launcher.hold_item?(:big_root)
           @scene.visual.show_hp_animations([launcher], [hp])
         end
       end
@@ -195,13 +195,13 @@ module Battle
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Focus Band') do |_, hp, target, _, skill|
       next unless skill
 
-      next target.hp - 1 if hp >= target.hp && target.battle_item_db_symbol == :focus_band && rand(10) == 1
+      next target.hp - 1 if hp >= target.hp && target.hold_item?(:focus_band) && rand(10) == 1
     end
 
     # Focus Sash
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Focus Sash') do |handler, hp, target, _, skill|
       next unless skill
-      next if hp < target.hp || target.hp != target.max_hp || target.battle_item_db_symbol != :focus_sash
+      next if hp < target.hp || target.hp != target.max_hp || !target.hold_item?(:focus_sash)
 
       handler.logic.item_change_handler.change_item(:none, true, target)
       next target.hp - 1
@@ -209,7 +209,7 @@ module Battle
 
     # Water Absorb
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Water Absorb') do |handler, _, target, launcher, skill|
-      next unless skill&.type_water? && !target.battle_effect.has_heal_block_effect? && target.ability_db_symbol == :water_absorb
+      next unless skill&.type_water? && !target.battle_effect.has_heal_block_effect? && target.has_ability?(:water_absorb)
       next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
@@ -220,7 +220,7 @@ module Battle
 
     # Volt Absorb
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Volt Absorb') do |handler, _, target, launcher, skill|
-      next unless skill&.type_electric? && !target.battle_effect.has_heal_block_effect? && target.ability_db_symbol == :volt_absorb
+      next unless skill&.type_electric? && !target.battle_effect.has_heal_block_effect? && target.has_ability?(:volt_absorb)
       next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
@@ -233,7 +233,7 @@ module Battle
     # Sturdy
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Sturdy') do |handler, hp, target, _, skill|
       next unless skill
-      next if hp < target.hp || target.hp != target.max_hp || target.ability_db_symbol != :sturdy
+      next if hp < target.hp || target.hp != target.max_hp || !target.has_ability?(:sturdy)
 
       handler.scene.visual.show_ability(target)
       next target.hp - 1
@@ -241,7 +241,7 @@ module Battle
 
     # Lightning Rod
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Lightning Rod') do |handler, _, target, launcher, skill|
-      next unless skill&.type_electric? && target.ability_db_symbol == :lightning_rod
+      next unless skill&.type_electric? && target.has_ability?(:lightning_rod)
       next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
@@ -252,7 +252,7 @@ module Battle
 
     # Storm Drain
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Storm Drain') do |handler, _, target, launcher, skill|
-      next unless skill&.type_water? && target.ability_db_symbol == :storm_drain
+      next unless skill&.type_water? && target.has_ability?(:storm_drain)
       next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
@@ -263,7 +263,7 @@ module Battle
 
     # Motor Drive
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Motor Drive') do |handler, _, target, launcher, skill|
-      next unless skill&.type_electric? && target.ability_db_symbol == :motor_drive
+      next unless skill&.type_electric? && target.has_ability?(:motor_drive)
       next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
@@ -274,7 +274,7 @@ module Battle
 
     # Flash Fire
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Flash Fire') do |handler, _, target, launcher, skill|
-      next unless skill&.type_fire? && target.ability_db_symbol == :flash_fire
+      next unless skill&.type_fire? && target.has_ability?(:flash_fire)
       next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
@@ -286,7 +286,7 @@ module Battle
 
     # Dry Skin
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Dry Skin') do |handler, _, target, launcher, skill|
-      next unless skill&.type_water? && target.ability_db_symbol == :dry_skin
+      next unless skill&.type_water? && target.has_ability?(:dry_skin)
       next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
@@ -297,7 +297,7 @@ module Battle
 
     # Oran Berry
     DamageHandler.register_post_damage_hook('PSDK post damage: Oran Berry') do |handler, _, target|
-      next unless target.battle_item_db_symbol == :oran_berry
+      next unless target.hold_item?(:oran_berry)
 
       if target.hp_rate <= 0.5
         handler.scene.visual.show_item(target)
@@ -309,7 +309,7 @@ module Battle
 
     # Sitrus Berry
     DamageHandler.register_post_damage_hook('PSDK post damage: Sitrus Berry') do |handler, _, target|
-      next unless target.battle_item_db_symbol == :sitrus_berry
+      next unless target.hold_item?(:sitrus_berry)
 
       if target.hp_rate <= 0.5
         handler.scene.visual.show_item(target)
@@ -321,7 +321,7 @@ module Battle
 
     # Air Balloon
     DamageHandler.register_post_damage_hook('PSDK post damage: Air Balloon') do |handler, _, target|
-      next unless target.battle_item_db_symbol == :air_balloon
+      next unless target.hold_item?(:air_balloon)
 
       handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 411, target))
       handler.logic.item_change_handler.change_item(:none, true, target)
@@ -329,7 +329,7 @@ module Battle
 
     # Luminous Moss
     DamageHandler.register_post_damage_hook('PSDK Post damage: Luminous Moss') do |handler, _, target, _, skill|
-      next unless skill&.type_water? && target.battle_item_db_symbol == :luminous_moss
+      next unless skill&.type_water? && target.hold_item?(:luminous_moss)
 
       handler.scene.visual.show_item(target)
       handler.logic.stat_change_handler.stat_change_with_process(:dfs, 1, target)
@@ -338,7 +338,7 @@ module Battle
 
     # Snowball
     DamageHandler.register_post_damage_hook('PSDK Post damage: Luminous Moss') do |handler, _, target, _, skill|
-      next unless skill&.type_ice? && target.battle_item_db_symbol == :snowball
+      next unless skill&.type_ice? && target.hold_item?(:snowball)
 
       handler.scene.visual.show_item(target)
       handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, target)
@@ -380,7 +380,7 @@ module Battle
 
     # Shell Bell
     DamageHandler.register_post_damage_hook('PSDK Post damage: Shell Bell') do |handler, hp, target, launcher, skill|
-      next unless skill && launcher&.battle_item_db_symbol == :shell_bell && hp >= 8 && launcher != target
+      next unless skill && launcher&.hold_item?(:shell_bell) && hp >= 8 && launcher != target
 
       handler.scene.visual.show_item(launcher)
       handler.scene.visual.show_hp_animations([launcher], [hp / 8])
@@ -388,7 +388,7 @@ module Battle
 
     # Sticky Barb
     DamageHandler.register_post_damage_hook('PSDK Post damage: Sticky Barb') do |handler, _, target, launcher, skill|
-      next unless skill && target&.battle_item_db_symbol == :sticky_barb && launcher != target
+      next unless skill && target.hold_item?(:sticky_barb) && launcher != target
 
       # TODO: Dont forget to add damage of Sticky Barb in the end turn procedure ;)
       if launcher.item_db_symbol == :__undef__
@@ -399,21 +399,23 @@ module Battle
 
     # King's Rock
     DamageHandler.register_post_damage_hook('PSDK Post damage: King’s Rock') do |handler, _, target, launcher, skill|
-      next unless skill&.trigger_king_rock? && launcher&.battle_item_db_symbol == :king’s_rock && launcher != target && rand(10) == 0
+      next unless skill&.trigger_king_rock? && launcher&.hold_item?(:king’s_rock) && launcher != target && rand(10) == 0
 
+      handler.scene.visual.show_item(launcher)
       handler.logic.status_change_handler.status_change_with_process(:flinch, target)
     end
 
     # Razor Fang
     DamageHandler.register_post_damage_hook('PSDK Post damage: Razor Fang') do |handler, _, target, launcher, skill|
-      next unless skill && launcher&.battle_item_db_symbol == :razor_fang && launcher != target && rand(10) == 0
+      next unless skill && launcher&.hold_item?(:razor_fang) && launcher != target && rand(10) == 0
 
+      handler.scene.visual.show_item(launcher)
       handler.logic.status_change_handler.status_change_with_process(:flinch, target)
     end
 
     # Stench
     DamageHandler.register_post_damage_hook('PSDK Post damage: Stench') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && rand(10) == 0 && launcher.hp > 0 && launcher.ability_db_symbol == :stench
+      next unless skill&.direct? && launcher && launcher != target && rand(10) == 0 && launcher.hp > 0 && launcher.has_ability?(:stench)
 
       handler.scene.visual.show_ability(launcher)
       handler.logic.status_change_handler.status_change_with_process(:flinch, target)
@@ -421,7 +423,7 @@ module Battle
 
     # Static
     DamageHandler.register_post_damage_hook('PSDK Post damage: Static') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.ability_db_symbol == :static
+      next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.has_ability?(:static)
       next unless launcher.can_be_paralyzed?
 
       handler.scene.visual.show_ability(target)
@@ -430,7 +432,7 @@ module Battle
 
     # Poison Point
     DamageHandler.register_post_damage_hook('PSDK Post damage: Poison Point') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.ability_db_symbol == :poison_point
+      next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.has_ability?(:poison_point)
       next unless launcher.can_be_poisoned?
 
       handler.scene.visual.show_ability(target)
@@ -439,7 +441,7 @@ module Battle
 
     # Flame Body
     DamageHandler.register_post_damage_hook('PSDK Post damage: Flame Body') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.ability_db_symbol == :flame_body
+      next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.has_ability?(:flame_body)
       next unless launcher.can_be_burn?
 
       handler.scene.visual.show_ability(target)
@@ -448,7 +450,7 @@ module Battle
 
     # Cute Charm
     DamageHandler.register_post_damage_hook('PSDK Post damage: Cute Charm') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.ability_db_symbol == :cute_charm
+      next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.has_ability?(:cute_charm)
       next unless launcher.gender * target.gender == 2 && launcher.effects.has?(:attract)
 
       handler.scene.visual.show_ability(target)
@@ -458,7 +460,7 @@ module Battle
 
     # Effect Spore
     DamageHandler.register_post_damage_hook('PSDK Post damage: Effect Spore') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.ability_db_symbol == :effect_spore
+      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.has_ability?(:effect_spore)
       next if (n = rand(10)) > 2
 
       status = %i[poison sleep paralysis][n]
@@ -470,9 +472,9 @@ module Battle
 
     # Rough Skin
     DamageHandler.register_post_damage_hook('PSDK Post damage: Rough Skin') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.ability_db_symbol == :rough_skin
-      damages = launcher.max_hp >= 8 ? launcher.max_hp/8 : 1
+      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.has_ability?(:rough_skin)
 
+      damages = launcher.max_hp >= 8 ? launcher.max_hp / 8 : 1
       handler.scene.visual.show_ability(target)
       handler.scene.visual.show_hp_animations([launcher], [damages])
       text = parse_text_with_pokemon(19, 430, launcher, PFM::Text::PKNICK[0] => launcher.given_name)
@@ -481,9 +483,9 @@ module Battle
 
     # Iron Barbs
     DamageHandler.register_post_damage_hook('PSDK Post damage: Iron Barbs') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.ability_db_symbol == :iron_barbs
-      damages = launcher.max_hp >= 8 ? launcher.max_hp/8 : 1
+      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.has_ability?(:iron_barbs)
 
+      damages = launcher.max_hp >= 8 ? launcher.max_hp / 8 : 1
       handler.scene.visual.show_ability(target)
       handler.scene.visual.show_hp_animations([launcher], [damages])
       text = parse_text_with_pokemon(19, 430, launcher, PFM::Text::PKNICK[0] => launcher.given_name)
@@ -492,12 +494,12 @@ module Battle
 
     # Aftermath
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Aftermath') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.ability_db_symbol == :aftermath
+      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.has_ability?(:aftermath)
       next unless launcher.max_hp >= 4
 
       if launcher.can_be_lowered_or_canceled?
-        next if handler.logic.allies_of(target).any? { |pkmn| pkmn && pkmn.hp > 0 && pkmn.ability_db_symbol == :damp }
-        next if handler.logic.foes_of(target).any? { |pkmn| pkmn && pkmn.hp > 0 && pkmn.ability_db_symbol == :damp }
+        next if handler.logic.allies_of(target).any? { |pkmn| pkmn && pkmn.hp > 0 && pkmn.has_ability?(:damp) }
+        next if handler.logic.foes_of(target).any? { |pkmn| pkmn && pkmn.hp > 0 && pkmn.has_ability?(:damp) }
       end
 
       handler.scene.visual.show_ability(target)
@@ -506,7 +508,7 @@ module Battle
 
     # Mummy
     DamageHandler.register_post_damage_hook('PSDK Post damage: Mummy') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.ability_db_symbol == :mummy
+      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.has_ability?(:mummy)
       next unless handler.logic.ability_change_handler.can_change_ability?(launcher, :mummy)
 
       handler.scene.visual.show_ability(target)
@@ -516,7 +518,7 @@ module Battle
 
     # Color Change
     DamageHandler.register_post_damage_hook('PSDK Post damage: Color Change') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.ability_db_symbol == :color_change
+      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.has_ability?(:color_change)
       next if target.type1 == skill.type1
 
       handler.scene.visual.show_ability(target)
@@ -528,8 +530,9 @@ module Battle
 
     # Disguise
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Disguise') do |handler, _, target, launcher, skill|
-      next unless !target.battle_effect.has_heal_block_effect? && target.ability_db_symbol == :disguise && launcher.ability_db_symbol != :mold_breaker && !skill.status?
-      next unless launcher.can_be_lowered_or_canceled?
+      next if target.battle_effect.has_heal_block_effect? || !target.has_ability?(:disguise) || skill.status?
+      next unless launcher&.can_be_lowered_or_canceled?
+
       original_form = target.form
       target.form_calibrate(:battle)
 
@@ -543,8 +546,8 @@ module Battle
     end
 
     # Disguise - Back to form 0 after death
-    DamageHandler.register_post_damage_death_hook('PSDK Post damage: Disguise') do |handler, _, target, launcher, skill|
-      next unless target.ability_db_symbol == :disguise
+    DamageHandler.register_post_damage_death_hook('PSDK Post damage: Disguise') do |_, _, target, _, _|
+      next unless target.has_ability?(:disguise)
 
       target.form = 0
     end

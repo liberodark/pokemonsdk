@@ -63,7 +63,8 @@ module Battle
     # @return [Numeric]
     def calc_ua_type_1_3(user, target)
       return 1 if user.hp > user.max_hp / 3
-      return 1.5 if POWERING_TYPE_USER_ABILITY[user.ability_db_symbol] == type
+      return 1.5 if POWERING_TYPE_USER_ABILITY[user.battle_ability_db_symbol] == type
+
       return 1
     end
 

@@ -123,7 +123,7 @@ module Battle
 
     WeatherChangeHandler.register_weather_prevention_hook('PSDK prev weather: Air Lock') do |handler, weather|
       next if weather == :none
-      next unless (air_lock = handler.logic.all_alive_battlers.find { |battler| battler.ability_db_symbol == :air_lock })
+      next unless (air_lock = handler.logic.all_alive_battlers.find { |battler| battler.has_ability?(:air_lock) })
 
       handler.prevent_change do
         handler.scene.visual.show_ability(air_lock)
@@ -132,7 +132,7 @@ module Battle
 
     WeatherChangeHandler.register_weather_prevention_hook('PSDK prev weather: Cloud Nine') do |handler, weather|
       next if weather == :none
-      next unless (cloud_nine = handler.logic.all_alive_battlers.find { |battler| battler.ability_db_symbol == :cloud_nine })
+      next unless (cloud_nine = handler.logic.all_alive_battlers.find { |battler| battler.has_ability?(:cloud_nine) })
 
       handler.prevent_change do
         handler.scene.visual.show_ability(cloud_nine)

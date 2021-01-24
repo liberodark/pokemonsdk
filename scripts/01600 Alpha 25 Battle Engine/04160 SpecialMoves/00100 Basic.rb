@@ -31,12 +31,12 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       # @return [Boolean]
       def effect_working?(user, actual_targets)
-        if !status? && user.can_be_lowered_or_canceled?(target = actual_targets.find { |t| t.ability_db_symbol == :shield_dust })
+        if !status? && user.can_be_lowered_or_canceled?(target = actual_targets.find { |t| t.has_ability?(:shield_dust) })
           @scene.visual.show_ability(target) if effect_chance == 100
           return false
         end
 
-        if user.ability_db_symbol == :serene_grace
+        if user.has_ability?(:serene_grace)
           n = 2
         else
           n = 1

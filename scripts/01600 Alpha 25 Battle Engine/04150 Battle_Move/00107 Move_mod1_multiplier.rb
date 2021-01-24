@@ -25,7 +25,8 @@ module Battle
     # @return [Numeric]
     def calc_mod1_brn(user)
       return 1 unless physical? && user.burn?
-      return 1 if user.ability_db_symbol == :guts
+      return 1 if user.has_ability?(:guts)
+
       return VAL_0_5
     end
 
@@ -35,7 +36,8 @@ module Battle
     # @return [Numeric]
     def calc_mod1_rl(user, target)
       return 1 if critical_hit?
-      return 1 if user.ability_db_symbol == :infiltrator
+      return 1 if user.has_ability?(:infiltrator)
+
       if physical?
         return 1 unless logic.bank_reflect?(target.bank)
       else
@@ -80,7 +82,7 @@ module Battle
     # @param target [PFM::PokemonBattler] target of the move
     # @return [Numeric]
     def calc_mod1_ff(user, target)
-      if target.can_be_lowered_or_canceled?(user.ability_db_symbol == :flash_fire)
+      if target.can_be_lowered_or_canceled?(user.has_ability?(:flash_fire))
         return 1.5 if user.last_hit_by_move&.type == GameData::Types::FIRE
       end
       return 1

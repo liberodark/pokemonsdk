@@ -63,13 +63,14 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Numeric]
     def calc_am_plus_minus(user, target)
-      return 1 unless PLUS_MINUS_ABILITIES.include?(user.ability_db_symbol)
+      return 1 unless PLUS_MINUS_ABILITIES.include?(user.battle_ability_db_symbol)
+
       # The partner should have the other ability
-      partner_expectation = user.ability_db_symbol == :plus ? :minus : :plus
+      partner_expectation = user.has_ability?(:plus) ? :minus : :plus
       # Try all the adjacent partner
       (user.position - 1).step(user.position + 1, 2) do |position|
         partner = logic.battler(user.bank, position)
-        return 1.5 if partner&.ability_db_symbol == partner_expectation
+        return 1.5 if partner&.has_ability?(partner_expectation)
       end
       # No partner with the right ability => 1
       return 1

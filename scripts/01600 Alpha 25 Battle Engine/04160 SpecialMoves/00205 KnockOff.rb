@@ -46,7 +46,7 @@ module Battle
 
         actual_targets.each do |target|
           next if target.dead? || target.battle_effect.has_substitute_effect?
-          next if user.can_be_lowered_or_canceled?(target.ability_db_symbol == :sticky_hold)
+          next if user.can_be_lowered_or_canceled?(target.has_ability?(:sticky_hold))
           next if target.battle_item_db_symbol == :__undef__ || PROTECTED_ITEMS.include?(target.item_db_symbol)
           next if PROTECTED_POKEMON_ITEMS[target.db_symbol]&.include?(target.battle_item_db_symbol)
 

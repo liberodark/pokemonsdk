@@ -153,7 +153,7 @@ Example:
 Battle::Logic::StatChangeHandler.register_stat_decrease_prevention_hook('No atk decrease caused by foe moves') do |handler, stat, target, launcher, skill|
   next unless launcher && skill # Only prevented during move execution
   next if stat != :atk # Only block atk changes
-  next if target.ability_db_symbol != :atk_blocker # Only work if the target has the right ability
+  next unless target.has_abilit?(:atk_blocker) # Only work if the target has the right ability
 
   next handler.prevent_change do
     handler.scene.visual.show_ability(target)
@@ -169,7 +169,7 @@ There's a hook allowing to potentially change the power of a stat change. To do 
 Example: 
 ```ruby
 Battle::Logic::StatChangeHandler.register_stat_change_hook('PSDK stat_change: Simple') do |handler, stat, power, target, launcher, skill|
-  next if target.ability_db_symbol != :simple # The target needs the right ability
+  next unless target.has_ability?(:simple) # The target needs the right ability
 
   # We make sure the user of the move (if any) doesn't have mold_breaker
   if !launcher || launcher.can_be_lowered_or_canceled?(true)
@@ -194,7 +194,7 @@ Example:
 
 ```ruby
 Battle::Logic::ItemChangeHandler.register_pre_item_change_hook('Infinite spikes are there forever') do |handler, db_symbol, target, launcher, skill|
-  next if target.battle_item_db_symbol != :infinite_spikes # Don't change if target has no infinite spikes
+  next unless target.hold_item?(:infinite_spikes) # Don't change if target has no infinite spikes
 
   next handler.prevent_change do
     handler.scene.visual.show_item(target)
@@ -212,7 +212,7 @@ Example:
 ```ruby
 Battle::Logic::ItemChangeHandler.register_post_item_change_hook('PSDK item change post: Unburden') do |handler, db_symbol, target|
   # Don't execute if we didn't removed the item or the target doesn't have the unburden ability
-  next if db_symbol != :none || target.ability_db_symbol != :unburden
+  next unless db_symbol == :none && target.has_ability?(:unburden)
 
   # If wa can increase speed we do otherwise remain silent
   if (st_ch = handler.logic.stat_change_handler).stat_increasable?(:spd, target)
@@ -251,7 +251,7 @@ This handler allows you to prevent change of status by registering a status_prev
 ```ruby
 Battle::Logic::StatusChangeHandler.register_status_prevention_hook('Poison imunity') do |handler, status, target, launcher, skill|
   next if status != :poison && status != :toxic # We only want to prevent poisoning
-  next if target.ability_db_symbol != :poison_imunity # No prevention if the right ability is not on target
+  next unless target.has_ability?(:poison_imunity) # No prevention if the right ability is not on target
 
   next handler.prevent_change do
     handler.scene.visual.show_ability(target)
@@ -267,7 +267,7 @@ Sometimes stuff happens after a status was applied, this handler allows you to d
 ```ruby
 Battle::Logic::StatusChangeHandler.register_post_status_change_hook('Sleep evasion') do |handler, status, target, launcher, skill|
   next if status != :sleep # Only happen on sleep application
-  next if target.ability_db_symbol != :sleep_evasion
+  next unless target.has_ability?(:sleep_evasion)
 
   if (stat_handler = handler.logic.stat_change_handler).stat_increasable?(:eva, target)
     handler.scene.visual.show_ability(target)
@@ -293,7 +293,7 @@ This handler allows you to overwrite hp taken by the target or prevent a hp chan
 # Preventing damages
 Battle::Logic::DamageHandler.register_damage_prevention_hook('Even damage ability') do |handler, hp, target, launcher, skill|
   next if hp.odd? || hp <= 0 # Target only take even hp damage
-  next if target.ability_db_symbol != :even_damage # Target need the right ability
+  next unless target.has_ability?(:even_damage) # Target need the right ability
 
   next handler.prevent_change do
     handler.scene.visual.show_ability(target)
@@ -304,7 +304,7 @@ end
 # Changing damages
 Battle::Logic::DamageHandler.register_damage_prevention_hook('Half damage ability') do |handler, hp, target, launcher, skill|
   next if hp <= 0 # We don't divid healing hp
-  next if target.ability_db_symbol != :half_damages # Target need the right ability
+  next unless target.has_ability?(:half_damages) # Target need the right ability
 
   next hp / 2
 end
@@ -317,7 +317,7 @@ In addition of dealing damages, it is possible to execute actions when the targe
 Battle::Logic::DamageHandler.register_post_damage_hook('Increase atk afte damages') do |handler, hp, target, launcher, skill|
   next unless launcher && skill # Only work if damages are move related
   next if hp <= 0 # No increase upons heal
-  next if target.ability_db_symbols != :angry_damages # Target needs the right ability
+  next unless target.has_ability?(:angry_damages) # Target needs the right ability
 
   if (stat_handler = handler.logic.stat_change_handler).stat_increasable?(:atk, target)
     handler.scene.visual.show_ability(target)
@@ -328,7 +328,7 @@ end
 # After death hook
 Battle::Logic::DamageHandler.register_post_damage_death_hook('Not dying alone') do |handler, hp, target, launcher, skill|
   next unless launcher && skill # Only work if damages are move related
-  next if target.ability_db_symbols != :not_dying_alone # Target needs the right ability
+  next unless target.has_ability?(:not_dying_alone) # Target needs the right ability
 
   handler.scene.visual.show_ability(target)
   # We ignore all abilities & stuff preventing damages:
@@ -359,7 +359,7 @@ Since some items/ability allows the pokemon to switch regardless of the blocking
 Example:
 ```ruby
 Battle::Logic::SwitchHandler.register_switch_passthrough_hook('Coward ability') do |handler, pokemon, skill|
-  next if pokemon.ability_db_symbol != :coward
+  next unless pokemon.has_ability?(:coward)
 
   next :passthrough # Actually force the switch
 end
@@ -372,8 +372,8 @@ If the Pokemon has no condition allowing it to switch regardless of the conditio
 Example:
 ```ruby
 Battle::Logic::SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Shadow Tag') do |handler, pokemon|
-  next if pokemon.ability_db_symbol == :shadow_tag
-  next unless (fv = handler.logic.foes_of(pokemon).find { |foe| foe&.alive? && foe.ability_db_symbol == :shadow_tag })
+  next if pokemon.has_ability?(:shadow_tag)
+  next unless (fv = handler.logic.foes_of(pokemon).find { |foe| foe&.alive? && foe&.has_ability?(:shadow_tag) })
 
   next handler.prevent_change do
     handler.scene.visual.show_ability(fv)
@@ -387,7 +387,7 @@ It is possible to execute action right after a switch using the switch_event hoo
 
 ```ruby
 Battle::Logic::SwitchHandler.register_switch_event_hook('PSDK switch: Pressure') do |handler, who, with|
-  next if with.ability_db_symbol != :pressure
+  next unless with.has_ability?(:pressure)
 
   handler.scene.visual.show_ability(with)
   handler.scene.display_message(parse_text_with_pokemon(19, 487, with))
@@ -440,7 +440,7 @@ This handler look at the weather_prevention hook to know if the weather can be c
 Battle::Logic::WeatherChangeHandler.register_weather_prevention_hook('PSDK prev weather: Cloud Nine') do |handler, weather|
   next if weather == :none # We don't prevent weather removal
   # We try to find a pokemon that has the cloud nine ability
-  next unless (cloud_nine = handler.logic.all_alive_battlers.find { |battler| battler.ability_db_symbol == :cloud_nine })
+  next unless (cloud_nine = handler.logic.all_alive_battlers.find { |battler| battler.has_ability?(:cloud_nine) })
 
   # We prevent the change telling which pokemon was the one preventing
   handler.prevent_change do
@@ -485,7 +485,7 @@ If you want the player to be able to flee (eg, having the Pokemon holding smoke 
 Here's an example:
 ```ruby
 Battle::Logic::FleeHandler.register_flee_passthrough_hook('PSDK smoke ball') do |handler, pokemon|
-    next if pokemon.item_db_symbol != :smoke_ball
+    next unless pokemon.hold_item?(:smoke_ball)
 
     # Play smokeball animation over pokemon
     message = parse_text_with_pokemon(19, 1010, pokemon, PFM::Text::ITEM2[1] => pokemon.item_name)
@@ -750,10 +750,10 @@ module Battle
       def target_immune?(user, target)
         return true if target.effects.has?(:attract) || (user.gender * target.gender) != 2
 
-        if target.battle_item_db_symbol == :mental_herb
+        if target.hold_item?(:mental_herb)
           @logic.item_change_handler.change_item(:none, true, target)
           return true
-        elsif user.can_be_lowered_or_canceled?(BLOCKING_ABILITY.include?(target.ability_db_symbol))
+        elsif user.can_be_lowered_or_canceled?(BLOCKING_ABILITY.include?(target.battle_ability_db_symbol))
           @scene.visual.show_ability(target)
           return true
         end
@@ -767,7 +767,7 @@ module Battle
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
           target.effects.add(Effects::Attract.new(@logic, target, user))
-          user.effects.add(Effects::Attract.new(@logic, user, target)) if target.battle_item_db_symbol == :destiny_knot
+          user.effects.add(Effects::Attract.new(@logic, user, target)) if target.hold_item?(:destiny_knot)
         end
       end
     end

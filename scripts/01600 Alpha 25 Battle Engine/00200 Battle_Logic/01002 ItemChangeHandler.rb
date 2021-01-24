@@ -78,7 +78,7 @@ module Battle
 
     # Register the Unburden ablility
     ItemChangeHandler.register_post_item_change_hook('PSDK item change post: Unburden') do |handler, db_symbol, target|
-      next if db_symbol != :none || target.ability_db_symbol != :unburden
+      next unless db_symbol == :none && target.has_ability?(:unburden)
 
       if (st_ch = handler.logic.stat_change_handler).stat_increasable?(:spd, target)
         handler.scene.visual.show_ability(target)

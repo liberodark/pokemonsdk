@@ -26,7 +26,7 @@ module Battle
       def on_end_turn_event(logic, scene, battlers)
         return unless (user = affected_pokemon)
         return if dead?
-        return if @target.ability_db_symbol == :magic_guard
+        return if @target.has_ability?(:magic_guard)
 
         scene.display_message_and_wait(parse_text_with_pokemon(19, 610, @target))
         # TODO: Add an animation

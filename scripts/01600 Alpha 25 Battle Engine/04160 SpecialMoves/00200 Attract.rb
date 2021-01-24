@@ -13,10 +13,10 @@ module Battle
       def target_immune?(user, target)
         return true if target.effects.has?(:attract) || (user.gender * target.gender) != 2
 
-        if target.battle_item_db_symbol == :mental_herb
+        if target.hold_item?(:mental_herb)
           @logic.item_change_handler.change_item(:none, true, target)
           return true
-        elsif user.can_be_lowered_or_canceled?(BLOCKING_ABILITY.include?(target.ability_db_symbol))
+        elsif user.can_be_lowered_or_canceled?(BLOCKING_ABILITY.include?(target.battle_ability_db_symbol))
           @scene.visual.show_ability(target)
           return true
         end
@@ -30,7 +30,7 @@ module Battle
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
           target.effects.add(Effects::Attract.new(@logic, target, user))
-          user.effects.add(Effects::Attract.new(@logic, user, target)) if target.battle_item_db_symbol == :destiny_knot
+          user.effects.add(Effects::Attract.new(@logic, user, target)) if target.hold_item?(:destiny_knot)
         end
       end
     end

@@ -15,12 +15,12 @@ module Battle
       result = 1
       if super_effective?
         # SRF
-        result *= 0.75 if SUPER_EFFECTIVE_REDUCTION.include?(target.ability_db_symbol)
+        result *= 0.75 if SUPER_EFFECTIVE_REDUCTION.include?(target.battle_ability_db_symbol)
         # EB
-        result *= 1.2 if user.battle_item_db_symbol == :expert_belt
+        result *= 1.2 if user.hold_item?(:expert_belt)
       elsif not_very_effective?
         # TL
-        result *= 2 if user.ability_db_symbol == :tinted_lens
+        result *= 2 if user.has_ability?(:tinted_lens)
       end
       # TRB
       return result * calc_trb(target)

@@ -20,7 +20,7 @@ module Battle
         return true if user.effects.has?(:forced_next_move)
         return true if db_symbol == :solar_beam && $env.sunny?
 
-        if user.battle_item_db_symbol == :power_herb
+        if user.hold_item?(:power_herb)
           @logic.item_change_handler.change_item(:none, true, user)
           return true
         end

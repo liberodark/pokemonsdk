@@ -32,21 +32,6 @@ module PFM
         instance_variable_set(ivar_name, value.clone)
       end
       @ability_current = @ability
-      @item_holding_current ||= @item_holding # If the item was lost / thrown we don't set it back
-    end
-
-    # Return the db_symbol of the current ability of the Pokemon
-    # @return [Symbol]
-    def ability_db_symbol
-      return :__undef__ if @effects.has?(:ability_suppressed) && $scene.is_a?(Battle::Scene)
-
-      GameData::Abilities.db_symbol(@ability_current || -1)
-    end
-
-    # Return the db_symbol of the current item the Pokemon is holding
-    # @return [Symbol]
-    def item_db_symbol
-      GameData::Item.db_symbol(@item_holding_current || -1)
     end
 
     # Update all the status/effect at the end of a turn

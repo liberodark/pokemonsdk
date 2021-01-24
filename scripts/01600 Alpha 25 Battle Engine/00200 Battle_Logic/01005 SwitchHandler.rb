@@ -102,13 +102,13 @@ module Battle
 
     # Shed Shell
     SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: Shed Shell') do |_, pokemon|
-      next :passthrough if pokemon.battle_item_db_symbol == :shed_shell
+      next :passthrough if pokemon.hold_item?(:shed_shell)
     end
 
     # Shadow Tag
     SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Shadow Tag') do |handler, pokemon|
-      next if pokemon.ability_db_symbol == :shadow_tag
-      next unless (fv = handler.logic.foes_of(pokemon).find { |foe| foe&.alive? && foe.ability_db_symbol == :shadow_tag })
+      next if pokemon.has_ability?(:shadow_tag)
+      next unless (fv = handler.logic.foes_of(pokemon).find { |foe| foe&.alive? && foe&.has_ability?(:shadow_tag) })
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(fv)
@@ -118,7 +118,7 @@ module Battle
     # Magnet Pull
     SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Magnet Pull') do |handler, pokemon|
       next unless pokemon.type_steel?
-      next unless (fv = handler.logic.foes_of(pokemon).find { |foe| foe&.alive? && foe.ability_db_symbol == :magnet_pull })
+      next unless (fv = handler.logic.foes_of(pokemon).find { |foe| foe&.alive? && foe&.has_ability?(:magnet_pull) })
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(fv)
@@ -142,7 +142,7 @@ module Battle
     # Arena Trap
     SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Arena Trap') do |handler, pokemon|
       next unless false # pokemon.grounded? TODO: Create the grounded property on POKEMON
-      next unless (fv = handler.logic.foes_of(pokemon).find { |foe| foe&.alive? && foe.ability_db_symbol == :arena_trap })
+      next unless (fv = handler.logic.foes_of(pokemon).find { |foe| foe&.alive? && foe&.has_ability?(:arena_trap) })
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(fv)
@@ -159,7 +159,7 @@ module Battle
 
     # Natural Cure
     SwitchHandler.register_switch_event_hook('PSDK switch: Natural Cure') do |handler, who, with|
-      next if who == with || who.ability_db_symbol != :natural_cure || who.status == 0
+      next if who == with || !who.has_ability?(:natural_cure) || who.status == 0
 
       handler.scene.visual.show_ability(who)
       handler.logic.status_change_handler.status_change_with_process(:cure, who)
@@ -209,9 +209,9 @@ module Battle
     end
 
     # Intimidate
-    SwitchHandler.register_switch_event_hook('PSDK switch: Intimidate') do |handler, who, with|
+    SwitchHandler.register_switch_event_hook('PSDK switch: Intimidate') do |handler, _, with|
       # If with is entering the battle => all foes get the malus
-      if with.ability_db_symbol == :intimidate
+      if with.has_ability?(:intimidate)
         alive_foes = handler.logic.foes_of(with).select(&:alive?)
         handler.scene.visual.show_ability(with) if alive_foes.any?
         alive_foes.each do |foe|
@@ -222,7 +222,7 @@ module Battle
 
     # Trace
     SwitchHandler.register_switch_event_hook('PSDK switch: Trace') do |handler, _, with|
-      next if with.ability_db_symbol != :trace
+      next unless with.has_ability?(:trace)
 
       foes = handler.logic.foes_of(with).select do |foe|
         next foe.alive? && foe.ability_db_symbol != :__undef__ &&
@@ -237,7 +237,7 @@ module Battle
 
     # Pressure
     SwitchHandler.register_switch_event_hook('PSDK switch: Pressure') do |handler, _, with|
-      next if with.ability_db_symbol != :pressure
+      next unless with.has_ability?(:pressure)
 
       handler.scene.visual.show_ability(with)
       handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 487, with))
@@ -245,12 +245,12 @@ module Battle
 
     # Drizzle
     SwitchHandler.register_switch_event_hook('PSDK switch: Drizzle') do |handler, _, with|
-      next if with.ability_db_symbol != :drizzle
+      next unless with.has_ability?(:drizzle)
 
       weather_handler = handler.logic.weather_change_handler
       next unless weather_handler.weather_appliable?(:rain)
 
-      nb_turn = with.battle_item_db_symbol == :damp_rock ? 8 : 5
+      nb_turn = with.hold_item?(:damp_rock) ? 8 : 5
       weather_handler.weather_change(:rain, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 493)
@@ -258,12 +258,12 @@ module Battle
 
     # Drought
     SwitchHandler.register_switch_event_hook('PSDK switch: Drought') do |handler, _, with|
-      next if with.ability_db_symbol != :drought
+      next unless with.has_ability?(:drought)
 
       weather_handler = handler.logic.weather_change_handler
       next unless weather_handler.weather_appliable?(:sunny)
 
-      nb_turn = with.battle_item_db_symbol == :damp_rock ? 8 : 5
+      nb_turn = with.hold_item?(:damp_rock) ? 8 : 5
       weather_handler.weather_change(:sunny, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 492)
@@ -271,12 +271,12 @@ module Battle
 
     # Sand Stream
     SwitchHandler.register_switch_event_hook('PSDK switch: Sand Stream') do |handler, _, with|
-      next if with.ability_db_symbol != :sand_stream
+      next unless with.has_ability?(:sand_stream)
 
       weather_handler = handler.logic.weather_change_handler
       next unless weather_handler.weather_appliable?(:sandstorm)
 
-      nb_turn = with.battle_item_db_symbol == :damp_rock ? 8 : 5
+      nb_turn = with.hold_item?(:damp_rock) ? 8 : 5
       weather_handler.weather_change(:sandstorm, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 494)
@@ -284,12 +284,12 @@ module Battle
 
     # Snow Warning
     SwitchHandler.register_switch_event_hook('PSDK switch: Snow Warning') do |handler, _, with|
-      next if with.ability_db_symbol != :snow_warning
+      next unless with.has_ability?(:snow_warning)
 
       weather_handler = handler.logic.weather_change_handler
       next unless weather_handler.weather_appliable?(:hail)
 
-      nb_turn = with.battle_item_db_symbol == :damp_rock ? 8 : 5
+      nb_turn = with.hold_item?(:damp_rock) ? 8 : 5
       weather_handler.weather_change(:hail, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 494)
@@ -297,7 +297,7 @@ module Battle
 
     # Anticipation
     SwitchHandler.register_switch_event_hook('PSDK switch: Anticipation') do |handler, _, with|
-      next if with.ability_db_symbol != :anticipation
+      next unless with.has_ability?(:anticipation)
 
       handler.logic.foes_of(with).each do |foe|
         next false if foe.dead?
@@ -310,7 +310,7 @@ module Battle
 
     # Forewarn
     SwitchHandler.register_switch_event_hook('PSDK switch: Forewarn') do |handler, _, with|
-      next if with.ability_db_symbol != :forewarn
+      next unless with.has_ability?(:forewarn)
 
       alive_foes = handler.logic.foes_of(with).select(&:alive?)
       next if alive_foes.empty?
@@ -330,7 +330,7 @@ module Battle
 
     # Frisk
     SwitchHandler.register_switch_event_hook('PSDK switch: Frisk') do |handler, _, with|
-      next if with.ability_db_symbol != :frisk
+      next unless with.has_ability?(:frisk)
 
       foe_item = handler.logic.foes_of(with).find { |foe| foe.alive? && foe.battle_item_db_symbol != :__undef__ }
       next unless foe_item
@@ -342,7 +342,7 @@ module Battle
 
     # Download
     SwitchHandler.register_switch_event_hook('PSDK Switch: Download') do |handler, _, with|
-      next if with.ability_db_symbol != :download
+      next unless with.has_ability?(:download)
 
       random_foe = handler.logic.foes_of(with).shuffle.find(&:alive?)
       next unless random_foe
@@ -353,7 +353,8 @@ module Battle
 
     # Air Lock
     SwitchHandler.register_switch_event_hook('PSDK Switch: Air Lock') do |handler, _, with|
-      next if with.ability_db_symbol != :air_lock || $env.current_weather == 0
+      next if $env.current_weather == 0
+      next unless with.has_ability?(:air_lock)
 
       handler.scene.visual.show_ability(with)
       handler.logic.weather_change_handler.weather_change(:none, 0)
@@ -361,15 +362,16 @@ module Battle
 
     # Cloud Nine
     SwitchHandler.register_switch_event_hook('PSDK Switch: Cloud Nine') do |handler, _, with|
-      next if with.ability_db_symbol != :cloud_nine || $env.current_weather == 0
+      next if $env.current_weather == 0
+      next unless with.has_ability?(:cloud_nine)
 
       handler.scene.visual.show_ability(with)
       handler.logic.weather_change_handler.weather_change(:none, 0)
     end
 
-    #Zen Mode
+    # Zen Mode
     SwitchHandler.register_switch_event_hook('PSDK Switch: Zen Mode') do |handler, _, with|
-      next if with.ability_db_symbol != :zen_mode
+      next unless with.has_ability?(:zen_mode)
 
       original_form = with.form
       with.form_calibrate(:battle)
@@ -381,7 +383,7 @@ module Battle
     end
 
     SwitchHandler.register_switch_event_hook('PSDK Switch: Zen Mode going out') do |_, who|
-      next if who.ability_db_symbol != :zen_mode
+      next unless who.has_ability?(:zen_mode)
 
       who.form_calibrate # No argument here to force back the original form
     end

@@ -75,6 +75,14 @@ module PFM
     # @return [Boolean]
     attr_accessor :exp_distributed
 
+    # Get the item held during battle
+    # @return [Integer]
+    attr_accessor :battle_item
+
+    # Get the data associated to the item if needed
+    # @return [Array]
+    attr_reader :battle_item_data
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param scene [Battle::Scene] current battle scene
@@ -128,12 +136,46 @@ module PFM
       $actors.include?(@original)
     end
 
+    # Return the db_symbol of the current ability of the Pokemon
+    # @return [Symbol]
+    def ability_db_symbol
+      return GameData::Abilities.db_symbol(@ability_current || -1)
+    end
+
+    # Return the db_symbol of the current ability of the Pokemon for battle
+    # @return [Symbol]
+    def battle_ability_db_symbol
+      return :__undef__ if @effects.has?(:ability_suppressed) && $scene.is_a?(Battle::Scene)
+
+      return ability_db_symbol
+    end
+
+    # Tell if the pokemon has an ability
+    # @param db_symbol [Symbol] db_symbol of the ability
+    # @return [Boolean]
+    def has_ability?(db_symbol)
+      return battle_ability_db_symbol == db_symbol
+    end
+
+    # Return the db_symbol of the current item the Pokemon is holding
+    # @return [Symbol]
+    def item_db_symbol
+      GameData::Item.db_symbol(@battle_item || -1)
+    end
+
     # Get the item for battle
     # @return [Symbol]
     def battle_item_db_symbol
-      return :__undef__ if ability_db_symbol == :klutz
+      return :__undef__ if battle_ability_db_symbol == :klutz
 
       return item_db_symbol
+    end
+
+    # Tell if the pokemon hold an item
+    # @param db_symbol [Symbol] db_symbol of the item
+    # @return [Boolean]
+    def hold_item?(db_symbol)
+      return battle_item_db_symbol == db_symbol
     end
 
     # Add a move to the move history
@@ -171,7 +213,7 @@ module PFM
     # @return [Boolean] potential changed result
     def can_be_lowered_or_canceled?(test = true)
       return false unless test
-      return test if ability_db_symbol != :mold_breaker
+      return test unless has_ability?(:mold_breaker)
 
       unless ability_used
         @scene.visual.show_ability(self)

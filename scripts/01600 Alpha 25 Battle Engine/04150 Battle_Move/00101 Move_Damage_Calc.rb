@@ -68,9 +68,9 @@ module Battle
       # WS
       result = (result * VAL_0_5).floor if logic.global_water_sport? && type == GameData::Types::FIRE
       # UA
-      result = (result * send(USER_ABILITY_MULTIPLIER[user.ability_db_symbol], user, target)).floor
+      result = (result * send(USER_ABILITY_MULTIPLIER[user.battle_ability_db_symbol], user, target)).floor
       # FA
-      return (result * send(FOE_ABILITY_MULTIPLIER[target.ability_db_symbol], user, target)).floor
+      return (result * send(FOE_ABILITY_MULTIPLIER[target.battle_ability_db_symbol], user, target)).floor
     end
 
     # [Spe]atk calculation
@@ -85,7 +85,7 @@ module Battle
       # SM (Only if non-critical hit)
       result = (result * (ph_move ? user.atk_modifier : user.ats_modifier)).floor unless critical_hit?
       # AM
-      am = send((ph_move ? ATK_ABILITY_MODIFIER : ATS_ABILITY_MODIFIER)[user.ability_db_symbol], user, target)
+      am = send((ph_move ? ATK_ABILITY_MODIFIER : ATS_ABILITY_MODIFIER)[user.battle_ability_db_symbol], user, target)
       result = (result * am).floor
       # IM
       return (result * send((ph_move ? ATK_ITEM_MODIFIER : ATS_ITEM_MODIFIER)[user.battle_item_db_symbol], user, target)).floor
@@ -105,7 +105,7 @@ module Battle
       result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor unless critical_hit?
       # Mod
       result = (result * 1.5).floor if !ph_move && $env.sandstorm? && target.type_rock?
-      mod = send((ph_move ? DFE_ABILITY_MODIFIER : DFS_ABILITY_MODIFIER)[target.ability_db_symbol], user, target)
+      mod = send((ph_move ? DFE_ABILITY_MODIFIER : DFS_ABILITY_MODIFIER)[target.battle_ability_db_symbol], user, target)
       result = (result * mod).floor
       mod = send((ph_move ? DFE_ITEM_MODIFIER : DFS_ITEM_MODIFIER)[target.battle_item_db_symbol], user, target)
       result = (result * mod).floor
@@ -119,7 +119,8 @@ module Battle
     # @return [Numeric]
     def calc_ch(user)
       return 1 unless critical_hit?
-      return 3 if user.ability_db_symbol == :sniper
+      return 3 if user.has_ability?(:sniper)
+
       return 2
     end
 
@@ -128,7 +129,8 @@ module Battle
     # @return [Numeric]
     def calc_stab(user)
       if user.type1 == type || user.type2 == type || user.type3 == type
-        return 2 if user.ability_db_symbol == :adaptability
+        return 2 if user.has_ability?(:adaptability)
+
         return 1.5
       end
       return 1
@@ -181,7 +183,7 @@ module Battle
 
     # Not added before effects to let it being overwritten by effects ;)
     Move.register_move_type_change_hook('PSDK Normalize Ability') do |user|
-      next user.ability_db_symbol == :normalize ? GameData::Types::NORMAL : nil
+      next user.has_ability?(:normalize) ? GameData::Types::NORMAL : nil
     end
 
     Move.register_move_type_change_hook('PSDK Effect process') do |user, target, move, type|
@@ -194,19 +196,19 @@ module Battle
 
     # Note: added after effect to overwrite move effects ;)
     Move.register_move_type_change_hook('PSDK Pixilate Ability') do |user, _, move|
-      next user.ability_db_symbol == :pixilate && move.type_normal? ? GameData::Types::FAIRY : nil
+      next user.has_ability?(:pixilate) && move.type_normal? ? GameData::Types::FAIRY : nil
     end
 
     Move.register_move_type_change_hook('PSDK Refrigerate Ability') do |user, _, move|
-      next user.ability_db_symbol == :refrigerate && move.type_normal? ? GameData::Types::ICE : nil
+      next user.has_ability?(:refrigerate) && move.type_normal? ? GameData::Types::ICE : nil
     end
 
     Move.register_move_type_change_hook('PSDK Aerilate Ability') do |user, _, move|
-      next user.ability_db_symbol == :aerilate && move.type_normal? ? GameData::Types::FLYING : nil
+      next user.has_ability?(:aerilate) && move.type_normal? ? GameData::Types::FLYING : nil
     end
 
     Move.register_move_type_change_hook('PSDK Galvanize Ability') do |user, _, move|
-      next user.ability_db_symbol == :galvanize && move.type_normal? ? GameData::Types::ELECTRIC : nil
+      next user.has_ability?(:galvanize) && move.type_normal? ? GameData::Types::ELECTRIC : nil
     end
   end
 end

@@ -118,7 +118,7 @@ module Battle
 
   # Mold Breaker
   Move.register_move_prevention_user_hook('PSDK Move prev user: Mold Breaker') do |user, _, _|
-    next if user.ability_db_symbol != :mold_breaker
+    next unless user.has_ability?(:mold_breaker)
 
     user.ability_used = false
   end
@@ -146,7 +146,7 @@ module Battle
 
   # Truant registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Truant') do |user, _, move|
-    if user.ability_db_symbol == :truant && user.ability_used
+    if user.has_ability?(:truant) && user.ability_used
       move.scene.display_message_and_wait(parse_text_with_pokemon(19, 445, user))
       user.ability_used = false
       next :prevent
@@ -202,7 +202,7 @@ module Battle
   Move.register_move_prevention_user_hook('PSDK Move prev user: Powder') do |user, _, move|
     if user.battle_effect.has_powder_effect? && move.type_fire?
       move.send(:usage_message, user)
-      if user.ability_db_symbol == :magic_guard
+      if user.has_ability?(:magic_guard)
         move.scene.display_message_and_wait(parse_text(18, 74))
       else
         move.scene.visual.show_hp_animations([user], [-user.max_hp / 4])
@@ -237,7 +237,7 @@ module Battle
 
   # Sap Sipper registration
   Move.register_move_prevention_target_hook('PSDK Move prev target: Sap Sipper') do |user, target, move|
-    next false if target.ability_db_symbol != :sap_sipper || !move.type_grass? || move.db_symbol == :aromatherapy
+    next false unless target.has_ability?(:sap_sipper) && move.type_grass? && move.db_symbol != :aromatherapy
     next unless user.can_be_lowered_or_canceled?
 
     move.scene.visual.show_ability(target)
@@ -294,10 +294,10 @@ module Battle
     actual_targets = move_binding.local_variable_get(:actual_targets)
 
     next if move.db_symbol == :memento
-    next unless user.can_be_lowered_or_canceled?(move.status? && actual_targets.any? { |target| target.ability_db_symbol == :magic_bounce })
+    next unless user.can_be_lowered_or_canceled?(move.status? && actual_targets.any? { |target| target.has_ability?(:magic_bounce) })
 
     if move.affects_bank? # Send move back to user if affects the bank in order to apply the effect to the bank
-      blocker = actual_targets.find { |target| target.ability_db_symbol == :magic_bounce }
+      blocker = actual_targets.find { |target| target.has_ability?(:magic_bounce) }
       move.scene.visual.show_ability(blocker)
       actual_targets.clear << user
       next
@@ -305,7 +305,7 @@ module Battle
 
     # Send the moves back to the user if target has magic bounce
     actual_targets.map! do |target|
-      next target unless target.ability_db_symbol == :magic_bounce
+      next target unless target.has_ability?(:magic_bounce)
 
       move.scene.visual.show_ability(target)
       next user

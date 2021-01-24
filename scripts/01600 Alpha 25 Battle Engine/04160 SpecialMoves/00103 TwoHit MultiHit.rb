@@ -37,7 +37,7 @@ module Battle
       # @return [Integer]
       def hit_amount(user, actual_targets)
         return 3 if db_symbol == :triple_kick
-        return 5 if user.ability_db_symbol == :skill_link
+        return 5 if user.has_ability?(:skill_link)
 
         return MULTI_HIT_CHANCES.sample
       end
