@@ -301,7 +301,7 @@ module Battle
 
       if target.hp_rate <= 0.5
         handler.scene.visual.show_item(target)
-        # TODO: Use item handler
+        handler.logic.item_change_handler.change_item(:none, true, target)
         handler.scene.visual.show_hp_animations([target], [10])
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => target.item_name))
       end
@@ -313,7 +313,7 @@ module Battle
 
       if target.hp_rate <= 0.5
         handler.scene.visual.show_item(target)
-        # TODO: Use item handler
+        handler.logic.item_change_handler.change_item(:none, true, target)
         handler.scene.visual.show_hp_animations([target], [target.max_hp / 4])
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => target.item_name))
       end
