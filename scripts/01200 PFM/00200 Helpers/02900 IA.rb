@@ -519,6 +519,8 @@ module PFM
         unless BattleEngine.state[:air_lock]
           @IA_Info[:other_factor] = get_weather_advantage_factor(msg[1]) if $env.current_weather == 0
         end
+      when :fterrain_change
+        @IA_Info[:other_factor] = get_fterrain_advantage_factor(msg[1]) if $env.current_fterrain == 0
       when :attract_effect
         if msg[1] == launcher
           @IA_Info[:other_factor] = 0.1
@@ -704,6 +706,35 @@ module PFM
       end
       return 0
     end
+
+    def get_fterrain_advantage_factor(type)
+      launcher = @IA_Info[:launcher]
+      target = @IA_Info[:target]
+      case type
+      when :electric_terrain
+        if launcher.type_electric? 
+          unless target.type_electric? 
+            return 1.0 / $game_temp.battle_turn
+          end
+        end
+      when :grassy_terrain
+        if launcher.type_grass? and !target.type_grass?
+          return 1.0 / $game_temp.battle_turn
+        end
+      when :misty_terrain
+        if launcher.type_fairy? or !launcher.type_dragon?
+          unless target.type_dragon? or !target.type_fairy?
+            return 1.0 / $game_temp.battle_turn
+          end
+        end
+      when :psychic_terrain
+        if launcher.type_psychic?
+          return 1.0 / $game_temp.battle_turn
+        end
+      end
+      return 0
+    end
+
     # Retrieve the Pokemon when the Actor array changed
     # @param pokemon [PFM::Pokemon]
     # @return [PFM::Pokemon]

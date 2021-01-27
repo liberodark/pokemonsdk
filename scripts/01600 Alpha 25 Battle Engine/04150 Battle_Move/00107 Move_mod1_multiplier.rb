@@ -16,6 +16,8 @@ module Battle
       result *= calc_mod1_tvt(target)
       # SR
       result *= calc_mod1_sr
+      # FT
+      result *= calc_mod1_ft
       # FF
       return result * calc_mod1_ff(user, target)
     end
@@ -76,6 +78,25 @@ module Battle
       end
       return 1
     end
+
+    GRASSY_REDUCED_MOVES = %i[earthquake magnitude bulldoze]
+    # Calculate the FT mod
+    # @return [Numeric]
+    def calc_mod1_ft
+      if $env.terrain_psychic?
+        return 1.33 if type == GameData::Types::PSYCHIC
+      elsif $env.terrain_grassy?
+        return 1.33 if type == GameData::Types::GRASS
+      elsif $env.terrain_electric?
+        return 1.33 if type == GameData::Types::ELECTRIC
+      elsif $env.terrain_misty?
+        return VAL_0_5 if type == GameData::Types::DRAGON
+      elsif $env.terrain_grassy?
+        return VAL_0_5 if GRASSY_REDUCED_MOVES.include?(db_symbol)
+      end
+      return 1
+    end
+
 
     # Calculate the Flash Fire mod
     # @param user [PFM::PokemonBattler] user of the move

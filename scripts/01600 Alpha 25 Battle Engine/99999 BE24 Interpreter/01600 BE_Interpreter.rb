@@ -235,6 +235,13 @@ module BattleEngine
       @scene.logic.weather_change_handler.weather_change_with_process(meteo_sym, nb_turn)
     end
 
+    # Change the terrain
+    # @param meteo_sym [Symbol] kind of weather (:rain, :sunny, :sandstorm, :heil, :fog, :none)
+    # @param nb_turn [Integer] Number of turn the weather will be applied
+    def fterrain_change(terrain_sym, nb_turn = 5)
+      @scene.logic.fterrain_change_handler.fterrain_change_with_process(terrain_sym, nb_turn)
+    end
+    
     # Display an ability
     # @param target [PFM::PokemonBattler]
     # @param display_condition [#call] specific condition returning a boolean telling if the ability should be shown or not

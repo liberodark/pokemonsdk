@@ -397,5 +397,49 @@ module Battle
         scene.display_message_and_wait(parse_text(18, battler.form.odd? ? 191 : 192))
       end
     end
+
+    #Electric Terrain
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Electric Terrain') do |logic, scene, battlers|
+      next if $env.current_fterrain != 1
+
+      if $env.decrease_fterrain_duration # Return true if stopping!
+        scene.display_message_and_wait(parse_text(18, 210))
+        logic.fterrain_change_handler.fterrain_change(:terrainnone, 0)
+      end
+    end
+
+    # Grassy Terrain
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Grassy Terrain') do |logic, scene, battlers|
+      next if $env.current_fterrain != 2
+
+      if $env.decrease_fterrain_duration # Return true if stopping!
+        scene.display_message_and_wait(parse_text(18, 206))
+        logic.fterrain_change_handler.fterrain_change(:terrainnone, 0)
+      else
+        battlers.each do |battler|
+          scene.display_message_and_wait(parse_text_with_pokemon(19, 387, battler))
+          scene.visual.show_hp_animations([battler], [battler.max_hp / 16])
+        end
+      end
+    end
+
+    # Misty Terrain
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Misty Terrain') do |logic, scene, battlers|
+      next if $env.current_fterrain != 3
+
+      if $env.decrease_fterrain_duration # Return true if stopping!
+        scene.display_message_and_wait(parse_text(18, 208))
+        logic.fterrain_change_handler.fterrain_change(:terrainnone, 0)
+      end
+    end
+
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Psychic Terrain') do |logic, scene, battlers|
+      next if $env.current_fterrain != 4
+
+      if $env.decrease_fterrain_duration # Return true if stopping!
+        # TODO: Add gen7 text of Psychic Terrain
+        logic.fterrain_change_handler.fterrain_change(:terrainnone, 0)
+      end
+    end
   end
 end

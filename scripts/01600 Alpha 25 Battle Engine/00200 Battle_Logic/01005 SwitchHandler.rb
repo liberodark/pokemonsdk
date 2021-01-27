@@ -387,5 +387,57 @@ module Battle
 
       who.form_calibrate # No argument here to force back the original form
     end
+
+    # Electric Surge
+    SwitchHandler.register_switch_event_hook('PSDK switch: Electric Surge') do |handler, _, with|
+      next if with.ability_db_symbol != :electric_surge
+
+      fterrain_handler = handler.logic.fterrain_change_handler
+      next unless fterrain_handler.fterrain_appliable?(:electric_terrain)
+
+      nb_turn = 5
+      fterrain_handler.fterrain_change(:electric_terrain, nb_turn)
+      handler.scene.visual.show_ability(with)
+      handler.scene.display_message_and_wait(parse_text(18, 209))
+    end
+
+    # Grassy Surge
+    SwitchHandler.register_switch_event_hook('PSDK switch: Grassy Surge') do |handler, _, with|
+      next if with.ability_db_symbol != :grassy_surge
+
+      fterrain_handler = handler.logic.fterrain_change_handler
+      next unless fterrain_handler.fterrain_appliable?(:grassy_terrain)
+
+      nb_turn = 5
+      fterrain_handler.fterrain_change(:grassy_terrain, nb_turn)
+      handler.scene.visual.show_ability(with)
+      handler.scene.display_message_and_wait(parse_text(18, 205))
+    end
+
+    # Misty Surge
+    SwitchHandler.register_switch_event_hook('PSDK switch: Misty Surge') do |handler, _, with|
+      next if with.ability_db_symbol != :misty_surge
+
+      fterrain_handler = handler.logic.fterrain_change_handler
+      next unless fterrain_handler.fterrain_appliable?(:misty_terrain)
+
+      nb_turn = 5
+      fterrain_handler.fterrain_change(:misty_terrain, nb_turn)
+      handler.scene.visual.show_ability(with)
+      handler.scene.display_message_and_wait(parse_text(18, 207))
+    end
+
+    # Psychic Surge
+    SwitchHandler.register_switch_event_hook('PSDK switch: Psychic Surge') do |handler, _, with|
+      next if with.ability_db_symbol != :psychic_surge
+
+      fterrain_handler = handler.logic.fterrain_change_handler
+      next unless fterrain_handler.fterrain_appliable?(:psychic_terrain)
+
+      nb_turn = 5
+      # TODO: Add gen7 text of Psychic Terrain"
+      fterrain_handler.fterrain_change(:psychic_terrain, nb_turn)
+      handler.scene.visual.show_ability(with)
+    end
   end
 end

@@ -412,5 +412,24 @@ module Battle
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 270, target))
       end
     end
+
+    # Misty Terrain effect
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Misty Terrain') do |handler, status, target, launcher, skill|
+      next unless $env.terrain_misty? && (status == :flinch || status == :cure)
+
+      next handler.prevent_change do
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 845, target))
+      end
+    end
+
+    # Electric Terrain effect
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Electric Terrain') do |handler, status, target, launcher, skill|
+      next unless $env.terrain_electric? && status == :sleep
+
+      next handler.prevent_change do
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1207, target))
+      end
+    end
+
   end
 end

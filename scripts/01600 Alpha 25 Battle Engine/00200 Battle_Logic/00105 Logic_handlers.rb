@@ -42,6 +42,12 @@ module Battle
       return WeatherChangeHandler.new(self, @scene)
     end
 
+    # Get a new field terrain change handler
+    # @return [Battle::Logic::WeatherChangeHandler]
+    def fterrain_change_handler
+      return FTerrainChangeHandler.new(self, @scene)
+    end
+
     # Get the flee handler
     # @return [Battle::Logic::FleeHandler]
     def flee_handler

@@ -127,6 +127,11 @@ module Battle
       return data.priority
     end
 
+    ## Move priority
+    def relative_priority
+      return priority + Logic::MOVE_PRIORITY_OFFSET
+    end  
+
     # Return the chance of effect of the skill
     # @return [Integer]
     def effect_chance
