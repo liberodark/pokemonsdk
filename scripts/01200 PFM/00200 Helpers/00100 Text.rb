@@ -111,8 +111,10 @@ module PFM
     # @param pokemon [PFM::PokemonBattler]
     # @return [Boolean]
     def enemy_pokemon?(pokemon)
-      return (pokemon.is_a?(PFM::PokemonBattler) && pokemon.bank != 0) ||
-             (pokemon.is_a?(PFM::Pokemon) && (pokemon.position == nil or pokemon.position < 0))
+      return false unless pokemon
+      return pokemon.bank != 0 if pokemon.is_a?(PFM::PokemonBattler)
+
+      return pokemon.position.nil? || pokemon.position < 0
     end
 
     # Parse a text from the text database with specific informations and two Pokemon
