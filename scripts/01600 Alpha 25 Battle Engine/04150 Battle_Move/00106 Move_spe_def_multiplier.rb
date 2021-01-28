@@ -31,6 +31,14 @@ module Battle
       return 1
     end
 
+    # Fur Coat ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM:PokemonBattler]
+    # @return [Numeric]
+    def calc_def_fur_coat(user, target)
+      2
+    end
+
     # Deep Sea Scale item multiplier
     # @param user [PFM::PokemonBattler]
     # @param target [PFM::PokemonBattler]
@@ -77,6 +85,7 @@ module Battle
       end
     end
     define_ability_dfe_modifier(:marvel_scale, :calc_def_mod_marvel_scale)
+    define_ability_dfe_modifier(:fur_coat, :calc_def_fur_coat)
     define_ability_dfs_modifier(:flower_gift, :calc_am_flower_gift)
     define_item_dfe_modifier(:metal_powder, :calc_def_mod_metal_powder)
     define_item_dfs_modifier(:metal_powder, :calc_def_mod_metal_powder)

@@ -96,7 +96,7 @@ module PFM
     # Can the Pokemon be burnt?
     # @return [Boolean]
     def can_be_burn?
-      return false if @status != 0 || type_fire?
+      return false if @status != 0 || type_fire? || has_ability?(:water_bubble)
       return true
     end
     # Return the burn effect on HP of the Pokemon

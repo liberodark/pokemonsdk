@@ -42,6 +42,24 @@ module Battle
       return 1
     end
 
+    # Water Bubble ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_am_water_bubble(user, target)
+      return 2 if type_water?
+      return 1
+    end
+
+    # Toxic Boost ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_am_toxic_boost(user, target)
+      return 1.5 if user.poisoned? || user.toxic?
+      return 1
+    end
+
     # Hustle ability multiplier
     # @param user [PFM::PokemonBattler]
     # @param target [PFM::PokemonBattler]
@@ -141,8 +159,11 @@ module Battle
     define_ability_atk_modifier(:huge_power, :calc_am_pure_power)
     define_ability_atk_modifier(:flower_gift, :calc_am_flower_gift)
     define_ability_atk_modifier(:guts, :calc_am_guts)
+    define_ability_atk_modifier(:toxic_boost, :calc_am_toxic_boost)
+    define_ability_atk_modifier(:water_bubble, :calc_am_water_bubble)
     define_ability_atk_modifier(:hustle, :calc_am_hustle)
     define_ability_atk_modifier(:slow_start, :calc_am_slow_start)
+    define_ability_atk_modifier(:gorilla_tactics, :calc_im_choice_band)
     define_ability_ats_modifier(:solar_power, :calc_am_flower_gift)
     define_ability_ats_modifier(:plus, :calc_am_plus_minus)
     define_ability_ats_modifier(:minus, :calc_am_plus_minus)

@@ -108,9 +108,10 @@ module Battle
     end == true
   end
 
-  # Choice item
+  # Choice item || Gorilla Tactics
   Move.register_move_disabled_check_hook('PSDK Move Disabled: Choice item') do |user, move|
     next unless Move::CHOICE_ITEMS.include?(user.battle_item_db_symbol) && user.move_history.any?
+    next unless user.has_ability?(:gorilla_tactics) && user.move_history.any?
     next if user.move_history.last.db_symbol == move.db_symbol
 
     next proc {}

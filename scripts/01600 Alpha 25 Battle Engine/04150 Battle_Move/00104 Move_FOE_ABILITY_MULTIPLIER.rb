@@ -31,6 +31,33 @@ module Battle
       type == GameData::Types::FIRE ? 1.25 : 1
     end
 
+    # Punk Rock foe ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_fa_punk_rock(user, target)
+      sound_attack? ? VAL_0_5 : 1
+    end
+
+    # Fluffy foe ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_fa_fluffy(user, target)
+      return VAL_0_5 if direct?
+      return 2 if type == GameData::Types::FIRE
+      return 1
+    end
+
+    # Ice Scales ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_def_ice_scales
+      return VAL_0_5 if special? 
+      return 1
+    end
+
     class << self
       # Define an ability of the foe that deplete the move power
       # @param db_symbol [Symbol] db_symbol of the ability
@@ -43,5 +70,8 @@ module Battle
     define_depleting_ability(:thick_fat, :calc_fa_thick_fat)
     define_depleting_ability(:heatproof, :calc_fa_heatproof)
     define_depleting_ability(:dry_skin, :calc_fa_dry_skin)
+    define_depleting_ability(:punk_rock, :calc_fa_punk_rock)
+    define_depleting_ability(:fluffy, :calc_fa_fluffy)
+    define_depleting_ability(:ice_scales, :calc_fa_ice_scales)
   end
 end

@@ -68,6 +68,46 @@ module Battle
       return 1
     end
 
+    # Dragon's Maw user ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_dragons_maw(user, target)
+      type_dragon? ? 1.5 : 1
+    end
+
+    # Steelworker user ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_steelworker(user, target)
+      type_steel? ? 1.5 : 1
+    end
+
+    # Tough Claws ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_tough_claws(user, target)
+      direct? ? 1.3 : 1
+    end
+
+    # Transitor ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_transitor(user, target)
+      type_electric? ? 1.5 : 1
+    end
+
+    # Punk Rock ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_punk_rock(user, target)
+      sound_attack? ? 1.3 : 1
+    end
+
     class << self
       # Define a user ability that powers a type of move in bad condition (1/3 of hp remaining)
       # @param db_symbol [Symbol] db_symbol of the ability
@@ -97,5 +137,10 @@ module Battle
     define_boosting_ability(:refrigerate, :calc_ua_pixilate)
     define_boosting_ability(:aerilate, :calc_ua_pixilate)
     define_boosting_ability(:galvanize, :calc_ua_pixilate)
+    define_boosting_ability(:"dragon's maw", :calc_ua_dragons_maw)
+    define_boosting_ability(:steelworker, :calc_ua_steelworker)
+    define_boosting_ability(:punk_rock, :calc_ua_punk_rock)
+    define_boosting_ability(:tough_claws, :calc_ua_tough_claws)
+    define_boosting_ability(:transitor, :calc_ua_transitor)
   end
 end
