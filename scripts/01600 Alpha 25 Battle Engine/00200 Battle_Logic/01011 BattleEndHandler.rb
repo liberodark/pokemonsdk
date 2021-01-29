@@ -99,6 +99,10 @@ module Battle
       $env.apply_weather(0, 0) unless $game_switches[Yuki::Sw::MixWeather]
     end
 
+    BattleEndHandler.register('PSDK reset terrain to normal') do
+      $env.apply_fterrain(0, 0) unless $game_switches[Yuki::Sw::MixTerrain]
+    end
+
     BattleEndHandler.register('PSDK trainer messages') do |handler|
       next unless $game_temp.trainer_battle
 
