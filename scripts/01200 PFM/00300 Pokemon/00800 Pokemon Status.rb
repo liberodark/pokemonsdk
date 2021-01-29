@@ -182,21 +182,11 @@ module PFM
     # @return [Boolean] if the pokemon has been confused
     def status_confuse(forcing=false)
       if((!@confuse || forcing) && !dead?)
-        @confuse=true
-        @state_count=rand(4)+2
+        @confuse = true
+        @state_count = rand(4) + 2
         return true
       end
       return false
-    end
-    # Check if the Pokemon is still confused
-    # @return [Boolean, :cured] true = get confuse damage, :cured = not confuse anymore
-    def confuse_check
-      if @state_count > 0
-        @state_count -= 1
-        return rand(2) == 0
-      end
-      @confuse = false
-      return :cured #Le pokémon est soigné de la confusion
     end
     # Return the amount of damage the Pokemon receive from confusion
     # @return [Integer]

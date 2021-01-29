@@ -46,11 +46,16 @@ module PFM
     end
 
     # Update the confuse state
+    # @return [Boolean, Symbol]
     def update_confuse_count
-      return unless confused?
+      return false unless confused?
+
       @confuse_count -= 1
-      return if confused?
-      # Display the message about the end of the confusion
+      if @confuse_count == 0
+        @confuse = false
+        return :cured
+      end
+      return true if confused?
     end
 
     # Is the Pokemon on the effect of helping hand ?

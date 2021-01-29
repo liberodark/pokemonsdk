@@ -215,10 +215,10 @@ module Battle
   # Confusion registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Confusion') do |user, _, move|
     if user.confused?
-      stat = user.confuse_check
-      move.scene.visual.show_rmxp_animation(user, 475)
+      stat = user.update_confuse_count
+      move.scene.visual.show_rmxp_animation(user, 475) unless stat == :cured
       move.scene.display_message_and_wait(parse_text_with_pokemon(19, (stat == :cured ? 351 : 348), user))
-      if stat == true
+      if stat == true && rand(2) == 0 # 50% in Gen6 and 33% in Gen7
         hp = user.confuse_damage
         move.scene.visual.show_hp_animations([user], [-hp])
         move.scene.display_message_and_wait(parse_text(18, 83))
