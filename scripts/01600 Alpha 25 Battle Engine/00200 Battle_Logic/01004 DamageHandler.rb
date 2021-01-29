@@ -214,6 +214,7 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(target)
+        handler.scene.visual.show_hp_animations([target], [target.max_hp / 4])
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 387, target))
       end
     end
@@ -476,7 +477,7 @@ module Battle
 
       damages = launcher.max_hp >= 8 ? launcher.max_hp / 8 : 1
       handler.scene.visual.show_ability(target)
-      handler.scene.visual.show_hp_animations([launcher], [damages])
+      handler.scene.visual.show_hp_animations([launcher], [-damages])
       text = parse_text_with_pokemon(19, 430, launcher, PFM::Text::PKNICK[0] => launcher.given_name)
       handler.scene.display_message_and_wait(text)
     end
@@ -487,7 +488,7 @@ module Battle
 
       damages = launcher.max_hp >= 8 ? launcher.max_hp / 8 : 1
       handler.scene.visual.show_ability(target)
-      handler.scene.visual.show_hp_animations([launcher], [damages])
+      handler.scene.visual.show_hp_animations([launcher], [-damages])
       text = parse_text_with_pokemon(19, 430, launcher, PFM::Text::PKNICK[0] => launcher.given_name)
       handler.scene.display_message_and_wait(text)
     end
@@ -501,9 +502,10 @@ module Battle
         next if handler.logic.allies_of(target).any? { |pkmn| pkmn && pkmn.hp > 0 && pkmn.has_ability?(:damp) }
         next if handler.logic.foes_of(target).any? { |pkmn| pkmn && pkmn.hp > 0 && pkmn.has_ability?(:damp) }
       end
-
+      
+      damages = launcher.max_hp / 4
       handler.scene.visual.show_ability(target)
-      handler.scene.visual.show_hp_animations([launcher], [launcher.max_hp / 4])
+      handler.scene.visual.show_hp_animations([launcher], [-damages])
     end
 
     # Mummy
