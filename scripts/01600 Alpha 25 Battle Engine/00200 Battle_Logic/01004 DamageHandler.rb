@@ -608,7 +608,7 @@ module Battle
     end
 
     # Moxie
-    DamageHandler.register_post_damage_hook('PSDK Post damage: Moxie') do |handler, _, target, launcher, skill|
+    DamageHandler.register_post_damage_death_hook('PSDK Post damage: Moxie') do |handler, _, target, launcher, skill|
       next unless skill && launcher && launcher != target && launcher.has_ability?(:moxie)
       next unless launcher.can_be_lowered_or_canceled?
 
