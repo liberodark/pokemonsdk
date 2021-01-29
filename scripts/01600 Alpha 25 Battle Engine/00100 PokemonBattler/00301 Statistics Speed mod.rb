@@ -2,11 +2,14 @@ module PFM
   class PokemonBattler
     # List of ability speed modifier
     SPEED_MODIFIER_ABILITY = Hash.new(:calc_us_1).merge!(
-      chlorophyll: :calc_us_chlorophyll,
-      quick_feet:  :calc_us_quick_feet,
-      slow_start:  :calc_us_slow_start,
-      swift_swim:  :calc_us_swift_swim,
-      unburden:    :calc_us_unburden
+      chlorophyll:   :calc_us_chlorophyll,
+      quick_feet:    :calc_us_quick_feet,
+      slow_start:    :calc_us_slow_start,
+      swift_swim:    :calc_us_swift_swim,
+      unburden:      :calc_us_unburden,
+      slush_rush:    :calc_us_slush_rush,
+      sand_rush:     :calc_us_sand_rush,
+      surge_surfer:  :calc_us_surge_surfer
     )
     # List of item speed modifier
     SPEED_MODIFIER_ITEM = Hash.new(:calc_us_1).merge!(
@@ -74,6 +77,24 @@ module PFM
     # @return [Integer]
     def calc_us_swift_swim
       return $env.rain? ? 2 : 1
+    end
+
+    # Slush Rush speed modifier
+    # @return [Integer]
+    def calc_us_slush_rush
+      return $env.hail? ? 2 : 1
+    end
+
+    # Sand Rush speed modifier
+    # @return [Integer]
+    def calc_us_sand_rush
+      return $env.sandstorm? ? 2 : 1
+    end
+
+    # Surge Surfer speed modifier
+    # @return [Integer]
+    def calc_us_surge_surfer
+      return $env.terrain_electric? ? 2 : 1
     end
 
     # Unburden speed modifier
