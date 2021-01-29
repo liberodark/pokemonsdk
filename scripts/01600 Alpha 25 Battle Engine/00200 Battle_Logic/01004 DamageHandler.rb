@@ -551,5 +551,69 @@ module Battle
 
       target.form = 0
     end
+
+    # Anger Point
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Anger Point') do |handler, _, target, launcher, skill|
+      next unless skill&.critical_hit? && launcher && launcher != target && target.has_ability?(:anger_point)
+      next unless launcher.can_be_lowered_or_canceled?
+
+      handler.scene.visual.show_ability(target)
+      handler.logic.stat_change_handler.stat_change_with_process(:atk, 12, target)
+    end
+
+    # Gooey / Tangling Hair
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Gooey/Tangling Hair') do |handler, _, target, launcher, skill|
+      next unless skill&.direct? && launcher && launcher != target && (target.has_ability?(:gooey) || target.has_ability?(:tangling_hair))
+      next unless launcher.can_be_lowered_or_canceled?
+
+      handler.scene.visual.show_ability(target)
+      handler.logic.stat_change_handler.stat_change_with_process(:spd, -1, launcher)
+    end
+
+    # Weak Armor
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Weak Armor') do |handler, _, target, launcher, skill|
+      next unless skill&.physical? && launcher && launcher != target && target.has_ability?(:weak_armor)
+      next unless launcher.can_be_lowered_or_canceled?
+
+      handler.scene.visual.show_ability(target)
+      handler.logic.stat_change_handler.stat_change_with_process(:dfe, -1, target)
+      handler.logic.stat_change_handler.stat_change_with_process(:spd, 2, target)
+    end
+
+    # Water Compaction
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Water Compaction') do |handler, _, target, launcher, skill|
+      next unless skill&type_water? && launcher && launcher != target && target.has_ability?(:water_compaction)
+      next unless launcher.can_be_lowered_or_canceled?
+
+      handler.scene.visual.show_ability(target)
+      handler.logic.stat_change_handler.stat_change_with_process(:dfe, 2, target)
+    end
+
+    # Steam Engine
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Steam Engine') do |handler, _, target, launcher, skill|
+      next unless skill&type_water? && launcher && launcher != target && target.has_ability?(:steam_engine)
+      next unless launcher.can_be_lowered_or_canceled?
+
+      handler.scene.visual.show_ability(target)
+      handler.logic.stat_change_handler.stat_change_with_process(:spd, 6, target)
+    end
+
+    # Berserk
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Bersek') do |handler, _, target, launcher, skill|
+      next unless target.hp_rate <= 0.5 && skill && launcher && launcher != target && target.has_ability?(:berserk)
+      next unless launcher.can_be_lowered_or_canceled?
+
+      handler.scene.visual.show_ability(target)
+      handler.logic.stat_change_handler.stat_change_with_process(:ats, 1, target)
+    end
+
+    # Moxie
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Moxie') do |handler, _, target, launcher, skill|
+      next unless skill && launcher && launcher != target && launcher.has_ability?(:moxie)
+      next unless launcher.can_be_lowered_or_canceled?
+
+      handler.scene.visual.show_ability(target)
+      handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, target)
+    end
   end
 end
