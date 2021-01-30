@@ -1,6 +1,7 @@
 module PFM
   # Class defining a Pokemon during a battle, it aim to copy its properties but also to have the methods related to the battle.
   class PokemonBattler < Pokemon
+    include Hooks
     # List of properties to copy
     COPIED_PROPERTIES = %i[
       @id @form @given_name @code @ability @nature

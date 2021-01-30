@@ -141,7 +141,7 @@ module Battle
 
     # Arena Trap
     SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Arena Trap') do |handler, pokemon|
-      next unless false # pokemon.grounded? TODO: Create the grounded property on POKEMON
+      next unless pokemon.grounded?
       next unless (fv = handler.logic.foes_of(pokemon).find { |foe| foe&.alive? && foe&.has_ability?(:arena_trap) })
 
       next handler.prevent_change do

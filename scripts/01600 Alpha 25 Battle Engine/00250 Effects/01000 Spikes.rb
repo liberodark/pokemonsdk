@@ -34,7 +34,7 @@ module Battle
       # @param who [PFM::PokemonBattler] Pokemon that is switched out
       # @param with [PFM::PokemonBattler] Pokemon that is switched in
       def on_switch_event(handler, who, with)
-        return unless true # with.grounded? TODO: Create the grounded property on POKEMON
+        return unless with.grounded?
         return if with.has_ability?(:magic_guard)
 
         factor = 10 - power * 2 # 8 -> 6 -> 4
