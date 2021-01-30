@@ -144,6 +144,11 @@ module Battle
     def calc_type_n_multiplier(target, type_to_check, types)
       user_type = target.send(type_to_check)
       result = types.inject(1) { |product, type| product * GameData::Type[user_type].hit_by(type) }
+      # Foresight - Odor Sleuth
+      if result == 0 && ((target.effects.has?(:foresight) && types.include?(GameData::Types::NORMAL || GameData::Types::FIGHTING)) ||
+                        (target.effects.has?(:miracle_eye) && types.include?(GameData::Types::PSYCHIC)))
+        result = 1
+      end
       @effectiveness *= result
       return result
     end

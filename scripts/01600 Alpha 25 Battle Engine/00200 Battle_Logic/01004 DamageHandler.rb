@@ -549,9 +549,9 @@ module Battle
 
     # Disguise - Back to form 0 after death
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Disguise') do |_, _, target, _, _|
-      next unless target.has_ability?(:disguise)
+      next unless target&.has_ability?(:disguise)
 
-      target.form = 0
+      target&.form = 0
     end
 
     # Anger Point
@@ -584,7 +584,7 @@ module Battle
 
     # Water Compaction
     DamageHandler.register_post_damage_hook('PSDK Post damage: Water Compaction') do |handler, _, target, launcher, skill|
-      next unless skill&type_water? && launcher && launcher != target && target.has_ability?(:water_compaction)
+      next unless skill&.type_water? && launcher && launcher != target && target.has_ability?(:water_compaction)
       next unless launcher.can_be_lowered_or_canceled?
 
       handler.scene.visual.show_ability(target)
@@ -593,7 +593,7 @@ module Battle
 
     # Steam Engine
     DamageHandler.register_post_damage_hook('PSDK Post damage: Steam Engine') do |handler, _, target, launcher, skill|
-      next unless skill&type_water? && launcher && launcher != target && target.has_ability?(:steam_engine)
+      next unless skill&.type_water? && launcher && launcher != target && target.has_ability?(:steam_engine)
       next unless launcher.can_be_lowered_or_canceled?
 
       handler.scene.visual.show_ability(target)

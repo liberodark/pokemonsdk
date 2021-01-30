@@ -136,10 +136,10 @@ module BattleEngine
 
     target = _magic_coat(launcher, target, skill)
     ls = target.last_skill
-    skill = target.find_skill(ls)
+    skill = target.find_skill(ls) if ls
     pp = skill ? (skill.pp < 4 ? skill.pp : 4) : 0
-    if ls > 0 && ls != 165 && pp > 0
-      _mp([:msg, parse_text_with_pokemon(19, 641, target, MOVE[1] => ::GameData::Skill[ls].name, "[VAR NUM1(0002)]" => pp.to_s)])
+    if ls && ls > 0 && ls != 165 && pp > 0
+      _mp([:msg, parse_text_with_pokemon(19, 641, target, MOVE[1] => ::GameData::Skill[ls].name, '[VAR NUM1(0002)]' => pp.to_s)])
       _mp([:pp_down, target, skill, pp])
     else
       _mp(MSG_Fail)

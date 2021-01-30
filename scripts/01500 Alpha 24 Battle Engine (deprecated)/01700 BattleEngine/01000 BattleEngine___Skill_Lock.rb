@@ -87,17 +87,6 @@ module BattleEngine
     _message_stack_push([:msg, parse_text_with_pokemon(19, 670, launcher)])
   end
 
-  # Odor Sleuth & Foresight skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_foresight(launcher, target, skill, msg_push = true)
-    return false unless __s_beg_step(launcher, target, skill, msg_push)
-    target = _magic_coat(launcher, target, skill)
-    _mp([:stat_set, target, 5, 0]) #> Evasion reset
-    _mp([:apply_effect, target, :apply_foresight])
-  end
-
   # Imprison skill definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move
@@ -143,20 +132,6 @@ module BattleEngine
     return false unless __s_beg_step(launcher, target, skill, msg_push)
     _mp([:apply_effect, launcher, :apply_mind_reader, target])
     _mp([:msg, ::PFM::Text.parse_with_pokemons(19, 651, launcher, target)])
-  end
-  
-  # Miracle Eye skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_miracle_eye(launcher, target, skill, msg_push = true)
-    return unless __s_beg_step(launcher, target, skill, msg_push)
-    if target.battle_effect.has_miracle_eye_effect?
-      _mp(MSG_Fail)
-    else
-      _mp([:set_state, target, 5, 0])
-      _mp([:apply_effect, target, :apply_miracle_eye])
-    end
   end
 
   # Snatch skill definition

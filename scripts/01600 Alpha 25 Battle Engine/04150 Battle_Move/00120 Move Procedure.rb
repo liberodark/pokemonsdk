@@ -100,8 +100,13 @@ module Battle
     # @return [Boolean]
     def target_immune?(user, target)
       types = definitive_types(user, target)
-      # TODO: foresight / odor_sleuth effect on target (ghost type)
-      # TODO: miracle eye effect on target (dark type not immue to psy)
+      # Foresight / Odor_Sleuth / Miracle Eye
+      if ((type_normal? || type_fighting?) && target.type_ghost? && target.effects.has?(:foresight)) ||
+         (type_psychic? && target.type_dark? && target.effects.has?(:miracle_eye))
+        return false
+      end
+      return false if status? && target == user
+
       return calc_type_n_multiplier(target, :type1, types) == 0 ||
              calc_type_n_multiplier(target, :type2, types) == 0 ||
              calc_type_n_multiplier(target, :type3, types) == 0
