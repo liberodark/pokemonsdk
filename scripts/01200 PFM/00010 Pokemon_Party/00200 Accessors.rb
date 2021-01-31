@@ -4,7 +4,6 @@ module PFM
   # The global object is stored in $pokemon_party
   # @author Nuri Yuri
   class Pokemon_Party
-    include GameData::PokemonParty
     # Constant containing all the proc to call when creating a new Pokemon_Party object (for battle)
     ON_INITIALIZE = {}
     # Constant containing all the proc to call when creating a new Pokemon_Party object (for the player)
@@ -294,6 +293,9 @@ module PFM
       end
       nuzlocke.clear_dead_pokemon if nuzlocke.enabled?
     end
+
+    # Abilities that increase the hatch speed
+    FASTER_HATCH_ABILITIES = %i[magma_armor flame_body]
 
     # Update the remaining steps of all the Egg to hatch
     def hatch_check_update

@@ -147,7 +147,6 @@ pokemonsdk/scripts/00800 GameData/00200 Helpers/00200 Abilities.rb
 pokemonsdk/scripts/00800 GameData/00200 Helpers/00300 Natures.rb
 pokemonsdk/scripts/00800 GameData/00200 Helpers/00400 Text.rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/00100 EXP_TABLE___MAX_LEVEL.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/00100 GameData__PokemonParty.rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/00200 GameData__Bag.rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/01600 Tutos (deprecated).rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/01700 States.rb
