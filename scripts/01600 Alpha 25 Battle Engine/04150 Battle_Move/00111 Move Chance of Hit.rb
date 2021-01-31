@@ -24,7 +24,7 @@ module Battle
              send(EVASION_ITEM_MULTIPLIER[target.battle_item_db_symbol], user, target) *
              send(ACCURACY_ABILITY_MULTIPLIER[user.battle_ability_db_symbol], user, target) *
              send(EVASION_ABILITY_MULTIPLIER[target.battle_ability_db_symbol], user, target) *
-             (logic.global_gravity? ? GRAVITY_MODIFIER : 1)
+             (logic.terrain_effects.has?(:gravity) ? GRAVITY_MODIFIER : 1)
     end
 
     private

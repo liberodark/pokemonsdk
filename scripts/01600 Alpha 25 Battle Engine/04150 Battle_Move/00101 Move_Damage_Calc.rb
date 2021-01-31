@@ -259,5 +259,12 @@ module Battle
 
       next nil
     end
+
+    Move.register_single_type_multiplier_overwrite_hook('PSDK Gravity') do |_, target_type, type, move|
+      next nil unless move.logic.terrain_effects.has?(:gravity) && target_type == GameData::Types::FLYING
+      next 1 if type == GameData::Types::GROUND
+
+      next nil
+    end
   end
 end

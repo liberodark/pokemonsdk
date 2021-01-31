@@ -34,7 +34,7 @@ module PFM
       end
     end
 
-    register_force_grounded_hook('PSDK grounded: Gravity') { |_, scene| scene.logic.global_gravity? }
+    register_force_grounded_hook('PSDK grounded: Gravity') { |_, scene| scene.logic.terrain_effects.has?(:gravity) }
     register_force_grounded_hook('PSDK grounded: Iron Ball') { |pokemon| pokemon.hold_item?(:iron_ball) }
     # TODO: smack down
     # TODO: ingrain

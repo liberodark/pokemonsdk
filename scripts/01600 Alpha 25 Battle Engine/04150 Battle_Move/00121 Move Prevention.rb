@@ -139,7 +139,7 @@ module Battle
 
   # Gravity registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Gravity') do |user, _, move|
-    if move.scene.logic.global_gravity? && move.gravity_affected?
+    if move.scene.logic.terrain_effects.has?(:gravity) && move.gravity_affected?
       move.scene.display_message_and_wait(parse_text_with_pokemon(19, 1092, user))
       next :prevent
     end

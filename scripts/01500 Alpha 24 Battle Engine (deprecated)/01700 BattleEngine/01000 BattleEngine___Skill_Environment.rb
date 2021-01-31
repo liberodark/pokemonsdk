@@ -58,30 +58,6 @@ module BattleEngine
     s_stat(launcher, target, skill)
   end
 
-  # Gravity skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_gravity(launcher, target, skill, msg_push = true)
-    return unless __s_beg_step(launcher, target, skill, msg_push)
-
-    if @_State[:gravity] <= 0
-      _mp([:set_state, :gravity, 5])
-      _mp([:msg, parse_text(18,123)])
-      get_battlers.each do |i|
-        unless !i || _is_grounded(i) || i.dead?
-          _mp([:msg, parse_text_with_pokemon(19, 1089, i)])
-          if i.battle_effect.has_telekinesis_effect?
-            _msgp(19, 1149, i)
-            _mp([:apply_effect, i, :apply_telekinesis, 0])
-          end
-        end
-      end
-    else
-      _mp(MSG_Fail)
-    end
-  end
-
   # Mist skill definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move

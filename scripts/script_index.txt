@@ -548,6 +548,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Attract.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Electrify.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Flinch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Foresight.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Gravity.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 LeechSeed.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 MagicCoat.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 MiracleEye.rb
@@ -616,6 +617,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00102 Status 
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00103 TwoHit MultiHit.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00104 TwoTurn.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 Attract.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 Gravity.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 MudSport.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 RecoilMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00201 LeechSeed.rb
