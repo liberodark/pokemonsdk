@@ -1,6 +1,6 @@
 module Battle
   class Move
-    # Move that inflict attract effect to the ennemy
+    # Move that lower the power of electric/fire moves
     class MudSport < Move
       # List of effect depending on db_symbol of the move
       # @return [Hash{ Symbol => Class<Battle::Effects::EffectBase> }]
