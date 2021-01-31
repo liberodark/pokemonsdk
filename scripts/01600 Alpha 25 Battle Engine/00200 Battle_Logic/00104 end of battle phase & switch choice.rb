@@ -144,7 +144,7 @@ module Battle
     def exp_multipliers(receiver)
       aura_factor = 1 # TODO: Implement aura
       lucky_factor = receiver.item_db_symbol == :lucky_egg ? 1.5 : 1
-      trade_factor = receiver.trainer_id != $trainer.id ? 1.5 : 1
+      trade_factor = receiver.from_player? ? 1 : 1.5
       loyalty_factor = 1 # TODO: Implement loyalty
       evolution_factor = 1 # TODO: Implement evolution factor (can evolve on next level)
       return aura_factor * lucky_factor * trade_factor * loyalty_factor * evolution_factor
