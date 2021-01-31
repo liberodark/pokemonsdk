@@ -17,7 +17,7 @@ end
 
 safe_code('Register LevelIncreaseItem ItemDescriptor') do
   PFM::ItemDescriptor.define_chen_prevension(GameData::LevelIncreaseItem) do
-    return $game_temp.in_battle
+    next $game_temp.in_battle
   end
 
   PFM::ItemDescriptor.define_on_pokemon_usability(GameData::LevelIncreaseItem) do |item, pokemon|
