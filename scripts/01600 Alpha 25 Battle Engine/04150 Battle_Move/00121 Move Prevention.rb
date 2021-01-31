@@ -134,7 +134,7 @@ module Battle
   Move.register_move_disabled_check_hook('PSDK Move disabled: Torment') do |user, move|
     next unless user.battle_effect.has_torment_effect? && !user.last_successfull_move_is?(move.db_symbol)
 
-    return proc { move.scene.display_message_and_wait(parse_text_with_pokemon(19, 580, user)) }
+    next proc { move.scene.display_message_and_wait(parse_text_with_pokemon(19, 580, user)) }
   end
 
   # Gravity registration
