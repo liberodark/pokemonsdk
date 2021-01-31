@@ -142,17 +142,22 @@ module Battle
     # @param types [Array<Integer>] list of types the move has
     # @return [Numeric]
     def calc_type_n_multiplier(target, type_to_check, types)
-      user_type = target.send(type_to_check)
-      result = types.inject(1) { |product, type| product * GameData::Type[user_type].hit_by(type) }
-      # Foresight - Odor Sleuth
-      if result == 0 && ((target.effects.has?(:foresight) && types.include?(GameData::Types::NORMAL || GameData::Types::FIGHTING)) ||
-                        (target.effects.has?(:miracle_eye) && types.include?(GameData::Types::PSYCHIC)))
-        result = 1
-      end
-      # Freeze-Dry
-      result = 2 if db_symbol == :"freeze-dry" && target.type_water?
+      target_type = target.send(type_to_check)
+      result = types.inject(1) { |product, type| product * calc_single_type_multiplier(target, target_type, type) }
       @effectiveness *= result
       return result
+    end
+
+    # Calc the single type multiplier
+    # @param target [PFM::PokemonBattler] target of the move
+    # @param target_type [Integer] one of the type of the target
+    # @param type [Integer] one of the type of the move
+    # @return [Float] definitive multiplier
+    def calc_single_type_multiplier(target, target_type, type)
+      exec_hooks(Move, :single_type_multiplier_overwrite, binding)
+      return GameData::Type[target_type].hit_by(type)
+    rescue Hooks::ForceReturn => e
+      return e.data
     end
 
     # Get the types of the move with 1st type being affected by effects
@@ -162,7 +167,7 @@ module Battle
     def definitive_types(user, target)
       type = self.type
       exec_hooks(Move, :move_type_change, binding)
-      return [type]
+      return [*type]
     end
 
     # "Calc" the R range value
@@ -184,6 +189,22 @@ module Battle
           result = yield(hook_binding.local_variable_get(:user), hook_binding.local_variable_get(:target), self,
                          hook_binding.local_variable_get(:type))
           hook_binding.local_variable_set(:type, result) if result.is_a?(Integer)
+        end
+      end
+
+      # Function that registers a single_type_multiplier_overwrite hook
+      # @param reason [String] reason of the single_type_multiplier_overwrite registration
+      # @yieldparam target [PFM::PokemonBattler]
+      # @yieldparam target_type [Integer] one of the type of the target
+      # @yieldparam type [Integer] one of the type of the move
+      # @yieldparam move [Battle::Move]
+      # @yieldreturn [Float, nil] overwritten
+      def register_single_type_multiplier_overwrite_hook(reason)
+        Hooks.register(Move, :single_type_multiplier_overwrite, reason) do |hook_binding|
+          result = yield(hook_binding.local_variable_get(:target),
+                         hook_binding.local_variable_get(:target_type),
+                         hook_binding.local_variable_get(:type), self)
+          force_return(result) if result
         end
       end
     end
@@ -216,6 +237,27 @@ module Battle
 
     Move.register_move_type_change_hook('PSDK Galvanize Ability') do |user, _, move|
       next user.has_ability?(:galvanize) && move.type_normal? ? GameData::Types::ELECTRIC : nil
+    end
+
+    Move.register_single_type_multiplier_overwrite_hook('PSDK Foresight') do |target, target_type, type|
+      next nil unless target.effects.has?(:foresight) && target_type == GameData::Types::GHOST
+      next 1 if type == GameData::Types::NORMAL
+      next 1 if type == GameData::Types::FIGHTING
+
+      next nil
+    end
+
+    Move.register_single_type_multiplier_overwrite_hook('PSDK Miracle Eye') do |target, target_type, type|
+      next nil unless target.effects.has?(:miracle_eye) && target_type == GameData::Types::DARK
+      next 1 if type == GameData::Types::PSYCHIC
+
+      next nil
+    end
+
+    Move.register_single_type_multiplier_overwrite_hook('PSDK Freeze-Dry') do |_, target_type, _, move|
+      next 2 if move.db_symbol == :"freeze-dry" && target_type == GameData::Types::WATER
+
+      next nil
     end
   end
 end

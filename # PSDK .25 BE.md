@@ -493,6 +493,7 @@ Battle::Logic::FleeHandler.register_flee_passthrough_hook('PSDK smoke ball') do 
     next :success
   end
 end
+```
 
 ### CatchHandler
 
@@ -978,4 +979,43 @@ Effectiveness can be set to one of the following values:
 Example:
 ```ruby
 Battle::Move.define_type_resisting_berry(:babiri_berry, GameData::Types::STEEL, 2)
+```
+
+### Define a type multiplier overwrite
+
+Some effects or moves might need to overwrite the multiplier of a type against another. This can lead to the target not being immune anymore or getting different damage. Here's how to define type multiplier overwrite:
+
+Define the overwrite using
+```ruby
+Battle::Move.register_single_type_multiplier_overwrite_hook('reason') do |target, target_type, type, move|
+  next overwrite if condition
+
+  next nil # No overwrite
+end
+```
+
+The variables are:
+- `target` a PFM::PokemonBattler representing the target that might get hit by the move
+- `target_type` the ID of one of the type of the target
+- `type` the ID of one of the type of the move
+- `move` the move that is being executed
+
+Example 1 Foresight:
+```ruby
+Battle::Move.register_single_type_multiplier_overwrite_hook('PSDK Foresight') do |target, target_type, type|
+  next nil unless target.effects.has?(:foresight) && target_type == GameData::Types::GHOST
+  next 1 if type == GameData::Types::NORMAL
+  next 1 if type == GameData::Types::FIGHTING
+
+  next nil
+end
+```
+
+Example 2 Freeze-Dry:
+```ruby
+Battle::Move.register_single_type_multiplier_overwrite_hook('PSDK Freeze-Dry') do |_, target_type, _, move|
+  next 2 if move.db_symbol == :"freeze-dry" && target_type == GameData::Types::WATER
+
+  next nil
+end
 ```
