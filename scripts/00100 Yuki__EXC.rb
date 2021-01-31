@@ -22,7 +22,7 @@ module Yuki
     def run(e, io = nil)
       log_debug(e.inspect)
       return if e.class == LiteRGSS::Graphics::ClosedWindowError
-      raise if e.message.empty? || e.class.to_s == 'Reset'
+      raise if (e.message.empty? || e.class.to_s == 'Reset') && !e.is_a?(Interrupt)
 
       error_log = build_error_log(e)
       if io
@@ -35,6 +35,7 @@ module Yuki
         EODSP
         system('pause')
       end
+      dot_25_battle_reproduction($scene) if $scene.is_a?(Battle::Scene)
     end
 
     # Method that build the error log.
@@ -112,5 +113,25 @@ module Yuki
       str << (e.backtrace || ['Unkown Sources...']).join("\r\n")
       return str
     end
+
+    # Function building the reproduction file
+    # @param scene [Battle::Scene]
+    def dot_25_battle_reproduction(scene)
+      $pokemon_party.game_temp = Game_Temp.new
+      $game_map.begin_save
+      compressed_data = Zlib::Deflate.deflate(Marshal.dump([$pokemon_party, scene.battle_info]), Zlib::BEST_COMPRESSION)
+      File.binwrite('battle.dat', compressed_data)
+    end
   end
+end
+
+# Function responsive of reloading the saved battle
+def reload_battle
+  return log_error('There is no battle') unless File.exist?('battle.dat')
+
+  $pokemon_party, battle_info = Marshal.load(Zlib::Inflate.inflate(File.binread('battle.dat')))
+  $pokemon_party.expand_global_var
+  $pokemon_party.load_parameters
+  $game_map.setup($game_map.map_id)
+  $scene.call_scene(Battle::Scene, battle_info)
 end
