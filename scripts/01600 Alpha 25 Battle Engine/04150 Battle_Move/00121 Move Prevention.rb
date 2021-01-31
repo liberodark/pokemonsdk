@@ -108,6 +108,13 @@ module Battle
     end == true
   end
 
+  # Prevent unimplemented moves from being used
+  Move.register_move_disabled_check_hook('PSDK .24 moves disabled') do |_, move|
+    next if move.class != Battle::Move
+
+    next proc { move.scene.display_message_and_wait('\c[2]This move is not implemented!\c[0]') }
+  end
+
   # Choice item || Gorilla Tactics
   Move.register_move_disabled_check_hook('PSDK Move Disabled: Choice item') do |user, move|
     next unless Move::CHOICE_ITEMS.include?(user.battle_item_db_symbol) && user.move_history.any?

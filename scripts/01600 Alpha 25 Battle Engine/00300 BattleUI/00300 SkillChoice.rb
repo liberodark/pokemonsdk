@@ -81,6 +81,8 @@ module BattleUI
       move = @pokemon.moveset[@index]
       if (blocked = move.disable_reason(@pokemon))
         $game_system.se_play($data_system.buzzer_se)
+        @scene.message_window.blocking = true
+        @scene.message_window.wait_input = true
         return blocked.call
       end
       @result = move
