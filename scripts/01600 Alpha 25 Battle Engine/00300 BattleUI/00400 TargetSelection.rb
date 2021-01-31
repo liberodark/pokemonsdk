@@ -25,8 +25,8 @@ module BattleUI
     def update
       super
       return if validated?
-      return validate if Input.trigger?(:A)
-      return cancel if Input.trigger?(:B)
+      return validate if Input.trigger?(:A) || Mouse.trigger?(:LEFT)
+      return cancel if Input.trigger?(:B) || Mouse.trigger?(:RIGHT)
       return unless @allow_selection
 
       last_index = @index
