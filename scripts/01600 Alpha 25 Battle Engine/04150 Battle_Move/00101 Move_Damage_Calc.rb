@@ -149,6 +149,8 @@ module Battle
                         (target.effects.has?(:miracle_eye) && types.include?(GameData::Types::PSYCHIC)))
         result = 1
       end
+      # Freeze-Dry
+      result = 2 if db_symbol == :"freeze-dry" && target.type_water?
       @effectiveness *= result
       return result
     end
