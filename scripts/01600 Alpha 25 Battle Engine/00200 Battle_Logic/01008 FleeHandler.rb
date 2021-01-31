@@ -84,8 +84,9 @@ module Battle
         next :success
       end
 
+      # Run Away ability
       FleeHandler.register_flee_passthrough_hook('PSDK run away') do |handler, pokemon|
-        next if pokemon.item_db_symbol != :run_away
+        next unless pokemon.has_ability?(:run_away)
 
         message = parse_text_with_pokemon(19, 872, pokemon, PFM::Text::ABILITY[1] => pokemon.ability_name)
         handler.scene.display_message_and_wait(message)
