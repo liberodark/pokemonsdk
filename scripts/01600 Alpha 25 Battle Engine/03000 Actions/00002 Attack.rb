@@ -44,7 +44,8 @@ module Battle
         priority_return = attack.move.priority <=> @move.priority
         return priority_return if priority_return != 0
 
-        return attack.launcher.spd <=> @launcher.spd # <= Invert result here if Trick Room is enabled!!
+        trick_room_factor = @scene.logic.terrain_effects.has?(:trick_room) ? -1 : 1
+        return (attack.launcher.spd <=> @launcher.spd) * trick_room_factor
       end
 
       # Get the priority of the move

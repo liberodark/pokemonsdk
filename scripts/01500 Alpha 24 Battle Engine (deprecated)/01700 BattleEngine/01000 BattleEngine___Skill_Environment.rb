@@ -323,23 +323,6 @@ module BattleEngine
     end
   end
 
-  # Trick Room skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_trick_room(launcher, target, skill, msg_push = true)
-    return false unless __s_beg_step(launcher, target, skill, msg_push)
-    return unless msg_push
-    sym = :trick_room
-    if @_State[sym] > 0
-      _mp([:msg, parse_text(18, 122)])
-      _mp([:set_state, sym, 0])
-    else
-      _mp([:msg, parse_text_with_pokemon(19, 860, launcher)])
-      _mp([:set_state, sym, 5])
-    end
-  end
-
   # Weather related skills
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move
