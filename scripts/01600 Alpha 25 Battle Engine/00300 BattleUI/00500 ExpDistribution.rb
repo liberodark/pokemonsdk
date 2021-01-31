@@ -91,6 +91,7 @@ module BattleUI
       index = @pokemon.index(pokemon)
       @bars[index].data = pokemon if index
       level_up_message(pokemon) if pokemon.can_learn_skill_at_this_level?
+      @scene.logic.evolve_request << pokemon unless @scene.logic.evolve_request.include?(pokemon) # outside of message to prevent skips
       @scene.visual.scene_update_proc { update_statistics } while @statistics
     end
 
@@ -102,7 +103,6 @@ module BattleUI
       # @scene.display_message_and_wait(parse_text(18, 62, '[VAR 010C(0000)]' => receiver.given_name))
       PFM::Text.reset_variables
       receiver.check_skill_and_learn
-      @scene.logic.evolve_request << receiver unless @scene.logic.evolve_request.include?(receiver)
     end
 
     # Function that create an exp animation for a specific pokemon

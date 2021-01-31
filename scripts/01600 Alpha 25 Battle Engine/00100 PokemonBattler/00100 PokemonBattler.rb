@@ -10,7 +10,7 @@ module PFM
       @trainer_id @trainer_name @step_remaining @loyalty
       @exp @hp @status @status_count @item_holding
       @captured_with @captured_in @captured_at @captured_level
-      @gender @skill_learnt @ribbons
+      @gender @skill_learnt @ribbons @character
       @exp_rate @hp_rate @egg_at @egg_in
     ]
     # List of properties to copy back to original
@@ -20,7 +20,7 @@ module PFM
       @trainer_id @trainer_name @step_remaining @loyalty
       @exp @hp @status @status_count @item_holding
       @captured_with @captured_in @captured_at @captured_level
-      @gender @exp_rate @hp_rate
+      @gender @character @exp_rate @hp_rate
     ]
 
     # @return [Array<Battle::Move>] the moveset of the Pokemon
