@@ -155,8 +155,6 @@ module BattleEngine
     st = @_State
     @_State[:act_follow_me] = nil
     @_State[:enn_follow_me] = nil
-    _State_decrease(:water_sport, 119)
-    _State_decrease(:mud_sport, 121)
     _State_decrease(:trick_room, 122)
     _State_decrease(:gravity, 124)
     _State_decrease(:act_reflect, 132)
@@ -218,8 +216,6 @@ module BattleEngine
     :act_lucky_chant => 0, #>Air Veinard
     :enn_lucky_chant => 0,
     :gravity => 0, #>Compteur de gravité
-    :water_sport => 0, #>Tourniquet
-    :mud_sport => 0, #>Lance-Boue
     :last_skill => nil, #>Dernière attaque (pour Photocopie)
     :knock_off => [], #>Sabotage
     :magic_room => 0, #> Zone Magique

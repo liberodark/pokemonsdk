@@ -49,8 +49,11 @@ module Battle
 
       # Delete all the effect that should be deleted
       def deleted_dead_effects
-        result = @effects.delete_if(&:dead?)
-        result.each(&:on_delete)
+        deleted_effect = @effects.select(&:dead?)
+        return if deleted_effect.empty?
+
+        @effects.reject!(&:dead?)
+        deleted_effect.each(&:on_delete)
       end
     end
   end

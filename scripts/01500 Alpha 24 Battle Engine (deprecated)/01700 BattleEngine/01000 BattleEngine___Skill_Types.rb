@@ -111,22 +111,4 @@ module BattleEngine
     return unless __s_beg_step(launcher, target, skill, msg_push)
     _message_stack_push([:powder_effect, target])
   end
-
-  # Mud Sport & Water Sport skills definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_thing_sport(launcher, target, skill, msg_push = true)
-    return false unless __s_beg_step(launcher, target, skill, msg_push)
-    return false if launcher != target
-    #> Water Sport
-    if skill.id == 346
-      _mp([:msg, parse_text(18, 118)])
-      _mp([:set_state, :water_sport, 5])
-    else
-      _mp([:msg, parse_text(18, 120)])
-      _mp([:set_state, :mud_sport, 5])
-    end
-  end
-
 end

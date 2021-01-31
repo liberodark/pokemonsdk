@@ -40,7 +40,7 @@ module Battle
       return if actual_targets.none?
 
       user.add_move_to_history(self, actual_targets)
-      play_animation(user, targets) # TODO: check if that works properly, eg. not playing when the move does nothing
+      play_animation(user, targets)
 
       if self.class == Battle::Move
         BattleEngine.use_skill(PFM::PokemonBattler24.new(user), actual_targets.map { |i| PFM::PokemonBattler24.new(i) }, self)
@@ -48,11 +48,11 @@ module Battle
         BattleEngine::MessageInterpter.new(@scene).process_messages(messages)
         messages.clear
       else
-        deal_damage(user, actual_targets) && # TODO: DO
+        deal_damage(user, actual_targets) &&
           effect_working?(user, actual_targets) &&
-          deal_status(user, actual_targets) && # TODO: DO
-          deal_stats(user, actual_targets) && # TODO: DO
-          deal_effect(user, actual_targets) # TODO: DO
+          deal_status(user, actual_targets) &&
+          deal_stats(user, actual_targets) &&
+          deal_effect(user, actual_targets)
       end
       @scene.visual.set_info_state(:move_animation)
       @scene.visual.wait_for_animation

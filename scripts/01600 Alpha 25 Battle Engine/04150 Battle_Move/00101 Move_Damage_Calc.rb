@@ -64,9 +64,9 @@ module Battle
       # CHG
       result *= user.last_successfull_move_is?(:charge) && type == GameData::Types::ELECTRIC ? 2 : 1
       # MS
-      result = (result * VAL_0_5).floor if logic.global_mud_sport? && type == GameData::Types::ELECTRIC
+      result = (result * VAL_0_5).floor if logic.terrain_effects.has?(:mud_sport) && type == GameData::Types::ELECTRIC
       # WS
-      result = (result * VAL_0_5).floor if logic.global_water_sport? && type == GameData::Types::FIRE
+      result = (result * VAL_0_5).floor if logic.terrain_effects.has?(:water_sport) && type == GameData::Types::FIRE
       # UA
       result = (result * send(USER_ABILITY_MULTIPLIER[user.battle_ability_db_symbol], user, target)).floor
       # FA

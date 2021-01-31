@@ -29,6 +29,9 @@ module Battle
     # Get the Mega Evolve helper
     # @return [MegaEvolve]
     attr_reader :mega_evolve
+    # Get the scene used to instanciate this Logic instance
+    # @return [Battle::Scene]
+    attr_reader :scene
     # Create a new Logic instance
     # @param scene [Scene] scene that hold the logic object
     def initialize(scene)
