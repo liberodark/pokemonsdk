@@ -40,9 +40,9 @@ module PFM
     # Kaphotics decoded var clean regexp
     KAPHOTICS_Clean = /\[VAR [^\]]+\]/ # /\[VAR .[A-Z\,\(\)a-z0-9]+\]/
     # Nummeric branch regexp catcher
-    NUMBRNCH_Reg = /\[VAR NUMBRNCH\(....,....\)\][^ ]+/
+    NUMBRNCH_Reg = /\[VAR NUMBRNCH\(....,....\)\][^\[]+/
     # Gender branch regexp catcher
-    GENDBR_Reg = /\[VAR GENDBR\(....,....\)\][^ ]+/
+    GENDBR_Reg = /\[VAR GENDBR\(....,....\)\][^\[]+/
     # Bell detector
     BELL_Reg = /\[VAR BE05\(([0-9]+)\)\]/ # TODO!
     # Empty string (remove stuff)
