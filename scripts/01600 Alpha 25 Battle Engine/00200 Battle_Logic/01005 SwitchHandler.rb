@@ -439,5 +439,21 @@ module Battle
       fterrain_handler.fterrain_change(:psychic_terrain, nb_turn)
       handler.scene.visual.show_ability(with)
     end
+
+    # Dauntless Shield
+    SwitchHandler.register_switch_event_hook('PSDK switch: Dauntless Shield') do |handler, _, with|
+      next unless with.has_ability?(:dauntless_shield)
+
+      handler.scene.visual.show_ability(with)
+      handler.logic.stat_change_handler.stat_change_with_process(:dfe, 1, with)
+    end
+
+    # Intrepid Sword
+    SwitchHandler.register_switch_event_hook('PSDK switch: Intrepid Sword') do |handler, _, with|
+      next unless with.has_ability?(:intrepid_sword)
+
+      handler.scene.visual.show_ability(with)
+      handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, with)
+    end
   end
 end
