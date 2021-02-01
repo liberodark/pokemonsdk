@@ -22,7 +22,6 @@ module GamePlay
       @frame = @stack.add_sprite(0, 0, 'language/frame')
 
       @flag_left = @stack.add_sprite(-76, 85, nil)
-      @flag_left.zoom = 0.9
       @flag_left.opacity = 192
 
       @flag_center = @stack.add_sprite(91, 81, nil)
@@ -30,6 +29,7 @@ module GamePlay
 
       @flag_right = @stack.add_sprite(258, 85, nil)
       @flag_right.opacity = 192
+      @flag_right.zoom = @flag_left.zoom = 0.9
 
       # @type [SpriteSheet]
       @cursor = @stack.add_sprite(91 - 4, 81 - 4, 'language/cursors', 1, 2, type: SpriteSheet)
