@@ -593,7 +593,7 @@ module Battle
 
     # Steam Engine
     DamageHandler.register_post_damage_hook('PSDK Post damage: Steam Engine') do |handler, _, target, launcher, skill|
-      next unless skill&.type_water? && launcher && launcher != target && target.has_ability?(:steam_engine)
+      next unless (skill&.type_water? || skill&.type_fire?) && launcher && launcher != target && target.has_ability?(:steam_engine)
       next unless launcher.can_be_lowered_or_canceled?
 
       handler.scene.visual.show_ability(target)

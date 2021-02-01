@@ -295,7 +295,7 @@ module PFM
     end
 
     # Abilities that increase the hatch speed
-    FASTER_HATCH_ABILITIES = %i[magma_armor flame_body]
+    FASTER_HATCH_ABILITIES = %i[magma_armor flame_body steam_engine]
 
     # Update the remaining steps of all the Egg to hatch
     def hatch_check_update
