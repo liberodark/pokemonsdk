@@ -337,5 +337,17 @@ module Battle
         end
       end
     end
+
+    # Register the Big Pecks ability
+    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Big Pecks') do |handler, stat, target, launcher|
+      next if target == launcher || stat != :dfe || !launcher
+
+      if launcher.can_be_lowered_or_canceled?(target.has_ability?(:big_pecks))
+        next handler.prevent_change do
+          handler.scene.visual.show_ability(target)
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 201, target))
+        end
+      end
+    end
   end
 end
