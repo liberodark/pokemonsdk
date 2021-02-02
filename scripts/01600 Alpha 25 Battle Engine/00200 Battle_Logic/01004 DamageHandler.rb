@@ -611,11 +611,52 @@ module Battle
 
     # Moxie
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Moxie') do |handler, _, target, launcher, skill|
-      next unless skill && launcher && launcher != target && launcher.has_ability?(:moxie)
-      next unless launcher.can_be_lowered_or_canceled?
+      next unless launcher != target && launcher && skill
+      next unless target.can_be_lowered_or_canceled?
 
-      handler.scene.visual.show_ability(target)
-      handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, target)
+      handler.logic.allies_of(launcher).each do |ally|
+        if launcher.has_ability?(:moxie) && target != ally
+          handler.scene.visual.show_ability(launcher)
+          handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, launcher)
+        end
+      end
+    end
+
+    # Chilling Neigh
+    DamageHandler.register_post_damage_death_hook('PSDK Post damage: Chilling Neigh') do |handler, _, target, launcher, skill|
+      next unless launcher != target && launcher && skill
+      next unless target.can_be_lowered_or_canceled?
+
+      handler.logic.allies_of(launcher).each do |ally|
+        if launcher.has_ability?(:chilling_neigh) && target != ally
+          handler.scene.visual.show_ability(launcher)
+          handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, launcher)
+        end
+      end
+    end
+
+    # Grim Neigh
+    DamageHandler.register_post_damage_death_hook('PSDK Post damage: Grim Neigh') do |handler, _, target, launcher, skill|
+      next unless launcher != target && launcher && skill
+      next unless target.can_be_lowered_or_canceled?
+
+      handler.logic.allies_of(launcher).each do |ally|
+        if launcher.has_ability?(:grim_neigh) && target != ally
+          handler.scene.visual.show_ability(launcher)
+          handler.logic.stat_change_handler.stat_change_with_process(:ats, 1, launcher)
+        end
+      end
+    end
+
+    # Soul-Heart
+    DamageHandler.register_post_damage_death_hook('PSDK Post damage: Soul-Heart') do |handler, _, target, launcher, skill|
+      next unless launcher != target && launcher
+      next unless target.can_be_lowered_or_canceled?
+
+      if launcher.has_ability?(:"soul-heart") 
+        handler.scene.visual.show_ability(launcher)
+        handler.logic.stat_change_handler.stat_change_with_process(:ats, 1, launcher)
+      end
     end
   end
 end
