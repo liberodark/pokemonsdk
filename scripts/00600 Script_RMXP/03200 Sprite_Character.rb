@@ -8,6 +8,8 @@ class Sprite_Character < RPG::Sprite
   Shadow_Tag = '§'
   # Name of the shadow file
   Shadow_File = '0 Ombre Translucide'
+  # Enable or disable realistic shadow
+  REALISTIC_SHADOW = true
   # Tag that add 1 to the superiority of the Sprite_Character
   Sup_Tag = '¤'
   # Blend mode for Reflection
@@ -206,7 +208,18 @@ class Sprite_Character < RPG::Sprite
     @shadow.x = @character.shadow_screen_x * @tile_zoom
     @shadow.y = @character.shadow_screen_y * @tile_zoom
     @shadow.z = z - 1
-    @shadow.visible = !@character.jumping? && !@character.shadow_disabled && @character.activated?
+    @shadow.visible = (!@character.jumping? || REALISTIC_SHADOW) && !@character.shadow_disabled && @character.activated?
+
+    if REALISTIC_SHADOW
+      character_offset_y_on_tiles = (@character.shadow_screen_y - @character.screen_y - 2) / 32
+      if character_offset_y_on_tiles < 4
+        @shadow.zoom_x = 1 - 0.25 * character_offset_y_on_tiles
+        @shadow.zoom_y = 1 - 0.25 * character_offset_y_on_tiles
+      else
+        @shadow.zoom_x = 0
+        @shadow.zoom_y = 0
+      end
+    end
   end
 
   # Dispose the shadow sprite
