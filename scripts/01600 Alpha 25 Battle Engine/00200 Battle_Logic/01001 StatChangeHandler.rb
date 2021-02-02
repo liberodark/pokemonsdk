@@ -280,6 +280,17 @@ module Battle
       end
     end
 
+    # Register the Full Metal Body ability
+    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Full Metal Body') do |handler, _, target, launcher|
+      next if target == launcher || !launcher
+      next unless target.has_ability?(:full_metal_body)
+
+      next handler.prevent_change do
+        handler.scene.visual.show_ability(target)
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 198, target))
+      end
+    end
+
     # Register the White Smoke ability
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: White Smoke') do |handler, _, target, launcher|
       next if target == launcher || !launcher
