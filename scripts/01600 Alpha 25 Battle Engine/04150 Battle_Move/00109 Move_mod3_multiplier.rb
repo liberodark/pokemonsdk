@@ -3,7 +3,7 @@ module Battle
     private
 
     # Target ability that reduce the multiplier if the move is super effective
-    SUPER_EFFECTIVE_REDUCTION = %i[solid_rock filter]
+    SUPER_EFFECTIVE_REDUCTION = %i[solid_rock filter prism_armor]
     # Target item reducing move type power
     TYPE_RESISTING_BERRY = {}
     # Mod3 calculation
@@ -18,6 +18,8 @@ module Battle
         result *= 0.75 if SUPER_EFFECTIVE_REDUCTION.include?(target.battle_ability_db_symbol)
         # EB
         result *= 1.2 if user.hold_item?(:expert_belt)
+        # TL
+        result *= 1.25 if user.has_ability?(:neuroforce)
       elsif not_very_effective?
         # TL
         result *= 2 if user.has_ability?(:tinted_lens)

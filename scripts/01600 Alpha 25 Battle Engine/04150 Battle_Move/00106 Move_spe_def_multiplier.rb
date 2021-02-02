@@ -55,6 +55,14 @@ module Battle
       SOUL_DEW_POKEMON.include?(target.db_symbol) ? 1.5 : 1
     end
 
+    # Grass Pelt ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_am_grass_pelt(user, target)
+      $env.terrain_grassy? ? 1.5 : 1
+    end
+
     class << self
       # Define an ability that modifies dfe
       # @param db_symbol [Symbol] db_symbol of the ability
@@ -86,6 +94,7 @@ module Battle
     end
     define_ability_dfe_modifier(:marvel_scale, :calc_def_mod_marvel_scale)
     define_ability_dfe_modifier(:fur_coat, :calc_def_fur_coat)
+    define_ability_dfe_modifier(:grass_pelt, :calc_am_grass_pelt)
     define_ability_dfs_modifier(:flower_gift, :calc_am_flower_gift)
     define_item_dfe_modifier(:metal_powder, :calc_def_mod_metal_powder)
     define_item_dfs_modifier(:metal_powder, :calc_def_mod_metal_powder)

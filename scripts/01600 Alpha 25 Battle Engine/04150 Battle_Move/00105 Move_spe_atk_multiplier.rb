@@ -94,6 +94,15 @@ module Battle
       return 1
     end
 
+    # Flare Boost ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_am_flare_boost(user, target)
+      return 1.5 if user.burn?
+      return 1
+    end
+
     # Choice Band item multiplier
     # @param user [PFM::PokemonBattler]
     # @param target [PFM::PokemonBattler]
@@ -167,6 +176,7 @@ module Battle
     define_ability_ats_modifier(:solar_power, :calc_am_flower_gift)
     define_ability_ats_modifier(:plus, :calc_am_plus_minus)
     define_ability_ats_modifier(:minus, :calc_am_plus_minus)
+    define_ability_ats_modifier(:flare_boost, :calc_am_flare_boost)
     define_item_atk_modifier(:choice_band, :calc_im_choice_band)
     define_item_atk_modifier(:thick_club, :calc_im_thick_club)
     define_item_ats_modifier(:choice_specs, :calc_im_choice_band)

@@ -108,6 +108,16 @@ module Battle
       sound_attack? ? 1.3 : 1
     end
 
+    # Defeatist multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_defeatist(user, target)
+      return 0.5 if user.hp < user.max_hp / 2
+
+      return 1
+    end
+
     class << self
       # Define a user ability that powers a type of move in bad condition (1/3 of hp remaining)
       # @param db_symbol [Symbol] db_symbol of the ability
@@ -142,5 +152,6 @@ module Battle
     define_boosting_ability(:punk_rock, :calc_ua_punk_rock)
     define_boosting_ability(:tough_claws, :calc_ua_tough_claws)
     define_boosting_ability(:transitor, :calc_ua_transitor)
+    define_boosting_ability(:defeatist, :calc_ua_defeatist)
   end
 end

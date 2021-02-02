@@ -53,8 +53,18 @@ module Battle
     # @param user [PFM::PokemonBattler]
     # @param target [PFM::PokemonBattler]
     # @return [Numeric]
-    def calc_def_ice_scales
+    def calc_fa_ice_scales
       return VAL_0_5 if special? 
+      return 1
+    end
+
+    # Multiscale/Shadow Shield multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_fa_max_hp(user, target)
+      return VAL_0_5 if user.hp = user.max_hp
+
       return 1
     end
 
@@ -73,5 +83,7 @@ module Battle
     define_depleting_ability(:punk_rock, :calc_fa_punk_rock)
     define_depleting_ability(:fluffy, :calc_fa_fluffy)
     define_depleting_ability(:ice_scales, :calc_fa_ice_scales)
+    define_depleting_ability(:multiscale, :calc_fa_max_hp)
+    define_depleting_ability(:shadow_shield, :calc_fa_max_hp)
   end
 end
