@@ -15,7 +15,7 @@ module Battle
       # Case of a ability that fail
       ABILITY_BLOCKING_ABILITIES = {
         mummy: %i[mummy],
-        wandering_spirit: %i[wandering_spirit]
+        wandering_spirit: %i[wandering_spirit],
         trace: %i[flower_gift forecast illusion imposter multitype stance_change trace zen_mode]
       }
       # Case of a move that fail if the launcher has this ability
@@ -74,28 +74,28 @@ module Battle
     end
 
     # Cannot overwrite specific abilities
-    AbilityChangeHandler.register_ability_prevention_hook('PSDK Ability Prev: Cannot OW Target Ability') do |handler, target, ability_symbol, launcher, skill|
+    AbilityChangeHandler.register_ability_prevention_hook('PSDK Ability Prev: Cannot OW Target Ability') do |handler, target, _, _, _|
       next unless AbilityChangeHandler::CANT_OVERWRITE_ABILITIES.include?(target.ability_db_symbol)
 
       next handler.prevent_change # silent
     end
 
     # Cannot overwrite specific abilities with a skill
-    AbilityChangeHandler.register_ability_prevention_hook('PSDK Ability Prev: Cannot OW Target Ability With Skill') do |handler, target, ability_symbol, launcher, skill|
+    AbilityChangeHandler.register_ability_prevention_hook('PSDK Ability Prev: Cannot OW Target Ability With Skill') do |handler, target, _, launcher, skill|
       next unless skill && launcher != target && AbilityChangeHandler::SKILL_BLOCKING_ABILITIES[skill.db_symbol]&.include?(target.ability_db_symbol)
 
       next handler.prevent_change # silent
     end
 
     # Cannot overwrite specific abilities with an ability
-    AbilityChangeHandler.register_ability_prevention_hook('PSDK Ability Prev: Cannot OW Target Ability With Ability') do |handler, target, ability_symbol, launcher, skill|
+    AbilityChangeHandler.register_ability_prevention_hook('PSDK Ability Prev: Cannot OW Target Ability With Ability') do |handler, target, ability_symbol, _, skill|
       next unless AbilityChangeHandler::ABILITY_BLOCKING_ABILITIES[ability_symbol]&.include?(target.ability_db_symbol) && !skill
 
       next handler.prevent_change # silent
     end
 
     # Cannot overwrite specific abilities with a skill
-    AbilityChangeHandler.register_ability_prevention_hook('PSDK Ability Prev: Cannot OW User Ability With Skill') do |handler, target, ability_symbol, launcher, skill|
+    AbilityChangeHandler.register_ability_prevention_hook('PSDK Ability Prev: Cannot OW User Ability With Skill') do |handler, target, _, launcher, skill|
       next unless skill && launcher == target && AbilityChangeHandler::SKILL_BLOCKING_ABILITIES[skill.db_symbol]&.include?(launcher.ability_db_symbol)
 
       next handler.prevent_change # silent
