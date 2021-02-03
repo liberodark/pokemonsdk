@@ -843,9 +843,9 @@ class Pokemon_Effect
     return @imprison != nil
   end
 
-  def apply_imprison_effect(launcher,common)
-    @imprison=common
-    @imprison_launcher=launcher
+  def apply_imprison_effect(launcher, common)
+    @imprison = common
+    @imprison_launcher = launcher
   end
 
   def get_imprison_launcher
@@ -853,9 +853,8 @@ class Pokemon_Effect
   end
 
   def is_skill_imprisonned?(skill)
-    i = nil
     @imprison.each do |i|
-      return true if skill.id == i.id
+      return true if skill.id == i&.id
     end
     return false
   end

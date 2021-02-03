@@ -106,7 +106,7 @@ module BattleEngine
         break if common
       end
       if common || !::GameData::Flag_4G
-        _mp([:apply_effect, target, :apply_imprison_effect, launcher.skills_set])
+        _mp([:apply_effect, target, :apply_imprison_effect, launcher, launcher.skills_set])
         _msgp(19, 586, launcher)
         return
       end
