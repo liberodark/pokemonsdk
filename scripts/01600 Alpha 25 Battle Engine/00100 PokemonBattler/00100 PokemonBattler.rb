@@ -117,7 +117,8 @@ module PFM
     # Is the Pokemon able to fight ?
     # @return [Boolean]
     def can_fight?
-      @position && !dead?
+      log_error("The pokemon #{self} has undefined position, it should be -1 if not in battle") unless @position
+      return @position && @position >= 0 && !dead?
     end
 
     # Is the pokemon able to use a move ?

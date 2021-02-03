@@ -116,7 +116,7 @@ module Battle
         scene_update_proc { exp_ui.update } until exp_ui.done?
         exp_ui.dispose
       end
-      exp_data.each_key { |pokemon| refresh_info_bar(pokemon) if @scene.battle_info.vs_type > pokemon.position }
+      exp_data.each_key { |pokemon| refresh_info_bar(pokemon) if pokemon.can_fight? }
     end
   end
 end

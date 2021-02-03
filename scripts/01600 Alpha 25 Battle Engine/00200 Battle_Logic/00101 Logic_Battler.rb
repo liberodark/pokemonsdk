@@ -6,6 +6,7 @@ module Battle
     # @return [PFM::PokemonBattler, nil]
     def battler(bank, position)
       return nil if position < 0
+
       return @battlers.dig(bank, position)
     end
 
@@ -32,15 +33,12 @@ module Battle
     def foes_of(pokemon, check_adjacent = false)
       return [] if pokemon.position.nil? || pokemon.position >= @battle_info.vs_type
 
-      vs_type = @battle_info.vs_type
       position = pokemon.position
       return @battlers.flat_map.with_index do |battler_bank, bank|
         next nil.to_a if bank == pokemon.bank
 
         next battler_bank.select.with_index do |foe, foe_position|
-          next false unless foe&.position
-
-          next foe_position < vs_type && (!check_adjacent || (foe_position - position).abs <= 1)
+          foe.can_fight? && (!check_adjacent || (foe_position - position).abs <= 1)
         end
       end
     end
@@ -59,12 +57,9 @@ module Battle
     def allies_of(pokemon, check_adjacent = false)
       return [] if pokemon.position.nil? || pokemon.position >= @battle_info.vs_type
 
-      vs_type = @battle_info.vs_type
       position = pokemon.position
       return @battlers[pokemon.bank].select.with_index do |ally, ally_position|
-        next false unless ally&.position
-
-        next ally_position != position && ally_position < vs_type && (!check_adjacent || (ally_position - position).abs <= 1)
+        next ally_position != position && ally.can_fight? && (!check_adjacent || (ally_position - position).abs <= 1)
       end
     end
 
@@ -72,8 +67,7 @@ module Battle
     # @param bank [Integer]
     # @return [Array<PFM::PokemonBattler>]
     def alive_battlers(bank)
-      max_pos = @battle_info.vs_type - 1
-      return @battlers[bank].select { |battler| battler&.position&.between?(0, max_pos) && battler.alive? }
+      return @battlers[bank].select(&:can_fight?)
     end
 
     # Return all alive battlers
@@ -107,14 +101,9 @@ module Battle
     # Update the turn count of all alive battler
     def update_battler_turn_count
       $game_temp.battle_turn += 1
-      $game_temp.vs_type.times do |position|
-        bank_count.times do |bank|
-          battler = self.battler(bank, position)
-          if battler&.alive?
-            battler.turn_count += 1
-            battler.last_battle_turn = $game_temp.battle_turn
-          end
-        end
+      all_alive_battlers.each do |pokemon|
+        pokemon.turn_count += 1
+        pokemon.last_battle_turn = $game_temp.battle_turn
       end
     end
 
@@ -165,6 +154,7 @@ module Battle
       with.position, who.position = who.position, with.position
       # Ensure the newly comming pokemon gets the right battle turn
       with.last_battle_turn = $game_temp.battle_turn
+      with.init_states
     end
 
     # Iterate through all battlers

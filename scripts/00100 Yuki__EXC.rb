@@ -133,5 +133,6 @@ def reload_battle
   $pokemon_party.expand_global_var
   $pokemon_party.load_parameters
   $game_map.setup($game_map.map_id)
-  $scene.call_scene(Battle::Scene, battle_info)
+  Graphics.freeze
+  $scene = Battle::Scene.new(battle_info)
 end

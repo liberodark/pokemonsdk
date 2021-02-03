@@ -53,15 +53,11 @@ module Battle
     # @return [Numeric]
     def calc_mod1_tvt(target)
       return 1 if one_target? || $game_temp.vs_type == 1
-      count = 0
+
       if self.target == :all_foe
-        $game_temp.vs_type.times do |i|
-          count += 1 if logic.battler(target.bank, i)&.can_fight?
-        end
+        count = logic.allies_of(target).size + 1
       else
-        (target.position - 1).upto(target.position + 1) do |i|
-          count += 1 if logic.battler(target.bank, i)&.can_fight?
-        end
+        count = logic.adjacent_allies_of(target).size + 1
       end
       return count > 1 ? 0.75 : 1
     end

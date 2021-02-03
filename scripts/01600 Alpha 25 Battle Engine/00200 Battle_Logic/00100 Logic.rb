@@ -42,6 +42,7 @@ module Battle
       # @type [Array<Actions::Base>]
       @actions = []
       @bags = @battle_info.bags
+      # @type [Array<Array<PFM::PokemonBattler>>]
       @battlers = []
       @terrain_effects = Effects::EffectsHandler.new
       @bank_effects = Array.new(@bags.size) { Effects::EffectsHandler.new }
@@ -74,12 +75,8 @@ module Battle
     # @return [Boolean]
     def can_battle_continue?
       return false if @battle_result >= 0
-      banks_that_can_fight = []
-      @battlers.each_with_index do |battler_bank, bank|
-        battler_bank.each do |battler|
-          break(banks_that_can_fight << bank) if battler&.can_fight?
-        end
-      end
+
+      banks_that_can_fight = @battlers.map.with_index { |battlers, bank| battlers.any?(&:alive?) ? bank : nil }.compact
       # It's a victory if the player still have a Pokemon on its bank
       if banks_that_can_fight.size <= 1
         @battle_result = banks_that_can_fight.include?(0) ? 0 : 2
