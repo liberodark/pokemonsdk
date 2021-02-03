@@ -7,8 +7,12 @@ module PFM
       cute_charm: :rate_cute_charm,
       magnet_pull: :rate_magnet_pull,
       compound_eyes: :rate_compound_eyes,
+      super_luck: :rate_compound_eyes,
       static: :rate_static,
-      synchronize: :rate_synchronize
+      lightning_rod: :rate_static,
+      flash_fire: :rate_flash_fire,
+      synchronize: :rate_synchronize,
+      storm_drain: :rate_storm_drain
     }
 
     private
@@ -70,6 +74,22 @@ module PFM
     # @return [Float] new rate or 1
     def rate_static(pkmn, main_pokemon)
       return pkmn.type_electric? ? 1.5 : 1
+    end
+
+    # Get rate for Storm Drain case
+    # @param pkmn [PFM::Pokemon] pokemon to select
+    # @param main_pokemon [PFM::Pokemon] pokemon that caused the rate verification
+    # @return [Float] new rate or 1
+    def rate_storm_drain(pkmn, main_pokemon)
+      return pkmn.type_water? ? 1.5 : 1
+    end
+
+    # Get rate for Flash Fire case
+    # @param pkmn [PFM::Pokemon] pokemon to select
+    # @param main_pokemon [PFM::Pokemon] pokemon that caused the rate verification
+    # @return [Float] new rate or 1
+    def rate_flash_fire(pkmn, main_pokemon)
+      return pkmn.type_fire? ? 1.5 : 1
     end
 
     # Get rate for Synchronize case
