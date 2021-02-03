@@ -218,7 +218,7 @@ class Game_Character
   def screen_z(_height = 0)
     return 999 if @always_on_top
     z = (@real_y - $game_map.display_y + 3) / 4 + 32 * @z
-    return z + $game_map.priorities[@tile_id] * 32 if @tile_id > 0
+    return z + $game_map.priorities[@tile_id].to_i * 32 if @tile_id > 0
     return z + 31
     # return z + ((height > 64) ? 31 : 0)
   end
