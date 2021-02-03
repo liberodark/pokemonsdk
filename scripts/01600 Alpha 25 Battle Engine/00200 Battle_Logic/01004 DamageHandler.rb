@@ -518,6 +518,18 @@ module Battle
       handler.logic.ability_change_handler.change_ability(launcher, :mummy)
     end
 
+    # Wandering Spirit
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Wandering Spirit') do |handler, _, target, launcher, skill|
+      next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.has_ability?(:wandering_spirit)
+      next unless handler.logic.ability_change_handler.can_change_ability?(launcher, :wandering_spirit)
+
+      handler.scene.visual.show_ability(target)
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 405, launcher, PFM::Text::ABILITY[1] => target.ability_name))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 405, target, PFM::Text::ABILITY[1] => launcher.ability_name))
+      handler.logic.ability_change_handler.change_ability(launcher, :wandering_spirit)
+      handler.logic.ability_change_handler.change_ability(target, PFM::Text::ABILITY[1] => target.ability_name)
+    end
+
     # Color Change
     DamageHandler.register_post_damage_hook('PSDK Post damage: Color Change') do |handler, _, target, launcher, skill|
       next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.has_ability?(:color_change)

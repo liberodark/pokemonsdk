@@ -15,6 +15,7 @@ module Battle
       # Case of a ability that fail
       ABILITY_BLOCKING_ABILITIES = {
         mummy: %i[mummy],
+        wandering_spirit: %i[wandering_spirit]
         trace: %i[flower_gift forecast illusion imposter multitype stance_change trace zen_mode]
       }
       # Case of a move that fail if the launcher has this ability
