@@ -347,4 +347,26 @@ module Battle
     # TODO: Add gen7 text of Psychic Terrain
     next true
   end
+
+  # Queenly Majesty effect
+  Move.register_move_prevention_target_hook('PSDK Move prev target: Queenly Majesty') do |user, target, move|
+    protector = move.logic.foes_of(user).find { |pokemon| pokemon.has_ability?(:queenly_majesty) }
+    next false unless protector && move.relative_priority >= 1 && move.blocable?
+
+    move.scene.visual.show_ability(protector)
+    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, "[VAR MOVE(0001)]" => move.name))
+
+    next true
+  end
+
+  # Dazzling effect
+  Move.register_move_prevention_target_hook('PSDK Move prev target: Dazzling') do |user, target, move|
+    protector = move.logic.foes_of(user).find { |pokemon| pokemon.has_ability?(:dazzling) }
+    next false unless protector && move.relative_priority >= 1 && move.blocable?
+
+    move.scene.visual.show_ability(protector)
+    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, "[VAR MOVE(0001)]" => move.name))
+
+    next true
+  end
 end
