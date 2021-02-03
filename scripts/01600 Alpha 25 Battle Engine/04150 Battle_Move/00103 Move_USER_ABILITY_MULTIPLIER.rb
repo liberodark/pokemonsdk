@@ -118,6 +118,29 @@ module Battle
       return 1
     end
 
+    # Steely Spirit ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_steely_spirit(user, target)
+      return 1.5 if type_steel? && user.has_ability?(:steely_spirit)
+      # Try all the adjacent partner
+      return 1.5 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(:steely_spirit) }
+      # No partner with the right ability => 1
+      return 1
+    end    
+
+    # Power Spot ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_power_spot(user, target)
+      # Try all the adjacent partner
+      return 1.2 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(:power_spot) }
+      # No partner with the right ability => 1
+      return 1
+    end 
+
     class << self
       # Define a user ability that powers a type of move in bad condition (1/3 of hp remaining)
       # @param db_symbol [Symbol] db_symbol of the ability
@@ -153,5 +176,7 @@ module Battle
     define_boosting_ability(:tough_claws, :calc_ua_tough_claws)
     define_boosting_ability(:transitor, :calc_ua_transitor)
     define_boosting_ability(:defeatist, :calc_ua_defeatist)
+    define_boosting_ability(:steely_spirit, :calc_ua_steely_spirit)
+    define_boosting_ability(:power_spot, :calc_ua_power_spot)
   end
 end

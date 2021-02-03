@@ -68,6 +68,16 @@ module Battle
       return 1
     end
 
+    # Friend Guard ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_fa_friend_guard(user, target)
+      return 0.75 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(:friend_guard) }
+
+      return 1
+    end
+
     class << self
       # Define an ability of the foe that deplete the move power
       # @param db_symbol [Symbol] db_symbol of the ability
@@ -85,5 +95,6 @@ module Battle
     define_depleting_ability(:ice_scales, :calc_fa_ice_scales)
     define_depleting_ability(:multiscale, :calc_fa_max_hp)
     define_depleting_ability(:shadow_shield, :calc_fa_max_hp)
+    define_depleting_ability(:friend_guard, :calc_fa_friend_guard)
   end
 end

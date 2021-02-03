@@ -86,13 +86,21 @@ module Battle
       # The partner should have the other ability
       partner_expectation = user.has_ability?(:plus) ? :minus : :plus
       # Try all the adjacent partner
-      (user.position - 1).step(user.position + 1, 2) do |position|
-        partner = logic.battler(user.bank, position)
-        return 1.5 if partner&.has_ability?(partner_expectation)
-      end
+      return 1.5 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(partner_expectation) }
       # No partner with the right ability => 1
       return 1
-    end
+    end    
+
+    # Battery ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_am_battery(user, target)
+      # Try all the adjacent partner
+        return 1.3 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(:battery) }
+      # No partner with the right ability => 1
+      return 1
+    end    
 
     # Flare Boost ability multiplier
     # @param user [PFM::PokemonBattler]
@@ -177,6 +185,7 @@ module Battle
     define_ability_ats_modifier(:plus, :calc_am_plus_minus)
     define_ability_ats_modifier(:minus, :calc_am_plus_minus)
     define_ability_ats_modifier(:flare_boost, :calc_am_flare_boost)
+    define_ability_ats_modifier(:battery, :calc_am_battery)
     define_item_atk_modifier(:choice_band, :calc_im_choice_band)
     define_item_atk_modifier(:thick_club, :calc_im_thick_club)
     define_item_ats_modifier(:choice_specs, :calc_im_choice_band)
