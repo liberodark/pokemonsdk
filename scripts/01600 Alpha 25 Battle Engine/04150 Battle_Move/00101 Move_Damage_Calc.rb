@@ -48,7 +48,7 @@ module Battle
       damage = (damage * calc_type_n_multiplier(target, :type2, types)).floor
       log_data("damage = #{damage} # after type2 (#{GameData::Type[target.type2].name})")
       damage = (damage * calc_type_n_multiplier(target, :type3, types)).floor
-      log_data("damage = #{damage} # after type2 (#{GameData::Type[target.type2].name})")
+      log_data("damage = #{damage} # after type3 (#{GameData::Type[target.type3].name})")
       log_data("damage = #{(damage * calc_mod3(user, target)).floor} # after mod3") if debug?
       return (damage * calc_mod3(user, target)).floor
     end
