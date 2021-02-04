@@ -670,5 +670,49 @@ module Battle
         handler.logic.stat_change_handler.stat_change_with_process(:ats, 1, launcher)
       end
     end
+
+    # Stamina
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Stamina') do |handler, _, target, launcher, skill|
+      next unless skill && launcher && launcher != target && target.has_ability?(:stamina)
+      next unless launcher.can_be_lowered_or_canceled?
+
+      handler.scene.visual.show_ability(target)
+      handler.logic.stat_change_handler.stat_change_with_process(:dfe, 1, target)
+    end
+
+    # Justified
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Justified') do |handler, _, target, launcher, skill|
+      next unless skill&.type_dark? && launcher && launcher != target && target.has_ability?(:justified)
+      next unless launcher.can_be_lowered_or_canceled?
+
+      handler.scene.visual.show_ability(target)
+      handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, target)
+    end
+
+    # Sand Spit
+    DamageHandler.register_post_damage_hook('PSDK Post Damage: Sand Spit') do |handler, _, target, launcher, skill|
+      next unless skill && launcher && launcher != target && target.has_ability?(:sand_spit)
+      weather_handler = handler.logic.weather_change_handler
+      next unless weather_handler.weather_appliable?(:sandstorm)
+
+      nb_turn = target.hold_item?(:smooth_rock) ? 8 : 5
+      weather_handler.weather_change(:sandstorm, nb_turn)
+      handler.scene.visual.show_ability(target)
+      handler.scene.visual.show_rmxp_animation(target, 494)
+    end
+
+    # Cotton Down
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Cotton Down') do |handler, _, target, launcher, skill| 
+    next unless skill && launcher && launcher != target && target.has_ability?(:cotton_down)
+
+      handler.logic.allies_of(target).each do |ally|
+        handler.scene.visual.show_ability(target)
+        handler.logic.stat_change_handler.stat_change_with_process(:spd, -1, ally)
+      end
+
+      handler.logic.foes_of(target).each do |foe|
+        handler.logic.stat_change_handler.stat_change_with_process(:spd, -1, foe)
+      end
+    end
   end
 end

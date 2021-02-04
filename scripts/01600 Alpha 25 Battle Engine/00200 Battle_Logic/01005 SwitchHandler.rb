@@ -263,7 +263,7 @@ module Battle
       weather_handler = handler.logic.weather_change_handler
       next unless weather_handler.weather_appliable?(:sunny)
 
-      nb_turn = with.hold_item?(:damp_rock) ? 8 : 5
+      nb_turn = with.hold_item?(:heat_rock) ? 8 : 5
       weather_handler.weather_change(:sunny, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 492)
@@ -276,7 +276,7 @@ module Battle
       weather_handler = handler.logic.weather_change_handler
       next unless weather_handler.weather_appliable?(:sandstorm)
 
-      nb_turn = with.hold_item?(:damp_rock) ? 8 : 5
+      nb_turn = with.hold_item?(:smooth_rock) ? 8 : 5
       weather_handler.weather_change(:sandstorm, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 494)
@@ -289,7 +289,7 @@ module Battle
       weather_handler = handler.logic.weather_change_handler
       next unless weather_handler.weather_appliable?(:hail)
 
-      nb_turn = with.hold_item?(:damp_rock) ? 8 : 5
+      nb_turn = with.hold_item?(:icy_rock) ? 8 : 5
       weather_handler.weather_change(:hail, nb_turn)
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_rmxp_animation(with, 494)
