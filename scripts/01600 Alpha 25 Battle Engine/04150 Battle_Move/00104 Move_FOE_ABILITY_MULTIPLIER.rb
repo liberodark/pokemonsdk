@@ -63,7 +63,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Numeric]
     def calc_fa_max_hp(user, target)
-      return VAL_0_5 if user.hp = user.max_hp
+      return VAL_0_5 if user.hp == user.max_hp
 
       return 1
     end
