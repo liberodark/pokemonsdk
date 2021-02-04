@@ -10,12 +10,14 @@ module Battle
       # @note Thing that prevents the damage from being applied should be defined using :damage_prevention Hook.
       # @return [Integer, false]
       def damage_appliable(hp, target, launcher = nil, skill = nil)
+        log_data("# damage_appliable(#{hp}, #{target}, #{launcher}, #{skill})")
         return false if target.hp <= 0
 
         reset_prevention_reason
         exec_hooks(DamageHandler, :damage_prevention, binding)
         return hp
       rescue Hooks::ForceReturn => e
+        log_data("# FR: damage_appliable #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
       end
 
@@ -26,10 +28,12 @@ module Battle
       # @param skill [Battle::Move, nil] Potential move used
       # @param messages [Proc] messages shown right before the post processing
       def damage_change(hp, target, launcher = nil, skill = nil, &messages)
+        log_data("# damage_change(#{hp}, #{target}, #{launcher}, #{skill})")
         @scene.visual.show_hp_animations([target], [-hp], [skill&.effectiveness], &messages)
         exec_hooks(DamageHandler, :post_damage, binding) if target.hp > 0
         exec_hooks(DamageHandler, :post_damage_death, binding) if target.hp <= 0
       rescue Hooks::ForceReturn => e
+        log_data("# FR: damage_change #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
       ensure
         @scene.visual.refresh_info_bar(target)

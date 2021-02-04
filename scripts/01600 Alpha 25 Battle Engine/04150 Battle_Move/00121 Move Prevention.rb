@@ -8,11 +8,13 @@ module Battle
     # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
     # @return [Boolean] if the procedure can continue
     def move_usable_by_user(user, targets)
+      log_data("# move_usable_by_user(#{user}, #{targets})")
       PFM::Text.set_variable(PFM::Text::PKNICK[0], user.given_name)
       PFM::Text.set_variable(PFM::Text::MOVE[1], name)
       exec_hooks(Move, :move_prevention_user, binding)
       return true
     rescue Hooks::ForceReturn => e
+      log_data("# FR: move_usable_by_user #{e.data} from #{e.hook_name} (#{e.reason})")
       return e.data
     ensure
       PFM::Text.reset_variables
@@ -34,6 +36,8 @@ module Battle
       exec_hooks(Move, :move_disabled_check, binding)
       return nil
     rescue Hooks::ForceReturn => e
+      log_data("# disable_reason(#{user})")
+      log_data("# FR: disable_reason #{e.data} from #{e.hook_name} (#{e.reason})")
       return e.data
     end
 
@@ -43,9 +47,11 @@ module Battle
     # @note Thing that prevents the move from being used should be defined by :move_prevention_target Hook.
     # @return [Boolean] if the target evade the move (and is not selected)
     def move_blocked_by_target?(user, target)
+      log_data("# move_blocked_by_target?(#{user}, #{target})")
       exec_hooks(Move, :move_prevention_target, binding) if user != target
       return false
     rescue Hooks::ForceReturn => e
+      log_data("# FR: move_blocked_by_target? #{e.data} from #{e.hook_name} (#{e.reason})")
       return e.data
     end
 

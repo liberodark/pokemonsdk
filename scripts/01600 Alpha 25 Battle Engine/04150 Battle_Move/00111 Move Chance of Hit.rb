@@ -16,15 +16,21 @@ module Battle
     # @param target [PFM::PokemonBattler] target of the move
     # @return [Float]
     def chance_of_hit(user, target)
-      # TODO: lock-on return 100 if target is locked by user
-      return 100 *
-             accuracy_mod(user) *
-             evasion_mod(target) *
-             send(ACCURACY_ITEM_MULTIPLIER[user.battle_item_db_symbol], user, target) *
-             send(EVASION_ITEM_MULTIPLIER[target.battle_item_db_symbol], user, target) *
-             send(ACCURACY_ABILITY_MULTIPLIER[user.battle_ability_db_symbol], user, target) *
-             send(EVASION_ABILITY_MULTIPLIER[target.battle_ability_db_symbol], user, target) *
-             (logic.terrain_effects.has?(:gravity) ? GRAVITY_MODIFIER : 1)
+      log_data("# chance_of_hit(#{user}, #{target}) for #{db_symbol}")
+      return 100 if target.effects.get(:lock_on)&.user == user
+
+      factors = [
+        accuracy_mod(user),
+        evasion_mod(target),
+        send(ACCURACY_ITEM_MULTIPLIER[user.battle_item_db_symbol], user, target),
+        send(EVASION_ITEM_MULTIPLIER[target.battle_item_db_symbol], user, target),
+        send(ACCURACY_ABILITY_MULTIPLIER[user.battle_ability_db_symbol], user, target),
+        send(EVASION_ABILITY_MULTIPLIER[target.battle_ability_db_symbol], user, target),
+        (logic.terrain_effects.has?(:gravity) ? GRAVITY_MODIFIER : 1)
+      ]
+      log_data("factors = [#{factors.join(', ')}] # acc, eva, aci, evi, aca, evaa, gr") if debug?
+      log_data("result = #{factors.reduce(100, :*)}") if debug?
+      return factors.reduce(100, :*)
     end
 
     private

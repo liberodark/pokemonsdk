@@ -9,6 +9,7 @@ module Battle
       # @param skill [Battle::Move, nil] potential move
       # @return [Boolean] if it can switch or not
       def can_switch?(pokemon, skill = nil)
+        log_data("# can_switch?(#{pokemon}, #{skill})")
         return false if pokemon.hp <= 0
 
         reset_prevention_reason
@@ -16,7 +17,16 @@ module Battle
         exec_hooks(SwitchHandler, :switch_prevention, binding)
         return true
       rescue Hooks::ForceReturn => e
+        log_data("# FR: can_switch? #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
+      end
+
+      # Execute the events before the pokemon switch out
+      # @param who [PFM::PokemonBattler] Pokemon who is switched out
+      # @param with [PFM::PokemonBattler, nil] Pokemon who is switched in
+      # @note In the event we're starting the battle who & with should be identic, this help to process effect like Intimidate
+      def execute_pre_switch_events(who, with)
+        exec_hooks(SwitchHandler, :pre_switch_event, binding)
       end
 
       # Perform the switch between two Pokemon
@@ -63,6 +73,21 @@ module Battle
               hook_binding.local_variable_get(:skill)
             )
             force_return(false) if result == :prevent
+          end
+        end
+
+        # Register a pre switch event
+        # @param reason [String] reason of the pre_switch_event hook
+        # @yieldparam handler [SwitchHandler]
+        # @yieldparam who [PFM::PokemonBattler] Pokemon that is switched out
+        # @yieldparam with [PFM::PokemonBattler] Pokemon that is switched in
+        def register_pre_switch_event_hook(reason)
+          Hooks.register(SwitchHandler, :pre_switch_event, reason) do |hook_binding|
+            yield(
+              self,
+              hook_binding.local_variable_get(:who),
+              hook_binding.local_variable_get(:with)
+            )
           end
         end
 

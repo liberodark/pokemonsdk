@@ -28,12 +28,14 @@ module Battle
       # @param pkm_ally [PFM::PokemonBattler]
       # @param ball [GameData::BallItem] db_symbol of the used ball
       def try_to_catch_pokemon(target, pkm_ally, ball)
+        log_data("# FR: try_to_catch_pokemon(#{target}, #{pkm_ally}, #{ball})")
         @bounces = 0
         exec_hooks(Battle::Logic::CatchHandler, :ball_blocked, binding)
         catching_procedure(target, pkm_ally, ball)
         show_message_and_animation(target, ball, @bounces, caught?)
         return caught?
       rescue Hooks::ForceReturn => e
+        log_data("# FR: try_to_catch_pokemon #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
       end
 

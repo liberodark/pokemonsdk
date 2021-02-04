@@ -52,6 +52,8 @@ module Battle
         exec_hooks(StatChangeHandler, :stat_increase_prevention, binding)
         return true
       rescue Hooks::ForceReturn => e
+        log_data("# stat = #{stat}; target = #{target}; launcher = #{launcher}; skill = #{skill}")
+        log_data("# FR: stat_increasable? #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
       end
 
@@ -69,6 +71,8 @@ module Battle
         exec_hooks(StatChangeHandler, :stat_decrease_prevention, binding)
         return true
       rescue Hooks::ForceReturn => e
+        log_data("# stat = #{stat}; target = #{target}; launcher = #{launcher}; skill = #{skill}")
+        log_data("# FR: stat_decreasable? #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
       end
 
@@ -79,10 +83,13 @@ module Battle
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
       def stat_change(stat, power, target, launcher = nil, skill = nil)
+        log_data("# stat_change(#{stat}, #{power}, #{target}, #{launcher}, #{skill})")
         exec_hooks(StatChangeHandler, :stat_change, binding)
         amount = target.change_stat(STAT_INDEX[stat], power)
         show_stat_change_text_and_animation(stat, power, amount, target)
+        exec_hooks(StatChangeHandler, :stat_change_post_event, binding)
       rescue Hooks::ForceReturn => e
+        log_data("# FR: stat_change #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
       end
 
@@ -169,6 +176,27 @@ module Battle
               hook_binding.local_variable_get(:skill)
             )
             force_return(false) if result == :prevent
+          end
+        end
+
+        # Function that register a stat_change_post_event hook
+        # @param reason [String] reason of the stat_change_post_event registration
+        # @yieldparam handler [StatChangeHandler]
+        # @yieldparam stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva
+        # @yieldparam power [Integer] power of the stat change
+        # @yieldparam target [PFM::PokemonBattler]
+        # @yieldparam launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @yieldparam skill [Battle::Move, nil] Potential move used
+        def register_stat_change_post_event_hook(reason)
+          Hooks.register(StatChangeHandler, :stat_change_post_event, reason) do |hook_binding|
+            yield(
+              self,
+              hook_binding.local_variable_get(:stat),
+              hook_binding.local_variable_get(:power),
+              hook_binding.local_variable_get(:target),
+              hook_binding.local_variable_get(:launcher),
+              hook_binding.local_variable_get(:skill)
+            )
           end
         end
 

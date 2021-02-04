@@ -10,27 +10,46 @@ module Battle
     # @param rng [Random] random generator used for the move
     # @return [Integer]
     def damages(user, target, rng)
+      log_data("# damages(#{user}, #{target}, Random.new) for #{db_symbol}")
+      log_data("# user_item_multiplier reason : #{user.battle_item_db_symbol}")
+      log_data("# foe_item_multiplier reason : #{target.battle_item_db_symbol}")
+      log_data("# user_ability_multiplier reason : #{user.battle_ability_db_symbol}")
+      log_data("# foe_ability_multiplier reason : #{target.battle_ability_db_symbol}")
       @critical = logic.calc_critical_hit(user, target, critical_rate)
+      log_data("@critical = #{@critical} # critical_rate = #{critical_rate}")
       # Reset the effectiveness
       @effectiveness = 1
       # (((((((Level * 2 / 5) + 2) * BasePower * [Sp]Atk / 50) / [Sp]Def) * Mod1) + 2) *
       # CH * Mod2 * R / 100) * STAB * Type1 * Type2 * Mod3)
       damage = user.level * 2 / 5 + 2
+      log_data("damage = #{damage} # #{user.level} * 2 / 5 + 2")
       damage = (damage * calc_base_power(user, target)).floor
+      log_data("damage = #{damage} # after calc_base_power")
       damage = (damage * calc_sp_atk(user, target)).floor
       damage /= 50
+      log_data("damage = #{damage} # after calc_sp_atk / 50")
       damage = (damage / calc_sp_def(user, target)).floor
+      log_data("damage = #{damage} # after calc_sp_def")
       damage = (damage * calc_mod1(user, target)).floor
+      log_data("damage = #{damage} # after calc_mod1")
       damage += 2
       damage = (damage * calc_ch(user)).floor
       damage = (damage * calc_mod2(user, target)).floor
+      log_data("damage = #{damage} # after calc_mod2 & calc_ch")
       damage *= rng.rand(calc_r_range)
       damage /= 100
+      log_data("damage = #{damage} # after rng")
       damage = (damage * calc_stab(user)).floor
+      log_data("damage = #{damage} # after stab")
       types = definitive_types(user, target)
+      log_data("types = #{types} # ie: #{types.map do |t| GameData::Type[t].name end.join(', ')}")
       damage = (damage * calc_type_n_multiplier(target, :type1, types)).floor
+      log_data("damage = #{damage} # after type1 (#{GameData::Type[target.type1].name})")
       damage = (damage * calc_type_n_multiplier(target, :type2, types)).floor
+      log_data("damage = #{damage} # after type2 (#{GameData::Type[target.type2].name})")
       damage = (damage * calc_type_n_multiplier(target, :type3, types)).floor
+      log_data("damage = #{damage} # after type2 (#{GameData::Type[target.type2].name})")
+      log_data("damage = #{(damage * calc_mod3(user, target)).floor} # after mod3") if debug?
       return (damage * calc_mod3(user, target)).floor
     end
 
@@ -157,6 +176,8 @@ module Battle
       exec_hooks(Move, :single_type_multiplier_overwrite, binding)
       return GameData::Type[target_type].hit_by(type)
     rescue Hooks::ForceReturn => e
+      log_data("# calc_single_type_multiplier(#{target}, #{target_type}, #{type})")
+      log_data("# FR: calc_single_type_multiplier #{e.data} from #{e.hook_name} (#{e.reason})")
       return e.data
     end
 

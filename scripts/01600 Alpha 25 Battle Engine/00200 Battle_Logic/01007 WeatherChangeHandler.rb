@@ -25,11 +25,13 @@ module Battle
       # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
       # @return [Boolean]
       def weather_appliable?(weather_type)
+        log_data("# weather_appliable?(#{weather_type})")
         reset_prevention_reason
         last_weather = WEATHER_SYM_TO_ID.key($env.current_weather) || :none
         exec_hooks(WeatherChangeHandler, :weather_prevention, binding)
         return true
       rescue Hooks::ForceReturn => e
+        log_data("# FR: weather_appliable? #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
       end
 
@@ -37,11 +39,13 @@ module Battle
       # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
       # @param nb_turn [Integer, nil] Number of turn, use nil for Infinity
       def weather_change(weather_type, nb_turn)
+        log_data("# weather_change(#{weather_type}, #{nb_turn})")
         last_weather = WEATHER_SYM_TO_ID.key($env.current_weather) || :none
         $env.apply_weather(WEATHER_SYM_TO_ID[weather_type] || 0, nb_turn)
         show_weather_message(last_weather, weather_type)
         exec_hooks(WeatherChangeHandler, :post_weather_change, binding)
       rescue Hooks::ForceReturn => e
+        log_data("# FR: weather_change #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
       end
 

@@ -7,6 +7,8 @@ module PFM
       exec_hooks(PokemonBattler, :force_flying, binding)
       return true
     rescue Hooks::ForceReturn => e
+      log_data("# pokemon = #{self}")
+      log_data("# FR: grounded? #{e.data} from #{e.hook_name} (#{e.reason})")
       return e.data
     end
 

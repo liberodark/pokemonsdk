@@ -9,6 +9,7 @@ module Battle
       # @note flee_block hooks are called to test if the flee is blocked for other reason than switch blocked
       # @return [Symbol] if success :success, if failure :failure, if blocked (trainer battle) :blocked
       def attempt(index)
+        log_data("# flee#attempt(#{index})")
         exec_hooks(FleeHandler, :flee_block, binding)
         exec_hooks(FleeHandler, :flee_passthrough, binding)
         switch_handler = @logic.switch_handler
@@ -22,6 +23,7 @@ module Battle
         @scene.display_message_and_wait(parse_text(18, result == :success ? 75 : 76))
         return result
       rescue Hooks::ForceReturn => e
+        log_data("# FR: flee#attempt #{e.data} from #{e.hook_name} (#{e.reason})")
         process_prevention_reason
         return e.data
       end

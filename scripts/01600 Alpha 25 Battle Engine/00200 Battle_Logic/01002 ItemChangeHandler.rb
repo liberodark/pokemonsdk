@@ -12,12 +12,14 @@ module Battle
       # @param skill [Battle::Move, nil] Potential move used
       # @return [Boolean] if the operation was successfull
       def change_item(db_symbol, overwrite, target, launcher = nil, skill = nil)
+        log_data("# change_item(#{db_symbol}, #{overwrite}, #{target}, #{launcher}, #{skill})")
         exec_hooks(ItemChangeHandler, :pre_item_change, binding)
         target.battle_item = db_symbol == :none ? 0 : GameData::Item[db_symbol].id
         target.item_holding = target.battle_item if overwrite
         exec_hooks(ItemChangeHandler, :post_item_change, binding)
         return true
       rescue Hooks::ForceReturn => e
+        log_data("# FR: change_item #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
       end
 

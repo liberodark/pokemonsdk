@@ -43,6 +43,8 @@ module Battle
         exec_hooks(StatusChangeHandler, :status_prevention, binding) if status != :cure
         return true
       rescue Hooks::ForceReturn => e
+        log_data("# status = #{status}; target = #{target}; launcher = #{launcher}; skill = #{skill}")
+        log_data("# FR: status_appliable? #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
       end
 
@@ -53,6 +55,7 @@ module Battle
       # @param skill [Battle::Move, nil] Potential move used
       # @param message_overwrite [Integer] Index of the message to use if file 19 to apply the status (if there's specific reason)
       def status_change(status, target, launcher = nil, skill = nil, message_overwrite: nil)
+        log_data("# status_change(#{status}, #{target}, #{launcher}, #{skill})")
         if status == :cure
           message_overwrite ||= cure_message_id(target)
           target.send(STATUS_APPLY_METHODS[status])
@@ -66,6 +69,7 @@ module Battle
         @scene.display_message_and_wait(parse_text_with_pokemon(19, message_overwrite, target)) if message_overwrite
         exec_hooks(StatusChangeHandler, :post_status_change, binding)
       rescue Hooks::ForceReturn => e
+        log_data("# FR: status_change #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
       ensure
         @scene.visual.refresh_info_bar(target)

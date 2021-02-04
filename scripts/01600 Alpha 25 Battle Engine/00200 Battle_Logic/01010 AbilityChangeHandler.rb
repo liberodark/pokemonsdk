@@ -42,10 +42,11 @@ module Battle
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
       def can_change_ability?(target, ability_symbol, launcher = nil, skill = nil)
+        log_data("# can_change_ability?(#{target}, #{ability_symbol}, #{launcher}, #{skill})")
         exec_hooks(AbilityChangeHandler, :ability_change_prevention, binding)
         return true
-
       rescue Hooks::ForceReturn => e
+        log_data("# FR: can_change_ability? #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
       end
 
