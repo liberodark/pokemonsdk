@@ -130,6 +130,20 @@ module Battle
       return 1
     end    
 
+    # Fairy Aura, Dark Aura and Aura Break multipliers
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_auras(user, target)
+      fairy_aura_active = type_fairy? && logic.any_field_ability_active?(:fairy_aura)
+      dark_aura_active = type_dark? && logic.any_field_ability_active?(:dark_aura)
+
+      return 1 unless fairy_aura_active || dark_aura_active
+
+      return logic.any_field_ability_active?(:aura_break) ? 0.75 : 1.33
+    
+    end
+
     # Power Spot ability multiplier
     # @param user [PFM::PokemonBattler]
     # @param target [PFM::PokemonBattler]
@@ -178,5 +192,8 @@ module Battle
     define_boosting_ability(:defeatist, :calc_ua_defeatist)
     define_boosting_ability(:steely_spirit, :calc_ua_steely_spirit)
     define_boosting_ability(:power_spot, :calc_ua_power_spot)
+    define_boosting_ability(:fairy_aura, :calc_ua_auras)
+    define_boosting_ability(:dark_aura, :calc_ua_auras)
+    define_boosting_ability(:aura_break, :calc_ua_auras)
   end
 end

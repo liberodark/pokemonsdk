@@ -455,5 +455,29 @@ module Battle
       handler.scene.visual.show_ability(with)
       handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, with)
     end
+
+    # Fairy Aura message
+    SwitchHandler.register_switch_event_hook('PSDK switch: Fairy Aura') do |handler, _, with|
+      next unless with.has_ability?(:fairy_aura)
+
+      handler.scene.visual.show_ability(with)
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1205, with))
+    end
+
+    # Dark Aura message
+    SwitchHandler.register_switch_event_hook('PSDK switch: Dark Aura') do |handler, _, with|
+      next unless with.has_ability?(:dark_aura)
+
+      handler.scene.visual.show_ability(with)
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1201, with))
+    end
+
+    # Aura Break message
+    SwitchHandler.register_switch_event_hook('PSDK switch: Aura Break') do |handler, _, with|
+      next unless with.has_ability?(:aura_break)
+
+      handler.scene.visual.show_ability(with)
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1231, with))
+    end
   end
 end

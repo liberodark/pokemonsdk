@@ -244,5 +244,11 @@ module Battle
     def trainer_battlers
       return @battlers[0].compact.select(&:from_party?)
     end
+
+    # Check active abilities on the field
+    # @return [Array<PFM::PokemonBattler>]
+    def any_field_ability_active?(db_symbol)
+      return @battlers.any? { |battlers| battlers.any? { |battler| battler.has_ability?(db_symbol) } }
+    end  
   end
 end
