@@ -256,16 +256,16 @@ module GamePlay
       text.add_text(x + 60, 32, 94, 16, pokemon.item_name, 0)
       text.add_text(x, 48, 100, 16,texts[18],0)
       text.add_text(x, 64, 100, 16,texts[20],0)
-      text.add_text(x, 80, 100, 16,texts[26],0)
-      text.add_text(x, 96, 100, 16,texts[22],0)
-      text.add_text(x, 112, 100, 16,texts[24],0)
+      text.add_text(x, 80, 100, 16,texts[22],0)
+      text.add_text(x, 96, 100, 16,texts[24],0)
+      text.add_text(x, 112, 100, 16,texts[26],0)
       text.add_text(x, 128, 52, 16,ext_text(9000, 44),0)
       x += 100
       text.add_text(x, 48, 54, 16, pokemon.atk_basis.to_s, 2)
       text.add_text(x, 64, 54, 16, pokemon.dfe_basis.to_s, 2)
-      text.add_text(x, 80, 54, 16, pokemon.spd_basis.to_s, 2)
-      text.add_text(x, 96, 54, 16, pokemon.ats_basis.to_s, 2)
-      text.add_text(x, 112, 54, 16, pokemon.dfs_basis.to_s, 2)
+      text.add_text(x, 80, 54, 16, pokemon.ats_basis.to_s, 2)
+      text.add_text(x, 96, 54, 16, pokemon.dfs_basis.to_s, 2)
+      text.add_text(x, 112, 54, 16, pokemon.spd_basis.to_s, 2)
       text.add_text(x - 50, 128, 106, 16, pokemon.ability_name, 0)
     end
   end
