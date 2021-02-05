@@ -183,11 +183,17 @@ module Battle
     end
 
     # Natural Cure
-    SwitchHandler.register_switch_event_hook('PSDK switch: Natural Cure') do |handler, who, with|
+    SwitchHandler.register_switch_event_hook('PSDK switch: Natural Cure') do |_, who, with|
       next if who == with || !who.has_ability?(:natural_cure) || who.status == 0
 
-      handler.scene.visual.show_ability(who)
-      handler.logic.status_change_handler.status_change_with_process(:cure, who)
+      who.cure
+    end
+
+    # Regenerator
+    SwitchHandler.register_switch_event_hook('PSDK switch: Regenerator') do |_, who, with|
+      next if who == with || who.hp == who.max_hp || !who.has_ability?(:regenerator)
+
+      who.hp += who.max_hp / 3
     end
 
     # Lunar Dance

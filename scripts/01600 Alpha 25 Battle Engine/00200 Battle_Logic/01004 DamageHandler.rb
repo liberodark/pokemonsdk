@@ -57,19 +57,22 @@ module Battle
       # @param launcher [PFM::PokemonBattler] launcher of a draining move/effect
       # @param skill [Battle::Move, nil] Potential move used
       # @param hp_overwrite [Integer, nil] for the number of hp drained by the move
+      # @param drain_factor [Integer] the division factor of HP drained
       # @param messages [Proc] messages shown right before the post processing
-      def drain(hp_factor, target, launcher, skill = nil, hp_overwrite: nil, &messages)
+      def drain(hp_factor, target, launcher, skill = nil, hp_overwrite: nil, drain_factor: 1, &messages)
         hp = hp_overwrite || (target.max_hp / hp_factor).clamp(0, Float::INFINITY)
         damage_change(hp, target, launcher, skill, &messages)
         # TODO: Add hooks for all those stuff
         if target.has_ability?(:liquid_ooze)
           @scene.visual.show_ability(target)
           damage_change(hp, launcher, launcher, nil)
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 457, launcher))
         elsif launcher.effects.has?(:heal_block)
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 890, launcher))
-        else
+        elsif launcher.hp < launcher.max_hp
           hp = hp * 130 / 100 if launcher.hold_item?(:big_root)
-          @scene.visual.show_hp_animations([launcher], [hp])
+          @scene.visual.show_hp_animations([launcher], [hp / drain_factor])
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 905, target))
         end
       end
 
@@ -213,7 +216,7 @@ module Battle
 
     # Water Absorb
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Water Absorb') do |handler, _, target, launcher, skill|
-      next unless skill&.type_water? && !target.battle_effect.has_heal_block_effect? && target.has_ability?(:water_absorb)
+      next unless skill&.type_water? && !target.effects.has?(:heal_block) && target.has_ability?(:water_absorb)
       next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
@@ -225,7 +228,7 @@ module Battle
 
     # Volt Absorb
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Volt Absorb') do |handler, _, target, launcher, skill|
-      next unless skill&.type_electric? && !target.battle_effect.has_heal_block_effect? && target.has_ability?(:volt_absorb)
+      next unless skill&.type_electric? && !target.effects.has?(:heal_block) && target.has_ability?(:volt_absorb)
       next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do
@@ -548,7 +551,7 @@ module Battle
 
     # Disguise
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Disguise') do |handler, _, target, launcher, skill|
-      next if target.battle_effect.has_heal_block_effect? || !target.has_ability?(:disguise) || skill.status?
+      next if target.effects.has?(:heal_block) || !target.has_ability?(:disguise) || skill.status?
       next unless launcher&.can_be_lowered_or_canceled?
 
       original_form = target.form

@@ -280,7 +280,7 @@ module Battle
         next if !battler.poisoned? || battler.has_ability?(:magic_guard)
 
         if battler.has_ability?(:poison_heal)
-          if battler.battle_effect.has_heal_block_effect?
+          if battler.effects.has?(:heal_block)
             scene.display_message_and_wait(parse_text_with_pokemon(19, 890, battler))
             next
           end

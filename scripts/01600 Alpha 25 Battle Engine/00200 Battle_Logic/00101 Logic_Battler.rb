@@ -70,6 +70,13 @@ module Battle
       return @battlers[bank].select(&:can_fight?)
     end
 
+    # Return all the alive battler of a bank but don't check can_fight?
+    # @param bank [Integer]
+    # @return [Array<PFM::PokemonBattler>]
+    def alive_battlers_without_check(bank)
+      return @battlers[bank].select(&:alive?)
+    end
+
     # Return all alive battlers
     # @return [Array<PFM::PokemonBattler>]
     def all_alive_battlers

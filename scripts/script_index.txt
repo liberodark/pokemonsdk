@@ -541,6 +541,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00003 PositionTied
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00004 PokemonTiedEffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00100 ForcedNextMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00101 OutOfReach.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00102 HealBlock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 AbilitySuppressed.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Attract.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Electrify.rb
@@ -615,6 +616,11 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00101 Self.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00102 Status Stat.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00103 TwoHit MultiHit.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00104 TwoTurn.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00105 Heal.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00106 HealBlock.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00107 HealWeather.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00108 HealBell.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00109 Absorb.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 Attract.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 Gravity.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 MudSport.rb
