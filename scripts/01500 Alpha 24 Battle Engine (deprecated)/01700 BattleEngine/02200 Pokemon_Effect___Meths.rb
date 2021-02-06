@@ -391,17 +391,6 @@ class Pokemon_Effect
   def sticky_web
     @priority -= 1
   end
-  #===
-  #>Appliquer l'effet de Lilliput
-  #===
-  def apply_minimize
-    @minimize=true
-  end
-
-  #>Vérification de la présence de l'effet Lilliput
-  def has_minimize_effect?
-    return @minimize
-  end
 
   #===
   #>Appliquer l'effet brûme

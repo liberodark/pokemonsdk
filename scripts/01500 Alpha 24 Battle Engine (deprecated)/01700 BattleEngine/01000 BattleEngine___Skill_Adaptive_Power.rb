@@ -240,16 +240,6 @@ module BattleEngine
     skill.power2 = nil
   end
 
-  # Stomp skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_stomp(launcher, target, skill, msg_push = true)
-    skill.power2 = skill.power * 2 if target.battle_effect.has_minimize_effect? #> Minimize
-    s_basic(launcher, target, skill)
-    skill.power2 = nil
-  end
-
   # Stored Power & Punishment skill definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move

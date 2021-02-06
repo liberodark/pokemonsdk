@@ -229,19 +229,6 @@ module BattleEngine
     skill.type2 = nil
   end
 
-  # Minimize skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_minimize(launcher, target, skill, msg_push = true)
-    return false unless __s_beg_step(launcher, target, skill, msg_push)
-    if __s_stat_us_step(launcher, launcher, skill, nil, 100)
-      _message_stack_push([:apply_effect, target, :apply_minimize])
-    else
-      _message_stack_push(MSG_Fail)
-    end
-  end
-
   # Parting Shot skill definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move
