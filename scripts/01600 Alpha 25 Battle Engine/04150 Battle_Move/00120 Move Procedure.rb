@@ -173,7 +173,7 @@ module Battle
     def efficent_message(effectiveness, target)
       if effectiveness > 1
         scene.display_message_and_wait(parse_text_with_pokemon(19, 6, target))
-      elsif effectiveness > 0
+      elsif effectiveness > 0 && effectiveness < 1
         scene.display_message_and_wait(parse_text_with_pokemon(19, 15, target))
       end
     end

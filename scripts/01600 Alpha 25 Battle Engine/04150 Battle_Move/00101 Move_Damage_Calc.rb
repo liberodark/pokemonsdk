@@ -44,11 +44,11 @@ module Battle
       types = definitive_types(user, target)
       log_data("types = #{types} # ie: #{types.map do |t| GameData::Type[t].name end.join(', ')}")
       damage = (damage * calc_type_n_multiplier(target, :type1, types)).floor
-      log_data("damage = #{damage} # after type1 (#{GameData::Type[target.type1].name})")
+      log_data("damage = #{damage} # after type1 (#{GameData::Type[target.type1].name}) => new_eff = #{@effectiveness}")
       damage = (damage * calc_type_n_multiplier(target, :type2, types)).floor
-      log_data("damage = #{damage} # after type2 (#{GameData::Type[target.type2].name})")
+      log_data("damage = #{damage} # after type2 (#{GameData::Type[target.type2].name}) => new_eff = #{@effectiveness}")
       damage = (damage * calc_type_n_multiplier(target, :type3, types)).floor
-      log_data("damage = #{damage} # after type3 (#{GameData::Type[target.type3].name})")
+      log_data("damage = #{damage} # after type3 (#{GameData::Type[target.type3].name}) => new_eff = #{@effectiveness}")
       log_data("damage = #{(damage * calc_mod3(user, target)).floor} # after mod3") if debug?
       return (damage * calc_mod3(user, target)).floor
     end
