@@ -92,6 +92,7 @@ module Battle
       return (result * send(FOE_ABILITY_MULTIPLIER[target.battle_ability_db_symbol], user, target)).floor
     end
 
+    UNAWARE_IGNORING_ABILITIES = %i[turboblaze teravolt mold_breaker]
     # [Spe]atk calculation
     # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler] target of the move
@@ -102,7 +103,9 @@ module Battle
       # Stat
       result = ph_move ? user.atk_basis : user.ats_basis
       # SM (Only if non-critical hit)
-      result = (result * (ph_move ? user.atk_modifier : user.ats_modifier)).floor unless critical_hit?
+      unless target.has_ability?(:unaware) && !UNAWARE_IGNORING_ABILITIES.include?(user.battle_ability_db_symbol)
+        result = (result * (ph_move ? user.atk_modifier : user.ats_modifier)).floor unless critical_hit?
+      end
       # AM
       am = send((ph_move ? ATK_ABILITY_MODIFIER : ATS_ABILITY_MODIFIER)[user.battle_ability_db_symbol], user, target)
       result = (result * am).floor
@@ -121,7 +124,9 @@ module Battle
       # Stat
       result = ph_move ? target.dfe_basis : target.dfs_basis
       # SM (Only if non-critical hit)
-      result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor unless critical_hit?
+      unless user.has_ability?(:unaware)
+        result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor unless critical_hit?
+      end
       # Mod
       result = (result * 1.5).floor if !ph_move && $env.sandstorm? && target.type_rock?
       mod = send((ph_move ? DFE_ABILITY_MODIFIER : DFS_ABILITY_MODIFIER)[target.battle_ability_db_symbol], user, target)

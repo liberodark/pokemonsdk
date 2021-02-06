@@ -19,9 +19,11 @@ module Battle
       log_data("# chance_of_hit(#{user}, #{target}) for #{db_symbol}")
       return 100 if target.effects.get(:lock_on)&.user == user
 
+      acc_mod = target.has_ability?(:unaware) && !UNAWARE_IGNORING_ABILITIES.include?(user.battle_ability_db_symbol)
+      eva_mod = user.has_ability?(:unaware)
       factors = [
-        accuracy_mod(user),
-        evasion_mod(target),
+        acc_mod ? accuracy_mod(user) : 1,
+        eva_mod ? evasion_mod(target) : 1,
         send(ACCURACY_ITEM_MULTIPLIER[user.battle_item_db_symbol], user, target),
         send(EVASION_ITEM_MULTIPLIER[target.battle_item_db_symbol], user, target),
         send(ACCURACY_ABILITY_MULTIPLIER[user.battle_ability_db_symbol], user, target),
