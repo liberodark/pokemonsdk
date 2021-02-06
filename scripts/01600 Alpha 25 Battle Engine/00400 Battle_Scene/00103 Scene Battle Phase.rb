@@ -25,7 +25,7 @@ module Battle
       call_event(:after_action_dialog)
       if @logic.can_battle_continue?
         @logic.battle_phase_end
-        @next_update = :player_action_choice
+        @next_update = @logic.can_battle_continue? ? :player_action_choice : :battle_end
       else
         @next_update = :battle_end
       end

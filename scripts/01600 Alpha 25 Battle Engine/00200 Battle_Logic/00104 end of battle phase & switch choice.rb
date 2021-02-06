@@ -2,18 +2,23 @@ module Battle
   class Logic
     # Function that distribute the exp to all Pokemon and switch dead pokemon
     def battle_phase_end
+      log_debug('Entering battle_phase_end')
       end_turn_handler.process_events
+      log_debug('end_turn_handler called')
       # Add all dead enemy to the switch request
       @switch_request.concat(
         dead_enemy_battler_during_this_turn.map { |battler| { who: battler } }
       )
+      log_data("Number of switch request (ennemy) : #{@switch_request.size}")
       # Add all dead actors to switch request
       turn = $game_temp.battle_turn
       @switch_request.concat(
         trainer_battlers.select { |battler| battler.last_battle_turn == turn && battler.dead? }.map { |battler| { who: battler } }
       )
+      log_data("Number of switch request (enemy + actors) : #{@switch_request.size}")
       @switch_request.uniq! { |who:| who }
       battle_phase_switch_exp_check
+      log_debug('battle_phase_switch_exp_check called')
       all_alive_battlers.each { |pokemon| pokemon.switching = false }
     end
 
@@ -37,13 +42,17 @@ module Battle
     def battle_phase_switch_exp_check
       return unless can_battle_continue?
 
+      log_debug('battle_phase_switch_exp_check working')
       battle_phase_exp
       during_end_of_turn = @actions.empty?
       @switch_request.each do |who:, with: nil|
         next Actions::Switch.new(@scene, who, with).execute if who && with
+
+        log_data("Attempting to switch #{who}")
         next unless can_battler_be_replaced?(who)
 
         with = switch_choose_with(who)
+        log_data("Pokemon switched with #{who} : #{with}")
         next unless with
 
         request_switch_to_trainer(with) if who.bank != 0 && during_end_of_turn
@@ -82,7 +91,7 @@ module Battle
     def request_switch_to_trainer(enemy)
       battlers = trainer_battlers
       who = battlers[0]
-      if $options.battle_mode && @battle_info.vs_type == 1 && battlers.count(&:alive?) > 1 && can_battler_be_replaced?(who)
+      if $options.battle_mode && @battle_info.vs_type == 1 && battlers.count(&:alive?) > 1 && can_battler_be_replaced?(who) && !who.dead?
         text = parse_text(
           18, 21,
           '[VAR 010E(0000)]' => @battle_info.trainer_class(enemy),
