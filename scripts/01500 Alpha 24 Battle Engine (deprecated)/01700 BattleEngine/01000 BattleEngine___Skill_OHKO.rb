@@ -4,37 +4,6 @@
 module BattleEngine
   module_function
 
-  # OHKO skills definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_ohko(launcher, target, skill, msg_push = true)
-    #> Pokémon uses xxx!
-    _message_stack_push([:use_skill_msg, launcher, target, skill])
-    #> Sacrifices ?
-    if launcher == target
-      if (target.position < 0 ? $scene.enemy_party : $pokemon_party).pokemon_alive > $game_temp.vs_type
-        _mp([:hp_down, target, target.hp])
-      else
-        _mp(MSG_Fail)
-        return false
-      end
-      return true
-    end
-    #> Type check
-    if _type_modifier_calculation(target, skill) == 0
-      _message_stack_push([:useless_msg, target])
-      return
-    end
-    #> Accuracy check
-    unless launcher.level >= target.level && 
-      _rand_check(launcher.level - target.level + 30, 100)
-      _message_stack_push([:msg, parse_text(18, 74)])
-      return
-    end
-    _message_stack_push([:OHKO, target])
-  end
-
   # Destiny Bound skill definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move
