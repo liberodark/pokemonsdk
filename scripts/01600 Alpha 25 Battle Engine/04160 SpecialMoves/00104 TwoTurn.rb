@@ -16,6 +16,9 @@ module Battle
       # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
+        # Cancel effect from previous use
+        user.effects.get(:out_of_reach)&.kill
+        user.effects.deleted_dead_effects
         return false unless super
         return true if user.effects.has?(:forced_next_move)
         return true if db_symbol == :solar_beam && $env.sunny?
@@ -42,14 +45,6 @@ module Battle
         return super / 2 if db_symbol == :solar_beam && ($env.sandstorm? || $env.hail? || $env.rain?)
 
         return super
-      end
-
-      # Function that deals the effect to the pokemon
-      # @param user [PFM::PokemonBattler] user of the move
-      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
-      def deal_effect(user, actual_targets)
-        user.effects.get(:out_of_reach)&.kill
-        user.effects.deleted_dead_effects
       end
     end
 
