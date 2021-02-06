@@ -6,67 +6,6 @@
 module BattleEngine
   module_function
 
-  # Status related skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_status(launcher, target, skill, msg_push = true)
-    did_something = false
-    return unless __s_beg_step(launcher, target, skill, msg_push)
-    #> Immunity to seeds & others
-    unless target.type_grass? && ImmuGrass.include?(skill.id)
-      #> Move check
-      if skill.power > 0
-        hp = _damage_calculation(launcher, target, skill).to_i
-        return if __s_hp_down_check(hp, target)
-        did_something = true
-      end
-      did_something |= __s_stat_us_step(launcher, target, skill, 100)
-    end
-    unless did_something
-      _message_stack_push([:msg, parse_text(18, 70)])
-    end
-  end
-
-  # Self status skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_self_statut(launcher, target, skill, msg_push = true)
-    did_something = false
-    return unless __s_beg_step(launcher, target, skill, msg_push)
-    #> Move check
-    if skill.power > 0
-      hp = _damage_calculation(launcher, target, skill).to_i
-      return if __s_hp_down_check(hp, target)
-      did_something = true
-    end
-    did_something |= __s_stat_us_step(launcher, launcher, skill, 100, nil)
-    unless did_something
-      _message_stack_push([:msg, parse_text(18, 70)])
-    end
-  end
-
-  # Attract skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_attract(launcher, target, skill, msg_push = true)
-    return unless __s_beg_step(launcher, target, skill, msg_push)
-    _message_stack_push([:attract_effect, launcher, target])
-  end
-
-  # Fangs skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_a_fang(launcher, target, skill, msg_push = true)
-    return unless s_basic(launcher, target, skill)
-    if _attacking_first?(launcher) and _chance(10, launcher, target, skill)
-      _message_stack_push([:effect_afraid, target])
-    end
-  end
-
   # Fake Out skill definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move
@@ -203,25 +142,6 @@ module BattleEngine
       #Gives fail message
       _message_stack_push(MSG_Fail)
       return false
-    end
-  end
-
-  # Tri Attack skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_tri_attack(launcher, target, skill, msg_push = true)
-    if s_basic(launcher, target, skill) && _status_chance(20, launcher, target, skill)
-      target = _magic_coat(launcher, target, skill)
-      v = rand(3)
-      case v
-      when 0
-        _message_stack_push([:status_burn, target]) if target.can_be_burn?
-      when 1
-        _message_stack_push([:status_paralyze, target]) if target.can_be_paralyzed?
-      when 2
-        _message_stack_push([:status_frozen, target]) if target.can_be_frozen?
-      end
     end
   end
 
