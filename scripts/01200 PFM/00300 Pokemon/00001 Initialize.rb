@@ -84,7 +84,7 @@ module PFM
       code_initialize
       self.shiny = force_shiny if force_shiny
       self.shiny = !no_shiny if no_shiny
-      @level = level.clamp(1, max_level)
+      @level = level.clamp(1, Float::INFINITY)
       @step_remaining = 0
       @ribbons = []
       @skill_learnt = []

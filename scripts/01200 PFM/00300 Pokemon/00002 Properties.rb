@@ -214,7 +214,7 @@ module PFM
     # @return [Integer]
     def max_level
       infinity = Float::INFINITY
-      return [@max_level || infinity, $pokemon_party.level_max_limit || infinity, PSDK_CONFIG.pokemon_max_level].min
+      return [@max_level || infinity, $pokemon_party.level_max_limit || infinity, PSDK_CONFIG.pokemon_max_level].min.clamp(1, Float::INFINITY)
     end
 
     # Set the maximum level of the Pokemon
