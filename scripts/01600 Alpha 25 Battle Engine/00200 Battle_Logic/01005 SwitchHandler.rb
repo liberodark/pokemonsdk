@@ -108,6 +108,11 @@ module Battle
       end
     end
 
+    # Last sent turn
+    SwitchHandler.register_switch_event_hook('Update last_sent_turn value') do |_, _, with|
+      with.last_sent_turn = $game_temp.battle_turn
+    end
+
     # Effects
     SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: Effects') do |handler, pokemon, skill|
       next handler.logic.each_effects(pokemon) do |e|

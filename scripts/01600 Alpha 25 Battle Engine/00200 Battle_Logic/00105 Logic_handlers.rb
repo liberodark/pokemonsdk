@@ -71,5 +71,11 @@ module Battle
     def battle_end_handler
       return BattleEndHandler.new(self, @scene)
     end
+
+    # Get the exp handler
+    # @return [Battle::Logic::ExpHandler]
+    def exp_handler
+      return ExpHandler.new(self)
+    end
   end
 end

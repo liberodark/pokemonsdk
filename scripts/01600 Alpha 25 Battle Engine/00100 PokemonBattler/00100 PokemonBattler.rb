@@ -34,6 +34,10 @@ module PFM
     # @return [Integer]
     attr_accessor :last_battle_turn
 
+    # Last turn the pokemon was sent out
+    # @return [Integer]
+    attr_accessor :last_sent_turn
+
     # @return [Battle::Move] last move that hit the pokemon
     attr_accessor :last_hit_by_move
 
@@ -102,6 +106,7 @@ module PFM
       @battle_item_data = []
       @battle_item = @item_holding
       @last_battle_turn = -1
+      @last_sent_turn = -1
       @effects = Battle::Effects::EffectsHandler.new
       @move_history = []
       @mega_evolved = false

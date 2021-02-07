@@ -24,17 +24,7 @@ module Battle
 
     # Function that test the experience distribution
     def battle_phase_exp
-      exp_distributions = {}
-      # Distribute exp and add all enemy that are dead to switch request
-      dead_enemy_battler_during_this_turn.each do |enemy|
-        next if enemy.exp_distributed
-
-        exp_distributions.merge!(distribute_exp_for(enemy)) do |_, old_val, new_val|
-          old_val + new_val
-        end
-        enemy.exp_distributed = true
-      end
-
+      exp_distributions = exp_handler.distribute_exp_grouped(dead_enemy_battler_during_this_turn)
       @scene.visual.show_exp_distribution(exp_distributions) if exp_distributions.any?
     end
 
@@ -64,7 +54,7 @@ module Battle
     # Function that process the battle end when Pokemon was caught
     def battle_phase_end_caught
       pokemon = alive_battlers(1).find { |enemy| @battle_info.caught_pokemon == enemy }
-      @scene.visual.show_exp_distribution(distribute_exp_for(pokemon))
+      @scene.visual.show_exp_distribution(exp_handler.distribute_exp_for(pokemon))
     end
 
     private
@@ -104,73 +94,6 @@ module Battle
           Actions::Switch.new(@scene, who, result).execute if result != who
         end
       end
-    end
-
-    # Function that distribute experience for a dead Enemy Pokemon
-    # @param enemy [PFM::PokemonBattler]
-    # @return [Hash{ PFM::PokemonBattler => Integer }]
-    def distribute_exp_for(enemy)
-      return {} if @battle_info.disallow_exp?
-
-      expable = trainer_battlers.reject { |receiver| receiver.max_level == receiver.level || receiver.dead? }
-      base_exp = exp_base(enemy)
-      global_multi_exp_factor = $bag.contain_item?(:"exp._share")
-
-      if global_multi_exp_factor
-        exp_data = expable.map do |receiver|
-          exp = (base_exp * exp_multipliers(receiver)).floor
-          exp /= (receiver.last_battle_turn != $game_temp.battle_turn ? 14 : 7)
-          next [receiver, exp]
-        end
-      else
-        fought_count = expable.count { |battler| battler.last_battle_turn == $game_temp.battle_turn && battler.alive? }.clamp(1, 6)
-        multi_exp_count = expable.count { |battler| battler.item_db_symbol == :"exp._share" && battler.alive? } # TODO: Implement a switch for that: && GLOBAL_MULTI_EXP_ENABLED
-        multi_exp_factor = exp_multi_exp_factor(multi_exp_count)
-        fought_exp_factor = exp_fought_factor(multi_exp_count, fought_count)
-        exp_data = expable.map do |receiver|
-          exp = (base_exp * exp_multipliers(receiver)).floor
-          if receiver.last_battle_turn != $game_temp.battle_turn # Did not fight this turn
-            next [receiver, (exp / multi_exp_factor).to_i]
-          else
-            next [receiver, (exp / fought_exp_factor).to_i + (receiver.item_db_symbol == :"exp._share" ? exp / multi_exp_factor : 0).to_i]
-          end
-        end
-      end
-      return exp_data.to_h
-    end
-
-    # TODO: Move experience distribution in a dedicated class
-
-    # Base exp
-    # @param enemy [PFM::PokemonBattler]
-    # @return [Float]
-    def exp_base(enemy)
-      return enemy.base_exp * enemy.level * (@battle_info.trainer_battle? ? 1.5 : 1)
-    end
-
-    # Exp multipliers
-    # @param receiver [PFM::PokemonBattler]
-    def exp_multipliers(receiver)
-      aura_factor = 1 # TODO: Implement aura
-      lucky_factor = receiver.item_db_symbol == :lucky_egg ? 1.5 : 1
-      trade_factor = receiver.from_player? ? 1 : 1.5
-      loyalty_factor = 1 # TODO: Implement loyalty
-      evolution_factor = 1 # TODO: Implement evolution factor (can evolve on next level)
-      return aura_factor * lucky_factor * trade_factor * loyalty_factor * evolution_factor
-    end
-
-    # Get the multi_exp factor
-    # @param multi_exp_count [Integer] number of Pokemon with multi_exp
-    # @return [Integer]
-    def exp_multi_exp_factor(multi_exp_count)
-      return 14 * (multi_exp_count + 1)
-    end
-
-    # Get the fought factor
-    # @param multi_exp_count [Integer] number of Pokemon with multi_exp
-    # @param fought [Integer] number of Pokemon that fought
-    def exp_fought_factor(multi_exp_count, fought)
-      return (multi_exp_count > 0 ? 14.0 : 7.0) / fought
     end
   end
 end

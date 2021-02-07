@@ -186,6 +186,18 @@ module Battle
       return number > 0
     end
 
+    # List all the trainer Pokemon
+    # @return [Array<PFM::PokemonBattler>]
+    def trainer_battlers
+      return @battlers[0].compact.select(&:from_party?)
+    end
+
+    # Check active abilities on the field
+    # @return [Array<PFM::PokemonBattler>]
+    def any_field_ability_active?(db_symbol)
+      return @battlers.any? { |battlers| battlers.any? { |battler| battler.has_ability?(db_symbol) } }
+    end
+
     private
 
     # Load the battlers from a party
@@ -245,17 +257,5 @@ module Battle
         next @battlers[bank].compact.select { |battler| battler.last_battle_turn == turn && battler.dead? }
       end
     end
-
-    # List all the trainer Pokemon
-    # @return [Array<PFM::PokemonBattler>]
-    def trainer_battlers
-      return @battlers[0].compact.select(&:from_party?)
-    end
-
-    # Check active abilities on the field
-    # @return [Array<PFM::PokemonBattler>]
-    def any_field_ability_active?(db_symbol)
-      return @battlers.any? { |battlers| battlers.any? { |battler| battler.has_ability?(db_symbol) } }
-    end  
   end
 end
