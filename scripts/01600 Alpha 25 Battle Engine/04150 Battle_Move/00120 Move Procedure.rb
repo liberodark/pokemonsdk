@@ -33,9 +33,10 @@ module Battle
 
       usage_message(user)
       return scene.display_message_and_wait(parse_text(18, 85)) if pp == 0
-      return scene.display_message_and_wait(parse_text(18, 74)) if accuracy > 0 && rand(100) >= accuracy
 
       decrese_pp(user, targets)
+      return scene.display_message_and_wait(parse_text(18, 74)) if accuracy > 0 && rand(100) >= accuracy
+
       actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
       return if actual_targets.none?
 
