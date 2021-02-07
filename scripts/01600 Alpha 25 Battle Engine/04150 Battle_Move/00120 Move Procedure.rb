@@ -115,7 +115,14 @@ module Battle
     # @return [Boolean]
     def ability_immunity?(user, target)
       # TODO: add hooks
-      return ballistics? && target.has_ability?(:bulletproof)
+      return true if ballistics? && target.has_ability?(:bulletproof)
+
+      if priority != priority(user)
+        return true if target.type_dark? && user.has_ability?(:prankster)
+        return true if logic.bank_effects[target.bank]&.has?(:quick_guard)
+      end
+
+      return false
     end
 
     # Decrese the PP of the move

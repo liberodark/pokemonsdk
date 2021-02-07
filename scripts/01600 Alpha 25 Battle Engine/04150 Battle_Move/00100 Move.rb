@@ -128,6 +128,8 @@ module Battle
       priority = data.priority
       return priority unless user
       return priority + 3 if heal? && user.has_ability?(:triage)
+      return priority + 1 if type_fly? && user.hp == user.max_hp && user.has_ability?(:gale_wings)
+      return priority + 1 if status? && user.has_ability?(:prankster)
 
       return priority
     end
