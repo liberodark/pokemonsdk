@@ -377,5 +377,27 @@ module Battle
         end
       end
     end
+
+    # Register the Defiant ability
+    StatChangeHandler.register_stat_change_post_event_hook('PSDK stat post event: Defiant') do |handler, _, power, target, launcher|
+      handler.logic.foes_of(target).each do |foe|
+        next unless foe && target.has_ability?(:defiant) && power < 0
+
+        handler.scene.visual.show_ability(target)
+        handler.logic.stat_change_handler.stat_change_with_process(:atk, 2, target)
+
+      end
+    end
+
+    # Register the Competitive ability
+    StatChangeHandler.register_stat_change_post_event_hook('PSDK stat post event: Competitive') do |handler, _, power, target, launcher|
+      handler.logic.foes_of(target).each do |foe|
+        next unless foe && target.has_ability?(:competitive) && power < 0
+
+          handler.scene.visual.show_ability(target)
+          handler.logic.stat_change_handler.stat_change_with_process(:ats, 2, target)
+
+      end
+    end
   end
 end
