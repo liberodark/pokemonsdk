@@ -35,7 +35,9 @@ module Battle
       return scene.display_message_and_wait(parse_text(18, 85)) if pp == 0
 
       decrese_pp(user, targets)
-      return scene.display_message_and_wait(parse_text(18, 74)) if accuracy > 0 && rand(100) >= accuracy
+      accuracy_dice = rand(100)
+      log_data("# accuracy= #{accuracy}, value = #{accuracy_dice} (testing=#{accuracy > 0}, failure=#{accuracy_dice >= accuracy})")
+      return scene.display_message_and_wait(parse_text(18, 74)) if accuracy > 0 && accuracy_dice >= accuracy
 
       actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
       return if actual_targets.none?
@@ -43,18 +45,11 @@ module Battle
       user.add_move_to_history(self, actual_targets)
       play_animation(user, targets)
 
-      if self.class == Battle::Move
-        BattleEngine.use_skill(PFM::PokemonBattler24.new(user), actual_targets.map { |i| PFM::PokemonBattler24.new(i) }, self)
-        messages = BattleEngine._message_get_all
-        BattleEngine::MessageInterpter.new(@scene).process_messages(messages)
-        messages.clear
-      else
-        deal_damage(user, actual_targets) &&
-          effect_working?(user, actual_targets) &&
-          deal_status(user, actual_targets) &&
-          deal_stats(user, actual_targets) &&
-          deal_effect(user, actual_targets)
-      end
+      deal_damage(user, actual_targets) &&
+        effect_working?(user, actual_targets) &&
+        deal_status(user, actual_targets) &&
+        deal_stats(user, actual_targets) &&
+        deal_effect(user, actual_targets)
       @scene.visual.set_info_state(:move_animation)
       @scene.visual.wait_for_animation
     end
