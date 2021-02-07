@@ -40,6 +40,7 @@ module Battle
     # Sort the actions
     # @note The last action in the stack is the first action to pop out from the stack
     def sort_actions
+      handle_dancer
       sorted_actions = sort_action_and_add_effects
       @actions.clear
       @actions.concat(sorted_actions.reverse)
@@ -105,6 +106,18 @@ module Battle
       triggered_action.ignore_speed = true
       # Add the message of the item activation
       actions << Actions::HighPriorityItem.new(@scene, triggered_action.launcher)
+    end
+
+    # Function that handle the dancer ability
+    def handle_dancer
+      # @type [Array<Actions::Attack>]
+      dancing_moves = @actions.select { |action| action.is_a?(Actions::Attack) && action.move.dance? }
+      # @type [Array<PFM::PokemonBattler>]
+      dancers = all_alive_battlers.select { |battler| battler.has_ability?(:dancer) }
+      # Add all dancer as sub launcher
+      dancing_moves.each do |move|
+        move.sub_launchers.concat(dancers.reject { |dancer| dancer == move.launcher })
+      end
     end
 
     # Test the quick claw trigger

@@ -24,6 +24,7 @@ module Battle
         # TL
         result *= 2 if user.has_ability?(:tinted_lens)
       end
+      result *= 1.5 if bite? && user.has_ability?(:strong_jaw) || pulse? && user.has_ability?(:mega_launcher)
       # TRB
       return result * calc_trb(target)
     end

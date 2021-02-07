@@ -14,6 +14,9 @@ module Battle
       # Tell if this action can ignore speed of the other pokemon
       # @return [Boolean]
       attr_accessor :ignore_speed
+      # List all the sub launcher that will use the same move due to their ability (Dancer)
+      # @return [Array]
+      attr_reader :sub_launchers
       # Create a new attack action
       # @param scene [Battle::Scene]
       # @param move [Battle::Move]
@@ -28,6 +31,7 @@ module Battle
         @target_position = target_position
         @pursuit_enabled = false
         @ignore_speed = false
+        @sub_launchers = []
       end
 
       # Compare this action with another
@@ -39,9 +43,9 @@ module Battle
         return 1 unless other.is_a?(Attack)
 
         attack = Attack.from(other)
-        return -1 if @ignore_speed && attack.move.priority == @move.priority
+        return -1 if @ignore_speed && attack.move.priority(attack.launcher) == @move.priority(@launcher)
 
-        priority_return = attack.move.priority <=> @move.priority
+        priority_return = attack.move.priority(attack.launcher) <=> @move.priority(@launcher)
         return priority_return if priority_return != 0
 
         trick_room_factor = @scene.logic.terrain_effects.has?(:trick_room) ? -1 : 1
@@ -65,6 +69,10 @@ module Battle
         # Reset flee attempt count
         @scene.battle_info.flee_attempt_count = 0 if @launcher.from_party?
         @move.proceed(@launcher, @target_bank, @target_position)
+        @sub_launchers.each do |launcher|
+          @scene.visual.show_ability(launcher)
+          @move.dup.proceed(launcher, @target_bank, @target_position)
+        end
       end
     end
   end

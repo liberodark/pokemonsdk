@@ -14,6 +14,7 @@ module Battle
           else
             hp = target.max_hp / 4
           end
+          hp = hp * 3 / 2 if pulse? && user.has_ability?(:mega_launcher)
           scene.visual.show_hp_animations([target], [hp])
           scene.display_message_and_wait(parse_text_with_pokemon(19, 387, target))
         end

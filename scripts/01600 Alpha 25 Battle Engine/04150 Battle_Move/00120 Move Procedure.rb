@@ -100,11 +100,22 @@ module Battle
     # @return [Boolean]
     def target_immune?(user, target)
       return false if status? && target == user
+      # BulletProof like moves
+      return true if user != target && ability_immunity?(user, target)
 
       types = definitive_types(user, target)
       return calc_type_n_multiplier(target, :type1, types) == 0 ||
              calc_type_n_multiplier(target, :type2, types) == 0 ||
              calc_type_n_multiplier(target, :type3, types) == 0
+    end
+
+    # Test if the target has an immunity due to the type of move & ability
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Boolean]
+    def ability_immunity?(user, target)
+      # TODO: add hooks
+      return ballistics? && target.has_ability?(:bulletproof)
     end
 
     # Decrese the PP of the move

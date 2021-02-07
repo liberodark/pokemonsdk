@@ -34,12 +34,8 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, targets)
         targets.each do |target|
-          # Heal Pulse & Mega Blaster
-          if db_symbol == :heal_pulse && user.has_ability?(:mega_launcher)
-            hp = target.max_hp * 3 / 4
-          else
-            hp = target.max_hp / 2
-          end
+          hp = target.max_hp / 2
+          hp = hp * 3 / 2 if pulse? && user.has_ability?(:mega_launcher)
           scene.visual.show_hp_animations([target], [hp])
           scene.display_message_and_wait(parse_text_with_pokemon(19, 387, target))
         end

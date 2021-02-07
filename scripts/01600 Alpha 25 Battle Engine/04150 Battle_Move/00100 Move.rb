@@ -122,15 +122,20 @@ module Battle
     end
 
     # Return the priority of the skill
+    # @param user [PFM::PokemonBattler] user for the priority check
     # @return [Integer]
-    def priority
-      return data.priority
+    def priority(user = nil)
+      priority = data.priority
+      return priority unless user
+      return priority + 3 if heal? && user.has_ability?(:triage)
+
+      return priority
     end
 
     ## Move priority
     def relative_priority
       return priority + Logic::MOVE_PRIORITY_OFFSET
-    end  
+    end
 
     # Return the chance of effect of the skill
     # @return [Integer]
@@ -292,6 +297,36 @@ module Battle
     # @return [Boolean]
     def not_very_effective?
       @effectiveness > 0 && @effectiveness < 1
+    end
+
+    # Tell if the move is a ballistic move
+    # @return [Boolean]
+    def ballistics?
+      return data.ballistics
+    end
+
+    # Tell if the move is biting move
+    # @return [Boolean]
+    def bite?
+      return data.bite
+    end
+
+    # Tell if the move is a dance move
+    # @return [Boolean]
+    def dance?
+      return data.dance
+    end
+
+    # Tell if the move is a pulse move
+    # @return [Boolean]
+    def pulse?
+      return data.pulse
+    end
+
+    # Tell if the move is a heal move
+    # @return [Boolean]
+    def heal?
+      return data.heal
     end
 
     # Get the effectiveness
