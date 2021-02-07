@@ -150,6 +150,13 @@ module Battle
     next proc { move.scene.display_message_and_wait(parse_text_with_pokemon(19, 580, user)) }
   end
 
+  # Assault vest
+  Move.register_move_disabled_check_hook('PSDK Move disabled: Assault vest') do |user, move|
+    next unless user.hold_item?(:assault_vest) && !move.status?
+
+    next proc { move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, PFM::Text::MOVE[1])) }
+  end
+
   # Gravity registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Gravity') do |user, _, move|
     if move.scene.logic.terrain_effects.has?(:gravity) && move.gravity_affected?

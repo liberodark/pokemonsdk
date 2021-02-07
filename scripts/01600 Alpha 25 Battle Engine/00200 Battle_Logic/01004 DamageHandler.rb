@@ -395,6 +395,32 @@ module Battle
       handler.scene.visual.show_hp_animations([launcher], [hp / 8])
     end
 
+    # Rocky Helmet
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Rocky Helmet') do |handler, hp, target, launcher, skill|
+      next unless skill&.direct? && launcher&.hold_item?(:rocky_helmet) && hp >= 6 && launcher != target
+
+      handler.scene.visual.show_item(target)
+      handler.scene.visual.show_hp_animations([launcher], [hp / 6])
+    end
+
+    # Red Card
+    DamageHandler.register_post_damage_death_hook('PSDK Post damage: Red Card') do |handler, _, target, launcher, skill|
+      next unless skill && launcher != target && target.hold_item?(:red_card) && handler.logic.can_battler_be_replaced?(launcher)
+
+      handler.scene.visual.show_item(target)
+      handler.logic.switch_request << { who: launcher }
+    end
+
+    # Eject button
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Eject button') do |handler, _, target, launcher, skill|
+      next unless skill && launcher != target && target.hold_item?(:eject_button) && handler.logic.can_battler_be_replaced?(target)
+      next unless handler.logic.switch_handler.can_switch?(target)
+
+      handler.scene.visual.show_item(target)
+      handler.logic.item_change_handler.change_item(:none, true)
+      handler.logic.switch_request << { who: target }
+    end
+
     # Sticky Barb
     DamageHandler.register_post_damage_hook('PSDK Post damage: Sticky Barb') do |handler, _, target, launcher, skill|
       next unless skill && target.hold_item?(:sticky_barb) && launcher != target

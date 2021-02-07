@@ -29,6 +29,9 @@ module Battle
     # Get the Mega Evolve helper
     # @return [MegaEvolve]
     attr_reader :mega_evolve
+    # Get the switch requests
+    # @return [Array<Hash>]
+    attr_reader :switch_request
     # Get the scene used to instanciate this Logic instance
     # @return [Battle::Scene]
     attr_reader :scene
