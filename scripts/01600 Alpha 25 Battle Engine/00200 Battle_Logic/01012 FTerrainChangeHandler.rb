@@ -129,5 +129,60 @@ module Battle
         handler.scene.visual.show_switch_form_animation(battler)
       end
     end
+
+    # Mimicry - No Terrain
+    FTerrainChangeHandler.register_post_fterrain_change_hook('PSDK post field terrain: Restart Mimicry type') do |handler, fterrain|
+    next unless fterrain == :terrainnone
+    mimicries = handler.logic.all_alive_battlers.select { |battler| battler.has_ability?(:mimicry) }
+      mimicries.each do |mimicry|
+        handler.scene.visual.show_ability(mimicry)
+        mimicry.type1 = mimicry.data.type1
+        mimicry.type2 = mimicry.data.type2
+      end
+    end
+
+    # Mimicry - Psychic Terrain
+    FTerrainChangeHandler.register_post_fterrain_change_hook('PSDK post field terrain: Psychic Mimicry type') do |handler, fterrain|
+    next unless fterrain == :psychic_terrain
+    mimicries = handler.logic.all_alive_battlers.select { |battler| battler.has_ability?(:mimicry) }
+      mimicries.each do |mimicry|
+        handler.scene.visual.show_ability(mimicry)
+        mimicry.type1 = 11
+        mimicry.type2 = 0
+      end
+    end
+
+    # Mimicry - Misty Terrain
+    FTerrainChangeHandler.register_post_fterrain_change_hook('PSDK post field terrain: Misty Mimicry type') do |handler, fterrain|
+    next unless fterrain == :misty_terrain
+    mimicries = handler.logic.all_alive_battlers.select { |battler| battler.has_ability?(:mimicry) }
+      mimicries.each do |mimicry|
+        handler.scene.visual.show_ability(mimicry)
+        mimicry.type1 = 18
+        mimicry.type2 = 0
+      end
+    end
+
+    # Mimicry - Grassy Terrain
+    FTerrainChangeHandler.register_post_fterrain_change_hook('PSDK post field terrain: Grassy Mimicry type') do |handler, fterrain|
+    next unless fterrain == :grassy_terrain
+    mimicries = handler.logic.all_alive_battlers.select { |battler| battler.has_ability?(:mimicry) }
+      mimicries.each do |mimicry|
+        handler.scene.visual.show_ability(mimicry)
+        mimicry.type1 = 5
+        mimicry.type2 = 0
+      end
+    end
+
+    # Mimicry - Electric Terrain
+    FTerrainChangeHandler.register_post_fterrain_change_hook('PSDK post field terrain: Electric Mimicry type') do |handler, fterrain|
+      next unless fterrain == :electric_terrain
+      mimicries = handler.logic.all_alive_battlers.select { |battler| battler.has_ability?(:mimicry) }
+      mimicries.each do |mimicry|
+        handler.scene.visual.show_ability(mimicry)
+        mimicry.type1 = 4
+        mimicry.type2 = 0
+      end
+    end
   end
 end
