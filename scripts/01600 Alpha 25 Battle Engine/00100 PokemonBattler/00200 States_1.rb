@@ -7,7 +7,6 @@ module PFM
       "@confuse_count": 0,
       "@helping_hand": false,
       "@turn_count": 0,
-      "@focus_energy": false,
       "@battle_stage": Array.new(7, 0),
       "@switching": false
     }
@@ -72,17 +71,6 @@ module PFM
     # Apply helping hand state
     def apply_helping_hand
       @helping_hand = true
-    end
-
-    # if the user has focus energy effect
-    # @return [Boolean]
-    def focus_energy?
-      @focus_energy
-    end
-
-    # Apply focus energy state
-    def apply_focus_energy
-      @focus_energy = true
     end
 
     # if the pokemon is switching during this turn

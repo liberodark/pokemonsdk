@@ -6,50 +6,6 @@
 module BattleEngine
   module_function
 
-  
-  ImmuGrass = [147, 78, 77, 79, 178]
-  # Statistic skill definition : statistics, status will have 100%
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_stat(launcher, target, skill, msg_push = true)
-    did_something = false
-    return unless __s_beg_step(launcher, target, skill, msg_push)
-    #> Immunity to seeds & others
-    unless target.type_grass? && ImmuGrass.include?(skill.id)
-      #> Move check
-      if skill.power > 0
-        hp=_damage_calculation(launcher, target, skill).to_i
-        return if __s_hp_down_check(hp, target)
-        did_something = true
-      end
-      did_something |= __s_stat_us_step(launcher, target, skill, nil, 100)
-    end
-
-    unless did_something
-      _message_stack_push([:msg, parse_text(18, 70)])
-    end
-  end
-
-  # Self stat skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_self_stat(launcher, target, skill, msg_push = true)
-    did_something = false
-    return unless __s_beg_step(launcher, target, skill, msg_push)
-    #> Move check
-    if skill.power > 0
-      hp=_damage_calculation(launcher, target, skill).to_i
-      return if __s_hp_down_check(hp, target)
-      did_something = true
-    end
-    did_something |= __s_stat_us_step(launcher, launcher, skill, nil, 100)
-    unless did_something
-      _message_stack_push([:msg, parse_text(18, 70)])
-    end
-  end
-
   # Statistics related skills definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move
@@ -132,31 +88,6 @@ module BattleEngine
       return false unless __s_beg_step(launcher, target, skill, msg_push)
 
       _message_stack_push(MSG_Fail)
-    end
-  end
-
-  # Curse & Belly Drum skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_curse(launcher, target, skill, msg_push = true)
-    return false unless __s_beg_step(launcher, target, skill, msg_push)
-    if skill.id == 187
-      target = _snatch_check(target, skill)
-      _message_stack_push([:hp_down, launcher, launcher.max_hp / 2])
-      _message_stack_push([:change_atk, target, 6])
-      return
-    end
-    if launcher.type_ghost?
-      #target = _random_target_selection(launcher, target)
-      #return _mp(MSG_Fail) if target == launcher
-      _message_stack_push([:hp_down, launcher, launcher.max_hp / 2])
-      _message_stack_push([:msg, ::PFM::Text.parse_with_pokemons(19, 1070, launcher, target)])
-      _message_stack_push([:apply_effect, target, :apply_curse])
-    else
-      _message_stack_push([:change_atk, launcher, 1])
-      _message_stack_push([:change_dfe, launcher, 1])
-      _message_stack_push([:change_spd, launcher, -1])
     end
   end
 

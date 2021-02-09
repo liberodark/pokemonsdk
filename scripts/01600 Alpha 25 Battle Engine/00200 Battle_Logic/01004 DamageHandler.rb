@@ -699,7 +699,7 @@ module Battle
       next unless launcher != target && launcher
       next unless target.can_be_lowered_or_canceled?
 
-      if launcher.has_ability?(:"soul-heart") 
+      if launcher.has_ability?(:"soul-heart")
         handler.scene.visual.show_ability(launcher)
         handler.logic.stat_change_handler.stat_change_with_process(:ats, 1, launcher)
       end
@@ -736,8 +736,8 @@ module Battle
     end
 
     # Cotton Down
-    DamageHandler.register_post_damage_hook('PSDK Post damage: Cotton Down') do |handler, _, target, launcher, skill| 
-    next unless skill && launcher && launcher != target && target.has_ability?(:cotton_down)
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Cotton Down') do |handler, _, target, launcher, skill|
+      next unless skill && launcher && launcher != target && target.has_ability?(:cotton_down)
 
       handler.logic.allies_of(target).each do |ally|
         handler.scene.visual.show_ability(target)

@@ -41,8 +41,6 @@ class Pokemon_Effect
     @afraid_counter=0
     @no_ability=false
     @atk = @ats = @spd = @dfe = @dfs = nil
-    @focus_energy = false
-    @cursed = false
     @no_stat_change = false
     @safe_guard = false
     @heal_block = 0
