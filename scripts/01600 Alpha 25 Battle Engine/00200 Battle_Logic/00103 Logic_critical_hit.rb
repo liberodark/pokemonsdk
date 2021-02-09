@@ -32,7 +32,7 @@ module Battle
       return 0 if user.can_be_lowered_or_canceled?(NO_CRITICAL_ABILITIES.include?(target.battle_ability_db_symbol))
 
       critical_count = initial_critical_count
-      critical_count += 2 if user.focus_energy?
+      critical_count += 2 if user.effects.has?(:focus_energy)
       critical_count += 1 if user.has_ability?(:super_luck)
       critical_count += 1 if calc_critical_count_item(user)
       return critical_count

@@ -56,17 +56,6 @@ module BattleEngine
     end
   end
 
-  # Focus Energy skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_focus_energy(launcher, target, skill, msg_push = true)
-    return false unless __s_beg_step(launcher, target, skill, msg_push)
-    target = _snatch_check(target, skill)
-    _message_stack_push([:msg, parse_text_with_pokemon(19, 616, target)])
-    _message_stack_push([:apply_effect, target, :apply_focus_energy])
-  end
- 
   # Fury Cutter skill definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move

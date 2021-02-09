@@ -459,7 +459,7 @@ class Pokemon_Effect
     @afraid_counter=1
   end
 
-  
+
   #>Appliquer l'effet bloquant les capacités spéciales
   def apply_no_ability
     @no_ability=true
@@ -468,17 +468,6 @@ class Pokemon_Effect
   #>Vérificiation de l'incapacité d'utiliser une capacité spéciale
   def has_no_ability_effect?
     return @no_ability
-  end
-
-  #===
-  #>Effet de Puissance
-  #===
-  def has_focus_energy_effect?
-    return @focus_energy
-  end
-
-  def apply_focus_energy
-    @focus_energy = true
   end
   #===
   #>Effet de boost (Empêcher les changements de stat)
