@@ -481,16 +481,6 @@ class Pokemon_Effect
     @focus_energy = true
   end
   #===
-  #>Effet de Malédiction
-  #===
-  def has_curse_effect?
-    return @cursed
-  end
-
-  def apply_curse
-    @cursed = true
-  end
-  #===
   #>Effet de boost (Empêcher les changements de stat)
   #===
   def has_no_stat_change_effect?

@@ -343,7 +343,7 @@ module Battle
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Curse') do |logic, scene, battlers|
       battlers.each do |battler|
-        next if !battler.battle_effect.has_curse_effect? || battler.has_ability?(:magic_guard)
+        next if !battler.effects.has?(:curse) || battler.has_ability?(:magic_guard)
 
         hp = battler.max_hp / 4
         scene.display_message_and_wait(parse_text_with_pokemon(19, 1077, battler))

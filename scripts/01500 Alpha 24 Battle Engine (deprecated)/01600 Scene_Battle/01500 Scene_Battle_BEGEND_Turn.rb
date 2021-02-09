@@ -241,19 +241,6 @@ class Scene_Battle
       end
     end
     #===
-    #> Curse
-    #===
-    battlers.each do |i|
-      if i&.hp>0 && i&.battle_effect&.has_curse_effect?
-        #> Magik Guard
-        next if !i.battle_effect.has_no_ability_effect? and i.ability == 17
-        hp = i.max_hp / 4
-        BattleEngine::_message_stack_push([:msgf, parse_text_with_pokemon(19, 1077, i)])
-        BattleEngine::_message_stack_push([:hp_down, i, hp, true])
-        phase4_message_display()
-      end
-    end
-    #===
     #> Mer de feu (aire de feu + aire d'herbe)
     #===
     if BattleEngine.state[:enn_firesea] > 0
