@@ -21,7 +21,6 @@ module SwooshTextImport
     'place_name_spe' => 9,
     'itemname' => 12, 'itemname_plural' => 9001 - GameData::Text::CSV_BASE, 'iteminfo' => 13,
     'bag_pocket' => 15, 'boxname' => 16,
-    'btl_std' => 18,
     'trainermemo' => 28, # /!\ don't forget to shift the resulting array!
     'shinka_demo' => 31,
     'nuts_name' => 40,
@@ -37,6 +36,7 @@ module SwooshTextImport
     'pokedex' => 57, # Pokedex UI
     'trainer_license_comon' => 58, # Additional text for 34 (TCARD)
     'btl_set' => 59, # 59 is used instead of 19 to prevent unwanted displacement of texts
+    'btl_std' => 60, # 60 is used instead of 18 to prevent unwanted displacement of texts
   }
 
   # List of replacements
