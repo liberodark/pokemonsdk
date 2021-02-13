@@ -36,21 +36,19 @@ module Yuki
       return if @disposed
 
       # ox / 32 = first visible tile (x), oy / 32 first visible tile (y)
-      ox = (@ox.round >> 1 << 1)
-      oy = (@oy.round >> 1 << 1)
-      x = ox / 32 - 1
-      y = oy / 32 - 1
+      x = @ox / 32 - 1
+      y = @oy / 32 - 1
 
       if x != @last_x || y != @last_y || (update_autotile = (Graphics.frame_count % @autotile_idle_count == 0))
         @map_datas.each(&:update_counters) if update_autotile
         draw(@last_x = x, @last_y = y)
-        update_position(ox % 32, oy % 32)
+        update_position(@ox % 32, @oy % 32)
       elsif ox != @last_ox || oy != @last_oy
-        update_position(ox % 32, oy % 32)
+        update_position(@ox % 32, @oy % 32)
       end
 
-      @last_ox = ox
-      @last_oy = oy
+      @last_ox = @ox
+      @last_oy = @oy
     end
 
     # Is the tilemap disposed

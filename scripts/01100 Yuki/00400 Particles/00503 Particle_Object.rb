@@ -155,8 +155,8 @@ module Yuki
     def update_sprite_position
       case @position_type
       when :center_pos, :grass_pos
-        @sprite.x = (((x * 128 - $game_map.display_x + 5) / 4 + 16) * @tile_zoom).floor
-        @sprite.y = ((y * 128 - $game_map.display_y + 5) / 4 + 32)
+        @sprite.x = (((x * 128 - $game_map.display_x + 3) / 4 + 16) * @tile_zoom).floor
+        @sprite.y = ((y * 128 - $game_map.display_y + 3) / 4 + 32)
         if @position_type == :center_pos || @sprite.y >= @character.screen_y
           @sprite.z = (screen_z + @add_z)
         else

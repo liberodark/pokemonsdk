@@ -62,9 +62,9 @@ class Game_Character
 
   # Update of the jump animation
   def update_jump
-    @jump_count -= 0.5 # Originally x1 but since the scale is 1/2 => 0.5
-    @real_x = ((@real_x * @jump_count + @x * 128) / (@jump_count + 1)).round >> 2 << 2
-    @real_y = ((@real_y * @jump_count + @y * 128) / (@jump_count + 1)).round >> 2 << 2
+    @jump_count -= 1
+    @real_x = ((@real_x * @jump_count + @x * 128) / (@jump_count + 1))
+    @real_y = ((@real_y * @jump_count + @y * 128) / (@jump_count + 1))
     return if @jump_count > 0
     # Fix pattern and push dust particle
     @pattern = 0

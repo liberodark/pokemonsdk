@@ -128,7 +128,7 @@ class Sprite_Character < RPG::Sprite
   # Update the position of the Sprite_Character on the screen
   # @return [Boolean] if the update can continue after the call of this function or not
   def update_position
-    set_position((@character.screen_x * @tile_zoom).floor, (@character.screen_y * @tile_zoom).floor)
+    set_position(@character.screen_x * @tile_zoom, @character.screen_y * @tile_zoom)
     @reflection&.set_position(x, y + ((@character.z - 1) * 32 * @tile_zoom).floor)
     self.z = @character.screen_z(@ch) + @add_z
     return true

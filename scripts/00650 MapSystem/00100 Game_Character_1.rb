@@ -183,13 +183,13 @@ class Game_Character
   # Return the x position of the sprite on the screen
   # @return [Integer]
   def screen_x
-    return (@real_x - $game_map.display_x + 5) / 4 + 16 # +3 => +5
+    return (@real_x - $game_map.display_x + 3) / 4 + 16
   end
 
   # Return the y position of the sprite on the screen
   # @return [Integer]
   def screen_y
-    y = (@real_y - $game_map.display_y + 5) / 4 + 32 # +3 => +5
+    y = (@real_y - $game_map.display_y + 3) / 4 + 32
     y += @offset_screen_y if @offset_screen_y
     y += @slope_offset_y if @slope_offset_y
     if @jump_count >= @jump_peak
@@ -203,13 +203,13 @@ class Game_Character
   # Return the x position of the shadow of the character on the screen
   # @return [Integer]
   def shadow_screen_x
-    return (@real_x - $game_map.display_x + 5) / 4 + 16 # +3 => +5
+    return (@real_x - $game_map.display_x + 3) / 4 + 16
   end
 
   # Return the y position of the shadow of the character on the screen
   # @return [Integer]
   def shadow_screen_y
-    return (@real_y - $game_map.display_y + 5) / 4 + 34 + (@offset_shadow_screen_y || 0) + (@slope_offset_y || 0) # +3 => +5
+    return (@real_y - $game_map.display_y + 3) / 4 + 34 + (@offset_shadow_screen_y || 0) + (@slope_offset_y || 0) # +3 => +5
   end
 
   # Return the z superiority of the sprite of the character
