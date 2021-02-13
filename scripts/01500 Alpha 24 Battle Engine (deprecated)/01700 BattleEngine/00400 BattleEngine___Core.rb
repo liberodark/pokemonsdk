@@ -113,9 +113,6 @@ module BattleEngine
 
     #> Enregistrement de l'attaque (pour photocopie)
     @_State[:last_skill] = skill if skill.id != 383
-
-    #>Suppression du verrouillage
-    _mp([:apply_effect, launcher, :apply_lock_on, nil]) if skill.id != 199 && launcher.battle_effect.has_lock_on_effect?
   end
 
   #===

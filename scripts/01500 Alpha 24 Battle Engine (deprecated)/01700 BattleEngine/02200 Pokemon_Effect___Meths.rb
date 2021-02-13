@@ -696,21 +696,6 @@ class Pokemon_Effect
   end
 
   #===
-  #>Verrouillage
-  #===
-  def apply_lock_on(target)
-    @lock_on_target = target
-  end
-
-  def has_lock_on_effect?
-    return @lock_on_target != nil
-  end
-
-  def get_lock_on_target
-    return @lock_on_target
-  end
-
-  #===
   #>Tourmente
   #===
   def apply_torment

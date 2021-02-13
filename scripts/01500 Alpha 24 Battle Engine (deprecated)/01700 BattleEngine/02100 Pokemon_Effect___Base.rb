@@ -68,7 +68,6 @@ class Pokemon_Effect
     @mind_reader = nil
     @last_damager = nil
     @last_attacking = nil
-    @lock_on_target = nil
     @torment = false
     @wish = 0
     @ingrain = false

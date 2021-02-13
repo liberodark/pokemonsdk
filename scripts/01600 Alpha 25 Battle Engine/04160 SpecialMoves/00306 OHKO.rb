@@ -20,7 +20,7 @@ module Battle
       # @return [Float]
       def chance_of_hit(user, target)
         log_data("# OHKO move: chance_of_hit(#{user}, #{target}) for #{db_symbol}")
-        return 100 if target.effects.get(:lock_on)&.user == user
+        return 100 if target.effects.get(:lock_on)&.lock_on_user == user
 
         return (user.level < target.level ? 0 : (user.level - target.level) + 30)
       end

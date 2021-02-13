@@ -114,16 +114,6 @@ module BattleEngine
     _mp(MSG_Fail)
   end
 
-  # Lock On skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_lock_on(launcher, target, skill, msg_push = true)
-    return unless __s_beg_step(launcher, target, skill, msg_push)
-    _mp([:msg, parse_text_with_pokemon(19, 651, launcher, PKNICK[1] => target.given_name)])
-    _mp([:apply_effect, launcher, :apply_lock_on, target])
-  end
-
   # Mind Reader skill definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move
