@@ -748,5 +748,29 @@ module Battle
         handler.logic.stat_change_handler.stat_change_with_process(:spd, -1, foe)
       end
     end
+
+    # Ice Face
+    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Ice Face') do |handler, _, target, launcher, skill|
+      next if target.effects.has?(:heal_block) || !target.has_ability?(:ice_face)
+      next unless skill&.physical?
+      next unless launcher&.can_be_lowered_or_canceled?
+
+      original_form = target.form
+      target.form_calibrate(:battle)
+
+      if target.form != original_form
+        next handler.prevent_change do
+          handler.scene.visual.show_ability(target)
+          handler.scene.visual.show_switch_form_animation(target)
+        end
+      end
+    end
+
+    # Disguise - Back to form 0 after death
+    DamageHandler.register_post_damage_death_hook('PSDK Post damage: Ice Face') do |_, _, target, _, _|
+      next unless target&.has_ability?(:ice_face)
+
+      target&.form = 0
+    end
   end
 end

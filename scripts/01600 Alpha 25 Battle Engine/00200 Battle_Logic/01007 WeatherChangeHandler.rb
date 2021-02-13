@@ -143,10 +143,22 @@ module Battle
       end
     end
 
+    # Forecast
     WeatherChangeHandler.register_post_weather_change_hook('PSDK post weather: Ensure form switch on weather') do |handler|
       handler.logic.all_alive_battlers.each do |battler|
-        next unless battler.form_calibrate(:weather)
+        next unless battler.has_ability?(:forecast) && battler.form_calibrate(:weather)
 
+        handler.scene.visual.show_switch_form_animation(battler)
+      end
+    end
+
+    # Ice Face
+    WeatherChangeHandler.register_post_weather_change_hook('PSDK post weather: Ensure form switch on weather') do |handler|
+      handler.logic.all_alive_battlers.each do |battler|
+        next unless battler.has_ability?(:ice_face) && battler.form == 1
+
+        battler.form = 0
+        handler.scene.visual.show_ability(battler)
         handler.scene.visual.show_switch_form_animation(battler)
       end
     end

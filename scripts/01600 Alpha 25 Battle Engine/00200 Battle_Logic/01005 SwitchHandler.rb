@@ -515,5 +515,15 @@ module Battle
       handler.scene.visual.show_ability(with)
       handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1231, with))
     end
+
+    # Ice Face on Switch
+    SwitchHandler.register_switch_event_hook('PSDK Switch: Ice Face') do |handler, _, with|
+      next unless with.has_ability?(:ice_face) && $env.hail?
+      next if with&.form == 0
+
+      with&.form = 1
+      handler.scene.visual.show_ability(with)
+      handler.scene.visual.show_switch_form_animation(with)
+    end
   end
 end
