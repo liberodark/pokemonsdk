@@ -210,7 +210,10 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
   # Method that load the event
   def load_events
     return unless @events_info
+
     $game_player.z = @events_info[:player]
+    return if $game_system.magic_number != $data_system.magic_number
+
     @events_info.each do |id, info|
       next unless (event = @events[id])
       next unless event.original_map == @map_id
@@ -222,7 +225,9 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
       event.clear_starting
       event.check_event_trigger_auto
     end
+  ensure
     $game_player.check_event_trigger_here([1, 2])
     @events_info = nil
+    $game_system.magic_number = $data_system.magic_number
   end
 end
