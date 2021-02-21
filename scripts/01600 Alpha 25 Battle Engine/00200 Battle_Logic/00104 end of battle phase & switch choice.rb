@@ -34,21 +34,26 @@ module Battle
 
       log_debug('battle_phase_switch_exp_check working')
       battle_phase_exp
-      during_end_of_turn = @actions.empty?
-      @switch_request.each do |who:, with: nil|
-        next Actions::Switch.new(@scene, who, with).execute if who && with
-
-        log_data("Attempting to switch #{who}")
-        next unless can_battler_be_replaced?(who)
-
-        with = switch_choose_with(who)
-        log_data("Pokemon switched with #{who} : #{with}")
-        next unless with
-
-        request_switch_to_trainer(with) if who.bank != 0 && during_end_of_turn
-        Actions::Switch.new(@scene, who, with).execute
-      end
+      @switch_request.each { |h| battle_phase_switch_execute(**h) }
       @switch_request.clear
+    end
+
+    # Function that executes the switch request
+    # @param who [PFM::PokemonBattler] Pokemon being switched out
+    # @param with [PFM::PokemonBattler, nil] Pokemon replacing who
+    def battle_phase_switch_execute(who:, with: nil)
+      return Actions::Switch.new(@scene, who, with).execute if who && with
+
+      log_data("Attempting to switch #{who}")
+      return unless can_battler_be_replaced?(who)
+
+      with = switch_choose_with(who)
+      log_data("Pokemon switched with #{who} : #{with}")
+      return unless with
+
+      during_end_of_turn = @actions.empty?
+      request_switch_to_trainer(with) if who.bank != 0 && during_end_of_turn
+      Actions::Switch.new(@scene, who, with).execute
     end
 
     # Function that process the battle end when Pokemon was caught
