@@ -78,6 +78,7 @@ module Graphics
     def freeze
       return unless @window
 
+      @frozen_sprite.dispose if @frozen_sprite && !@frozen_sprite.disposed?
       @frozen_sprite = LiteRGSS::ShaderedSprite.new(window)
       @frozen_sprite.bitmap = snap_to_bitmap
       @frozen = 10
@@ -95,7 +96,11 @@ module Graphics
     def snap_to_bitmap
       all_viewport = viewports_in_order.select(&:visible)
       tmp = LiteRGSS::Viewport.new(window, 0, 0, width, height)
-      # TODO: add black background
+      bk = Image.new(width, height)
+      bk.fill_rect(0, 0, width, height, Color.new(0, 0, 0, 255))
+      sp = LiteRGSS::Sprite.new(tmp)
+      sp.bitmap = LiteRGSS::Bitmap.new(width, height)
+      bk.copy_to_bitmap(sp.bitmap)
       texture_to_dispose = all_viewport.map do |vp|
         texture = vp.snap_to_bitmap
         sprite = LiteRGSS::Sprite.new(tmp)
@@ -103,6 +108,8 @@ module Graphics
         sprite.set_position(vp.rect.x, vp.rect.y)
         next texture
       end
+      texture_to_dispose << bk
+      texture_to_dispose << sp.bitmap
       result_texture = tmp.snap_to_bitmap
       texture_to_dispose.each(&:dispose)
       tmp.dispose
