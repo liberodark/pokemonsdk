@@ -21,7 +21,6 @@ pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00011 Shader.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/99999 RMXP_DATA.rb
 pokemonsdk/scripts/00000 Dependencies/00200 GameData(dep)/00100 GameData__SystemTags.rb
 pokemonsdk/scripts/00000 Dependencies/00200 GameData(dep)/00900 Yuki__VD.rb
-pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00200 Object.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00201 Object_validate_param.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00202 Object_Module_void.rb
 pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00300 String.rb
@@ -170,7 +169,6 @@ pokemonsdk/scripts/01000 Util/00600 Util_Warp.rb
 pokemonsdk/scripts/01000 Util/00650 SystemMessage.rb
 pokemonsdk/scripts/01000 Util/00700 DragSprite.rb
 pokemonsdk/scripts/01100 Yuki/00100 Yuki__Sprite.rb
-pokemonsdk/scripts/01100 Yuki/00200 Yuki__BasicAnimator.rb
 pokemonsdk/scripts/01100 Yuki/00400 Yuki__MapLinker.rb
 pokemonsdk/scripts/01100 Yuki/00600 Yuki__TJN.rb
 pokemonsdk/scripts/01100 Yuki/00700 Yuki__Berries.rb
@@ -313,12 +311,6 @@ pokemonsdk/scripts/01300 UI/09002 Options/00003 Button.rb
 pokemonsdk/scripts/01300 UI/09003 Casino/00001 NumberDisplay.rb
 pokemonsdk/scripts/01300 UI/09003 Casino/00002 BandDisplay.rb
 pokemonsdk/scripts/01300 UI/09003 Casino/00004 BaseUI.rb
-pokemonsdk/scripts/01300 UI/09900 Leikt/02300 List.rb
-pokemonsdk/scripts/01300 UI/09900 Leikt/02305 List__Content.rb
-pokemonsdk/scripts/01300 UI/09900 Leikt/02306 List__Content__Helper.rb
-pokemonsdk/scripts/01300 UI/09900 Leikt/02310 UI__List__Item.rb
-pokemonsdk/scripts/01300 UI/09900 Leikt/02500 UI__ScrollBar.rb
-pokemonsdk/scripts/01300 UI/09900 Leikt/02600 UI__TextInput.rb
 pokemonsdk/scripts/01400 GamePlay/00000 GamePlay__Base.rb
 pokemonsdk/scripts/01400 GamePlay/00099 Movie.rb
 pokemonsdk/scripts/01400 GamePlay/00100 Scene_Title.rb
