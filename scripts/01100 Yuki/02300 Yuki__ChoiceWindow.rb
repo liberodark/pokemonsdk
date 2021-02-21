@@ -221,7 +221,7 @@ module Yuki
     end
 
     # Function that creates a new ChoiceWindow for Yuki::Message
-    # @param window [Game_Window] a window that has the right window_builder (to calculate the width)
+    # @param window [Window] a window that has the right window_builder (to calculate the width)
     # @return [ChoiceWindow] the choice window.
     def self.generate_for_message(window)
       choice_window = new(nil, $game_temp.choices, window.viewport)

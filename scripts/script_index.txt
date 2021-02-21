@@ -101,7 +101,6 @@ pokemonsdk/scripts/00700 Ajout_PSDK/00200 Tester.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00300 Text__Util.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00400 Text.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00500 SpriteSheet.rb
-pokemonsdk/scripts/00700 Ajout_PSDK/00900 Game_Window.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/01300 PSDK_Def.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/01700 Debugger.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/01800 XXX_simple_mouse_in_.rb
