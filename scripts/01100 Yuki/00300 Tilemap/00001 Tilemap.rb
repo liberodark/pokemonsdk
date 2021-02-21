@@ -81,6 +81,7 @@ module Yuki
     # @param tile_size [Integer] the dimension of a tile
     # @param zoom [Numeric] the global zoom of a tile
     def create_sprites(tile_size = 32, zoom = 1)
+      @zoom = zoom
       viewport = @viewport
       # Variable allowing to quicky update the sprites
       @all_sprites = []
@@ -133,6 +134,7 @@ module Yuki
     # @param ox [Integer] ox of every tiles
     # @param oy [Integer] oy of every tiles
     def update_position(ox, oy)
+      oy = ((oy * @zoom).ceil / @zoom).to_i if @zoom < 1
       add_z = oy / 2
       @sprites.each do |layer|
         layer.each_with_index do |priority_layer, priority|
