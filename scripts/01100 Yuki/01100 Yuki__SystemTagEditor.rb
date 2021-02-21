@@ -161,7 +161,7 @@ module Yuki
     end
 
     # Draw the current SystemTag
-    # @param bitmap [Bitmap] the bitmap where the SystemTag is drawn
+    # @param bitmap [Texture] the bitmap where the SystemTag is drawn
     # @param x [Integer] the x position where the SystemTag is drawn
     # @param y [Integer] the y position where the SystemTag is drawn
     # @param no_draw [Boolean] if the function only clears the surface where the SystemTag should be drawn
@@ -275,7 +275,7 @@ module Yuki
     def init_editable_surface
       @autotile_tag = ::Sprite.new
       @autotile_tag.z = 20_001
-      @autotile_tag.bitmap = Bitmap.new(256, 32)
+      @autotile_tag.bitmap = Texture.new(256, 32)
       @tileset_tag = ::Sprite.new
       @tileset_tag.z = 20_001
       @tileset_tag.y = 32
@@ -289,7 +289,7 @@ module Yuki
       @tileset_sprite.bitmap = RPG::Cache.tileset(TilesetName)
       @autotile_sprite = ::Sprite.new
       @autotile_sprite.z = 20_000
-      @autotile_sprite.bitmap = Bitmap.new(256, 32)
+      @autotile_sprite.bitmap = Texture.new(256, 32)
       load_tileset
       @tileset_scroll_bar = Yuki::ScrollBar.new(
         @tileset_sprite,
@@ -307,7 +307,7 @@ module Yuki
       @tag_sprite.bitmap = RPG::Cache.tileset(TilesetName)
       @tag_sprite.src_rect.set(0, 0, 256, 448)
       @tag_selector = ::Sprite.new
-      @tag_selector.bitmap = Bitmap.new(32, 32)
+      @tag_selector.bitmap = Texture.new(32, 32)
       @tag_selector.bitmap.fill_rect(0, 0, 32, 32, Color.new(200, 255, 60, 200))
       @tag_selector.bitmap.fill_rect(4, 4, 24, 24, Color.new(80, 255, 60, 128))
       @tag_selector.bitmap.update
@@ -326,7 +326,7 @@ module Yuki
       @info_text.visible = @tileset_sprite.bitmap.width > 256
       @tileset_sprite.src_rect.set(0, 0, 256, 448)
       @tileset_tag.bitmap&.dispose
-      @tileset_tag.bitmap = Bitmap.new(@tileset_sprite.bitmap.width, @tileset_sprite.bitmap.height)
+      @tileset_tag.bitmap = Texture.new(@tileset_sprite.bitmap.width, @tileset_sprite.bitmap.height)
       @tileset_tag.src_rect.set(0, 0, 256, 448)
       @tileset_scroll_bar&.load_parameters
       bmp = @autotile_sprite.bitmap
@@ -386,7 +386,7 @@ module Yuki
       @tileset_name_sprite = ::Sprite.new
       height = num_tileset * 16
       height = 480 if height < 480
-      @tileset_name_sprite.bitmap = Bitmap.new(92, height)
+      @tileset_name_sprite.bitmap = Texture.new(92, height)
       @tileset_name_sprite.src_rect.set(0, 0, 92, 480)
       x = @tileset_name_sprite.x = Graphics.width - 92 - 12
       @tileset_name_sprite.z = 20_000

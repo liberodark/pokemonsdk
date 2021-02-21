@@ -73,7 +73,7 @@ module Yuki
     end
 
     # Progress in the text display
-    # @param text [LiteRGSS::Text] the text element
+    # @param text [Text] the text element
     # @param str [String] the text shown
     # @param counter [Integer] the counter
     # @return [Integer] the new counter, if counter == -1, the user requested to skip the progress thing
@@ -121,7 +121,7 @@ module Yuki
     end
 
     # Set the text style
-    # @param text [LiteRGSS::Text]
+    # @param text [Text]
     # @param style [Integer] 1 = bold, 2 = italic, 3 = bold & italic
     def set_text_style(text, style)
       text.bold = true if (style & 1) != 0

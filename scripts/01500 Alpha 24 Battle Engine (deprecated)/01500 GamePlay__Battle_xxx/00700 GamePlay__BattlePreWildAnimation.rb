@@ -165,7 +165,7 @@ module GamePlay
       @layer11.ox = @layer1.ox = -320
       #>Fond noir qui se déplace
       @black = Sprite.new(@viewport)
-      @black.bitmap = Bitmap.new(448, 240)
+      @black.bitmap = Texture.new(448, 240)
       @black.bitmap.fill_rect(128,0,320,240, Color.new(0,0,0))
       bmp = RPG::Cache.transition("ecd_z01")
       @black.bitmap.blt(0,0, bmp, bmp.rect)

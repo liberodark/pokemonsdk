@@ -273,9 +273,9 @@ module GamePlay
 
     # Take a snapshot of the scene
     # @note You have to dispose the bitmap you got from this function
-    # @return [Bitmap]
+    # @return [Texture]
     def snap_to_bitmap
-      @viewport&.snap_to_bitmap || Bitmap.new(16, 16)
+      @viewport&.snap_to_bitmap || Texture.new(16, 16)
     end
 
     # Find a parent scene
@@ -496,7 +496,7 @@ module GamePlay
     # Create the viewport (oftern used)
     def create_viewport
       # Main viewport
-      # @type [LiteRGSS::Viewport]
+      # @type [Viewport]
       @viewport = Viewport.create(:main, 10_000)
     end
 

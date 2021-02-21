@@ -39,7 +39,7 @@ module GamePlay
       if [:transition_in, :end_transition_in].include? @ui_state
         limit = 0
       elsif [:transition_out, :end_transition_out].include? @ui_state
-        limit = 0 - LiteRGSS::Config::ScreenHeight
+        limit = 0 - Graphics.height
       end
       @transition.move_to(0, limit, 30)
       until @transition.y == limit do 

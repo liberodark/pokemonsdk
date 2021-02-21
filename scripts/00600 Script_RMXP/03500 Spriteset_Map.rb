@@ -36,12 +36,12 @@ class Spriteset_Map
   end
 
   # Take a snapshot of the spriteset
-  # @return [Array<Bitmap>]
+  # @return [Array<Texture>]
   def snap_to_bitmaps
     @viewport1.sort_z
     @viewport2.sort_z
     @viewport3.sort_z
-    background = Bitmap.new(@viewport1.rect.width, @viewport2.rect.width)
+    background = Texture.new(@viewport1.rect.width, @viewport2.rect.width)
     background_image = Image.new(background.width, background.height)
     background_image.fill_rect(0, 0, background.width, background.height, Color.new(0, 0, 0))
     background_image.copy_to_bitmap(background)
@@ -108,7 +108,7 @@ class Spriteset_Map
 
   # Attempt to load an autotile
   # @param filename [String] name of the autotile
-  # @return [Bitmap] the bitmap of the autotile
+  # @return [Texture] the bitmap of the autotile
   def load_autotile(filename)
     target_filename = filename + '_._tiled'
     if RPG::Cache.autotile_exist?(target_filename)
@@ -245,7 +245,7 @@ class Spriteset_Map
     @viewport1.update
     @viewport3.update
     exec_hooks(Spriteset_Map, :update, binding)
-    @viewport1.sort_z unless Graphics.skipping_frame?
+    @viewport1.sort_z # unless Graphics.skipping_frame?
   rescue ForceReturn => e
     log_error("Hooks tried to return #{e.data} in Spriteset_Map#update")
   end
@@ -358,7 +358,7 @@ class Spriteset_Map
   end
 
   # Return the map viewport
-  # @return [LiteRGSS::Viewport]
+  # @return [Viewport]
   def map_viewport
     return @viewport1
   end

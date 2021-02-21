@@ -131,7 +131,7 @@ module GamePlay
 
     def create_sprite_pkmn
       if ENABLE_GIF && (@pokemon_gif = @pokemon.gif_face)
-        add_disposable bitmap = Bitmap.new(@pokemon_gif.width, @pokemon_gif.height)
+        add_disposable bitmap = Texture.new(@pokemon_gif.width, @pokemon_gif.height)
         @pokemon_gif&.update(bitmap)
       end
       @sprite_pokemon = Sprite::WithColor.new(@viewport).set_bitmap(bitmap || @pokemon.battler_face)
@@ -141,7 +141,7 @@ module GamePlay
 
     def create_sprite_pkmn_evolved
       if ENABLE_GIF && (@clone_gif = @clone.gif_face)
-        add_disposable bitmap = Bitmap.new(@clone_gif.width, @clone_gif.height)
+        add_disposable bitmap = Texture.new(@clone_gif.width, @clone_gif.height)
         @clone_gif&.update(bitmap)
       end
       @sprite_clone = Sprite::WithColor.new(@viewport).set_bitmap(bitmap || @clone.battler_face)

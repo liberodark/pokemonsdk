@@ -36,7 +36,7 @@ module GamePlay
       width += BltCoords[4].width if $game_temp.shop_calling
       height = BltCoords[0].height
       #>Génération des surfaces
-      bmp = self.bitmap = Bitmap.new(width, height)
+      bmp = self.bitmap = Texture.new(width, height)
       init_text(0, viewport)
       bg_bmp = ::RPG::Cache.interface(BitmapFile)
       #>Position de l'interface sur l'axe x

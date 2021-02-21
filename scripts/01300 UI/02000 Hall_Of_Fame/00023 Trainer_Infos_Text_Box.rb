@@ -3,13 +3,13 @@ module UI
     # Class that define the Trainer Infos text box stack
     class Trainer_Infos_Text_Box < SpriteStack
       # The name text
-      # @return [LiteRGSS::Text]
+      # @return [Text]
       attr_accessor :name
       # The id_no text
-      # @return [LiteRGSS::Text]
+      # @return [Text]
       attr_accessor :id_no
       # The play_time text
-      # @return [LiteRGSS::Text]
+      # @return [Text]
       attr_accessor :play_time
       Y_FINAL = 202
       WHITE_COLOR = Color.new(255, 255, 255, 255)

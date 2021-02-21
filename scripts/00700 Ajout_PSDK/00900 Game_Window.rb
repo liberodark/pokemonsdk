@@ -28,19 +28,19 @@ class Game_Window
   # Offset Y of the contents
   # @return [Integer]
   attr_reader :oy
-  # Bitmap that contain the basic frame of the Window
-  # @return [Bitmap, nil]
+  # Texture that contain the basic frame of the Window
+  # @return [Texture, nil]
   attr_reader :windowskin
   # Array that describe how the frame is defined on the windowskin.
   #   Defined this way : [frame_mid_x, frame_mid_y, frame_mid_width, frame_mid_height, contents_ox, contents_oy]
   #   frame_mid correspond to the tile in the center of the frame.
   # @return [Array(Integer, Integer, Integer, Integer, Integer, Integer)]
   attr_reader :window_builder
-  # Bitmap of the pause_cursor, contains 4 frames 2 by 2
-  # @return [Bitmap, nil]
+  # Texture of the pause_cursor, contains 4 frames 2 by 2
+  # @return [Texture, nil]
   attr_reader :pauseskin
-  # Bitmap of the cursor, contains only one frame
-  # @return [Bitmap, nil]
+  # Texture of the cursor, contains only one frame
+  # @return [Texture, nil]
   attr_reader :cursorskin
   # Indicate if the frame is draw by stretching it or repeating it (middle tiles)
   # @return [Boolean]
@@ -135,9 +135,9 @@ class Game_Window
     end
   end
   # Change the cursorskin
-  # @param v [Bitmap] the new cursorskin
+  # @param v [Texture] the new cursorskin
   def cursorskin=(v)
-    return if v.class != Bitmap and v != nil
+    return if v.class != Texture and v != nil
     @cursorskin = v
     unless @cursor_sprite
       @cursor_sprite = Sprite.new(@window.viewport)
@@ -148,9 +148,9 @@ class Game_Window
     end
   end
   # Change the pauseskin
-  # @param v [Bitmap] the new pauseskin
+  # @param v [Texture] the new pauseskin
   def pauseskin=(v)
-    return if v.class != Bitmap and v != nil
+    return if v.class != Texture and v != nil
     @pauseskin=v
     unless @pause_sprite
       @pause_sprite = Sprite.new(@window.viewport)
@@ -232,14 +232,14 @@ class Game_Window
     @pause_sprite.z = v if @pause_sprite
   end
   # Change the windowskin of the Window
-  # @param v [Bitmap] the new windowskin of the window
+  # @param v [Texture] the new windowskin of the window
   def windowskin=(v)
-    return if v.class != Bitmap and v != nil
+    return if v.class != Texture and v != nil
     @windowskin = v
     yuri_draw_window if @width > 0 and @height > 0
   end
   # Return the contents of the Window
-  # @return [Bitmap, nil]
+  # @return [Texture, nil]
   def contents
     return @window.bitmap
   end
@@ -344,7 +344,7 @@ class Game_Window
     @window.bitmap.dispose if @window.bitmap
     @window.bitmap = nil
     return unless @windowskin
-    @window.bitmap = Bitmap.new(@width,@height)
+    @window.bitmap = Texture.new(@width,@height)
     @window.src_rect.set(0,0,@width,@height)
     yuri_draw_blt_window
     @window.bitmap.update

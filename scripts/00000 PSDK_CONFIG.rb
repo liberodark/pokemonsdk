@@ -64,7 +64,6 @@ module ScriptLoader
         instance_variable_set(ivar_name, data.instance_variable_get(ivar_name))
       end
       fix_variables(!data || should_save)
-      adjust_litergss_config
     end
 
     def copy_past_old_project_identity
@@ -92,6 +91,29 @@ module ScriptLoader
     def save_to_files
       File.write(YAML_FILENAME, YAML.dump(self))
       save_data(self, DAT_FILENAME)
+    end
+
+    # Function that choose the best resolution
+    # @return [Array<Integer>]
+    def choose_best_resolution
+      return editors_resolution if running_editor?
+
+      native = @native_resolution.split('x').collect(&:to_i)
+      @viewport_offset_x = 0
+      @viewport_offset_y = 0
+      if @running_in_full_screen
+        desired = [native.first * @window_scale, native.last * @window_scale].map(&:round)
+        all_res = LiteRGSS::DisplayWindow.list_resolutions
+        return native if all_res.include?(desired)
+
+        if all_res.include?(native)
+          @window_scale = 1
+          return native
+        end
+        return find_best_matching_resolution(native, desired, all_res)
+      else
+        return native
+      end
     end
 
     private
@@ -185,51 +207,6 @@ module ScriptLoader
         must_save = true
       end
       return must_save
-    end
-
-    # Function that adjust the liteRGSS configs
-    def adjust_litergss_config
-      resolution = choose_best_resolution
-      param = self
-      Config.module_eval do
-        remove_const :Title if const_defined?(:Title)
-        const_set :Title, param.game_title
-        remove_const :ScreenWidth if const_defined?(:ScreenWidth)
-        const_set :ScreenWidth, resolution.first
-        remove_const :ScreenHeight if const_defined?(:ScreenHeight)
-        const_set :ScreenHeight, resolution.last
-        remove_const :ScreenScale if const_defined?(:ScreenScale)
-        const_set :ScreenScale, param.window_scale
-        remove_const :SmoothScreen if const_defined?(:SmoothScreen)
-        const_set :SmoothScreen, param.smooth_texture
-        remove_const :FullScreen if const_defined?(:FullScreen)
-        const_set :FullScreen, param.running_in_full_screen
-        remove_const :Vsync if const_defined?(:Vsync)
-        const_set :Vsync, param.vsync_enabled
-      end
-    end
-
-    # Function that choose the best resolution
-    # @return [Array<Integer>]
-    def choose_best_resolution
-      return editors_resolution if running_editor?
-
-      native = @native_resolution.split('x').collect(&:to_i)
-      @viewport_offset_x = 0
-      @viewport_offset_y = 0
-      if @running_in_full_screen
-        desired = [native.first * @window_scale, native.last * @window_scale].map(&:round)
-        all_res = Graphics.list_resolutions
-        return native if all_res.include?(desired)
-
-        if all_res.include?(native)
-          @window_scale = 1
-          return native
-        end
-        return find_best_matching_resolution(native, desired, all_res)
-      else
-        return native
-      end
     end
 
     # Return the editor resolution

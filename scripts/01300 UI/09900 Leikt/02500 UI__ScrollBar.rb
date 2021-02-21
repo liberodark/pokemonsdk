@@ -74,11 +74,11 @@ module UI
     end
 
     # Create the background sprite
-    # @param cache_back_bmp [Bitmap] the background bitmap
+    # @param cache_back_bmp [Texture] the background bitmap
     # @param size [Integer] the size of the background sprite
     def create_background(cache_back_bmp, size)
       # Initialize variables
-      bmp = Bitmap.new(cache_back_bmp.width, size)
+      bmp = Texture.new(cache_back_bmp.width, size)
       # Copy the pixels to have a background matching the viewport length
       base_y = 0
       while base_y < bmp.height
@@ -92,21 +92,21 @@ module UI
     end
 
     # Create the button up sprite
-    # @param cach_up_bmp [Bitmap] the button up bitmap
+    # @param cach_up_bmp [Texture] the button up bitmap
     def create_button_up(cache_up_bmp)
       @button_up_sprite = push 0, 0, nil
       @button_up_sprite.set_bitmap(cache_up_bmp).set_rect_div(0, 0, 1, 2)
     end
 
     # Create the button down sprite
-    # @param cach_down_bmp [Bitmap] the button down bitmap
+    # @param cach_down_bmp [Texture] the button down bitmap
     def create_button_down(cache_down_bmp)
       @button_down_sprite = push 0, 0, nil
       @button_down_sprite.set_bitmap(cache_down_bmp).set_rect_div(0, 0, 1, 2)
     end
 
     # Create the sliding button sprite
-    # @param cach_button_bmp [Bitmap]the sliding button bitmap
+    # @param cach_button_bmp [Texture]the sliding button bitmap
     def create_button_slider(cach_button_bmp)
       @button_slider_sprite = push 0, 0, nil
       @button_slider_sprite.set_bitmap(cach_button_bmp).set_rect_div(0, 0, 1, 2)

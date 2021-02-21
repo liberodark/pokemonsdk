@@ -124,7 +124,7 @@ module Battle
     end
 
     # Snap all viewports to bitmap
-    # @return [Array<Bitmap>]
+    # @return [Array<Texture>]
     def snap_to_bitmaps
       return [@viewport, @viewport_sub].map(&:snap_to_bitmap)
     end

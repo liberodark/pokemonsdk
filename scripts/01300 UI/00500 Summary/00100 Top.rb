@@ -58,12 +58,12 @@ module UI
       push(72 + 6, 74 + 16, nil, type: RealHoldSprite)
     end
 
-    # @return [LiteRGSS::Sprite]
+    # @return [Sprite]
     def create_ball
       push(107, 11, nil, ox: 16, oy: 16)
     end
 
-    # @return [LiteRGSS::Sprite]
+    # @return [Sprite]
     def create_star
       push(91, 107, 'shiny')
     end

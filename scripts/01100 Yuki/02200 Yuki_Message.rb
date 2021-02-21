@@ -10,7 +10,7 @@ module Yuki
   # - Choosing the skin of the various elements
   # - Choosing the position of the window & the various elements (speaker etc...)
   # - Choosing the speed of the text display
-  class Message < LiteRGSS::Window
+  class Message < Window
     # Name of the pause skin in Graphics/Windowskins/
     PauseSkin = 'Pause2'
     # Windowskin for the name window
@@ -48,7 +48,7 @@ module Yuki
     end
 
     # Create a new Message handler
-    # @param viewport [LiteRGSS::Viewport]
+    # @param viewport [Viewport]
     # @param parent [GamePlay::Base, Scene_Map]
     def initialize(viewport, parent = $scene)
       raise 'Viewport required to display message' unless viewport

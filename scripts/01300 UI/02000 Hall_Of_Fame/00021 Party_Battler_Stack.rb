@@ -6,7 +6,7 @@ module UI
       # @return [Array<UI::PokemonFaceSprite>]
       attr_accessor :pokemon_arr
       # The trainer battler
-      # @return [LiteRGSS::Sprite]
+      # @return [Sprite]
       attr_accessor :trainer_battler
       X_PARTY = [99, 221, 69, 251, 38, 282]
       Y_PARTY = [180, 150, 120]

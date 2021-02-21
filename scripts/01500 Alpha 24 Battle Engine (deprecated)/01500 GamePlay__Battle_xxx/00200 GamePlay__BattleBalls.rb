@@ -8,7 +8,7 @@ module GamePlay
     # Ball offset
     Offset = 14
     # Create a new Battle Bal
-    # @param viewport [LiteRGSS::Viewport]
+    # @param viewport [Viewport]
     # @param team [Array<PFM::Pokemon>] the pokemon of a trainer
     # @param direction [Boolean] if the balls comes from the right
     def initialize(viewport, team, direction)

@@ -26,19 +26,6 @@ rescue LoadError
   display_game_exception('An error occured during extensions loading.')
 end
 
-# Class that describe a Color (compatibility with RGSS load data)
-class ::Color < LiteRGSS::Color
-  # Do nothing
-end
-
-# Class that describe a Tone (compatibility with RGSS load data)
-class ::Tone < LiteRGSS::Tone
-  # Do nothing
-end
-
-# Include all the liteRGSS classes to the current module
-include LiteRGSS
-
 # Store the RGSS Main entry function
 def rgss_main
   $GAME_LOOP = proc do

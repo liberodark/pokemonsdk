@@ -3,7 +3,7 @@ module BattleUI
     # @return [Array, :cancel] the position (bank, position) of the choosen target
     attr_accessor :result
     # Create a new TargetSelection
-    # @param viewport [LiteRGSS::Viewport]
+    # @param viewport [Viewport]
     # @param launcher [PFM::PokemonBattler]
     # @param move [Battle::Move]
     # @param logic [Battle::Logic]

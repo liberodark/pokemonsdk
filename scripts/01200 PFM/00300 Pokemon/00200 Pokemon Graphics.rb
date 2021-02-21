@@ -28,7 +28,7 @@ module PFM
     FOOT_SIZE = 16
 
     # Return the ball image of the Pokemon
-    # @return [Bitmap]
+    # @return [Texture]
     def ball_image
       return RPG::Cache.ball(ball_sprite)
     end
@@ -128,20 +128,20 @@ module PFM
     end
 
     # Return the icon of the Pokemon
-    # @return [Bitmap]
+    # @return [Texture]
     def icon
       return RPG::Cache.b_icon(PFM::Pokemon.icon_filename(id, form, female?, shiny?, egg?))
     end
 
     # Return the front battler of the Pokemon
-    # @return [Bitmap]
+    # @return [Texture]
     def battler_face
       return RPG::Cache.poke_front(PFM::Pokemon.front_filename(id, form, female?, shiny?, egg?), shiny? ? 1 : 0)
     end
     alias battler_front battler_face
 
     # Return the back battle of the Pokemon
-    # @return [Bitmap]
+    # @return [Texture]
     def battler_back
       return RPG::Cache.poke_back(PFM::Pokemon.back_filename(id, form, female?, shiny?, egg?), shiny? ? 1 : 0)
     end

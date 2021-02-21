@@ -6,7 +6,7 @@ module Battle
       class Base
         # Create a new transition
         # @param scene [Battle::Scene]
-        # @param screenshot [Bitmap]
+        # @param screenshot [Texture]
         def initialize(scene, screenshot)
           @scene = scene
           @visual = scene.visual
@@ -14,7 +14,7 @@ module Battle
           @screenshot = screenshot
           # @type [Array<Yuki::Animation>]
           @animations = []
-          # @type [Array<Bitmap, Sprite>]
+          # @type [Array<Texture, Sprite>]
           @to_dispose = [screenshot]
         end
 

@@ -166,7 +166,7 @@ module GamePlay
     # Create the Pokemon sprite
     def create_pokemon_sprite
       if ENABLE_GIF && (@pokemon_gif = @pokemon.gif_face)
-        add_disposable bitmap = Bitmap.new(@pokemon_gif.width, @pokemon_gif.height)
+        add_disposable bitmap = Texture.new(@pokemon_gif.width, @pokemon_gif.height)
         @pokemon_gif&.update(bitmap)
       end
       @pokemon_sprite = Sprite::WithColor.new(@viewport).set_bitmap(bitmap || @pokemon.battler_face)

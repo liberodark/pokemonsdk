@@ -128,7 +128,7 @@ module UI
       # Array of button coordinates
       COORDINATES = [[3, 219], [83, 219], [163, 219], [243, 219]]
       # Create a new Button
-      # @param viewport [LiteRGSS::Viewport]
+      # @param viewport [Viewport]
       # @param coords_index [Integer] index of the coordinates to use in order to position the button
       # @param key [Symbol] key to show by default
       def initialize(viewport, coords_index, key)

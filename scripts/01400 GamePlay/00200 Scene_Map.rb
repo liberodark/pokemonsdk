@@ -96,7 +96,7 @@ class Scene_Map < GamePlay::Base
 
   # Take a snapshot of the scene
   # @note You have to dispose the bitmap you got from this function
-  # @return [Bitmap]
+  # @return [Texture]
   def snap_to_bitmap
     temp_view = Viewport.create(:main)
     # Snapshot of spriteset

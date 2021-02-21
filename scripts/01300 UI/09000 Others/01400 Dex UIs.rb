@@ -89,7 +89,7 @@ module UI
   # Dex sprite that show the Pokemon infos
   class DexButton < SpriteStack
     # Create a new dex button
-    # @param viewport [LiteRGSS::Viewport]
+    # @param viewport [Viewport]
     # @param index [Integer] index of the sprite in the viewport
     def initialize(viewport, index)
       # Create the sprite stack at coordinate 147, 62 using the RPG::Cache.pokedex as image source

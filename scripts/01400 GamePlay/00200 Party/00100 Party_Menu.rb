@@ -126,10 +126,10 @@ module GamePlay
 
     # Create the frame sprites
     def create_frames
-      # @type [LiteRGSS::Sprite]
+      # @type [Sprite]
       @black_frame = Sprite.new(@viewport) #  Get the Blackn ^^
       # Scene frame
-      # @type [LiteRGSS::Sprite]
+      # @type [Sprite]
       @frame = Sprite.new(@viewport).set_bitmap($options.language == 'fr' ? 'team/FrameFR' : 'team/FrameEN', :interface)
     end
 
@@ -147,7 +147,7 @@ module GamePlay
     # Create the selector
     def create_selector
       # Scene selector
-      # @type [LiteRGSS::Sprite]
+      # @type [Sprite]
       @selector = Sprite.new(@viewport).set_bitmap('team/Cursors', :interface)
       @selector.src_rect.set(*SelectorRect[0])
       update_selector_coordinates

@@ -11,7 +11,7 @@ module GamePlay
     end
     FadeOutAnim << [:stop_animation]
     # Creates a new BattleAbilityDisplayer
-    # @param viewport [LiteRGSS::Viewport] The viewport in which the interface is shown
+    # @param viewport [Viewport] The viewport in which the interface is shown
     # @param pokemon [PFM::Pokemon] the Pokemon that has the ability to show
     # @param animation_stack [Array] the stack of animated sprite of the Battle
     def initialize(viewport, pokemon, animation_stack)

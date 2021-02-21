@@ -93,17 +93,17 @@ module Yuki
     # Update the origin x/y
     # @param wm [Class] should contain TileSize and BitmapOffset constants
     def update_origin(worldmap)
-      @ox += 1 if Input.repeat?(:right)
+      @ox += 1 if Input.repeat?(:RIGHT)
       max_ox = (@map_sprite.width - Graphics.width + worldmap::BitmapOffset) / worldmap::TileSize
       max_ox = 1 if max_ox <= 0
       @ox = max_ox - 1 if @ox >= max_ox
-      @ox -= 1 if Input.repeat?(:left)
+      @ox -= 1 if Input.repeat?(:LEFT)
       @ox = 0 if @ox < 0
-      @oy += 1 if Input.repeat?(:down)
+      @oy += 1 if Input.repeat?(:DOWN)
       max_oy = (@map_sprite.height - Graphics.height + worldmap::BitmapOffset) / worldmap::TileSize
       max_oy = 1 if max_oy <= 0
       @oy = max_oy - 1 if @oy >= max_oy
-      @oy -= 1 if Input.repeat?(:up)
+      @oy -= 1 if Input.repeat?(:UP)
       @oy = 0 if @oy < 0
     end
 

@@ -40,7 +40,7 @@ module PFM
     end
 
     # Display the choice
-    # @param viewport [LiteRGSS::Viewport] viewport in wich the choice is shown
+    # @param viewport [Viewport] viewport in wich the choice is shown
     # @param x [Integer] x coordinate of the choice window
     # @param y [Integer] y coordinate of the choice window
     # @param width [Integer] width of the choice window
@@ -69,7 +69,7 @@ module PFM
     private
 
     # Build the choice window
-    # @param viewport [LiteRGSS::Viewport] viewport in wich the choice is shown
+    # @param viewport [Viewport] viewport in wich the choice is shown
     # @param x [Integer] x coordinate of the choice window
     # @param y [Integer] y coordinate of the choice window
     # @param width [Integer] width of the choice window

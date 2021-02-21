@@ -94,7 +94,7 @@ module GamePlay
         gif = pokemon.position < 0 ? pokemon.gif_face : pokemon.gif_back
         if gif
           @gif = gif
-          self.bitmap = Bitmap.new(@gif.width, @gif.height)
+          self.bitmap = Texture.new(@gif.width, @gif.height)
           @gif.update(bitmap)
         else
           self.bitmap = pokemon.position < 0 ? pokemon.battler_face : pokemon.battler_back

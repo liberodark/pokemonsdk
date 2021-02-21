@@ -544,7 +544,7 @@ module RPG
   end
 end
 module RPG
-  class Sprite < LiteRGSS::ShaderedSprite
+  class Sprite < ::Sprite
     attr_accessor :blend_type
     attr_accessor :bush_depth
     attr_accessor :tone
@@ -618,7 +618,7 @@ module RPG
       else
         damage_string = value.to_s
       end
-      bitmap = Bitmap.new(160, 48)
+      bitmap = Texture.new(160, 48)
       bitmap.font.name = "Arial Black"
       bitmap.font.size = 32
       bitmap.font.color.set(0, 0, 0)
@@ -1313,19 +1313,19 @@ module RPG
       @oy = 0
       color1 = Color.new(255, 255, 255, 255)
       color2 = Color.new(255, 255, 255, 128)
-      @rain_bitmap = Bitmap.new(7, 56)
+      @rain_bitmap = Texture.new(7, 56)
       for i in 0..6
         @rain_bitmap.fill_rect(6-i, i*8, 1, 8, color1)
       end
       @rain_bitmap.update
-      @storm_bitmap = Bitmap.new(34, 64)
+      @storm_bitmap = Texture.new(34, 64)
       for i in 0..31
         @storm_bitmap.fill_rect(33-i, i*2, 1, 2, color2)
         @storm_bitmap.fill_rect(32-i, i*2, 1, 2, color1)
         @storm_bitmap.fill_rect(31-i, i*2, 1, 2, color2)
       end
       @storm_bitmap.update
-      @snow_bitmap = Bitmap.new(6, 6)
+      @snow_bitmap = Texture.new(6, 6)
       @snow_bitmap.fill_rect(0, 1, 6, 4, color2)
       @snow_bitmap.fill_rect(1, 0, 4, 6, color2)
       @snow_bitmap.fill_rect(1, 2, 4, 2, color1)

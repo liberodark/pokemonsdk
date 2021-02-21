@@ -168,3 +168,6 @@ module Scheduler
     return Scene_Title.new
   end
 end
+
+Hooks.register(Graphics, :transition, 'PSDK Graphics.transition') { Scheduler.start(:on_transition) }
+Hooks.register(Graphics, :update, 'PSDK Graphics.update') { Scheduler.start(:on_update) }

@@ -116,7 +116,7 @@ module BattleUI
     end
 
     # Set the bitmap of the sprite
-    # @param bitmap [Bitmap]
+    # @param bitmap [Texture]
     def bitmap=(bitmap)
       @shadow.bitmap = bitmap
       super
@@ -175,7 +175,7 @@ module BattleUI
         gif = pokemon.bank != 0 ? pokemon.gif_face : pokemon.gif_back
         if gif
           @gif = gif
-          self.bitmap = Bitmap.new(gif.width, gif.height)
+          self.bitmap = Texture.new(gif.width, gif.height)
           gif.draw(bitmap)
         else
           self.bitmap = pokemon.bank != 0 ? pokemon.battler_face : pokemon.battler_back

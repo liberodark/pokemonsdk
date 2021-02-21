@@ -13,7 +13,7 @@ module GamePlay
     attr_reader :pokemon
     include UI
     # Create a new Battle Bar
-    # @param viewport [LiteRGSS::Viewport]
+    # @param viewport [Viewport]
     # @param pokemon [PFM::Pokemon]
     def initialize(viewport, pokemon)
       super(viewport)

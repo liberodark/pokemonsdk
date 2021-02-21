@@ -27,7 +27,7 @@ module Yuki
     #       add_z: Integer # The z offset relatively to the character
     #       oy_offset: Integer # The offset in oy
     #       opacity: Integer # The opacity of the particle
-    #       chara: Boolean # If the particle Bitmap is treaten like the Character bitmap
+    #       chara: Boolean # If the particle Texture is treaten like the Character bitmap
     #       rect: Array(Integer, Integer, Integer, Integer) # the parameter of the #set function of Rect (src_rect)
     # @param on_tp [Boolean] tells the particle to skip the :enter animation or not
     # @param params [Hash] additional params for the animation

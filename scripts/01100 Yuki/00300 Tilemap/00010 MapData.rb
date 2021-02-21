@@ -152,7 +152,7 @@ module Yuki
         name = $game_temp.tileset_name || @tileset.tileset_name
         $game_temp.tileset_name = nil
 
-        # @type [Array<Bitmap>]
+        # @type [Array<Texture>]
         # TODO: Add split loading of the tileset that way :
         #   1. load the image (if not chunked)
         #   2. split it in chunk of 256x1024 named this way tilesename-chunk_id
@@ -161,14 +161,14 @@ module Yuki
         #   Final result : @tilesets = (MapData.tileset_chunks[tileset_name] || load_chunks(tileset_name))
         #                              .map { |filename| RPG::Cache.tileset(filename) }
         @tilesets = load_tileset_chunks(@tileset_name = name)
-        # @type [Array<Bitmap>]
+        # @type [Array<Texture>]
         @autotiles = @tileset.autotile_names.map { |aname| MapLinker.spriteset.load_autotile(aname) }
         @autotile_counter = Array.new(@autotiles.size + 1, 0)
       end
 
       # Load tileset chunks
       # @param name [Filename]
-      # @return [Array<Bitmap>]
+      # @return [Array<Texture>]
       def load_tileset_chunks(name)
         chunks = MapData.tileset_chunks[name]
         chunks&.compact!
@@ -184,7 +184,7 @@ module Yuki
         chunks = (image.height / 1024.0).ceil.times.map do |i|
           height = ((i + 1) * 1024) > image.height ? image.height - (i * 1024) : 1024
           working_surface.blt!(0, 0, image, rect.set(0, i * 1024, 256, height))
-          bmp = Bitmap.new(256, 1024)
+          bmp = Texture.new(256, 1024)
           working_surface.copy_to_bitmap(bmp)
           next bmp
         end
@@ -250,7 +250,7 @@ module Yuki
 
       class << self
         # Get tileset chunks
-        # @return [Hash{filename => Array<Bitmap>}]
+        # @return [Hash{filename => Array<Texture>}]
         attr_reader :tileset_chunks
       end
     end

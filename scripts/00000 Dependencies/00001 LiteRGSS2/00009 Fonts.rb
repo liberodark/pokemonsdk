@@ -1,3 +1,5 @@
+raise 'You did not loaded LiteRGSS2' unless defined?(LiteRGSS::DisplayWindow)
+
 module LiteRGSS
   module Fonts
     # Tell if the game supports specific pokemon glyph
@@ -20,17 +22,19 @@ module LiteRGSS
     end
   end
 end
+# Alias access to the Fonts module
+Fonts = LiteRGSS::Fonts
 
 Graphics.on_start do
   PSDK_CONFIG.layout.general.ttf_files.each do |ttf_file|
     id = ttf_file[:id]
-    Fonts.load_font(id, "Fonts/#{ttf_file[:name]}.ttf")
-    Fonts.set_default_size(id, ttf_file[:size])
-    Fonts.load_line_height(id, ttf_file[:line_height])
+    LiteRGSS::Fonts.load_font(id, "Fonts/#{ttf_file[:name]}.ttf")
+    LiteRGSS::Fonts.set_default_size(id, ttf_file[:size])
+    LiteRGSS::Fonts.load_line_height(id, ttf_file[:line_height])
   end
   PSDK_CONFIG.layout.general.alt_sizes.each do |size|
     id = size[:id]
-    Fonts.set_default_size(id, size[:size])
-    Fonts.load_line_height(id, size[:line_height])
+    LiteRGSS::Fonts.set_default_size(id, size[:size])
+    LiteRGSS::Fonts.load_line_height(id, size[:line_height])
   end
 end

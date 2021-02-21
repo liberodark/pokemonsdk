@@ -131,9 +131,9 @@ module RPG
       @_animation_sprites = []
       if @_animation.position != 3 || !@@_animations.include?(animation)
         0.upto(15) do
-          sprite = LiteRGSS::ShaderedSprite.new(viewport)
+          sprite = ShaderedSprite.new(viewport)
           sprite.bitmap = bitmap
-          sprite.shader = LiteRGSS::Shader.new(SHADER)
+          sprite.shader = Shader.new(SHADER)
           sprite.shader.set_float_uniform('hue', Math::PI * (360 - animation_hue) / 180)
           sprite.visible = false
           @_animation_sprites.push(sprite)

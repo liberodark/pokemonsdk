@@ -14,7 +14,7 @@ module Yuki
     attr_accessor :oy
 
     # Create a new Tilemap
-    # @param viewport [LiteRGSS::Viewport]
+    # @param viewport [Viewport]
     def initialize(viewport)
       @viewport = viewport
       create_sprites

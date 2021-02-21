@@ -31,7 +31,7 @@ module UI
     end
 
     # Function that creates the snapshot
-    # @return [Bitmap]
+    # @return [Texture]
     def create_snapshot
       bitmap&.dispose
       return @last_scene.viewport.snap_to_bitmap if @last_scene.is_a?(Scene_Battle)

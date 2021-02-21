@@ -1,7 +1,7 @@
 module Yuki
   # Display a choice Window
   # @author Nuri Yuri
-  class ChoiceWindow < LiteRGSS::Window
+  class ChoiceWindow < Window
     # Array of choice colors
     # @return [Array<Integer>]
     attr_accessor :colors

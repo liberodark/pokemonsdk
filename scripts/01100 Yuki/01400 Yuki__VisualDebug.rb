@@ -126,7 +126,7 @@ module Yuki
       end
     end
     # Draw the roaming Pokemon informations
-    # @param bmp [Bitmap] the bitmap where to draw the Roaming Pokemon
+    # @param bmp [Texture] the bitmap where to draw the Roaming Pokemon
     # @param group [Array] list of PFM::Wild_*Info
     def update_draw_roaming(bmp, group)
       return if group.size < 1
@@ -146,7 +146,7 @@ module Yuki
       end
     end
     # Draw a pokemon group
-    # @param bmp [Bitmap] the bitmap where to draw the Pokemon
+    # @param bmp [Texture] the bitmap where to draw the Pokemon
     # @param x [Integer] the x position where to start drawing Pokemon
     # @param y [Integer] the y position where to start drawing Pokemon
     # @param ids [Array<Integer>] the list of Pokemon ID
@@ -239,7 +239,7 @@ module Yuki
       @viewport.z = 15_000
       @text = ::Sprite.new(@viewport)
       @text.z = 1
-      @text.bitmap = Bitmap.new(640, 480)
+      @text.bitmap = Texture.new(640, 480)
       @text.bitmap.font.set_small_font
 
       @systag_sprite = Utils.create_sprite(@viewport, "prio_w", 0, 32, 1, 

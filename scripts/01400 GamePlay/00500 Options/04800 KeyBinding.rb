@@ -107,7 +107,7 @@ module GamePlay
 
     # When the player presses A in selection mode
     def action_a_sel
-      return display_message(ext_text(8998, 28)) if @ui.key_index == 4 && !Input.joy_connected?(Input.main_joy)
+      return display_message(ext_text(8998, 28)) if @ui.key_index == 4 && !Sf::Joystick.connected?(Input.main_joy)
       @ui.blinking = true
       @cool_down = 10
       @base_ui.mode = 2
@@ -147,8 +147,8 @@ module GamePlay
         end
         return action_b_blink if Input::Keyboard.press?(Input::Keyboard::Escape)
 
-        0.upto(Input.joy_button_count(Input.main_joy)) do |key_value|
-          if Input.joy_button_press?(Input.main_joy, key_value)
+        0.upto(Sf::Joystick.button_count(Input.main_joy)) do |key_value|
+          if Sf::Joystick.press?(Input.main_joy, key_value)
             return validate_key((-key_value - 1) - 32 * Input.main_joy)
           end
         end

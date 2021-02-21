@@ -70,7 +70,7 @@ module Yuki
       csp.x = base_x
       csp.y = @scroll_min_y
       csp.z = z
-      csp.bitmap = Bitmap.new(back_bmp.width, @surface.height - (down_bmp.height - up_bmp.height) / 2)
+      csp.bitmap = Texture.new(back_bmp.width, @surface.height - (down_bmp.height - up_bmp.height) / 2)
       base_y = 0
       while base_y < csp.bitmap.height
         csp.bitmap.blt(0, base_y, back_bmp, back_bmp.rect)

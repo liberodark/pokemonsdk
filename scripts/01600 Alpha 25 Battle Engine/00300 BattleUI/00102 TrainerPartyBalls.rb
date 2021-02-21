@@ -26,7 +26,7 @@ module BattleUI
     attr_reader :scene
 
     # Create a new Trainer Party Balls
-    # @param viewport [LiteRGSS::Viewport]
+    # @param viewport [Viewport]
     # @param scene [Battle::Scene]
     # @param bank [Integer]
     def initialize(viewport, scene, bank)
