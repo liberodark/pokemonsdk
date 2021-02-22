@@ -16,7 +16,7 @@ module GamePlay
     # List of the usable tools
     TOOLS = %i[pickaxe mace dynamite]
     # Pathname of the SE folder
-    SE_PATH = 'audio/se/mining_game/'
+    SE_PATH = 'audio/se/mining_game'
     # @return [UI::MiningGame::Tiles_Stack]
     attr_accessor :tiles_stack
     # @return [Array<PFM::MiningGame::Diggable>]
@@ -37,10 +37,11 @@ module GamePlay
       @arr_items_won = []
       # @type [Yuki::Animation::TimedAnimation]
       @animation = nil
-      # States are :transition_in, :transition_out, :end_transition_in, :end_transition_out, :mouse & :animation
-      @ui_state = :transition_in
-      create_transition
-      update_transition
+      # @type [Yuki::Animation::TimedAnimation]
+      @transition_animation = nil
+      # States are :mouse, :animation
+      @ui_state = :mouse
+      @mbf_type = :mining_game
       Audio.bgm_play(music_filename)
       @running = true
     end
@@ -49,7 +50,8 @@ module GamePlay
 
     # Method that execute the ping sound and might trigger the texts displayed the first time the player plays
     def launch_ping_text
-      Audio.se_play(SE_PATH + 'ping')
+      @transition_animation = nil
+      Audio.se_play(File.join(SE_PATH, 'ping'))
       Graphics.wait(60)
       ping_text
       if $pokemon_party.mining_game.first_time

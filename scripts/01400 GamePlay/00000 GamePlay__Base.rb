@@ -103,7 +103,7 @@ module GamePlay
     # @param no_message [Boolean] if the scene is created wihout the message management
     # @param message_z [Integer] the z superiority of the message
     # @param message_viewport_args [Array] if empty : [:main, message_z] will be used.
-    def initialize(no_message = false, message_z = 10_001, *message_viewport_args)
+    def initialize(no_message = false, message_z = 20_000, *message_viewport_args)
       # List of object to dispose in #dispose
       @object_to_dispose = []
       # Force the message window of the map to be closed
@@ -227,9 +227,11 @@ module GamePlay
     # Call an other scene
     # @param name [Class] the scene to call
     # @param args [Array] the parameter of the initialize method of the scene to call
+    # @param fade_out_params [Array, nil] params to send to the fade_out function (when this scene hides to call the next scene)
+    # @param fade_in_params [Array, nil] params to send to the fade_in function (when this scene comes back)
     # @return [Boolean] if this scene can still run
-    def call_scene(name, *args, &result_process)
-      fade_out(@cfo_type || DEFAULT_TRANSITION, @cfo_param || DEFAULT_TRANSITION_PARAMETER)
+    def call_scene(name, *args, fade_out_params: nil, fade_in_params: nil, &result_process)
+      fade_out(*(fade_out_params || [@cfo_type || DEFAULT_TRANSITION, @cfo_param || DEFAULT_TRANSITION_PARAMETER]))
       # Make the current scene invisible
       self.visible = false
       result_process ||= @__result_process
@@ -243,7 +245,7 @@ module GamePlay
       return @running = false if $scene != self || !@running
 
       self.visible = true
-      fade_in(@cfi_type || DEFAULT_TRANSITION, @cfi_param || DEFAULT_TRANSITION_PARAMETER)
+      fade_in(*(fade_in_params || [@cfi_type || DEFAULT_TRANSITION, @cfi_param || DEFAULT_TRANSITION_PARAMETER]))
       return true
     end
 

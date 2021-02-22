@@ -173,7 +173,7 @@ Style/DocumentDynamicEvalDefinition:
   Enabled: true
 # Will allow once Ruby 3.0 gets stabilized on PSDK
 Style/EndlessMethod:
-  EnforcedStyle: disallow
+  Enabled: false
 Style/HashConversion:
   Enabled: true
 # TODO: Enable in the futur

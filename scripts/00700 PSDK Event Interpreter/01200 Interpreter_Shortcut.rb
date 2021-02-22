@@ -292,25 +292,18 @@ class Interpreter
   #   @param wanted_item_db_symbols [Array<Symbol>] the array containing the specific items (comprised between 1 and 5 items)
   #   @param music_filename [String] the filename of the music to play
   def mining_game(param = nil, music_filename = GamePlay::MiningGame::DEFAULT_MUSIC, delete_after: true)
-    if $game_map.events[@event_id].event.name.downcase.include?('miningrock')
-      nb = 2
-    else
-      nb = 0
-    end
+    message_id = $game_map.events[@event_id].event.name.downcase.include?('miningrock') ? 2 : 0
     if $pokemon_party.bag.contain_item?(:explorer_kit)
-      if yes_no_choice(ext_text(9005, nb))
+      if yes_no_choice(ext_text(9005, message_id))
         $game_system.bgm_memorize
         $game_system.bgm_fade(0.2)
-        $scene = GamePlay::MiningGame.new(param, music_filename)
-        $scene.main
+        $scene.call_scene(GamePlay::MiningGame, param, music_filename, fade_out_params: [:mining_game, 0])
         $game_system.bgm_restore
-        Graphics.transition
         @wait_count = 2
         delete_this_event_forever if delete_after
       end
     else
-      nb += 1
-      message(ext_text(9005, nb))
+      message(ext_text(9005, message_id + 1))
     end
   end
 end

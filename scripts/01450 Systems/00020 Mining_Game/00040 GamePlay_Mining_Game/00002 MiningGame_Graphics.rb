@@ -9,6 +9,7 @@ module GamePlay
       super
       # Ensure the handler is ready before creating the graphics
       Graphics.update until @handler.ready?
+      create_snapshot
       create_background
       create_tool_buttons
       create_diggable_stacks
@@ -17,43 +18,15 @@ module GamePlay
       create_tool_hit_sprite
       create_iron_hit_sprite
       create_tool_sprite
-      create_transition
-      update_transition
-      launch_ping_text
-    end
-
-    # Create the transition (black screen)
-    def create_transition
-      @transition.dispose if @transition.is_a? Yuki::Sprite
-      @transition = Yuki::Sprite.new(@viewport)
-      @transition.set_bitmap('mining_game/black_background', :interface)
-      if [:transition_in, :end_transition_in].include? @ui_state
-        @transition.y -= @transition.height
-      elsif [:transition_out, :end_transition_out].include? @ui_state
-        @transition.y -= 0
-      end
-    end
-
-    # Update the black screen transition
-    def update_transition
-      if [:transition_in, :end_transition_in].include? @ui_state
-        limit = 0
-      elsif [:transition_out, :end_transition_out].include? @ui_state
-        limit = 0 - Graphics.height
-      end
-      @transition.move_to(0, limit, 30)
-      until @transition.y == limit do 
-        @transition.update_position
-        Graphics.wait(1)
-      end
-      @ui_state = :mouse if @ui_state == :transition_out
-      @ui_state = :transition_out if @ui_state == :transition_in
-      @ui_state = :end_transition_out if @ui_state == :end_transition_in
+      create_transition_sprite
+      start_transition_in_animation
+      Graphics.sort_z
     end
 
     # Update the graphics that needs to be updated (and @animation)
     def update_graphics
       @tool_buttons.animation.update if @tool_buttons.animation && !@tool_buttons.animation.done?
+      @transition_animation&.update
       return unless @ui_state == :animation
       return if !@animation || @animation.done?
 
@@ -61,6 +34,27 @@ module GamePlay
       @tool_sprite.update
       @tool_hit_sprite.update
       @ui_state = :mouse if @animation.done?
+    end
+
+    # Create the viewports
+    def create_viewport
+      super
+      @sup_viewport = Viewport.create(:main, @viewport.z + 1)
+    end
+
+    # Create the map snapshot
+    def create_snapshot
+      return unless @__last_scene&.viewport
+
+      @snapshot = Sprite.new(@sup_viewport)
+      add_disposable(@snapshot.bitmap = @__last_scene.viewport.snap_to_bitmap)
+    end
+
+    # Create the transition sprite
+    def create_transition_sprite
+      @transition = Sprite.new(@sup_viewport)
+      @transition.set_bitmap('mining_game/black_background', :interface)
+      @transition.set_position(0, -@transition.height)
     end
 
     # Create the background

@@ -115,14 +115,33 @@ module GamePlay
     end
 
     # Play the wall collapsing animation
-    def wall_collapse_anim
-      @sprite = Sprite.new(@viewport)
-      @sprite.set_bitmap('mining_game/black_screen', :interface)
-      @sprite.set_rect(0, 0, 320, 0)
-      until @sprite.src_rect.height == 240
-        @sprite.src_rect.height += 8
-        Graphics.wait(1)
-      end
+    def start_wall_collapse_anim
+      @transition_animation = Yuki::Animation.send_command_to(@transition, :visible=, true)
+      @transition_animation.play_before(black_in_animation)
+      @transition_animation.play_before(Yuki::Animation.message_locked_animation)
+      @transition_animation.play_before(Yuki::Animation.send_command_to(self, :launch_loose_message))
+      @transition_animation.start
+    end
+
+    # Start the transition_in animation
+    def start_transition_in_animation
+      @transition_animation = black_in_animation
+      @transition_animation.play_before(Yuki::Animation.send_command_to(@snapshot, :visible=, false))
+      @transition_animation.play_before(black_out_animation)
+      @transition_animation.play_before(Yuki::Animation.send_command_to(@transition, :visible=, false))
+      @transition_animation.play_before(Yuki::Animation.message_locked_animation)
+      @transition_animation.play_before(Yuki::Animation.send_command_to(self, :launch_ping_text))
+      @transition_animation.start
+    end
+
+    # Get the black sprite in animation
+    def black_in_animation
+      return Yuki::Animation.move(0.5, @transition, 0, -@transition.height, 0, 0)
+    end
+
+    # Get the black sprite out animation
+    def black_out_animation
+      return Yuki::Animation.move(0.5, @transition, 0, 0, 0, -@transition.height)
     end
   end
 end

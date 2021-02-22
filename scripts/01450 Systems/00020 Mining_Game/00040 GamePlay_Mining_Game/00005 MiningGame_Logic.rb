@@ -5,9 +5,11 @@ module GamePlay
     # Dull method, only here to check the win condition
     # @return [Boolean] false if @running == false
     def update_inputs
+      return false if @transition_animation && !@transition_animation.done?
       return false if @running == false
 
       check_win_lose_condition if @ui_state != :animation
+      return true
     end
 
     # Check if a diggable item has been revealed
@@ -51,12 +53,10 @@ module GamePlay
     def check_win_lose_condition
       if @arr_items_won.size == @handler.arr_items.size
         win
+        end_of_game
       elsif @hit_counter_stack.max_cracks?
         lose
-      else
-        return
       end
-      end_of_game
     end
 
     # ID of the text for the lose scenario
@@ -64,9 +64,14 @@ module GamePlay
     # Method that play the lose condition
     def lose
       $pokemon_party.mining_game.nb_game_failed += 1
-      Audio.se_play(SE_PATH + 'collapse')
-      wall_collapse_anim
-      display_message(ext_text(*LOSE_TEXT))
+      Audio.se_play(File.join(SE_PATH, 'collapse'))
+      start_wall_collapse_anim
+    end
+
+    # Show the message starting lost
+    def launch_loose_message
+      display_message_and_wait(ext_text(*LOSE_TEXT))
+      end_of_game
     end
 
     # ID of the text for the win scenario
@@ -74,7 +79,7 @@ module GamePlay
     # Method that play the win condition
     def win
       $pokemon_party.mining_game.nb_game_success += 1
-      Audio.se_play(SE_PATH + 'win')
+      Audio.se_play(File.join(SE_PATH, 'win'))
       display_message(ext_text(*WIN_TEXT))
     end
 
