@@ -268,6 +268,8 @@ class Game_Map
   # @param y [Integer] the y coordinate
   # @return [Boolean] if it's valid or not
   def valid?(x, y)
+    return true unless $game_switches[Yuki::Sw::MapLinkerDisabled]
+
     return ((x >= 0) && (x < width) && (y >= 0) && (y < height))
   end
 
