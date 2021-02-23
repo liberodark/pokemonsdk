@@ -93,7 +93,8 @@ module GamePlay
       AFTER_SAVE_HOOKS = { game_map: proc { $game_map.end_save } }
       # Save a game
       # @param filename [String, nil] name of the save file (nil = auto name the save file)
-      def save(filename = nil)
+      # @param no_file [Boolean] tell if the save should not be saved to file and just be returned
+      def save(filename = nil, no_file = false)
         # Fix the filename for event processing
         filename ||= Save.save_filename
         # Clear states
@@ -112,9 +113,10 @@ module GamePlay
         save_data = 'PKPRT'
         save_data << Marshal.dump($pokemon_party)
         # Save the game
-        File.binwrite(filename, save_data)
+        File.binwrite(filename, save_data) unless no_file
         # Call the hooks that restore all the data
         AFTER_SAVE_HOOKS.each_value(&:call)
+        return save_data
       end
 
       # Load a game
