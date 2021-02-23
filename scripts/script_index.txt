@@ -94,6 +94,7 @@ pokemonsdk/scripts/00650 MapSystem/00705 Pathfinding_cursor.rb
 pokemonsdk/scripts/00650 MapSystem/00710 Pathfinding_targets.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00001 Graphics Debug.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00001 Graphics FPS+Mouse.rb
+pokemonsdk/scripts/00700 Ajout_PSDK/00001 Graphics Icon.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00100 Scheduler.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00101 EventTasks.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00200 Tester.rb
