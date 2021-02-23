@@ -305,6 +305,7 @@ pokemonsdk/scripts/01300 UI/09000 Others/02700 SaveWindow.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02800 BlurScreenshot.rb
 pokemonsdk/scripts/01300 UI/09001 NameInput/00001 NameInputBaseUI.rb
 pokemonsdk/scripts/01300 UI/09001 NameInput/00002 NameInputUI.rb
+pokemonsdk/scripts/01300 UI/09001 NameInput/00100 NumberInput.rb
 pokemonsdk/scripts/01300 UI/09002 Options/00001 Description.rb
 pokemonsdk/scripts/01300 UI/09002 Options/00002 Arrow.rb
 pokemonsdk/scripts/01300 UI/09002 Options/00003 Button.rb
@@ -357,7 +358,6 @@ pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00300 MoveTeaching/00303 
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00300 MoveTeaching/00304 scene Mouse.rb
 pokemonsdk/scripts/01400 GamePlay/01100 Input/00700 NameInput.rb
 pokemonsdk/scripts/01400 GamePlay/01100 Input/00701 NumberInput.rb
-pokemonsdk/scripts/01400 GamePlay/01100 Input/01100 InputNumber_message.rb
 pokemonsdk/scripts/01400 GamePlay/01200 Shop/00100 Shop.rb
 pokemonsdk/scripts/01400 GamePlay/01200 Shop/00101 Shop_Graphics.rb
 pokemonsdk/scripts/01400 GamePlay/01200 Shop/00102 Shop_Inputs.rb
