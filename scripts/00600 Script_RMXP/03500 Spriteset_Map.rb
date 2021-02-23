@@ -303,55 +303,32 @@ class Spriteset_Map
   # @param zone [Integer, nil] the id of the zone where the player is
   def create_panel(zone)
     return unless zone && GameData::Zone.get(zone).panel_id > 0
-    @sp_bg ||= Sprite.new
-    @sp_bg.x = 2
-    @sp_bg.y = -30
-    @sp_bg.z = 5001
-    @sp_bg.bitmap = bmp = RPG::Cache.windowskin("Pannel_#{GameData::Zone.get(zone).panel_id}")
-    map_name = PFM::Text.parse_string_for_messages(GameData::Zone.get(zone).map_name)
-    color = 10
-    map_name.gsub!(/\\c\[([0-9]+)\]/) do
-      color = $1.to_i
-      nil
-    end
-    @sp_fg = Text.new(0, nil, 2, -30 - 4, bmp.width, bmp.height, map_name, 1,
-                      Text::Util::DEFAULT_OUTLINE_SIZE, color)
-    @sp_fg.z = 5002
-    @counter = 0
+
+    @map_panel = UI::MapPanel.new(@viewport2, GameData::Zone.get(zone))
   end
   Hooks.register(self, :finish_init, 'Zone Panel') { |method_binding| create_panel(method_binding[:zone]) }
 
   # Dispose the zone panel
   def dispose_sp_map
-    @sp_bg&.dispose
-    @sp_bg = nil
-    @sp_fg&.dispose
-    @sp_fg = nil
+    @map_panel&.dispose
+    @map_panel = nil
   end
   Hooks.register(self, :reload, 'Zone Panel') { dispose_sp_map }
   Hooks.register(self, :dispose, 'Zone Panel') { dispose_sp_map }
 
   # Update the zone panel
   def update_panel
-    return unless @sp_bg
-    @counter += 1
-    if @counter < 32
-      @sp_bg.y += 1
-      @sp_fg.y += 1
-    elsif @counter == 154
-      dispose_sp_map
-    elsif @counter > 122
-      @sp_bg.y -= 1
-      @sp_fg.y -= 1
-    end
+    return unless @map_panel
+
+    @map_panel.update
+    dispose_sp_map if @map_panel.done?
   end
   Hooks.register(self, :update, 'Zone Panel') { update_panel }
 
   # Change the visible state of the Spriteset
   # @param value [Boolean] the new visibility state
   def visible=(value)
-    @sp_bg&.visible = value
-    @sp_fg&.visible = value
+    @map_panel&.visible = value
     @viewport1.visible = value
     @viewport2.visible = value
     @viewport3.visible = value

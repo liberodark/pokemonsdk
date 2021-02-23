@@ -298,6 +298,7 @@ pokemonsdk/scripts/01300 UI/09000 Others/00200 QuestInformer.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00300 MenuButton.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00400 LevelUpWindow.rb
 pokemonsdk/scripts/01300 UI/09000 Others/00500 Shortcut.rb
+pokemonsdk/scripts/01300 UI/09000 Others/00600 MapPanel.rb
 pokemonsdk/scripts/01300 UI/09000 Others/01400 Dex UIs.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02000 UI__TeamButton.rb
 pokemonsdk/scripts/01300 UI/09000 Others/02200 VoltorbFlipSprites.rb
