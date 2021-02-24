@@ -32,8 +32,6 @@ module Input
   @y_axis = Sf::Joystick::POV_Y
   # Last text user entered
   @last_text = nil
-  # Last time text was entered
-  @last_text_time = Graphics.current_time
   # List of keys the input knows
   Keys = {
     A: [Sf::Keyboard::C, Sf::Keyboard::Space, Sf::Keyboard::Enter, Sf::Keyboard::C, -1],
@@ -105,7 +103,6 @@ module Input
     # @return [String, nil]
     def get_text
       return nil unless Graphics.focus?
-      return nil if @last_text_time != Graphics.current_time
 
       return @last_text
     end
@@ -172,15 +169,13 @@ module Input
         delta = Graphics.current_time - value
         @last_down_times[key] = Graphics.current_time - (REPEAT_COOLDOWN - REPEAT_SPACE) if delta >= REPEAT_COOLDOWN
       end
+      @last_text = nil
     end
 
     # Register all events in the window
     # @param window [LiteRGSS::DisplayWindow]
     def register_events(window)
-      window.on_text_entered = proc do |text|
-        @last_text_time = Graphics.current_time
-        @last_text = text
-      end
+      window.on_text_entered = proc { |text| on_text_entered(text) }
       window.on_key_pressed = proc { |key| on_key_up(key) }
       window.on_key_released = proc { |key| on_key_down(key) }
       window.on_joystick_button_pressed = proc { |id, button| on_key_up(-32 * id - button - 1) }
@@ -188,6 +183,12 @@ module Input
     end
 
     private
+
+    # Set the last entered text
+    # @param text [String]
+    def on_text_entered(text)
+      @last_text = text
+    end
 
     # Set a key up
     # @param key [Integer]
