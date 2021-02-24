@@ -230,14 +230,14 @@ module GamePlay
     # @param fade_out_params [Array, nil] params to send to the fade_out function (when this scene hides to call the next scene)
     # @param fade_in_params [Array, nil] params to send to the fade_in function (when this scene comes back)
     # @return [Boolean] if this scene can still run
-    def call_scene(name, *args, fade_out_params: nil, fade_in_params: nil, &result_process)
+    def call_scene(name, *args, fade_out_params: nil, fade_in_params: nil, **kwarg, &result_process)
       fade_out(*(fade_out_params || [@cfo_type || DEFAULT_TRANSITION, @cfo_param || DEFAULT_TRANSITION_PARAMETER]))
       # Make the current scene invisible
       self.visible = false
       result_process ||= @__result_process
       @__result_process = nil
       # @type [GamePlay::Base]
-      scene = name.new(*args)
+      scene = name.new(*args, **kwarg)
       scene.main { Scheduler.start(:on_scene_switch, self.class) }
       # Call the result process if any
       result_process&.call(scene)

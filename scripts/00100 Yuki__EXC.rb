@@ -207,7 +207,7 @@ module Yuki
     def append_message(input)
       if $game_system&.map_interpreter&.running?
         eid = $game_system.map_interpreter.event_id
-        event = $game_map.events[eid]&.event
+        event = $game_map.events&.[](eid)&.event
         event_info = "\nEventID: #{eid} (#{event&.x}, #{event&.y}) | MapID: #{$game_map.map_id}"
       end
       return "#{input.strip}#{event_info}\n\nTake a snapshot of this window and report the issue if you can't fix it yourself!"
