@@ -386,9 +386,10 @@ class Game_Character
     last_eval = Yuki::EXC.get_eval_script
     script = script.force_encoding('UTF-8')
     Yuki::EXC.set_eval_script(script)
-    Yuki::ErrorHandler.critical_section("Eval from MoveRoute (EVENT_ID = #{@event_id.to_i})\nScript:\n#{script}") do
-      eval(script)
-    end
+    eval(script)
+  rescue StandardError => e
+    Yuki::EXC.run(e)
+  ensure
     Yuki::EXC.set_eval_script(last_eval)
   end
 

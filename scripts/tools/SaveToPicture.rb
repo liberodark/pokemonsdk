@@ -12,7 +12,7 @@
 #   SaveToPicture.run(restore: 'filename.png', to: 'Saves/Pokemon_Party-1')
 module SaveToPicture
   # Regular width of the image
-  IMAGE_MAX_WITH = 320
+  IMAGE_MAX_WITH = 479
   class << self
     # Run the SaveToPicture utility
     # @param restore [String] name of the image to restore to a save

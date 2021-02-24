@@ -33,9 +33,9 @@ module Yuki
           The game crashed!
           The error is stored in Error.log.
         EODSP
-        system('pause')
       end
-      dot_25_battle_reproduction($scene) if $scene.is_a?(Battle::Scene)
+      dot_25_battle_reproduction($scene) if defined?(Battle::Scene) && $scene.is_a?(Battle::Scene)
+      show_error_window(error_log)
     end
 
     # Method that build the error log.
@@ -121,6 +121,121 @@ module Yuki
       $game_map.begin_save
       compressed_data = Zlib::Deflate.deflate(Marshal.dump([$pokemon_party, scene.battle_info]), Zlib::BEST_COMPRESSION)
       File.binwrite('battle.dat', compressed_data)
+    end
+
+    # Function that shows the error window
+    # @param log [String]
+    def show_error_window(log)
+      ScriptLoader.load_tool('ErrorWindow')
+      if defined?(GamePlay::Save)
+        save_data = defined?(Battle::Scene) && $scene.is_a?(Battle::Scene) ? File.binread('battle.dat') : GamePlay::Save.save(nil, true)
+        ErrorWindow.new.run(log, save_data)
+      else
+        ErrorWindow.new.run(log)
+      end
+    end
+  end
+
+  # Show an error window
+  class ErrorWindow
+    # Open the error window and let the user aknowledge it
+    # @param error_text [String] Text stored inside Error.log
+    # @param data_to_add [Array<String>] data to add to the error log as pictures
+    def run(error_text, *data_to_add)
+      texts_to_show = cleanup_error_log(error_text)
+      if defined?(ScriptLoader.load_tool)
+        ScriptLoader.load_tool('SaveToPicture')
+        images_to_show = data_to_add.map { |i| SaveToPicture.run(data: i) }
+        images_to_show << SaveToPicture.run(data: error_text)
+      end
+      show_window_and_wait(texts_to_show, images_to_show || [])
+    end
+
+    private
+
+    # Function that generates the text to show
+    # @param error_text [String]
+    # @return [Array<String>]
+    def cleanup_error_log(error_text)
+      sections = error_text.split(/=+[^=]+=+\r*\n/).reject(&:empty?)
+      backtraces = sections[1].split("\n")[0, 5].join("\n")
+      message = sections[0].sub('Message', 'A script error happened')
+      return message, "Backtraces:\n#{backtraces}"
+    end
+
+    # Function that shows the window and wait for the user to do something
+    # @param texts_to_show [Array<String>] text to show into the window
+    # @param images [Array<Image>]
+    def show_window_and_wait(texts_to_show, images)
+      running = true
+      Thread.new do
+        window = LiteRGSS::DisplayWindow.new('Error', 960, 480, 1, 32, 20, false, false, false)
+        create_text(window, texts_to_show)
+        to_dispose = create_and_arrange_images(window, images)
+        window.on_closed = proc { running = false }
+        window.update while running
+        to_dispose.each { |bmp| bmp.dispose unless bmp.disposed? }
+      end
+      update_graphics while running
+    end
+
+    # Function that updates the ingame graphics
+    def update_graphics
+      Graphics.window&.update
+      sleep(0.1)
+    rescue Exception
+      sleep(0.1)
+    end
+
+    # Function that create the text to show into the window
+    # @param window [LiteRGSS::Window]
+    # @param texts_to_show [Array<String>]
+    def create_text(window, texts_to_show)
+      text = LiteRGSS::Text.new(0, window, window.width - 2, 96, 0, 16, texts_to_show[1], 2)
+      text.draw_shadow = false
+      text.fill_color = Color.new(220, 220, 220, 255)
+      text.size = 13
+      text = LiteRGSS::Text.new(0, window, 0, 0, 0, 16, append_message(texts_to_show[0]))
+      text.draw_shadow = false
+      text.fill_color = Color.new(220, 220, 220, 255)
+      text.size = 13
+    end
+
+    # Function that append the text to show with a message
+    # @param input [String]
+    # @return [String]
+    def append_message(input)
+      if $game_system&.map_interpreter&.running?
+        eid = $game_system.map_interpreter.event_id
+        event = $game_map.events[eid]&.event
+        event_info = "\nEventID: #{eid} (#{event&.x}, #{event&.y}) | MapID: #{$game_map.map_id}"
+      end
+      return "#{input.strip}#{event_info}\n\nTake a snapshot of this window and report the issue if you can't fix it yourself!"
+    end
+
+    # Function that displays the images in reverse order starting from bottom right of the screen
+    # @param window [LiteRGSS::Window]
+    # @param images [Array<Image>]
+    # @return [Array<Texture>]
+    def create_and_arrange_images(window, images)
+      y = window.height
+      x = window.width
+      min_y = y
+      return images.map do |image|
+        bmp = Texture.new(image.width, image.height)
+        image.copy_to_bitmap(bmp)
+        if (x - image.width) < 0
+          x = window.width
+          y = min_y
+        end
+        x -= image.width
+        iy = y - image.height
+        min_y = [iy, min_y].min
+        LiteRGSS::Sprite.new(window).set_position(x, iy).bitmap = bmp
+        image.dispose
+        x -= 1
+        next bmp
+      end
     end
   end
 end
