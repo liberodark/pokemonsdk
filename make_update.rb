@@ -1,5 +1,6 @@
 require 'uri'
 require 'zlib'
+p RUBY_VERSION
 system("git log --oneline")
 print("Enter commit short sha1 : ")
 sha1 = STDIN.gets.chomp
@@ -72,7 +73,7 @@ while (line = STDIN.gets.chomp).bytesize > 0
   line.delete!('"')
   line.gsub!(current_path, '')
   copy_file(line)
-  update_file_contents << "#{URI.encode(File.basename(line))}:#{line}\n"
+  update_file_contents << "#{URI.encode_www_form_component(File.basename(line))}:#{line}\n"
   print 'Additionnal ressource : '
 end
 
