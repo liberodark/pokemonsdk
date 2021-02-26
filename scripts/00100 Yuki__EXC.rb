@@ -126,7 +126,6 @@ module Yuki
     # Function that shows the error window
     # @param log [String]
     def show_error_window(log)
-      ScriptLoader.load_tool('ErrorWindow')
       if defined?(GamePlay::Save)
         save_data = defined?(Battle::Scene) && $scene.is_a?(Battle::Scene) ? File.binread('battle.dat') : GamePlay::Save.save(nil, true)
         ErrorWindow.new.run(log, save_data)
