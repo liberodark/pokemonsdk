@@ -41,3 +41,6 @@ build/
 .rvmrc
 psdk.code-workspace
 scripts/my_scripts/scripts
+
+# useless mac files
+.DS_Store

@@ -11,13 +11,13 @@ begin
   require 'json'
   require 'yaml'
   require 'rexml/document'
-  require PSDK_RUNNING_UNDER_WINDOWS ? './lib/LiteRGSS.so' : 'LiteRGSS'
+  require PSDK_RUNNING_UNDER_WINDOWS ? './lib/LiteRGSS.so' : './LiteRGSS'
   # Attempt to load audio
   begin
-    require PSDK_RUNNING_UNDER_WINDOWS ? './lib/RubyFmod.so' : 'RubyFmod'
+    require PSDK_RUNNING_UNDER_WINDOWS ? './lib/RubyFmod.so' : './RubyFmod'
   rescue LoadError
     begin
-      require PSDK_RUNNING_UNDER_WINDOWS ? './lib/SFMLAudio.so' : 'SFMLAudio'
+      require PSDK_RUNNING_UNDER_WINDOWS ? './lib/SFMLAudio.so' : './SFMLAudio'
     rescue LoadError
       puts 'Could not load Audio'
     end
