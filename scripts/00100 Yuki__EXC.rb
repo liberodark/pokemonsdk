@@ -166,16 +166,28 @@ module Yuki
     # @param texts_to_show [Array<String>] text to show into the window
     # @param images [Array<Image>]
     def show_window_and_wait(texts_to_show, images)
-      running = true
-      Thread.new do
-        window = LiteRGSS::DisplayWindow.new('Error', 960, 480, 1, 32, 20, false, false, false)
-        create_text(window, texts_to_show)
-        to_dispose = create_and_arrange_images(window, images)
-        window.on_closed = proc { running = false }
-        window.update while running
-        to_dispose.each { |bmp| bmp.dispose unless bmp.disposed? }
+      @running = true
+      if PSDK_RUNNING_UNDER_MAC
+        show_window_and_wait_internal(texts_to_show, images) { update_graphics }
+      else
+        Thread.new { show_window_and_wait_internal(texts_to_show, images) }
+        update_graphics while @running
       end
-      update_graphics while running
+    end
+
+    # Function that execute the window processing
+    # @param texts_to_show [Array<String>] text to show into the window
+    # @param images [Array<Image>]
+    def show_window_and_wait_internal(texts_to_show, images)
+      window = LiteRGSS::DisplayWindow.new('Error', 960, 480, 1, 32, 20, false, false, false)
+      create_text(window, texts_to_show)
+      to_dispose = create_and_arrange_images(window, images)
+      window.on_closed = proc { @running = false }
+      while @running
+        window.update
+        yield if block_given?
+      end
+      to_dispose.each { |bmp| bmp.dispose unless bmp.disposed? }
     end
 
     # Function that updates the ingame graphics
