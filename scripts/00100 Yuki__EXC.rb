@@ -21,7 +21,7 @@ module Yuki
     #   @param io [#<<] the io that receive the log
     def run(e, io = nil)
       log_debug(e.inspect)
-      return if e.class == LiteRGSS::Graphics::ClosedWindowError
+      return if e.class == LiteRGSS::DisplayWindow::ClosedWindowError
       raise if (e.message.empty? || e.class.to_s == 'Reset') && !e.is_a?(Interrupt)
 
       error_log = build_error_log(e)

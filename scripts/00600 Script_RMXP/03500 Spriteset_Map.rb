@@ -190,7 +190,7 @@ class Spriteset_Map
   def init_weather_picture_timer
     @weather = RPG::Weather.new(@viewport1)
     @picture_sprites = Array.new(50) { |i| Sprite_Picture.new(@viewport2, $game_screen.pictures[i + 1]) }
-    @timer_sprite = Sprite_Timer.new
+    @timer_sprite = Sprite_Timer.new(Graphics.window)
   end
 
   # Create the quest informer array
