@@ -21,13 +21,23 @@ module Battle
         hail: 90,
         fog: 91
       }
+
+      # Create a new Weather Change Handler
+      # @param logic [Battle::Logic]
+      # @param scene [Battle::Scene]
+      # @param env [PFM::Environnement]
+      def initialize(logic, scene, env = $env)
+        super(logic, scene)
+        @env = env
+      end
+
       # Function telling if a weather can be applyied
       # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
       # @return [Boolean]
       def weather_appliable?(weather_type)
         log_data("# weather_appliable?(#{weather_type})")
         reset_prevention_reason
-        last_weather = WEATHER_SYM_TO_ID.key($env.current_weather) || :none
+        last_weather = WEATHER_SYM_TO_ID.key(@env.current_weather) || :none
         exec_hooks(WeatherChangeHandler, :weather_prevention, binding)
         return true
       rescue Hooks::ForceReturn => e
@@ -40,8 +50,8 @@ module Battle
       # @param nb_turn [Integer, nil] Number of turn, use nil for Infinity
       def weather_change(weather_type, nb_turn)
         log_data("# weather_change(#{weather_type}, #{nb_turn})")
-        last_weather = WEATHER_SYM_TO_ID.key($env.current_weather) || :none
-        $env.apply_weather(WEATHER_SYM_TO_ID[weather_type] || 0, nb_turn)
+        last_weather = WEATHER_SYM_TO_ID.key(@env.current_weather) || :none
+        @env.apply_weather(WEATHER_SYM_TO_ID[weather_type] || 0, nb_turn)
         show_weather_message(last_weather, weather_type)
         exec_hooks(WeatherChangeHandler, :post_weather_change, binding)
       rescue Hooks::ForceReturn => e

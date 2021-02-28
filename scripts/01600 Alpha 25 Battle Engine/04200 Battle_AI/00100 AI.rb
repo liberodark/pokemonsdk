@@ -9,6 +9,8 @@ module Battle
     # Trigger the AI work
     # @return [Array<Hash>] the action to do
     def trigger
+      mocked_scene = @scene.clone.extend(SceneMock)
+      # TODO: use mocked_scene
       actions = PFM::IA.start
       return translate_actions(actions)
     end

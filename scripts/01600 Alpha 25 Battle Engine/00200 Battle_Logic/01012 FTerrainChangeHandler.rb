@@ -19,13 +19,23 @@ module Battle
         misty_terrain: 89,
         psychic_terrain: 90
       }
+
+      # Create a new Terrain Change Handler
+      # @param logic [Battle::Logic]
+      # @param scene [Battle::Scene]
+      # @param env [PFM::Environnement]
+      def initialize(logic, scene, env = $env)
+        super(logic, scene)
+        @env = env
+      end
+
       # Function telling if a terrain can be applyied
       # @param fterrain_type [Symbol] :terrainnone, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
       # @return [Boolean]
       def fterrain_appliable?(fterrain_type)
         log_data("# fterrain_appliable?(#{fterrain_type})")
         reset_prevention_reason
-        last_fterrain = FTERRAIN_SYM_TO_ID.key($env.current_fterrain) || :terrainnone
+        last_fterrain = FTERRAIN_SYM_TO_ID.key(@env.current_fterrain) || :terrainnone
         exec_hooks(FTerrainChangeHandler, :fterrain_prevention, binding)
         return true
       rescue Hooks::ForceReturn => e
@@ -38,8 +48,8 @@ module Battle
       # @param nb_turn [Integer, nil] Number of turn, use nil for Infinity
       def fterrain_change(fterrain_type, nb_turn)
         log_data("# fterrain_change(#{fterrain_type}, #{nb_turn})")
-        last_fterrain = FTERRAIN_SYM_TO_ID.key($env.current_fterrain) || :terrainnone
-        $env.apply_fterrain(FTERRAIN_SYM_TO_ID[fterrain_type] || 0, nb_turn)
+        last_fterrain = FTERRAIN_SYM_TO_ID.key(@env.current_fterrain) || :terrainnone
+        @env.apply_fterrain(FTERRAIN_SYM_TO_ID[fterrain_type] || 0, nb_turn)
         exec_hooks(FTerrainChangeHandler, :post_fterrain_change, binding)
       rescue Hooks::ForceReturn => e
         log_data("# FR: fterrain_change #{e.data} from #{e.hook_name} (#{e.reason})")
