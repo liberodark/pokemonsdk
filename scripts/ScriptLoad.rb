@@ -45,7 +45,7 @@ module ScriptLoader
   def load_scripts(path, file = nil)
     Dir[File.join(path, '*.rb')].sort.each do |filename|
       next unless File.basename(filename) =~ /^[0-9]{5}[ _].*/
-      file&.puts(filename)
+      file&.puts(filename.sub(File.expand_path('.') + '/', ''))
       require(filename)
     end
   rescue StandardError
