@@ -27,7 +27,7 @@ safe_code('Register PPIncreaseItem ItemDescriptor') do
     next moves.any? { |move| (move.data.pp_max * 8 / 5) > move.ppmax }
   end
 
-  PFM::ItemDescriptor.define_on_move_usability(GameData::PPIncreaseItem, 35) do |_, _, skill|
+  PFM::ItemDescriptor.define_on_move_usability(GameData::PPIncreaseItem, 35) do |_, skill|
     next (skill.data.pp_max * 8 / 5) > skill.ppmax
   end
 

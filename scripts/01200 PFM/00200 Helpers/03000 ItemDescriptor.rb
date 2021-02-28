@@ -138,7 +138,6 @@ module PFM
     # @param klass [Class<GameData::Item>, Symbol] class or db_symbol of the item
     # @param skill_message_id [Integer, nil] ID of the message shown in the summary UI
     # @yieldparam item [GameData::Item] item used
-    # @yieldparam pokemon [PFM::Pokemon] pokemon that should be tested
     # @yieldparam skill [PFM::Skill] skill that should be tested
     # @yieldparam scene [Battle::Scene]
     # @yieldreturn [Boolean] if the item can be used on the Pokemon
@@ -253,7 +252,7 @@ module PFM
       def on_skill_choice(skill, scene)
         return false unless @on_skill_choice.respond_to?(:call)
 
-        return @on_skill_choice.call(@item, pokemon, scene)
+        return @on_skill_choice.call(@item, skill, scene)
       end
 
       # Call the on_skill_use block

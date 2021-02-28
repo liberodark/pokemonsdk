@@ -105,6 +105,13 @@ end
 ```
 
 Example:
+```ruby
+PFM::ItemDescriptor.define_on_pokemon_usability(GameData::StoneItem) do |item, pokemon|
+  next false if pokemon.egg?
+
+  next pokemon.evolve_check(:stone, item.id)
+end
+```
 
 ### Define the action that is done on a Pokemon on Map
 
@@ -116,7 +123,15 @@ end
 ```
 
 Example:
-
+```ruby
+PFM::ItemDescriptor.define_on_pokemon_use(GameData::StoneItem) do |item, pokemon, scene|
+  id, form = pokemon.evolve_check(:stone, item.id)
+  scene.call_scene(GamePlay::Evolve, pokemon, id, form, true) do |evolve_scene|
+    scene.running = false
+    $bag.add_item(item.id, 1) unless GamePlay::Evolve.from(evolve_scene).evolved
+  end
+end
+```
 
 
 ### Define the action that is done on a Pokemon in Battle
@@ -146,6 +161,11 @@ end
 Note: skill_message_id defines the ID of the message shown in the Summary UI when testing the moves.
 
 Example:
+```ruby
+PFM::ItemDescriptor.define_on_move_usability(GameData::PPIncreaseItem, 35) do |_, skill|
+  next (skill.data.pp_max * 8 / 5) > skill.ppmax
+end
+```
 
 ### Define the action that is done on a Move on Map
 
@@ -157,6 +177,18 @@ end
 ```
 
 Example:
+```ruby
+PFM::ItemDescriptor.define_on_move_use(GameData::PPIncreaseItem) do |item, pokemon, skill, scene|
+  pokemon.loyalty -= GameData::HealingItem.from(item).loyalty_malus
+  if GameData::PPIncreaseItem.from(item).max
+    skill.ppmax = skill.data.pp_max * 8 / 5
+  else
+    skill.ppmax += skill.data.pp_max * 1 / 5
+  end
+  skill.pp += 99
+  scene.display_message_and_wait(parse_text(22, 117, PFM::Text::MOVE[0] => skill.name))
+end
+```
 
 
 ### Define the action that is done on a Move in Battle

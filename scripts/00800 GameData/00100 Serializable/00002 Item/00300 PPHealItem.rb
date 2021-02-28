@@ -23,7 +23,7 @@ safe_code('Register PPHealItem ItemDescriptor') do
     next moves.any? { |move| move.pp < move.ppmax }
   end
 
-  PFM::ItemDescriptor.define_on_move_usability(GameData::PPHealItem, 34) do |_, _, skill|
+  PFM::ItemDescriptor.define_on_move_usability(GameData::PPHealItem, 34) do |_, skill|
     next skill.pp < skill.ppmax
   end
 
