@@ -63,7 +63,7 @@ module BattleUI
       if (result == :pokemon || result == :flee) && !@can_switch
         $game_system.se_play($data_system.buzzer_se)
         hide
-        (handler = @scene.logic.switch_handler).can_switch?
+        (handler = @scene.logic.switch_handler).can_switch?(@scene.logic.battler(0, @scene.player_actions.size))
         handler.process_prevention_reason
         show
       else
