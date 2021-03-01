@@ -271,7 +271,7 @@ module Battle
         next unless battler.hold_item?(:leftovers)
 
         scene.display_message_and_wait(parse_text_with_pokemon(19, 918, battler, PFM::Text::ITEM2[1] => battler.item_name))
-        scene.visual.show_hp_animations([battle], [-(battler.max_hp / 8).clamp(1, Float::INFINITY)])
+        scene.visual.show_hp_animations([battler], [(battler.max_hp / 8).clamp(1, Float::INFINITY)])
       end
     end
 
