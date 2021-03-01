@@ -120,7 +120,7 @@ module Scheduler
     if $scene.class != ::Scene_Title && $trainer.current_version.to_i <= 6211
       $game_map.instance_variable_set(:@events_info, nil)
       unless $game_switches[Yuki::Sw::MapLinkerDisabled]
-        $game_player.moveto($game_player.x - Yuki::MapLinker::OffsetX, $game_player.y - Yuki::MapLinker::OffsetY)
+        $game_player.moveto($game_player.x - Yuki::MapLinker::OFFSET_X, $game_player.y - Yuki::MapLinker::OFFSET_Y)
       end
     end
   end

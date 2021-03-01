@@ -273,6 +273,8 @@ module ScriptLoader
       attr_reader :maplinker_offset_x
       # @return [Integer] number of tile in y to make a proper map transition with map linker
       attr_reader :maplinker_offset_y
+      # @return [Boolean] if the game use old maplinker method
+      attr_reader :old_maplinker
 
       # Create a new TilemapConfig
       def initialize

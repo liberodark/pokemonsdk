@@ -52,7 +52,7 @@ module Yuki
       # @param side [Symbol] which side the map is (:north, :south, :east, :west)
       # @param offset [Integer] offset relative to the side of the map in the positive perpendicular position
       def load_position(map, side, offset)
-        maker_offset = MapLinker::DeltaMaker
+        maker_offset = MapLinker::DELTA_MAKER
         send(POSITION_LOADERS[side], map, offset, maker_offset)
         @side = side
       end
