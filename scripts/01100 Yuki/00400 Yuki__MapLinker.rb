@@ -151,6 +151,75 @@ module Yuki
         end
       end
 
+      # Test if a tile is passable
+      # @param x [Integer] x coordinate of the tile on the map
+      # @param y [Integer] y coordinate of the tile on the map
+      # @param d [Integer] direction to check
+      def passable?(x, y, d = 0)
+        # @type [Yuki::Tilemap::MapData]
+        return false unless (target_map = @map_datas.find { |map| map.x_range.include?(x) && map.y_range.include?(y) })
+
+        tileset = $data_tilesets[target_map.map.tileset_id]
+        passages = tileset.passages
+        priorities = tileset.priorities
+        bit = (1 << (d / 2 - 1)) & 0x0f
+        data = target_map.map.data
+        x += target_map.offset_x
+        y += target_map.offset_y
+        2.downto(0) do |i|
+          tile_id = data[x, y, i]
+          return false if tile_id.nil?
+          return false if passages[tile_id] & bit != 0
+          return false if passages[tile_id] & 0x0f == 0x0f
+          return true if priorities[tile_id] == 0
+        end
+
+        return true
+      end
+
+      # Retrieve the ID of the SystemTag on a specific tile
+      # @param x [Integer] x position of the tile
+      # @param y [Integer] y position of the tile
+      # @return [Integer]
+      # @author Nuri Yuri
+      def system_tag(x, y)
+        # @type [Yuki::Tilemap::MapData]
+        return false unless (target_map = @map_datas.find { |map| map.x_range.include?(x) && map.y_range.include?(y) })
+
+        system_tags = $data_system_tags[@map.tileset_id]
+        tiles = target_map.map.data
+        x += target_map.offset_x
+        y += target_map.offset_y
+        2.downto(0) do |i|
+          tile_id = tiles[x, y, i]
+          return 0 unless tile_id
+
+          tag_id = system_tags[tile_id]
+          return tag_id if tag_id && tag_id > 0
+        end
+        return 0
+      end
+
+      # Check if a specific SystemTag is present on a specific tile
+      # @param x [Integer] x position of the tile
+      # @param y [Integer] y position of the tile
+      # @param tag [Integer] ID of the SystemTag
+      # @return [Boolean]
+      # @author Nuri Yuri
+      def system_tag_here?(x, y, tag)
+        # @type [Yuki::Tilemap::MapData]
+        return false unless (target_map = @map_datas.find { |map| map.x_range.include?(x) && map.y_range.include?(y) })
+
+        system_tags = $data_system_tags[@map.tileset_id]
+        tiles = target_map.map.data
+        x += target_map.offset_x
+        y += target_map.offset_y
+
+        return 2.downto(0).any? do |i|
+          (tile_id = tiles[x, y, i]) && system_tags[tile_id] == tag
+        end
+      end
+
       private
 
       # Load the visible events for all maps

@@ -104,6 +104,8 @@ class Game_Player
   # @param new_y [Integer] new y position on the Map
   # @return [Boolean] if the front/current tile is passable
   def maplinker_passable?(new_x, new_y)
+    return false unless Yuki::MapLinker.passable?(new_x, new_y, @direction)
+
     return event_passable_check?(new_x, new_y, z, $game_map)
   end
 end
