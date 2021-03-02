@@ -134,6 +134,7 @@ module Yuki
     # @param ox [Integer] ox of every tiles
     # @param oy [Integer] oy of every tiles
     def update_position(ox, oy)
+      ox = ((ox * @zoom).ceil / @zoom).to_i if @zoom < 1
       oy = ((oy * @zoom).ceil / @zoom).to_i if @zoom < 1
       add_z = oy / 2
       @sprites.each do |layer|
