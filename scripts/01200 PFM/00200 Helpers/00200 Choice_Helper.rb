@@ -54,6 +54,8 @@ module PFM
       window = build_choice_window(viewport, x, y, width, align_right)
       loop do
         Graphics.update
+        next if Graphics::FPSBalancer.global.skipping?
+
         window.update
         on_update&.call(*args)
         break if check_cancel(window)

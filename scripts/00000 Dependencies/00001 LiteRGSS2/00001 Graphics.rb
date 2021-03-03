@@ -203,6 +203,7 @@ module Graphics
       return unless @window
 
       window.update_no_input
+      @last_time = @current_time
       @current_time = Time.new
     end
 
@@ -213,6 +214,7 @@ module Graphics
       Input.swap_states
       Mouse.swap_states
       window.update_only_input
+      @last_time = @current_time
       @current_time = Time.new
     end
 

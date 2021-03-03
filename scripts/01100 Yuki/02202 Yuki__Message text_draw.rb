@@ -84,6 +84,10 @@ module Yuki
       until text.nchar_draw >= str.size
         break if stop_message_process?
 
+        if Graphics::FPSBalancer.global.skipping?
+          Graphics.update
+          redo
+        end
         text.nchar_draw += 1
         counter += 1
         if Input.trigger?(:A) || (Mouse.trigger?(:left) && simple_mouse_in?) || panel_skip? # Skip request
@@ -103,6 +107,10 @@ module Yuki
       default_line_height.times do
         return if stop_message_process?
 
+        if Graphics::FPSBalancer.global.skipping?
+          Graphics.update
+          redo
+        end
         self.oy += 1
         @city_sprite&.y += 1
         message_update_processing
@@ -186,6 +194,10 @@ module Yuki
         instr_arr.each do |instr|
           break if stop_message_process?
 
+          if Graphics::FPSBalancer.global.skipping?
+            Graphics.update
+            redo
+          end
           if instr == :new_line
             @x = origin_x
             @y += lineheight

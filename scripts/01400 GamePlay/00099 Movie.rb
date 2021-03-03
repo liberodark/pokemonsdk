@@ -1,6 +1,6 @@
 module GamePlay
   # Scene responsive of playing a movie (video file)
-  class Movie < BaseCleanUpdate
+  class Movie < BaseCleanUpdate::FrameBalanced
     # Constant telling if the BGM should automatically be stopped
     AUTO_STOP_BGM = true
     # Constant telling if the map scene should automatically be hidden

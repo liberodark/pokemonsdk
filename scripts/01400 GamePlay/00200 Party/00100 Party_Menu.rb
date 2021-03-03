@@ -12,7 +12,7 @@ module GamePlay
   #
   # This class can also show an other party than the player party,
   # the party paramter is an array of Pokemon upto 6 Pokemon
-  class Party_Menu < BaseCleanUpdate
+  class Party_Menu < BaseCleanUpdate::FrameBalanced
     # Color mapping for the result of on_pokemon_choice
     ON_POKEMON_CHOICE_COLOR_MAPPING = {
       true => 1, false => 2, nil => 3

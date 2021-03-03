@@ -4,6 +4,7 @@ class Scene_Map < GamePlay::Base
   # Access to the spriteset of the map
   # @return [Spriteset_Map]
   attr_reader :spriteset
+
   # Create a new Scene_Map
   def initialize
     super
@@ -13,7 +14,7 @@ class Scene_Map < GamePlay::Base
 
   # Update the scene process
   def update
-    auto_transfert_update
+    Graphics::FPSBalancer.global.run { auto_transfert_update }
     update_graphics
     return false if switched_to_main_rmxp_scene
     return false unless super # Update message window & break if messages are shown

@@ -246,7 +246,7 @@ module Yuki
     def wait_user_input
       self.pause = true
       until Input.trigger?(:A) || (Mouse.trigger?(:left) && simple_mouse_in?) || stop_message_process?
-        message_update_processing
+        Graphics::FPSBalancer.global.skipping? ? Graphics.update : message_update_processing
       end
       $game_system.se_play($data_system.cursor_se)
       self.pause = false

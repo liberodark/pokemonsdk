@@ -202,6 +202,8 @@ module GamePlay
       # Message update
       while processing_message
         Graphics.update
+        next if Graphics::FPSBalancer.global.skipping?
+
         @message_window.update
         @__display_message_proc&.call
         if edit_max && @message_window.input_number_window
@@ -603,6 +605,18 @@ module GamePlay
         end
       end
       return true
+    end
+
+    # Base that takes frame balancing in account
+    class FrameBalanced < self
+      # Update with frame balancing
+      def update
+        if Graphics::FPSBalancer.global.skipping?
+          @message_window.update if @message_window
+        else
+          super
+        end
+      end
     end
   end
 end

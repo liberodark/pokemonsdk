@@ -1,5 +1,5 @@
 module GamePlay
-  class Evolve < BaseCleanUpdate
+  class Evolve < BaseCleanUpdate::FrameBalanced
     attr_accessor :evolved
     # Constant telling if you have gifs or not during the scene
     ENABLE_GIF = true

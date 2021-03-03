@@ -280,4 +280,4 @@ Hooks.register(Spriteset_Map, :init_player_begin, 'Yuki::FollowMe') do
   Yuki::FollowMe.update
   Yuki::FollowMe.particle_push
 end
-Hooks.register(Spriteset_Map, :update, 'Yuki::FollowMe') { Yuki::FollowMe.update }
+Hooks.register(Spriteset_Map, :update_fps_balanced, 'Yuki::FollowMe') { Yuki::FollowMe.update }

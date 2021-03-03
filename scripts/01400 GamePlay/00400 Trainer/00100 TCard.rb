@@ -1,6 +1,6 @@
 module GamePlay
   # Scene displaying the trainer card
-  class TCard < BaseCleanUpdate
+  class TCard < BaseCleanUpdate::FrameBalanced
     # Coordinates of the player sprite
     PLAYER_COORDINATES = [222, 49]
     # Surface given to the player sprite

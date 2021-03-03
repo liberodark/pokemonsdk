@@ -1,5 +1,5 @@
 module GamePlay
-  class NameInput < GamePlay::BaseCleanUpdate
+  class NameInput < GamePlay::BaseCleanUpdate::FrameBalanced
     # Hint shown about how to enter name
     DEFAULT_HINT = [:ext_text, 9000, 162] # "Use your keyboard and press ENTER"
     # GUESSED PHRASE when not given

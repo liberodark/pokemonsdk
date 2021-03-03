@@ -1,5 +1,5 @@
 module GamePlay
-  class Shop < BaseCleanUpdate
+  class Shop < BaseCleanUpdate::FrameBalanced
     # Create a new Item Shop
     # @overload GamePlay::.new(symbol_shop)
     #   @param symbol_shop [Symbol] the symbol of the shop to open

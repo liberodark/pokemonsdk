@@ -95,6 +95,8 @@ module GamePlay
       # @param filename [String, nil] name of the save file (nil = auto name the save file)
       # @param no_file [Boolean] tell if the save should not be saved to file and just be returned
       def save(filename = nil, no_file = false)
+        return 'NONE' unless $game_temp
+
         # Fix the filename for event processing
         filename ||= Save.save_filename
         # Clear states

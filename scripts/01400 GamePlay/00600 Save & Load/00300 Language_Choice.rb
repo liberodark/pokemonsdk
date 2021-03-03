@@ -1,6 +1,6 @@
 module GamePlay
   # Scene responsive of displaying the language choice when creating a new game
-  class Language_Choice < BaseCleanUpdate
+  class Language_Choice < BaseCleanUpdate::FrameBalanced
     # If the change of index is animated
     ANIME_CHANGE = true
     # Number of frame for index change

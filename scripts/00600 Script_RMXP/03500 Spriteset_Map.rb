@@ -245,6 +245,7 @@ class Spriteset_Map
     @viewport1.update
     @viewport3.update
     exec_hooks(Spriteset_Map, :update, binding)
+    Graphics::FPSBalancer.global.run { exec_hooks(Spriteset_Map, :update_fps_balanced, binding) }
     @viewport1.sort_z # unless Graphics.skipping_frame?
   rescue ForceReturn => e
     log_error("Hooks tried to return #{e.data} in Spriteset_Map#update")

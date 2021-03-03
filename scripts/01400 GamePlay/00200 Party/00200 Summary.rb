@@ -1,6 +1,6 @@
 module GamePlay
   # Scene displaying the Summary of a Pokemon
-  class Summary < BaseCleanUpdate
+  class Summary < BaseCleanUpdate::FrameBalanced
     # @return [Integer] Last state index in this scene
     LAST_STATE = 2
     # Array of Key to press

@@ -95,6 +95,7 @@ pokemonsdk/scripts/00650 MapSystem/00710 Pathfinding_targets.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00001 Graphics Debug.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00001 Graphics FPS+Mouse.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00001 Graphics Icon.rb
+pokemonsdk/scripts/00700 Ajout_PSDK/00002 FPSBalancer.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00100 Scheduler.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00101 EventTasks.rb
 pokemonsdk/scripts/00700 Ajout_PSDK/00200 Tester.rb
@@ -337,7 +338,6 @@ pokemonsdk/scripts/01400 GamePlay/00300 Bag/00330 Bag_Actions.rb
 pokemonsdk/scripts/01400 GamePlay/00300 Bag/00340 Bag_Mouse.rb
 pokemonsdk/scripts/01400 GamePlay/00300 Bag/00400 BattleBag.rb
 pokemonsdk/scripts/01400 GamePlay/00400 Trainer/00100 TCard.rb
-pokemonsdk/scripts/01400 GamePlay/00400 Trainer/00200 Hall of Fame.rb
 pokemonsdk/scripts/01400 GamePlay/00400 Trainer/00300 Dressing.rb
 pokemonsdk/scripts/01400 GamePlay/00500 Options/00001 Options_Helper.rb
 pokemonsdk/scripts/01400 GamePlay/00500 Options/00002 Options Scene.rb

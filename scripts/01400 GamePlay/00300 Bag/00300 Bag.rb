@@ -8,7 +8,7 @@ module GamePlay
   #   - :hold : when opened to give an item to a Pokemon
   #   - :shop : when opened to sell item
   #   - :map : when an event request an item
-  class Bag < BaseCleanUpdate
+  class Bag < BaseCleanUpdate::FrameBalanced
     # List of pocket name
     POCKET_NAMES = [
       nil.to_s,
