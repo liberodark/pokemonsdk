@@ -16,12 +16,15 @@ module UI
 
     # Update the panel animation
     def update
+      return if Graphics.frozen?
+
       create_animation unless @animation
       @animation.update
     end
 
     # Tell if the animation is done and the pannel should be disposed
     def done?
+      return false if Graphics.frozen?
       return true unless @animation
 
       return @animation.done?

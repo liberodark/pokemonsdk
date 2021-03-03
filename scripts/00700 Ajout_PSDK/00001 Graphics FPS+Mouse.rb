@@ -65,6 +65,8 @@ module Graphics
       end
     end
     Hooks.register(Graphics, :pre_update_internal, 'PSDK Graphics fps_update') { fps_update }
+    Hooks.register(Graphics, :update_freeze, 'PSDK Graphics fps_update') { fps_update }
+    Hooks.register(Graphics, :update_transition_internal, 'PSDK Graphics fps_update') { fps_update }
     Hooks.register(Graphics, :post_transition, 'PSDK Graphics reset_fps_info') { reset_fps_info }
 
     def fps_gpu_update
@@ -92,6 +94,8 @@ module Graphics
       @mouse.set_position(Mouse.x, Mouse.y)
     end
     Hooks.register(Graphics, :pre_update_internal, 'PSDK Graphics mouse_update_graphics') { mouse_update_graphics }
+    Hooks.register(Graphics, :update_freeze, 'PSDK Graphics mouse_update_graphics') { mouse_update_graphics }
+    Hooks.register(Graphics, :update_transition_internal, 'PSDK Graphics mouse_update_graphics') { mouse_update_graphics }
   end
   reset_fps_info
 end

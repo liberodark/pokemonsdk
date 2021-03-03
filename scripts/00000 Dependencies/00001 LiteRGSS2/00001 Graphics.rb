@@ -31,11 +31,26 @@ module Graphics
     # Get the current time
     # @return [Time]
     attr_reader :current_time
+    # Get the time when the last frame was executed
+    # @return [Time]
+    attr_reader :last_time
 
     # Tell if the graphics window has focus
     # @return [Boolean]
     def focus?
       return @has_focus
+    end
+
+    # Tell if the graphics are frozen
+    # @return [Boolean]
+    def frozen?
+      @frozen > 0
+    end
+
+    # Tell how much time there was since last frame
+    # @return [Float]
+    def delta
+      return @current_time - @last_time
     end
 
     # Get the brightness of the main game window
@@ -126,7 +141,7 @@ module Graphics
       )
       @on_start.each(&:call)
       @on_start.clear
-      @current_time = Time.new
+      @last_time = @current_time = Time.new
       Input.register_events(@window)
       Mouse.register_events(@window)
       @window.on_lost_focus = proc { @has_focus = false }
@@ -168,13 +183,14 @@ module Graphics
     # Update graphics window content & events. This method might wait for vsync before updating events
     def update
       return unless @window
-      return update_freeze if @frozen > 0
+      return update_freeze if frozen?
 
       exec_hooks(Graphics, :update, bnd = binding)
       exec_hooks(Graphics, :pre_update_internal, bnd)
       Input.swap_states
       Mouse.swap_states
       window.update
+      @last_time = @current_time
       @current_time = Time.new
       @frame_count += 1
       exec_hooks(Graphics, :post_update_internal, bnd)
@@ -264,6 +280,8 @@ module Graphics
       if @frozen == 0
         log_error('Graphics were frozen for too long, calling transition...')
         transition
+      else
+        exec_hooks(Graphics, :update_freeze, binding)
       end
     end
 
@@ -300,6 +318,7 @@ module Graphics
       # Process
       while (current_time = Time.new) < next_time
         @frozen_sprite.shader.set_float_uniform('param', ((current_time - initial_time) / total_time).clamp(0, 1))
+        exec_hooks(Graphics, :update_transition_internal, binding)
         window.update
       end
       # Show all previously visible viewport back
