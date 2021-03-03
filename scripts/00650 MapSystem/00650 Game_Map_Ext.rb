@@ -212,7 +212,7 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
     return unless @events_info
 
     $game_player.z = @events_info[:player]
-    return if $game_system.magic_number != $data_system.magic_number
+    return if PSDK_CONFIG.debug? && $game_system.magic_number != $data_system.magic_number
 
     @events_info.each do |id, info|
       next unless (event = @events[id])
