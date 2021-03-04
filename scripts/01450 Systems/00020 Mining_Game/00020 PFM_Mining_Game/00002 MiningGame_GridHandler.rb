@@ -37,7 +37,7 @@ module PFM
         @ready = false
         # We create all the grids
         @arr_tiles_state = Array.new(@height) { Array.new(@width, 0) }
-        @mgt = Random::MiningGameTiles
+        @mgt = Random::MINING_GAME_TILES
         initialize_grid_content
       end
 
@@ -72,7 +72,7 @@ module PFM
       def randomize_items(nb_items)
         arr = []
         data = GameData::MiningGame::DATA_ITEM
-        rng_item = Random::MiningGameItem
+        rng_item = Random::MINING_GAME_ITEM
         chance_range = 0..GameData::MiningGame.total_chance
 
         until arr.size == nb_items
@@ -292,7 +292,7 @@ module PFM
       def randomize_irons
         arr = []
         data = GameData::MiningGame::DATA_IRON
-        rng_iron = Random::MiningGameObstacles
+        rng_iron = Random::MINING_GAME_OBSTACLES
         change_range = 0..GameData::MiningGame.total_chance
 
         until arr.size == @nb_irons

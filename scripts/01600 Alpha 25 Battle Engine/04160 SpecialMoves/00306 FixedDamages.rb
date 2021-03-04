@@ -10,9 +10,8 @@ module Battle
       # Method calculating the damages done by the actual move
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
-      # @param rng [Random] random generator used for the move
       # @return [Integer]
-      def damages(user, target, rng)
+      def damages(user, target)
         @critical = false
         @effectiveness = 1
         dmg = FIXED_DMG_PARAM[db_symbol]

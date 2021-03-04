@@ -239,7 +239,7 @@ module Battle
       stat = user.update_confuse_count
       move.scene.visual.show_rmxp_animation(user, 475) unless stat == :cured
       move.scene.display_message_and_wait(parse_text_with_pokemon(19, (stat == :cured ? 351 : 348), user))
-      if stat == true && rand(2) == 0 # 50% in Gen6 and 33% in Gen7
+      if stat == true && bchance?(0.5) # 50% in Gen6 and 33% in Gen7
         hp = user.confuse_damage
         move.scene.visual.show_hp_animations([user], [-hp])
         move.scene.display_message_and_wait(parse_text(18, 83))

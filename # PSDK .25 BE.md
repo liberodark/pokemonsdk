@@ -711,7 +711,7 @@ Once you did this, all the move whose be_method correspond to the first paramete
 
 Here's the list of important methods you'll find in the moves:
 
-- `damages(user, target, rng)` : Calculate the damages the move will deal to target, sets the `effectiveness` factor and the `critical` boolean attribute. This method should remain silent so abilities & items involved in rate modification should not be shown during the calculation. We will not detail all the methods involved in the calculation in this chapter.
+- `damages(user, target)` : Calculate the damages the move will deal to target, sets the `effectiveness` factor and the `critical` boolean attribute. This method should remain silent so abilities & items involved in rate modification should not be shown during the calculation. We will not detail all the methods involved in the calculation in this chapter.
 - `type_modifier(user, target)` : Calculate the effectiveness of the move against a target. **This method is not called in damages**.
 - `calc_stab(user)` : Gives the stab of the move with a specific user.
 - `calc_type_n_multiplier(target, type_to_check, types)` : Gives the type modifier of the wanted type_to_check (`:type1`, `:type2`, `:type3`) on target when the move will hit the target. `types` correspond to the move types.

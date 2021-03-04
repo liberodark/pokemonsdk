@@ -7,10 +7,9 @@ module Battle
     # @note : I used the 4th Gen formula : https://www.smogon.com/dp/articles/damage_formula
     # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler] target of the move
-    # @param rng [Random] random generator used for the move
     # @return [Integer]
-    def damages(user, target, rng)
-      log_data("# damages(#{user}, #{target}, Random.new) for #{db_symbol}")
+    def damages(user, target)
+      log_data("# damages(#{user}, #{target}) for #{db_symbol}")
       log_data("# user_item_multiplier reason : #{user.battle_item_db_symbol}")
       log_data("# foe_item_multiplier reason : #{target.battle_item_db_symbol}")
       log_data("# user_ability_multiplier reason : #{user.battle_ability_db_symbol}")
@@ -36,7 +35,7 @@ module Battle
       damage = (damage * calc_ch(user)).floor
       damage = (damage * calc_mod2(user, target)).floor
       log_data("damage = #{damage} # after calc_mod2 & calc_ch")
-      damage *= rng.rand(calc_r_range)
+      damage *= logic.move_damage_rng.rand(calc_r_range)
       damage /= 100
       log_data("damage = #{damage} # after rng")
       damage = (damage * calc_stab(user)).floor

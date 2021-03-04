@@ -124,7 +124,7 @@ module Battle
     # @param pokemon [PFM::PokemonBattler]
     # @return [Boolean] if the item triggered
     def check_priority_trigger_quick_claw(pokemon)
-      return rand(100) < 20
+      return bchance?(0.2, self)
     end
 
     # Test the custap berry trigger

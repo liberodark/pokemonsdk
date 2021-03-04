@@ -114,7 +114,7 @@ module PFM
       max_rand = reduced_rareness.last
       # This reducer prevents to select the exact same Pokemon twice
       return wi.vs_type.times.reduce([]) do |acc, _|
-        nb = Random::WildBattle.rand(max_rand.to_i)
+        nb = Random::WILD_BATTLE.rand(max_rand.to_i)
         index = reduced_rareness.find_index { |i| i > nb } || real_rareness.size - 1
         pokemon = real_rareness[index].first
         redo if acc.include?(pokemon)

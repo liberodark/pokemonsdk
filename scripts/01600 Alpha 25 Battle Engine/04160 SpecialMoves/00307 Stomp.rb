@@ -3,7 +3,7 @@ module Battle
     class Stomp < Basic
       # Method calculating the damages done by the actual move if the target has minimize effect
       # @return [Integer]
-      def damages(user, target, rng)
+      def damages(user, target)
         return super * 2 if target.effects.has?(:minimize)
       end
 

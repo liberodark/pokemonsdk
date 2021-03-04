@@ -29,9 +29,8 @@ module Battle
       # @note : I used the 4th Gen formula : https://www.smogon.com/dp/articles/damage_formula
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
-      # @param rng [Random] random generator used for the move
       # @return [Integer]
-      def damages(user, target, rng)
+      def damages(user, target)
         @critical = false
         @effectiveness = 1
         log_data('OHKO Move: 100% HP')

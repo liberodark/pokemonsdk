@@ -35,6 +35,19 @@ module Battle
     # Get the scene used to instanciate this Logic instance
     # @return [Battle::Scene]
     attr_reader :scene
+    # Get the move damage rng
+    # @return [Random]
+    attr_reader :move_damage_rng
+    # Get the move critical rng
+    # @return [Random]
+    attr_reader :move_critical_rng
+    # Get the move accuracy rng
+    # @return [Random]
+    attr_reader :move_accuracy_rng
+    # Get the generic rng
+    # @return [Random]
+    attr_reader :generic_rng
+
     # Create a new Logic instance
     # @param scene [Scene] scene that hold the logic object
     def initialize(scene)
@@ -94,6 +107,7 @@ module Battle
       @move_damage_rng = Random.new(seeds[:move_damage_rng])
       @move_critical_rng = Random.new(seeds[:move_critical_rng])
       @move_accuracy_rng = Random.new(seeds[:move_accuracy_rng])
+      @generic_rng = Random.new(seeds[:generic_rng])
     end
 
     # Get the current RNG Seeds
@@ -102,7 +116,8 @@ module Battle
       {
         move_damage_rng: @move_damage_rng.seed,
         move_critical_rng: @move_critical_rng.seed,
-        move_accuracy_rng: @move_accuracy_rng.seed
+        move_accuracy_rng: @move_accuracy_rng.seed,
+        generic_rng: @generic_rng.seed
       }
     end
 

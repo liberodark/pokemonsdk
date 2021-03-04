@@ -24,7 +24,7 @@ module Battle
         return unless targets.include?(@attracted_to)
 
         move.scene.display_message_and_wait(parse_text_with_pokemon(19, 333, user, PFM::Text::PKNICK[1] => @attracted_to.given_name))
-        if rand(2) == 1
+        if bchance?(0.5)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 336, user))
           return :prevent
         end

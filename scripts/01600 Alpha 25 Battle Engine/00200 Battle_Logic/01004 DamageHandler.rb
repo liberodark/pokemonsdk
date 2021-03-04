@@ -203,7 +203,7 @@ module Battle
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Focus Band') do |_, hp, target, _, skill|
       next unless skill
 
-      next target.hp - 1 if hp >= target.hp && target.hold_item?(:focus_band) && rand(10) == 1
+      next target.hp - 1 if hp >= target.hp && target.hold_item?(:focus_band) && bchance?(0.1)
     end
 
     # Focus Sash
@@ -434,7 +434,7 @@ module Battle
 
     # King's Rock
     DamageHandler.register_post_damage_hook('PSDK Post damage: King’s Rock') do |handler, _, target, launcher, skill|
-      next unless skill&.trigger_king_rock? && launcher&.hold_item?(:king’s_rock) && launcher != target && rand(10) == 0
+      next unless skill&.trigger_king_rock? && launcher&.hold_item?(:king’s_rock) && launcher != target && bchance?(0.1)
 
       handler.scene.visual.show_item(launcher)
       handler.logic.status_change_handler.status_change_with_process(:flinch, target)
@@ -442,7 +442,7 @@ module Battle
 
     # Razor Fang
     DamageHandler.register_post_damage_hook('PSDK Post damage: Razor Fang') do |handler, _, target, launcher, skill|
-      next unless skill && launcher&.hold_item?(:razor_fang) && launcher != target && rand(10) == 0
+      next unless skill && launcher&.hold_item?(:razor_fang) && launcher != target && bchance?(0.1)
 
       handler.scene.visual.show_item(launcher)
       handler.logic.status_change_handler.status_change_with_process(:flinch, target)
@@ -450,7 +450,7 @@ module Battle
 
     # Stench
     DamageHandler.register_post_damage_hook('PSDK Post damage: Stench') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && rand(10) == 0 && launcher.hp > 0 && launcher.has_ability?(:stench)
+      next unless skill&.direct? && launcher && launcher != target && bchance?(0.1) && launcher.hp > 0 && launcher.has_ability?(:stench)
 
       handler.scene.visual.show_ability(launcher)
       handler.logic.status_change_handler.status_change_with_process(:flinch, target)
@@ -458,7 +458,7 @@ module Battle
 
     # Static
     DamageHandler.register_post_damage_hook('PSDK Post damage: Static') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.has_ability?(:static)
+      next unless skill&.direct? && launcher && launcher != target && bchance?(0.3) && launcher.hp > 0 && target.has_ability?(:static)
       next unless launcher.can_be_paralyzed?
 
       handler.scene.visual.show_ability(target)
@@ -467,7 +467,7 @@ module Battle
 
     # Poison Point
     DamageHandler.register_post_damage_hook('PSDK Post damage: Poison Point') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.has_ability?(:poison_point)
+      next unless skill&.direct? && launcher && launcher != target && bchance?(0.3) && launcher.hp > 0 && target.has_ability?(:poison_point)
       next unless launcher.can_be_poisoned?
 
       handler.scene.visual.show_ability(target)
@@ -476,7 +476,7 @@ module Battle
 
     # Flame Body
     DamageHandler.register_post_damage_hook('PSDK Post damage: Flame Body') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.has_ability?(:flame_body)
+      next unless skill&.direct? && launcher && launcher != target && bchance?(0.3) && launcher.hp > 0 && target.has_ability?(:flame_body)
       next unless launcher.can_be_burn?
 
       handler.scene.visual.show_ability(target)
@@ -485,7 +485,7 @@ module Battle
 
     # Cute Charm
     DamageHandler.register_post_damage_hook('PSDK Post damage: Cute Charm') do |handler, _, target, launcher, skill|
-      next unless skill&.direct? && launcher && launcher != target && rand(10) < 3 && launcher.hp > 0 && target.has_ability?(:cute_charm)
+      next unless skill&.direct? && launcher && launcher != target && bchance?(0.3) && launcher.hp > 0 && target.has_ability?(:cute_charm)
       next unless launcher.gender * target.gender == 2 && launcher.effects.has?(:attract)
 
       handler.scene.visual.show_ability(target)
@@ -496,7 +496,7 @@ module Battle
     # Effect Spore
     DamageHandler.register_post_damage_hook('PSDK Post damage: Effect Spore') do |handler, _, target, launcher, skill|
       next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.has_ability?(:effect_spore)
-      next if (n = rand(10)) > 2
+      next if (n = handler.logic.generic_rng.rand(10)) > 2
 
       status = %i[poison sleep paralysis][n]
       if handler.logic.status_change_handler.status_appliable?(status, target)

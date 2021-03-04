@@ -142,7 +142,7 @@ class Scene_Battle
     end
     selected=[]
     $game_temp.vs_type.times do |i|
-      nb = Random::WildBattle.rand(max_rand.to_i) #rand(max_rand.to_i)
+      nb = Random::WILD_BATTLE.rand(max_rand.to_i) #rand(max_rand.to_i)
       puts "Generated number : #{nb} / #{max_rand.to_i}"
       count=0
       rareness.each_index do |j|

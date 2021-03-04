@@ -35,9 +35,7 @@ module Battle
       return scene.display_message_and_wait(parse_text(18, 85)) if pp == 0
 
       decrese_pp(user, targets)
-      accuracy_dice = rand(100)
-      log_data("# accuracy= #{accuracy}, value = #{accuracy_dice} (testing=#{accuracy > 0}, failure=#{accuracy_dice >= accuracy})")
-      return scene.display_message_and_wait(parse_text(18, 74)) if accuracy > 0 && accuracy_dice >= accuracy
+      return unless proceed_move_accuracy(user, targets) # => Will call display message if failure
 
       actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
       return if actual_targets.none?
@@ -52,6 +50,21 @@ module Battle
         deal_effect(user, actual_targets)
       @scene.visual.set_info_state(:move_animation)
       @scene.visual.wait_for_animation
+    end
+
+    # Test move accuracy
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param targets [Array<PFM::PokemonBattler>] expected targets
+    # @return [Boolean] if the move can continue
+    def proceed_move_accuracy(user, targets)
+      accuracy_dice = logic.move_accuracy_rng.rand(100)
+      log_data("# accuracy= #{accuracy}, value = #{accuracy_dice} (testing=#{accuracy > 0}, failure=#{accuracy_dice >= accuracy})")
+      if accuracy > 0 && accuracy_dice >= accuracy
+        scene.display_message_and_wait(parse_text(18, 74))
+        return false
+      end
+
+      return true
     end
 
     # Show the usage failure when move is not usable by user
@@ -79,7 +92,7 @@ module Battle
         if target_immune?(user, pokemon)
           scene.display_message_and_wait(parse_text_with_pokemon(19, 210, pokemon))
           next false
-        elsif rand(100) >= chance_of_hit(user, pokemon)
+        elsif logic.move_accuracy_rng.rand(100) >= chance_of_hit(user, pokemon)
           scene.display_message_and_wait(parse_text_with_pokemon(19, 213, pokemon))
           next false
         elsif move_blocked_by_target?(user, pokemon)
@@ -144,32 +157,6 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
     def deal_damage(user, actual_targets)
-      # Status move does not deal damages
-      return true if status?
-
-=begin
-      rng = Random.new
-      fibers = actual_targets.map do |target|
-        damages = self.damages(user, target, rng) # /!\ test the substitute pokemon when substitute was used
-        critical_hit = @critical
-        effectiveness = @effectiveness
-        log_debug("#{user} inflict #{damages} HP to #{target}")
-        # TODO: Manage clone, abilities like cursed_body & sturdy, then effect, berries
-        next Fiber.new do
-          Fiber.yield if damages <= 0
-          Fiber.yield :wait_for_animation, Visual::HPAnimation.new(scene, target, -damages, effectiveness) if damages > 0
-          if critical_hit
-            scene.display_message_and_wait(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
-          elsif damages > 0
-            efficent_message(effectiveness, target)
-          end
-          handle_ko(target) if target.hp <= 0
-          Fiber.yield :kill
-        end
-      end
-      process_fiber(fibers)
-=end
-
       return true
     end
 

@@ -181,7 +181,7 @@ module Battle
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Shed Skin') do |logic, scene, battlers|
       battlers.each do |battler|
-        next if battler.status == 0 || rand(3) < 2 || !battler.has_ability?(:shed_skin)
+        next if battler.status == 0 || bchance?(0.66) || !battler.has_ability?(:shed_skin)
 
         scene.visual.show_ability(battler)
         logic.status_change_handler.status_change(:cure, battler)
