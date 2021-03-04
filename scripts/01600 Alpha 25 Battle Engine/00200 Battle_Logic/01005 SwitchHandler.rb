@@ -135,6 +135,13 @@ module Battle
       next :passthrough if pokemon.hold_item?(:shed_shell)
     end
 
+    # U-Turn moves
+    SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: U-Turn moves') do |handler, pokemon, skill|
+      next :passthrough if skill&.self_user_switch? &&
+                           !pokemon.hold_item?(:red_card) &&
+                           skill&.battler_targets(pokemon, handler.logic).find { |target| target&.alive? && target&.hold_item?(:eject_button) }
+    end
+
     # Shadow Tag
     SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Shadow Tag') do |handler, pokemon|
       next if pokemon.has_ability?(:shadow_tag)
@@ -142,6 +149,8 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(fv)
+        text = parse_text_with_pokemon(19, 881, fv, PFM::Text::PKNICK[0] => fv.given_name, PFM::Text::ABILITY[1] => fv.ability_name)
+        handler.scene.display_message_and_wait(text)
       end
     end
 
@@ -152,6 +161,19 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.visual.show_ability(fv)
+        text = parse_text_with_pokemon(19, 881, fv, PFM::Text::PKNICK[0] => fv.given_name, PFM::Text::ABILITY[1] => fv.ability_name)
+        handler.scene.display_message_and_wait(text)
+      end
+    end
+
+    # Suction Cups
+    SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Suction Cups') do |handler, pokemon, skill|
+      next unless pokemon.has_ability?(:suction_cups) && skill&.force_switch?
+
+      next handler.prevent_change do
+        handler.scene.visual.show_ability(pokemon)
+        text = parse_text_with_pokemon(19, 881, pokemon, PFM::Text::PKNICK[0] => pokemon.given_name, PFM::Text::ABILITY[1] => pokemon.ability_name)
+        handler.scene.display_message_and_wait(text)
       end
     end
 
@@ -373,7 +395,7 @@ module Battle
 
       handler.scene.visual.show_ability(with)
       handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 439, with, PFM::Text::PKNICK[1] => foe_item.given_name,
-                                                                           PFM::Text::ITEM2[2] => foe_item.item_name))
+                                                                                    PFM::Text::ITEM2[2] => foe_item.item_name))
     end
 
     # Download

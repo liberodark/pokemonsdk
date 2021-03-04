@@ -248,6 +248,14 @@ module Battle
     end
   end
 
+  # Crafty Shield registration
+  Move.register_move_prevention_target_hook('PSDK Move prev target: Crafty Shield') do |user, target, move|
+    next false unless target.effects.has?(:crafty_shield) && move.status? && user != target && move.db_symbol != :curse
+
+    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 803, target))
+    next true
+  end
+
   # Protect registration
   Move.register_move_prevention_target_hook('PSDK Move prev target: Protect') do |_, target, move|
     next false unless move.blocked_by?(target, :protect)
@@ -354,7 +362,7 @@ module Battle
   end
 
   # Psychic Terrain effect
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Psychic Terrain') do |_, target, move|
+  Move.register_move_prevention_target_hook('PSDK Move prev target: Psychic Terrain') do |_, _, move|
     next false unless $env.terrain_psychic? && move.relative_priority >= 1 && move.blocable?
 
     # TODO: Add gen7 text of Psychic Terrain
@@ -362,23 +370,23 @@ module Battle
   end
 
   # Queenly Majesty effect
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Queenly Majesty') do |user, target, move|
+  Move.register_move_prevention_target_hook('PSDK Move prev target: Queenly Majesty') do |user, _, move|
     protector = move.logic.foes_of(user).find { |pokemon| pokemon.has_ability?(:queenly_majesty) }
     next false unless protector && move.relative_priority >= 1 && move.blocable?
 
     move.scene.visual.show_ability(protector)
-    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, "[VAR MOVE(0001)]" => move.name))
+    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, '[VAR MOVE(0001)]' => move.name))
 
     next true
   end
 
   # Dazzling effect
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Dazzling') do |user, target, move|
+  Move.register_move_prevention_target_hook('PSDK Move prev target: Dazzling') do |user, _, move|
     protector = move.logic.foes_of(user).find { |pokemon| pokemon.has_ability?(:dazzling) }
     next false unless protector && move.relative_priority >= 1 && move.blocable?
 
     move.scene.visual.show_ability(protector)
-    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, "[VAR MOVE(0001)]" => move.name))
+    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, '[VAR MOVE(0001)]' => move.name))
 
     next true
   end

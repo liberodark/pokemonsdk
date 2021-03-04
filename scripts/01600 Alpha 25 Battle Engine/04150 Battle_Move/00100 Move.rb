@@ -331,6 +331,24 @@ module Battle
       return data.heal
     end
 
+    # Tell if the move is an OHKO move
+    # @return [Boolean]
+    def ohko?
+      return false
+    end
+
+    # Tell if the move is a move that switch the user if that hit
+    # @return [Boolean]
+    def self_user_switch?
+      return false
+    end
+
+    # Tell if the move is a move that forces target switch
+    # @return [Boolean]
+    def force_switch?
+      return false
+    end
+
     # Get the effectiveness
     attr_reader :effectiveness
 

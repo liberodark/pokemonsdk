@@ -167,7 +167,7 @@ class Scene_Battle
         elsif BattleEngine::_has_item(i, 272)
           BattleEngine::_message_stack_push([:status_toxic, i, true])  if i.battle_effect.nb_of_turn_here == 1
         #> Life Orb
-        elsif BattleEngine::_has_item(i, 270) && i.prepared_skill != 0
+        elsif BattleEngine::_has_item(i, 270) && i&.prepared_skill != 0
           BattleEngine::_message_stack_push([:hp_down, i, i.max_hp/10])
         #> Sticky Barb
         elsif BattleEngine::_has_item(i, 288)

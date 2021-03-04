@@ -695,7 +695,7 @@ module Battle
     end
 
     # Soul-Heart
-    DamageHandler.register_post_damage_death_hook('PSDK Post damage: Soul-Heart') do |handler, _, target, launcher, skill|
+    DamageHandler.register_post_damage_death_hook('PSDK Post damage: Soul-Heart') do |handler, _, target, launcher, _|
       next unless launcher != target && launcher
       next unless target.can_be_lowered_or_canceled?
 
@@ -726,6 +726,7 @@ module Battle
     # Sand Spit
     DamageHandler.register_post_damage_hook('PSDK Post Damage: Sand Spit') do |handler, _, target, launcher, skill|
       next unless skill && launcher && launcher != target && target.has_ability?(:sand_spit)
+
       weather_handler = handler.logic.weather_change_handler
       next unless weather_handler.weather_appliable?(:sandstorm)
 

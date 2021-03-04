@@ -76,8 +76,8 @@ module BattleEngine
   # @param skill [PFM::Skill] move that is currently used
   def s_me_first(launcher, target, skill, msg_push = true)
     return unless __s_beg_step(launcher, target, skill, msg_push)
-    if _attacking_before?(launcher, target) && target.prepared_skill > 0
-      skill = ::PFM::Skill.new(target.prepared_skill)
+    if _attacking_before?(launcher, target) && target&.prepared_skill > 0
+      skill = ::PFM::Skill.new(target&.prepared_skill)
       unless skill.status?
         _launch_skill(launcher, target, skill)
         return
@@ -91,7 +91,7 @@ module BattleEngine
   # @param target [PFM::Pokemon] target of the move
   # @param skill [PFM::Skill] move that is currently used
   def s_sucker_punch(launcher, target, skill, msg_push = true)
-    skill_id = target.prepared_skill
+    skill_id = target&.prepared_skill
     if _attacking_before?(launcher, target) && skill_id && skill_id != 0 && GameData::Skill[skill_id].atk_class != 3
       s_basic(launcher, target, skill)
     elsif __s_beg_step(launcher, target, skill, msg_push)

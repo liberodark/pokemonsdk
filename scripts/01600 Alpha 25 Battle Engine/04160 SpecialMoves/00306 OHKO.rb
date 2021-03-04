@@ -2,6 +2,12 @@ module Battle
   class Move
     # Class managing OHKO moves
     class OHKO < Basic
+      # Tell if the move is an OHKO move
+      # @return [Boolean]
+      def ohko?
+        return true
+      end
+
       private
 
       # Test if the target is immune
@@ -35,10 +41,6 @@ module Battle
         @effectiveness = 1
         log_data('OHKO Move: 100% HP')
         return target.max_hp
-      end
-
-      def ohko?
-        return true
       end
     end
 

@@ -129,6 +129,18 @@ module BattleUI
       super
     end
 
+    # Creates the flee animation
+    # @return [Yuki::Animation::TimedAnimation]
+    def flee_animation
+      bx = enemy? ? viewport.rect.width + width : -width
+      ya = Yuki::Animation
+      animation = ya.move(0.5, self, x, y, bx, y)
+      animation.parallel_add(ya::ScalarAnimation.new(0.5, self, :opacity=, 255, 0))
+      animation.parallel_add(ya.se_play('fleee', 100, 60))
+      animation.start
+      animation_handler[:in_out] = animation
+    end
+
     private
 
     # Reset the battler position

@@ -159,13 +159,13 @@ module BattleEngine
       next unless enemies[i]
       enemies[i].position=-i-1
       enemies[i].attack_order=255
-      enemies[i].prepared_skill=0
+      enemies[i]&.prepared_skill=0
     end
     actors.each_index do |i|
       next unless actors[i]
       actors[i].position=i
       actors[i].attack_order=255
-      actors[i].prepared_skill=0
+      actors[i]&.prepared_skill=0
     end
     #>Update of the Pokémon's moves informations
     act_ind = 0
@@ -179,9 +179,9 @@ module BattleEngine
         atk_last = act_ind
         act_ind+=1
         if(i[1])
-          pkmn.prepared_skill = pkmn.ss(i[1]).id
+          pkmn&.prepared_skill = pkmn.ss(i[1]).id
         else
-          pkmn.prepared_skill = ID_Struggle
+          pkmn&.prepared_skill = ID_Struggle
         end
         _msgp(19, 1031, pkmn, '[VAR ITEM2(0001)]' => pkmn.item_name, '[VAR PKNICK(0000)]' => pkmn.given_name) if quick_claw_triggered && _has_item(pkmn, 217)
         quick_claw_triggered = false
