@@ -68,5 +68,9 @@ module Battle
     def fterrain_change_handler
       return Logic::FTerrainChangeHandler.new(self, @scene, @env)
     end
+
+    # Get the env object
+    # @return [PFM::Environnement]
+    attr_reader :env
   end
 end

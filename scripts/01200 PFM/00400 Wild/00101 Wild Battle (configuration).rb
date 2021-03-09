@@ -129,9 +129,10 @@ module PFM
     def configure_battle(enemy_arr, battle_id)
       return if (!enemy_arr.is_a? Array) || !enemy_arr || enemy_arr&.empty?
 
+      has_roaming = enemy_arr.any? { |pokemon| roaming?(pokemon) }
       info = Battle::Logic::BattleInfo.new
       info.add_party(0, *info.player_basic_info)
-      info.add_party(1, enemy_arr)
+      info.add_party(1, enemy_arr, nil, nil, nil, nil, nil, has_roaming ? -1 : 0)
       info.battle_id = battle_id
       info.fishing = !@fish_battle.nil?
       info.vs_type = 2 if enemy_arr.size >= 2

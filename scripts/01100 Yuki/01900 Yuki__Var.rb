@@ -66,6 +66,8 @@ module Yuki
     # Map Transition type (1 = Circular, 2 = Directed)
     MapTransitionID = 32
 
+    # Level of the AI
+    AI_LEVEL = 34
     # ID (in the database) of the second trainer of the duo battle
     Second_Trainer_ID = 35
     # ID (in the database) of the allied trainer of the duo battle

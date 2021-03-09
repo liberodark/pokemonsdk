@@ -2,6 +2,7 @@
 module Battle
   # Base classe of all the battle scene
   class Scene < GamePlay::Base
+    include Hooks
     # @return [Battle::Visual]
     attr_reader :visual
     # @return [Battle::Logic]
@@ -12,6 +13,8 @@ module Battle
     attr_reader :message_window
     # @return [Array]
     attr_reader :player_actions
+    # @return [Array<AI::Base>]
+    attr_reader :artificial_intelligences
     # Set the next update from outside (flee)
     # @return [Symbol]
     attr_accessor :next_update
@@ -31,7 +34,7 @@ module Battle
       @logic.load_rng
       @logic.load_battlers
       @visual = create_visual
-      @AIs = Array.new(count_ai_battler) { create_ai }
+      @artificial_intelligences = create_ais
       # Next method called in update
       @next_update = :pre_transition
       # List of the player actions
@@ -116,21 +119,15 @@ module Battle
       return Battle::Visual.new(self)
     end
 
-    # Create a new AI
-    # @return [Battle::AI]
-    def create_ai
-      return Battle::AI.new(self)
-    end
-
-    # Function counting the number of AI required
-    # @return [Integer]
-    def count_ai_battler
-      count = -1
-      @battle_info.parties.each do |bank|
-        count += bank.size
-      end
-      log_debug("Found #{count} AI")
-      return count
+    # Create all the AIs
+    # @return [Array<Battle::AI::Base>]
+    def create_ais
+      exec_hooks(Scene, :create_ais, binding)
+      return @battle_info.ai_levels.flat_map.with_index do |ai_bank, bank|
+        ai_bank.map.with_index do |ai_level, party_id|
+          ai_level && AI::Base.registered(ai_level).new(self, bank, party_id) || nil
+        end
+      end.compact
     end
 
     # Method that call @visual.show_pre_transition and change @next_update to :transition_animation

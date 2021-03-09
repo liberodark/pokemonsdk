@@ -6,17 +6,17 @@ module Battle
       end_turn_handler.process_events
       log_debug('end_turn_handler called')
       # Add all dead enemy to the switch request
-      @switch_request.concat(
-        dead_enemy_battler_during_this_turn.map { |battler| { who: battler } }
-      )
+      @switch_request.concat(dead_enemy_battler_during_this_turn.map { |battler| { who: battler } })
       log_data("Number of switch request (ennemy) : #{@switch_request.size}")
+      @switch_request.concat(dead_friend_battler_during_this_turn.map { |battler| { who: battler } })
+      log_data("Number of switch request (friend) : #{@switch_request.size}")
       # Add all dead actors to switch request
       turn = $game_temp.battle_turn
       @switch_request.concat(
         trainer_battlers.select { |battler| battler.last_battle_turn == turn && battler.dead? }.map { |battler| { who: battler } }
       )
       log_data("Number of switch request (enemy + actors) : #{@switch_request.size}")
-      @switch_request.uniq! { |who:| who }
+      @switch_request.uniq! { |h| h[:who] }
       battle_phase_switch_exp_check
       log_debug('battle_phase_switch_exp_check called')
       all_alive_battlers.each { |pokemon| pokemon.switching = false }
@@ -73,12 +73,10 @@ module Battle
 
         return @scene.visual.show_pokemon_choice(true)
       end
-      BattleEngine.set_actors(6.times.map { |i| battler(0, i) }.compact.map { |i| PFM::PokemonBattler24.new(i) }) # BE24
-      BattleEngine.set_enemies(6.times.map { |i| battler(1, i) }.compact.map { |i| PFM::PokemonBattler24.new(i) }) # BE24
-      new_enemy = PFM::IA.request_switch(who) # BE24
-      return nil unless new_enemy
 
-      return battler(who.bank, -new_enemy[1] - 1)
+      # @type [Battle::AI::Base]
+      right_ai = @scene.artificial_intelligences.find { |ai| ai.party_id == who.party_id && ai.bank == who.bank }
+      return right_ai&.request_switch(who)
     end
 
     # Function that ask the player if he wants to switch

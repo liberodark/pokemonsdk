@@ -249,13 +249,20 @@ module Battle
       end
     end
 
-    # List all dead Pokemon enemy during this turn
+    # List all dead enemy Pokemon during this turn
     # @return [Array<PFM::PokemonBattler>]
     def dead_enemy_battler_during_this_turn
       turn = $game_temp.battle_turn
       return 1.upto(bank_count - 1).flat_map do |bank|
         next @battlers[bank].compact.select { |battler| battler.last_battle_turn == turn && battler.dead? }
       end
+    end
+
+    # List all dead friend Pokemon during this turn
+    # @return [Array<PFM::PokemonBattler>]
+    def dead_friend_battler_during_this_turn
+      turn = $game_temp.battle_turn
+      return @battlers[0].compact.select { |battler| battler.last_battle_turn == turn && battler.dead? && !battler.from_party? }
     end
   end
 end

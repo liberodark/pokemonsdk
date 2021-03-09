@@ -5,6 +5,10 @@ module Battle
       # Get the Pokemon responsive of the item usage
       # @return [PFM::PokemonBattler]
       attr_reader :user
+      # Get the item wrapper executing the action
+      # @return [PFM::ItemDescriptor::Wrapper]
+      attr_reader :item_wrapper
+
       # Create a new item action
       # @param scene [Battle::Scene]
       # @param item_wrapper [PFM::ItemDescriptor::Wrapper]

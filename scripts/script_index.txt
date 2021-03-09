@@ -224,7 +224,6 @@ pokemonsdk/scripts/01200 PFM/00100 Global Systems/01600 Nuzlocke.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/02000 Hall_of_Fame.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/00100 Text.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/00200 Choice_Helper.rb
-pokemonsdk/scripts/01200 PFM/00200 Helpers/02900 IA.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/03000 ItemDescriptor.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/03100 SkillProcess.rb
 pokemonsdk/scripts/01200 PFM/00200 Helpers/03200 BattleInterface.rb
@@ -649,15 +648,21 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00306 OHKO.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00307 Stomp.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00308 Minimize.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00309 HPEqLevel.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00309 UTurn.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00310 ForceSwitch.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00311 CraftyShield.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00312 FocusEnergy.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00313 LockOn.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00001 BattleSceneMock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00002 BattleVisualMock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00003 BattleLogicMock.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00309 UTurn.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00310 ForceSwitch.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00311 CraftyShield.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00100 AI.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00100 Base.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00101 MoveActionFor.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00102 MegaEvolve.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00103 Switch.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00104 Item.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00105 Flee.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00200 GenericAI.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04400 Battle_Message/00001 BattleStart.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 BE24 Interpreter/01600 BE_Interpreter.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 BE24 Interpreter/01700 BE_Interpreter_(Effect).rb

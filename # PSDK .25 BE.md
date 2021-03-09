@@ -715,6 +715,7 @@ Here's the list of important methods you'll find in the moves:
 - `type_modifier(user, target)` : Calculate the effectiveness of the move against a target. **This method is not called in damages**.
 - `calc_stab(user)` : Gives the stab of the move with a specific user.
 - `calc_type_n_multiplier(target, type_to_check, types)` : Gives the type modifier of the wanted type_to_check (`:type1`, `:type2`, `:type3`) on target when the move will hit the target. `types` correspond to the move types.
+- `real_base_power(user, target)` Give the real base power of the move when used.
 - `definitive_types(user, target)` : Gives the list of types the move has once all effect that change types were processed.
 - `one_target?` : Tells if the move can hit only one target each time it's used.
 - `no_choice_skill?` : Tell if the move let the player choose the target.

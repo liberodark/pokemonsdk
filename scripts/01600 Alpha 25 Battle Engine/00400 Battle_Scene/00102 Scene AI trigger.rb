@@ -9,8 +9,8 @@ module Battle
       BattleEngine.set_actors(6.times.map { |i| @logic.battler(0, i) }.compact.map { |i| PFM::PokemonBattler24.new(i) }) # BE24
       BattleEngine.set_enemies(6.times.map { |i| @logic.battler(1, i) }.compact.map { |i| PFM::PokemonBattler24.new(i) }) # BE24
       call_event(:trainer_dialog)
-      @AIs.each_with_index do |ai, index|
-        log_debug("Triggering AI##{index}...")
+      @artificial_intelligences.each_with_index do |ai, index|
+        log_debug("Triggering AI##{index} (#{ai.class})...")
         actions = call_event(:AI_force_action, ai, index)
         if actions
           @logic.add_actions(actions)

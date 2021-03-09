@@ -15,6 +15,9 @@ module UI
     attr_reader :data
     # Get the stack
     attr_reader :stack
+    # Get the viewport
+    # @return [Viewport]
+    attr_reader :viewport
 
     # Create a new Sprite stack
     # @param viewport [Viewport] the viewport where the sprites will be shown

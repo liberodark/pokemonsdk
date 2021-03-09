@@ -4,6 +4,8 @@ module Battle
     class BattleInfo
       # List of item decupling money
       MONEY_ITEMS = %i[amulet_coin luck_incense]
+      # List of base money giving AI levels (if strictly below the value)
+      AI_LEVELS_BASE_MONEY = [16, 20, 36, 48, 80, 100, 200, Float::INFINITY]
       # @return [Array<Array<String>>] List of the name of the battlers according to the bank & their position
       attr_accessor :names
       # @return [Array<Array<String>>] List of the classes of the battlers according to the bank & their position
@@ -14,6 +16,8 @@ module Battle
       attr_accessor :bags
       # @return [Array<Array<Array<PFM::Pokemon>>>] List of the "Party" of the battlers according to the bank & their position
       attr_accessor :parties
+      # @return [Array<Array<Integer>>]
+      attr_accessor :ai_levels
       # @return [Array<Array<Integer>>] List of the base money of the battlers according to the bank
       attr_accessor :base_moneys
       # @return [Integer, nil] Maximum level allowed for the battle
@@ -53,6 +57,7 @@ module Battle
         @battlers = hash[:battlers] || [[], []]
         @bags = hash[:bags] || [[], []]
         @parties = hash[:parties] || [[], []]
+        @ai_levels = hash[:ai_levels] || [[], []]
         @base_moneys = hash[:base_moneys] || [[], []]
         @max_level = hash[:max_level] || nil
         @vs_type = hash[:vs_type] || 1
@@ -101,9 +106,18 @@ module Battle
           battler = trainer.battler
           name = trainer.internal_names[battle_info.parties[1]&.size || 0]
           party = trainer.team.map { |hash| PFM::Pokemon.generate_from_hash(hash) }
-          battle_info.add_party(bank, party, name, klass, battler)
+          battle_info.add_party(bank, party, name, klass, battler, nil, nil, ai_level(trainer.base_money || 0))
           battle_info.base_moneys[bank] << trainer.base_money if bank == 1
           battle_info.trainer_is_couple = battle_info.parties[1].size == 1 if bank == 1 && trainer.vs_type == 2
+        end
+
+        # Guess the AI level based on the base money (or a variable)
+        # @param base_money [Integer]
+        # @return [Integer]
+        def ai_level(base_money)
+          return $game_variables[Yuki::Var::AI_LEVEL] if $game_variables[Yuki::Var::AI_LEVEL] > 0
+
+          return AI_LEVELS_BASE_MONEY.find_index { |base_money_limit| base_money < base_money_limit } || 1
         end
       end
 
@@ -126,7 +140,9 @@ module Battle
       # @param klass [String, nil] name of the battler (don't set it if Wild Battle)
       # @param battler [String, nil] name of the battler image (don't set it if Wild Battle)
       # @param bag [String, nil] bag used by the party
-      def add_party(bank, party, name = nil, klass = nil, battler = nil, bag = nil, base_money = nil)
+      # @param base_money [Integer]
+      # @param ai_level [Integer]
+      def add_party(bank, party, name = nil, klass = nil, battler = nil, bag = nil, base_money = nil, ai_level = nil)
         @parties[bank] ||= []
         @parties[bank] << party
         @names[bank] ||= []
@@ -139,6 +155,8 @@ module Battle
         @bags[bank] << (bag || PFM::Bag.new)
         @base_moneys[bank] ||= []
         @base_moneys[bank] << base_money if base_money
+        @ai_levels[bank] ||= []
+        @ai_levels[bank] << ai_level
       end
 
       # Get the trainer name of a battler

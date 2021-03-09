@@ -4,6 +4,8 @@ module Battle
 
     # Method that ask for the player choice (it calls @visual.show_player_choice)
     def player_action_choice
+      # If the battle does not allow player choice we skip
+      return @next_update = :trigger_all_AI if no_player_action?
       # If the method was called and the player cannot make another choice it's a bug so we end the battle
       return @next_update = :battle_end unless can_player_make_another_action_choice?
 
@@ -105,6 +107,14 @@ module Battle
       end
       return false
 =end
+    end
+
+    # Tell if the player is not allowed to take any actions
+    # @return [Boolean]
+    def no_player_action?
+      return true if @no_player_action
+
+      return @logic.all_battlers.none?(&:from_party?)
     end
 
     # Method that asks the item to use

@@ -64,6 +64,26 @@ module Battle
       return n
     end
 
+    # STAB calculation
+    # @param user [PFM::PokemonBattler] user of the move
+    # @return [Numeric]
+    def calc_stab(user)
+      if user.type1 == type || user.type2 == type || user.type3 == type
+        return 2 if user.has_ability?(:adaptability)
+
+        return 1.5
+      end
+      return 1
+    end
+
+    # Get the real base power of the move (taking in account all parameter)
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
+    # @return [Integer]
+    def real_base_power(user, target)
+      return power
+    end
+
     private
 
     # Base power calculation
@@ -73,7 +93,7 @@ module Battle
     def calc_base_power(user, target)
       # HH * BP * IT * CHG * MS * WS * UA * FA
       # BP
-      result = power
+      result = real_base_power(user, target)
       # HH
       result *= 1.5 if user.helping_hand?
       result = result.floor # Round down between each multiplication, the first two can be reverted.
@@ -145,18 +165,6 @@ module Battle
       return 3 if user.has_ability?(:sniper)
 
       return 2
-    end
-
-    # STAB calculation
-    # @param user [PFM::PokemonBattler] user of the move
-    # @return [Numeric]
-    def calc_stab(user)
-      if user.type1 == type || user.type2 == type || user.type3 == type
-        return 2 if user.has_ability?(:adaptability)
-
-        return 1.5
-      end
-      return 1
     end
 
     # Calc TypeN multiplier of the move
