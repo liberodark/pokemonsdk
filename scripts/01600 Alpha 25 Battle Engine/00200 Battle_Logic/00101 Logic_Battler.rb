@@ -179,6 +179,8 @@ module Battle
     # @param who [PFM::PokemonBattler]
     # @return [Boolean]
     def can_battler_be_replaced?(who)
+      return false if who.effects.has?(:forced_next_move)
+
       bank = who.bank
       party_id = who.party_id
       allies = allies_of(who)
