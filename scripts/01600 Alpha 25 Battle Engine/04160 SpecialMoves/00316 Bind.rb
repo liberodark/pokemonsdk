@@ -20,7 +20,7 @@ module Battle
         actual_targets.each do |target|
           next if target.effects.has?(:bind)
 
-          target.effects.add(Effects::Bind.new(logic, target, user, turn_count))
+          target.effects.add(Effects::Bind.new(logic, target, user, turn_count, self))
         end
       end
     end
