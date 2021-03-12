@@ -177,13 +177,6 @@ module Battle
       end
     end
 
-    # Bind
-    SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Bind') do |_, pokemon|
-      next unless pokemon.battle_effect.has_bind_effect?
-
-      next :prevent
-    end
-
     # Ingrain
     SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Ingrain') do |_, pokemon|
       next if pokemon.type_ghost? || !pokemon.battle_effect.has_ingrain_effect?

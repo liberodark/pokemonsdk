@@ -117,6 +117,33 @@ module PFM
       return pokemon.position.nil? || pokemon.position < 0
     end
 
+    # Parse a text from the text database with 2 pokemon & specific information
+    # @param file_id [Integer] ID of the text file
+    # @param text_id [Integer] ID of the text in the file
+    # @param pokemon1 [PFM::Pokemon] pokemon we're talking about
+    # @param pokemon2 [PFM::Pokemon] pokemon who originated the "problem" (eg. bind)
+    # @param additionnal_var [nil, Hash{String => String}] additional remplacements in the text
+    # @return [String] the text parsed and ready to be displayed
+    def parse_with_2pokemon(file_id, text_id, pokemon1, pokemon2, additionnal_var)
+      if enemy_pokemon?(pokemon1)
+        text_id += $game_temp.trainer_battle ? 5 : 3
+        text_id += 1 if enemy_pokemon?(pokemon2)
+      elsif enemy_pokemon?(pokemon2)
+        text_id += ($game_temp.trainer_battle ? 2 : 1)
+      end
+      # Get text
+      text = GameData::Text.get(file_id, text_id).clone
+      # Parse all the variables
+      additionnal_var&.each { |expr, value| text.gsub!(expr, value || '<nil>') }
+      @variables.each { |expr, value| text.gsub!(expr, value) }
+      # Set the Pokemon nickname
+      text.gsub!(PKNICK[0], pokemon1.given_name)
+      text.gsub!(PKNICK[1], pokemon2.given_name)
+      # Parse the branches & clean the text
+      parse_rest_of_thing(text)
+      return text
+    end
+
     # Parse a text from the text database with specific informations and two Pokemon
     # @param file_id [Integer] ID of the text file
     # @param text_id [Integer] ID of the text in the file

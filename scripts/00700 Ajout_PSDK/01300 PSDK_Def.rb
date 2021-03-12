@@ -9,6 +9,17 @@ class Object
     PFM::Text.parse_with_pokemon(file_id, text_id, pokemon, additionnal_var)
   end
 
+  # Parse a text from the text database with 2 pokemon & specific information
+  # @param file_id [Integer] ID of the text file
+  # @param text_id [Integer] ID of the text in the file
+  # @param pokemon1 [PFM::Pokemon] pokemon we're talking about
+  # @param pokemon2 [PFM::Pokemon] pokemon who originated the "problem" (eg. bind)
+  # @param additionnal_var [nil, Hash{String => String}] additional remplacements in the text
+  # @return [String] the text parsed and ready to be displayed
+  def parse_text_with_2pokemon(file_id, text_id, pokemon1, pokemon2, additionnal_var = nil)
+    PFM::Text.parse_with_2pokemon(file_id, text_id, pokemon1, pokemon2, additionnal_var)
+  end
+
   # Parse a text from the text database with specific informations
   # @param file_id [Integer] ID of the text file
   # @param text_id [Integer] ID of the text in the file
