@@ -322,6 +322,8 @@ module Graphics
         @frozen_sprite.shader.set_float_uniform('param', ((current_time - initial_time) / total_time).clamp(0, 1))
         exec_hooks(Graphics, :update_transition_internal, binding)
         window.update
+        @last_time = @current_time
+        @current_time = Time.new
       end
       # Show all previously visible viewport back
       viewports.each_with_index { |v, i| v.visible = visibilities[i] }

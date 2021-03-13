@@ -15,8 +15,8 @@ module Graphics
     def update
       @delta_accumulator += Graphics.delta
       expected_delta = (1.0 / Graphics.frame_rate)
-      @frame_to_execute = (@delta_accumulator / expected_delta).floor.clamp(0, 3)
-      @delta_accumulator -= (@frame_to_execute * expected_delta)
+      @frame_to_execute = (real_frame_to_execute = (@delta_accumulator / expected_delta).floor).clamp(0, 3)
+      @delta_accumulator -= (real_frame_to_execute * expected_delta)
       if Sf::Keyboard.press?(Sf::Keyboard::F3)
         FPSBalancer.last_f3_up = Graphics.current_time
       elsif FPSBalancer.last_f3_up == Graphics.last_time
