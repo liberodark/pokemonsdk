@@ -29,16 +29,17 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def proceed_internal(user, targets)
-      return unless move_usable_by_user(user, targets)
+      return unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
 
       usage_message(user)
       return scene.display_message_and_wait(parse_text(18, 85)) if pp == 0
 
       decrese_pp(user, targets)
-      return unless proceed_move_accuracy(user, targets) # => Will call display message if failure
+      # => proceed_move_accuracy will call display message if failure
+      return unless proceed_move_accuracy(user, targets) || (on_move_failure(user, targets, :accuracy) && false)
 
       actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
-      return if actual_targets.none?
+      return if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
 
       user.add_move_to_history(self, actual_targets)
       play_animation(user, targets)
@@ -225,31 +226,12 @@ module Battle
       return true # TODO
     end
 
-    # Function that process a list of fiber
-    # @param fibers [Array<Fiber>]
-    def process_fiber(fibers)
-      animation_stack = []
-      killed_stack = []
-      while fibers.any?
-        # Process fiber
-        fibers.each do |fiber|
-          result = fiber.resume
-          animation_stack << result.last if result.is_a?(Array) && result.first == :wait_for_animation
-          killed_stack << fiber if result == :kill
-        end
-        # Kill fibers
-        fibers.reject! { |fiber| killed_stack.include?(fiber) }
-        killed_stack.clear
-        # Play animations
-        scene.visual.lock do
-          while animation_stack.any?
-            animation_stack.each(&:update)
-            scene.update
-            Graphics.update
-            animation_stack.reject!(&:done?)
-          end
-        end
-      end
+    # Event called if the move failed
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param targets [Array<PFM::PokemonBattler>] expected targets
+    # @param reason [Symbol] why the move failed: :usable_by_user, :accuracy, :immunity
+    def on_move_failure(user, targets, reason)
+      return false
     end
   end
 end

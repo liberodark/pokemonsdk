@@ -733,6 +733,7 @@ Here's the list of important methods you'll find in the moves:
 - `deal_status(user, actual_targets)` : Apply the status change on the targets
 - `deal_stats(user, actual_targets)` : Apply the stat change on the targets
 - `deal_effect(user, actual_targets)` : Apply the effect on the targets or terrain.
+- `on_move_failure(user, targets, reason)` : Method executed if the move fails because the user couldn't use it (`:usable_by_user`), the accuracy of the move was not enough (`:accuracy`) or one of the target is immune / evades the move (`:immunity`)
 
 Example of move that was implemented with some of those methods and that is registered properly:
 
