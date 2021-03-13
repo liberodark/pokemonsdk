@@ -10,7 +10,7 @@ module BattleEngine
       return if @ignore || target.hp <= 0
       return if @no_secondary_effect
 
-      @logic.status_change_handler.status_change_with_process(:confuse, target, @launcher, @skill, message_overwrite: msg_id)
+      @logic.status_change_handler.status_change_with_process(:confusion, target, @launcher, @skill, message_overwrite: msg_id)
     end
 
     # Put a target asleep

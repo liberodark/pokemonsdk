@@ -199,7 +199,7 @@ module Battle
 
     # Already confused
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: confused') do |handler, status, target|
-      next if status != :confuse || !target.confused?
+      next if status != :confusion || !target.confused?
 
       next handler.prevent_change do
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 354, target))
@@ -240,7 +240,7 @@ module Battle
 
     # Own Tempo
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Own Tempo') do |handler, status, target, launcher|
-      next unless status == :confuse && target.has_ability?(:own_tempo)
+      next unless status == :confusion && target.has_ability?(:own_tempo)
       next unless launcher.can_be_lowered_or_canceled?
 
       next handler.prevent_change do

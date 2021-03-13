@@ -254,7 +254,7 @@ module Battle
       next if !last_move || last_move.db_symbol != :baton_pass || !last_move.current_turn?
 
       with.battle_effect.transmit_bind(who.battle_effect) if who.battle_effect.has_bind_effect?
-      handler.logic.status_change_handler(:confuse, with) if who.confused?
+      handler.logic.status_change_handler(:confusion, with) if who.confused?
       with.battle_effect.apply_aqua_ring if who.battle_effect.has_aqua_ring_effect?
       with.battle_effect.transmit_substitute(who.battle_effect) if who.battle_effect.has_substitute_effect?
     end

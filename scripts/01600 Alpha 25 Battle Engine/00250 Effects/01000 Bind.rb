@@ -42,6 +42,8 @@ module Battle
       # @param skill [Battle::Move, nil] potential skill used to switch
       # @return [:prevent, nil] if :prevent, can_switch? will return false
       def on_switch_prevention(handler, pokemon, skill)
+        return if pokemon != @pokemon
+
         return handler.prevent_change do
           scene.display_message(message)
         end

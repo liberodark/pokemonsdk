@@ -546,6 +546,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00105 LockOn.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 AbilitySuppressed.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Attract.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Bind.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Confusion.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 CraftyShield.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Electrify.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Flinch.rb

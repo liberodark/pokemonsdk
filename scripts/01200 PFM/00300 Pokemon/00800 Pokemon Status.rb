@@ -172,27 +172,6 @@ module PFM
       end
       return true
     end
-    # Is the Pokemon confused?
-    # @return [Boolean]
-    def confused?
-      return @confuse
-    end
-    # Confuse the Pokemon
-    # @param forcing [Boolean] force the new status
-    # @return [Boolean] if the pokemon has been confused
-    def status_confuse(forcing=false)
-      if((!@confuse || forcing) && !dead?)
-        @confuse = true
-        @state_count = rand(4) + 2
-        return true
-      end
-      return false
-    end
-    # Return the amount of damage the Pokemon receive from confusion
-    # @return [Integer]
-    def confuse_damage
-      return (((@level*2/5 + 2)*40*self.atk/self.dfe)/50).to_i
-    end
     # Is the Pokemon in toxic state ?
     # @return [Boolean]
     def toxic?

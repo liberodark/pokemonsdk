@@ -233,21 +233,6 @@ module Battle
     end
   end
 
-  # Confusion registration
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Confusion') do |user, _, move|
-    if user.confused?
-      stat = user.update_confuse_count
-      move.scene.visual.show_rmxp_animation(user, 475) unless stat == :cured
-      move.scene.display_message_and_wait(parse_text_with_pokemon(19, (stat == :cured ? 351 : 348), user))
-      if stat == true && bchance?(0.5) # 50% in Gen6 and 33% in Gen7
-        hp = user.confuse_damage
-        move.scene.visual.show_hp_animations([user], [-hp])
-        move.scene.display_message_and_wait(parse_text(18, 83))
-        next :prevent
-      end
-    end
-  end
-
   # Crafty Shield registration
   Move.register_move_prevention_target_hook('PSDK Move prev target: Crafty Shield') do |user, target, move|
     next false unless target.effects.has?(:crafty_shield) && move.status? && user != target && move.db_symbol != :curse

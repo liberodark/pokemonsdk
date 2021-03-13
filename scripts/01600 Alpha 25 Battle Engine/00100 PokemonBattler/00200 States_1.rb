@@ -2,6 +2,24 @@ module PFM
   class PokemonBattler
     # @return [Boolean] set switching state
     attr_writer :switching
+
+    # Is the Pokemon confused?
+    # @return [Boolean]
+    def confused?
+      return effects.has?(:confusion)
+    end
+
+    # Confuse the Pokemon
+    # @param _ [Boolean] (ignored)
+    # @return [Boolean] if the pokemon has been confused
+    def status_confuse(_ = false)
+      return false if dead? || confused?
+
+      effects.add(Battle::Effects::Confusion.new(@scene.logic, self))
+      return true
+    end
+
+    # TODO: Fix all that comes after this line
     # @return [Hash{Symbol => Object}] List of initial values of each instance variables
     STATE_INI_VALUES = {
       "@confuse_count": 0,
@@ -36,25 +54,6 @@ module PFM
     # Update all the status/effect at the end of a turn
     def update_status
       END_TURN_UPDATE.each { |method_name| send(method_name) }
-    end
-
-    # Is the Pokemon confused ?
-    # @return [Boolean]
-    def confused?
-      @confuse_count > 0
-    end
-
-    # Update the confuse state
-    # @return [Boolean, Symbol]
-    def update_confuse_count
-      return false unless confused?
-
-      @confuse_count -= 1
-      if @confuse_count == 0
-        @confuse = false
-        return :cured
-      end
-      return true if confused?
     end
 
     # Is the Pokemon on the effect of helping hand ?
