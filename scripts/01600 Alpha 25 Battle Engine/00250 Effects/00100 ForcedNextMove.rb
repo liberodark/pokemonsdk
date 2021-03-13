@@ -44,6 +44,24 @@ module Battle
           @successive_uses = 1
         end
       end
+
+      # Forced Next Move that can be disturbed
+      class Disturbable < ForcedNextMove
+        # Get the distirbed flag
+        # @return [Boolean]
+        attr_accessor :disturbed
+
+        # Create a new Forced next move effect
+        # @param logic [Battle::Logic]
+        # @param target [PFM::PokemonBattler]
+        # @param move [Battle::Move]
+        # @param counter [Integer] number of turn the move is forced to be used
+        # @param targets [Array<PFM::PokemonBattler>]
+        def initialize(logic, target, move, targets, counter = 2)
+          super
+          @disturbed = false
+        end
+      end
     end
   end
 end
