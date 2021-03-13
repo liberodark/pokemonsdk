@@ -32,7 +32,7 @@ module Battle
       return unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
 
       usage_message(user)
-      return scene.display_message_and_wait(parse_text(18, 85)) if pp == 0
+      return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp) if pp == 0
 
       decrese_pp(user, targets)
       # => proceed_move_accuracy will call display message if failure
@@ -229,7 +229,7 @@ module Battle
     # Event called if the move failed
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
-    # @param reason [Symbol] why the move failed: :usable_by_user, :accuracy, :immunity
+    # @param reason [Symbol] why the move failed: :usable_by_user, :accuracy, :immunity, :pp
     def on_move_failure(user, targets, reason)
       return false
     end
