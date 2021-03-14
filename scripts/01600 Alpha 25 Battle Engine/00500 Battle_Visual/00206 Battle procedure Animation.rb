@@ -118,5 +118,88 @@ module Battle
       end
       exp_data.each_key { |pokemon| refresh_info_bar(pokemon) if pokemon.can_fight? }
     end
+
+    # Show the catching animation
+    # @param target_pokemon [PFM::PokemonBattler] pokemon being caught
+    # @param ball [GameData::Ball] ball used
+    # @param nb_bounce [Integer] number of time the ball move
+    # @param caught [Integer] if the pokemon got caught
+    def show_catch_animation(target_pokemon, ball, nb_bounce, caught)
+      origin = battler_sprite(0, 0)
+      target = battler_sprite(target_pokemon.bank, target_pokemon.position)
+      sprite = UI::ThrowingBallSprite.new(origin.viewport, ball)
+      animation = create_throw_ball_animation(sprite, target, origin)
+      create_move_ball_animation(animation, sprite, nb_bounce)
+      caught ? create_caught_animation(animation, sprite) : create_break_animation(animation, sprite, target)
+      animation.start
+      @animations << animation
+      wait_for_animation
+    end
+
+    private
+
+    # Create the throw ball animation
+    # @param sprite [UI::ThrowingBallSprite]
+    # @param target [Sprite]
+    # @param origin [Sprite]
+    # @return [Yuki::Animation::TimedAnimation]
+    def create_throw_ball_animation(sprite, target, origin)
+      ya = Yuki::Animation
+      sprite.set_position(-sprite.ball_offset_y, origin.y - sprite.trainer_offset_y)
+      animation = ya.scalar_offset(0.4, sprite, :y, :y=, 0, -64, distortion: :SQUARE010_DISTORTION)
+      animation.parallel_play(ya.move(0.4, sprite, sprite.x, sprite.y, target.x, target.y - sprite.trainer_offset_y))
+      animation.parallel_play(ya.scalar(0.4, sprite, :throw_progression=, 0, 1))
+      animation.parallel_play(ya.se_play('fall', 100, 120))
+      animation.play_before(ya.scalar(0.2, sprite, :open_progression=, 0, 1))
+      animation.play_before(ya.scalar(0.2, target, :zoom=, 1, 0))
+      animation.play_before(ya.se_play('pokeopen'))
+      animation.play_before(ya.scalar(0.5, sprite, :close_progression=, 0, 1))
+      fall_distortion = proc { |x| (Math.cos(2.5 * Math::PI * x) * Math.exp(-2 * x)).abs }
+      fall_animation = ya.scalar(1, sprite, :y=, target.y - sprite.ball_offset_y, target.y - sprite.trainer_offset_y, distortion: fall_distortion)
+      sound_animation = ya.wait(0.2)
+      sound_animation.play_before(ya.se_play('pokerebond'))
+      sound_animation.play_before(ya.wait(0.4))
+      sound_animation.play_before(ya.se_play('pokerebond'))
+      sound_animation.play_before(ya.wait(0.4))
+      sound_animation.play_before(ya.se_play('pokerebond'))
+      animation.play_before(fall_animation)
+      fall_animation.parallel_play(sound_animation)
+      return animation
+    end
+
+    # Create the move animation
+    # @param animation [Yuki::Animation::TimedAnimation]
+    # @param sprite [UI::ThrowingBallSprite]
+    # @param nb_bounce [Integer]
+    def create_move_ball_animation(animation, sprite, nb_bounce)
+      ya = Yuki::Animation
+      animation.play_before(ya.wait(0.5))
+      nb_bounce.times do
+        animation.play_before(ya.se_play('pokemove'))
+        animation.play_before(ya.scalar(0.5, sprite, :move_progression=, 0, 1))
+        animation.play_before(ya.wait(0.5))
+      end
+    end
+
+    # Create the move animation
+    # @param animation [Yuki::Animation::TimedAnimation]
+    # @param sprite [UI::ThrowingBallSprite]
+    def create_caught_animation(animation, sprite)
+      ya = Yuki::Animation
+      animation.play_before(ya.se_play('pokeopenbreak', 100, 180))
+      animation.play_before(ya.scalar(0.5, sprite, :caught_progression=, 0, 1))
+    end
+
+    # Create the move animation
+    # @param animation [Yuki::Animation::TimedAnimation]
+    # @param sprite [UI::ThrowingBallSprite]
+    # @param target [Sprite]
+    def create_break_animation(animation, sprite, target)
+      ya = Yuki::Animation
+      animation.play_before(ya.se_play('pokeopenbreak'))
+      animation.play_before(ya.scalar(0.5, sprite, :break_progression=, 0, 1))
+      animation.play_before(ya.scalar(0.2, target, :zoom=, 0, 1))
+      animation.play_before(ya.send_command_to(sprite, :dispose))
+    end
   end
 end

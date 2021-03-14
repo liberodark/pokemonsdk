@@ -307,7 +307,7 @@ module LiteRGSS
     #   @return [Numeric] The zoom scale in height axis of the sprite
     # @!attribute [rw] opacity
     #   @return [Numeric] The opacity of the sprite
-    # @!attribute [rw]
+    # @!attribute [rw] viewport
     #   @return [Viewport, Window, nil] The sprite viewport
     # @!attribute [rw] mirror
     #   @return [Boolean] If the sprite texture is mirrored

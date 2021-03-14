@@ -241,8 +241,7 @@ module Battle
       end
 
       def show_message_and_animation(target, ball, nb_bounce, caught)
-        # @scene.visual.catch_animation(target, ball, nb_bounce, caught)
-        # @scene.visual.update until @scene.visual.animations.done? #Not sure about that one
+        @scene.visual.show_catch_animation(target, ball, nb_bounce, caught)
         @scene.display_message_and_wait(parse_text(*TEXT_CATCH[nb_bounce], PFM::Text::PKNAME[0] => target.name)) unless caught
         return caught
       end

@@ -7,7 +7,9 @@ module Yuki
       # Proc defining the SMOOTH Time distortion
       SMOOTH_DISTORTION: proc { |x| 1 - Math.cos(pi_div2 * x**1.5)**5 },
       # Proc defining the UNICITY Time distortion (no distortion at all)
-      UNICITY_DISTORTION: proc { |x| x }
+      UNICITY_DISTORTION: proc { |x| x },
+      # Proc defining the SQUARE 0 to 1 to 0 distortion
+      SQUARE010_DISTORTION: proc { |x| 1 - (x * 2 - 1)**2 }
     }
     # Hash describing all the time sources
     TIME_SOURCES = {
@@ -251,6 +253,19 @@ module Yuki
                           distortion: distortion, time_source: time_source)
     end
 
+    # Create a scalar animation
+    # @param time_to_process [Float] number of seconds (with generic time) to process the animation
+    # @param on [Object] object that will receive the property
+    # @param property [Symbol] name of the property to affect (add the = sign in the symbol name)
+    # @param a [Float, Symbol] origin position
+    # @param b [Float, Symbol] destination position
+    # @param distortion [#call, Symbol] callable taking one paramater (between 0 & 1) and
+    # convert it to another number (between 0 & 1) in order to distord time
+    # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
+    def scalar(time_to_process, on, property, a, b, distortion: :UNICITY_DISTORTION, time_source: :GENERIC_TIME_SOURCE)
+      return ScalarAnimation.new(time_to_process, on, property, a, b, distortion: distortion, time_source: time_source)
+    end
+
     # Class that perform a scalar animation (set object.property to a upto b depending on the animation)
     class ScalarAnimation < TimedAnimation
       # Create a new ScalarAnimation
@@ -287,6 +302,40 @@ module Yuki
       def update_internal(time_factor)
         @on.send(@property, @origin + @delta * time_factor)
       end
+    end
+
+    # Scalar animation with offset
+    class ScalarOffsetAnimation < ScalarAnimation
+      # Create a new ScalarOffsetAnimation
+      # @param time_to_process [Float] number of seconds (with generic time) to process the animation
+      # @param on [Object] object that will receive the property
+      # @param property_get [Symbol] name of the property to affect (add the = sign in the symbol name)
+      # @param property_set [Symbol] name of the property to affect (add the = sign in the symbol name)
+      # @param a [Float, Symbol] origin position
+      # @param b [Float, Symbol] destination position
+      # @param distortion [#call, Symbol] callable taking one paramater (between 0 & 1) and
+      # convert it to another number (between 0 & 1) in order to distord time
+      # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
+      def initialize(time_to_process, on, property_get, property_set, a, b, distortion: :UNICITY_DISTORTION,
+                     time_source: :GENERIC_TIME_SOURCE)
+        super(time_to_process, on, property_set, a, b, distortion: distortion, time_source: time_source)
+        @property_get = property_get
+      end
+
+      private
+
+      # Update the scalar animation
+      # @param time_factor [Float] number between 0 & 1 indicating the progression of the animation
+      def update_internal(time_factor)
+        current_value = @on.send(@property_get)
+        @on.send(@property, current_value + @origin + @delta * time_factor)
+      end
+    end
+
+    # Create a new ScalarOffsetAnimation
+    # @return [ScalarOffsetAnimation]
+    def scalar_offset(time_to_process, on, property_get, property_set, a, b, distortion: :UNICITY_DISTORTION, time_source: :GENERIC_TIME_SOURCE)
+      return ScalarOffsetAnimation.new(time_to_process, on, property_get, property_set, a, b, distortion: distortion, time_source: time_source)
     end
 
     # Create a move animation (from a to b)

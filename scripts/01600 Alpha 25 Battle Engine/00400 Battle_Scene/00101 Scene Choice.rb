@@ -93,20 +93,6 @@ module Battle
       # We fill actions that player cannot control
       next_relative_mon.times { @player_actions << Actions::Base.new(self) }
       return true
-=begin
-      @player_actions.size.upto(@logic.battle_info.vs_type - 1) do |position|
-        next_pokemon = @logic.battler(0, position)
-        # If there's no Pokemon at this position, then it's probably the end of the team
-        break unless next_pokemon
-        # If it's not our Pokemon we don't control it
-        next(@player_actions << {}) if next_pokemon.party_id != 0
-        # If the Pokemon is dead, we also don't control it
-        next(@player_actions << {}) if next_pokemon.dead?
-        # This Pokemon can be controlled
-        return true
-      end
-      return false
-=end
     end
 
     # Tell if the player is not allowed to take any actions

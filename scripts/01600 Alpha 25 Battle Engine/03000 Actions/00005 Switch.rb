@@ -45,6 +45,7 @@ module Battle
         @scene.logic.switch_battlers(@who, @with)
         # Switching the sprite
         sprite.pokemon = @with
+        sprite.visible = false # Ensure there's no glitch with animation (the animation sets visible :))
         sprite.go_in
         visual.show_info_bar(@with)
         switch_in_message

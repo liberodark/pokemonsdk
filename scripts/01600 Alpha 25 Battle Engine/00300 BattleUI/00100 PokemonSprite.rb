@@ -235,7 +235,9 @@ module BattleUI
       animation.play_before(ya.send_command_to(self, :zoom=, 0))
       animation.play_before(ya.send_command_to(self, :opacity=, 255))
       animation.play_before(ya.send_command_to(self, :set_position, *sprite_position))
-      animation.play_before(ya::ScalarAnimation.new(0.1, self, :zoom=, 0, 1))
+      poke_out = ya.scalar(0.1, self, :zoom=, 0, 1)
+      ball_animation = enemy? ? enemy_ball_animation(poke_out) : actor_ball_animation(poke_out)
+      animation.play_before(ball_animation)
       animation.play_before(ya.send_command_to(self, :cry))
 
       return animation
@@ -254,7 +256,7 @@ module BattleUI
     def regular_go_out_animation
       ya = Yuki::Animation
       animation = ya.send_command_to(self, :zoom=, 1)
-      animation.play_before(ya::ScalarAnimation.new(0.1, self, :zoom=, 1, 0))
+      animation.play_before(go_back_ball_animation(ya.scalar(0.1, self, :zoom=, 1, 0)))
 
       return animation
     end
@@ -267,6 +269,59 @@ module BattleUI
       going_down = ya.opacity_change(0.1, self, opacity, 0)
       animation.play_before(going_down)
       going_down.parallel_add(ya.move(0.1, self, x, y, x, y + DELTA_DEATH_Y))
+
+      return animation
+    end
+
+    # Create the ball animation of the actor Pokemon
+    # @param pokemon_going_out_of_ball_animation [Yuki::Animation::TimedAnimation]
+    # @return [Yuki::Animation::TimedAnimation]
+    def actor_ball_animation(pokemon_going_out_of_ball_animation)
+      sprite = UI::ThrowingBallSprite.new(viewport, @pokemon)
+      sprite.set_position(-sprite.ball_offset_y, y - sprite.trainer_offset_y)
+      ya = Yuki::Animation
+      animation = ya.scalar_offset(0.5, sprite, :y, :y=, 0, -64, distortion: :SQUARE010_DISTORTION)
+      animation.parallel_play(ya.move(0.5, sprite, -sprite.ball_offset_y, y - sprite.trainer_offset_y, x, y - sprite.ball_offset_y))
+      animation.parallel_play(ya.scalar(0.5, sprite, :throw_progression=, 0, 1))
+      animation.parallel_play(ya.se_play('fall'))
+      animation.play_before(ya.se_play('pokeopen'))
+      animation.play_before(ya.scalar(0.1, sprite, :open_progression=, 0, 1))
+      animation.play_before(ya.send_command_to(sprite, :dispose))
+      animation.play_before(pokemon_going_out_of_ball_animation)
+
+      return animation
+    end
+
+    # Create the ball animation of the enemy Pokemon
+    # @param pokemon_going_out_of_ball_animation [Yuki::Animation::TimedAnimation]
+    # @return [Yuki::Animation::TimedAnimation]
+    def enemy_ball_animation(pokemon_going_out_of_ball_animation)
+      sprite = UI::ThrowingBallSprite.new(viewport, @pokemon)
+      sprite.set_position(*sprite_position)
+      sprite.y -= sprite.ball_offset_y
+      ya = Yuki::Animation
+      animation = ya.wait(0.2)
+      animation.play_before(ya.se_play('pokeopen'))
+      animation.play_before(ya.scalar(0.1, sprite, :open_progression=, 0, 1))
+      animation.play_before(ya.send_command_to(sprite, :dispose))
+      animation.play_before(pokemon_going_out_of_ball_animation)
+
+      return animation
+    end
+
+    # Create the ball animation of the Pokemon going back in ball
+    # @param pokemon_going_in_the_ball_animation [Yuki::Animation::TimedAnimation]
+    # @return [Yuki::Animation::TimedAnimation]
+    def go_back_ball_animation(pokemon_going_in_the_ball_animation)
+      sprite = UI::ThrowingBallSprite.new(viewport, @pokemon)
+      sprite.set_position(*sprite_position)
+      sprite.y -= sprite.ball_offset_y
+      ya = Yuki::Animation
+      animation = ya.wait(0.2)
+      animation.play_before(ya.se_play('pokeopen'))
+      animation.play_before(ya.scalar(0.1, sprite, :open_progression=, 0, 1))
+      animation.play_before(ya.send_command_to(sprite, :dispose))
+      animation.play_before(pokemon_going_in_the_ball_animation)
 
       return animation
     end
