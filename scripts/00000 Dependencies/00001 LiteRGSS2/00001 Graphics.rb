@@ -18,6 +18,8 @@ module Graphics
   @has_focus = true
   # Frame counter
   @frame_count = 0
+  # Flag telling if going fullscreen is allowed or not
+  @fullscreen_toggle_enabled = true
   class << self
     # Get the game window
     # @return [LiteRGSS::DisplayWindow]
@@ -34,6 +36,8 @@ module Graphics
     # Get the time when the last frame was executed
     # @return [Time]
     attr_reader :last_time
+    # Tell if it is allowed to go fullscreen with ALT+ENTER
+    attr_accessor :fullscreen_toggle_enabled
 
     # Tell if the graphics window has focus
     # @return [Boolean]
@@ -270,6 +274,13 @@ module Graphics
     # Sort the graphics in z
     def sort_z
       @window&.sort_z
+    end
+
+    # Swap the fullscreen state
+    def swap_fullscreen
+      settings = window.settings
+      settings[7] = !settings[7]
+      window.settings = settings
     end
 
     private

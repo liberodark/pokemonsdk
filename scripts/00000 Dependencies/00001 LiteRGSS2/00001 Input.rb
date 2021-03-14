@@ -176,10 +176,10 @@ module Input
     # @param window [LiteRGSS::DisplayWindow]
     def register_events(window)
       window.on_text_entered = proc { |text| on_text_entered(text) }
-      window.on_key_pressed = proc { |key| on_key_up(key) }
-      window.on_key_released = proc { |key| on_key_down(key) }
-      window.on_joystick_button_pressed = proc { |id, button| on_key_up(-32 * id - button - 1) }
-      window.on_joystick_button_released = proc { |id, button| on_key_down(-32 * id - button - 1) }
+      window.on_key_pressed = proc { |key, alt| on_key_down(key, alt) }
+      window.on_key_released = proc { |key| on_key_up(key) }
+      window.on_joystick_button_pressed = proc { |id, button| on_key_down(-32 * id - button - 1) }
+      window.on_joystick_button_released = proc { |id, button| on_key_up(-32 * id - button - 1) }
     end
 
     private
@@ -192,7 +192,10 @@ module Input
 
     # Set a key up
     # @param key [Integer]
-    def on_key_up(key)
+    # @param alt [Boolean] if the alt key is pressed
+    def on_key_down(key, alt)
+      return Graphics.swap_fullscreen if alt && key == Sf::Keyboard::Enter && Graphics.fullscreen_toggle_enabled
+
       vkey, = Keys.find { |_, v| v.include?(key) }
       return unless vkey
 
@@ -202,7 +205,7 @@ module Input
 
     # Set a key down
     # @param key [Integer]
-    def on_key_down(key)
+    def on_key_up(key)
       vkey, = Keys.find { |_, v| v.include?(key) }
       return unless vkey
 

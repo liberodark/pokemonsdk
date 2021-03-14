@@ -824,6 +824,12 @@ module LiteRGSS
     #   @param width [Integer]
     #   @param height [Integer]
     #   @return [self]
+    # @!attribute [rw] settings
+    #   @return [Array(title, width, height, scale, bpp, fps, vsync, fullscreen, visible_mouse)]
+    # @!attribute [rw] x
+    #   @return [Integer] X coordinate of the window on the desktop
+    # @!attribute [rw] y
+    #   @return [Integer] Y coordinate of the window on the desktop
     # @!attribute [r] openGL_version
     #   @return [Array<Integer>] Major & Minor version number of the currently running OpenGL version
     # @!method on_closed=(proc)
@@ -831,7 +837,7 @@ module LiteRGSS
     #   @example Prevent the user from closing the window if $no_close is true
     #     win.on_close = proc do
     #       next false if $no_close
-    #       
+    #
     #       next true
     #     end
     # @!method on_resized=(proc)
@@ -959,6 +965,12 @@ module LiteRGSS
     # @!method self.list_resolutions
     #   List all the resolution available on the current device
     #   @return [Array] [[width1, height1], [width2, height2], ...]
+    # @!method self.desktop_width
+    #   Get the desktop width
+    #   @return [Integer]
+    # @!method self.desktop_height
+    #   Get the desktop height
+    #   @return [Integer]
   end
 end
 # Module of things made by Nuri Yuri
