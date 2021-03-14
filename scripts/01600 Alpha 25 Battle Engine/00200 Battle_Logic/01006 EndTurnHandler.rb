@@ -398,8 +398,8 @@ module Battle
       end
     end
 
-    #Electric Terrain
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Electric Terrain') do |logic, scene, battlers|
+    # Electric Terrain
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Electric Terrain') do |logic, scene, _|
       next if $env.current_fterrain != 1
 
       if $env.decrease_fterrain_duration # Return true if stopping!
@@ -424,7 +424,7 @@ module Battle
     end
 
     # Misty Terrain
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Misty Terrain') do |logic, scene, battlers|
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Misty Terrain') do |logic, scene, _|
       next if $env.current_fterrain != 3
 
       if $env.decrease_fterrain_duration # Return true if stopping!
@@ -433,7 +433,7 @@ module Battle
       end
     end
 
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Psychic Terrain') do |logic, scene, battlers|
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Psychic Terrain') do |logic, _, _|
       next if $env.current_fterrain != 4
 
       if $env.decrease_fterrain_duration # Return true if stopping!
