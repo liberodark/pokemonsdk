@@ -29,7 +29,7 @@ module Battle
       # @param ball [GameData::BallItem] db_symbol of the used ball
       def try_to_catch_pokemon(target, pkm_ally, ball)
         log_data("# FR: try_to_catch_pokemon(#{target}, #{pkm_ally}, #{ball})")
-        @bounces = 0
+        @bounces = -1
         exec_hooks(Battle::Logic::CatchHandler, :ball_blocked, binding)
         catching_procedure(target, pkm_ally, ball)
         show_message_and_animation(target, ball, @bounces, caught?)
@@ -42,7 +42,7 @@ module Battle
       # Tells if the Pokemon is caught
       # @return [Boolean]
       def caught?
-        return @bounces == 4 || @critical_capture
+        return @bounces == 3 || @critical_capture
       end
 
       class << self
@@ -165,7 +165,7 @@ module Battle
         return if check_critical_capture(a)
 
         if a >= 255
-          @bounces = 4
+          @bounces = 3
         else
           4.times do |i|
             log_debug("bounce no.#{i}")
