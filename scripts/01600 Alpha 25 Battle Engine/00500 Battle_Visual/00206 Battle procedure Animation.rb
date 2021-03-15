@@ -174,7 +174,7 @@ module Battle
     def create_move_ball_animation(animation, sprite, nb_bounce)
       ya = Yuki::Animation
       animation.play_before(ya.wait(0.5))
-      nb_bounce.times do
+      nb_bounce.clamp(0, 3).times do
         animation.play_before(ya.se_play('pokemove'))
         animation.play_before(ya.scalar(0.5, sprite, :move_progression=, 0, 1))
         animation.play_before(ya.wait(0.5))
