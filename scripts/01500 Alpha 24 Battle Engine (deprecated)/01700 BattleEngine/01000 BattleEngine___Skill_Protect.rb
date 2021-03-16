@@ -99,16 +99,6 @@ module BattleEngine
     _mp([:apply_affect, target, :apply_safe_guard])
   end
 
-  # Magic Coat skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_magic_coat(launcher, target, skill, msg_push = true)
-    return false unless __s_beg_step(launcher, target, skill, msg_push)
-    _mp([:msg, parse_text_with_pokemon(19, 761, launcher)])
-    _mp([:apply_effect, launcher, :apply_magic_coat])
-  end
-
   # Substitute skill definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move

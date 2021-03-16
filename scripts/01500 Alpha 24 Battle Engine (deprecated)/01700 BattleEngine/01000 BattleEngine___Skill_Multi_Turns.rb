@@ -4,32 +4,6 @@
 module BattleEngine
   module_function
 
-  # 2 turns skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_2turns(launcher, target, skill, msg_push = true)
-    #> If it didn't make the wait turn / Power Herb
-    unless launcher.battle_effect.has_forced_attack? || (skill.id == 76 && $env.sunny?) || _has_item(launcher, 271)
-      _message_stack_push([:change_dfe, launcher, 1]) if skill.id == 130
-      oor = GameData::Skill.get_out_of_reach_type(skill.db_symbol)
-      _message_stack_push([:apply_out_of_reach, launcher, oor]) if oor
-      id_txt = GameData::Skill.get_2turns_announce(skill.db_symbol)
-      _message_stack_push([:msg, parse_text_with_pokemon(19, id_txt, launcher)]) if id_txt
-      _message_stack_push([:force_attack, launcher, target, skill, 2])
-      return
-    end
-    #> Power Herb
-    if _has_item(launcher, 271)
-      _mp([:set_item, launcher, 0, true])
-    end
-    #> Solar Beam -> Sandstorm / Hail / Rain
-    skill.power2 = skill.power / 2 if skill.id == 76 && ($env.sandstorm? || $env.hail? || $env.rain?)
-    _message_stack_push([:apply_out_of_reach, launcher, 0])
-    s_basic(launcher, target, skill)
-    skill.power2 = nil
-  end
-
   # Bide skill definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move
@@ -151,36 +125,6 @@ module BattleEngine
       s_basic(launcher, target, skill)
       _message_stack_push([:set_reload_state, launcher])
     end
-  end
-
-  # Rollout skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_rollout(launcher, target, skill, msg_push = true)
-    be = launcher.battle_effect
-    #> Defense Curl
-    if launcher.last_skill == 111
-      skill.power2 = skill.power * 2
-    elsif be.rollout_power > 0
-      skill.power2 = be.rollout_power
-    end
-    result = s_basic(launcher, target, skill)
-    #> Inactive Rollout
-    if be.get_forced_attack_counter == 0
-      if result
-        _mp([:apply_effect, launcher, :apply_forced_attack, skill.id, 5, target])
-        _mp([:apply_effect, launcher, :rollout_power=, 2 * skill.power])
-      else
-        _mp([:apply_effect, launcher, :rollout_power=, 0])
-      end
-    elsif be.get_forced_attack_counter == 1 || !result
-      _mp([:apply_effect, launcher, :apply_forced_attack, 0, 0, target])
-      _mp([:apply_effect, launcher, :rollout_power=, 0])
-    else
-      _mp([:apply_effect, launcher, :rollout_power=, 2 * skill.power])
-    end
-    skill.power2 = nil
   end
 
   # Stockpile skill definition

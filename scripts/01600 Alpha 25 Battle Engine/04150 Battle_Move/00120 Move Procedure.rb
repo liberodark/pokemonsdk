@@ -235,5 +235,24 @@ module Battle
     def on_move_failure(user, targets, reason)
       return false
     end
+
+    # Function that execute another move (Sleep Talk, Metronome)
+    # @param move [Battle::Move] has to be cloned before calling the method
+    # @param target_bank [Integer]
+    # @param target_position [Integer]
+    def use_another_move(move, user, target_bank = nil, target_position = nil)
+      if target_bank.nil? || target_position.nil?
+        targets = move.battler_targets(user, @logic)
+        if targets.any? { |target| target.bank != user.bank }
+          choosen_target = targets.reject { |target| target.bank == user.bank }.first
+        else
+          choosen_target = targets.first
+        end
+        target_bank = choosen_target.bank
+        target_position = choosen_target.position
+      end
+      action = Actions::Attack.new(@scene, move, user, target_bank, target_position)
+      action.execute
+    end
   end
 end

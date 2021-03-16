@@ -87,25 +87,6 @@ module BattleEngine
     _mp(MSG_Fail)
   end
 
-  Sleep_Talk_NoMove = [214, 274, 448, 253, 130, 13, 76, 118, 119, 264, 382, 117, 383, 143, 291, 340, 467, 91, 19]
-  # Sleep Talk skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_sleep_talk(launcher, target, skill, msg_push = true)
-    return unless __s_beg_step(launcher, target, skill, msg_push)
-    target = launcher.battle_effect.last_attacking
-    target = _random_target_selection(launcher, target) unless target && target != launcher
-    if launcher != target && launcher.asleep?
-      id = Sleep_Talk_NoMove[0]
-      id = rand(GameData::Skill::LAST_ID) + 1 while(Sleep_Talk_NoMove.include?(id))
-      skill = ::PFM::Skill.new(id)
-      _launch_skill(launcher, target, skill)
-    else
-      _mp(MSG_Fail)
-    end
-  end
-
   # Sparkling Aria skill definition
   # This move inflicts damage to everyone around you (this includes allies) and cures burn if hit. If Pokémon hit has soundproof, dry skin,
   # storm drain, or water absorbed they are not affected (burns do not get cured).
