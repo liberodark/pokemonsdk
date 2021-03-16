@@ -22,16 +22,4 @@ module BattleEngine
     __s_hp_down_check(launcher.hp, target)
     _mp([:hp_down, launcher, launcher.hp])
   end
-
-  # Memento skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_memento(launcher, target, skill, msg_push = true)
-    if s_ohko(launcher, launcher, skill)
-      _mp([:change_atk, target, -2])
-      _mp([:change_ats, target, -2])
-    end
-  end
-
 end

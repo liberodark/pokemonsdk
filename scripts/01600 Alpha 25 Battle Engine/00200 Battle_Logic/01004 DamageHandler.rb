@@ -371,6 +371,13 @@ module Battle
       handler.scene.visual.show_hp_animations([launcher], [-launcher.hp])
     end
 
+    # OHKO Moves
+    DamageHandler.register_post_damage_death_hook('PSDK Post damage: OHKO Moves') do |handler, _, target, launcher, skill|
+      next unless skill&.be_method == :s_ohko && launcher != target && launcher
+
+      handler.scene.display_message_and_wait(parse_text(18, 100)) # "Its a one-hit KO!"
+    end
+
     # Grudge
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Grudge') do |handler, _, target, launcher, skill|
       next unless skill && target.battle_effect.has_grudge_effect? && launcher != target && launcher
@@ -536,7 +543,7 @@ module Battle
         next if handler.logic.allies_of(target).any? { |pkmn| pkmn && pkmn.hp > 0 && pkmn.has_ability?(:damp) }
         next if handler.logic.foes_of(target).any? { |pkmn| pkmn && pkmn.hp > 0 && pkmn.has_ability?(:damp) }
       end
-      
+
       damages = launcher.max_hp / 4
       handler.scene.visual.show_ability(target)
       handler.scene.visual.show_hp_animations([launcher], [-damages])

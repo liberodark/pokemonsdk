@@ -39,7 +39,9 @@ module Battle
       return unless proceed_move_accuracy(user, targets) || (on_move_failure(user, targets, :accuracy) && false)
 
       actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
-      return if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
+      if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
+        return scene.display_message_and_wait(parse_text(18, 106)) # Case of the fainted target
+      end
 
       user.add_move_to_history(self, actual_targets)
       play_animation(user, targets)
