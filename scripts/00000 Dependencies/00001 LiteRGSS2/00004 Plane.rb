@@ -1,5 +1,5 @@
 # Class simulating repeating texture
-class Plane < ShaderedSprite
+class Plane < Sprite
   SHADER = <<~ENDOFSHADER
     // Viewport tone (required)
     uniform vec4 tone;
@@ -63,7 +63,7 @@ class Plane < ShaderedSprite
   def initialize(viewport)
     super(viewport)
     self.shader = Shader.new(SHADER)
-    self.texture = Plane.texture
+    self.working_texture = Plane.texture
     self.tone = Tone.new(0, 0, 0, 0)
     self.color = Color.new(255, 255, 255, 0)
     @blend_type = 0
@@ -76,6 +76,8 @@ class Plane < ShaderedSprite
     shader.set_float_uniform('screenSize', [width, height])
   end
 
+  alias working_texture= bitmap=
+  alias working_texture bitmap
   # Set the texture of the plane
   # @param texture [Texture]
   def texture=(texture)
@@ -198,7 +200,12 @@ class Plane < ShaderedSprite
       if !@texture || @texture.disposed?
         @texture = Texture.new(Graphics.width, Graphics.height)
         image = Image.new(Graphics.width, Graphics.height)
-        image.fill_rect(0, 0, Graphics.width, Graphics.height, Color.new(255, 255, 255, 255))
+        # TODO: revert to image.fill_rect(0, 0, Graphics.width, Graphics.height, Color.new(255, 255, 255, 255))
+        # once liteRGSS2 gets fixed on this function
+        Graphics.height.times do |y|
+          image.fill_rect(0, y, Graphics.width, 1, Color.new(255, 255, 255, 255))
+        end
+        image.to_png_file('test2.png')
         image.copy_to_bitmap(@texture)
         image.dispose
       end

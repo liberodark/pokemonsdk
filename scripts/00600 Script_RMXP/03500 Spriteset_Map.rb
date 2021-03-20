@@ -272,22 +272,22 @@ class Spriteset_Map
     if @panorama_name != $game_map.panorama_name # or @panorama_hue != $game_map.panorama_hue
       @panorama_name = $game_map.panorama_name
       @panorama_hue = $game_map.panorama_hue
-      unless @panorama.bitmap.nil?
-        @panorama.bitmap.dispose
-        @panorama.bitmap = nil
+      unless @panorama.texture.nil?
+        @panorama.texture.dispose
+        @panorama.texture = nil
       end
-      @panorama.bitmap = RPG::Cache.panorama(@panorama_name, @panorama_hue) unless @panorama_name.empty? # if @panorama_name != ""
+      @panorama.texture = RPG::Cache.panorama(@panorama_name, @panorama_hue) unless @panorama_name.empty? # if @panorama_name != ""
       Graphics.frame_reset
     end
 
     if @fog_name != $game_map.fog_name # or @fog_hue != $game_map.fog_hue
       @fog_name = $game_map.fog_name
       @fog_hue = $game_map.fog_hue
-      unless @fog.bitmap.nil?
-        @fog.bitmap.dispose
-        @fog.bitmap = nil
+      unless @fog.texture.nil?
+        @fog.texture.dispose
+        @fog.texture = nil
       end
-      @fog.bitmap = RPG::Cache.fog(@fog_name, @fog_hue) unless @fog_name.empty? # if @fog_name != ""
+      @fog.texture = RPG::Cache.fog(@fog_name, @fog_hue) unless @fog_name.empty? # if @fog_name != ""
       Graphics.frame_reset
     end
 
