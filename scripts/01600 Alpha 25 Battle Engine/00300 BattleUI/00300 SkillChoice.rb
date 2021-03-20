@@ -40,6 +40,7 @@ module BattleUI
       @mega_enabled = false
       self.data = pokemon
       @index = @last_indexes[pokemon].to_i.clamp(0, @buttons.rindex(&:visible))
+      update_button_opacity
       super()
     end
 
@@ -54,9 +55,12 @@ module BattleUI
 
     # Set the button opacity
     def update_button_opacity
+      base_index = BUTTON_COORDINATE.size - buttons.count(&:visible)
       buttons.each_with_index do |button, index|
+        next unless button.visible
+
         button.opacity = index == @index ? 255 : 204
-        x, y = *BUTTON_COORDINATE[index]
+        x, y = *BUTTON_COORDINATE[base_index + index]
         button.set_position(x + (@index == index ? -10 : 0) + @x, y + @y)
       end
     end

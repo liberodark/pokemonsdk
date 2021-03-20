@@ -159,7 +159,7 @@ module BattleUI
       return unless Mouse.moved
 
       @buttons.each_with_index do |sp, index|
-        break @index = index if sp.simple_mouse_in?
+        break @index = index if sp.simple_mouse_in? && sp.visible
       end
     end
 
