@@ -198,6 +198,7 @@ pokemonsdk/scripts/01100 Yuki/00100 Animation/00100 Animation.rb
 pokemonsdk/scripts/01100 Yuki/00100 Animation/00101 Commands.rb
 pokemonsdk/scripts/01100 Yuki/00100 Animation/00102 MessageLocked.rb
 pokemonsdk/scripts/01100 Yuki/00100 Animation/00103 Handler.rb
+pokemonsdk/scripts/01100 Yuki/00100 Animation/00104 MoveAnimationHelper.rb
 pokemonsdk/scripts/01100 Yuki/00200 FollowMe/00001 Config.rb
 pokemonsdk/scripts/01100 Yuki/00200 FollowMe/00300 Core.rb
 pokemonsdk/scripts/01100 Yuki/00300 Tilemap/00001 Tilemap.rb
@@ -675,6 +676,8 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00104 Item.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00105 Flee.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00200 GenericAI.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04400 Battle_Message/00001 BattleStart.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/05000 MoveAnimation/00000 MoveAnimation.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/05000 MoveAnimation/00001 Example.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 BE24 Interpreter/01600 BE_Interpreter.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 BE24 Interpreter/01700 BE_Interpreter_(Effect).rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 BE24 Interpreter/01800 BE_Interpreter_(Stats).rb
