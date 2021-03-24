@@ -22,10 +22,6 @@ module Battle
           @logic.stat_change_handler.stat_change_with_process(:dfe, 1, user, user, self)
         end
       end
-
-      def effect_working?(user, actual_targets)
-        return true
-      end
     end
     Move.register(:s_curse, Curse)
   end

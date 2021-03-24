@@ -45,6 +45,18 @@ module Battle
       end
     end
 
+    # Class describing a basic move (damage + status + stat = garanteed)
+    class BasicWithSuccessfulEffect < Basic
+      # Test if the effect is working
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+      # @return [Boolean]
+      def effect_working?(user, actual_targets)
+        exec_hooks(Move, :effect_working, binding)
+        return true
+      end
+    end
+
     Move.register(:s_basic, Basic)
   end
 end

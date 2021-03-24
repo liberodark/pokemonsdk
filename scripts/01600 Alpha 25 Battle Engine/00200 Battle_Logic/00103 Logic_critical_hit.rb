@@ -16,6 +16,9 @@ module Battle
     # @param initial_critical_count [Integer] Initial critical count of the move
     # @return [Boolean]
     def calc_critical_hit(user, target, initial_critical_count)
+      return false if bank_effects[target.bank].has?(:lucky_chant)
+      return false if user.can_be_lowered_or_canceled?(target.has_ability?(:battle_armor) || target.has_ability?(:shell_armor))
+
       # 100_000 = 100%
       current_value = @move_critical_rng.rand(100_000)
       return current_value < CRITICAL_RATES[calc_critical_count(user, target, initial_critical_count)]

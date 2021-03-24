@@ -307,7 +307,7 @@ module Battle
     # @type [Array<PFM::PokemonBattler>]
     actual_targets = move_binding.local_variable_get(:actual_targets)
 
-    next if move.db_symbol == :memento
+    next unless move.magic_coat_affected?
     next unless user.can_be_lowered_or_canceled?(move.status? && actual_targets.any? { |target| target.has_ability?(:magic_bounce) })
 
     if move.affects_bank? # Send move back to user if affects the bank in order to apply the effect to the bank

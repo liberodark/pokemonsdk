@@ -200,7 +200,7 @@ module Battle
     # @return [Boolean]
     def effect_working?(user, actual_targets)
       exec_hooks(Move, :effect_working, binding)
-      return user && actual_targets && false || true
+      return true
     end
 
     # Array mapping the status effect to an action

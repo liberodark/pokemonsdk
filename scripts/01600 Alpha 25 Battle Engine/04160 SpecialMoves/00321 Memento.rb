@@ -9,10 +9,6 @@ module Battle
         hp = user.max_hp
         scene.visual.show_hp_animations([user], [-hp])
       end
-
-      def effect_working?(user, actual_targets)
-        return true
-      end
     end
 
     Move.register(:s_memento, Memento)

@@ -1,7 +1,7 @@
 module Battle
   class Move
     # class managing PayDay move
-    class PayDay < Move
+    class PayDay < BasicWithSuccessfulEffect
       private
 
       # Function that deals the effect (generates money the player gains at the end of battle)

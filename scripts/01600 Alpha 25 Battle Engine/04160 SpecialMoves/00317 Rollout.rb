@@ -1,7 +1,7 @@
 module Battle
   class Move
     # Move that is used during 5 turn and get more powerfull until it gets interrupted
-    class Rollout < Basic
+    class Rollout < BasicWithSuccessfulEffect
       # Get the real base power of the move (taking in account all parameter)
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
@@ -28,14 +28,6 @@ module Battle
         # @type [Effects::ForcedNextMove::Rollout]
         rollout_effect = user.effects.get(:forced_next_move)
         rollout_effect.successive_uses = 1 if rollout_effect.is_a?(Effects::ForcedNextMove::Rollout)
-      end
-
-      # Test if the effect is working
-      # @param user [PFM::PokemonBattler] user of the move
-      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
-      # @return [Boolean]
-      def effect_working?(user, actual_targets)
-        return true
       end
 
       # Function that deals the effect to the pokemon

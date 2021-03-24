@@ -220,7 +220,7 @@ module PFM
     # @return [Boolean] potential changed result
     def can_be_lowered_or_canceled?(test = true)
       return false unless test
-      return test unless has_ability?(:mold_breaker)
+      return test unless has_ability?(:mold_breaker) || has_ability?(:teravolt) || has_ability?(:turboblaze)
 
       unless ability_used
         @scene.visual.show_ability(self)

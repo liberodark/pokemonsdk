@@ -235,7 +235,7 @@ module Yuki
       Object.define_method(:save) { Yuki::WorldMapEditor.save }
       Object.define_method(:clear_map) { Yuki::WorldMapEditor.clear_map }
       Object.define_method(:select_worldmap) { |id| Yuki::WorldMapEditor.select_worldmap(id) }
-      Object.define_method(:add_worldmap) { |name, image| Yuki::WorldMapEditor.add_worldmap(name, image) }
+      Object.define_method(:add_worldmap) { |image, text_id, file_id = nil| Yuki::WorldMapEditor.add_worldmap(image, text_id, file_id) }
       Object.define_method(:delete_worldmap) { |id| Yuki::WorldMapEditor.delete_worldmap(id) }
       Object.define_method(:list_worldmap) { |name = ''| Yuki::WorldMapEditor.list_worldmap(name) }
       Object.define_method(:set_worldmap_image) { |id, value| Yuki::WorldMapEditor.set_worldmap_image(id, value) }

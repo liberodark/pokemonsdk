@@ -1,7 +1,7 @@
 module Battle
   class Move
     # Thrash Move
-    class Thrash < Basic
+    class Thrash < BasicWithSuccessfulEffect
       private
 
       # Event called if the move failed
@@ -12,14 +12,6 @@ module Battle
         # @type [Effects::ForcedNextMove::Disturbable]
         effect = user.effects.get(:forced_next_move)
         effect.disturbed = true if effect.is_a?(Effects::ForcedNextMove::Disturbable)
-      end
-
-      # Test if the effect is working
-      # @param user [PFM::PokemonBattler] user of the move
-      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
-      # @return [Boolean]
-      def effect_working?(user, actual_targets)
-        return true
       end
 
       # Function that deals the effect to the pokemon
