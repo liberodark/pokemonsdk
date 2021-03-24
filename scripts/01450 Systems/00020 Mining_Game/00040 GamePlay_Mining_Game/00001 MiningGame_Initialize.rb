@@ -1,6 +1,6 @@
 module GamePlay
   # Class that describes the functionment of the scene
-  class MiningGame < BaseCleanUpdate
+  class MiningGame < BaseCleanUpdate::FrameBalanced
     # Constant that stock the Database of the Mining Game
     DATA = GameData::MiningGame::DATA_ITEM
     # The base music of the scene

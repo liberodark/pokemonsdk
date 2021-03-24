@@ -14,8 +14,8 @@ module GamePlay
       @tool_hit_sprite.change_tool(@current_tool)
       @tool_sprite.set_position(x * 16 + 14, y * 16 + 32 - 20)
       @tool_sprite.visible = true
-      @tool_hit_sprite.set_position(x * 16 - 17, y * 16 + 32 - 17)
-      @iron_hit_sprite.set_position(x * 16 - 17, y * 16 + 32 - 17)
+      @tool_hit_sprite.set_position(x * 16 - 17, y * 16 + 32 - 17).visible = false
+      @iron_hit_sprite.set_position(x * 16 - 17, y * 16 + 32 - 17).visible = false
       anim = Yuki::Animation
       @animation = anim.wait(0.01)
       @animation.play_before(anim.wait(0.01))
