@@ -215,8 +215,8 @@ class Interpreter
   # @param radius: [Integer] <default : 0> the distance from the target to consider it as reached
   # @param priority: [Integer] <default : Pathfinding::PRIORITY_NORMAL> the priority in front of the other requests
   # @param tries: [Integer, Symbol] <default : 5> the number of tries allowed to this request, use :infinity to unlimited tris count
-  def find_path(*args)
-    get_character(@event_id).find_path(*args)
+  def find_path(**kwargs)
+    get_character(@event_id).find_path(**kwargs)
   end
 
   # Shortcut for get_character(@event_id).stop_path
