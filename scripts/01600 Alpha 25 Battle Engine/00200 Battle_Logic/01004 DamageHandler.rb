@@ -29,6 +29,7 @@ module Battle
       # @param messages [Proc] messages shown right before the post processing
       def damage_change(hp, target, launcher = nil, skill = nil, &messages)
         log_data("# damage_change(#{hp}, #{target}, #{launcher}, #{skill})")
+        skill&.damage_dealt += hp
         @scene.visual.show_hp_animations([target], [-hp], [skill&.effectiveness], &messages)
         exec_hooks(DamageHandler, :post_damage, binding) if target.hp > 0
         exec_hooks(DamageHandler, :post_damage_death, binding) if target.hp <= 0

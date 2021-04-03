@@ -26,6 +26,9 @@ module Battle
     attr_reader :scene
     # @return [Battle::Move]
     attr_accessor :original
+    # Number of damage dealt last time the move was used (to be used with move history)
+    # @return [Integer]
+    attr_accessor :damage_dealt
 
     # Create a new move
     # @param id [Integer] ID of the move in the database
@@ -39,6 +42,7 @@ module Battle
       @used = false
       @consecutive_use_count = 0
       @effectiveness = 1
+      @damage_dealt = 0
       @scene = scene
       @logic = scene.logic
     end
