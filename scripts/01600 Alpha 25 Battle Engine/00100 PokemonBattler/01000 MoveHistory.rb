@@ -11,10 +11,15 @@ module PFM
       # Get the target that were affected by the move
       # @return [Array<PFM::PokemonBattler>]
       attr_reader :targets
+      # Get the actual move object that was used
+      # @return [Battle::Move]
+      attr_reader :original_move
+
       # Create a new Move History
       # @param move [Battle::Move]
       # @param targets [Array<PFM::PokemonBattler>]
       def initialize(move, targets)
+        @original_move = move
         @move = move.dup
         @turn = $game_temp.battle_turn
         @targets = targets

@@ -113,6 +113,13 @@ module Battle
       break true if effect.on_move_prevention_target(user, target, move) == true
     end == true
   end
+  Move.register_move_disabled_check_hook('PSDK Move disable check: Effects') do |user, move|
+    next move.logic.each_effects(user) do |effect|
+      effect_proc = effect.on_move_disabled_check(user, move)
+      puts "#{effect} : #{effect_proc}"
+      break effect_proc if effect_proc.is_a?(Proc)
+    end
+  end
 
   # Prevent unimplemented moves from being used
   Move.register_move_disabled_check_hook('PSDK .24 moves disabled') do |_, move|

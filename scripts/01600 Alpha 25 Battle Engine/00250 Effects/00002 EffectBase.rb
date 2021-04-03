@@ -247,6 +247,14 @@ module Battle
       def on_move_type_change(user, target, move, type)
         nil && user && target && move && type
       end
+
+      # Function called when we try to check if the user cannot use a move
+      # @param user [PFM::PokemonBattler]
+      # @param move [Battle::Move]
+      # @return [Proc, nil]
+      def on_move_disabled_check(user, move)
+        return nil
+      end
     end
   end
 end
