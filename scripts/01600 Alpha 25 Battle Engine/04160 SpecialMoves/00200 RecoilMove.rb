@@ -52,6 +52,18 @@ module Battle
       end
     end
 
+    # Struggle Move
+    class Struggle < RecoilMove
+      # Get the types of the move with 1st type being affected by effects
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @return [Array<Integer>] list of types of the move
+      def definitive_types(user, target)
+        [0]
+      end
+    end
+
     Move.register(:s_recoil, RecoilMove)
+    Move.register(:s_struggle, Struggle)
   end
 end

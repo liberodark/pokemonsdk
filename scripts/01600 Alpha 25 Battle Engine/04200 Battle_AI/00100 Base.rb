@@ -106,7 +106,10 @@ module Battle
       # @param pokemon [PFM::PokemonBattler]
       # @return [Array<Battle::Move>]
       def usable_moves(pokemon)
-        pokemon.moveset.reject { |move| move.disable_reason(pokemon) || move.instance_of?(Battle::Move) }
+        moves = pokemon.moveset.reject { |move| move.disable_reason(pokemon) || move.instance_of?(Battle::Move) }
+        return moves if moves.any?
+
+        return [Battle::Move[:s_struggle].new(GameData::Skill[:struggle].id, 1, 1, @scene)]
       end
     end
   end

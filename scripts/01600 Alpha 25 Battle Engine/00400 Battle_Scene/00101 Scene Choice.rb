@@ -48,7 +48,12 @@ module Battle
 
     # Method that asks for the skill the current Pokemon should use
     def skill_choice
-      if @visual.show_skill_choice(@player_actions.size)
+      pokemon = logic.battler(0, @player_actions.size)
+      if !pokemon.can_move?
+        move = Battle::Move[:s_struggle].new(GameData::Skill[:struggle].id, 1, 1, self)
+        @player_actions << Actions::Attack.new(self, move, pokemon, 1, pokemon.position)
+        @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
+      elsif @visual.show_skill_choice(@player_actions.size)
         # The player choosed a move
         @next_update = :target_choice
       else
