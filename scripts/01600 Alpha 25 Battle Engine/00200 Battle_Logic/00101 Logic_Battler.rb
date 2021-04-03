@@ -161,7 +161,6 @@ module Battle
       with.position, who.position = who.position, with.position
       # Ensure the newly comming pokemon gets the right battle turn
       with.last_battle_turn = $game_temp.battle_turn
-      with.init_states
     end
 
     # Iterate through all battlers

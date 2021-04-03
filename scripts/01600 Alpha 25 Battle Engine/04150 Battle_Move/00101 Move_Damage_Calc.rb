@@ -95,7 +95,7 @@ module Battle
       # BP
       result = real_base_power(user, target)
       # HH
-      result *= 1.5 if user.helping_hand?
+      result *= 1.5 if user.effects.has?(:helping_hand)
       result = result.floor # Round down between each multiplication, the first two can be reverted.
       # IT
       result = (result * send(ITEM_MULTIPLIER[user.battle_item_db_symbol], user, target)).floor

@@ -51,6 +51,7 @@ module Battle
         switch_in_message
         wait_for(sprite, visual)
         @scene.logic.switch_handler.execute_switch_events(@who, @with)
+        @who.reset_states
       end
 
       private

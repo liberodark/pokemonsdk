@@ -88,6 +88,9 @@ module PFM
     # @return [Array]
     attr_reader :battle_item_data
 
+    # @return [Boolean] set switching state
+    attr_writer :switching
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param scene [Battle::Scene] current battle scene
@@ -97,7 +100,8 @@ module PFM
       @scene = scene
       copy_properties
       copy_moveset
-      init_states
+      @battle_stage = Array.new(7, 0)
+      reset_states
       @level = original.level < max_level ? original.level : max_level
       @type3 = 0
       @bank = 0
@@ -107,7 +111,6 @@ module PFM
       @battle_item = @item_holding
       @last_battle_turn = -1
       @last_sent_turn = -1
-      @effects = Battle::Effects::EffectsHandler.new
       @move_history = []
       @mega_evolved = false
       @exp_distributed = false
@@ -250,6 +253,47 @@ module PFM
       @moveset.each_with_index do |move, i|
         @original.skills_set[i]&.pp = move.pp
       end
+    end
+
+    # Function that resets everything from the pokemon once it got switched out of battle
+    def reset_states
+      @battle_stage.map! { 0 }
+      @status_count = 0 if toxic?
+      @effects = Battle::Effects::EffectsHandler.new
+      @ability_current = @ability
+      @switching = false
+      @turn_count = 0
+    end
+
+    # if the pokemon is switching during this turn
+    # @return [Boolean]
+    def switching?
+      @switching
+    end
+
+    # Confuse the Pokemon
+    # @param _ [Boolean] (ignored)
+    # @return [Boolean] if the pokemon has been confused
+    def status_confuse(_ = false)
+      return false if dead? || confused?
+
+      effects.add(Battle::Effects::Confusion.new(@scene.logic, self))
+      return true
+    end
+
+    # Is the Pokemon confused?
+    # @return [Boolean]
+    def confused?
+      return effects.has?(:confusion)
+    end
+
+    # Apply the flinch effect
+    # @param forced [Boolean] this parameter is ignored since flinch effect is volatile
+    def apply_flinch(forced = false)
+      old_effect = @effects.get(:flinch)
+      return if old_effect && !old_effect.dead?
+
+      @effects.add(Battle::Effects::Flinch.new(@scene.logic, self))
     end
 
     private
