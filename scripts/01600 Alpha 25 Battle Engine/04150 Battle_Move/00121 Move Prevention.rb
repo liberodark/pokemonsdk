@@ -104,6 +104,8 @@ module Battle
   # Effects
   Move.register_move_prevention_user_hook('PSDK Move prev user: Effects') do |user, targets, move|
     next move.logic.each_effects(user, *targets) do |effect|
+      next if effect.name == :confusion
+
       result = effect.on_move_prevention_user(user, targets, move)
       break result if result
     end
@@ -116,7 +118,6 @@ module Battle
   Move.register_move_disabled_check_hook('PSDK Move disable check: Effects') do |user, move|
     next move.logic.each_effects(user) do |effect|
       effect_proc = effect.on_move_disabled_check(user, move)
-      puts "#{effect} : #{effect_proc}"
       break effect_proc if effect_proc.is_a?(Proc)
     end
   end
@@ -381,5 +382,15 @@ module Battle
     move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, '[VAR MOVE(0001)]' => move.name))
 
     next true
+  end
+
+  # Confusion effect
+  Move.register_move_prevention_user_hook('PSDK Move prev user: Confusion Effects') do |user, targets, move|
+    next move.logic.each_effects(user) do |effect|
+      next if effect.name != :confusion
+
+      result = effect.on_move_prevention_user(user, targets, move)
+      break result if result
+    end
   end
 end
