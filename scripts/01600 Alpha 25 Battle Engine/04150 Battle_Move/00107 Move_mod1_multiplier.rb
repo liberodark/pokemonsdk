@@ -41,9 +41,9 @@ module Battle
       return 1 if user.has_ability?(:infiltrator)
 
       if physical?
-        return 1 unless logic.bank_reflect?(target.bank)
+        return 1 unless logic.bank_effects[target.bank].has?(:reflect)
       else
-        return 1 unless logic.bank_light_screen?(target.bank)
+        return 1 unless logic.bank_effects[target.bank].has?(:light_screen)
       end
       return $game_temp.vs_type == 2 ? (2 / 3.0) : VAL_0_5
     end
