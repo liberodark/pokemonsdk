@@ -62,6 +62,42 @@ module Battle
           @disturbed = false
         end
       end
+
+      # Forced Next Move for Bide
+      class Bide < ForcedNextMove
+        # Get the number of damage the Pokemon got during this effect
+        # @return [Integer]
+        attr_accessor :damages
+
+        # Create a new Forced next move effect
+        # @param logic [Battle::Logic]
+        # @param target [PFM::PokemonBattler]
+        # @param move [Battle::Move]
+        # @param counter [Integer] number of turn the move is forced to be used
+        # @param targets [Array<PFM::PokemonBattler>]
+        def initialize(logic, target, move, targets, counter = 2)
+          super
+          @damages = 0
+        end
+
+        # Function called after damages were applied (post_damage, when target is still alive)
+        # @param handler [Battle::Logic::DamageHandler]
+        # @param hp [Integer] number of hp (damage) dealt
+        # @param target [PFM::PokemonBattler]
+        # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @param skill [Battle::Move, nil] Potential move used
+        def on_post_damage(handler, hp, target, launcher, skill)
+          return if @pokemon != target || hp < 0
+
+          @damages += hp
+        end
+
+        # Tell if the bide can unleach
+        # @return [Boolean]
+        def unleach?
+          return @counter == 1
+        end
+      end
     end
   end
 end
