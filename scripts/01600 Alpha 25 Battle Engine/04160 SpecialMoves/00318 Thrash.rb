@@ -32,5 +32,6 @@ module Battle
     end
 
     Move.register(:s_thrash, Thrash)
+    Move.register(:s_outrage, Thrash)
   end
 end
