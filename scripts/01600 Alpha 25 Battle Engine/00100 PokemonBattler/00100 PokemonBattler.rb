@@ -91,6 +91,10 @@ module PFM
     # @return [Boolean] set switching state
     attr_writer :switching
 
+    # Mimic move that was replace by another move with its index
+    # @return [Array<Battle::Move, Integer>]
+    attr_accessor :mimic_move
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param scene [Battle::Scene] current battle scene
@@ -127,14 +131,6 @@ module PFM
     def can_fight?
       log_error("The pokemon #{self} has undefined position, it should be -1 if not in battle") unless @position
       return @position && @position >= 0 && !dead?
-    end
-
-    # Is the pokemon able to use a move ?
-    # @return [Boolean]
-    def can_use_move?
-      moves = @moveset
-      # TODO : Implement all the move conditions
-      return moves.any? { |move| move.pp > 0 }
     end
 
     def to_s
@@ -263,6 +259,11 @@ module PFM
       @ability_current = @ability
       @switching = false
       @turn_count = 0
+      if mimic_move
+        @moveset[mimic_move.last] = mimic_move.first
+        @moveset.compact!
+        @mimic_move = nil
+      end
     end
 
     # if the pokemon is switching during this turn
