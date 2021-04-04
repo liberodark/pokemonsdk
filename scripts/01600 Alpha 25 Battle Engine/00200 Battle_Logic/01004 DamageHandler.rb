@@ -387,14 +387,6 @@ module Battle
       skill.pp = 0
     end
 
-    # Rage
-    DamageHandler.register_post_damage_hook('PSDK Post damage: Rage') do |handler, _, target, _, skill|
-      next unless skill && target.battle_effect.has_rage_effect?
-
-      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 536, target))
-      handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, target)
-    end
-
     # Shell Bell
     DamageHandler.register_post_damage_hook('PSDK Post damage: Shell Bell') do |handler, hp, target, launcher, skill|
       next unless skill && launcher&.hold_item?(:shell_bell) && hp >= 8 && launcher != target

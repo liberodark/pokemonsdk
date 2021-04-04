@@ -1,7 +1,7 @@
 module Battle
   class Move
     # Class describing a self stat move (damage + potential status + potential stat to user)
-    class Growth < Move
+    class Growth < StatusStat
       def battle_stage_mod
         return super unless $env.sunny?
 
