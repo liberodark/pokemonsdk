@@ -143,6 +143,8 @@ module Battle
     # @param user [PFM::PokemonBattler]
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def decrese_pp(user, targets)
+      return if user.effects.has?(:forced_next_move) && !@forced_next_move_decrease_pp
+
       self.pp -= 1
       self.pp -= 1 if @logic.foes_of(user).any? { |foe| foe.alive? && foe.has_ability?(:pressure) }
     end
