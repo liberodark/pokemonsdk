@@ -158,6 +158,8 @@ pokemonsdk/scripts/00800 GameData/00900 Constants/01700 States.rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/01800 EV.rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/01801 Stages.rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/01802 Types.rb
+pokemonsdk/scripts/00800 GameData/00900 Constants/01803 Natures.rb
+pokemonsdk/scripts/00800 GameData/00900 Constants/01804 Flavors.rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/02000 Windows (Builder).rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/02100 Colors.rb
 pokemonsdk/scripts/00800 GameData/00900 Constants/02200 Pickup data.rb
@@ -241,6 +243,7 @@ pokemonsdk/scripts/01200 PFM/00300 Pokemon/00800 Pokemon Status.rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/00900 Pokemon Types.rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/01000 Pokemon Params (generate).rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/01100 Pokemon Text.rb
+pokemonsdk/scripts/01200 PFM/00300 Pokemon/02000 Pokemon Flavors.rb
 pokemonsdk/scripts/01200 PFM/00300 Pokemon/90000 Skill.rb
 pokemonsdk/scripts/01200 PFM/00400 Wild/00100 Wild Battle (manager).rb
 pokemonsdk/scripts/01200 PFM/00400 Wild/00101 Wild Battle (configuration).rb
