@@ -184,7 +184,9 @@ module Battle
       # @param battler [PFM::PokemonBattler]
       # @return [Array<PFM::Pokemon>]
       def party(battler)
-        return @parties[battler.bank][party_index(battler)]
+        return @parties[battler.bank][party_index(battler)] if battler.bank
+
+        @parties.find { |parties| parties.any? { |party| party.include?(battler.original) } }&.find { |party| party.include?(battler.original) }
       end
 
       # Get the base money of a battler

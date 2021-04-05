@@ -95,17 +95,25 @@ module PFM
     # @return [Array<Battle::Move, Integer>]
     attr_accessor :mimic_move
 
+    # Get the transform pokemon
+    # @return [PFM::Pokemon]
+    attr_reader :transform
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param scene [Battle::Scene] current battle scene
     # @param max_level [Integer] new max level for Online battle
     def initialize(original, scene, max_level = Float::INFINITY)
       @original = original
+      # @type [PFM::Pokemon]
+      @transform = nil
       @scene = scene
+      scene.logic.transform_handler.initialize_transform_attempt(self)
       copy_properties
       copy_moveset
       @battle_stage = Array.new(7, 0)
       reset_states
+      @battle_max_level = max_level
       @level = original.level < max_level ? original.level : max_level
       @type3 = 0
       @bank = 0
@@ -297,11 +305,21 @@ module PFM
       @effects.add(Battle::Effects::Flinch.new(@scene.logic, self))
     end
 
+    # Transform this pokemon into another pokemon
+    # @param pokemon [PFM::Pokemon, nil]
+    def transform=(pokemon)
+      @transform = pokemon
+      return unless @moveset
+
+      copy_properties
+      copy_moveset
+    end
+
     private
 
     # Copy the properties of the original pokemon
     def copy_properties
-      original = @original
+      original = @transform || @original
       COPIED_PROPERTIES.each do |ivar_name|
         instance_variable_set(ivar_name, original.instance_variable_get(ivar_name))
       end
@@ -309,8 +327,14 @@ module PFM
 
     # Copy the moveset of the original Pokemon
     def copy_moveset
-      @skills_set = @moveset = @original.skills_set.map do |skill|
-        Battle::Move[skill.symbol].new(skill.id, skill.pp, skill.ppmax, @scene)
+      original = @transform || @original
+      original = @original if @original.ability_db_symbol == :illusion && !effects&.has?(:transform)
+      @skills_set = @moveset = original.skills_set.map do |skill|
+        if original == @original
+          next Battle::Move[skill.symbol].new(skill.id, skill.pp, skill.ppmax, @scene)
+        else
+          next Battle::Move[skill.symbol].new(skill.id, 5, 5, @scene)
+        end
       end
       @moveset << Battle::Move.new(0, 0, 9001, @scene) if @moveset.empty?
     end

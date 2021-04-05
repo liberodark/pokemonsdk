@@ -77,5 +77,11 @@ module Battle
     def exp_handler
       return ExpHandler.new(self)
     end
+
+    # Get the transform handler
+    # @return [Battle::Logic::TransformHandler]
+    def transform_handler
+      return TransformHandler.new(self, @scene)
+    end
   end
 end
