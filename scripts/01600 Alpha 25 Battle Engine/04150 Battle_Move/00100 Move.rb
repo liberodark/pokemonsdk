@@ -282,9 +282,7 @@ module Battle
     # Change the PP
     # @param value [Integer] the new pp value
     def pp=(value)
-      @pp = value.to_i
-      @pp = @ppmax if @pp > @ppmax
-      @pp = 0 if @pp < 0
+      @pp = value.to_i.clamp(0, @ppmax)
     end
 
     # Was the move a critical hit

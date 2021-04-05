@@ -33,7 +33,9 @@ module Battle
       return unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
 
       usage_message(user)
-      return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp) if pp == 0
+      if pp == 0 && !(user.effects.has?(:forced_next_move) && !@forced_next_move_decrease_pp)
+        return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp)
+      end
 
       decrese_pp(user, targets)
       # => proceed_move_accuracy will call display message if failure
