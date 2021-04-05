@@ -14,15 +14,20 @@ module PFM
       # Get the actual move object that was used
       # @return [Battle::Move]
       attr_reader :original_move
+      # Get the attack order of the Pokemon
+      # @return [Integer]
+      attr_reader :attack_order
 
       # Create a new Move History
       # @param move [Battle::Move]
       # @param targets [Array<PFM::PokemonBattler>]
-      def initialize(move, targets)
+      # @param attack_order [Integer]
+      def initialize(move, targets, attack_order)
         @original_move = move
         @move = move.dup
         @turn = $game_temp.battle_turn
         @targets = targets
+        @attack_order = attack_order
       end
 
       # Tell if the move was used during last turn

@@ -189,7 +189,7 @@ module PFM
     # @param move [Battle::Move]
     # @param targets [Array<PFM::PokemonBattler>]
     def add_move_to_history(move, targets)
-      @move_history << MoveHistory.new(move, targets)
+      @move_history << MoveHistory.new(move, targets, attack_order)
     end
 
     # Test if the last move was of a certain symbol
