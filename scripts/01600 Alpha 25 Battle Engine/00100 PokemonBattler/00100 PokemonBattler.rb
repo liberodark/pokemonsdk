@@ -95,6 +95,14 @@ module PFM
     # @return [Array<Battle::Move, Integer>]
     attr_accessor :mimic_move
 
+    # Tell if the Pokemon has lost its item
+    # @return [Boolean]
+    attr_accessor :item_stolen
+
+    # Tell if the Pokemon has its item burnt
+    # @return [Boolean]
+    attr_accessor :item_burnt
+
     # Get the transform pokemon
     # @return [PFM::Pokemon]
     attr_reader :transform
@@ -189,6 +197,9 @@ module PFM
     # @param db_symbol [Symbol] db_symbol of the item
     # @return [Boolean]
     def hold_item?(db_symbol)
+      return false if @item_stolen || @item_burnt
+      return false if db_symbol == :__undef__
+
       return battle_item_db_symbol == db_symbol
     end
 

@@ -272,6 +272,19 @@ module Battle
       next user.has_ability?(:galvanize) && move.type_normal? ? GameData::Types::ELECTRIC : nil
     end
 
+    # TechnoBlast
+    TECHNODRIVES = {
+      douse_drive: GameData::Types::WATER,
+      shock_drive: GameData::Types::ELECTRIC,
+      burn_drive: GameData::Types::FIRE,
+      chill_drive: GameData::Types::ICE
+    }
+    Move.register_move_type_change_hook('PSDK Techno Blast') do |user, _, move|
+      next nil unless user.db_symbol == :genesect && move.be_method == :s_techno_blast
+
+      next TECHNODRIVES[user.item_db_symbol] || GameData::Types::NORMAL
+    end
+
     Move.register_single_type_multiplier_overwrite_hook('PSDK Foresight') do |target, target_type, type|
       next nil unless target.effects.has?(:foresight) && target_type == GameData::Types::GHOST
       next 1 if type == GameData::Types::NORMAL

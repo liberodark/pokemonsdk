@@ -138,6 +138,15 @@ module Battle
     next proc {}
   end
 
+  Move.register_move_prevention_user_hook('PSDK Taunt Status Move Prevention') do |user, _, move|
+    next unless user.effects.has?(:taunt) && !user.has_ability?(:oblivious)
+
+    if move.status?
+      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 571, user, PFM::Text::MOVE[1] => move.name))
+      next :prevent
+    end
+  end
+
   # Mold Breaker
   Move.register_move_prevention_user_hook('PSDK Move prev user: Mold Breaker') do |user, _, _|
     next unless user.has_ability?(:mold_breaker)

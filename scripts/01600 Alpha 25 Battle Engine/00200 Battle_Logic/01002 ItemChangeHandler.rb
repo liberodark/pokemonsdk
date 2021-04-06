@@ -4,6 +4,24 @@ module Battle
     class ItemChangeHandler < ChangeHandlerBase
       include Hooks
 
+      # List of item that cannot be knocked off
+      PROTECTED_ITEMS = %i[exp._share lucky_egg amulet_coin oak’s_letter gram_1 gram_2 gram_3 prof’s_letter letter
+                           greet_mail favored_mail rsvp_mail thanks_mail inquiry_mail like_mail reply_mail
+                           bridge_mail_s bridge_mail_d bridge_mail_t bridge_mail_v bridge_mail_m gengarite
+                           gardevoirite ampharosite venusaurite charizardite_x blastoisinite mewtwonite_x mewtwonite_y
+                           blazikenite medichamite houndoominite aggronite banettite tyranitarite scizorite pinsirite
+                           aerodactylite lucarionite abomasite kangaskhanite gyaradosite absolite charizardite_y alakazite
+                           heracronite mawilite manectite garchompite latiasite latiosite swampertite sceptilite sablenite
+                           altarianite galladite audinite metagrossite sharpedonite slowbronite steelixite pidgeotite glalitite
+                           diancite cameruptite lopunnite salamencite beedrillite red_orb blue_orb jade_orb]
+      # List of items that cannot be knocked off if the holder is a specific Pokemon
+      PROTECTED_POKEMON_ITEMS = {
+        giratina: %i[griseous_orb],
+        arceus: %i[flame_plate splash_plate zap_plate meadow_plate icicle_plate fist_plate toxic_plate earth_plate sky_plate mind_plate insect_plate
+                   stone_plate spooky_plate draco_plate dread_plate iron_plate pixie_plate],
+        genesect: %i[shock_drive burn_drive chill_drive douse_drive]
+      }
+
       # Function that change the item held by a Pokemon
       # @param db_symbol [Symbol, :none] Symbol ID of the item
       # @param overwrite [Boolean] if the actual item held should be overwritten
@@ -21,6 +39,21 @@ module Battle
       rescue Hooks::ForceReturn => e
         log_data("# FR: change_item #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
+      end
+
+      # Function that checks if the Pokemon can lose its item
+      # @param target [PFM::PokemonBattler]
+      # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+      # @return [Boolean]
+      def can_lose_item?(target, launcher = nil)
+        return false unless target.hold_item?(target.item_db_symbol)
+        return false if target.battle_item_db_symbol == :__undef__ || PROTECTED_ITEMS.include?(target.item_db_symbol)
+        return false if target.dead? || target.battle_effect.has_substitute_effect?
+        return false if launcher&.can_be_lowered_or_canceled?(target.has_ability?(:sticky_hold))
+        return false if PROTECTED_POKEMON_ITEMS[target.db_symbol]&.include?(target.battle_item_db_symbol)
+        return false if target.effects.has?(:substitute)
+
+        return true
       end
 
       class << self

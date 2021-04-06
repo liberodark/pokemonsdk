@@ -70,20 +70,6 @@ module BattleEngine
     end
   end
 
-  # Incinerate skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_incinerate(launcher, target, skill, msg_push = true)
-    return unless s_basic(launcher, target, skill)
-	  data = ::GameData::Item[target.battle_item].misc_data
-    if data&.berry # TODO Joyaux
-      # TODO Fix msg parsing with plural
-      # _mp([:msg, parse_text_with_pokemon(19, 1114, target, PKNICK[0] => target.given_name, ITEM2[1] => ::GameData::Item[target.battle_item].name)])
-      _mp([:set_item, target, 0, true])
-	  end
-  end
-
   JudgementPlates = [298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 644]
   # Judgment skill definition
   # @param launcher [PFM::Pokemon] user of the move
@@ -96,26 +82,6 @@ module BattleEngine
     end
     s_basic(launcher, target, skill)
     skill.type2 = nil
-  end
-
-  # Knock Off skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_knock_off(launcher, target, skill, msg_push = true)
-    return false unless s_basic(launcher, target, skill)
-    ti = target.battle_item
-    #> Mega-Gemmes will need to specify an user !
-    if ti > 0
-      data = ::GameData::Item[ti].misc_data
-      #> Suction Cups / Multitype
-      if data&.need_user_id != target.id && !Abilities.has_abilities(target, 45, 122)
-        _mp([:msg, ::PFM::Text.parse_with_pokemons(19, 1056, launcher, target, ITEM2[2] => target.item_name)])
-        _mp([:send_state, :knock_off, :push, target])
-        return
-      end
-    end
-    _mp(MSG_Fail)
   end
 
   # Natural Gift skill definition
@@ -172,48 +138,6 @@ module BattleEngine
       _mp([:msg, parse_text_with_pokemon(19, 490, target, ITEM2[1] => ::GameData::Item[ie].name)])
     else
       _mp(MSG_Fail)
-    end
-  end
-
-  
-  Technodrives = { 116 => 3, 117 => 4, 118 => 2, 119 => 6 }
-  # Techno Blast skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_techno_blast(launcher, target, skill, msg_push = true)
-    # Fails if that's not Genesect
-    if launcher.id == 649
-      drive_check = false
-      Technodrives.each { |key, value| drive_check = true if key == @_State[:launcher_item] }
-      skill.type2 = drive_check ? Technodrives[@_State[:launcher_item]] : 1
-      s_basic(launcher, target, skill)
-      skill.type2 = nil
-    else
-      _mp(MSG_Fail)
-    end
-  end
-
-  # Thief skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_thief(launcher, target, skill, msg_push = true)
-    return false unless s_basic(launcher, target, skill)
-    ti = target.battle_item
-    #> Mega-Gemmes will need to specify an user !
-    if ti > 0 && ($game_temp.trainer_battle || launcher.position > 0)
-      data = ::GameData::Item[ti].misc_data
-      #> Suction Cups / Multitype
-      if data&.need_user_id != target.id && !Abilities.has_abilities(target, 45, 122)
-        _mp([:msg, ::PFM::Text.parse_with_pokemons(19, 1063, launcher, target, ITEM2[2] => target.item_name)])
-        _mp([:set_item, target, -1])
-        if launcher.battle_item <= 0
-          _mp([:set_item, launcher, ti, launcher.item_holding == 0])
-        end
-      else
-        _mp([:msg, parse_text_with_pokemon(19, 493, target)])
-      end
     end
   end
 

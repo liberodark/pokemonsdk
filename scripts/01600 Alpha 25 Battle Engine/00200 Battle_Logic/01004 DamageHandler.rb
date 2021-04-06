@@ -465,6 +465,44 @@ module Battle
       handler.logic.status_change_handler.status_change_with_process(:paralysis, launcher)
     end
 
+    # Pickpocket
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Pickpocket') do |handler, _, target, launcher, skill|
+      next unless skill&.direct? && launcher && launcher != target && target.has_ability?(:pickpocket)
+      next if target.item_db_symbol != :__undef__
+      next unless handler.logic.item_change_handler.can_lose_item?(launcher)
+
+      handler.scene.visual.show_ability(target)
+      handler.logic.item_change_handler.change_item(launcher.item_db_symbol, !$game_temp.trainer_battle, target)
+      text = parse_text_with_pokemon(19, 460, launcher, PFM::Text::PKNICK[0] => launcher.given_name, PFM::Text::ITEM2[1] => launcher.item_name)
+      handler.scene.display_message_and_wait(text)
+      target.item_stolen = false
+      if launcher.from_party?
+        launcher.item_stolen = true
+      else
+        handler.logic.item_change_handler.change_item(:none, true, launcher)
+      end
+    end
+
+    # Magician
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Magician') do |handler, _, target, launcher, _|
+      next unless launcher && launcher != target && launcher.has_ability?(:magician)
+      next if launcher.item_db_symbol != :__undef__
+      next unless handler.logic.item_change_handler.can_lose_item?(target)
+
+      handler.scene.visual.show_ability(launcher)
+      handler.logic.item_change_handler.change_item(target.item_db_symbol, !$game_temp.trainer_battle, launcher)
+      text = parse_text_with_pokemon(19, 1063, launcher, PFM::Text::PKNICK[0] => launcher.given_name,
+                                                         PFM::Text::ITEM2[1] => target.item_name,
+                                                         PFM::Text::PKNICK[1] => target.given_name)
+      handler.scene.display_message_and_wait(text)
+      launcher.item_stolen = false
+      if target.from_party?
+        target.item_stolen = true
+      else
+        handler.logic.item_change_handler.change_item(:none, true, target)
+      end
+    end
+
     # Poison Point
     DamageHandler.register_post_damage_hook('PSDK Post damage: Poison Point') do |handler, _, target, launcher, skill|
       next unless skill&.direct? && launcher && launcher != target && bchance?(0.3) && launcher.hp > 0 && target.has_ability?(:poison_point)
@@ -550,6 +588,16 @@ module Battle
       handler.scene.visual.show_ability(target)
       handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 405, launcher, PFM::Text::ABILITY[1] => target.ability_name))
       handler.logic.ability_change_handler.change_ability(launcher, :mummy)
+    end
+
+    # Cursed Body
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Cursed Body') do |handler, _, target, launcher, skill|
+      next unless launcher && launcher != target && launcher.hp > 0 && target.has_ability?(:cursed_body)
+      next if target.effects.has?(:substitute)
+
+      handler.scene.visual.show_ability(target)
+      launcher.effects.add(Effects::Disable.new(@logic, launcher, skill))
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 592, launcher, PFM::Text::MOVE[1] => skill.name))
     end
 
     # Wandering Spirit
