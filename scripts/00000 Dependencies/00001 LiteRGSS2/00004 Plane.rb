@@ -205,7 +205,6 @@ class Plane < Sprite
         Graphics.height.times do |y|
           image.fill_rect(0, y, Graphics.width, 1, Color.new(255, 255, 255, 255))
         end
-        image.to_png_file('test2.png')
         image.copy_to_bitmap(@texture)
         image.dispose
       end
