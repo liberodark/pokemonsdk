@@ -540,5 +540,20 @@ module Battle
       handler.scene.visual.show_ability(with)
       handler.scene.visual.show_switch_form_animation(with)
     end
+
+    # Imposter
+    SwitchHandler.register_switch_event_hook('PSDK switch: Misty Surge') do |handler, _, with|
+      next if with.ability_db_symbol != :imposter
+      next unless (th = handler.logic.transform_handler).can_transform?(with)
+
+      target = handler.logic.foes_of(with).select(&:alive?).select { |foe| th.can_copy?(foe) }
+      next if target.empty?
+
+      handler.scene.visual.show_ability(with)
+      with.transform = target.sample
+      handler.scene.visual.show_switch_form_animation(with)
+      handler.scene.visual.wait_for_animation
+      with.effects.add(Effects::Transform.new(handler.logic, with))
+    end
   end
 end

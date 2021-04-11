@@ -13,6 +13,12 @@ module PFM
       @gender @skill_learnt @ribbons @character
       @exp_rate @hp_rate @egg_at @egg_in
     ]
+    # List of properties to copy with transform
+    TRANSFORM_COPIED_PROPERTIES = %i[
+      @id @form @nature
+      @ev_hp @ev_atk @ev_dfe @ev_spd @ev_ats @ev_dfs
+      @gender
+    ]
     # List of properties to copy back to original
     BACK_PROPETIES = %i[
       @id @form @given_name @ability @level
@@ -252,15 +258,30 @@ module PFM
     # @param silent [Boolean] if the skill is automatically learnt or not (false = show skill learn interface & messages)
     # @param level [Integer] The level to check in order to learn the moves
     def check_skill_and_learn(silent = false, level = @level)
+      tmp_transform = @transform
       copy_properties_back_to_original
       @original.check_skill_and_learn(silent, level)
+      self.transform = tmp_transform if tmp_transform
       copy_moveset
+    end
+
+    # Return the Pokemon rareness
+    # @return [Integer]
+    def rareness
+      @original.rareness
+    end
+
+    # Return the base HP
+    # @return [Integer]
+    def base_hp
+      @original.base_hp
     end
 
     # Copy all the properties back to the original pokemon
     def copy_properties_back_to_original
       return if @scene.battle_info.max_level
 
+      self.transform = nil
       original = @original
       BACK_PROPETIES.each do |ivar_name|
         original.instance_variable_set(ivar_name, instance_variable_get(ivar_name))
@@ -322,7 +343,7 @@ module PFM
       @transform = pokemon
       return unless @moveset
 
-      copy_properties
+      copy_transform_properties
       copy_moveset
     end
 
@@ -330,9 +351,18 @@ module PFM
 
     # Copy the properties of the original pokemon
     def copy_properties
-      original = @transform || @original
+      original = @original
       COPIED_PROPERTIES.each do |ivar_name|
         instance_variable_set(ivar_name, original.instance_variable_get(ivar_name))
+      end
+      copy_transform_properties if @transform
+    end
+
+    # Copy the properties of a transformed pokemon
+    def copy_transform_properties
+      transform = @transform || @original
+      TRANSFORM_COPIED_PROPERTIES.each do |ivar_name|
+        instance_variable_set(ivar_name, transform.instance_variable_get(ivar_name))
       end
     end
 

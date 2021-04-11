@@ -9,6 +9,23 @@ module Battle
         exec_hooks(TransformHandler, :on_initialize_transform, binding)
       end
 
+      # Function that tells if the Pokemon can transform or not
+      # @param target [PFM::PokemonBattler]
+      # @return [Boolean]
+      def can_transform?(target)
+        return !target.transform
+      end
+
+      # Function that tells if the pokemon can copy another pokemon
+      # @param copied [PFM::PokemonBattler]
+      # @return [Boolean]
+      def can_copy?(copied)
+        return false if copied&.effects&.has?(:substitute)
+        return false if copied.has_ability?(:illusion) && !can_transform?(copied)
+
+        return true
+      end
+
       class << self
         # Function that registers a on_initialize_transform hook
         # @param reason [String] reason of the on_initialize_transform registration
@@ -28,6 +45,7 @@ module Battle
 
     TransformHandler.register_on_initialize_transform('PSDK: Illusion') do |handler, target|
       next if target.original.ability_db_symbol != :illusion
+      next unless handler.can_transform?(target)
 
       party = handler.logic.battle_info.party(target)
       next if party.empty? || party.index(target) == (party.size - 1)
