@@ -106,11 +106,18 @@ module Battle
       # @param pokemon [PFM::PokemonBattler]
       # @return [Array<Battle::Move>]
       def usable_moves(pokemon)
-        taunt_check = move.status? && pokemon.effects.has?(:oblivious)
-        moves = pokemon.moveset.reject { |move| move.disable_reason(pokemon) || move.instance_of?(Battle::Move) || taunt_check }
+        moves = pokemon.moveset.reject { |move| move.disable_reason(pokemon) || move.instance_of?(Battle::Move) || oblivious_reject?(pokemon, move) }
         return moves if moves.any?
 
         return [Battle::Move[:s_struggle].new(GameData::Skill[:struggle].id, 1, 1, @scene)]
+      end
+
+      # Function that check if the move is not usable because of oblivious
+      # @param pokemon [PFM::PokemonBattler]
+      # @param move [Battle::Move]
+      # @return [Boolean] if the move should be rejeced from the moveset
+      def oblivious_reject?(pokemon, move)
+        return move.status? && pokemon.effects.has?(:oblivious)
       end
     end
   end
