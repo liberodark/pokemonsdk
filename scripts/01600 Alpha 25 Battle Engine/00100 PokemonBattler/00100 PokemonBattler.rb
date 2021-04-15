@@ -299,6 +299,7 @@ module PFM
       @ability_current = @ability
       @switching = false
       @turn_count = 0
+      @type1 = @type2 = @type3 = nil
       if mimic_move
         @moveset[mimic_move.last] = mimic_move.first
         @moveset.compact!
