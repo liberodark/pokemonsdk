@@ -193,7 +193,7 @@ module Input
     # Set a key up
     # @param key [Integer]
     # @param alt [Boolean] if the alt key is pressed
-    def on_key_down(key, alt)
+    def on_key_down(key, alt = false)
       return Graphics.swap_fullscreen if alt && key == Sf::Keyboard::Enter && Graphics.fullscreen_toggle_enabled
 
       vkey, = Keys.find { |_, v| v.include?(key) }
