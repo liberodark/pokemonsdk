@@ -53,8 +53,10 @@ module GamePlay
       @selection.clear
       @selection.select
       @current_pokemon = @selection.all_selected_pokemon.first
-      return play_buzzer_se if @current_pokemon.nil?
-
+      if @current_pokemon.nil?
+        @selection.clear
+        return play_buzzer_se
+      end
       play_decision_se
       can_item_be_taken = proc { @current_pokemon.item_holding == 0 }
       not_releasable = proc { !pokemon_can_be_released? }
