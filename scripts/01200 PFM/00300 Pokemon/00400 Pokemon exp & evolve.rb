@@ -228,6 +228,8 @@ module PFM
     # @param id [Integer] ID of the Pokemon that evolve
     # @param form [Integer, nil] form of the Pokemon that evolve
     def evolve(id, form)
+      old_evolution_id = self.id
+      old_evolution_form = self.form
       self.id = id
       if form
         self.form = form
@@ -236,7 +238,9 @@ module PFM
       end
       return unless $actors.include?(self) # Don't do te rest if the pokemon isn't in the current party
 
-      evolution_items = (data.special_evolution || []).map { |hash| hash[:item_hold] || 0 }
+      # evolution_items = (data.special_evolution || []).map { |hash| hash[:item_hold] || 0 }
+      previous_pokemon_evolution_method = GameData::Pokemon[old_evolution_id, old_evolution_form].special_evolution
+      evolution_items = (previous_pokemon_evolution_method || []).map { |hash| hash[:item_hold] || 0 }
       self.item_holding = 0 if evolution_items.include?(item_holding) || evolution_items.include?(item_db_symbol)
       # Normal skill learn
       check_skill_and_learn
