@@ -563,6 +563,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Minimize.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 MiracleEye.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Mist.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 MudSport.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Protect.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Rage.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Spikes.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Taunt.rb
@@ -656,6 +657,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Haze.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 LightScreen Reflect.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Mimic.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 MirrorMove.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Protect.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Rage.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Transform.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00301 GastroAcid.rb

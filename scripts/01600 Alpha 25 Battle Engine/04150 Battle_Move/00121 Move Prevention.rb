@@ -59,7 +59,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @param symbol [Symbol]
     def blocked_by?(target, symbol)
-      return blocable? && target.battle_effect.has_protect_effect? && target.last_successfull_move_is?(symbol)
+      return blocable? && target.effects.has?(:protect) && target.last_successfull_move_is?(symbol)
     end
 
     class << self
@@ -258,14 +258,6 @@ module Battle
     next true
   end
 
-  # Protect registration
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Protect') do |_, target, move|
-    next false unless move.blocked_by?(target, :protect)
-
-    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-    next true
-  end
-
   # Sap Sipper registration
   Move.register_move_prevention_target_hook('PSDK Move prev target: Sap Sipper') do |user, target, move|
     next false unless target.has_ability?(:sap_sipper) && move.type_grass? && move.db_symbol != :aromatherapy
@@ -273,45 +265,6 @@ module Battle
 
     move.scene.visual.show_ability(target)
     move.logic.stat_change_handler.stat_change_with_process(:atk, 1, target, user, move)
-    next true
-  end
-
-  # Detect registration
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Detect') do |_, target, move|
-    next false unless move.blocked_by?(target, :detect)
-
-    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-    next true
-  end
-
-  # Spiky Shield registration
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Spiky Shield') do |user, target, move|
-    next false unless move.blocked_by?(target, :spiky_shield)
-
-    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-    move.scene.visual.show_hp_animations([user], [-hp]) if move.direct?
-    next true
-  end
-
-  # King's Shield registration
-  Move.register_move_prevention_target_hook('PSDK Move prev target: King\'s Shield') do |user, target, move|
-    next false unless move.blocked_by?(target, :king’s_shield)
-
-    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-    move.scene.logic.stat_change_handler.stat_change_with_process(:atk, -1, target, user, skill) if move.direct?
-    next true
-  end
-
-  # Baneful Bunker registration
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Baneful Bunker') do |user, target, move|
-    next false unless move.blocked_by?(target, :baneful_bunker)
-
-    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-    # TODO: Make a utility for changing status and use it!
-    if move.direct? && user.can_be_poisoned? && user.status_poison
-      move.scene.visual.show_rmxp_animation(user, 470)
-      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 234, user))
-    end
     next true
   end
 
