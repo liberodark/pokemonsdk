@@ -124,6 +124,51 @@ module Battle
         end
       end
       Protect.register(:mat_block, MatBlock)
+
+      # Implement the Mat Block effect
+      class Endure < PokemonTiedEffectBase
+        # Create a new Pokemon tied effect
+        # @param logic [Battle::Logic]
+        # @param pokemon [PFM::PokemonBattler]
+        # @param move [Battle::Move] move that applied this effect
+        def initialize(logic, pokemon, move)
+          super(logic, pokemon)
+          @move = move
+          @show_message = false
+          self.counter = 1
+        end
+
+        # Function called when a damage_prevention is checked
+        # @param handler [Battle::Logic::DamageHandler]
+        # @param hp [Integer] number of hp (damage) dealt
+        # @param target [PFM::PokemonBattler]
+        # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @param skill [Battle::Move, nil] Potential move used
+        # @return [:prevent, Integer, nil] :prevent if the damage cannot be applied, Integer if the hp variable should be updated
+        def on_damage_prevention(handler, hp, target, launcher, skill)
+          return unless launcher && skill
+          return if hp < target.hp
+          return if target != @pokemon || dead?
+
+          @show_message = true
+          return target.hp - 1
+        end
+
+        # Function called after damages were applied (post_damage, when target is still alive)
+        # @param handler [Battle::Logic::DamageHandler]
+        # @param hp [Integer] number of hp (damage) dealt
+        # @param target [PFM::PokemonBattler]
+        # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @param skill [Battle::Move, nil] Potential move used
+        def on_post_damage(handler, hp, target, launcher, skill)
+          return unless @show_message
+
+          @show_message = false
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 514, target))
+          kill
+        end
+      end
+      Protect.register(:endure, Endure)
     end
   end
 end
