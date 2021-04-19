@@ -128,7 +128,7 @@ module Battle
       return 1.5 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(:steely_spirit) }
       # No partner with the right ability => 1
       return 1
-    end    
+    end
 
     # Fairy Aura, Dark Aura and Aura Break multipliers
     # @param user [PFM::PokemonBattler]
@@ -141,7 +141,6 @@ module Battle
       return 1 unless fairy_aura_active || dark_aura_active
 
       return logic.any_field_ability_active?(:aura_break) ? 0.75 : 1.33
-    
     end
 
     # Power Spot ability multiplier

@@ -241,9 +241,10 @@ module Battle
     end
 
     # Sturdy
-    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Sturdy') do |handler, hp, target, _, skill|
+    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Sturdy') do |handler, hp, target, launcher, skill|
       next unless skill
       next if hp < target.hp || target.hp != target.max_hp || !target.has_ability?(:sturdy)
+      next unless launcher.can_be_lowered_or_canceled?
 
       handler.scene.visual.show_ability(target)
       next target.hp - 1
@@ -512,6 +513,16 @@ module Battle
       handler.logic.status_change_handler.status_change_with_process(:poison, launcher)
     end
 
+    # Poison Touch
+    DamageHandler.register_post_damage_hook('PSDK Post damage: Poison Touch') do |handler, _, target, launcher, skill|
+      next unless skill&.direct? && launcher && launcher != target && bchance?(0.3) && launcher.hp > 0 && launcher.has_ability?(:poison_touch)
+      next unless target.can_be_poisoned?
+
+      handler.scene.visual.show_ability(launcher)
+      handler.logic.status_change_handler.status_change_with_process(:poison, target)
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 472, target))
+    end
+
     # Flame Body
     DamageHandler.register_post_damage_hook('PSDK Post damage: Flame Body') do |handler, _, target, launcher, skill|
       next unless skill&.direct? && launcher && launcher != target && bchance?(0.3) && launcher.hp > 0 && target.has_ability?(:flame_body)
@@ -651,7 +662,7 @@ module Battle
     # Anger Point
     DamageHandler.register_post_damage_hook('PSDK Post damage: Anger Point') do |handler, _, target, launcher, skill|
       next unless skill&.critical_hit? && launcher && launcher != target && target.has_ability?(:anger_point)
-      next unless launcher.can_be_lowered_or_canceled?
+      # next unless launcher.can_be_lowered_or_canceled?
 
       handler.scene.visual.show_ability(target)
       handler.logic.stat_change_handler.stat_change_with_process(:atk, 12, target)
@@ -660,7 +671,7 @@ module Battle
     # Gooey / Tangling Hair
     DamageHandler.register_post_damage_hook('PSDK Post damage: Gooey/Tangling Hair') do |handler, _, target, launcher, skill|
       next unless skill&.direct? && launcher && launcher != target && (target.has_ability?(:gooey) || target.has_ability?(:tangling_hair))
-      next unless launcher.can_be_lowered_or_canceled?
+      # next unless launcher.can_be_lowered_or_canceled?
 
       handler.scene.visual.show_ability(target)
       handler.logic.stat_change_handler.stat_change_with_process(:spd, -1, launcher)
@@ -669,7 +680,7 @@ module Battle
     # Weak Armor
     DamageHandler.register_post_damage_hook('PSDK Post damage: Weak Armor') do |handler, _, target, launcher, skill|
       next unless skill&.physical? && launcher && launcher != target && target.has_ability?(:weak_armor)
-      next unless launcher.can_be_lowered_or_canceled?
+      # next unless launcher.can_be_lowered_or_canceled?
 
       handler.scene.visual.show_ability(target)
       handler.logic.stat_change_handler.stat_change_with_process(:dfe, -1, target)
@@ -679,7 +690,7 @@ module Battle
     # Water Compaction
     DamageHandler.register_post_damage_hook('PSDK Post damage: Water Compaction') do |handler, _, target, launcher, skill|
       next unless skill&.type_water? && launcher && launcher != target && target.has_ability?(:water_compaction)
-      next unless launcher.can_be_lowered_or_canceled?
+      # next unless launcher.can_be_lowered_or_canceled?
 
       handler.scene.visual.show_ability(target)
       handler.logic.stat_change_handler.stat_change_with_process(:dfe, 2, target)
@@ -688,7 +699,7 @@ module Battle
     # Steam Engine
     DamageHandler.register_post_damage_hook('PSDK Post damage: Steam Engine') do |handler, _, target, launcher, skill|
       next unless (skill&.type_water? || skill&.type_fire?) && launcher && launcher != target && target.has_ability?(:steam_engine)
-      next unless launcher.can_be_lowered_or_canceled?
+      # next unless launcher.can_be_lowered_or_canceled?
 
       handler.scene.visual.show_ability(target)
       handler.logic.stat_change_handler.stat_change_with_process(:spd, 6, target)
@@ -697,7 +708,7 @@ module Battle
     # Berserk
     DamageHandler.register_post_damage_hook('PSDK Post damage: Bersek') do |handler, _, target, launcher, skill|
       next unless target.hp_rate <= 0.5 && skill && launcher && launcher != target && target.has_ability?(:berserk)
-      next unless launcher.can_be_lowered_or_canceled?
+      # next unless launcher.can_be_lowered_or_canceled?
 
       handler.scene.visual.show_ability(target)
       handler.logic.stat_change_handler.stat_change_with_process(:ats, 1, target)
@@ -706,7 +717,7 @@ module Battle
     # Moxie
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Moxie') do |handler, _, target, launcher, skill|
       next unless launcher != target && launcher && skill
-      next unless target.can_be_lowered_or_canceled?
+      # next unless target.can_be_lowered_or_canceled?
 
       handler.logic.allies_of(launcher).each do |ally|
         if launcher.has_ability?(:moxie) && target != ally
@@ -719,7 +730,7 @@ module Battle
     # Chilling Neigh
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Chilling Neigh') do |handler, _, target, launcher, skill|
       next unless launcher != target && launcher && skill
-      next unless target.can_be_lowered_or_canceled?
+      # next unless target.can_be_lowered_or_canceled?
 
       handler.logic.allies_of(launcher).each do |ally|
         if launcher.has_ability?(:chilling_neigh) && target != ally
@@ -732,7 +743,7 @@ module Battle
     # Grim Neigh
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Grim Neigh') do |handler, _, target, launcher, skill|
       next unless launcher != target && launcher && skill
-      next unless target.can_be_lowered_or_canceled?
+      # next unless target.can_be_lowered_or_canceled?
 
       handler.logic.allies_of(launcher).each do |ally|
         if launcher.has_ability?(:grim_neigh) && target != ally
@@ -745,7 +756,7 @@ module Battle
     # Soul-Heart
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Soul-Heart') do |handler, _, target, launcher, _|
       next unless launcher != target && launcher
-      next unless target.can_be_lowered_or_canceled?
+      # next unless target.can_be_lowered_or_canceled?
 
       if launcher.has_ability?(:"soul-heart")
         handler.scene.visual.show_ability(launcher)
@@ -756,7 +767,7 @@ module Battle
     # Stamina
     DamageHandler.register_post_damage_hook('PSDK Post damage: Stamina') do |handler, _, target, launcher, skill|
       next unless skill && launcher && launcher != target && target.has_ability?(:stamina)
-      next unless launcher.can_be_lowered_or_canceled?
+      # next unless launcher.can_be_lowered_or_canceled?
 
       handler.scene.visual.show_ability(target)
       handler.logic.stat_change_handler.stat_change_with_process(:dfe, 1, target)
@@ -765,7 +776,7 @@ module Battle
     # Justified
     DamageHandler.register_post_damage_hook('PSDK Post damage: Justified') do |handler, _, target, launcher, skill|
       next unless skill&.type_dark? && launcher && launcher != target && target.has_ability?(:justified)
-      next unless launcher.can_be_lowered_or_canceled?
+      # next unless launcher.can_be_lowered_or_canceled?
 
       handler.scene.visual.show_ability(target)
       handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, target)

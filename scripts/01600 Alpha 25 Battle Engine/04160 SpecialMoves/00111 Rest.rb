@@ -10,7 +10,7 @@ module Battle
       def move_blocked_by_target?(user, target)
         return true if super
 
-        if target.has_ability?(:insomnia) || target.has_ability?(:vital_spirit)
+        if target.has_ability?(:insomnia) || target.has_ability?(:vital_spirit) || target.has_ability?(:sweet_veil)
           scene.visual.show_ability(target)
           scene.display_message_and_wait(parse_text_with_pokemon(19, 451, target))
           return true
@@ -31,7 +31,7 @@ module Battle
       def deal_status(user, actual_targets)
         actual_targets.each do |target|
           scene.visual.show_info_bar(target)
-          target.status_sleep(true, target.has_ability?(:early_bird) ? 1 : 2)
+          target.status_sleep(true, 2)
           scene.display_message_and_wait(parse_text_with_pokemon(19, 306, target))
           hp = target.max_hp
           scene.visual.show_hp_animations([target], [hp])

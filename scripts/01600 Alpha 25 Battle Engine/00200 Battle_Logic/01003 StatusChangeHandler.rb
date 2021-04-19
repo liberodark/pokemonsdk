@@ -238,6 +238,20 @@ module Battle
       end
     end
 
+    # Sweet Veil Ability
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Sweet Veil') do |handler, status, target, launcher, _|
+      next unless status == :sleep
+
+      allies = handler.logic.alive_battlers(target.bank)
+      fv = allies.find { |ally| ally.has_ability?(:sweet_veil) }
+      next unless fv && launcher.can_be_lowered_or_canceled?
+
+      next handler.prevent_change do
+        handler.scene.visual.show_ability(fv)
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1186, target))
+      end
+    end
+
     # Own Tempo
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Own Tempo') do |handler, status, target, launcher|
       next unless status == :confusion && target.has_ability?(:own_tempo)
@@ -418,7 +432,7 @@ module Battle
     end
 
     # Misty Terrain effect
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Misty Terrain') do |handler, status, target, launcher, skill|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Misty Terrain') do |handler, status, target, _, _|
       next unless $env.terrain_misty? && (status == :flinch || status == :cure)
 
       next handler.prevent_change do
@@ -427,13 +441,12 @@ module Battle
     end
 
     # Electric Terrain effect
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Electric Terrain') do |handler, status, target, launcher, skill|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Electric Terrain') do |handler, status, target, _, _|
       next unless $env.terrain_electric? && status == :sleep
 
       next handler.prevent_change do
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1207, target))
       end
     end
-
   end
 end

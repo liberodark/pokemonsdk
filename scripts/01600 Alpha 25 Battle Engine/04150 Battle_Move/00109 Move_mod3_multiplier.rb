@@ -15,7 +15,7 @@ module Battle
       result = 1
       if super_effective?
         # SRF
-        result *= 0.75 if SUPER_EFFECTIVE_REDUCTION.include?(target.battle_ability_db_symbol)
+        result *= 0.75 if SUPER_EFFECTIVE_REDUCTION.include?(target.battle_ability_db_symbol) && user.can_be_lowered_or_canceled?
         # EB
         result *= 1.2 if user.hold_item?(:expert_belt)
         # TL

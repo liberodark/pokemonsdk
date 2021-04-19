@@ -83,16 +83,14 @@ module Battle
         return 1.33 if type == GameData::Types::PSYCHIC
       elsif $env.terrain_grassy?
         return 1.33 if type == GameData::Types::GRASS
+        return VAL_0_5 if GRASSY_REDUCED_MOVES.include?(db_symbol)
       elsif $env.terrain_electric?
         return 1.33 if type == GameData::Types::ELECTRIC
       elsif $env.terrain_misty?
         return VAL_0_5 if type == GameData::Types::DRAGON
-      elsif $env.terrain_grassy?
-        return VAL_0_5 if GRASSY_REDUCED_MOVES.include?(db_symbol)
       end
       return 1
     end
-
 
     # Calculate the Flash Fire mod
     # @param user [PFM::PokemonBattler] user of the move

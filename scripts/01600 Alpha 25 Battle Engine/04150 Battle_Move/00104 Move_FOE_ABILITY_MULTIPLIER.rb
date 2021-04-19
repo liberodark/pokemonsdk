@@ -12,7 +12,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Numeric]
     def calc_fa_thick_fat(user, target)
-      THICK_FAT_TYPES.include?(type) ? VAL_0_5 : 1
+      THICK_FAT_TYPES.include?(type) && user.can_be_lowered_or_canceled? ? VAL_0_5 : 1
     end
 
     # Heatproof foe ability multiplier
@@ -20,7 +20,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Numeric]
     def calc_fa_heatproof(user, target)
-      type == GameData::Types::FIRE ? VAL_0_5 : 1
+      type == GameData::Types::FIRE && user.can_be_lowered_or_canceled? ? VAL_0_5 : 1
     end
 
     # Dry Skin foe ability multiplier
@@ -44,7 +44,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Numeric]
     def calc_fa_fluffy(user, target)
-      return VAL_0_5 if direct?
+      return VAL_0_5 if direct? && user.can_be_lowered_or_canceled?
       return 2 if type == GameData::Types::FIRE
       return 1
     end
@@ -63,7 +63,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Numeric]
     def calc_fa_max_hp(user, target)
-      return VAL_0_5 if user.hp == user.max_hp
+      return VAL_0_5 if target.hp == target.max_hp && user.can_be_lowered_or_canceled?
 
       return 1
     end
@@ -73,7 +73,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Numeric]
     def calc_fa_friend_guard(user, target)
-      return 0.75 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(:friend_guard) }
+      return 0.75 if logic.adjacent_allies_of(target).any? { |partner| partner&.has_ability?(:friend_guard) } && user.can_be_lowered_or_canceled?
 
       return 1
     end

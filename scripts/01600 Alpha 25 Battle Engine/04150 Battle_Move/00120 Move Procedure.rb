@@ -116,7 +116,6 @@ module Battle
     # @return [Boolean]
     def target_immune?(user, target)
       return false if status? && target == user
-      # BulletProof like moves
       return true if user != target && ability_immunity?(user, target)
 
       types = definitive_types(user, target)
@@ -131,7 +130,9 @@ module Battle
     # @return [Boolean]
     def ability_immunity?(user, target)
       # TODO: add hooks
-      return true if ballistics? && target.has_ability?(:bulletproof)
+      return true if ballistics? && user.can_be_lowered_or_canceled?(target.has_ability?(:bulletproof))
+      return true if sound_attack? && user.can_be_lowered_or_canceled?(target.has_ability?(:soundproof))
+      return true if effectiveness <= 1 && user.can_be_lowered_or_canceled?(target.has_ability?(:wonder_guard))
 
       if priority != priority(user)
         return true if target.type_dark? && user.has_ability?(:prankster)

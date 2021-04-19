@@ -26,8 +26,8 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Numeric]
     def calc_def_mod_marvel_scale(user, target)
-      return 1.5 if target.paralyzed? || target.poisoned? || target.toxic? || target.burn? || target.asleep? ||
-                    target.frozen?
+      return 1.5 if (target.paralyzed? || target.poisoned? || target.toxic? || target.burn? || target.asleep? ||
+                    target.frozen?) && user.can_be_lowered_or_canceled?
       return 1
     end
 
@@ -36,7 +36,7 @@ module Battle
     # @param target [PFM:PokemonBattler]
     # @return [Numeric]
     def calc_def_fur_coat(user, target)
-      2
+      return user.can_be_lowered_or_canceled? ? 2 : 1
     end
 
     # Deep Sea Scale item multiplier
@@ -44,7 +44,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Numeric]
     def calc_def_mod_deep_sea_scale(user, target)
-      target.db_symbol == :clamperl ? 2 : 1
+      return target.db_symbol == :clamperl ? 2 : 1
     end
 
     # Soul Dew item multiplier

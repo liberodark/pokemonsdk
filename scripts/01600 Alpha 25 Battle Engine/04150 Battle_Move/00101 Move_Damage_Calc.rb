@@ -272,6 +272,10 @@ module Battle
       next user.has_ability?(:galvanize) && move.type_normal? ? GameData::Types::ELECTRIC : nil
     end
 
+    Move.register_move_type_change_hook('PSDK Scrappy Ability') do |user, target, move|
+      next user.has_ability?(:scrappy) && target.type_ghost? && (move.type_normal? || move.type_fighting?) ? 1 : nil
+    end
+
     # TechnoBlast
     TECHNODRIVES = {
       douse_drive: GameData::Types::WATER,

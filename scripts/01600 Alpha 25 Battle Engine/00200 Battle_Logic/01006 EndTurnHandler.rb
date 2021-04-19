@@ -360,6 +360,25 @@ module Battle
       end
     end
 
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Moody') do |logic, scene, battlers|
+      battlers.each do |battler|
+        next unless battler.has_ability?(:moody)
+
+        stats = Battle::Logic::StatChangeHandler::ALL_STATS
+        stat_up = stats.reject do |stat|
+          battler.battle_stage[Battle::Logic::StatChangeHandler::STAT_INDEX[stat]] == PFM::PokemonBattler::MAX_STAGE
+        end.sample
+        stat_down = stats.reject do |stat|
+          battler.battle_stage[Battle::Logic::StatChangeHandler::STAT_INDEX[stat]] == PFM::PokemonBattler::MIN_STAGE || stat == stat_up
+        end.sample
+        next unless stat_down || stat_up
+
+        scene.visual.show_ability(battler)
+        logic.stat_change_handler.stat_change_with_process(stat_up, 2, battler) if stat_up
+        logic.stat_change_handler.stat_change_with_process(stat_down, -1, battler) if stat_down
+      end
+    end
+
     EndTurnHandler.register_end_turn_event('PSDK end turn: Dry Skin (damage)') do |logic, scene, battlers|
       battlers.each do |battler|
         next unless $env.sunny? && battler.has_ability?(:dry_skin)

@@ -328,6 +328,7 @@ module Battle
   Move.register_move_prevention_target_hook('PSDK Move prev target: Queenly Majesty') do |user, _, move|
     protector = move.logic.foes_of(user).find { |pokemon| pokemon.has_ability?(:queenly_majesty) }
     next false unless protector && move.relative_priority >= 1 && move.blocable?
+    next false unless user.can_be_lowered_or_canceled?
 
     move.scene.visual.show_ability(protector)
     move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, '[VAR MOVE(0001)]' => move.name))
@@ -339,6 +340,7 @@ module Battle
   Move.register_move_prevention_target_hook('PSDK Move prev target: Dazzling') do |user, _, move|
     protector = move.logic.foes_of(user).find { |pokemon| pokemon.has_ability?(:dazzling) }
     next false unless protector && move.relative_priority >= 1 && move.blocable?
+    next false unless user.can_be_lowered_or_canceled?
 
     move.scene.visual.show_ability(protector)
     move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, '[VAR MOVE(0001)]' => move.name))

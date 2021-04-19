@@ -87,7 +87,7 @@ module PFM
     # @param forcing [Boolean] force the new status
     # @return [Boolean] if the pokemon has been burnt
     def status_burn(forcing=false)
-      if((@status==0 or forcing) and !dead?)
+      if (@status==0 || forcing) && !dead?
         @status = GameData::States::BURN
         return true
       end
@@ -96,7 +96,8 @@ module PFM
     # Can the Pokemon be burnt?
     # @return [Boolean]
     def can_be_burn?
-      return false if @status != 0 || type_fire? || has_ability?(:water_bubble)
+      return false if @status != 0 || type_fire? || ($scene.is_a?(Battle::Scene) ? has_ability?(:water_bubble) : ability_db_symbol == :water_bubble)
+
       return true
     end
     # Return the burn effect on HP of the Pokemon
@@ -114,10 +115,10 @@ module PFM
     # @param nb_turn [Integer, nil] number of turn the Pokemon will sleep
     # @return [Boolean] if the pokemon has been put to sleep
     def status_sleep(forcing=false, nb_turn = nil)
-      if((@status==0 || forcing) && !dead?)
+      if (@status == 0 || forcing) && !dead?
         @status = GameData::States::ASLEEP
         @status_count = nb_turn ? nb_turn : rand(4) + 2
-        #Vérifier la capacité qui réduit le nombre de tours du someil
+        @status_count = (@status_count / 2).floor if $scene.is_a?(Battle::Scene) ? has_ability?(:early_bird) : ability_db_symbol == :early_bird
         return true
       end
       return false

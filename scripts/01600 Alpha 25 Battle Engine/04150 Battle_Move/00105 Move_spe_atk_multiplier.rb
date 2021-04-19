@@ -30,7 +30,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Numeric]
     def calc_am_flower_gift(user, target)
-      $env.sunny? ? 1.5 : 1
+      $env.sunny? && user.can_be_lowered_or_canceled? ? 1.5 : 1
     end
 
     # Guts ability multiplier

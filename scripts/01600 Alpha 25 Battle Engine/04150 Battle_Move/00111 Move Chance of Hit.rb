@@ -104,7 +104,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Float]
     def eva_mod_sand_veil(user, target)
-      return $env.sandstorm? ? VAL_0_8 : 1
+      return $env.sandstorm? && user.can_be_lowered_or_canceled? ? VAL_0_8 : 1
     end
 
     # Return the eva mod of snow cloak
@@ -112,7 +112,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Float]
     def eva_mod_snow_cloak(user, target)
-      return $env.hail? ? VAL_0_8 : 1
+      return $env.hail? && user.can_be_lowered_or_canceled? ? VAL_0_8 : 1
     end
 
     # Return the eva mod of the tangled feet
@@ -120,7 +120,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Float]
     def eva_mod_tangled_feet(user, target)
-      return target.confused? ? VAL_0_5 : 1
+      return target.confused? && user.can_be_lowered_or_canceled? ? VAL_0_5 : 1
     end
 
     class << self
