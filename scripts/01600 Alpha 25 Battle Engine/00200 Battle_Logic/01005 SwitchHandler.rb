@@ -267,6 +267,10 @@ module Battle
         handler.scene.visual.show_ability(with) if alive_foes.any?
         alive_foes.each do |foe|
           handler.logic.stat_change_handler.stat_change_with_process(:atk, -1, foe)
+          if foe.has_ability?(:rattled)
+            handler.scene.visual.show_ability(foe)
+            handler.logic.stat_change_handler.stat_change_with_process(:spd, 1, foe)
+          end
         end
       end
     end

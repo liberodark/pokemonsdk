@@ -611,6 +611,16 @@ module Battle
       handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 592, launcher, PFM::Text::MOVE[1] => skill.name))
     end
 
+    # Rattled
+    DamageHandler.register_post_damage_hook('PSDK Post Damage: Rattled') do |handler, _, target, launcher, skill|
+      next unless launcher && launcher != target && launcher.hp > 0 && target.has_ability?(:rattled)
+      next unless skill.type_ghost? || skill.type_dark? || skill.type_bug?
+      next if target.effects.has?(:substitute)
+
+      handler.scene.visual.show_ability(target)
+      handler.logic.stat_change_handler.stat_change_with_process(:spd, 1, target)
+    end
+
     # Wandering Spirit
     DamageHandler.register_post_damage_hook('PSDK Post damage: Wandering Spirit') do |handler, _, target, launcher, skill|
       next unless skill&.direct? && launcher && launcher != target && launcher.hp > 0 && target.has_ability?(:wandering_spirit)

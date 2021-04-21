@@ -88,6 +88,7 @@ module Battle
     def type_insect?
       return type?(GameData::Types::BUG)
     end
+    alias type_bug? type_insect?
 
     # Is the skill type rock ?
     # @return [Boolean]
