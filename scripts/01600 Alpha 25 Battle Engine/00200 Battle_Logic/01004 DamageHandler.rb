@@ -308,7 +308,7 @@ module Battle
 
     # Oran Berry
     DamageHandler.register_post_damage_hook('PSDK post damage: Oran Berry') do |handler, _, target|
-      unnerve_foes = logic.foes_of(target).select { |foe| foe.has_ability?(:unnerve) }
+      unnerve_foes = handler.logic.foes_of(target).select { |foe| foe.has_ability?(:unnerve) }
       next unless target.hold_item?(:oran_berry) && unnerve_foes.none?
 
       if target.hp_rate <= 0.5
@@ -321,7 +321,7 @@ module Battle
 
     # Sitrus Berry
     DamageHandler.register_post_damage_hook('PSDK post damage: Sitrus Berry') do |handler, _, target|
-      unnerve_foes = logic.foes_of(target).select { |foe| foe.has_ability?(:unnerve) }
+      unnerve_foes = handler.logic.foes_of(target).select { |foe| foe.has_ability?(:unnerve) }
       next unless target.hold_item?(:sitrus_berry) && unnerve_foes.none?
 
       if target.hp_rate <= 0.5

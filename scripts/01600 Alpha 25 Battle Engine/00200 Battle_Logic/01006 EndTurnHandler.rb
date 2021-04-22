@@ -329,15 +329,12 @@ module Battle
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Nightmare') do |logic, scene, battlers|
       battlers.each do |battler|
-        next if !battler.battle_effect.has_nightmare_effect? || battler.has_ability?(:magic_guard)
+        next if !battler.effects.has?(:nightmare) || battler.has_ability?(:magic_guard)
+        next unless battler.asleep?
 
-        if battler.asleep?
-          hp = battler.max_hp / 4
-          scene.display_message_and_wait(parse_text_with_pokemon(19, 324, battler))
-          logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), battler)
-        else
-          battler.battle_effect.apply_nightmare(false)
-        end
+        hp = battler.max_hp / 4
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 324, battler))
+        logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), battler)
       end
     end
 

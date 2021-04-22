@@ -85,23 +85,6 @@ module BattleEngine
     skill.power2 = nil
   end
 
-  Flail_Pow = [20, 40, 80, 100, 150, 200]
-  Flail_HP  = [70, 35, 20, 10, 4, 0]
-  # Flail skill definition
-  # @param launcher [PFM::Pokemon] user of the move
-  # @param target [PFM::Pokemon] target of the move
-  # @param skill [PFM::Skill] move that is currently used
-  def s_flail(launcher, target, skill, msg_push = true)
-    hp_rate = 100 * launcher.hp / launcher.max_hp
-    i = 0
-    while Flail_HP[i] > hp_rate
-      i += 1
-    end
-    skill.power2 = Flail_Pow[i].to_i
-    s_basic(launcher, target, skill)
-    skill.power2 = nil
-  end
-
   # Gyroball skill definition
   # @param launcher [PFM::Pokemon] user of the move
   # @param target [PFM::Pokemon] target of the move
