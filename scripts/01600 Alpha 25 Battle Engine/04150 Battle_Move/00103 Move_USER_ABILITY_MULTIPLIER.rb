@@ -143,6 +143,16 @@ module Battle
       return logic.any_field_ability_active?(:aura_break) ? 0.75 : 1.33
     end
 
+    # Analytic ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_analytic(user, target)
+      return VAL_1_3 if logic.battler_attacks_last?(user)
+
+      return 1
+    end
+
     # Power Spot ability multiplier
     # @param user [PFM::PokemonBattler]
     # @param target [PFM::PokemonBattler]
@@ -152,7 +162,7 @@ module Battle
       return 1.2 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(:power_spot) }
       # No partner with the right ability => 1
       return 1
-    end 
+    end
 
     class << self
       # Define a user ability that powers a type of move in bad condition (1/3 of hp remaining)
@@ -194,5 +204,6 @@ module Battle
     define_boosting_ability(:fairy_aura, :calc_ua_auras)
     define_boosting_ability(:dark_aura, :calc_ua_auras)
     define_boosting_ability(:aura_break, :calc_ua_auras)
+    define_boosting_ability(:analytic, :calc_ua_analytic)
   end
 end
