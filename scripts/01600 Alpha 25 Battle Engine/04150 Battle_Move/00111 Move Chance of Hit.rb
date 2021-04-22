@@ -28,9 +28,10 @@ module Battle
         send(EVASION_ITEM_MULTIPLIER[target.battle_item_db_symbol], user, target),
         send(ACCURACY_ABILITY_MULTIPLIER[user.battle_ability_db_symbol], user, target),
         send(EVASION_ABILITY_MULTIPLIER[target.battle_ability_db_symbol], user, target),
-        (logic.terrain_effects.has?(:gravity) ? GRAVITY_MODIFIER : 1)
+        (logic.terrain_effects.has?(:gravity) ? GRAVITY_MODIFIER : 1),
+        (logic.allies_of(user).any? { |ally| ally.has_ability?(:victory_star) } ? VAL_1_1 : 1)
       ]
-      log_data("factors = [#{factors.join(', ')}] # acc, eva, aci, evi, aca, evaa, gr") if debug?
+      log_data("factors = [#{factors.join(', ')}] # acc, eva, aci, evi, aca, evaa, gr, vstar") if debug?
       log_data("result = #{factors.reduce(100, :*)}") if debug?
       return factors.reduce(100, :*)
     end
@@ -81,6 +82,22 @@ module Battle
     # @return [Float]
     def acc_mod_hustle(user, target)
       return physical? ? VAL_0_8 : 1
+    end
+
+    # Return the acc mod of hustle
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Float]
+    def acc_mod_victory_star(user, target)
+      return VAL_1_1
+    end
+
+    # Return the eva mod of wonder skin
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Float]
+    def eva_mod_wonder_skin(user, target)
+      return status? && user.can_be_lowered_or_canceled? ? VAL_0_5 : 1
     end
 
     # Return the eva mod of the brightpowder
@@ -155,6 +172,8 @@ module Battle
 
     define_ability_accuracy_modifier(:compoundeyes, :acc_mod_compoundeyes)
     define_ability_accuracy_modifier(:hustle, :acc_mod_hustle)
+    define_ability_accuracy_modifier(:victory_star, :acc_mod_victory_star)
+    define_ability_evasion_modifier(:wonder_skin, :eva_mod_wonder_skin)
     define_ability_evasion_modifier(:sand_veil, :eva_mod_sand_veil)
     define_ability_evasion_modifier(:snow_cloak, :eva_mod_snow_cloak)
     define_ability_evasion_modifier(:tangled_feet, :eva_mod_tangled_feet)
