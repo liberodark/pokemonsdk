@@ -70,6 +70,7 @@ module PFM
     # @return [Numeric]
     def calc_us_slow_start
       return VAL_1_5 if @turn_count < 5
+
       return 1
     end
 
@@ -101,7 +102,8 @@ module PFM
     # @return [Integer]
     def calc_us_unburden
       return 1 if @item_holding >= 0
-      return @item_holding != @original.item_holding ? 2 : 1
+
+      return @item_holding == @original.item_holding ? 1 : 2
     end
 
     # Ditto's quick powder speed modifier

@@ -87,9 +87,10 @@ module Battle
       partner_expectation = user.has_ability?(:plus) ? :minus : :plus
       # Try all the adjacent partner
       return 1.5 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(partner_expectation) }
+
       # No partner with the right ability => 1
       return 1
-    end    
+    end
 
     # Battery ability multiplier
     # @param user [PFM::PokemonBattler]
@@ -97,10 +98,11 @@ module Battle
     # @return [Numeric]
     def calc_am_battery(user, target)
       # Try all the adjacent partner
-        return 1.3 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(:battery) }
+      return 1.3 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(:battery) }
+
       # No partner with the right ability => 1
       return 1
-    end    
+    end
 
     # Flare Boost ability multiplier
     # @param user [PFM::PokemonBattler]
@@ -108,6 +110,7 @@ module Battle
     # @return [Numeric]
     def calc_am_flare_boost(user, target)
       return 1.5 if user.burn?
+
       return 1
     end
 

@@ -281,6 +281,7 @@ module PFM
       psn_event = false
       @actors.each do |pokemon|
         next unless pokemon.poisoned? || pokemon.toxic?
+        next if pokemon.ability_db_symbol == :immunity
 
         $scene.delay_display_call(:display_poison_animation) unless psn_event
         psn_event = true

@@ -13,11 +13,15 @@ module Battle
       def target_immune?(user, target)
         return true if target.effects.has?(:attract) || (user.gender * target.gender) != 2
 
+        ally = @logic.allies_of(target).find { |a| BLOCKING_ABILITY.include?(a.battle_ability_db_symbol) }
         if target.hold_item?(:mental_herb)
           @logic.item_change_handler.change_item(:none, true, target)
           return true
         elsif user.can_be_lowered_or_canceled?(BLOCKING_ABILITY.include?(target.battle_ability_db_symbol))
           @scene.visual.show_ability(target)
+          return true
+        elsif user.can_be_lowered_or_canceled? && ally
+          @scene.visual.show_ability(ally)
           return true
         end
 

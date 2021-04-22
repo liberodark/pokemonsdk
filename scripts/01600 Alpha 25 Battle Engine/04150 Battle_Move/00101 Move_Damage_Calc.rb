@@ -126,6 +126,9 @@ module Battle
         result = (result * (ph_move ? user.atk_modifier : user.ats_modifier)).floor unless critical_hit?
       end
       # AM
+      if ph_move && !user.has_ability?(:flower_gift) && $env.sunny? && logic.allies_of(user).any? { |ally| ally.has_ability?(:flower_gift) }
+        result = (result * 1.5).floor
+      end
       am = send((ph_move ? ATK_ABILITY_MODIFIER : ATS_ABILITY_MODIFIER)[user.battle_ability_db_symbol], user, target)
       result = (result * am).floor
       # IM
@@ -147,6 +150,9 @@ module Battle
         result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor unless critical_hit?
       end
       # Mod
+      if !ph_move && !user.has_ability?(:flower_gift) && $env.sunny? && logic.allies_of(target).any? { |ally| ally.has_ability?(:flower_gift) }
+        result = (result * 1.5).floor
+      end
       result = (result * 1.5).floor if !ph_move && $env.sandstorm? && target.type_rock?
       mod = send((ph_move ? DFE_ABILITY_MODIFIER : DFS_ABILITY_MODIFIER)[target.battle_ability_db_symbol], user, target)
       result = (result * mod).floor

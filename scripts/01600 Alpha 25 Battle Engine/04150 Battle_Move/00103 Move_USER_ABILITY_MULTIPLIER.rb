@@ -164,6 +164,16 @@ module Battle
       return 1
     end
 
+    # Sand Force ability multiplier
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Numeric]
+    def calc_ua_sand_force(user, target)
+      return VAL_1_3 if $env.sandstorm? && (type_steel? || type_rock? || type_ground?)
+
+      return 1
+    end
+
     class << self
       # Define a user ability that powers a type of move in bad condition (1/3 of hp remaining)
       # @param db_symbol [Symbol] db_symbol of the ability
@@ -205,5 +215,6 @@ module Battle
     define_boosting_ability(:dark_aura, :calc_ua_auras)
     define_boosting_ability(:aura_break, :calc_ua_auras)
     define_boosting_ability(:analytic, :calc_ua_analytic)
+    define_boosting_ability(:sand_force, :calc_ua_sand_force)
   end
 end
