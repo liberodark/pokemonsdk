@@ -351,6 +351,19 @@ module Battle
       end
     end
 
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Harvest') do |logic, scene, battlers|
+      battlers.each do |battler|
+        next unless battler.has_ability?(:harvest)
+        next unless battler.item_consumed && GameData::Item[battler.consumed_item]&.socket == 4 && battler.item_db_symbol == :__undef__
+        next unless bchance?(0.5) || $env.sunny?
+
+        # TODO: Add the harvest animation
+        scene.visual.show_ability(battler)
+        logic.item_change_handler.change_item(battler.consumed_item, true, battler)
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 475, battler, PFM::Text::ITEM2[1] => battler.item_name))
+      end
+    end
+
     EndTurnHandler.register_end_turn_event('PSDK end turn: Speed Boost') do |logic, scene, battlers|
       battlers.each do |battler|
         next unless battler.has_ability?(:speed_boost) && battler.spd_stage < PFM::PokemonBattler::MAX_STAGE
@@ -458,6 +471,34 @@ module Battle
       if $env.decrease_fterrain_duration # Return true if stopping!
         # TODO: Add gen7 text of Psychic Terrain
         logic.fterrain_change_handler.fterrain_change(:terrainnone, 0)
+      end
+    end
+
+    # Oran Berry
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Oran Berry') do |logic, scene, battlers|
+      battlers.each do |battler|
+        unnerve_foes = logic.foes_of(battler).select { |foe| foe.has_ability?(:unnerve) }
+        next unless battler.hold_item?(:oran_berry) && unnerve_foes.none?
+        next if battler.hp_rate > 0.5
+
+        scene.visual.show_item(battler)
+        scene.visual.show_hp_animations([battler], [10])
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 914, battler, PFM::Text::ITEM2[1] => battler.item_name))
+        logic.item_change_handler.change_item(:none, true, battler)
+      end
+    end
+
+    # Sitrus Berry
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Sitrus Berry') do |logic, scene, battlers|
+      battlers.each do |battler|
+        unnerve_foes = logic.foes_of(battler).select { |foe| foe.has_ability?(:unnerve) }
+        next unless battler.hold_item?(:sitrus_berry) && unnerve_foes.none?
+        next if battler.hp_rate > 0.5
+
+        scene.visual.show_item(battler)
+        scene.visual.show_hp_animations([battler], [battler.max_hp / 4])
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 914, battler, PFM::Text::ITEM2[1] => battler.item_name))
+        logic.item_change_handler.change_item(:none, true, battler)
       end
     end
   end

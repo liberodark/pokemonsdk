@@ -16,9 +16,8 @@ module Battle
         return if user.dead?
 
         actual_targets.each do |target|
-          imisc = GameData::Item[target.item_hold].misc_data
           next unless @logic.item_change_handler.can_lose_item?(target, user)
-          next unless imisc&.berry || BURNABLE_ITEMS.include?(target.item_db_symbol)
+          next unless target.hold_berry?(target.battle_item_db_symbol) || BURNABLE_ITEMS.include?(target.battle_item_db_symbol)
 
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 1114, target, PFM::Text::ITEM2[1] => target.item_name))
           target.item_burnt = true

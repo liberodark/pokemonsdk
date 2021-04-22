@@ -38,6 +38,7 @@ module Battle
       return 1 unless trb
 
       effectiveness_method = trb[:effectiveness_method]
+      # TODO: Add berry consumed & hook
       return VAL_0_5 if (!effectiveness_method || send(effectiveness_method)) && type == trb[:type]
 
       return 1

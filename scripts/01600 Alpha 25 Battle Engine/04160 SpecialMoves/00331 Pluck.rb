@@ -11,9 +11,7 @@ module Battle
         return if user.dead?
 
         actual_targets.each do |target|
-          imisc = GameData::Item[target.item_hold].misc_data
-          next unless @logic.item_change_handler.can_lose_item?(target, user)
-          next unless imisc&.berry
+          next unless @logic.item_change_handler.can_lose_item?(target, user) && target.hold_berry?(target.battle_item_db_symbol)
 
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 776, user, PFM::Text::ITEM2[1] => target.item_name))
           # TODO: Add a method to use berry on the launcher.

@@ -259,18 +259,25 @@ module Battle
       with.battle_effect.transmit_substitute(who.battle_effect) if who.battle_effect.has_substitute_effect?
     end
 
+    # Unnerve
+    SwitchHandler.register_switch_event_hook('PSDK switch: Unnerve') do |handler, _, with|
+      next unless with.has_ability?(:unnerve)
+
+      handler.scene.visual.show_ability(with)
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(18, with.bank == 0 ? 183 : 182))
+    end
+
     # Intimidate
     SwitchHandler.register_switch_event_hook('PSDK switch: Intimidate') do |handler, _, with|
-      # If with is entering the battle => all foes get the malus
-      if with.has_ability?(:intimidate)
-        alive_foes = handler.logic.foes_of(with).select(&:alive?)
-        handler.scene.visual.show_ability(with) if alive_foes.any?
-        alive_foes.each do |foe|
-          handler.logic.stat_change_handler.stat_change_with_process(:atk, -1, foe)
-          if foe.has_ability?(:rattled)
-            handler.scene.visual.show_ability(foe)
-            handler.logic.stat_change_handler.stat_change_with_process(:spd, 1, foe)
-          end
+      next unless with.has_ability?(:intimidate)
+
+      alive_foes = handler.logic.foes_of(with).select(&:alive?)
+      handler.scene.visual.show_ability(with) if alive_foes.any?
+      alive_foes.each do |foe|
+        handler.logic.stat_change_handler.stat_change_with_process(:atk, -1, foe)
+        if foe.has_ability?(:rattled)
+          handler.scene.visual.show_ability(foe)
+          handler.logic.stat_change_handler.stat_change_with_process(:spd, 1, foe)
         end
       end
     end
@@ -445,7 +452,7 @@ module Battle
 
     # Electric Surge
     SwitchHandler.register_switch_event_hook('PSDK switch: Electric Surge') do |handler, _, with|
-      next if with.ability_db_symbol != :electric_surge
+      next unless with.has_ability?(:electric_surge)
 
       fterrain_handler = handler.logic.fterrain_change_handler
       next unless fterrain_handler.fterrain_appliable?(:electric_terrain)
@@ -458,7 +465,7 @@ module Battle
 
     # Grassy Surge
     SwitchHandler.register_switch_event_hook('PSDK switch: Grassy Surge') do |handler, _, with|
-      next if with.ability_db_symbol != :grassy_surge
+      next unless with.has_ability?(:grassy_surge)
 
       fterrain_handler = handler.logic.fterrain_change_handler
       next unless fterrain_handler.fterrain_appliable?(:grassy_terrain)
@@ -471,7 +478,7 @@ module Battle
 
     # Misty Surge
     SwitchHandler.register_switch_event_hook('PSDK switch: Misty Surge') do |handler, _, with|
-      next if with.ability_db_symbol != :misty_surge
+      next unless with.has_ability?(:misty_surge)
 
       fterrain_handler = handler.logic.fterrain_change_handler
       next unless fterrain_handler.fterrain_appliable?(:misty_terrain)
@@ -484,7 +491,7 @@ module Battle
 
     # Psychic Surge
     SwitchHandler.register_switch_event_hook('PSDK switch: Psychic Surge') do |handler, _, with|
-      next if with.ability_db_symbol != :psychic_surge
+      next unless with.has_ability?(:psychic_surge)
 
       fterrain_handler = handler.logic.fterrain_change_handler
       next unless fterrain_handler.fterrain_appliable?(:psychic_terrain)

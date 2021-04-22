@@ -308,25 +308,27 @@ module Battle
 
     # Oran Berry
     DamageHandler.register_post_damage_hook('PSDK post damage: Oran Berry') do |handler, _, target|
-      next unless target.hold_item?(:oran_berry)
+      unnerve_foes = logic.foes_of(target).select { |foe| foe.has_ability?(:unnerve) }
+      next unless target.hold_item?(:oran_berry) && unnerve_foes.none?
 
       if target.hp_rate <= 0.5
         handler.scene.visual.show_item(target)
-        handler.logic.item_change_handler.change_item(:none, true, target)
         handler.scene.visual.show_hp_animations([target], [10])
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => target.item_name))
+        handler.logic.item_change_handler.change_item(:none, true, target)
       end
     end
 
     # Sitrus Berry
     DamageHandler.register_post_damage_hook('PSDK post damage: Sitrus Berry') do |handler, _, target|
-      next unless target.hold_item?(:sitrus_berry)
+      unnerve_foes = logic.foes_of(target).select { |foe| foe.has_ability?(:unnerve) }
+      next unless target.hold_item?(:sitrus_berry) && unnerve_foes.none?
 
       if target.hp_rate <= 0.5
         handler.scene.visual.show_item(target)
-        handler.logic.item_change_handler.change_item(:none, true, target)
         handler.scene.visual.show_hp_animations([target], [target.max_hp / 4])
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => target.item_name))
+        handler.logic.item_change_handler.change_item(:none, true, target)
       end
     end
 
@@ -426,7 +428,6 @@ module Battle
     DamageHandler.register_post_damage_hook('PSDK Post damage: Sticky Barb') do |handler, _, target, launcher, skill|
       next unless skill && target.hold_item?(:sticky_barb) && launcher != target
 
-      # TODO: Dont forget to add damage of Sticky Barb in the end turn procedure ;)
       if launcher.item_db_symbol == :__undef__
         handler.logic.item_change_handler.change_item(:sticky_barb, false, launcher)
         handler.logic.item_change_handler.change_item(:none, false, target)

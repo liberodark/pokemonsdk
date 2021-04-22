@@ -48,6 +48,10 @@ module Battle
         priority_return = attack.move.priority(attack.launcher) <=> @move.priority(@launcher)
         return priority_return if priority_return != 0
 
+        return -1 if (@launcher.hold_item?(:lagging_tail) && !attack.launcher.hold_item?(:lagging_tail)) ||
+                     (@launcher.hold_item?(:full_incense) && !attack.launcher.hold_item?(:full_incense))
+        return -1 if @launcher.has_ability?(:stall) && !attack.launcher.has_ability?(:stall)
+
         trick_room_factor = @scene.logic.terrain_effects.has?(:trick_room) ? -1 : 1
         return (attack.launcher.spd <=> @launcher.spd) * trick_room_factor
       end

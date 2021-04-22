@@ -109,6 +109,13 @@ module PFM
     # @return [Boolean]
     attr_accessor :item_burnt
 
+    # Tell if the Pokemon has its item consumed
+    # @return [Boolean]
+    attr_accessor :item_consumed
+
+    # @return [Symbol] the symbol of the consumed item
+    attr_accessor :consumed_item
+
     # Get the transform pokemon
     # @return [PFM::Pokemon]
     attr_reader :transform
@@ -140,6 +147,10 @@ module PFM
       @move_history = []
       @mega_evolved = false
       @exp_distributed = false
+      @item_burnt = false
+      @item_stolen = false
+      @item_consumed = false
+      @consumed_item = :__undef__
       initialize_set_is_follower
     end
 
@@ -207,6 +218,15 @@ module PFM
       return false if db_symbol == :__undef__
 
       return battle_item_db_symbol == db_symbol
+    end
+
+    # Tell if the pokemon hold a berry
+    # @param db_symbol [Symbol] db_symbol of the item
+    # @return [Boolean]
+    def hold_berry?(db_symbol)
+      return false unless GameData::Item[db_symbol]&.socket == 4
+
+      return hold_item?(db_symbol)
     end
 
     # Add a move to the move history

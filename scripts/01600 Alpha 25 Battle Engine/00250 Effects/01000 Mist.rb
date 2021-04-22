@@ -1,7 +1,7 @@
 module Battle
   module Effects
     class Mist < PositionTiedEffectBase
-      # Create a new spike effect
+      # Create a new Mist effect
       # @param logic [Battle::Logic]
       # @param bank [Integer] bank where the effect acts
       def initialize(logic, bank)
