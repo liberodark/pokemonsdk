@@ -8,7 +8,7 @@ module Battle
       def target_immune?(user, target)
         return true if super
 
-        return db_symbol == :heal_pulse && target.battle_effect.has_substitute_effect?
+        return db_symbol == :heal_pulse && target.effects.has?(:substitute)
       end
 
       # Function that tests if the targets blocks the move

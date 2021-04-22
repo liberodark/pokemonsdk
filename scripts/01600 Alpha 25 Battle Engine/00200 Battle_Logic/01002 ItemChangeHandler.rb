@@ -48,7 +48,7 @@ module Battle
       def can_lose_item?(target, launcher = nil)
         return false unless target.hold_item?(target.item_db_symbol)
         return false if target.battle_item_db_symbol == :__undef__ || PROTECTED_ITEMS.include?(target.item_db_symbol)
-        return false if target.dead? || target.battle_effect.has_substitute_effect?
+        return false if target.dead? || target.effects.has?(:substitute)
         return false if launcher&.can_be_lowered_or_canceled?(target.has_ability?(:sticky_hold))
         return false if PROTECTED_POKEMON_ITEMS[target.db_symbol]&.include?(target.battle_item_db_symbol)
         return false if target.effects.has?(:substitute)

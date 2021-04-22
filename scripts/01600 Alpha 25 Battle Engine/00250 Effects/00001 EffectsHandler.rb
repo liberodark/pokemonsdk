@@ -55,6 +55,16 @@ module Battle
         @effects.reject!(&:dead?)
         deleted_effect.each(&:on_delete)
       end
+
+      # Delete specific dead effect
+      # @param name [Symbol]
+      def delete_specific_dead_effect(name)
+        deleted_effect = @effects.select { |effect| effect.dead? && effect.name == name }
+        return if deleted_effect.empty?
+
+        @effects.reject! { |effect| effect.dead? && effect.name == name }
+        deleted_effect.each(&:on_delete)
+      end
     end
   end
 end

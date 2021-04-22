@@ -45,7 +45,7 @@ module Battle
             @logic.scene.visual.wait_for_animation
           end
           next false unless @logic.switch_handler.can_switch?(target, self) && user.alive?
-          next false if target.battle_effect.has_substitute_effect? && be_method == :s_dragon_tail
+          next false if target.effects.has?(:substitute) && be_method == :s_dragon_tail
 
           @logic.switch_request << { who: target }
         end

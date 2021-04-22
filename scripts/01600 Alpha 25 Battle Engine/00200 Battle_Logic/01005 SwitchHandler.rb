@@ -256,7 +256,7 @@ module Battle
       with.battle_effect.transmit_bind(who.battle_effect) if who.battle_effect.has_bind_effect?
       handler.logic.status_change_handler(:confusion, with) if who.confused?
       with.battle_effect.apply_aqua_ring if who.battle_effect.has_aqua_ring_effect?
-      with.battle_effect.transmit_substitute(who.battle_effect) if who.battle_effect.has_substitute_effect?
+      who.effects.get(:substitute)&.baton_pass(with)
     end
 
     # Unnerve

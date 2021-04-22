@@ -37,6 +37,7 @@ module Battle
       # Kill the effect (in order to remove it from the effects handler)
       def kill
         @counter = -1
+        disable_hooks
       end
 
       # Function called when the effect has been deleted from the effects handler
@@ -254,6 +255,38 @@ module Battle
       # @return [Proc, nil]
       def on_move_disabled_check(user, move)
         return nil
+      end
+
+      private
+
+      # Function that disable all the hooks (putting aside on_delete)
+      def disable_hooks
+        class << self
+          def on_stat_increase_prevention(*)
+            return nil
+          end
+          alias on_stat_decrease_prevention on_stat_increase_prevention
+          alias on_stat_change on_stat_increase_prevention
+          alias on_pre_item_change on_stat_increase_prevention
+          alias on_post_item_change on_stat_increase_prevention
+          alias on_status_prevention on_stat_increase_prevention
+          alias on_post_status_change on_stat_increase_prevention
+          alias on_damage_prevention on_stat_increase_prevention
+          alias on_post_damage on_stat_increase_prevention
+          alias on_post_damage_death on_stat_increase_prevention
+          alias on_switch_passthrough on_stat_increase_prevention
+          alias on_switch_prevention on_stat_increase_prevention
+          alias on_switch_event on_stat_increase_prevention
+          alias on_end_turn_event on_stat_increase_prevention
+          alias on_weather_prevention on_stat_increase_prevention
+          alias on_post_weather_change on_stat_increase_prevention
+          alias on_fterrain_prevention on_stat_increase_prevention
+          alias on_post_fterrain_change on_stat_increase_prevention
+          alias on_move_prevention_user on_stat_increase_prevention
+          alias on_move_prevention_target on_stat_increase_prevention
+          alias on_move_type_change on_stat_increase_prevention
+          alias on_move_disabled_check on_stat_increase_prevention
+        end
       end
     end
   end

@@ -49,6 +49,7 @@ module Battle
       def damage_change_with_process(hp, target, launcher = nil, skill = nil, &messages)
         return process_prevention_reason unless (hp = damage_appliable(hp, target, launcher, skill))
 
+        process_prevention_reason # Ensure that things with damage change like substitute shows something
         damage_change(hp, target, launcher, skill, &messages)
       end
 
@@ -170,27 +171,6 @@ module Battle
       handler.logic.each_effects(launcher, target) do |e|
         e.on_post_damage(handler, hp, target, launcher, skill)
       end
-    end
-
-    # Substitute
-    DamageHandler.register_damage_prevention_hook('PSDK damage perv: Substitute') do |handler, hp, target, _, skill|
-      next if !skill || skill.sound_attack? || !target.battle_effect.has_substitute_effect?
-
-      substitue_hp = target.battle_effect.substitute_hp
-      hp -= substitue_hp
-      handler.prevent_change do
-        target.battle_effect.substitute_hp -= hp
-        if hp > 0
-          handler.scene.visual.show_switch_form_animation(target)
-          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 794, target))
-        else
-          target.battle_effect.last_damaging_skill = nil
-          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 791, target))
-        end
-      end
-
-      # We modify the HP if the substitute broke
-      next hp <= 0 ? :prevent : hp
     end
 
     # Endure

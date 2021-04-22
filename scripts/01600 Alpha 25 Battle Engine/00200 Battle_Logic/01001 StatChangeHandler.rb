@@ -252,14 +252,6 @@ module Battle
       next :prevent if target.battle_effect.has_no_stat_change_effect?
     end
 
-    # Register the substitute effect
-    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Substitute') do |_, _, target, launcher, skill|
-      next :prevent if target != launcher && target.battle_effect.has_substitute_effect? && skill && skill.db_symbol != :defog
-    end
-    StatChangeHandler.register_stat_increase_prevention_hook('PSDK stat incr: Substitute') do |_, _, target, launcher, skill|
-      next :prevent if target != launcher && target.battle_effect.has_substitute_effect? && skill && skill.db_symbol != :defog
-    end
-
     # Register the Simple ability
     StatChangeHandler.register_stat_change_hook('PSDK stat_change: Simple') do |handler, _, power, target, launcher|
       next unless target.has_ability?(:simple)

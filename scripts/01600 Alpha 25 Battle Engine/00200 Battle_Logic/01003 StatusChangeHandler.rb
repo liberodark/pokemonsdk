@@ -206,15 +206,6 @@ module Battle
       end
     end
 
-    # Substitute effect
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Substitue') do |handler, status, target, launcher, skill|
-      next if status == :cure || launcher == target || !skill || !target.battle_effect.has_substitute_effect?
-
-      next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 24, target))
-      end
-    end
-
     # Safeguard effect
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Safeguard') do |handler, status, target, launcher, skill|
       next true if status == :cure || launcher == target || !skill || !target.battle_effect.has_safe_guard_effect?
