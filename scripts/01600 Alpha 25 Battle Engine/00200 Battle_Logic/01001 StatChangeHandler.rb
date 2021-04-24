@@ -82,11 +82,12 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
-      def stat_change(stat, power, target, launcher = nil, skill = nil)
+      # @param no_message [Boolean] if the message about stat increase should be shown
+      def stat_change(stat, power, target, launcher = nil, skill = nil, no_message: false)
         log_data("# stat_change(#{stat}, #{power}, #{target}, #{launcher}, #{skill})")
         exec_hooks(StatChangeHandler, :stat_change, binding)
         amount = target.change_stat(STAT_INDEX[stat], power)
-        show_stat_change_text_and_animation(stat, power, amount, target)
+        show_stat_change_text_and_animation(stat, power, amount, target, no_message)
         exec_hooks(StatChangeHandler, :stat_change_post_event, binding)
       rescue Hooks::ForceReturn => e
         log_data("# FR: stat_change #{e.data} from #{e.hook_name} (#{e.reason})")
@@ -99,7 +100,8 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
-      def stat_change_with_process(stat, power, target, launcher = nil, skill = nil)
+      # @param no_message [Boolean] if the message about stat increase should be shown
+      def stat_change_with_process(stat, power, target, launcher = nil, skill = nil, no_message: false)
         if power < 0
           result = stat_decreasable?(stat, target, launcher, skill)
         else
@@ -107,10 +109,8 @@ module Battle
         end
         return process_prevention_reason unless result
 
-        stat_change(stat, power, target, launcher, skill)
+        stat_change(stat, power, target, launcher, skill, no_message: no_message)
       end
-
-      private
 
       # Get the text index in the TEXT_POS array depending on amount & power
       # @param amount [Integer]
@@ -125,15 +125,18 @@ module Battle
         return (power > 0 ? 4 : 5)
       end
 
+      private
+
       # Play the animation & display the text depending on the stat
       # @param stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva
       # @param power [Integer] expected power of the stat increase
       # @param amount [Integer] actual amount changed
       # @param target [PFM::PokemonBattler]
-      def show_stat_change_text_and_animation(stat, power, amount, target)
+      # @param no_message [Boolean] if the message about stat increase should be shown
+      def show_stat_change_text_and_animation(stat, power, amount, target, no_message)
         text_index = stat_text_index(amount, power)
         @scene.visual.show_rmxp_animation(target, ANIMATION[stat] + (power < 0 ? 1 : 0)) if amount != 0
-        @scene.display_message_and_wait(parse_text_with_pokemon(19, TEXT_POS[stat][text_index], target))
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, TEXT_POS[stat][text_index], target)) unless no_message
       end
 
       class << self
@@ -222,6 +225,24 @@ module Battle
             hook_binding.local_variable_set(:power, result) if result.is_a?(Integer)
           end
         end
+      end
+    end
+
+    # Register native impossibilities
+    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: self stage') do |handler, stat, target, _, _|
+      next if target.battle_stage[StatChangeHandler::STAT_INDEX[stat]] != PFM::PokemonBattler::MIN_STAGE
+
+      next handler.prevent_change do
+        text_index = handler.stat_text_index(0, -1)
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, StatChangeHandler::TEXT_POS[stat][text_index], target))
+      end
+    end
+    StatChangeHandler.register_stat_increase_prevention_hook('PSDK stat incr: self stage') do |handler, stat, target, _, _|
+      next if target.battle_stage[StatChangeHandler::STAT_INDEX[stat]] != PFM::PokemonBattler::MAX_STAGE
+
+      next handler.prevent_change do
+        text_index = handler.stat_text_index(0, 1)
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, StatChangeHandler::TEXT_POS[stat][text_index], target))
       end
     end
 
