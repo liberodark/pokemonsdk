@@ -7,7 +7,7 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @param user [PFM::PokemonBattler]
       def initialize(logic, target, user)
-        super(logic, target, user)
+        super(logic, target)
         @lock_on_user = user
       end
 
