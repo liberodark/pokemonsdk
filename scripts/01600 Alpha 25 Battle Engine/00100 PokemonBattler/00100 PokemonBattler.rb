@@ -365,7 +365,7 @@ module PFM
       return unless @moveset
 
       copy_transform_properties
-      copy_moveset
+      copy_transform_moveset
     end
 
     private
@@ -381,24 +381,37 @@ module PFM
 
     # Copy the properties of a transformed pokemon
     def copy_transform_properties
-      transform = @transform || @original
-      TRANSFORM_COPIED_PROPERTIES.each do |ivar_name|
-        instance_variable_set(ivar_name, transform.instance_variable_get(ivar_name))
+      if @transform
+        @properties_before_transform = TRANSFORM_COPIED_PROPERTIES.map { |ivar_name| instance_variable_get(ivar_name) }
+        TRANSFORM_COPIED_PROPERTIES.each do |ivar_name|
+          instance_variable_set(ivar_name, @transform.instance_variable_get(ivar_name))
+        end
+      elsif @properties_before_transform
+        TRANSFORM_COPIED_PROPERTIES.map.with_index { |ivar_name, index| instance_variable_set(ivar_name, @properties_before_transform[index]) }
+        @properties_before_transform = nil
       end
     end
 
     # Copy the moveset of the original Pokemon
     def copy_moveset
-      original = @transform || @original
-      original = @original if @original.ability_db_symbol == :illusion && !effects&.has?(:transform)
-      @skills_set = @moveset = original.skills_set.map do |skill|
-        if original == @original
-          next Battle::Move[skill.symbol].new(skill.id, skill.pp, skill.ppmax, @scene)
-        else
-          next Battle::Move[skill.symbol].new(skill.id, 5, 5, @scene)
-        end
+      @skills_set = @moveset = @original.skills_set.map do |skill|
+        next Battle::Move[skill.symbol].new(skill.id, skill.pp, skill.ppmax, @scene)
       end
       @moveset << Battle::Move.new(0, 0, 9001, @scene) if @moveset.empty?
+    end
+
+    # Copy the moveset of the pokemon it transforms
+    def copy_transform_moveset
+      if @transform
+        @moveset_before_transform ||= @moveset
+        @skills_set = @moveset = @transform.skills_set.map do |skill|
+          next Battle::Move[skill.symbol].new(skill.id, 5, 5, @scene)
+        end
+        @moveset << Battle::Move.new(0, 0, 9001, @scene) if @moveset.empty?
+      elsif @moveset_before_transform
+        @moveset = @skills_set = @moveset_before_transform
+        @moveset_before_transform = nil
+      end
     end
 
     # Function that sets the is_follower variable (for animation purpose)
