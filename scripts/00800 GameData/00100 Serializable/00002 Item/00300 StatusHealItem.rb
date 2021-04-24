@@ -20,7 +20,8 @@ safe_code('Register StatusHealItem ItemDescriptor') do
     next false if pokemon.egg?
 
     states = GameData::StatusHealItem.from(item).status_list
-    next (pokemon.confused? && states.include?(GameData::States::CONFUSED)) || states.include?(pokemon.status)
+    confuse_check = $game_temp.in_battle && pokemon.confused? && states.include?(GameData::States::CONFUSED)
+    next confuse_check || states.include?(pokemon.status)
   end
 
   PFM::ItemDescriptor.define_on_pokemon_use(GameData::StatusHealItem) do |item, pokemon, scene|

@@ -25,7 +25,8 @@ safe_code('Define StatusRateHealItem ItemDescriptor') do
     next false if pokemon.dead? && !include_death
     next false if pokemon.alive? && include_death && states.size == 1
 
-    next pokemon.hp < pokemon.max_hp || (pokemon.confused? && states.include?(GameData::States::CONFUSED)) || states.include?(pokemon.status)
+    confuse_check = $game_temp.in_battle && pokemon.confused? && states.include?(GameData::States::CONFUSED)
+    next pokemon.hp < pokemon.max_hp || confuse_check || states.include?(pokemon.status)
   end
 
   PFM::ItemDescriptor.define_on_pokemon_use(GameData::StatusRateHealItem) do |item, pokemon, scene|
