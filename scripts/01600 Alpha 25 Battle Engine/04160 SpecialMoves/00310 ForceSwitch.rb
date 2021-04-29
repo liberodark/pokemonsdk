@@ -2,7 +2,7 @@ module Battle
   class Move
     # Class managing moves that force the target switch
     # Roar, Whirlwind, Dragon Tail, Circle Throw
-    class ForceSwitch < Move
+    class ForceSwitch < Basic
       # Tell if the move is a move that forces target switch
       # @return [Boolean]
       def force_switch?
@@ -34,7 +34,10 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
-          if !@logic.battle_info.trainer_battle? && @logic.alive_battlers_without_check(target.bank).size == 1 && target.bank == 1 && user.level >= target.level
+          next false unless @logic.switch_handler.can_switch?(target, self) && user.alive?
+          next false if target.effects.has?(:substitute) && be_method == :s_dragon_tail
+
+          if !@logic.battle_info.trainer_battle? && @logic.alive_battlers_without_check(target.bank).size == 1 && target.bank == 1 && user.level >= target.level && !$game_switches[Yuki::Sw::BT_NoEscape]
             @battler_s = @scene.visual.battler_sprite(target.bank, target.position)
             @battler_s.flee_animation
             @logic.scene.visual.wait_for_animation
@@ -44,9 +47,6 @@ module Battle
             @battler_s.go_out
             @logic.scene.visual.wait_for_animation
           end
-          next false unless @logic.switch_handler.can_switch?(target, self) && user.alive?
-          next false if target.effects.has?(:substitute) && be_method == :s_dragon_tail
-
           @logic.switch_request << { who: target }
         end
       end

@@ -7,8 +7,9 @@ module Battle
       # Test if the switch is possible
       # @param pokemon [PFM::PokemonBattler] pokemon to switch
       # @param skill [Battle::Move, nil] potential move
+      # @param reason [Symbol] the reason why the SwitchHandler is called (:switch or :flee)
       # @return [Boolean] if it can switch or not
-      def can_switch?(pokemon, skill = nil)
+      def can_switch?(pokemon, skill = nil, reason: :switch)
         log_data("# can_switch?(#{pokemon}, #{skill})")
         return false if pokemon.hp <= 0
 
@@ -47,13 +48,15 @@ module Battle
         # @yieldparam handler [SwitchHandler]
         # @yieldparam pokemon [PFM::PokemonBattler]
         # @yieldparam skill [Battle::Move, nil] potential skill used to switch
+        # @yieldparam reason [Symbol] the reason why the SwitchHandler is called
         # @yieldreturn [:passthrough, nil] if :passthrough, can_switch? will return true without checking switch_prevention
         def register_switch_passthrough_hook(reason)
           Hooks.register(SwitchHandler, :switch_passthrough, reason) do |hook_binding|
             result = yield(
               self,
               hook_binding.local_variable_get(:pokemon),
-              hook_binding.local_variable_get(:skill)
+              hook_binding.local_variable_get(:skill),
+              hook_binding.local_variable_get(:reason)
             )
             force_return(true) if result == :passthrough
           end
@@ -64,13 +67,15 @@ module Battle
         # @yieldparam handler [SwitchHandler]
         # @yieldparam pokemon [PFM::PokemonBattler]
         # @yieldparam skill [Battle::Move, nil] potential skill used to switch
+        # @yieldparam reason [Symbol] the reason why the SwitchHandler is called
         # @yieldreturn [:prevent, nil] if :prevent, can_switch? will return false
         def register_switch_prevention_hook(reason)
           Hooks.register(SwitchHandler, :switch_prevention, reason) do |hook_binding|
             result = yield(
               self,
               hook_binding.local_variable_get(:pokemon),
-              hook_binding.local_variable_get(:skill)
+              hook_binding.local_variable_get(:skill),
+              hook_binding.local_variable_get(:reason)
             )
             force_return(false) if result == :prevent
           end
@@ -108,9 +113,23 @@ module Battle
       end
     end
 
+    # Delete every effects for which the origin is the Pokemon switched out
+    SwitchHandler.register_switch_event_hook('Delete Effects with @origin') do |handler, who, _|
+      handler.logic.all_alive_battlers.each do |pkm|
+        pkm.effects.each { |e| e.kill if e&.origin == who}
+      end
+    end
+
     # Last sent turn
     SwitchHandler.register_switch_event_hook('Update last_sent_turn value') do |_, _, with|
       with.last_sent_turn = $game_temp.battle_turn
+    end
+
+    # Shed Shell
+    SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: Shed Shell') do |_, pokemon, skill, reason|
+      next if reason == :flee
+      next if skill&.be_method == :s_teleport
+      next :passthrough if pokemon.hold_item?(:shed_shell)
     end
 
     # Effects
@@ -130,11 +149,6 @@ module Battle
       end
     end
 
-    # Shed Shell
-    SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: Shed Shell') do |_, pokemon|
-      next :passthrough if pokemon.hold_item?(:shed_shell)
-    end
-
     # U-Turn moves
     SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: U-Turn moves') do |handler, pokemon, skill|
       next :passthrough if skill&.self_user_switch? &&
@@ -144,6 +158,7 @@ module Battle
 
     # Shadow Tag
     SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Shadow Tag') do |handler, pokemon|
+      next unless pokemon.type_ghost?
       next if pokemon.has_ability?(:shadow_tag)
       next unless (fv = handler.logic.foes_of(pokemon).find { |foe| foe&.alive? && foe&.has_ability?(:shadow_tag) })
 
@@ -175,13 +190,6 @@ module Battle
         text = parse_text_with_pokemon(19, 881, pokemon, PFM::Text::PKNICK[0] => pokemon.given_name, PFM::Text::ABILITY[1] => pokemon.ability_name)
         handler.scene.display_message_and_wait(text)
       end
-    end
-
-    # Ingrain
-    SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Ingrain') do |_, pokemon|
-      next if pokemon.type_ghost? || !pokemon.battle_effect.has_ingrain_effect?
-
-      next :prevent
     end
 
     # Arena Trap

@@ -39,7 +39,7 @@ module PFM
     register_force_grounded_hook('PSDK grounded: Gravity') { |_, scene| scene.logic.terrain_effects.has?(:gravity) }
     register_force_grounded_hook('PSDK grounded: Iron Ball') { |pokemon| pokemon.hold_item?(:iron_ball) }
     # TODO: smack down
-    # TODO: ingrain
+    register_force_grounded_hook('PSDK grounded: Ingrain') { |pokemon| pokemon.effects.has?(:ingrain) }
     register_force_flying_hook('PSDK flying: Air Balloon') { |pokemon| pokemon.hold_item?(:air_balloon) }
     register_force_flying_hook('PSDK flying: Fly type') { |pokemon, _| pokemon.type_fly? }
     # TODO: magnet rise

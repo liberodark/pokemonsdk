@@ -2,6 +2,7 @@ module Battle
   module Effects
     # Class that describe the bind effect
     class Bind < PokemonTiedEffectBase
+      
       # Hash giving the message info based on the db_symbol of the move
       MESSAGE_INFO = {
         bind: [806, true],
@@ -13,6 +14,9 @@ module Battle
         magma_storm: [833, false],
         infestation: [1234, false]
       }
+      # The Pokemon that launched the attack
+      # @return [PFM::PokemonBattler]
+      attr_reader :origin
 
       # Create a new Pokemon tied effect
       # @param logic [Battle::Logic]
@@ -45,14 +49,26 @@ module Battle
         return if pokemon != @pokemon
 
         return handler.prevent_change do
-          scene.display_message(message)
+          handler.scene.display_message_and_wait(message)
         end
+      end
+
+      # Function that tells if the move is affected by Rapid Spin
+      # @return [Boolean]
+      def rapid_spin_affected?
+        return true
       end
 
       # Get the name of the effect
       # @return [Symbol]
       def name
         return :bind
+      end
+
+      # Function called when the effect has been deleted from the effects handler
+      def on_delete
+        message_id = @pokemon.bank == 0 ? 375 : (@logic.battle_info.trainer_battle? ? 377 : 376)
+        @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, message_id, @pokemon, PFM::Text::MOVE[1] => @move.name))
       end
 
       private

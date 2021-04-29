@@ -1,7 +1,7 @@
 module Battle
   module Effects
-    class Spikes < PositionTiedEffectBase
-      # Get the Spike power
+    class ToxicSpikes < PositionTiedEffectBase
+      # Get the Toxic Spikes power
       # @return [Integer]
       attr_reader :power
       # Create a new spike effect
@@ -21,23 +21,17 @@ module Battle
       # Get the effect name
       # @return [Symbol]
       def name
-        return :spikes
-      end
-
-      # Tell if the spikes are at max power
-      # @return [Boolean]
-      def max_power?
-        return @power >= 3
+        return :toxic_spikes
       end
 
       # Increase the spike power
       def empower
-        @power += 1 unless max_power?
+        @power += 1
       end
 
       # Function called when the effect has been deleted from the effects handler
       def on_delete
-        @logic.scene.display_message_and_wait(parse_text(18, @bank == 0 ? 156 : 157))
+        @logic.scene.display_message_and_wait(parse_text(18, @bank == 0 ? 160 : 161))
       end
 
       # Function called when a Pokemon has actually switched with another one
@@ -48,10 +42,8 @@ module Battle
         return unless with.grounded?
         return if with.has_ability?(:magic_guard)
 
-        factor = 10 - power * 2 # 8 -> 6 -> 4
-        hp = (with.max_hp / factor).clamp(1, Float::INFINITY)
-        handler.logic.damage_handler.damage_change(hp, with)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 854, with))
+        status = @power == 1 ? :poison : :toxic
+        handler.logic.status_change_handler.status_change_with_process(status, with)
       end
     end
   end

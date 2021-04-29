@@ -1,15 +1,11 @@
 module Battle
   module Effects
-    class Spikes < PositionTiedEffectBase
-      # Get the Spike power
-      # @return [Integer]
-      attr_reader :power
-      # Create a new spike effect
+    class StickyWeb < PositionTiedEffectBase
+      # Create a new Sticky Web effect
       # @param logic [Battle::Logic]
       # @param bank [Integer] bank where the effect acts
       def initialize(logic, bank)
         super(logic, bank, 0)
-        @power = 1
       end
 
       # Function that tells if the move is affected by Rapid Spin
@@ -21,23 +17,12 @@ module Battle
       # Get the effect name
       # @return [Symbol]
       def name
-        return :spikes
-      end
-
-      # Tell if the spikes are at max power
-      # @return [Boolean]
-      def max_power?
-        return @power >= 3
-      end
-
-      # Increase the spike power
-      def empower
-        @power += 1 unless max_power?
+        return :sticky_web
       end
 
       # Function called when the effect has been deleted from the effects handler
       def on_delete
-        @logic.scene.display_message_and_wait(parse_text(18, @bank == 0 ? 156 : 157))
+        @logic.scene.display_message_and_wait(parse_text(18, @bank == 0 ? 218 : 219))
       end
 
       # Function called when a Pokemon has actually switched with another one
@@ -48,10 +33,16 @@ module Battle
         return unless with.grounded?
         return if with.has_ability?(:magic_guard)
 
-        factor = 10 - power * 2 # 8 -> 6 -> 4
-        hp = (with.max_hp / factor).clamp(1, Float::INFINITY)
-        handler.logic.damage_handler.damage_change(hp, with)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 854, with))
+        handler.scene.display_message_and_wait(message(with))
+        handler.logic.stat_change_handler.stat_change_with_process(:spd, -1, with)
+      end
+
+      # Get the message text
+      # @param pokemon [PFM::PokemonBattler]
+      # @return [String]
+      def message(pokemon)
+        message_id = pokemon.bank == 0 ? 1222 : (@logic.battle_info.trainer_battle? ? 1224 : 1223)
+        return parse_text_with_pokemon(19, message_id, pokemon)
       end
     end
   end

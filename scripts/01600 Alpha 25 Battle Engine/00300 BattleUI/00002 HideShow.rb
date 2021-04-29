@@ -11,14 +11,14 @@ module BattleUI
     # Tell the element to show in the scene
     def show
       delta = hide_show_delta
-      animation_handler[:hide_show] ||= show_animation
+      animation_handler[:hide_show] = show_animation
       animation_handler[:hide_show].start(delta)
     end
 
     # Tell the element to hide from scene
     def hide
       delta = hide_show_delta
-      animation_handler[:hide_show] ||= hide_animation
+      animation_handler[:hide_show] = hide_animation
       animation_handler[:hide_show].start(delta)
     end
 

@@ -1,0 +1,72 @@
+module Battle
+  module Effects
+    # Ingrain Effect
+    class Ingrain < CantSwitch
+      # Function called when testing if pokemon can switch (when he couldn't passthrough)
+      # @param handler [Battle::Logic::SwitchHandler]
+      # @param pokemon [PFM::PokemonBattler]
+      # @param skill [Battle::Move, nil] potential skill used to switch
+      # @return [:prevent, nil] if :prevent, can_switch? will return false
+      def on_switch_prevention(handler, pokemon, skill)
+        return true if skill&.be_method == :s_teleport
+
+        return handler.prevent_change do
+          handler.scene.display_message_and_wait(flee_message)
+        end
+      end
+
+      # Function called at the end of a turn
+      # @param logic [Battle::Logic] logic of the battle
+      # @param scene [Battle::Scene] battle scene
+      # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
+      def on_end_turn_event(logic, scene, battlers)
+        if @pokemon.effects.has?(:heal_block)
+          scene.display_message_and_wait(fail_message)
+          return
+        end
+        scene.display_message_and_wait(message)
+        heal_hp = (@pokemon.max_hp / hp_factor).clamp(1, Float::INFINITY)
+        heal_hp += heal_hp * 30 / 100 if @pokemon.hold_item?(:big_root)
+        scene.visual.show_hp_animations([@pokemon], [heal_hp])
+      end
+
+      # Get the name of the effect
+      # @return [Symbol]
+      def name
+        return :ingrain
+      end
+
+      private
+
+      # Get the message text
+      # @return [String]
+      def message
+        message_id = @pokemon.bank == 0 ? 739 : (@logic.battle_info.trainer_battle? ? 741 : 740)
+
+        return parse_text_with_pokemon(19, message_id, @pokemon)
+      end
+
+      # Get the message text when a flee is attempted
+      # @return [String]
+      def flee_message
+        message_id = @pokemon.bank == 0 ? 742 : (@logic.battle_info.trainer_battle? ? 744 : 743)
+
+        return parse_text_with_pokemon(19, message_id, @pokemon)
+      end
+
+      # Get the message text when a heal fail because of Heal Block
+      # @return [String]
+      def fail_message
+        message_id = @pokemon.bank == 0 ? 890 : (@logic.battle_info.trainer_battle? ? 892 : 891)
+
+        return parse_text_with_pokemon(19, message_id, @pokemon)
+      end
+
+      # Get the HP factor delt by the move
+      # @return [Integer]
+      def hp_factor
+        return 16
+      end
+    end
+  end
+end

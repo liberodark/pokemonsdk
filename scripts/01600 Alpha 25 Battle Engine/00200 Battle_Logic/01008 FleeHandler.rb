@@ -13,7 +13,7 @@ module Battle
         exec_hooks(FleeHandler, :flee_block, binding)
         exec_hooks(FleeHandler, :flee_passthrough, binding)
         switch_handler = @logic.switch_handler
-        unless switch_handler.can_switch?(@logic.battler(0, index))
+        unless switch_handler.can_switch?(@logic.battler(0, index), reason: :flee)
           switch_handler.process_prevention_reason
           return :failure
         end
