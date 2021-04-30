@@ -317,10 +317,18 @@ module Battle
   end
 
   # Psychic Terrain effect
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Psychic Terrain') do |_, _, move|
-    next false unless $env.terrain_psychic? && move.relative_priority >= 1 && move.blocable?
+  Move.register_move_prevention_target_hook('PSDK Move prev target: Psychic Terrain') do |_, target, move|
+    next false unless $env.terrain_psychic? && target.affected_by_terrain? && move.relative_priority >= 1 && move.blocable?
 
     # TODO: Add gen7 text of Psychic Terrain
+    next true
+  end
+
+  # Misty Terrain effect
+  Move.register_move_prevention_target_hook('PSDK Move prev target: Misty Terrain') do |_, target, move|
+    next false unless $env.terrain_misty? && target.affected_by_terrain? && move.name == :yawn
+
+    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 845, target))
     next true
   end
 

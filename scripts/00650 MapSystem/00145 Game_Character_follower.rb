@@ -13,6 +13,7 @@ class Game_Character
     return if @sliding && @follower.sliding
     return if $game_variables[Yuki::Var::FM_Sel_Foll] > 0 && @follower.class == Game_Character
 
+    @follower.move_speed = @move_speed
     if @memorized_move
       @memorized_move_arg ? @follower.send(@memorized_move, *@memorized_move_arg) : @follower.send(@memorized_move)
       @memorized_move_arg = nil
@@ -104,6 +105,14 @@ class Game_Character
     return current_follower
   end
 
+  # Rerturn the first follower that is a Game_Event in the queue
+  # @return [Game_Event, nil]
+  def next_event_follower
+    f = @follower
+    f = f.follower while !f.nil? && !f.is_a?(Game_Event)
+    return f.is_a?(Game_Event) ? f : nil
+  end
+
   def reset_follower
     return unless (current_follower = @follower)
     while (next_follower = current_follower.follower)
@@ -111,6 +120,7 @@ class Game_Character
       current_follower.set_follower(nil)
       current_follower = next_follower
     end
-    @follower = nil
+    # @follower = nil
+    set_follower(nil)
   end
 end

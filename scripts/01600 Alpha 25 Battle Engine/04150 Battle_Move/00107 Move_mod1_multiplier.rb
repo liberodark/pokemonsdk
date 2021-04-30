@@ -17,7 +17,7 @@ module Battle
       # SR
       result *= calc_mod1_sr
       # FT
-      result *= calc_mod1_ft
+      result *= calc_mod1_ft(user, target)
       # FF
       return result * calc_mod1_ff(user, target)
     end
@@ -77,17 +77,19 @@ module Battle
 
     GRASSY_REDUCED_MOVES = %i[earthquake magnitude bulldoze]
     # Calculate the FT mod
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
     # @return [Numeric]
-    def calc_mod1_ft
+    def calc_mod1_ft(user, target)
       if $env.terrain_psychic?
-        return 1.33 if type == GameData::Types::PSYCHIC
+        return 1.5 if type == GameData::Types::PSYCHIC && user.affected_by_terrain?
       elsif $env.terrain_grassy?
-        return 1.33 if type == GameData::Types::GRASS
-        return VAL_0_5 if GRASSY_REDUCED_MOVES.include?(db_symbol)
+        return 1.5 if type == GameData::Types::GRASS && user.affected_by_terrain?
+        return VAL_0_5 if GRASSY_REDUCED_MOVES.include?(db_symbol) && user.affected_by_terrain?
       elsif $env.terrain_electric?
-        return 1.33 if type == GameData::Types::ELECTRIC
+        return 1.5 if type == GameData::Types::ELECTRIC && user.affected_by_terrain?
       elsif $env.terrain_misty?
-        return VAL_0_5 if type == GameData::Types::DRAGON
+        return VAL_0_5 if type == GameData::Types::DRAGON && target.affected_by_terrain? # Not a mistake, it's actually the target
       end
       return 1
     end

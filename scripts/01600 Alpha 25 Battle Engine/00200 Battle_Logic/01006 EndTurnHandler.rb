@@ -134,12 +134,13 @@ module Battle
       end
     end
 
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Yawn') do |logic, _, battlers|
+    EndTurnHandler.register_end_turn_event('PSDK end turn: Drowsiness effect from Yawn') do |logic, _, battlers|
       battlers.each do |battler|
-        next if battler.has_ability?(:magic_guard)
-        next unless battler.battle_effect.fell_asleep_from_yawning?
+        # next unless battler.battle_effect.fell_asleep_from_yawning? # Deprecated (BE24)
+        next unless battler.effects.has?(:drowsiness)
+        next unless battler.effects.get(:drowsiness).triggered?
 
-        logic.status_change_handler.status_change(:sleep, battler)
+        logic.status_change_handler.status_change_with_process(:sleep, battler)
       end
     end
 
@@ -446,6 +447,9 @@ module Battle
         logic.fterrain_change_handler.fterrain_change(:terrainnone, 0)
       else
         battlers.each do |battler|
+          next unless battler.affected_by_terrain?
+          next unless battler.hp < battler.max_hp
+          
           scene.display_message_and_wait(parse_text_with_pokemon(19, 387, battler))
           scene.visual.show_hp_animations([battler], [battler.max_hp / 16])
         end

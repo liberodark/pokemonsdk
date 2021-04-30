@@ -368,6 +368,12 @@ module PFM
       copy_transform_moveset
     end
 
+    # Is the pokemon affected by the terrain ?
+    # @return [Boolean]
+    def affected_by_terrain?
+      return grounded? && !effects.has?(:out_of_reach)
+    end
+
     private
 
     # Copy the properties of the original pokemon

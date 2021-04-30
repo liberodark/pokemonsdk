@@ -236,7 +236,7 @@ module BattleEngine
     end
 
     # Change the terrain
-    # @param meteo_sym [Symbol] kind of weather (:rain, :sunny, :sandstorm, :heil, :fog, :none)
+    # @param terrain_sym [Symbol] kind of weather (:terrainnone, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain)
     # @param nb_turn [Integer] Number of turn the weather will be applied
     def fterrain_change(terrain_sym, nb_turn = 5)
       @scene.logic.fterrain_change_handler.fterrain_change_with_process(terrain_sym, nb_turn)
