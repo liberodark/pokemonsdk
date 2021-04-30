@@ -133,10 +133,13 @@ module Battle
 
     # Register the Iron Ball addition
     ItemChangeHandler.register_post_item_change_hook('PSDK item change post: Iron Ball') do |handler, db_symbol, target|
+      next
+=begin
       next if db_symbol != :iron_ball || !target.battle_effect.has_telekinesis_effect?
 
       handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1149, target))
       target.battle_effect.apply_telekinesis(0)
+=end
     end
   end
 end

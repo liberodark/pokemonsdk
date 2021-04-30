@@ -6,8 +6,6 @@ module Battle
     # @note It should first trigger the trainer_dialog event and for each AI trigger the AI_force_action event
     def trigger_all_AI
       @logic.update_battler_turn_count
-      BattleEngine.set_actors(6.times.map { |i| @logic.battler(0, i) }.compact.map { |i| PFM::PokemonBattler24.new(i) }) # BE24
-      BattleEngine.set_enemies(6.times.map { |i| @logic.battler(1, i) }.compact.map { |i| PFM::PokemonBattler24.new(i) }) # BE24
       call_event(:trainer_dialog)
       @artificial_intelligences.each_with_index do |ai, index|
         log_debug("Triggering AI##{index} (#{ai.class})...")

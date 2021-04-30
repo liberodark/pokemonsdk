@@ -33,7 +33,6 @@ module Battle
       # Show messages
       targets.each do |target|
         @scene.display_message_and_wait(parse_text_with_pokemon(19, 0, target, PFM::Text::PKNICK[0] => target.given_name))
-        target.reset_stat_stage
         target.status = 0
       end
     end

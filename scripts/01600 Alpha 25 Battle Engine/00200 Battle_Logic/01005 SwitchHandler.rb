@@ -36,7 +36,6 @@ module Battle
       # @note In the event we're starting the battle who & with should be identic, this help to process effect like Intimidate
       def execute_switch_events(who, with)
         if with != who
-          with.battle_effect = Pokemon_Effect.new
           with.turn_count = 0
         end
         exec_hooks(SwitchHandler, :switch_event, binding)
@@ -204,10 +203,13 @@ module Battle
 
     # Can't flee effect
     SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Cant flee') do |handler, pokemon|
+      next
+=begin
       next unless pokemon.battle_effect.has_cant_attack_effect?
       next unless handler.logic.all_alive_battlers.include?(pokemon.battle_effect.get_cant_flee_launcher)
 
       next :prevent
+=end
     end
 
     # Natural Cure
@@ -246,9 +248,12 @@ module Battle
 
     # Wish
     SwitchHandler.register_switch_event_hook('PSDK switch: Wish') do |_, who, with|
+      next
+=begin
       next if who == with || !who.battle_effect.has_wish_effect?
 
       with.battle_effect.apply_wish(who.battle_effect.get_wisher, 1)
+=end
     end
 
     # Mimic
@@ -261,9 +266,9 @@ module Battle
       last_move = who.move_history.last
       next if !last_move || last_move.db_symbol != :baton_pass || !last_move.current_turn?
 
-      with.battle_effect.transmit_bind(who.battle_effect) if who.battle_effect.has_bind_effect?
+      # with.battle_effect.transmit_bind(who.battle_effect) if who.battle_effect.has_bind_effect?
       handler.logic.status_change_handler(:confusion, with) if who.confused?
-      with.battle_effect.apply_aqua_ring if who.battle_effect.has_aqua_ring_effect?
+      # with.battle_effect.apply_aqua_ring if who.battle_effect.has_aqua_ring_effect?
       who.effects.get(:substitute)&.baton_pass(with)
     end
 

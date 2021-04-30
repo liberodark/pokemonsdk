@@ -68,7 +68,6 @@ module Kernel
   # @return [String] the message
   def log_data(message)
     return nil.to_s unless debug?
-    return nil.to_s if BattleEngine._IA?
 
     rc = binding.receiver
     rc = rc.is_a?(Module) ? rc : rc.class

@@ -167,9 +167,6 @@ module PFM
     # The position in the Battle, > 0 = actor, < 0 = enemy (index = -position-1), nil = not fighting
     # @return [Integer, nil]
     attr_accessor :position
-    # The effect data information...
-    # @return [Pokemon_Effect, nil]
-    attr_accessor :battle_effect
     # If the pokemon is confused
     # @return [Boolean]
     attr_accessor :confuse

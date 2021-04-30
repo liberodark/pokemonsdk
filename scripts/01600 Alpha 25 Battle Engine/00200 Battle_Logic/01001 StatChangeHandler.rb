@@ -267,10 +267,10 @@ module Battle
 
     # Register the no stat change effect
     StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: No Stat Change') do |_, _, target|
-      next :prevent if target.battle_effect.has_no_stat_change_effect?
+      # next :prevent if target.battle_effect.has_no_stat_change_effect?
     end
     StatChangeHandler.register_stat_increase_prevention_hook('PSDK stat incr: No Stat Change') do |_, _, target|
-      next :prevent if target.battle_effect.has_no_stat_change_effect?
+      # next :prevent if target.battle_effect.has_no_stat_change_effect?
     end
 
     # Register the Simple ability

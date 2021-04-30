@@ -67,7 +67,7 @@ module PFM
     # Is a wild battle available ?
     # @return [Boolean]
     def available?
-      return false if $scene.is_a?(Scene_Battle)
+      return false if $scene.is_a?(Battle::Scene)
       return false unless $actors[0]
       return true if @fish_battle
       return true if roaming_battle_available?

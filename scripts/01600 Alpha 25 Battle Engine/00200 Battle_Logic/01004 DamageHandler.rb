@@ -173,13 +173,6 @@ module Battle
       end
     end
 
-    # Endure
-    DamageHandler.register_damage_prevention_hook('PSDK damage prev: Endure') do |_, hp, target, _, skill|
-      next unless skill
-
-      next target.hp - 1 if target.battle_effect.has_endure_effect? && hp >= target.hp
-    end
-
     # Focus Band
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Focus Band') do |_, hp, target, _, skill|
       next unless skill
@@ -342,8 +335,6 @@ module Battle
     DamageHandler.register_post_damage_hook('PSDK Post damage: Damage Update') do |_, hp, target, launcher, skill|
       next unless skill && launcher
 
-      target.battle_effect.take_damages(hp, skill.atk_class, launcher)
-      target.battle_effect.last_damaging_skill = skill # BE24
       target.last_hit_by_move = skill
     end
 
@@ -364,10 +355,13 @@ module Battle
 
     # Grudge
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Grudge') do |handler, _, target, launcher, skill|
+      next
+=begin
       next unless skill && target.battle_effect.has_grudge_effect? && launcher != target && launcher
 
       handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 635, launcher, PFM::Text::MOVE[1] => skill.name))
       skill.pp = 0
+=end
     end
 
     # Shell Bell

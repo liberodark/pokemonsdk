@@ -131,14 +131,12 @@ module PFM
     # Is it rainning?
     # @return [Boolean]
     def rain?
-      return false if $game_temp.in_battle && ::BattleEngine.state[:air_lock]
       return current_weather == 1
     end
 
     # Is it sunny?
     # @return [Boolean]
     def sunny?
-      return false if $game_temp.in_battle && ::BattleEngine.state[:air_lock]
       return current_weather == 2
     end
 
@@ -146,28 +144,24 @@ module PFM
     # Dun dun dun dun dun dun dun dun dun dun dun dundun dun dundundun dun dun dun dun dun dun dundun dundun
     # @return [Boolean]
     def sandstorm?
-      return false if $game_temp.in_battle && ::BattleEngine.state[:air_lock]
       return current_weather == 3
     end
 
     # Does it hail ?
     # @return [Boolean]
     def hail?
-      return false if $game_temp.in_battle && ::BattleEngine.state[:air_lock]
       return current_weather == 4
     end
 
     # Is it foggy ?
     # @return [Boolean]
     def fog?
-      return false if $game_temp.in_battle && ::BattleEngine.state[:air_lock]
       return current_weather == 5
     end
 
     # Is the weather normal
     # @return [Boolean]
     def normal?
-      return false if $game_temp.in_battle && ::BattleEngine.state[:air_lock]
       return current_weather == 0
     end
 

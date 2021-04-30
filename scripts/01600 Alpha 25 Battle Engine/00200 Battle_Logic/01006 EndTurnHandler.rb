@@ -19,9 +19,6 @@ module Battle
       def process_events
         @alive_battlers = @logic.all_alive_battlers.dup
         exec_hooks(EndTurnHandler, :end_turn_event, binding)
-        @alive_battlers.each do |battler|
-          battler.battle_effect.update_counter(battler)
-        end
         @logic.delete_dead_effects
       end
 
@@ -47,6 +44,8 @@ module Battle
     end
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Perish Song') do |logic, scene, battlers|
+      next
+=begin
       battlers.each do |battler|
         next unless battler.battle_effect.has_perish_song_effect?
 
@@ -55,6 +54,7 @@ module Battle
         scene.display_message_and_wait(parse_text_with_pokemon(19, 863, battler, PFM::Text::NUMB[2] => counter.to_s))
         logic.damage_handler.damage_change(-battler.hp, battler) if counter == 0 # We purposedly ignore stuff that could prevent HP from going down
       end
+=end
     end
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Rain') do |logic, scene, battlers|
@@ -145,30 +145,39 @@ module Battle
     end
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Wish') do |_, scene, battlers|
+      next
+=begin
       battlers.each do |battler|
         next unless battler.battle_effect.has_wish_effect?
 
         scene.display_message_and_wait(parse_text_with_pokemon(19, 700, battler.battle_effect.get_wisher))
         scene.visual.show_hp_animations([battler], [(battler.max_hp / 2).clamp(1, Float::INFINITY)])
       end
+=end
     end
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Ingrain') do |_, scene, battlers|
+      next
+=begin
       battlers.each do |battler|
         next unless battler.battle_effect.has_ingrain_effect?
 
         scene.display_message_and_wait(parse_text_with_pokemon(19, 739, battler))
         scene.visual.show_hp_animations([battler], [(battler.max_hp / 16).clamp(1, Float::INFINITY)])
       end
+=end
     end
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Aqua Ring') do |_, scene, battlers|
+      next
+=begin
       battlers.each do |battler|
         next unless battler.battle_effect.has_aqua_ring_effect?
 
         scene.display_message_and_wait(parse_text_with_pokemon(19, 604, battler))
         scene.visual.show_hp_animations([battler], [(battler.max_hp / 16).clamp(1, Float::INFINITY)])
       end
+=end
     end
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Rain Dish') do |_, scene, battlers|
@@ -319,6 +328,8 @@ module Battle
     end
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Bind') do |logic, scene, battlers|
+      next
+=begin
       battlers.each do |battler|
         next if !battler.battle_effect.has_bind_effect? || battler.has_ability?(:magic_guard)
 
@@ -326,6 +337,7 @@ module Battle
         scene.display_message_and_wait(parse_text_with_pokemon(19, 1086, battler, PFM::Text::MOVE[1] => battler.battle_effect.get_bind_skill_name))
         logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), battler)
       end
+=end
     end
 
     EndTurnHandler.register_end_turn_event('PSDK end turn: Nightmare') do |logic, scene, battlers|

@@ -9,7 +9,7 @@ module Battle
     attr_reader :logic
     # @return [Battle::Logic::BattleInfo]
     attr_reader :battle_info
-    # @return [Scene_Battle::Message]
+    # @return [Yuki::Message]
     attr_reader :message_window
     # @return [Array]
     attr_reader :player_actions

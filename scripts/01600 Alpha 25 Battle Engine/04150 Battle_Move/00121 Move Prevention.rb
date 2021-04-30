@@ -156,15 +156,21 @@ module Battle
 
   # Torment registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Torment') do |user, _, move|
+    next
+=begin
     if user.battle_effect.has_torment_effect? && !user.last_successfull_move_is?(move.db_symbol)
       move.scene.display_message_and_wait(parse_text_with_pokemon(19, 580, user))
       next :prevent
     end
+=end
   end
   Move.register_move_disabled_check_hook('PSDK Move disabled: Torment') do |user, move|
+    next
+=begin
     next unless user.battle_effect.has_torment_effect? && !user.last_successfull_move_is?(move.db_symbol)
 
     next proc { move.scene.display_message_and_wait(parse_text_with_pokemon(19, 580, user)) }
+=end
   end
 
   # Assault vest
@@ -238,6 +244,8 @@ module Battle
 
   # Powder registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Powder') do |user, _, move|
+    next
+=begin
     if user.battle_effect.has_powder_effect? && move.type_fire?
       move.send(:usage_message, user)
       if user.has_ability?(:magic_guard)
@@ -248,6 +256,7 @@ module Battle
       end
       next :prevent
     end
+=end
   end
 
   # Crafty Shield registration

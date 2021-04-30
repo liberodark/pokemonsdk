@@ -208,11 +208,14 @@ module Battle
 
     # Safeguard effect
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Safeguard') do |handler, status, target, launcher, skill|
+      next
+=begin
       next true if status == :cure || launcher == target || !skill || !target.battle_effect.has_safe_guard_effect?
 
       next handler.prevent_change do
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 842, target))
       end
+=end
     end
 
     # Flower Veil ability

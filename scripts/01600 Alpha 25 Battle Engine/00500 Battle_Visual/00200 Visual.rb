@@ -303,8 +303,8 @@ module Battle
 
     # Create the battle animation handler
     def create_battle_animation_handler
-      Scene_Battle::PSP.make_sprite(@viewport)
-      @move_animator = Scene_Battle::PSP
+      PSP.make_sprite(@viewport)
+      @move_animator = PSP
     end
   end
 end
