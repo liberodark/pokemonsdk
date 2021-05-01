@@ -169,7 +169,7 @@ module Battle
     end
     DamageHandler.register_post_damage_death_hook('PSDK post damage: Effects') do |handler, hp, target, launcher, skill|
       handler.logic.each_effects(launcher, target) do |e|
-        e.on_post_damage(handler, hp, target, launcher, skill)
+        e.on_post_damage_death(handler, hp, target, launcher, skill)
       end
     end
 
