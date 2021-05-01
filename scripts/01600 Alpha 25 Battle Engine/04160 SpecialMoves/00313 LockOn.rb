@@ -1,6 +1,6 @@
 module Battle
   class Move
-    # class managing Lock-On move
+    # class managing Lock-On and Mind Reader moves
     class LockOn < Move
       private
 
@@ -9,7 +9,7 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @return [Boolean]
       def target_immune?(user, target)
-        return true if target.effects.get(:lock_on)&.lock_on_user == user
+        return true if target.effects.get(:lock_on)&.origin == user
 
         return false
       end
@@ -19,7 +19,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
-          next if target.effects.get(:lock_on)&.lock_on_user == user
+          next if target.effects.get(:lock_on)&.origin == user
 
           target.effects.add(Effects::LockOn.new(@logic, target, user))
           text = parse_text_with_pokemon(19, target.bank == 0 ? 656 : 651, user,
@@ -31,5 +31,6 @@ module Battle
     end
 
     Move.register(:s_lock_on, LockOn)
+    Move.register(:s_mind_reader, LockOn)
   end
 end

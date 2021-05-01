@@ -74,6 +74,10 @@ module PFM
     # @return [Array<MoveHistory>]
     attr_reader :move_history
 
+    # Get the damage history
+    # @return [Array<DamageHistory>]
+    attr_reader :damage_history
+
     # Get the information if the Pokemon is actually a follower or not (changing its go-in-out animation)
     # @return [Boolean]
     attr_accessor :is_follower
@@ -145,6 +149,7 @@ module PFM
       @last_battle_turn = -1
       @last_sent_turn = -1
       @move_history = []
+      @damage_history = []
       @mega_evolved = false
       @exp_distributed = false
       @item_burnt = false
@@ -235,6 +240,15 @@ module PFM
     # @param targets [Array<PFM::PokemonBattler>]
     def add_move_to_history(move, targets)
       @move_history << MoveHistory.new(move, targets, attack_order)
+    end
+
+    # Add a damage to the damage history
+    # @note This method should only be used for sucessfull damages!!!
+    # @param damage [Integer]
+    # @param launcher [PFM::PokemonBattler]
+    # @param move [Battle::Move]
+    def add_damage_to_history(damage, launcher, move)
+      @damage_history << DamageHistory.new(damage, launcher, move)
     end
 
     # Test if the last move was of a certain symbol

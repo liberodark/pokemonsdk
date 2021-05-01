@@ -433,6 +433,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00300 Stati
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00301 Statistics Speed mod.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00400 Grounded.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/01000 MoveHistory.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/01100 DamageHistory.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/99999 PokemonBattler24.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00100 Logic.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00101 Logic_Battler.rb
@@ -655,6 +656,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00342 VenomDr
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00343 Present.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00343 TerrainMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00344 Yawn.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00345 Avalanche.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00001 BattleSceneMock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00002 BattleVisualMock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00003 BattleLogicMock.rb

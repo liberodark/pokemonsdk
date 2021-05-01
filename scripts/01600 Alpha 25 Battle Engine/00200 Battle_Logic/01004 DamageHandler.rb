@@ -28,6 +28,7 @@ module Battle
       # @param skill [Battle::Move, nil] Potential move used
       # @param messages [Proc] messages shown right before the post processing
       def damage_change(hp, target, launcher = nil, skill = nil, &messages)
+        target.add_damage_to_history(hp, launcher, skill)
         log_data("# damage_change(#{hp}, #{target}, #{launcher}, #{skill})")
         skill&.damage_dealt += hp
         @scene.visual.show_hp_animations([target], [-hp], [skill&.effectiveness], &messages)
@@ -167,7 +168,7 @@ module Battle
         e.on_post_damage(handler, hp, target, launcher, skill)
       end
     end
-    DamageHandler.register_post_damage_death_hook('PSDK post damage: Effects') do |handler, hp, target, launcher, skill|
+    DamageHandler.register_post_damage_death_hook('PSDK post damage death: Effects') do |handler, hp, target, launcher, skill|
       handler.logic.each_effects(launcher, target) do |e|
         e.on_post_damage_death(handler, hp, target, launcher, skill)
       end

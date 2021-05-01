@@ -17,7 +17,7 @@ module Battle
     # @return [Float]
     def chance_of_hit(user, target)
       log_data("# chance_of_hit(#{user}, #{target}) for #{db_symbol}")
-      return 100 if target.effects.get(:lock_on)&.lock_on_user == user
+      return 100 if target.effects.get(:lock_on)&.origin == user
       return 100 if user.has_ability?(:no_guard) || target.has_ability?(:no_guard)
 
       acc_mod = target.has_ability?(:unaware) && !UNAWARE_IGNORING_ABILITIES.include?(user.battle_ability_db_symbol)

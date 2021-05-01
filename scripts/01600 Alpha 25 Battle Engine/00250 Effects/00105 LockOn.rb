@@ -1,18 +1,19 @@
 module Battle
   module Effects
-    # Implement the Lock-On effect
+    # Implement the Lock-On and Mind Reader effect
     class LockOn < PokemonTiedEffectBase
+      # The Pokemon that launched the attack
+      # @return [PFM::PokemonBattler]
+      attr_reader :origin
+
       # Create a new Pokemon Lock-On effect
       # @param logic [Battle::Logic]
       # @param target [PFM::PokemonBattler]
       # @param user [PFM::PokemonBattler]
       def initialize(logic, target, user)
         super(logic, target)
-        @lock_on_user = user
-      end
-
-      def lock_on_user
-        return @lock_on_user
+        @origin = user
+        self.counter = 2
       end
 
       # Get the name of the effect
