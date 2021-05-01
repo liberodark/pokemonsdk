@@ -1,5 +1,6 @@
 module BattleUI
   class TargetSelection < UI::SpriteStack
+    SKIP_NO_CHOICE_SKILL = true
     # @return [Array, :cancel] the position (bank, position) of the choosen target
     attr_accessor :result
     # Create a new TargetSelection
@@ -111,6 +112,15 @@ module BattleUI
     # @return [Integer]
     def find_best_index
       return @mons.index(@targets.first).to_i
+    end
+
+    class << self
+      # Tell if the UI can be shown or not
+      # @param move [Battle::Move]
+      # @return [Boolean]
+      def cannot_show?(move)
+        move.no_choice_skill? && SKIP_NO_CHOICE_SKILL
+      end
     end
 
     # Button shown by the UI to get what's selected

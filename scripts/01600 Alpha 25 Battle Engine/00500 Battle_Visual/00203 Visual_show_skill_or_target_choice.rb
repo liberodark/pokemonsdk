@@ -117,7 +117,7 @@ module Battle
     # Tell if we can choose a target
     # @return [Boolean]
     def stc_cannot_choose_target?
-      return @scene.logic.battle_info.vs_type == 1
+      return @scene.logic.battle_info.vs_type == 1 || BattleUI::TargetSelection.cannot_show?(@skill_choice_ui.result)
     end
   end
 end
