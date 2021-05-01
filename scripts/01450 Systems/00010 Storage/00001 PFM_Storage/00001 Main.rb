@@ -209,7 +209,10 @@ module PFM
     # Find a box with space and change @current_box if found
     # @return [Boolean] if a box with space could be found
     def switch_to_box_with_space
-      return false unless (box_index = @boxes.find_index { |box| box.content.include?(nil) })
+      unless (box_index = @boxes.find_index { |box| box.content.include?(nil) })
+        add_box('')
+        return false unless (box_index = @boxes.find_index { |box| box.content.include?(nil) })
+      end
 
       @current_box = box_index
       update_event_variables
