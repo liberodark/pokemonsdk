@@ -28,14 +28,14 @@ module Yuki
       if io
         io << error_log
       else
-        File.open('Error.log', 'wb') { |f| f << error_log }
+        File.binwrite('Error.log', error_log)
         puts <<~EODSP
           The game crashed!
           The error is stored in Error.log.
         EODSP
       end
       dot_25_battle_reproduction($scene) if defined?(Battle::Scene) && $scene.is_a?(Battle::Scene)
-      show_error_window(error_log)
+      show_error_window(error_log) if $scene
     end
 
     # Method that build the error log.
@@ -51,7 +51,7 @@ module Yuki
       source_line = source_arr.lineno
       str << 'Erreur de script'.center(80, '=')
       # Formatage du message pour Windows
-      str << format("\r\nMessage :\r\n%<message>s\r\n\r\n", message: e.message.to_s.gsub(/[\r\n]+/, "\r\n"))
+      str << format("\r\nMessage :\r\n%<message>s\r\n\r\n", message: e.message.to_s.sub(/#<([^ ]+).*>/, '#<\1>').gsub(/[\r\n]+/, "\r\n"))
       str << format("Type : %<type>s\r\n", type: e.class)
       str << format("Script : %<script>s\r\n", script: source_name)
       str << format("Ligne : %<line>d\r\n", line: source_line)
