@@ -341,7 +341,8 @@ module Battle
 
     # Destiny Bond
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Destiny Bond') do |handler, _, target, launcher, skill|
-      next unless skill && target.last_successfull_move_is?(:destiny_bond) && launcher != target && launcher
+      next unless skill && target.effects.has?(:destiny_bond) && launcher != target && launcher
+      next if handler.logic.allies_of(target).include?(launcher)
 
       handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 629, target))
       handler.scene.visual.show_hp_animations([launcher], [-launcher.hp])
