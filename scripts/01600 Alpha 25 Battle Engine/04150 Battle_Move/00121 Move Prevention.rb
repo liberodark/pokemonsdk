@@ -335,9 +335,19 @@ module Battle
 
   # Misty Terrain effect
   Move.register_move_prevention_target_hook('PSDK Move prev target: Misty Terrain') do |_, target, move|
-    next false unless $env.terrain_misty? && target.affected_by_terrain? && move.name == :yawn
+    next false unless $env.terrain_misty? && target.affected_by_terrain? && move.status?
+    next false unless move.status_effect > 0 || move.db_symbol == :yawn
 
     move.scene.display_message_and_wait(parse_text_with_pokemon(19, 845, target))
+    next true
+  end
+
+  # Electric Terrain effect
+  Move.register_move_prevention_target_hook('PSDK Move prev target: Electric Terrain') do |_, target, move|
+    next false unless $env.terrain_electric? && target.affected_by_terrain? && move.status?
+    next false unless move.status_effect == GameData::States::ASLEEP || move.db_symbol == :yawn
+
+    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 1207, target))
     next true
   end
 
