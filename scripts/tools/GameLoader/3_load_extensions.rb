@@ -1,3 +1,13 @@
+def load_extension_multiplatform(extension)
+  if PSDK_RUNNING_UNDER_ANDROID
+    # Android cannot require locally the extension because of restrictions of the filesystem which is usually not executable
+    require extension
+  else
+    game_deps = ENV['GAMEDEPS'] || '.'
+    require PSDK_RUNNING_UNDER_WINDOWS ? "#{game_deps}/lib/#{extension}.so" : "#{game_deps}/#{extension}"
+  end
+end
+
 # Load the extensions
 begin
   $DEBUG = false
@@ -11,15 +21,14 @@ begin
   require 'csv'
   require 'json'
   require 'yaml'
-  game_deps = ENV['GAMEDEPS'] || '.'
   # require 'rexml/document'
-  require PSDK_RUNNING_UNDER_WINDOWS ? "#{game_deps}/lib/LiteRGSS.so" : "#{game_deps}/LiteRGSS"
+  load_extension_multiplatform('LiteRGSS')
   # Attempt to load audio
   begin
-    require PSDK_RUNNING_UNDER_WINDOWS ? "#{game_deps}/lib/RubyFmod.so" : "#{game_deps}/RubyFmod"
+    load_extension_multiplatform('RubyFmod')
   rescue LoadError
     begin
-      require PSDK_RUNNING_UNDER_WINDOWS ? "#{game_deps}/lib/SFMLAudio.so" : "#{game_deps}/SFMLAudio"
+      load_extension_multiplatform('SFMLAudio')
     rescue LoadError
       puts 'Could not load Audio'
     end
