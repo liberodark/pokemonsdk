@@ -193,5 +193,62 @@ module PFM
     def change_acc(amount)
       return change_stat(ACC_STAGE, amount)
     end
+
+    # Set a stat stage
+    # @param stat_id [Integer] id of the stat : 0 = atk, 1 = dfe, 2 = spd, 3 = ats, 4 = dfs, 5 = eva, 6 = acc
+    # @param value [Integer] the new value of the stat stage
+    # @return [Integer] the new stat stage value
+    def set_stat_stage(stat_id, value)
+      return @battle_stage[stat_id] = value.clamp(MIN_STAGE, MAX_STAGE)
+    end
+
+    # Set the acc stage
+    # @param value [Integer] the new value of the stat stage
+    # @return [Integer] the new stat stage value
+    def acc_stage=(value)
+      return set_stat_stage(ACC_STAGE, value)
+    end
+
+    # Set the spd stage
+    # @param value [Integer] the new value of the stat stage
+    # @return [Integer] the new stat stage value
+    def spd_stage=(value)
+      return set_stat_stage(SPD_STAGE, value)
+    end
+
+    # Set the atk stage
+    # @param value [Integer] the new value of the stat stage
+    # @return [Integer] the new stat stage value
+    def atk_stage=(value)
+      return set_stat_stage(ATK_STAGE, value)
+    end
+
+    # Set the ats stage
+    # @param value [Integer] the new value of the stat stage
+    # @return [Integer] the new stat stage value
+    def ats_stage=(value)
+      return set_stat_stage(ATS_STAGE, value)
+    end
+
+    # Set the dfe stage
+    # @param value [Integer] the new value of the stat stage
+    # @return [Integer] the new stat stage value
+    def dfe_stage=(value)
+      return set_stat_stage(DFE_STAGE, value)
+    end
+
+    # Set the dfs stage
+    # @param value [Integer] the new value of the stat stage
+    # @return [Integer] the new stat stage value
+    def dfs_stage=(value)
+      return set_stat_stage(DFS_STAGE, value)
+    end
+
+    # Set the eva stage
+    # @param value [Integer] the new value of the stat stage
+    # @return [Integer] the new stat stage value
+    def eva_stage=(value)
+      return set_stat_stage(EVA_STAGE, value)
+    end
   end
 end
