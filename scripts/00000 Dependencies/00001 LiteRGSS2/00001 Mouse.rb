@@ -100,6 +100,17 @@ module Mouse
     def register_events(window)
       return if PSDK_CONFIG.mouse_disabled
 
+      window.on_touch_began = proc { |finger_id, x, y|
+        on_mouse_entered
+        on_mouse_moved(x, y)
+        on_button_pressed(Sf::Mouse::LEFT)
+      }
+      window.on_touch_moved = proc { |finger, x, y| on_mouse_moved(x, y) }
+      window.on_touch_ended = proc { |finger_id, x, y|
+        on_button_released(Sf::Mouse::LEFT)
+        on_mouse_moved(x, y)
+        on_mouse_left
+      }
       window.on_mouse_wheel_scrolled = proc { |wheel, delta| on_wheel_scrolled(wheel, delta) }
       window.on_mouse_button_pressed = proc { |button| on_button_pressed(button) }
       window.on_mouse_button_released = proc { |button| on_button_released(button) }
