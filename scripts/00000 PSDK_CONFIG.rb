@@ -179,7 +179,7 @@ module ScriptLoader
 
     # Function that fix the fullscreen
     def fix_full_screen
-      param = PARGV[:fullscreen]
+      param = PARGV[:fullscreen] || PSDK_RUNNING_UNDER_ANDROID
       @running_in_full_screen = (param.nil? ? @running_in_full_screen : param) == true
     end
 
