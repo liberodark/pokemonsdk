@@ -233,7 +233,11 @@ module ScriptLoader
     # @param all_res [Array<Array>] all the compatible resolution
     # @return [Array<Integer>]
     def find_best_matching_resolution(native, desired, all_res)
-      all_res = all_res.sort # Make sure we can find the first that matches
+      # Exclude "inversed" resolutions (inversed aspect ratio), eg 1080x1920 != 1920x1080
+      # Make sure we can find the first that matches
+      current_ratio = LiteRGSS::DisplayWindow.desktop_width / LiteRGSS::DisplayWindow.desktop_height >= 1 ? 1 : -1
+      all_res = all_res.select { |res| ((res.first / res.last) >= 1 ? 1 : -1) == current_ratio }.sort
+
       unless (desired_res = all_res.find { |res| res.first >= desired.first && res.last >= desired.last })
         @window_scale = 1
         unless (desired_res = all_res.find { |res| res.first >= native.first && res.last >= native.last })
