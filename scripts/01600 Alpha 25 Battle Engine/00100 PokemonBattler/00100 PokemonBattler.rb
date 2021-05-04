@@ -137,6 +137,7 @@ module PFM
       copy_properties
       copy_moveset
       @battle_stage = Array.new(7, 0)
+      @battle_stats = {}
       reset_states
       @battle_max_level = max_level
       @level = original.level < max_level ? original.level : max_level
@@ -328,6 +329,7 @@ module PFM
     # Function that resets everything from the pokemon once it got switched out of battle
     def reset_states
       @battle_stage.map! { 0 }
+      @battle_stats.clear
       @status_count = 0 if toxic?
       @effects = Battle::Effects::EffectsHandler.new
       @ability_current = @ability
