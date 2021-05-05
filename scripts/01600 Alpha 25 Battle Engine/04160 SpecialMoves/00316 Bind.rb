@@ -16,7 +16,7 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        turn_count = user.hold_item?(:grip_claw) ? 7 : rand(4..5)
+        turn_count = user.hold_item?(:grip_claw) ? 7 : logic.generic_rng.rand(4..5)
         actual_targets.each do |target|
           next if target.effects.has?(:bind)
 

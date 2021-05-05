@@ -19,7 +19,7 @@ module Battle
       # @return [Integer]
       def pickup_item(pokemon)
         off = (((pokemon.level - 1.0) / GameData::MAX_LEVEL) * 10).to_i # Offset should always depends on the final max level
-        ind = pickup_index(rand(100))
+        ind = pickup_index(@logic.generic_rng.rand(100))
         env = $env
         return GameData::GrassItem[off][ind] if env.tall_grass? || env.grass?
         return GameData::CaveItem[off][ind] if env.cave? || env.mount?
@@ -147,9 +147,9 @@ module Battle
       end
     end
 
-    BattleEndHandler.register_no_defeat('PSDK honey gather') do |_, players_pokemon|
+    BattleEndHandler.register_no_defeat('PSDK honey gather') do |handler, players_pokemon|
       players_pokemon.each do |pokemon|
-        next unless pokemon.original.ability_db_symbol == :honey_gather && pokemon.item_holding == 0 && rand(100) < (pokemon.level / 2)
+        next unless pokemon.original.ability_db_symbol == :honey_gather && pokemon.item_holding == 0 && handler.logic.generic_rng.rand(100) < (pokemon.level / 2)
 
         pokemon.item_holding = GameData::Item[:honey].id
       end
@@ -157,7 +157,7 @@ module Battle
 
     BattleEndHandler.register_no_defeat('PSDK pickup') do |handler, players_pokemon|
       players_pokemon.each do |pokemon|
-        next unless pokemon.original.ability_db_symbol == :pickup && pokemon.item_holding == 0 && rand(100) < 10
+        next unless pokemon.original.ability_db_symbol == :pickup && pokemon.item_holding == 0 && handler.logic.generic_rng.rand(100) < 10
 
         pokemon.item_holding = handler.pickup_item(pokemon.original)
       end

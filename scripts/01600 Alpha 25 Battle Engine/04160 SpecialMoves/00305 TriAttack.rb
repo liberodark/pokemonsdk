@@ -9,7 +9,7 @@ module Battle
       def deal_status(user, actual_targets)
         return true if status_effect.to_i <= 0
 
-        status = %i[paralysis burn freeze].sample
+        status = %i[paralysis burn freeze].sample(random: @logic.generic_rng)
         actual_targets.each do |target|
           @logic.status_change_handler.status_change_with_process(status, target, user, self)
         end

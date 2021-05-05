@@ -11,7 +11,7 @@ module Battle
         def real_base_power(user, target)
           return @real_base_power if @real_base_power
           # Do your calculation here without removing the previous line (safety mesure to prevent bugs in deal_damages)
-          rng = rand(1..100)
+          rng = logic.generic_rng.rand(1..100)
           log_data("Rng gave you: #{rng}")
           if rng <= 40
             return 40

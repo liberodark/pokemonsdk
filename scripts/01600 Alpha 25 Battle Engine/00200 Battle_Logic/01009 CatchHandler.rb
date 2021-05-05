@@ -222,7 +222,7 @@ module Battle
         end
         c = a / 6
         log_debug("c = #{c}")
-        if rand(0..255) < c
+        if logic.generic_rng.rand(0..255) < c
           @critical_capture = true
           @bounces = 1
         end
@@ -230,7 +230,7 @@ module Battle
 
       def check_bounce(a)
         b = (65_536 / ((255 / a)**0.1875)).floor
-        check = rand(0..65_535)
+        check = logic.generic_rng.rand(0..65_535)
         if check < b
           log_debug("Success as #{check} is inferior to #{b}")
           @bounces += 1

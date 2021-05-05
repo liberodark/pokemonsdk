@@ -26,7 +26,7 @@ module Battle
           end
         else
           effect&.kill
-          user.effects.add(Effects::ForcedNextMove::Disturbable.new(logic, user, self, actual_targets, rand(1..2)))
+          user.effects.add(Effects::ForcedNextMove::Disturbable.new(logic, user, self, actual_targets, logic.generic_rng.rand(1..2)))
         end
       end
     end

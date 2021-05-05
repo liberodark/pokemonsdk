@@ -64,7 +64,7 @@ module Battle
         actions.concat(flee_action_for(pokemon)) if @can_flee
 
         exec_hooks(Base, :battle_action_for, binding)
-        final_action = actions.compact.shuffle.max_by(&:first)&.last
+        final_action = actions.compact.shuffle(random: @scene.logic.generic_rng).max_by(&:first)&.last
 
         return mega ? [mega, final_action] : final_action
       end

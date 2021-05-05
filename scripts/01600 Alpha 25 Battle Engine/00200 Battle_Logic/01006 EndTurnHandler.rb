@@ -353,10 +353,10 @@ module Battle
         stats = Battle::Logic::StatChangeHandler::ALL_STATS
         stat_up = stats.reject do |stat|
           battler.battle_stage[Battle::Logic::StatChangeHandler::STAT_INDEX[stat]] == PFM::PokemonBattler::MAX_STAGE
-        end.sample
+        end.sample(random: logic.generic_rng)
         stat_down = stats.reject do |stat|
           battler.battle_stage[Battle::Logic::StatChangeHandler::STAT_INDEX[stat]] == PFM::PokemonBattler::MIN_STAGE || stat == stat_up
-        end.sample
+        end.sample(random: logic.generic_rng)
         next unless stat_down || stat_up
 
         scene.visual.show_ability(battler)

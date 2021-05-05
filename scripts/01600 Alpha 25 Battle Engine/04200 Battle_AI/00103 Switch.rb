@@ -8,7 +8,7 @@ module Battle
         actions = switch_actions_generate_for(who)
         return nil if actions.empty?
 
-        best = actions.compact.shuffle.max_by(&:first)
+        best = actions.compact.(random: @scene.logic.generic_rng).max_by(&:first)
         Debug::AiWindow.append(self, actions.compact) if defined?(Debug::AiWindow)
         return best.last.with
       end
@@ -47,7 +47,7 @@ module Battle
       def switch_danger_processing(pokemon)
         foe_moves = switch_opponent_moves(pokemon)
         foe_move_heuristics = foe_moves.map { |info| move_heuristic(info[:move], info[:foe], pokemon) }
-        return foe_move_heuristics.max || rand
+        return foe_move_heuristics.max || @scene.logic.generic_rng.rand
       end
 
       # Get the opponent moves in order to choose if we switch or not

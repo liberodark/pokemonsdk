@@ -14,7 +14,7 @@ module Battle
         end
         actions = group_move_action(actions) unless move.one_target?
 
-        return actions.shuffle.max_by(&:first)
+        return actions.shuffle(random: @scene.logic.generic_rng).max_by(&:first)
       end
 
       # Process the move heuristic
@@ -89,14 +89,14 @@ module Battle
       # @return [Array<PFM::PokemonBattler>]
       def filter_targets(targets, pokemon, move)
         alive_targets = targets.select(&:alive?)
-        return [alive_targets.sample || targets.sample].compact if move.target == :random_foe
+        return [alive_targets.sample || targets.sample(random: @scene.logic.generic_rng)].compact if move.target == :random_foe
         return targets if move.no_choice_skill? || !move.one_target?
 
         no_bank_target = alive_targets.reject { |battler| battler.bank == @bank }
         if @can_choose_target
           return no_bank_target.empty? ? targets : no_bank_target
         else
-          return [(no_bank_target.empty? ? targets : no_bank_target).sample].compact
+          return [(no_bank_target.empty? ? targets : no_bank_target).sample(random: @scene.logic.generic_rng)].compact
         end
       end
     end

@@ -19,7 +19,7 @@ module Battle
         end
         value = flee_value(index)
         @logic.battle_info.flee_attempt_count += 1
-        result = rand(256) < value ? :success : :failure
+        result = @logic.generic_rng.rand(256) < value ? :success : :failure
         @scene.display_message_and_wait(parse_text(18, result == :success ? 75 : 76))
         return result
       rescue Hooks::ForceReturn => e

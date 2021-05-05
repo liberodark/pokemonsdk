@@ -34,7 +34,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         target = actual_targets
-        user.transform = target.sample
+        user.transform = target.sample(random: logic.generic_rng)
         scene.visual.show_switch_form_animation(user)
         scene.visual.wait_for_animation
         user.effects.add(Effects::Transform.new(logic, user))

@@ -76,7 +76,7 @@ module BattleUI
       return @result = [1, 0] if @targets.empty?
 
       target = @allow_selection ? @buttons[@index].data : @targets.first
-      target = @move.battler_targets(@launcher, @logic).sample if @move.target == :random_foe
+      target = @move.battler_targets(@launcher, @logic).sample(random: @logic.generic_rng) if @move.target == :random_foe
       if @targets.include?(target)
         @result = [target.bank, target.position]
         $game_system.se_play($data_system.decision_se)

@@ -25,7 +25,7 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        move = user.skills_set.reject { |skill| CANNOT_BE_SELECTED_MOVES.include?(skill.db_symbol) }.sample.dup
+        move = user.skills_set.reject { |skill| CANNOT_BE_SELECTED_MOVES.include?(skill.db_symbol) }.sample(random: @logic.generic_rng).dup
         move.pp = move.ppmax
         def move.move_usable_by_user(user, targets)
           return true

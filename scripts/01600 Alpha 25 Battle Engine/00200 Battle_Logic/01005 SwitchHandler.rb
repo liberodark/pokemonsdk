@@ -306,7 +306,7 @@ module Battle
       next if foes.none?
 
       handler.scene.visual.show_ability(with)
-      handler.logic.ability_change_handler.change_ability(with, foes.sample.ability_db_symbol)
+      handler.logic.ability_change_handler.change_ability(with, foes.sample(random: handler.logic.generic_rng).ability_db_symbol)
       handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 381, with, PFM::Text::ABILITY[1] => with.ability_name))
     end
 
@@ -393,10 +393,10 @@ module Battle
       dangers = alive_foes.map do |foe|
         next [
           foe,
-          foe.moveset.shuffle.max_by(&:power)
+          foe.moveset.shuffle(random: handler.logic.generic_rng).max_by(&:power)
         ]
       end
-      danger_foe, danger_move = dangers.shuffle.max_by { |(_, move)| move.power }
+      danger_foe, danger_move = dangers.shuffle(random: handler.logic.generic_rng).max_by { |(_, move)| move.power }
       next if danger_move.power <= 0
 
       handler.scene.visual.show_ability(with)
@@ -419,7 +419,7 @@ module Battle
     SwitchHandler.register_switch_event_hook('PSDK Switch: Download') do |handler, _, with|
       next unless with.has_ability?(:download)
 
-      random_foe = handler.logic.foes_of(with).shuffle.find(&:alive?)
+      random_foe = handler.logic.foes_of(with).shuffle(random: handler.logic.generic_rng).find(&:alive?)
       next unless random_foe
 
       handler.scene.visual.show_ability(with)
@@ -574,7 +574,7 @@ module Battle
       next if target.empty?
 
       handler.scene.visual.show_ability(with)
-      with.transform = target.sample
+      with.transform = target.(random: handler.logic.generic_rng)
       handler.scene.visual.show_switch_form_animation(with)
       handler.scene.visual.wait_for_animation
       with.effects.add(Effects::Transform.new(handler.logic, with))

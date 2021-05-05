@@ -65,7 +65,7 @@ module Battle
         # @type [Array<PFM::PokemonBattler>]
         attackers = (logic.foes_of(user) + logic.allies_of(user)).sort { |a, b| b.attack_order <=> a.attack_order } # higher = first
         attacker = attackers.find { |foe| foe.move_history.last&.targets&.include?(user) && foe.move_history.last.turn == $game_temp.battle_turn }
-        return [attacker || logic.foes_of(user).sample]
+        return [attacker || logic.foes_of(user).sample(random: logic.generic_rng)]
       end
 
       # Play the move animation (only without all the decoration)
