@@ -11,7 +11,7 @@ module GameData
       alias original_load load
       # Load the items
       def load
-        fix_data unless File.exist?(data_filename)
+        fix_data unless File.exist?(data_filename) || PSDK_CONFIG.release?
         original_load
       end
     end

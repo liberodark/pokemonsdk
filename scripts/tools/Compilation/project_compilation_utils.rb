@@ -34,12 +34,18 @@ module ProjectCompilation
       lib_path = File.expand_path('lib')
       curr_path = File.expand_path('.') + '/'
       features_in_lib = $LOADED_FEATURES.select { |filename| filename.start_with?(lib_path) }
-      utf16 = "#{lib_path}/ruby/2.5.0/i386-mingw32/enc/utf_16le.so"
-      features_in_lib << utf16 unless features_in_lib.include?(utf16)
-      utf16 = "#{lib_path}/ruby/2.5.0/i386-mingw32/enc/utf_16be.so"
-      features_in_lib << utf16 unless features_in_lib.include?(utf16)
-      bin = "#{lib_path}/ruby/2.5.0/i386-mingw32/enc/trans/single_byte.so"
-      features_in_lib << bin unless features_in_lib.include?(bin)
+      Dir["#{lib_path}/ruby/3.0.0/i386-mingw32/enc/*.so"].each do |so|
+        features_in_lib << so unless features_in_lib.include?(so)
+      end
+      Dir["#{lib_path}/ruby/3.0.0/i386-mingw32/enc/trans/*.so"].each do |so|
+        features_in_lib << so unless features_in_lib.include?(so)
+      end
+      Dir["#{lib_path}/ruby/gems/3.0.0/specifications/*.gemspec"].each do |gem|
+        features_in_lib << gem unless features_in_lib.include?(gem)
+      end
+      Dir["#{lib_path}/ruby/gems/3.0.0/specifications/default/*.gemspec"].each do |gem|
+        features_in_lib << gem unless features_in_lib.include?(gem)
+      end
       pem = "#{lib_path}/cert.pem"
       features_in_lib << pem unless features_in_lib.include?(pem)
       return features_in_lib.collect { |filename| filename.sub(curr_path, '') }

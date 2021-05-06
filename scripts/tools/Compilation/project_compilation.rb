@@ -123,7 +123,7 @@ module ProjectCompilation
       GraphicsBuilder.start("#{psdk_path}/#{cache_name}", "#{release_path}/#{cache_name}", path, NO_RECURSIVE_PATH.include?(cache_name))
     end
     # Copy Shaders
-    Dir['graphics/shaders/*.txt'].each { |filename| File.copy_stream(filename, File.join(RELEASE_PATH, filename)) }
+    Dir['graphics/shaders/*.*'].each { |filename| File.copy_stream(filename, File.join(RELEASE_PATH, filename)) }
     # Copy Fonts
     Dir['Fonts/*.*'].each { |filename| File.copy_stream(filename, File.join(RELEASE_PATH, filename)) }
   end
@@ -137,8 +137,9 @@ module ProjectCompilation
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'bgm'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'bgs'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'se', 'cries'))
-    Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'se', 'voltorbflip')) if Dir.exist?('audio/se/voltorbflip')
-    Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'se', 'mining_game')) if Dir.exist?('audio/se/mining_game')
+    Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'se', 'voltorbflip'))
+    Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'se', 'mining_game'))
+    Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'se', 'moves'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'me'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'particles'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'graphics', 'shaders'))
@@ -178,7 +179,7 @@ module ProjectCompilation
     %w[
       Game.exe
       Game-noconsole.exe
-      msvcrt-ruby250.dll
+      msvcrt-ruby300.dll
     ].each { |filename| IO.copy_stream(filename, File.join(RELEASE_PATH, filename)) }
   end
 

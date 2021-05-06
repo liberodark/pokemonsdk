@@ -10,7 +10,7 @@ begin
   require 'csv'
   require 'json'
   require 'yaml'
-  require 'rexml/document'
+  # require 'rexml/document'
   require PSDK_RUNNING_UNDER_WINDOWS ? './lib/LiteRGSS.so' : './LiteRGSS'
   # Attempt to load audio
   begin
