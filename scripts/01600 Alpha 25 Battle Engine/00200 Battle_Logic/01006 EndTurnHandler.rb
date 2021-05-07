@@ -156,30 +156,6 @@ module Battle
 =end
     end
 
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Ingrain') do |_, scene, battlers|
-      next
-=begin
-      battlers.each do |battler|
-        next unless battler.battle_effect.has_ingrain_effect?
-
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 739, battler))
-        scene.visual.show_hp_animations([battler], [(battler.max_hp / 16).clamp(1, Float::INFINITY)])
-      end
-=end
-    end
-
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Aqua Ring') do |_, scene, battlers|
-      next
-=begin
-      battlers.each do |battler|
-        next unless battler.battle_effect.has_aqua_ring_effect?
-
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 604, battler))
-        scene.visual.show_hp_animations([battler], [(battler.max_hp / 16).clamp(1, Float::INFINITY)])
-      end
-=end
-    end
-
     EndTurnHandler.register_end_turn_event('PSDK end turn: Rain Dish') do |_, scene, battlers|
       battlers.each do |battler|
         next unless $env.rain? && battler.has_ability?(:rain_dish)
@@ -327,19 +303,6 @@ module Battle
       end
     end
 
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Bind') do |logic, scene, battlers|
-      next
-=begin
-      battlers.each do |battler|
-        next if !battler.battle_effect.has_bind_effect? || battler.has_ability?(:magic_guard)
-
-        hp = battler.battle_effect.get_bide_power(battler)
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 1086, battler, PFM::Text::MOVE[1] => battler.battle_effect.get_bind_skill_name))
-        logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), battler)
-      end
-=end
-    end
-
     EndTurnHandler.register_end_turn_event('PSDK end turn: Nightmare') do |logic, scene, battlers|
       battlers.each do |battler|
         next if !battler.effects.has?(:nightmare) || battler.has_ability?(:magic_guard)
@@ -461,7 +424,7 @@ module Battle
         battlers.each do |battler|
           next unless battler.affected_by_terrain?
           next unless battler.hp < battler.max_hp
-          
+
           scene.display_message_and_wait(parse_text_with_pokemon(19, 387, battler))
           scene.visual.show_hp_animations([battler], [battler.max_hp / 16])
         end

@@ -41,25 +41,19 @@ module Battle
       # Get the message text
       # @return [String]
       def message
-        message_id = @pokemon.bank == 0 ? 739 : (@logic.battle_info.trainer_battle? ? 741 : 740)
-
-        return parse_text_with_pokemon(19, message_id, @pokemon)
+        return parse_text_with_pokemon(19, 739, @pokemon)
       end
 
       # Get the message text when a flee is attempted
       # @return [String]
       def flee_message
-        message_id = @pokemon.bank == 0 ? 742 : (@logic.battle_info.trainer_battle? ? 744 : 743)
-
-        return parse_text_with_pokemon(19, message_id, @pokemon)
+        return parse_text_with_pokemon(19, 742, @pokemon)
       end
 
       # Get the message text when a heal fail because of Heal Block
       # @return [String]
       def fail_message
-        message_id = @pokemon.bank == 0 ? 890 : (@logic.battle_info.trainer_battle? ? 892 : 891)
-
-        return parse_text_with_pokemon(19, message_id, @pokemon)
+        return parse_text_with_pokemon(19, 890, @pokemon)
       end
 
       # Get the HP factor delt by the move

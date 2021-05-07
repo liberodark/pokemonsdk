@@ -46,9 +46,7 @@ module Battle
       # Get the message text
       # @return [String]
       def message
-        message_id = @pokemon.bank == 0 ? 878 : (@logic.battle_info.trainer_battle? ? 880 : 879)
-
-        return parse_text_with_pokemon(19, message_id, @pokemon)
+        return parse_text_with_pokemon(19, 878, @pokemon)
       end
     end
   end

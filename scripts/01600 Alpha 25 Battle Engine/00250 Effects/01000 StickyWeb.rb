@@ -41,8 +41,7 @@ module Battle
       # @param pokemon [PFM::PokemonBattler]
       # @return [String]
       def message(pokemon)
-        message_id = pokemon.bank == 0 ? 1222 : (@logic.battle_info.trainer_battle? ? 1224 : 1223)
-        return parse_text_with_pokemon(19, message_id, pokemon)
+        return parse_text_with_pokemon(19, 1222, pokemon)
       end
     end
   end

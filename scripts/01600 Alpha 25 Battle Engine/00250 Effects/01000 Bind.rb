@@ -67,8 +67,7 @@ module Battle
 
       # Function called when the effect has been deleted from the effects handler
       def on_delete
-        message_id = @pokemon.bank == 0 ? 375 : (@logic.battle_info.trainer_battle? ? 377 : 376)
-        @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, message_id, @pokemon, PFM::Text::MOVE[1] => @move.name))
+        @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 375, @pokemon, PFM::Text::MOVE[1] => @move.name))
       end
 
       private

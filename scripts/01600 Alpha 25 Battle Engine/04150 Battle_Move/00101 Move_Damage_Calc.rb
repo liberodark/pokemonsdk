@@ -111,7 +111,6 @@ module Battle
       return (result * send(FOE_ABILITY_MULTIPLIER[target.battle_ability_db_symbol], user, target)).floor
     end
 
-    UNAWARE_IGNORING_ABILITIES = %i[turboblaze teravolt mold_breaker]
     # [Spe]atk calculation
     # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler] target of the move
@@ -122,17 +121,38 @@ module Battle
       # Stat
       result = ph_move ? user.atk_basis : user.ats_basis
       # SM (Only if non-critical hit)
-      unless target.has_ability?(:unaware) && !UNAWARE_IGNORING_ABILITIES.include?(user.battle_ability_db_symbol)
-        result = (result * (ph_move ? user.atk_modifier : user.ats_modifier)).floor unless critical_hit?
-      end
+      result = (result * calc_atk_stat_modifier(user, target, ph_move)).floor
+      # Flower Gift
+      result = (result * flower_gift_atk_calc(user, ph_move)).floor
       # AM
-      if ph_move && !user.has_ability?(:flower_gift) && $env.sunny? && logic.allies_of(user).any? { |ally| ally.has_ability?(:flower_gift) }
-        result = (result * 1.5).floor
-      end
       am = send((ph_move ? ATK_ABILITY_MODIFIER : ATS_ABILITY_MODIFIER)[user.battle_ability_db_symbol], user, target)
       result = (result * am).floor
       # IM
       return (result * send((ph_move ? ATK_ITEM_MODIFIER : ATS_ITEM_MODIFIER)[user.battle_item_db_symbol], user, target)).floor
+    end
+
+    UNAWARE_IGNORING_ABILITIES = %i[turboblaze teravolt mold_breaker]
+    # Statistic modifier calculation: ATK/ATS
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
+    # @param ph_move [Boolean] true: physical, false: special
+    # @return [Integer]
+    def calc_atk_stat_modifier(user, target, ph_move)
+      return 1 if critical_hit?
+      return 1 if target.has_ability?(:unaware) && !UNAWARE_IGNORING_ABILITIES.include?(user.battle_ability_db_symbol)
+
+      return ph_move ? user.atk_modifier : user.ats_modifier
+    end
+
+    # Flower Gift calculation: ATK/ATS
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param ph_move [Boolean] true: physical, false: special
+    # @return [Integer]
+    def flower_gift_atk_calc(user, ph_move)
+      return 1 unless ph_move && $env.sunny?
+      return 1 unless logic.allies_of(user).any? { |ally| ally.has_ability?(:flower_gift) } || user.has_ability?(:flower_gift)
+
+      return 1.5
     end
 
     EXPLOSION_SELF_DESTRUCT_MOVE = %i[explosion self-destruct]
@@ -146,14 +166,12 @@ module Battle
       # Stat
       result = ph_move ? target.dfe_basis : target.dfs_basis
       # SM (Only if non-critical hit)
-      unless user.has_ability?(:unaware)
-        result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor unless critical_hit?
+      unless user.has_ability?(:unaware) || critical_hit?
+        result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor
       end
+      # Flower Gift & Sandstorm
+      result = (result * flower_gift_dfe_calc(target, ph_move) * sandstorm_calc(target, ph_move)).floor
       # Mod
-      if !ph_move && !user.has_ability?(:flower_gift) && $env.sunny? && logic.allies_of(target).any? { |ally| ally.has_ability?(:flower_gift) }
-        result = (result * 1.5).floor
-      end
-      result = (result * 1.5).floor if !ph_move && $env.sandstorm? && target.type_rock?
       mod = send((ph_move ? DFE_ABILITY_MODIFIER : DFS_ABILITY_MODIFIER)[target.battle_ability_db_symbol], user, target)
       result = (result * mod).floor
       mod = send((ph_move ? DFE_ITEM_MODIFIER : DFS_ITEM_MODIFIER)[target.battle_item_db_symbol], user, target)
@@ -161,6 +179,29 @@ module Battle
       # SX
       result = (result * VAL_0_5).floor if EXPLOSION_SELF_DESTRUCT_MOVE.include?(db_symbol)
       return result
+    end
+
+    # Flower Gift calculation: DFE/DFS
+    # @param target [PFM::PokemonBattler] target of the move
+    # @param ph_move [Boolean] true: physical, false: special
+    # @return [Integer]
+    def flower_gift_dfe_calc(target, ph_move)
+      return 1 if ph_move
+      return 1 unless $env.sunny?
+      return 1 unless logic.allies_of(target).any? { |ally| ally.has_ability?(:flower_gift) } || target.has_ability?(:flower_gift)
+
+      return 1.5
+    end
+
+    # Sandstorm calculation: DFE/DFS
+    # @param target [PFM::PokemonBattler] target of the move
+    # @param ph_move [Boolean] true: physical, false: special
+    # @return [Integer]
+    def sandstorm_calc(target, ph_move)
+      return 1 if ph_move
+      return 1 unless $env.sandstorm? && target.type_rock?
+
+      return 1.5
     end
 
     # CH calculation
