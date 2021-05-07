@@ -14,6 +14,12 @@ module PFM
       return hp > 0 && !egg?
     end
 
+    # Is the pokemon affected by a status
+    # @return [Boolean]
+    def status?
+      return @status != 0
+    end
+
     # Cure the Pokemon from its statues modifications
     def cure
       @status = 0
