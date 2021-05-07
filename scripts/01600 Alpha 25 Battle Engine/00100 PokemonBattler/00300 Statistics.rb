@@ -11,55 +11,55 @@ module PFM
     def atk_basis
       return @battle_stats[:atk_basis] || super
     end
-    
+
     # Return the ats stat without battle modifier
     # @return [Integer]
     def ats_basis
       return @battle_stats[:ats_basis] || super
     end
-    
+
     # Return the dfe stat without battle modifier
     # @return [Integer]
     def dfe_basis
       return @battle_stats[:dfe_basis] || super
     end
-    
+
     # Return the dfs stat without battle modifier
     # @return [Integer]
     def dfs_basis
       return @battle_stats[:dfs_basis] || super
     end
-    
+
     # Return the spd stat without battle modifier
     # @return [Integer]
     def spd_basis
       return @battle_stats[:spd_basis] || super
     end
-    
+
     # Set the atk basis (doesn't modify original value)
     # @param value [Integer]
     def atk_basis=(value)
       @battle_stats[:atk_basis] = value
     end
-    
+
     # Set the ats basis (doesn't modify original value)
     # @param value [Integer]
     def ats_basis=(value)
       @battle_stats[:ats_basis] = value
     end
-    
+
     # Set the dfe basis (doesn't modify original value)
     # @param value [Integer]
     def dfe_basis=(value)
       @battle_stats[:dfe_basis] = value
     end
-    
+
     # Set the dfs basis (doesn't modify original value)
     # @param value [Integer]
     def dfs_basis=(value)
       @battle_stats[:dfs_basis] = value
     end
-    
+
     # Set the spd basis (doesn't modify original value)
     # @param value [Integer]
     def spd_basis=(value)
@@ -85,8 +85,8 @@ module PFM
       ability_spd = (raw_spd * send(SPEED_MODIFIER_ABILITY[battle_ability_db_symbol])).floor
       item_spd = (ability_spd * send(SPEED_MODIFIER_ITEM[battle_item_db_symbol])).floor
       paralysis_spd = paralyzed? ? item_spd * PARALYSIS_MODIFIER : item_spd
-      # TODO : Implement tailwind
-      tailwind_spd = false ? 2 * paralysis_spd : paralysis_spd
+      # Tailwind
+      tailwind_spd = @scene.logic.bank_effects[bank]&.has?(:tailwind) ? 2 * paralysis_spd : paralysis_spd
       return tailwind_spd
     end
 

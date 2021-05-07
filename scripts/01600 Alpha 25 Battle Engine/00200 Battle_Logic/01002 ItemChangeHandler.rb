@@ -99,14 +99,23 @@ module Battle
       end
     end
 
-    # Register the berry used for Harvest
-    ItemChangeHandler.register_pre_item_change_hook('PSDK item change post: Harvest') do |_, _, target|
-      next unless target.has_ability?(:harvest) && target.hold_berry?(target.battle_item_db_symbol)
-      next if target.item_consumed
+    # Register the consumed item (Harvest & Recycle)
+    ItemChangeHandler.register_pre_item_change_hook('PSDK item change pre: Consumed item') do |_, db_symbol, target|
+      next if target.item_consumed || target.item_stolen
+      next unless db_symbol == :none
 
       target.item_consumed = true
       target.consumed_item = target.battle_item_db_symbol
     end
+
+    # Retrieve the consumed item
+    ItemChangeHandler.register_pre_item_change_hook('PSDK item change pre: Retrieve item') do |_, db_symbol, target|
+      next if db_symbol == :none || GameData::Item[db_symbol].db_symbol == :__undef__
+
+      target.item_consumed = false
+      target.consumed_item = nil
+    end
+
 
     # Register effects
     ItemChangeHandler.register_post_item_change_hook('PSDK item change post: Effects') do |handler, db_symbol, target, launcher, skill|

@@ -396,7 +396,7 @@ module Battle
       next unless handler.logic.switch_handler.can_switch?(target)
 
       handler.scene.visual.show_item(target)
-      handler.logic.item_change_handler.change_item(:none, true)
+      handler.logic.item_change_handler.change_item(:none, true, target)
       handler.logic.switch_request << { who: target }
     end
 
