@@ -10,24 +10,17 @@ module Battle
       # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
-        return super && targets.any? { |target| !target.effects.has?(:out_of_reach)}
+        return false unless super
+        return show_usage_failure(user) && false unless targets.all? { |target| target.effects.has?(:out_of_reach)}
+        return true 
       end
 
-      # Event called if the move failed
+      # Test move accuracy
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
-      # @param reason [Symbol] why the move failed: :usable_by_user, :accuracy, :immunity, :pp
-      def on_move_failure(user, targets, reason)
-        show_usage_failure(user)
-        return super
-      end
-
-      # Return the chance of hit of the move
-      # @return [Float]
-      def chance_of_hit(user, target)
-        return 100 unless target.effects.has?(:out_of_reach) && be_method == :s_roar
-
-        super
+      # @return [Boolean] if the move can continue
+      def proceed_move_accuracy(user, targets)
+        return true
       end
 
       # Function that deals the effect to the pokemon
@@ -35,6 +28,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
+          next if target.effects.has?(:out_of_reach)
           edit_stages(user, target)
         end
         return true

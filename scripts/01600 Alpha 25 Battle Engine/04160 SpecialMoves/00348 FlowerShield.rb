@@ -11,16 +11,9 @@ module Battle
       # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user?(user, targets)
-        return super && targets.any? {|target| target.type_grass? && !target.effects.has?(:out_of_reach)}
-      end
-
-      # Event called if the move failed
-      # @param user [PFM::PokemonBattler] user of the move
-      # @param targets [Array<PFM::PokemonBattler>] expected targets
-      # @param reason [Symbol] why the move failed: :usable_by_user, :accuracy, :immunity, :pp
-      def on_move_failure(user, targets, reason)
-        show_usage_failure(user)
-        return super
+        return false unless super
+        return show_usage_failure(user) && false unless targets.any? {|target| target.type_grass? && !target.effects.has?(:out_of_reach)}
+        return true
       end
 
       # Function that tests if the targets blocks the move
@@ -32,6 +25,8 @@ module Battle
         return super || !target.type_grass? || target.effects.has?(:out_of_reach)
       end
       
+      private
+
       # Function that deals the stat to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move

@@ -7,8 +7,6 @@ module Battle
     class Acupressure < Move
       private
 
-      STAGES = [:acc, :atk, :ats, :dfe, :dfs, :eva, :spd]
-      
       # Function that tests if the user is able to use the move
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
@@ -16,26 +14,29 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-        @stage_id = (STAGES.select { |s| @logic.stat_change_handler.stat_increasable?(s, targets[0], user, self) }).sample(random: @logic.generic_rng)
-        return !@stage_id.nil?
+        select_stage = -> (target) { (Logic::StatChangeHandler::ALL_STATS.select { |s| @logic.stat_change_handler.stat_increasable?(s, target, user, self) }).sample(random: @logic.generic_rng) }
+        @stages_ids = Hash[ targets.map { |target| [target, select_stage.call(target)] } ].reject { |_, stage_id| stage_id.nil? }
+        return show_usage_failure(user) && flase if @stages_ids.empty?
+        return true
       end
 
-      # Event called if the move failed
-      # @param user [PFM::PokemonBattler] user of the move
-      # @param targets [Array<PFM::PokemonBattler>] expected targets
-      # @param reason [Symbol] why the move failed: :usable_by_user, :accuracy, :immunity, :pp
-      def on_move_failure(user, targets, reason)
-        show_usage_failure(user)
-        return super
+      private
+
+      # All the stages that the move can modify
+      # @return [Array[Symbol]]
+      def stages
+        Logic::StatChangeHandler::ALL_STATS
       end
 
       # Function that deals the stat to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_stats(user, actual_targets)
-        @logic.stat_change_handler.stat_change(@stage_id, 2, actual_targets[0], user, self)
+        actual_targets.each do |target|
+          next unless @stages_ids[target]
+          @logic.stat_change_handler.stat_change(@stages_ids[target], 2, target, user, self)
+        end
       end
-
     end
     Move.register(:s_acupressure, Acupressure)
   end

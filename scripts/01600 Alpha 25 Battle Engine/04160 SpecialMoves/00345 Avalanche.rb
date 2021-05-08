@@ -1,8 +1,9 @@
 module Battle
   class Move
     # Class that manage Avalanche move
-    # @source https://bulbapedia.bulbagarden.net/wiki/Avalanche_(move)
-    # @source https://pokemondb.net/move/avalanche
+    # @see https://bulbapedia.bulbagarden.net/wiki/Avalanche_(move)
+    # @see https://pokemondb.net/move/avalanche
+    # @see https://www.pokepedia.fr/Avalanche
     class Avalanche < Basic
       # Base power calculation
       # @param user [PFM::PokemonBattler] user of the move
