@@ -16,7 +16,7 @@ module Battle
         return false unless super
         select_stage = -> (target) { (Logic::StatChangeHandler::ALL_STATS.select { |s| @logic.stat_change_handler.stat_increasable?(s, target, user, self) }).sample(random: @logic.generic_rng) }
         @stages_ids = Hash[ targets.map { |target| [target, select_stage.call(target)] } ].reject { |_, stage_id| stage_id.nil? }
-        return show_usage_failure(user) && flase if @stages_ids.empty?
+        return show_usage_failure(user) && false if @stages_ids.empty?
         return true
       end
 
