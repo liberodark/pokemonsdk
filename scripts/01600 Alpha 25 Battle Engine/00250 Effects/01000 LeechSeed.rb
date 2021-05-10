@@ -19,6 +19,12 @@ module Battle
         super || !@target.position || @target.dead?
       end
 
+      # Function that tells if the move is affected by Rapid Spin
+      # @return [Boolean]
+      def rapid_spin_affected?
+        return true
+      end
+
       # Function called at the end of a turn
       # @param logic [Battle::Logic] logic of the battle
       # @param scene [Battle::Scene] battle scene

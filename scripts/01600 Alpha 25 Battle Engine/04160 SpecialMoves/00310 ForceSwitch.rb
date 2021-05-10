@@ -2,7 +2,7 @@ module Battle
   class Move
     # Class managing moves that force the target switch
     # Roar, Whirlwind, Dragon Tail, Circle Throw
-    class ForceSwitch < Basic
+    class ForceSwitch < BasicWithSuccessfulEffect
       # Tell if the move is a move that forces target switch
       # @return [Boolean]
       def force_switch?

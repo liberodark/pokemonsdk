@@ -112,13 +112,6 @@ module Battle
       end
     end
 
-    # Delete every effects for which the origin is the Pokemon switched out
-    SwitchHandler.register_switch_event_hook('Delete Effects with @origin') do |handler, who, _|
-      handler.logic.all_alive_battlers.each do |pkm|
-        pkm.effects.each { |e| e.kill if e&.origin == who}
-      end
-    end
-
     # Last sent turn
     SwitchHandler.register_switch_event_hook('Update last_sent_turn value') do |_, _, with|
       with.last_sent_turn = $game_temp.battle_turn
