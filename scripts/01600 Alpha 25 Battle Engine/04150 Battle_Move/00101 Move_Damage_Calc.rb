@@ -290,8 +290,8 @@ module Battle
     end
 
     # Not added before effects to let it being overwritten by effects ;)
-    Move.register_move_type_change_hook('PSDK Normalize Ability') do |user|
-      next user.has_ability?(:normalize) ? GameData::Types::NORMAL : nil
+    Move.register_move_type_change_hook('PSDK Normalize Ability') do |user, _, move|
+      next user.has_ability?(:normalize) && move.be_method != :s_weather_ball ? GameData::Types::NORMAL : nil
     end
 
     Move.register_move_type_change_hook('PSDK Effect process') do |user, target, move, type|
@@ -304,25 +304,37 @@ module Battle
 
     # Note: added after effect to overwrite move effects ;)
     Move.register_move_type_change_hook('PSDK Pixilate Ability') do |user, _, move|
-      next user.has_ability?(:pixilate) && move.type_normal? ? GameData::Types::FAIRY : nil
+      next user.has_ability?(:pixilate) && move.type_normal? && move.be_method != :s_weather_ball ? GameData::Types::FAIRY : nil
     end
 
     Move.register_move_type_change_hook('PSDK Refrigerate Ability') do |user, _, move|
-      next user.has_ability?(:refrigerate) && move.type_normal? ? GameData::Types::ICE : nil
+      next user.has_ability?(:refrigerate) && move.type_normal? && move.be_method != :s_weather_ball ? GameData::Types::ICE : nil
     end
 
     Move.register_move_type_change_hook('PSDK Aerilate Ability') do |user, _, move|
-      next user.has_ability?(:aerilate) && move.type_normal? ? GameData::Types::FLYING : nil
+      next user.has_ability?(:aerilate) && move.type_normal? && move.be_method != :s_weather_ball ? GameData::Types::FLYING : nil
     end
 
     Move.register_move_type_change_hook('PSDK Galvanize Ability') do |user, _, move|
-      next user.has_ability?(:galvanize) && move.type_normal? ? GameData::Types::ELECTRIC : nil
+      next user.has_ability?(:galvanize) && move.type_normal? && move.be_method != :s_weather_ball ? GameData::Types::ELECTRIC : nil
     end
 
     Move.register_move_type_change_hook('PSDK Scrappy Ability') do |user, target, move|
       next user.has_ability?(:scrappy) && target.type_ghost? && (move.type_normal? || move.type_fighting?) ? 1 : nil
     end
+=begin
+    Move.register_move_type_change_hook('PSDK Weather Ball') do |user, target, move|
+      next nil unless move.be_method == :s_weather_ball
+      next nil if $env.normal? || $env.fog?
+      next nil if target.has_ability?(:air_lock) || target.has_ability?(:cloud_nine)
+      next GameData::Types::FIRE if $env.sunny?
+      next GameData::Types::WATER if $env.rain?
+      next GameData::Types::ICE if $env.hail?
+      next GameData::Types::ROCK if $env.sandstorm?
 
+      next nil
+    end
+=end
     # TechnoBlast
     TECHNODRIVES = {
       douse_drive: GameData::Types::WATER,

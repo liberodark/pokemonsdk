@@ -78,7 +78,7 @@ module PFM
       $game_switches[::Yuki::Sw::FT_Electric] = (fterrain == 1)
       $game_switches[::Yuki::Sw::FT_Grassy] = (fterrain == 2)
       $game_switches[::Yuki::Sw::FT_Mist] = (fterrain == 3)
-      $game_switches[::Yuki::Sw::FT_Psychic] = (fterrain = 4)
+      $game_switches[::Yuki::Sw::FT_Psychic] = (fterrain == 4)
     end
 
     # Return the current weather duration
