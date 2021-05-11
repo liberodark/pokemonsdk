@@ -462,6 +462,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 EffectsHandl
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00002 EffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00003 PositionTiedEffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00004 PokemonTiedEffectBase.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00010 SuccessiveSuccessfulUses.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00100 ForcedNextMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00101 OutOfReach.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00102 HealBlock.rb
@@ -505,6 +506,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Taunt.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 ToxicSpikes.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Transform.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 TrickRoom.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 PerishSong.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00001 GoingInOut.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00002 HideShow.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00003 MultiplePosition.rb
@@ -680,6 +682,9 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00345 Avalanc
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00346 DestinyBond.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00347 Acupressure.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00348 FlowerShield.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00349 FuryCutter.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00350 BeatUp.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00351 PerishSong.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00001 BattleSceneMock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00002 BattleVisualMock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00003 BattleLogicMock.rb

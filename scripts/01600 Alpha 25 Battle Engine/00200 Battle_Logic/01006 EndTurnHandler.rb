@@ -43,20 +43,6 @@ module Battle
       end
     end
 
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Perish Song') do |logic, scene, battlers|
-      next
-=begin
-      battlers.each do |battler|
-        next unless battler.battle_effect.has_perish_song_effect?
-
-        battler.battle_effect.dec_perish_song_counter
-        counter = battler.battle_effect.get_perish_song_counter
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 863, battler, PFM::Text::NUMB[2] => counter.to_s))
-        logic.damage_handler.damage_change(-battler.hp, battler) if counter == 0 # We purposedly ignore stuff that could prevent HP from going down
-      end
-=end
-    end
-
     EndTurnHandler.register_end_turn_event('PSDK end turn: Rain') do |logic, scene, battlers|
       next if $env.current_weather != 1
 
