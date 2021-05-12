@@ -219,26 +219,6 @@ module Battle
       who.hp += who.max_hp / 3
     end
 
-    # Lunar Dance
-    SwitchHandler.register_switch_event_hook('PSDK switch: Lunar Dance') do |handler, who, with|
-      last_move = who.move_history.last
-      next if !last_move || last_move.db_symbol != :lunar_dance || !last_move.current_turn?
-
-      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 694, with))
-      handler.scene.visual.show_hp_animations([with], [with.max_hp])
-      handler.logic.status_change_handler.status_change_with_process(:cure, with)
-    end
-
-    # Healing Wish
-    SwitchHandler.register_switch_event_hook('PSDK switch: Healing Wish') do |handler, who, with|
-      last_move = who.move_history.last
-      next if !last_move || last_move.db_symbol != :healing_wish || !last_move.current_turn?
-
-      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 697, with))
-      handler.scene.visual.show_hp_animations([with], [with.max_hp])
-      handler.logic.status_change_handler.status_change_with_process(:cure, with)
-    end
-
     # Wish
     SwitchHandler.register_switch_event_hook('PSDK switch: Wish') do |_, who, with|
       next

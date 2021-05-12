@@ -390,6 +390,23 @@ module PFM
       return grounded? && !effects.has?(:out_of_reach)
     end
 
+    # Neutralize a type on the Pokemon
+    # @param type [GameData::Types]
+    def ignore_type(type)
+      return unless type?(type)
+
+      original_types = [type1, type2, type3]
+      return self.type1 = GameData::Types::NORMAL if original_types.count { |t| t > 0 } == 1
+
+      self.type1, self.type2, self.type3 = original_types.map { |t| t.nil? || t == type ? 0 : t }
+    end
+
+    # Restore a type on the Pokemon
+    # @param pokemon [PFM::PokemonBattler]
+    def restore_types
+      self.type1, self.type2, self.type3 = nil
+    end
+
     private
 
     # Copy the properties of the original pokemon

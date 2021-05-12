@@ -12,6 +12,12 @@ module Battle
         @scene.display_message_and_wait(parse_text(18, 106))
       end
     end
+
+    # Class that manage moves like Celebrate & Hold Hands
+    class DoNothing < Move
+      alias deal_effect void_true
+    end
     Move.register(:s_splash, Splash)
+    Move.register(:s_do_nothing, DoNothing)
   end
 end

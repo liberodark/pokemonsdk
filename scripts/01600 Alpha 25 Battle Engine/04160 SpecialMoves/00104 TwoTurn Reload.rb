@@ -24,6 +24,7 @@ module Battle
         return true if db_symbol == :solar_beam && $env.sunny?
 
         if user.hold_item?(:power_herb)
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 1028, user, PFM::Text::ITEM2[1] => user.item_name))
           @logic.item_change_handler.change_item(:none, true, user)
           return true
         end

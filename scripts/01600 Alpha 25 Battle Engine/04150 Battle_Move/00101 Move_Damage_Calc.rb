@@ -375,5 +375,11 @@ module Battle
 
       next nil
     end
+
+    Move.register_single_type_multiplier_overwrite_hook('PSDK Grounded: Levitate & Air Balloon') do |target, _, type|
+      next 0 if type == GameData::Types::GROUND && !target.grounded?
+
+      next nil
+    end
   end
 end
