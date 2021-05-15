@@ -4,7 +4,7 @@ module Battle
     # @see https://bulbapedia.bulbagarden.net/wiki/Fury_Cutter_(move)
     # @see https://pokemondb.net/move/fury-cutter
     # @see https://www.pokepedia.fr/Taillade
-    class FuryCutter< BasicWithSuccessfulEffect
+    class FuryCutter < BasicWithSuccessfulEffect
       # Get the real base power of the move (taking in account all parameter)
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
@@ -25,7 +25,7 @@ module Battle
         user.effects.add(create_effect(user, actual_targets)) unless user.effects.has?(effect_name)
         user.effects.get(effect_name).increase
       end
-      
+
       # Max base power of the move.
       # @type [Integer]
       def max_power
