@@ -11,15 +11,7 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-        return show_usage_failure(user) && false unless targets.all? { |target| target.effects.has?(:out_of_reach)}
-        return true 
-      end
-
-      # Test move accuracy
-      # @param user [PFM::PokemonBattler] user of the move
-      # @param targets [Array<PFM::PokemonBattler>] expected targets
-      # @return [Boolean] if the move can continue
-      def proceed_move_accuracy(user, targets)
+        return show_usage_failure(user) && false if targets.all? { |target| target.effects.has?(:out_of_reach)}
         return true
       end
 
@@ -39,6 +31,17 @@ module Battle
       # @param target [PFM::PokemonBattler]
       def edit_stages(user, target)
         log_error("Poorly implemented move: edit_stages(user, target) should have been overwritten in child class")
+      end
+    end
+
+    # Abstract class that manage logic of stage swapping moves and bypass accuracy calculation
+    class StatAndStageEditBypassAccuracy < StatAndStageEdit
+      # Test move accuracy
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param targets [Array<PFM::PokemonBattler>] expected targets
+      # @return [Boolean] if the move can continue
+      def proceed_move_accuracy(user, targets)
+        return true
       end
     end
   end

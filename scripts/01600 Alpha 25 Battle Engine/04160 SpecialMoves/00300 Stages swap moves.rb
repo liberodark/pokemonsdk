@@ -4,7 +4,7 @@ module Battle
     # @see https://bulbapedia.bulbagarden.net/wiki/Heart_Swap_(move)
     # @see https://pokemondb.net/move/heart-swap
     # @see https://www.pokepedia.fr/Permuc%C5%93ur
-    class HeartSwap < StatAndStageEdit
+    class HeartSwap < StatAndStageEditBypassAccuracy
       private
 
       # Apply the stats or/and stage edition
@@ -27,7 +27,7 @@ module Battle
     # @see https://bulbapedia.bulbagarden.net/wiki/Power_Swap_(move)
     # @see https://pokemondb.net/move/power-swap
     # @see https://www.pokepedia.fr/Permuforce
-    class PowerSwap < StatAndStageEdit
+    class PowerSwap < StatAndStageEditBypassAccuracy
       private
 
       # Apply the stats or/and stage edition
@@ -45,7 +45,7 @@ module Battle
     # @see https://bulbapedia.bulbagarden.net/wiki/Guard_Swap_(move)
     # @see https://pokemondb.net/move/guard-swap
     # @see https://www.pokepedia.fr/Permugarde
-    class GuardSwap < StatAndStageEdit
+    class GuardSwap < StatAndStageEditBypassAccuracy
       private
       
       # Apply the stats or/and stage edition

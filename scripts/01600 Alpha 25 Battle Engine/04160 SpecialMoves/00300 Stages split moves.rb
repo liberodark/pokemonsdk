@@ -4,7 +4,7 @@ module Battle
     # @see https://bulbapedia.bulbagarden.net/wiki/Power_Split_(move)
     # @see https://pokemondb.net/move/power-split
     # @see https://www.pokepedia.fr/Partage_Force
-    class PowerSplit < StatAndStageEdit
+    class PowerSplit < StatAndStageEditBypassAccuracy
       private
 
       # Apply the stats or/and stage edition
@@ -22,7 +22,7 @@ module Battle
     # @see https://bulbapedia.bulbagarden.net/wiki/Guard_Split_(move)
     # @see https://pokemondb.net/move/guard-split
     # @see https://www.pokepedia.fr/Partage_Garde
-    class GuardSplit < StatAndStageEdit
+    class GuardSplit < StatAndStageEditBypassAccuracy
       private
 
       # Apply the stats or/and stage edition
