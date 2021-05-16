@@ -34,7 +34,7 @@ module Battle
         return true
       end
 
-      # Apply the swap
+      # Apply the stats or/and stage edition
       # @param user [PFM::PokemonBattler]
       # @param target [PFM::PokemonBattler]
       def edit_stages(user, target)

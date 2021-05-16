@@ -64,6 +64,11 @@ module Battle
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     # @return [Boolean] if the move can continue
     def proceed_move_accuracy(user, targets)
+      if targets.all? {|target| user.effects.get(:lock_on)&.target == target }
+        log_data("# accuracy= 100 (:lock_on effect)")
+        return true
+      end
+
       accuracy_dice = logic.move_accuracy_rng.rand(100)
       log_data("# accuracy= #{accuracy}, value = #{accuracy_dice} (testing=#{accuracy > 0}, failure=#{accuracy_dice >= accuracy})")
       if accuracy > 0 && accuracy_dice >= accuracy

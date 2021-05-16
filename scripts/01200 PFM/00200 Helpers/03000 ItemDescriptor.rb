@@ -234,6 +234,7 @@ module PFM
       # @return [Boolean]
       def on_pokemon_choice(pokemon, scene)
         return false unless @on_pokemon_choice.respond_to?(:call)
+        return false if $game_temp.in_battle && pokemon.effects.has?(:embargo)
 
         return @on_pokemon_choice.call(@item, pokemon, scene)
       end

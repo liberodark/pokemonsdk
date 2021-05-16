@@ -33,8 +33,8 @@ module Battle
       # @param handler [Battle::Logic::SwitchHandler]
       # @param who [PFM::PokemonBattler] Pokemon that is switched out
       # @param with [PFM::PokemonBattler] Pokemon that is switched in
-      def on_switch_event(_handler, who, _with)
-        kill if who == @origin
+      def on_switch_event(_handler, who, with)
+        kill if who == @origin && !who.effects.has?(:baton_pass)
       end
 
       # Tell if the effect is dead
@@ -50,6 +50,13 @@ module Battle
       end
 
       private
+      
+      # Transfer the effect to the given pokemon via baton switch
+      # @param with [PFM::Battler] the pokemon switched in
+      # @return [Battle::Effects::PokemonTiedEffectBase, nil] the effect to give to the switched in pokemon, nil if there is this effect isn't transferable via baton pass
+      def baton_switch_transfer(with)
+        return self.class.new(@logic, with, @origin, @move)
+      end
 
       # Get the message text
       # @return [String]

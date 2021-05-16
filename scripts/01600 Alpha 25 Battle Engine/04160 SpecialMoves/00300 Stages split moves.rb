@@ -7,7 +7,7 @@ module Battle
     class PowerSplit < StatAndStageEdit
       private
 
-      # Apply the swap
+      # Apply the stats or/and stage edition
       # @param user [PFM::PokemonBattler]
       # @param target [PFM::PokemonBattler]
       def edit_stages(user, target)
@@ -25,7 +25,7 @@ module Battle
     class GuardSplit < StatAndStageEdit
       private
 
-      # Apply the swap
+      # Apply the stats or/and stage edition
       # @param user [PFM::PokemonBattler]
       # @param target [PFM::PokemonBattler]
       def edit_stages(user, target)

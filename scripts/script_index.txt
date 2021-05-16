@@ -469,6 +469,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00102 HealBlock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00103 Curse.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00104 FocusEnergy.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00105 LockOn.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00106 BatonPass.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 AbilitySuppressed.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 AquaRing.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Attract.rb
@@ -480,6 +481,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 DestinyBond.
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Disable.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Drowsiness.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Electrify.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Embargo.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Flinch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Foresight.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Gravity.rb
@@ -491,6 +493,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 LightScreen 
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 LuckyChant.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 LunarDance.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 MagicCoat.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 MagnetRise.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Minimize.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 MiracleEye.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Mist.rb
@@ -500,6 +503,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Nightmare.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 PerishSong.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Protect.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Rage.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Safeguard.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 SmackDown.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Spikes.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 StealthRock.rb
@@ -601,8 +605,10 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00206 Spikes.
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 AbilityChanging.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Acrobatics.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 AquaRing.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 BatonPass.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 BrickBreak.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Conversion.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Embargo.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Endeavor.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 FakeOut.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 FinalGambit.rb
@@ -612,6 +618,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Growth.
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Haze.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Ingrain.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 LightScreen Reflect.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 MagnetRise.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Mimic.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 MirrorMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Protect.rb
@@ -697,6 +704,8 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00348 FlowerS
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00349 FuryCutter.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00350 BeatUp.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00351 PerishSong.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00352 HiddenPower.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00353 Safeguard.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00001 BattleSceneMock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00002 BattleVisualMock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00003 BattleLogicMock.rb

@@ -123,7 +123,7 @@ module Battle
         next effect.on_post_item_change(handler, db_symbol, target, launcher, skill)
       end
     end
-    ItemChangeHandler.register_post_item_change_hook('PSDK item change pre: Effects') do |handler, db_symbol, target, launcher, skill|
+    ItemChangeHandler.register_pre_item_change_hook('PSDK item change pre: Effects') do |handler, db_symbol, target, launcher, skill|
       handler.logic.each_effects(target, launcher) do |effect|
         next effect.on_pre_item_change(handler, db_symbol, target, launcher, skill)
       end

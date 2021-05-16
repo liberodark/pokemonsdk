@@ -21,7 +21,7 @@ module Battle
         # @type [Effects::ForcedNextMove::Disturbable]
         effect = user.effects.get(:forced_next_move)
         if effect.is_a?(Effects::ForcedNextMove::Disturbable)
-          if !effect.disturbed && logic.status_change_handler.status_appliable?(:confusion, user)
+          if !effect.disturbed && logic.status_change_handler.status_appliable?(:confusion, user, nil, self)
             logic.status_change_handler.status_change(:confusion, user)
           end
         else

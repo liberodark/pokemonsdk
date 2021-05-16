@@ -234,17 +234,6 @@ module Battle
       who.moveset.each(&:reset)
     end
 
-    # Baton Pass
-    SwitchHandler.register_switch_event_hook('PSDK switch: Baton Pass') do |handler, who, with|
-      last_move = who.move_history.last
-      next if !last_move || last_move.db_symbol != :baton_pass || !last_move.current_turn?
-
-      # with.battle_effect.transmit_bind(who.battle_effect) if who.battle_effect.has_bind_effect?
-      handler.logic.status_change_handler(:confusion, with) if who.confused?
-      # with.battle_effect.apply_aqua_ring if who.battle_effect.has_aqua_ring_effect?
-      who.effects.get(:substitute)&.baton_pass(with)
-    end
-
     # Unnerve
     SwitchHandler.register_switch_event_hook('PSDK switch: Unnerve') do |handler, _, with|
       next unless with.has_ability?(:unnerve)

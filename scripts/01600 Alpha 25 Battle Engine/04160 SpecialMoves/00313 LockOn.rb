@@ -9,7 +9,7 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @return [Boolean]
       def target_immune?(user, target)
-        return true if target.effects.get(:lock_on)&.origin == user
+        return true if user.effects.get(:lock_on)&.target == target
 
         return false
       end
@@ -19,9 +19,9 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
-          next if target.effects.get(:lock_on)&.origin == user
+          next if user.effects.get(:lock_on)&.target == target
 
-          target.effects.add(Effects::LockOn.new(@logic, target, user))
+          user.effects.add(Effects::LockOn.new(@logic, user, target))
           text = parse_text_with_pokemon(19, target.bank == 0 ? 656 : 651, user,
                                          PFM::Text::PKNICK[0] => user.given_name,
                                          PFM::Text::PKNICK[1] => target.given_name)

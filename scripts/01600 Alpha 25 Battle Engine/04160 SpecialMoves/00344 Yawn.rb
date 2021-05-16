@@ -3,10 +3,6 @@ module Battle
     # Class that manage the Yawn skill, works together with the Effects::Drowsiness class
     # @source https://bulbapedia.bulbagarden.net/wiki/Yawn_(move)
     class Yawn < Move
-      # Delay befor Yawn drowsiness proc
-      # @return [Integer]
-      YAWN_DELAY = 2
-
       private
       
       # Test move accuracy
@@ -33,9 +29,15 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
-          target.effects.add(Effects::Drowsiness.new(@logic, target, YAWN_DELAY))
+          target.effects.add(Effects::Drowsiness.new(@logic, target, turn_count))
         end
         return true
+      end
+
+      # Return the turn countdown before the effect proc (including the current one)
+      # @return [Integer]
+      def turn_count
+        2
       end
     end
     Move.register(:s_yawn, Yawn)

@@ -18,17 +18,20 @@ module Battle
       def triggered?
         return @counter == 1
       end
-
-      # Baton pass the substitute
-      # @param target [PFM::PokemonBattler] Pokemon getting the substitute due to baton pass
-      def baton_pass(target)
-        kill
-      end
       
       # Get the name of the effect
       # @return [Symbol]
       def name
         return :drowsiness
+      end
+      
+      # Function called at the end of a turn
+      # @param logic [Battle::Logic] logic of the battle
+      # @param scene [Battle::Scene] battle scene
+      # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
+      def on_end_turn_event(logic, scene, battlers)
+        return unless triggered?
+        logic.status_change_handler.status_change_with_process(:sleep, @pokemon)
       end
     end
   end

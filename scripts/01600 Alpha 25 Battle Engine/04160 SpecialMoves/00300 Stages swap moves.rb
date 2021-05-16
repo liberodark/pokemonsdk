@@ -7,7 +7,7 @@ module Battle
     class HeartSwap < StatAndStageEdit
       private
 
-      # Apply the swap
+      # Apply the stats or/and stage edition
       # @param user [PFM::PokemonBattler]
       # @param target [PFM::PokemonBattler]
       def edit_stages(user, target)
@@ -30,7 +30,7 @@ module Battle
     class PowerSwap < StatAndStageEdit
       private
 
-      # Apply the swap
+      # Apply the stats or/and stage edition
       # @param user [PFM::PokemonBattler]
       # @param target [PFM::PokemonBattler]
       def edit_stages(user, target)
@@ -48,7 +48,7 @@ module Battle
     class GuardSwap < StatAndStageEdit
       private
       
-      # Apply the swap
+      # Apply the stats or/and stage edition
       # @param user [PFM::PokemonBattler]
       # @param target [PFM::PokemonBattler]
       def edit_stages(user, target)

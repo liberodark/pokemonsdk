@@ -120,16 +120,6 @@ module Battle
       end
     end
 
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Drowsiness effect from Yawn') do |logic, _, battlers|
-      battlers.each do |battler|
-        # next unless battler.battle_effect.fell_asleep_from_yawning? # Deprecated (BE24)
-        next unless battler.effects.has?(:drowsiness)
-        next unless battler.effects.get(:drowsiness).triggered?
-
-        logic.status_change_handler.status_change_with_process(:sleep, battler)
-      end
-    end
-
     EndTurnHandler.register_end_turn_event('PSDK end turn: Wish') do |_, scene, battlers|
       next
 =begin

@@ -34,6 +34,15 @@ module Battle
         scene.display_message_and_wait(parse_text_with_pokemon(19, 863, @pokemon, { PFM::Text::NUMB[2] => (@counter - 1).to_s }))
         logic.damage_handler.damage_change(@pokemon.max_hp, @pokemon) if triggered?
       end
+
+      private
+
+      # Transfer the effect to the given pokemon via baton switch
+      # @param with [PFM::Battler] the pokemon switched in
+      # @return [Battle::Effects::PokemonTiedEffectBase, nil] the effect to give to the switched in pokemon, nil if there is this effect isn't transferable via baton pass
+      def baton_switch_transfer(with)
+        return self.class.new(@logic, with, @counter)
+      end
     end
   end
 end

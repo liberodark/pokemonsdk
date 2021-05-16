@@ -14,18 +14,6 @@ module Battle
         @hp = pokemon.max_hp / 4
       end
 
-      # Baton pass the substitute
-      # @param target [PFM::PokemonBattler] Pokemon getting the substitute due to baton pass
-      def baton_pass(target)
-        return if target.effects.has?(:substitute)
-
-        effect = Substitute.new(@logic, target)
-        effect.hp = @hp
-        target.effects.add(effect)
-        kill
-        @pokemon.effects.delete_specific_dead_effect(name)
-      end
-
       # Function called when a stat_increase_prevention is checked
       # @param handler [Battle::Logic::StatChangeHandler] handler use to test prevention
       # @param stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva
@@ -101,6 +89,15 @@ module Battle
       # @return [Symbol]
       def name
         return :substitute
+      end
+
+      private
+
+      # Transfer the effect to the given pokemon via baton switch
+      # @param with [PFM::Battler] the pokemon switched in
+      # @return [Battle::Effects::PokemonTiedEffectBase, nil] the effect to give to the switched in pokemon, nil if there is this effect isn't transferable via baton pass
+      def baton_switch_transfer(with)
+        return self.class.new(@logic, with)
       end
     end
   end
