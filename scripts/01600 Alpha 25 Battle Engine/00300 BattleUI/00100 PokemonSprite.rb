@@ -220,7 +220,7 @@ module BattleUI
       bx = enemy? ? viewport.rect.width + width : -width
       ya = Yuki::Animation
       animation = ya.send_command_to(self, :visible=, true)
-      animation.play_before(ya.send_command_to(self, :zoom=, 1))
+      animation.play_before(ya.send_command_to(self, :zoom=, sprite_zoom))
       animation.play_before(ya.send_command_to(self, :opacity=, 255))
       animation.play_before(ya.move(0.1, self, bx, y, x, y))
       animation.play_before(ya.send_command_to(self, :cry))
@@ -235,7 +235,7 @@ module BattleUI
       animation.play_before(ya.send_command_to(self, :zoom=, 0))
       animation.play_before(ya.send_command_to(self, :opacity=, 255))
       animation.play_before(ya.send_command_to(self, :set_position, *sprite_position))
-      poke_out = ya.scalar(0.1, self, :zoom=, 0, 1)
+      poke_out = ya.scalar(0.1, self, :zoom=, 0, sprite_zoom)
       ball_animation = enemy? ? enemy_ball_animation(poke_out) : actor_ball_animation(poke_out)
       animation.play_before(ball_animation)
       animation.play_before(ya.send_command_to(self, :cry))
@@ -255,8 +255,8 @@ module BattleUI
     # @return [Yuki::Animation::TimedAnimation]
     def regular_go_out_animation
       ya = Yuki::Animation
-      animation = ya.send_command_to(self, :zoom=, 1)
-      animation.play_before(go_back_ball_animation(ya.scalar(0.1, self, :zoom=, 1, 0)))
+      animation = ya.send_command_to(self, :zoom=, sprite_zoom)
+      animation.play_before(go_back_ball_animation(ya.scalar(0.1, self, :zoom=, sprite_zoom, 0)))
 
       return animation
     end
@@ -283,8 +283,8 @@ module BattleUI
       animation = ya.scalar_offset(0.5, sprite, :y, :y=, 0, -64, distortion: :SQUARE010_DISTORTION)
       animation.parallel_play(ya.move(0.5, sprite, -sprite.ball_offset_y, y - sprite.trainer_offset_y, x, y - sprite.ball_offset_y))
       animation.parallel_play(ya.scalar(0.5, sprite, :throw_progression=, 0, 1))
-      animation.parallel_play(ya.se_play('fall'))
-      animation.play_before(ya.se_play('pokeopen'))
+      animation.parallel_play(ya.se_play(*sending_ball_se))
+      animation.play_before(ya.se_play(*opening_ball_se))
       animation.play_before(ya.scalar(0.1, sprite, :open_progression=, 0, 1))
       animation.play_before(ya.send_command_to(sprite, :dispose))
       animation.play_before(pokemon_going_out_of_ball_animation)
@@ -301,7 +301,7 @@ module BattleUI
       sprite.y -= sprite.ball_offset_y
       ya = Yuki::Animation
       animation = ya.wait(0.2)
-      animation.play_before(ya.se_play('pokeopen'))
+      animation.play_before(ya.se_play(*opening_ball_se))
       animation.play_before(ya.scalar(0.1, sprite, :open_progression=, 0, 1))
       animation.play_before(ya.send_command_to(sprite, :dispose))
       animation.play_before(pokemon_going_out_of_ball_animation)
@@ -318,12 +318,33 @@ module BattleUI
       sprite.y -= sprite.ball_offset_y
       ya = Yuki::Animation
       animation = ya.wait(0.2)
-      animation.play_before(ya.se_play('pokeopen'))
+      animation.play_before(ya.se_play(*back_ball_se))
       animation.play_before(ya.scalar(0.1, sprite, :open_progression=, 0, 1))
       animation.play_before(ya.send_command_to(sprite, :dispose))
       animation.play_before(pokemon_going_in_the_ball_animation)
 
       return animation
+    end
+
+    # SE played when the ball is sent
+    def sending_ball_se
+      return 'fall'
+    end
+
+    # SE played when the ball is opening
+    def opening_ball_se
+      return 'pokeopen'
+    end
+
+    # SE played when the Pokemon back to the ball
+    def back_ball_se
+      return 'pokeopen'
+    end
+
+    # Pokemon sprite zoom
+    # @return [Integer]
+    def sprite_zoom
+      return 1
     end
   end
 end

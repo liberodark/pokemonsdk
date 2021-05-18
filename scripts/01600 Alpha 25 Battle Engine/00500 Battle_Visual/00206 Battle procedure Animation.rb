@@ -24,7 +24,7 @@ module Battle
       targets = targets.select(&:dead?)
       return if targets.empty?
 
-      Audio.se_play('Audio/SE/Down.wav', 100, 80)
+      play_ko_se
       # Start all animations
       targets.each do |target|
         battler_sprite(target.bank, target.position).go_out
@@ -148,22 +148,25 @@ module Battle
       animation = ya.scalar_offset(0.4, sprite, :y, :y=, 0, -64, distortion: :SQUARE010_DISTORTION)
       animation.parallel_play(ya.move(0.4, sprite, sprite.x, sprite.y, target.x, target.y - sprite.trainer_offset_y))
       animation.parallel_play(ya.scalar(0.4, sprite, :throw_progression=, 0, 1))
-      animation.parallel_play(ya.se_play('fall', 100, 120))
+      animation.parallel_play(ya.se_play(*sending_ball_se))
       animation.play_before(ya.scalar(0.2, sprite, :open_progression=, 0, 1))
-      animation.play_before(ya.scalar(0.2, target, :zoom=, 1, 0))
-      animation.play_before(ya.se_play('pokeopen'))
+      animation.play_before(ya.scalar(0.2, target, :zoom=, sprite_zoom, 0))
+      animation.play_before(ya.se_play(*opening_ball_se))
       animation.play_before(ya.scalar(0.5, sprite, :close_progression=, 0, 1))
-      fall_distortion = proc { |x| (Math.cos(2.5 * Math::PI * x) * Math.exp(-2 * x)).abs }
       fall_animation = ya.scalar(1, sprite, :y=, target.y - sprite.ball_offset_y, target.y - sprite.trainer_offset_y, distortion: fall_distortion)
       sound_animation = ya.wait(0.2)
-      sound_animation.play_before(ya.se_play('pokerebond'))
+      sound_animation.play_before(ya.se_play(*bouncing_ball_se))
       sound_animation.play_before(ya.wait(0.4))
-      sound_animation.play_before(ya.se_play('pokerebond'))
+      sound_animation.play_before(ya.se_play(*bouncing_ball_se))
       sound_animation.play_before(ya.wait(0.4))
-      sound_animation.play_before(ya.se_play('pokerebond'))
+      sound_animation.play_before(ya.se_play(*bouncing_ball_se))
       animation.play_before(fall_animation)
       fall_animation.parallel_play(sound_animation)
       return animation
+    end
+
+    def fall_distortion
+      return proc { |x| (Math.cos(2.5 * Math::PI * x) * Math.exp(-2 * x)).abs }
     end
 
     # Create the move animation
@@ -174,7 +177,7 @@ module Battle
       ya = Yuki::Animation
       animation.play_before(ya.wait(0.5))
       nb_bounce.clamp(0, 3).times do
-        animation.play_before(ya.se_play('pokemove'))
+        animation.play_before(ya.se_play(*moving_ball_se))
         animation.play_before(ya.scalar(0.5, sprite, :move_progression=, 0, 1))
         animation.play_before(ya.wait(0.5))
       end
@@ -185,7 +188,7 @@ module Battle
     # @param sprite [UI::ThrowingBallSprite]
     def create_caught_animation(animation, sprite)
       ya = Yuki::Animation
-      animation.play_before(ya.se_play('pokeopenbreak', 100, 180))
+      animation.play_before(ya.se_play(*catching_ball_se))
       animation.play_before(ya.scalar(0.5, sprite, :caught_progression=, 0, 1))
     end
 
@@ -195,10 +198,50 @@ module Battle
     # @param target [Sprite]
     def create_break_animation(animation, sprite, target)
       ya = Yuki::Animation
-      animation.play_before(ya.se_play('pokeopenbreak'))
+      animation.play_before(ya.se_play(*break_ball_se))
       animation.play_before(ya.scalar(0.5, sprite, :break_progression=, 0, 1))
-      animation.play_before(ya.scalar(0.2, target, :zoom=, 0, 1))
+      animation.play_before(ya.scalar(0.2, target, :zoom=, 0, sprite_zoom))
       animation.play_before(ya.send_command_to(sprite, :dispose))
+    end
+
+    # Sprite zoom of the Pokemon battler
+    def sprite_zoom
+      return 1
+    end
+
+    # SE played when a Pokemon is K.O.
+    def play_ko_se
+      Audio.se_play('Audio/SE/Down.wav', 100, 80)
+    end
+
+    # SE played when the ball is sent
+    def sending_ball_se
+      return 'fall', 100, 120
+    end
+
+    # SE played when the ball is opening
+    def opening_ball_se
+      return 'pokeopen'
+    end
+
+    # SE played when the ball is bouncing
+    def bouncing_ball_se
+      return 'pokerebond'
+    end
+
+    # SE played when the ball is moving
+    def moving_ball_se
+      return 'pokemove'
+    end
+
+    # SE played when the Pokemon is caught
+    def catching_ball_se
+      return 'pokeopenbreak', 100, 180
+    end
+
+    # SE played when the Pokemon escapes from the ball
+    def break_ball_se
+      return 'pokeopenbreak'
     end
   end
 end
