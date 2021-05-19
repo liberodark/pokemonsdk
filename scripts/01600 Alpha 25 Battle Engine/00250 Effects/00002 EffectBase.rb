@@ -51,6 +51,12 @@ module Battle
         return false
       end
 
+      # Tell if the effect forces the next move
+      # @return [Boolean]
+      def force_next_move?
+        return false
+      end
+
       # Function called when a stat_increase_prevention is checked
       # @param handler [Battle::Logic::StatChangeHandler] handler use to test prevention
       # @param stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva

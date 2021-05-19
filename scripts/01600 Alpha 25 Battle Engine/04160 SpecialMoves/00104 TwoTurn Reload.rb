@@ -10,6 +10,7 @@ module Battle
         ice_burn: 869, geomancy: 1213, sky_attack: 550,
         focus_punch: 1213
       }
+
       # Function that tests if the user is able to use the move
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
@@ -20,7 +21,7 @@ module Battle
         user.effects.get(:out_of_reach)&.kill
         user.effects.deleted_dead_effects
         return false unless super
-        return true if user.effects.has?(:forced_next_move)
+        return true if user.effects.has?(:force_next_move_base)
         return true if db_symbol == :solar_beam && $env.sunny?
 
         if user.hold_item?(:power_herb)
@@ -29,7 +30,7 @@ module Battle
           return true
         end
 
-        user.effects.add(Effects::ForcedNextMove.new(@logic, user, self, targets))
+        user.effects.add(Effects::ForceNextMoveBase.new(@logic, user, self, targets))
         oor_type = Effects::OutOfReach::TYPES[db_symbol]
         user.effects.add(Effects::OutOfReach.new(@logic, user, oor_type)) if oor_type
         id_txt = ANNOUNCES[db_symbol]
@@ -58,7 +59,7 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        if user.effects.has?(:forced_next_move)
+        if user.effects.has?(:force_next_move_base)
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 851, user))
           return false
         end
@@ -70,9 +71,9 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        return if user.effects.has?(:forced_next_move)
+        return if user.effects.has?(:force_next_move_base)
 
-        user.effects.add(Effects::ForcedNextMove.new(@logic, user, self, actual_targets))
+        user.effects.add(Effects::ForceNextMoveBase.new(@logic, user, self, actual_targets))
       end
     end
 

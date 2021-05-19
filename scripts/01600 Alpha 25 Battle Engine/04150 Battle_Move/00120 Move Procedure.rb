@@ -33,7 +33,7 @@ module Battle
       return unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
 
       usage_message(user)
-      if pp == 0 && !(user.effects.has?(:forced_next_move) && !@forced_next_move_decrease_pp)
+      if pp == 0 && !(user.effects.has?(&:force_next_move?) && !@forced_next_move_decrease_pp)
         return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp)
       end
 
@@ -151,7 +151,7 @@ module Battle
     # @param user [PFM::PokemonBattler]
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def decrese_pp(user, targets)
-      return if user.effects.has?(:forced_next_move) && !@forced_next_move_decrease_pp
+      return if user.effects.has?(&:force_next_move?) && !@forced_next_move_decrease_pp
 
       self.pp -= 1
       self.pp -= 1 if @logic.foes_of(user).any? { |foe| foe.alive? && foe.has_ability?(:pressure) }

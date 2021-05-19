@@ -14,7 +14,7 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_damage(user, actual_targets)
-        return super if user.effects.get(:forced_next_move)&.unleach?
+        return super if user.effects.get(:bide)&.unleach?
 
         return true
       end
@@ -27,7 +27,7 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        if user.effects.get(:forced_next_move)&.unleach? && user.effects.get(:forced_next_move).damages == 0
+        if user.effects.get(:bide)&.unleach? && user.effects.get(:bide).damages == 0
           show_usage_failure(user)
           return false
         end
@@ -41,9 +41,9 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        return if user.effects.has?(:forced_next_move)
+        return if user.effects.has?(:bide)
 
-        user.effects.add(Effects::ForcedNextMove::Bide.new(logic, user, self, actual_targets, 2))
+        user.effects.add(Effects::Bide.new(logic, user, self, actual_targets, 3))
       end
 
       # Method calculating the damages done by counter
@@ -51,8 +51,8 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def damages(user, target)
-        # @type [Effects::ForcedNextMove::Bide]
-        effect = user.effects.get(:forced_next_move)
+        # @type [Effects::Bide]
+        effect = user.effects.get(:bide)
         return ((effect&.damages || 1) * 2).clamp(1, Float::INFINITY)
       end
 
@@ -73,15 +73,15 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       def play_animation_internal(user, targets)
         # TODO: Fix with 2 animation: charging, not doing anything
-        super if user.effects.has?(:forced_next_move) && user.effects.get(:forced_next_move).unleach?
+        super if user.effects.has?(:bide) && user.effects.get(:bide).unleach?
       end
 
       # Show the move usage message
       # @param user [PFM::PokemonBattler] user of the move
       def usage_message(user)
-        if !user.effects.has?(:forced_next_move)
+        if !user.effects.has?(:bide)
           super
-        elsif user.effects.get(:forced_next_move).unleach?
+        elsif user.effects.get(:bide).unleach?
           return scene.display_message_and_wait(parse_text_with_pokemon(19, 748, user))
         end
         scene.display_message_and_wait(parse_text_with_pokemon(19, 745, user))

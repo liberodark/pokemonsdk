@@ -462,8 +462,9 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 EffectsHandl
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00002 EffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00003 PositionTiedEffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00004 PokemonTiedEffectBase.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00010 Disturbable.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00010 ForcedNextMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00010 SuccessiveSuccessfulUses.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00100 ForcedNextMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00101 OutOfReach.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00102 HealBlock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00103 Curse.rb
@@ -483,6 +484,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Drowsiness.r
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Electrify.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Embargo.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Flinch.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 ForcedNextMove effects.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Foresight.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Gravity.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 HappyHour.rb
@@ -510,6 +512,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 StealthRock.
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 StickyWeb.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Stockpile.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Substitute.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 SuccessiveUses effects.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Tailwind.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Taunt.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 ToxicSpikes.rb

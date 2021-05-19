@@ -17,9 +17,11 @@ module Battle
       end
 
       # Tell if an effect is present
-      # @param name [Symbol] name of the effect
+      # @param name [Symbol, nil] name of the effect. Ignored if a block is given.
+      # @param &block [Block, nil] (optional) block testing each effect
       # @return [Boolean] if the effect is present
-      def has?(name)
+      def has?(name = nil, &block)
+        return @effects.any?(&block) if block
         return @effects.any? { |e| e.name == name }
       end
 
@@ -29,11 +31,22 @@ module Battle
         @effects.push(effect)
       end
 
-      # Get an effect using its name
-      # @param name [Symbol]
+      # Replace the effects matching the block by the new one
+      # @param effect [EffectBase]
+      # @param block [Block]
+      def replace(effect, &block)
+        @effects.find_all(&block).each(&:kill)
+        deleted_dead_effects
+        add(effect)
+      end
+
+      # Get an effect using its name or a block
+      # @param name [Symbol, nil] name of the effect. Ignored if a block is given.
+      # @param &block [Block, nil] (optional) block testing each effect
       # @return [EffectBase, nil]
-      def get(name)
-        @effects.find { |e| e.name == name }
+      def get(name = nil, &block)
+        return @effects.find(&block) if block
+        return @effects.find { |e| e.name == name }
       end
 
       # Call something on all effects

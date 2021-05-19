@@ -1,16 +1,6 @@
 module Battle
   module Effects
-    # Effect that store successfull move use count
-    class SuccessiveSuccessfulUses < PokemonTiedEffectBase
-      # Create a new Fury Cutter effect
-      # @param logic [Battle::Logic]
-      # @param pokemon [PFM::PokemonBattler]
-      def initialize(logic, pokemon, move)
-        super(logic, pokemon)
-        @successive_uses = 0
-        @move_db_symbol = move.db_symbol
-      end
-
+    module SuccessiveSuccessfulUses
       # Return the number of successive succesful use of the move.
       # @return [Integer]
       def successive_uses
@@ -23,14 +13,17 @@ module Battle
       def increase
         @successive_uses += 1
       end
-
-      # Return the symbol of the effect.
-      # @return [Symbol]
-      def name
-        :successive_successful_uses
-      end
       
-      private 
+      private
+
+      # Init the successive uses module
+      # @param pokemon [PFM::PokemonBattler]
+      # @param move [Battle::Move]
+      def init_successive_successful_uses(pokemon, move)
+        @pokemon = pokemon
+        @successive_uses = 0
+        @move_db_symbol = move.db_symbol
+      end
 
       # List of the moves that don't break the continuity and don't increment
       # @type [Array[Symbol]]
@@ -40,15 +33,6 @@ module Battle
       # @return [Array[Symbol]]
       def accepted_moves
         ACCEPTED_MOVES
-      end
-    end
-
-    # Effect that manage Fury Cutter effect
-    class FuryCutter < SuccessiveSuccessfulUses
-      # Return the symbol of the effect.
-      # @return [Symbol]
-      def name
-        :fury_cutter
       end
     end
   end

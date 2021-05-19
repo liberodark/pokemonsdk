@@ -4,9 +4,9 @@ module Battle
     # @param pokemon_index [Integer] Index of the Pokemon in the party
     # @return [Symbol, Array(Symbol, Hash), nil] :attack, :bag, :pokemon, :flee, :cancel, :try_next
     def show_player_choice(pokemon_index)
-      if (pokemon = @scene.logic.battler(0, pokemon_index)).effects.has?(:forced_next_move)
-        # @type [Effects::ForcedNextMove]
-        effect = pokemon.effects.get(:forced_next_move)
+      if (pokemon = @scene.logic.battler(0, pokemon_index)).effects.has?(&:force_next_move?)
+        # @type [Effects::EffectBase]
+        effect = pokemon.effects.get(&:force_next_move?)
         target = effect.targets.first
         return :action, Actions::Attack.new(@scene, effect.move, pokemon, target.bank, target.position)
       end
