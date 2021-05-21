@@ -100,7 +100,7 @@ module Battle
       # IT
       result = (result * send(ITEM_MULTIPLIER[user.battle_item_db_symbol], user, target)).floor
       # CHG
-      result *= user.last_successfull_move_is?(:charge) && type == GameData::Types::ELECTRIC ? 2 : 1
+      result = user.effects.has?(:charge) ? user.effects.get(:charge).calc_base_power_as_user(result, user, target, self) : result
       # MS
       result = (result * VAL_0_5).floor if logic.terrain_effects.has?(:mud_sport) && type == GameData::Types::ELECTRIC
       # WS

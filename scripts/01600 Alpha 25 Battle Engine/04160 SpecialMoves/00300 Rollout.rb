@@ -8,7 +8,7 @@ module Battle
       # @return [Integer]
       def real_base_power(user, target)
         # @type [Effects::Rollout]
-        rollout_effect = user.effects.get(:rollout)
+        rollout_effect = user.effects.get(effect_name)
         mod = rollout_effect.successive_uses if rollout_effect
         mod = (mod || 0) + 1 if user.move_history.any? { |move| move.db_symbol == :defense_curl }
         return super * 2 ** (mod || 0)
@@ -21,7 +21,7 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @param reason [Symbol] why the move failed: :usable_by_user, :accuracy, :immunity
       def on_move_failure(user, targets, reason)
-        user.effects.get(:rollout)&.kill
+        user.effects.get(effect_name)&.kill
       end
 
       # Function that deals the effect to the pokemon
@@ -29,12 +29,26 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         # @type [Effects::Rollout]
-        rollout_effect = user.effects.get(:rollout)
+        rollout_effect = user.effects.get(effect_name)
         return rollout_effect.increase if rollout_effect
 
-        effect = Effects::Rollout.new(logic, user, self, actual_targets, 5)
+        effect = create_effect(user, actual_targets)
         user.effects.replace(effect, &:force_next_move?)
         effect.increase
+      end
+
+      # Name of the effect
+      # @return [Symbol]
+      def effect_name
+        :rollout
+      end
+
+      # Create the effect
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+      # @return [Effects::EffectBase]
+      def create_effect(user, actual_targets)
+        Effects::Rollout.new(logic, user, self, actual_targets, 5)
       end
     end
 
