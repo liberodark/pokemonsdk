@@ -9,7 +9,11 @@ module Battle
       lock do
         animations = targets.map.with_index do |target, index|
           show_info_bar(target)
-          next Battle::Visual::HPAnimation.new(@scene, target, hps[index], effectiveness[index]) if hps[index]
+          if hps[index] && hps[index] == 0
+            next Battle::Visual::FakeHPAnimation.new(@scene, target, effectiveness[index])
+          elsif hps[index]
+            next Battle::Visual::HPAnimation.new(@scene, target, hps[index], effectiveness[index])
+          end
         end
         wait_for_animation
         scene_update_proc { animations.each(&:update) } until animations.all?(&:done?)

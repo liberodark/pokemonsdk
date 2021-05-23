@@ -5,13 +5,15 @@ module Battle
       # Get the substitute hp
       # @return [Integer]
       attr_accessor :hp
+      # Get the substitute max hp
+      attr_reader :max_hp
 
       # Create a new Pokemon tied effect
       # @param logic [Battle::Logic]
       # @param pokemon [PFM::PokemonBattler]
       def initialize(logic, pokemon)
         super
-        @hp = pokemon.max_hp / 4
+        @hp = @max_hp = pokemon.max_hp / 4
       end
 
       # Function called when a stat_increase_prevention is checked

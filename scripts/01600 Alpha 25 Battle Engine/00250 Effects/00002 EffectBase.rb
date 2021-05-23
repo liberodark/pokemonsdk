@@ -269,6 +269,13 @@ module Battle
         return nil
       end
 
+      # Function called when a Pokemon initialize a transformation
+      # @param handler [Battle::Logic::TransformHandler]
+      # @param target [PFM::PokemonBattler]
+      def on_transform_event(handler, target)
+        nil && handler && target
+      end
+
       private
 
       # Function that disable all the hooks (putting aside on_delete)
@@ -298,6 +305,7 @@ module Battle
           alias on_move_prevention_target on_stat_increase_prevention
           alias on_move_type_change on_stat_increase_prevention
           alias on_move_disabled_check on_stat_increase_prevention
+          alias on_transform_event on_stat_increase_prevention
         end
       end
     end

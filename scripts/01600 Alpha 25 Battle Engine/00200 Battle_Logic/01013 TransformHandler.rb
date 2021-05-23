@@ -52,5 +52,13 @@ module Battle
 
       target.transform = party.last
     end
+
+    TransformHandler.register_on_initialize_transform('PSDK transform : Effects') do |handler, target|
+      next unless target.effects
+
+      next handler.logic.each_effects(target) do |e|
+        next e.on_transform_event(handler, target)
+      end
+    end
   end
 end
