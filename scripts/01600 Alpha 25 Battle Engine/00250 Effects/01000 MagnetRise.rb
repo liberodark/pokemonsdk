@@ -2,10 +2,10 @@ module Battle
   module Effects
     # User becomes immune to Ground-type moves for N turns.
     class MagnetRise < PokemonTiedEffectBase
-      include Effects::Mechanics::ForceFlying
+      include Mechanics::ForceFlying
 
       # Make to pokemon flying in grounded? test
-      Effects::Mechanics::ForceFlying.register_force_flying_hook('PSDK flying: Magnet Rise', :magnet_rise)
+      Mechanics::ForceFlying.register_force_flying_hook('PSDK flying: Magnet Rise', :magnet_rise)
 
       # Create a new Pokemon tied effect
       # @param logic [Battle::Logic]
