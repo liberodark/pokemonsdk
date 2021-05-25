@@ -17,5 +17,6 @@ module Battle
       end
     end
     Move.register(:s_avalanche, Avalanche)
+    Move.register(:s_assurance, Avalanche)
   end
 end

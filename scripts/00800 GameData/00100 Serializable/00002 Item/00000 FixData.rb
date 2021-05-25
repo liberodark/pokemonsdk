@@ -27,7 +27,8 @@ module GameData
     # @param map_usable [Boolean] if the item is usable in map
     # @param limited [Boolean] if the item is consumable
     # @param holdable [Boolean] if the item can be held by a Pokemon
-    def initialize(id, db_symbol, icon, price, socket, position, battle_usable, map_usable, limited, holdable)
+    # @param fling_power [Integer] power of the item in fling move
+    def initialize(id, db_symbol, icon, price, socket, position, battle_usable, map_usable, limited, holdable, fling_power)
       @id = id.to_i
       @db_symbol = db_symbol.is_a?(Symbol) ? db_symbol : :__undef__
       @icon = icon.to_s
@@ -38,12 +39,13 @@ module GameData
       @map_usable = map_usable
       @limited = limited
       @holdable = holdable
+      @fling_power = fling_power
     end
 
     # Get the parameters of the item
     # @return [Array]
     def initialize_params
-      [@id, @db_symbol, @icon, @price, @socket, @position, @battle_usable, @map_usable, @limited, @holdable]
+      [@id, @db_symbol, @icon, @price, @socket, @position, @battle_usable, @map_usable, @limited, @holdable, @fling_power]
     end
 
     # Convert an item to the new format

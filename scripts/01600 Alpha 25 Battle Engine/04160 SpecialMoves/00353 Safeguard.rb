@@ -25,7 +25,7 @@ module Battle
         actual_targets.each do |target|
           next if logic.bank_effects[target.bank].has?(effect_name)
 
-          logic.bank_effects[target.bank].add()
+          logic.bank_effects[target.bank].add(create_effect(user, target))
           scene.display_message_and_wait(deal_message(user, target))
         end
       end

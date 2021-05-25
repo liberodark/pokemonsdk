@@ -2,13 +2,18 @@ module Battle
   module Effects
     # User becomes immune to Ground-type moves for N turns.
     class MagnetRise < PokemonTiedEffectBase
+      include Effects::Mechanics::ForceFlying
+
+      # Make to pokemon flying in grounded? test
+      Effects::Mechanics::ForceFlying.register_force_flying_hook('PSDK flying: Magnet Rise', :magnet_rise)
+
       # Create a new Pokemon tied effect
       # @param logic [Battle::Logic]
       # @param pokemon [PFM::PokemonBattler]
-      # @param turncount [Integer] (default: 5)
-      def initialize(logic, pokemon, turncount = 5)
+      # @param duration [Integer] (default: 5) duration of the move (including the current turn)
+      def initialize(logic, pokemon, duration = 5)
         super(logic, pokemon)
-        self.counter = turncount
+        force_flying_initialize(duration)
       end
 
       # Function giving the name of the effect
@@ -17,32 +22,7 @@ module Battle
         :magnet_rise
       end
 
-      # Function called when we try to check if the target evades the move
-      # @param user [PFM::PokemonBattler]
-      # @param target [PFM::PokemonBattler] expected target
-      # @param move [Battle::Move]
-      # @return [Boolean] if the target is evading the move
-      def on_move_prevention_target(user, target, move)
-        return false unless target == @pokemon
-        return false unless move.type_ground?
-
-        @logic.scene.display_message_and_wait(on_proc_message)
-        return true
-      end
-
-      # Function called when the effect has been deleted from the effects handler
-      def on_delete
-        @logic.scene.display_message_and_wait(on_delete_message)
-      end
-
       private
-      
-      # Transfer the effect to the given pokemon via baton switch
-      # @param with [PFM::Battler] the pokemon switched in
-      # @return [Battle::Effects::PokemonTiedEffectBase, nil] the effect to give to the switched in pokemon, nil if there is this effect isn't transferable via baton pass
-      def baton_switch_transfer(with)
-        return self.class.new(@logic, with)
-      end
 
       # Message displayed when the effect procs
       # @return [String]

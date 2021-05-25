@@ -42,7 +42,6 @@ module PFM
     register_force_grounded_hook('PSDK grounded: Ingrain') { |pokemon| pokemon.effects.has?(:ingrain) }
     register_force_flying_hook('PSDK flying: Air Balloon') { |pokemon| pokemon.hold_item?(:air_balloon) }
     register_force_flying_hook('PSDK flying: Fly type') { |pokemon, _| pokemon.type_fly? }
-    # TODO: magnet rise
     register_force_flying_hook('PSDK flying: Levitate') { |pokemon| pokemon.has_ability?(:levitate) }
   end
 end
