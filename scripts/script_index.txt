@@ -429,6 +429,7 @@ pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00
 pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00005 MiningGame_Logic.rb
 pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00006 MiningGame_Mouse.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00100 PokemonBattler.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00200 Properties.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00300 Statistics.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00301 Statistics Speed mod.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00400 Grounded.rb
@@ -459,6 +460,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01012 FTerrai
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01013 TransformHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/02000 ExpHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00000 Mechanics/00100 ForceFlying.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00000 Mechanics/00100 NeutralizeType.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 EffectsHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00002 EffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00003 PositionTiedEffectBase.rb
@@ -504,11 +506,11 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Minimize.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 MiracleEye.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Mist.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 MudSport.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 NeutralizeType.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Nightmare.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 PerishSong.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Protect.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Rage.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Roost.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Safeguard.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 SmackDown.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Snatch.rb

@@ -137,7 +137,7 @@ module PFM
       copy_properties
       copy_moveset
       @battle_stage = Array.new(7, 0)
-      @battle_stats = {}
+      @battle_properties = {}
       reset_states
       @battle_max_level = max_level
       @level = original.level < max_level ? original.level : max_level
@@ -160,11 +160,6 @@ module PFM
       initialize_set_is_follower
     end
 
-    # Reload the original ability
-    def reset_ability
-      @ability = @original.ability
-    end
-
     # Is the Pokemon able to fight ?
     # @return [Boolean]
     def can_fight?
@@ -184,7 +179,7 @@ module PFM
     # Return the db_symbol of the current ability of the Pokemon
     # @return [Symbol]
     def ability_db_symbol
-      return GameData::Abilities.db_symbol(@ability_current || -1)
+      return GameData::Abilities.db_symbol(ability || -1)
     end
 
     # Return the db_symbol of the current ability of the Pokemon for battle
@@ -316,6 +311,7 @@ module PFM
     def copy_properties_back_to_original
       return if @scene.battle_info.max_level
 
+      @battle_properties.clear
       self.transform = nil
       original = @original
       BACK_PROPETIES.each do |ivar_name|
@@ -329,10 +325,9 @@ module PFM
     # Function that resets everything from the pokemon once it got switched out of battle
     def reset_states
       @battle_stage.map! { 0 }
-      @battle_stats.clear
+      @battle_properties.clear
       @status_count = 0 if toxic?
       @effects = Battle::Effects::EffectsHandler.new
-      @ability_current = @ability
       @switching = false
       @turn_count = 0
       @type1 = @type2 = @type3 = nil
@@ -391,20 +386,18 @@ module PFM
     end
 
     # Neutralize a type on the Pokemon
-    # @param type [GameData::Types]
-    def ignore_type(type)
-      return unless type?(type)
-
-      original_types = [type1, type2, type3]
-      return self.type1 = GameData::Types::NORMAL if original_types.count { |t| t > 0 } == 1
-
-      self.type1, self.type2, self.type3 = original_types.map { |t| t.nil? || t == type ? 0 : t }
+    # @param types [Array<GameData::Types>]
+    # @param default [GameData::Types] (default: GameData::Types::Normal) type applied when no other types are definied
+    def ignore_types(*types, default: GameData::Types::NORMAL)
+      self.type1, self.type2, self.type3 = [type1, type2, type3].reject { |t| types.include?(t) }
+      self.type1 = default unless type1
     end
 
-    # Restore a type on the Pokemon
-    # @param pokemon [PFM::PokemonBattler]
-    def restore_types
-      self.type1, self.type2, self.type3 = nil
+    # Change the type of the pokemons
+    # @param types [Array<GameData::Types>]
+    def change_types(*types)
+      return unless types.all { |t| type?(t) }
+      self.type1, self.type2, self.type3 = types
     end
 
     private

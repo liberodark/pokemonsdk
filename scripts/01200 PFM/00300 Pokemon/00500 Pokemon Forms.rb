@@ -53,16 +53,16 @@ module PFM
     def mega_evolve
       mega_evolution = can_mega_evolve?
       return unless mega_evolution
-      @mega_evolved = [@form, @ability]
+      @mega_evolved = @form
       @form = mega_evolution
-      @ability_current = @ability = data.abilities[rand(3)]
+      self.ability = data.abilities[rand(3)] # Pokemon will always be a PFM::PokemonBattler
     end
 
     # Reset the Pokemon to its normal form after mega evolution
     def unmega_evolve
       if @mega_evolved
-        @form, @ability = @mega_evolved
-        @ability_current = @ability
+        @form = @mega_evolved
+        restore_ability # Pokemon will always be a PFM::PokemonBattler
         @mega_evolved = false
       end
     end

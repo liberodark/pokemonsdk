@@ -132,9 +132,6 @@ module PFM
     # ID of the Pokemon ability in the database
     # @return [Integer]
     attr_writer :ability
-    # ID of the ability the Pokemon has in battle
-    # @return [Integer]
-    attr_accessor :ability_current
     # Index of the ability in the Pokemon data
     # @return [Integer, nil]
     attr_accessor :ability_index
@@ -410,7 +407,7 @@ module PFM
     # Return the current ability of the Pokemon
     # @return [Integer]
     def ability
-      return @ability_current
+      return @ability
     end
 
     # Return the db_symbol of the Pokemon's Ability

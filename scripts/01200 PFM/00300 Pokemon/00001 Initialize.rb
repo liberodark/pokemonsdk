@@ -226,7 +226,6 @@ module PFM
         @ability = ability[@ability_index = ABILITY_CHANCES.find_index { |value| value > ability_chance }].to_i
       end
       @ability = GameData::Abilities.find_using_symbol(@ability) unless @ability.is_a?(Integer)
-      @ability_current = @ability
       @ability_used = false
     end
   end

@@ -6,66 +6,6 @@ module PFM
     # Maximal value of the stat modifier level (stage)
     MAX_STAGE = 6
 
-    # Return the atk stat without battle modifier
-    # @return [Integer]
-    def atk_basis
-      return @battle_stats[:atk_basis] || super
-    end
-
-    # Return the ats stat without battle modifier
-    # @return [Integer]
-    def ats_basis
-      return @battle_stats[:ats_basis] || super
-    end
-
-    # Return the dfe stat without battle modifier
-    # @return [Integer]
-    def dfe_basis
-      return @battle_stats[:dfe_basis] || super
-    end
-
-    # Return the dfs stat without battle modifier
-    # @return [Integer]
-    def dfs_basis
-      return @battle_stats[:dfs_basis] || super
-    end
-
-    # Return the spd stat without battle modifier
-    # @return [Integer]
-    def spd_basis
-      return @battle_stats[:spd_basis] || super
-    end
-
-    # Set the atk basis (doesn't modify original value)
-    # @param value [Integer]
-    def atk_basis=(value)
-      @battle_stats[:atk_basis] = value
-    end
-
-    # Set the ats basis (doesn't modify original value)
-    # @param value [Integer]
-    def ats_basis=(value)
-      @battle_stats[:ats_basis] = value
-    end
-
-    # Set the dfe basis (doesn't modify original value)
-    # @param value [Integer]
-    def dfe_basis=(value)
-      @battle_stats[:dfe_basis] = value
-    end
-
-    # Set the dfs basis (doesn't modify original value)
-    # @param value [Integer]
-    def dfs_basis=(value)
-      @battle_stats[:dfs_basis] = value
-    end
-
-    # Set the spd basis (doesn't modify original value)
-    # @param value [Integer]
-    def spd_basis=(value)
-      @battle_stats[:spd_basis] = value
-    end
-
     # Return the current atk
     # @return [Integer]
     def atk
