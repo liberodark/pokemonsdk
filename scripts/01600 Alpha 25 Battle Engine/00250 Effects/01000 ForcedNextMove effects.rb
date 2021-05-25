@@ -49,6 +49,39 @@ module Battle
       end
     end
 
+    # Forced Next Move for previous move of target for 3 turns
+    class Encore < PokemonTiedEffectBase
+      include ForceNextMove
+
+      # Create a new Forced next move effect
+      # @param logic [Battle::Logic]
+      # @param target [PFM::PokemonBattler]
+      # @param move [Battle::Move]
+      # @param counter [Integer] number of turn the move is forced to be used
+      # @param targets [Array<PFM::PokemonBattler>]
+      # @param turncount [Integer] (default: 5) number of turn the effect proc (including the current one)
+      def initialize(logic, target, move, targets, turncount = 3)
+        super(logic, target)
+        init_force_next_move(move, targets, turncount)
+      end
+
+      def on_delete
+        @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 562, @pokemon))
+      end
+
+      # Get the class of the action
+      # @return [Class<Actions::Attack>]
+      def action_class
+        Actions::Attack::Encore
+      end
+
+      # Get the name of the effect
+      # @return [Symbol]
+      def name
+        :encore
+      end
+    end
+
     # Forced Next Move for Bide
     class Bide < PokemonTiedEffectBase
       include ForceNextMove

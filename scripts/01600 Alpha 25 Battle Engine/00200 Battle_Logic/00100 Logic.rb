@@ -5,7 +5,7 @@ module Battle
   class Logic
     # @return [Array<Array>] list of messages to send to an interpreter (AI/Scene)
     attr_reader :messages
-    # @return [Array<Hash>] list of the current actions to proccess during the scene
+    # @return [Array<Actions::Base>] list of the current actions to proccess during the scene
     attr_reader :actions
     # 0 : Victory, 1 : Flee, 2 : Defeat, -1 : undef
     # @return [Integer]

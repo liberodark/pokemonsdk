@@ -1,5 +1,9 @@
 module Battle
   class Move
+    # Tell if forced next move decreases PP
+    # @return [Boolean]
+    attr_accessor :forced_next_move_decrease_pp
+
     # Function starting the move procedure
     # @param user [PFM::PokemonBattler] user of the move
     # @param target_bank [Integer] bank of the target

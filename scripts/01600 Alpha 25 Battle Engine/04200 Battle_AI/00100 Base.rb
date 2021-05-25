@@ -29,6 +29,10 @@ module Battle
       # @return [Array<Actions::Base>]
       def trigger
         return controlled_pokemon.flat_map do |pokemon|
+          # @type [Battle::Effects::ForceNextMove]
+          effect = pokemon.effects.get(&:force_next_move?)
+          next effect.make_action if effect
+
           battle_action_for(pokemon)
         end.compact
       end

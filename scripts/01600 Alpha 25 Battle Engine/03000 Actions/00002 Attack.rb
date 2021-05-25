@@ -78,6 +78,20 @@ module Battle
           @move.dup.proceed(launcher, @target_bank, @target_position)
         end
       end
+
+      # Action describing the action forced by Encore
+      class Encore < Attack
+        # Execute the action
+        def execute
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 559, @launcher))
+          @move.forced_next_move_decrease_pp = true
+          super
+          @move.forced_next_move_decrease_pp = false
+          if @move.pp <= 0 && (effect = @launcher.effects.get(:encore))
+            effect.kill
+          end
+        end
+      end
     end
   end
 end

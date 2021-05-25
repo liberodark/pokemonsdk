@@ -20,8 +20,10 @@ module Battle
       # @param name [Symbol, nil] name of the effect. Ignored if a block is given.
       # @param &block [Block, nil] (optional) block testing each effect
       # @return [Boolean] if the effect is present
+      # @yieldparam effect [EffectBase]
       def has?(name = nil, &block)
         return @effects.any?(&block) if block
+
         return @effects.any? { |e| e.name == name }
       end
 
@@ -44,8 +46,10 @@ module Battle
       # @param name [Symbol, nil] name of the effect. Ignored if a block is given.
       # @param &block [Block, nil] (optional) block testing each effect
       # @return [EffectBase, nil]
+      # @yieldparam effect [EffectBase]
       def get(name = nil, &block)
         return @effects.find(&block) if block
+
         return @effects.find { |e| e.name == name }
       end
 
