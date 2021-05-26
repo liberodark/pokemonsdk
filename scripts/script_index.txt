@@ -649,6 +649,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Hex.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 HitThenCureStatus.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Ingrain.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Judgment.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 LastResort.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 LightScreen Reflect.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 MagnetRise.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 MagneticFlux.rb
