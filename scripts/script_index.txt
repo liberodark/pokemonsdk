@@ -586,8 +586,8 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00120 Move Pro
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00121 Move Prevention.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00130 Move Type.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00131 BE24 Shit.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 SpecialMoves Mechanics/00100 Counter.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 SpecialMoves Mechanics/00100 ItemBased.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04155 SpecialMoves Mechanics/00100 Counter.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04155 SpecialMoves Mechanics/00100 ItemBased.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00100 Basic.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00101 Self.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00102 Status Stat.rb

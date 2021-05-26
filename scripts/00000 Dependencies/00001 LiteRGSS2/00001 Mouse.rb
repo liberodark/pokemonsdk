@@ -25,6 +25,9 @@ module Mouse
   # Mouse wheel position
   # @type [Integer]
   @wheel = 0
+  # Mouse wheel delta
+  # @return [Integer]
+  @wheel_delta = 0
   # Mouse x position on the screen
   # @type [Integer]
   @x = -999_999
@@ -42,6 +45,9 @@ module Mouse
     # Mouse wheel position
     # @return [Integer]
     attr_accessor :wheel
+    # Mouse wheel delta
+    # @return [Integer]
+    attr_reader :wheel_delta
     # Get the mouse x position
     # @return [Integer]
     attr_reader :x
@@ -86,6 +92,7 @@ module Mouse
     def swap_states
       @last_state.merge!(@current_state)
       @moved = false
+      @wheel_delta = 0
     end
 
     # Register event related to the mouse
@@ -107,7 +114,10 @@ module Mouse
     # @param wheel [Integer]
     # @param delta [Float]
     def on_wheel_scrolled(wheel, delta)
-      @wheel += delta.to_i if wheel == Sf::Mouse::VerticalWheel
+      return unless wheel == Sf::Mouse::VerticalWheel
+
+      @wheel += delta.to_i
+      @wheel_delta += delta.to_i
     end
 
     # Update the button state
