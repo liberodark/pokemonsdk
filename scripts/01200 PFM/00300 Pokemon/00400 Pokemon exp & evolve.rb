@@ -122,7 +122,8 @@ module PFM
     # @param list1 [Array<Integer>] new basis stat list
     # @param z_level [Integer] z superiority of the Window
     def level_up_window_call(list0, list1, z_level)
-      window = UI::LevelUpWindow.new(nil, self, list0, list1)
+      vp = $scene&.viewport
+      window = UI::LevelUpWindow.new(vp, self, list0, list1)
       window.z = z_level
       Graphics.sort_z
       until Input.trigger?(:A)
