@@ -1,10 +1,12 @@
 module Battle
   class Move
-    # Sleep Talk move
-    class SleepTalk < Move
+    # Assist move
+    class Assist < Move
       CANNOT_BE_SELECTED_MOVES = %i[
-        assist belch bide bounce copycat dig dive freeze_shock fly focus_punch geomancy ice_burn me_first metronome sleep_talk
-        mirror_move mimic phantom_force razor_wind shadow_force sketch skull_bash sky_attack sky_drop solar_beam uproar
+        assist baneful_bunker beak_blast belch bestow bounce celebrate chatter circle_throw copycat counter covet destiny_bound detect dig
+        dive dragon_tail endure feint fly focus_punch follow_me helping_hand hold_hands king’s_shield mat_block me_first metronome mimic
+        mirror_coat mirror_move nature_power phantom_force protect rage_powder roar shadow_force shell_trap sketch sky_drop sleep_talk snatch
+        spiky_shield spotlight struggle switcheroo thief transform trick whirlwind
       ]
 
       # Function that tests if the user is able to use the move
@@ -13,12 +15,14 @@ module Battle
       # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
-        if !user.asleep? || usable_moves.empty?
+        return false unless super
+
+        if usable_moves(user).empty?
           show_usage_failure(user)
           return false
         end
 
-        return true if super
+        return true
       end
 
       private
@@ -27,8 +31,9 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        move = usable_moves.sample(random: @logic.generic_rng).dup
-        move.pp = move.ppmax
+        skill = usable_moves(user).sample(random: @logic.generic_rng)
+        move = Battle::Move[skill.be_method].new(skill.id, 1, 1, @scene)
+
         def move.move_usable_by_user(user, targets)
           return true
         end
@@ -39,9 +44,12 @@ module Battle
       # @param user [PFM::PokemonBattler]
       # @return [Array<Battle::Move>]
       def usable_moves(user)
-        user.skills_set.reject { |skill| CANNOT_BE_SELECTED_MOVES.include?(skill.db_symbol) }
+        team = @logic.trainer_battlers.reject { |pkm| pkm == user }
+        skills = team.flat_map(&:moveset).uniq(&:db_symbol)
+        skills.reject! { |move| CANNOT_BE_SELECTED_MOVES.include?(move.db_symbol) }
+        return skills
       end
     end
-    Move.register(:s_sleep_talk, SleepTalk)
+    Move.register(:s_assist, Assist)
   end
 end
