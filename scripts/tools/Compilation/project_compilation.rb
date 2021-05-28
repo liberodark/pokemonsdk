@@ -67,7 +67,7 @@ module ProjectCompilation
   def compile_vscode_scripts(path)
     compile_scripts(path)
     Dir[File.join(path, '*/')].grep(ScriptLoader::SCRIPT_FOLDER_REG).sort.each do |pathname|
-      compile_scripts(pathname)
+      compile_vscode_scripts(pathname)
     end
   end
 
