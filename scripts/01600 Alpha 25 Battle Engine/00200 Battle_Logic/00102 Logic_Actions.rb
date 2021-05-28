@@ -40,7 +40,7 @@ module Battle
     # Sort the actions
     # @note The last action in the stack is the first action to pop out from the stack
     def sort_actions
-      handle_dancer
+      refine_actions
       sorted_actions = sort_action_and_add_effects
       @actions.clear
       @actions.concat(sorted_actions.reverse)
@@ -48,6 +48,12 @@ module Battle
     end
 
     private
+
+    # Process specific behaviours
+    def refine_actions
+      handle_pre_attack_action
+      handle_dancer
+    end
 
     # Define all pokemon action properties based on the actions
     def define_pokemon_action_properties
@@ -118,6 +124,14 @@ module Battle
       dancing_moves.each do |move|
         move.sub_launchers.concat(dancers.reject { |dancer| dancer == move.launcher })
       end
+    end
+
+    # Handle the attakcs with pre attack effects
+    def handle_pre_attack_action
+      attack_actions = @actions.select { |action| action.is_a?(Actions::Attack) && action.move.pre_attack? }.sort
+      return if attack_actions.empty?
+
+      add_actions([Actions::PreAttack.new(@scene, attack_actions)])
     end
 
     # Test the quick claw trigger

@@ -28,6 +28,12 @@ module Battle
       proceed_internal(user, possible_targets)
     end
 
+    # Proceed the procedure before any other attack.
+    # @param user [PFM::PokemonBattler]
+    def proceed_pre_attack(user)
+      nil && user
+    end
+
     private
 
     # Internal procedure of the move
