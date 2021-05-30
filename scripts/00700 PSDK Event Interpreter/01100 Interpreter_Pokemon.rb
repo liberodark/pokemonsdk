@@ -62,12 +62,15 @@ class Interpreter
   alias retirer_pokemon_index withdraw_pokemon_at
 
   # Learn a skill to a Pokemon
-  # @param pokemon [PFM::Pokemon] the Pokemon that will learn the skill (use $actors[index] for a Pokemon in the party).
+  # @param pokemon [PFM::Pokemon, Integer] the Pokemon that will learn the skill (use $actors[index] for a Pokemon in the party). An integer will automatically search into the party
   # @param id_skill [Integer, Symbol] the id of the skill in the database
   # @return [Boolean] if the move was learnt or not
   # @author Nuri Yuri
   def skill_learn(pokemon, id_skill)
+    pokemon = $actors[pokemon] if pokemon.is_a?(Integer)
+    id_skill = GameData::Skill.get_id(id_skill) if id_skill.is_a?(Symbol)
     raise "Database Error : Skill ##{id_skill} doesn't exists." unless GameData::Skill.id_valid?(id_skill)
+    raise "Pokemon Error: #{pokemon} doesn't exists" unless pokemon.is_a?(PFM::Pokemon)
 
     @wait_count = 2
     result = nil
