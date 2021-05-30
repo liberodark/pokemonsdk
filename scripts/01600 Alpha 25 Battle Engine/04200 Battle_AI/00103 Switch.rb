@@ -8,7 +8,7 @@ module Battle
         actions = switch_actions_generate_for(who)
         return nil if actions.empty?
 
-        best = actions.compact.(random: @scene.logic.generic_rng).max_by(&:first)
+        best = actions.compact.shuffle(random: @scene.logic.generic_rng).max_by(&:first)
         Debug::AiWindow.append(self, actions.compact) if defined?(Debug::AiWindow)
         return best.last.with
       end

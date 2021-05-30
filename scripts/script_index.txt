@@ -493,6 +493,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 ForcedNextMo
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Foresight.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 FutureSight.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Gravity.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Grudge.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 HappyHour.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 HealingWish.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/01000 Ingrain.rb
@@ -642,8 +643,10 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 FoulPla
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 FutureSight.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Geomancy.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Growth.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Grudge.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Haze.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Hex.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 HitThenCureStatus.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Ingrain.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Judgment.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 LightScreen Reflect.rb
@@ -664,7 +667,6 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Rollout
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Roost.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 SecretPower.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Sketch.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 SmellingSalts.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Snatch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 SpitUp.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Stages split moves.rb
@@ -675,6 +677,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Stockpi
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 StoredPower.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Substitute.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Swallow.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Switcheroo.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Tailwind.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Telekinesis.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 TopsyTurvy.rb
