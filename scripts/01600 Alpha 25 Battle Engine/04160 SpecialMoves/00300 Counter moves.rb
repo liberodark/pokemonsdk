@@ -6,7 +6,7 @@ module Battle
     # @see https://www.pokepedia.fr/Riposte_(capacit%C3%A9)
     class Counter < Basic
       include Mechanics::Counter
-      
+
       private
 
       # Test if the attack fails
@@ -15,7 +15,7 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @return [Boolean] does the attack fails ?
       def counter_fails?(attacker, user, targets)
-        !attacker ||logic.allies_of(user).include?(attacker) || attacker.type_ghost? || !attacker.move_history.last.move.physical?
+        !attacker || logic.allies_of(user).include?(attacker) || attacker.type_ghost? || !attacker.move_history.last.move.physical?
       end
     end
     Move.register(:s_counter, Counter)
@@ -26,7 +26,7 @@ module Battle
     # @see https://www.pokepedia.fr/Voile_Miroir
     class MirrorCoat < Basic
       include Mechanics::Counter
-      
+
       private
 
       # Test if the attack fails
@@ -46,7 +46,7 @@ module Battle
     # @see https://www.pokepedia.fr/Fulmifer
     class MetalBurst < Basic
       include Mechanics::Counter
-      
+
       private
 
       # Test if the attack fails
@@ -55,11 +55,11 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @return [Boolean] does the attack fails ?
       def counter_fails?(attacker, user, targets)
-        !attacker || logic.allies_of(user).include?(attacker)
+        !attacker || logic.allies_of(user).include?(attacker) || !attacker.move_history.last.move.special? || !attacker.move_history.last.move.physical?
       end
 
       # Damage multiplier if the effect proc
-      # @return [Integer]
+      # @return [Integer, Float]
       def damage_multiplier
         1.5
       end

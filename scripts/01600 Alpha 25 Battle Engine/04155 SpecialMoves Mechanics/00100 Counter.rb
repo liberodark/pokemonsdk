@@ -43,7 +43,7 @@ module Battle::Move::Mechanics
     end
 
     # Damage multiplier if the effect proc
-    # @return [Integer]
+    # @return [Integer, Float]
     def damage_multiplier
       2
     end
