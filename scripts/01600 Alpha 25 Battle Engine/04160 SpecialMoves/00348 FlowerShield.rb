@@ -12,7 +12,7 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user?(user, targets)
         return false unless super
-        return show_usage_failure(user) && false unless targets.any? {|target| target.type_grass? && !target.effects.has?(:out_of_reach)}
+        return show_usage_failure(user) && false unless targets.any? {|target| target.type_grass? && !target.effects.has?(&:out_of_reach?)}
         return true
       end
 
@@ -22,7 +22,7 @@ module Battle
       # @note Thing that prevents the move from being used should be defined by :move_prevention_target Hook.
       # @return [Boolean] if the target evade the move (and is not selected)
       def move_blocked_by_target?(user, target)
-        return super || !target.type_grass? || target.effects.has?(:out_of_reach)
+        return super || !target.type_grass? || target.effects.has?(&:out_of_reach?)
       end
       
       private

@@ -57,6 +57,27 @@ module Battle
         return false
       end
 
+      # Tell if the effect make the pokemon out reach
+      # @return [Boolean]
+      def out_of_reach?
+        return false
+      end
+
+      # Check if the attack can hit the pokemon. Should be called after testing out_of_reach?
+      # @param name [Symbol]
+      # @return [Boolean]
+      def can_attack_hit_out_of_reach?(name)
+        # (exemple) This is where we test earthquake, fissuer and magnitude for Dig
+        return out_of_reach?
+      end
+
+      # Tell if the given battler is targetted by the effect
+      # @param battler [PFM::PokemonBattler]
+      # @return [Boolean]
+      def targetted?(battler)
+        false
+      end
+
       # Function called when a stat_increase_prevention is checked
       # @param handler [Battle::Logic::StatChangeHandler] handler use to test prevention
       # @param stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva

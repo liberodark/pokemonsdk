@@ -382,7 +382,7 @@ module PFM
     # Is the pokemon affected by the terrain ?
     # @return [Boolean]
     def affected_by_terrain?
-      return grounded? && !effects.has?(:out_of_reach)
+      return grounded? && !effects.has?(&:out_of_reach?)
     end
 
     # Neutralize a type on the Pokemon

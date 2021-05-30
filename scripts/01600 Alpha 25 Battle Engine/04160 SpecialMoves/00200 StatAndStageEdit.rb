@@ -11,7 +11,7 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-        return show_usage_failure(user) && false if targets.all? { |target| target.effects.has?(:out_of_reach)}
+        return show_usage_failure(user) && false if targets.all? { |target| target.effects.has?(&:out_of_reach?)}
         return true
       end
 
@@ -20,7 +20,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
-          next if target.effects.has?(:out_of_reach)
+          next if target.effects.has?(&:out_of_reach?)
           edit_stages(user, target)
         end
         return true

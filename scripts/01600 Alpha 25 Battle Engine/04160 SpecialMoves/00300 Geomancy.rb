@@ -2,15 +2,16 @@ module Battle
   class Move
     # Class managing the Geomancy move
     # @see https://pokemondb.net/move/geomancy
-    class Geomancy < TwoTurn
+    class Geomancy < BasicWithSuccessfulEffect
+      include Mechanics::TwoTurn
+
       private
 
-      # Test if the effect is working
-      # @param user [PFM::PokemonBattler] user of the move
-      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
-      # @return [Boolean]
-      def effect_working?(user, actual_targets)
-        return true
+      # Display the message and the animation of the turn
+      # @param user [PFM::PokemonBattler]
+      # @param targets [Array<PFM::PokemonBattler>] expected targets
+      def proceed_message_turn_1(user, targets)
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, 1213, user))
       end
 
       # Function that deals the effect to the pokemon

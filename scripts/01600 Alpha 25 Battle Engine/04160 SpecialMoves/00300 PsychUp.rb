@@ -28,7 +28,7 @@ module Battle
       # Return the chance of hit of the move
       # @return [Float]
       def chance_of_hit(user, target)
-        return 100 unless target.effects.has?(:out_of_reach)
+        return 100 unless target.effects.has?(&:out_of_reach?)
 
         super
       end

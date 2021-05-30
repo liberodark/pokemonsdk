@@ -19,7 +19,7 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def damages(user, target)
-        return super(user, target) unless (e = target.effects.get(:out_of_reach)) && !e&.on_move_prevention_target(user, target, self)
+        return super(user, target) unless (e = target.effects.get(&:out_of_reach?)) && !e&.on_move_prevention_target(user, target, self)
 
         d = super(user, target)
         log_data("damage = #{d * 2} # #{d} * 2 (magnitude overhall damages double when target is using dig)")
