@@ -2,8 +2,8 @@ module Battle
   module Effects
     # Forced Next Move that can be disturbed
     class ForceNextMoveDisturbable < PokemonTiedEffectBase
-      include ForceNextMove
-      include Disturbable
+      include Mechanics::ForceNextMove
+      include Mechanics::Disturbable
 
       # Create a new Forced next move effect
       # @param logic [Battle::Logic]
@@ -26,8 +26,8 @@ module Battle
 
     # Forced Next Move for rollout so it stores additional information
     class Rollout < PokemonTiedEffectBase
-      include ForceNextMove
-      include SuccessiveSuccessfulUses
+      include Mechanics::ForceNextMove
+      include Mechanics::SuccessiveSuccessfulUses
 
       # Create a new Forced next move effect
       # @param logic [Battle::Logic]
@@ -51,7 +51,7 @@ module Battle
 
     # Forced Next Move for previous move of target for 3 turns
     class Encore < PokemonTiedEffectBase
-      include ForceNextMove
+      include Mechanics::ForceNextMove
 
       # Create a new Forced next move effect
       # @param logic [Battle::Logic]
@@ -84,7 +84,7 @@ module Battle
 
     # Forced Next Move for Bide
     class Bide < PokemonTiedEffectBase
-      include ForceNextMove
+      include Mechanics::ForceNextMove
 
       # Get the number of damage the Pokemon got during this effect
       # @return [Integer]

@@ -460,16 +460,15 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01012 FTerrai
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/01013 TransformHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/02000 ExpHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 EffectsHandler.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00002 EffectBase.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00003 PositionTiedEffectBase.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00004 PokemonTiedEffectBase.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00010 Disturbable.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00010 ForcedNextMove.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00010 SuccessiveSuccessfulUses.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00101 OutOfReach effects.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00100 EffectBase.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00200 PokemonTiedEffectBase.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00200 PositionTiedEffectBase.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 Disturbable.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 ForceFlying.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 ForceNextMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 NeutralizeType.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 OutOfReach.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 SuccessiveSuccessfulUses.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 WithTargets.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 AbilitySuppressed.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 AquaRing.rb
@@ -490,8 +489,9 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Embargo.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Flinch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 FocusEnergy.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 ForcedNextMove effects.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 ForceNextMove effects.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Foresight.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 FuryCutter.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 FutureSight.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Gravity.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Grudge.rb
@@ -511,8 +511,9 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Mist.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 MudSport.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Nightmare.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 OutOfReach.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 OutOfReachBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 PerishSong.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 PreventTargetsMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Protect.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Rage.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Roost.rb
@@ -524,7 +525,6 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 StickyWeb.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Stockpile.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Substitute.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 SuccessiveUses effects.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Tailwind.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Taunt.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Telekinesis.rb

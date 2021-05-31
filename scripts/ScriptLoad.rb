@@ -45,14 +45,18 @@ module ScriptLoader
   def load_scripts(path, file = nil)
     Dir[File.join(path, '*.rb')].sort.each do |filename|
       next unless File.basename(filename) =~ /^[0-9]{5}[ _].*/
-      file&.puts(filename.sub(File.expand_path('.') + '/', ''))
       require(filename)
-    end
-  rescue StandardError
-    if Object.const_defined?(:Yuki) && Yuki.const_defined?(:EXC)
-      Yuki::EXC.run($!)
-    else
-      raise
+      file&.puts(filename.sub(File.expand_path('.') + '/', ''))
+    rescue StandardError
+      if Object.const_defined?(:Yuki) && Yuki.const_defined?(:EXC)
+        Yuki::EXC.run($!)
+        puts $!.message
+        puts $!.backtrace.join("\n")
+        print 'Retry ? [y/n]: '
+        retry if gets.chomp.downcase == 'y'
+      else
+        raise
+      end
     end
   end
 
