@@ -21,6 +21,7 @@ module GamePlay
       create_base_ui
       create_overlay
       create_ui
+      Graphics.sort_z
     end
 
     # Update the graphics
@@ -141,7 +142,7 @@ module GamePlay
           return validate_key(key_value) if key_value >= 0 && Input::Keyboard.press?(key_value)
         end
       else
-        unless Input.joy_connected?(Input.main_joy)
+        unless Sf::Joystick.connected?(Input.main_joy)
           action_b_blink
           return display_message(ext_text(8998, 28))
         end
