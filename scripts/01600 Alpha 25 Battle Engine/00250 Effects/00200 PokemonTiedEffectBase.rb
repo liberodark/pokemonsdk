@@ -14,7 +14,8 @@ module Battle
       # @param with [PFM::PokemonBattler] pokemon switched in
       # @return [Boolean, nil] True if the effect is passed
       def on_baton_pass_switch(with)
-        return false unless effect = baton_switch_transfer(with)
+        return false unless (effect = baton_switch_transfer(with))
+
         with.effects.add(effect)
         return true
       end
@@ -23,7 +24,7 @@ module Battle
 
       # Transfer the effect to the given pokemon via baton switch
       # @param with [PFM::Battler] the pokemon switched in
-      # @return [Battle::Effects::PokemonTiedEffectBase, nil] the effect to give to the switched in pokemon, nil if there is this effect isn't transferable via baton pass
+      # @return [Battle::Effects::PokemonTiedEffectBase, nil] the effect to give to the switched in pokemon when transferable via baton pass, nil otherwise
       def baton_switch_transfer(with)
         return nil
       end

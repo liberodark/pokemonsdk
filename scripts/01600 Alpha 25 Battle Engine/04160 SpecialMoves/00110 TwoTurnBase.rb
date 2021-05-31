@@ -40,14 +40,14 @@ module Battle
 
       # Move db_symbol to a list of stat and power change on the user
       # @return [Hash<Symbol, Array<Array[Symbol, Power]>]
-      def stat_changes_turn_1(user, targets)
+      def stat_changesturn1(user, targets)
         MOVE_TO_STAT[db_symbol]
       end
 
       # Display the message and the animation of the turn
       # @param user [PFM::PokemonBattler]
       # @param targets [Array<PFM::PokemonBattler>] expected targets
-      def proceed_message_turn_1(user, targets)
+      def proceed_messageturn1(user, targets)
         txt_id = ANNOUNCES[db_symbol]
         @scene.display_message_and_wait(parse_text_with_pokemon(19, txt_id, user)) if txt_id
       end

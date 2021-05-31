@@ -24,24 +24,24 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
       # @return [Boolean] if the procedure can continue
-      def move_usable_by_user_turn_1(super_result, user, targets)
+      def move_usable_by_userturn1(super_result, user, targets)
         return show_usage_failuer(user) && false if @logic.terrain_effects.has?(:gravity)
 
-        return two_turn_move_usable_by_user_turn_1(super_result, user, targets)
+        return two_turn_move_usable_by_userturn1(super_result, user, targets)
       end
 
       # Check if the user can skip the first move
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @return [Boolean] true if the move is actually one move
-      def check_shortcut_turn_1(user, targets)
+      def check_shortcutturn1(user, targets)
         false
       end
 
       # Display the message and the animation of the turn
       # @param user [PFM::PokemonBattler]
       # @param targets [Array<PFM::PokemonBattler>] expected targets
-      def proceed_message_turn_1(user, targets)
+      def proceed_messageturn1(user, targets)
         targets.each do |target|
           @scene.display_message_and_wait(parse_text_with_2pokemon(19, 1124, user, target))
         end
@@ -50,8 +50,8 @@ module Battle
       # Add the effects to the pokemons (first turn)
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
-      def proceed_effects_turn_1(user, targets)
-        two_turn_proceed_effects_turn_1(user, targets)
+      def proceed_effectsturn1(user, targets)
+        two_turn_proceed_effectsturn1(user, targets)
         user.effects.add(Effects::PreventTargetsMove.new(@logic, user, targets, 1))
       end
     end

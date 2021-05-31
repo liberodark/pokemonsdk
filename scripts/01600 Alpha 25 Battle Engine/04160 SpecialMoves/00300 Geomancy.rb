@@ -10,7 +10,7 @@ module Battle
       # Display the message and the animation of the turn
       # @param user [PFM::PokemonBattler]
       # @param targets [Array<PFM::PokemonBattler>] expected targets
-      def proceed_message_turn_1(user, targets)
+      def proceed_messageturn1(user, targets)
         @scene.display_message_and_wait(parse_text_with_pokemon(19, 1213, user))
       end
 

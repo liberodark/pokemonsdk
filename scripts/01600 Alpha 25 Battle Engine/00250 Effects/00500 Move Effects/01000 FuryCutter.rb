@@ -2,7 +2,7 @@ module Battle
   module Effects
     # Effect that manage Fury Cutter effect
     class FuryCutter < PokemonTiedEffectBase
-      include SuccessiveSuccessfulUses
+      include Mechanics::SuccessiveSuccessfulUses
 
       # Create a new Pokemon tied effect
       # @param logic [Battle::Logic]

@@ -5,7 +5,10 @@ module Battle
       # @return [Integer]
       def successive_uses
         return @successive_uses if @pokemon.move_history.last&.last_turn? && @pokemon.last_successfull_move_is?(@move_db_symbol)
-        return @successive_uses if @pokemon.move_history.last&.last_turn? && accepted_moves.any? {|move_sym| @pokemon.last_successfull_move_is?(move_sym)}
+        if @pokemon.move_history.last&.last_turn? && accepted_moves.any? { |move_sym| @pokemon.last_successfull_move_is?(move_sym) }
+          return @successive_uses
+        end
+
         return @successive_uses = 0
       end
 
@@ -13,7 +16,7 @@ module Battle
       def increase
         @successive_uses += 1
       end
-      
+
       private
 
       # Init the successive uses module

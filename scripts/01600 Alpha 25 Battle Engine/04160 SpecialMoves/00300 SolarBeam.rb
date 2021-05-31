@@ -21,16 +21,16 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @return [Boolean] true if the move is actually one move
-      def check_shortcut_turn_1(user, targets)
+      def check_shortcutturn1(user, targets)
         return true if $env.sunny?
 
-        return two_turn_check_shortcut_turn_1(user, targets)
+        return two_turn_check_shortcutturn1(user, targets)
       end
 
       # Display the message and the animation of the turn
       # @param user [PFM::PokemonBattler]
       # @param targets [Array<PFM::PokemonBattler>] expected targets
-      def proceed_message_turn_1(user, targets)
+      def proceed_messageturn1(user, targets)
         @scene.display_message_and_wait(parse_text_with_pokemon(19, 553, user))
       end
     end

@@ -13,7 +13,7 @@ module Battle
       end
 
       private
-      
+
       # Create a new Forced next move effect
       # @param move [Battle::Move]
       # @param counter [Integer] number of turn the move is forced to be used
