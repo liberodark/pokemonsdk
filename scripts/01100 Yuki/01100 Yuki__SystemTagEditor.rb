@@ -44,6 +44,7 @@ module Yuki
 
       init_context
       init_surfaces
+      @viewport.sort_z
       until Input::Keyboard.press?(Input::Keyboard::Escape)
         Graphics.update
         update_click unless update_scroll_bar
@@ -137,7 +138,8 @@ module Yuki
       (48 * mx).upto(48 * mx + 47) do |tile_id|
         data[tile_id] = tag_id
       end
-      draw_tag(@autotile_tag.bitmap, mx * 32, 0, tag_id == 0)
+      draw_tag(@autotile_tag_image, mx * 32, 0, tag_id == 0)
+      @autotile_tag_image.copy_to_bitmap(@autotile_tag.bitmap)
     end
 
     # Update a tile SystemTag
@@ -149,7 +151,8 @@ module Yuki
 
       mx /= 32
       my /= 32
-      draw_tag(@tileset_tag.bitmap, mx * 32, my * 32, tag_id == 0)
+      draw_tag(@tileset_tag_image, mx * 32, my * 32, tag_id == 0)
+      @tileset_tag_image.copy_to_bitmap(@tileset_tag.bitmap)
       offset_y = 0
       max_tiles = @tileset_tag.bitmap.height / 32 * 8
       while mx >= 8
@@ -161,18 +164,17 @@ module Yuki
     end
 
     # Draw the current SystemTag
-    # @param bitmap [Texture] the bitmap where the SystemTag is drawn
+    # @param image [Image] the bitmap where the SystemTag is drawn
     # @param x [Integer] the x position where the SystemTag is drawn
     # @param y [Integer] the y position where the SystemTag is drawn
     # @param no_draw [Boolean] if the function only clears the surface where the SystemTag should be drawn
-    def draw_tag(bitmap, x, y, no_draw)
+    def draw_tag(image, x, y, no_draw)
       return if @draw_tag_x == x && @draw_tag_y == y && @draw_tag_id == (no_draw ? 0 : @tag_id)
 
       AutotileRect.x = (@tag_id % 8) * 32
       AutotileRect.y = (@tag_id - 384) / 8 * 32
-      bitmap.clear_rect(x, y, 32, 32) # bitmap.fill_rect(x, y, 32, 32, GameData::Colors::Transparent)
-      bitmap.blt(x, y, @tag_sprite.bitmap, AutotileRect) unless no_draw
-      bitmap.update
+      image.clear_rect(x, y, 32, 32) # bitmap.fill_rect(x, y, 32, 32, GameData::Colors::Transparent)
+      image.blt(x, y, @tag_sprite_image, AutotileRect) unless no_draw
       AutotileRect.x = AutotileRect.y = 0
       @draw_tag_x = x
       @draw_tag_y = y
@@ -237,6 +239,10 @@ module Yuki
       @save_button.dispose
       @tileset_name_viewport.dispose
       @info_text.dispose
+      @autotile_tag_image.dispose
+      @autotile_sprite_image.dispose
+      @tag_sprite_image.dispose
+      @tileset_tag_image.dispose
       @save_button = nil
       @autotile_sprite = nil
       @tag_scroll_bar = nil
@@ -258,9 +264,11 @@ module Yuki
       @background.extend(Viewport::WithToneAndColors)
       @background.shader = Shader.create(:map_shader)
       @background.color = BackColor
-      @save_button = Utils.create_sprite(nil, 'save', 256, 0, 20_002, sprite_class: ::Sprite)
+      @viewport = Viewport.new(0, 0, 640, 480)
+      @viewport.z = 20_000
+      @save_button = Utils.create_sprite(@viewport, 'save', 256, 0, 20_002, sprite_class: ::Sprite)
       txt = "Appuyez droite ou gauche pour\nafficher l'extension du tileset."
-      @info_text = Text.new(0, nil, 288, -Text::Util::FOY, 224, 16, txt, 0, 1).load_color(6)
+      @info_text = Text.new(0, @viewport, 288, -Text::Util::FOY, 224, 16, txt, 0, 1).load_color(6)
       @info_text.z = 20_002
       init_tileset_name_surface
       init_editable_surface
@@ -273,23 +281,25 @@ module Yuki
 
     # Create the edit surfaces
     def init_editable_surface
-      @autotile_tag = ::Sprite.new
+      @autotile_tag = ::Sprite.new(@viewport)
       @autotile_tag.z = 20_001
       @autotile_tag.bitmap = Texture.new(256, 32)
-      @tileset_tag = ::Sprite.new
+      @autotile_tag_image = Image.new(256, 32)
+      @tileset_tag = ::Sprite.new(@viewport)
       @tileset_tag.z = 20_001
       @tileset_tag.y = 32
     end
 
     # Create the tileset view surfaces
     def init_tileset_surface
-      @tileset_sprite = ::Sprite.new
+      @tileset_sprite = ::Sprite.new(@viewport)
       @tileset_sprite.z = 20_000
       @tileset_sprite.y = 32
       @tileset_sprite.bitmap = RPG::Cache.tileset(TilesetName)
-      @autotile_sprite = ::Sprite.new
+      @autotile_sprite = ::Sprite.new(@viewport)
       @autotile_sprite.z = 20_000
       @autotile_sprite.bitmap = Texture.new(256, 32)
+      @autotile_sprite_image = Image.new(256, 32)
       load_tileset
       @tileset_scroll_bar = Yuki::ScrollBar.new(
         @tileset_sprite,
@@ -300,17 +310,20 @@ module Yuki
 
     # Create the SystemTag selection & selector surface
     def init_tag_surface
-      @tag_sprite = ::Sprite.new
+      @tag_sprite = ::Sprite.new(@viewport)
       @tag_sprite.x = 256 + 12
       @tag_sprite.y = 32
       @tag_sprite.z = 20_000
       @tag_sprite.bitmap = RPG::Cache.tileset(TilesetName)
+      @tag_sprite_image = Image.new("graphics/tilesets/#{TilesetName}.png")
       @tag_sprite.src_rect.set(0, 0, 256, 448)
-      @tag_selector = ::Sprite.new
+      @tag_selector = ::Sprite.new(@viewport)
       @tag_selector.bitmap = Texture.new(32, 32)
-      @tag_selector.bitmap.fill_rect(0, 0, 32, 32, Color.new(200, 255, 60, 200))
-      @tag_selector.bitmap.fill_rect(4, 4, 24, 24, Color.new(80, 255, 60, 128))
-      @tag_selector.bitmap.update
+      image = Image.new(32, 32)
+      image.fill_rect(0, 0, 32, 32, Color.new(200, 255, 60, 200))
+      image.fill_rect(4, 4, 24, 24, Color.new(80, 255, 60, 128))
+      image.copy_to_bitmap(@tag_selector.bitmap)
+      image.dispose
       @tag_selector.z = @tag_sprite.z + 1
       @tag_scroll_bar = Yuki::ScrollBar.new(
         @tag_sprite,
@@ -321,32 +334,34 @@ module Yuki
     # Load a tileset
     def load_tileset
       @tileset_offset = 0
-      @tileset_sprite.bitmap = RPG::Cache.tileset(
-        MapLinker.get_tileset_name($data_tilesets[@tileset_id + 1].tileset_name))
+      @tileset_sprite.bitmap = RPG::Cache.tileset($data_tilesets[@tileset_id + 1].tileset_name)
       @info_text.visible = @tileset_sprite.bitmap.width > 256
       @tileset_sprite.src_rect.set(0, 0, 256, 448)
       @tileset_tag.bitmap&.dispose
       @tileset_tag.bitmap = Texture.new(@tileset_sprite.bitmap.width, @tileset_sprite.bitmap.height)
+      @tileset_tag_image&.dispose
+      @tileset_tag_image = Image.new(@tileset_sprite.bitmap.width, @tileset_sprite.bitmap.height)
       @tileset_tag.src_rect.set(0, 0, 256, 448)
       @tileset_scroll_bar&.load_parameters
-      bmp = @autotile_sprite.bitmap
-      bmp.clear
+      @autotile_sprite_image.clear_rect(0, 0, 256, 32)
       $data_tilesets[@tileset_id + 1].autotile_names.each_with_index do |name, i|
         next if !name || name.empty?
-
-        atile = RPG::Cache.autotile(name)
-        bmp.blt((i + 1) * 32, 0, atile, AutotileRect)
+        next unless File.exist?(filename = "graphics/autotiles/#{name}.png")
+  
+        atile = Image.new(filename)
+        @autotile_sprite_image.blt((i + 1) * 32, 0, atile, AutotileRect)
+        atile.dispose
       end
-      bmp.update
+      @autotile_sprite_image.copy_to_bitmap(@autotile_sprite.bitmap)
       load_systemtags
     end
 
     # Load the tileset's SystemTags
     def load_systemtags
       data = @data_systemtags = $data_system_tags[@tileset_id + 1]
-      bmpdst = @autotile_tag.bitmap
-      bmpdst.clear
-      bmpsrc = @tag_sprite.bitmap
+      bmpdst = @autotile_tag_image
+      bmpdst.clear_rect(0, 0, bmpdst.width, bmpdst.height)
+      bmpsrc = @tag_sprite_image
       rect = Rect.new(0, 0, 32, 32)
       # Chargement des tags des autotiles
       idtag = 0
@@ -358,9 +373,9 @@ module Yuki
         rect.y = ((idtag - 384) / 8) * 32
         bmpdst.blt(i * 32, 0, bmpsrc, rect)
       end
-      bmpdst.update
+      bmpdst.copy_to_bitmap(@autotile_tag.bitmap)
       # Chargement des tags des tiles
-      bmpdst = @tileset_tag.bitmap
+      bmpdst = @tileset_tag_image
       384.upto($data_tilesets[@tileset_id + 1].terrain_tags.xsize - 1) do |i|
         idtag = data.fetch(i, 0)
         next if idtag == 0
@@ -376,14 +391,14 @@ module Yuki
         end
         bmpdst.blt(i % 8 * 32 + offset_x, i / 8 * 32, bmpsrc, rect)
       end
-      bmpdst.update
+      bmpdst.copy_to_bitmap(@tileset_tag.bitmap)
     end
 
     # Create the tileset name surface
     def init_tileset_name_surface
       num_tileset = $data_tilesets.size - 1
       data_tilesets = $data_tilesets
-      @tileset_name_sprite = ::Sprite.new
+      @tileset_name_sprite = ::Sprite.new(@viewport)
       height = num_tileset * 16
       height = 480 if height < 480
       @tileset_name_sprite.bitmap = Texture.new(92, height)
