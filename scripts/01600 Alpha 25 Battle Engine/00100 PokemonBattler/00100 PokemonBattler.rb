@@ -66,10 +66,6 @@ module PFM
     # @return [PFM::Pokemon]
     attr_reader :original
 
-    # Get the effect hanndler
-    # @return [Battle::Effects::EffectsHandler]
-    attr_reader :effects
-
     # Get the move history
     # @return [Array<MoveHistory>]
     attr_reader :move_history
@@ -185,7 +181,7 @@ module PFM
     # Return the db_symbol of the current ability of the Pokemon for battle
     # @return [Symbol]
     def battle_ability_db_symbol
-      return :__undef__ if @effects.has?(:ability_suppressed) && $scene.is_a?(Battle::Scene)
+      return :__undef__ if effects.has?(:ability_suppressed) && $scene.is_a?(Battle::Scene)
 
       return ability_db_symbol
     end
@@ -326,8 +322,7 @@ module PFM
     def reset_states
       @battle_stage.map! { 0 }
       @battle_properties.clear
-      @status_count = 0 if toxic?
-      @effects = Battle::Effects::EffectsHandler.new
+      exec_hooks(PFM::PokemonBattler, :on_reset_states, binding)
       @switching = false
       @turn_count = 0
       @type1 = @type2 = @type3 = nil
@@ -363,10 +358,10 @@ module PFM
     # Apply the flinch effect
     # @param forced [Boolean] this parameter is ignored since flinch effect is volatile
     def apply_flinch(forced = false)
-      old_effect = @effects.get(:flinch)
+      old_effect = effects.get(:flinch)
       return if old_effect && !old_effect.dead?
 
-      @effects.add(Battle::Effects::Flinch.new(@scene.logic, self))
+      effects.add(Battle::Effects::Flinch.new(@scene.logic, self))
     end
 
     # Transform this pokemon into another pokemon

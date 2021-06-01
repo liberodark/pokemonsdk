@@ -22,11 +22,13 @@ module PFM
     # @return [Integer]
     def spd
       raw_spd = (spd_basis * spd_modifier).floor
+      @scene.logic.each_effects(self) do |e|
+        raw_spd = (raw_spd * e.spd_modifier).floor
+      end
       ability_spd = (raw_spd * send(SPEED_MODIFIER_ABILITY[battle_ability_db_symbol])).floor
       item_spd = (ability_spd * send(SPEED_MODIFIER_ITEM[battle_item_db_symbol])).floor
-      paralysis_spd = paralyzed? ? item_spd * PARALYSIS_MODIFIER : item_spd
       # Tailwind
-      tailwind_spd = @scene.logic.bank_effects[bank]&.has?(:tailwind) ? 2 * paralysis_spd : paralysis_spd
+      tailwind_spd = @scene.logic.bank_effects[bank]&.has?(:tailwind) ? 2 * item_spd : item_spd
       return tailwind_spd
     end
 

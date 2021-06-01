@@ -237,48 +237,6 @@ module Battle
       end
     end
 
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Poison') do |logic, scene, battlers|
-      battlers.each do |battler|
-        next if !battler.poisoned? || battler.has_ability?(:magic_guard)
-
-        if battler.has_ability?(:poison_heal)
-          if battler.effects.has?(:heal_block)
-            scene.display_message_and_wait(parse_text_with_pokemon(19, 890, battler))
-            next
-          end
-          scene.display_message_and_wait(parse_text_with_pokemon(19, 387, battler))
-          scene.visual.show_hp_animations([battler], [battler.poison_effect])
-          next
-        end
-
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 243, battler))
-        scene.visual.show_rmxp_animation(battler, 469 + battler.status)
-        logic.damage_handler.damage_change(battler.poison_effect, battler)
-      end
-    end
-
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Toxic') do |logic, scene, battlers|
-      battlers.each do |battler|
-        next if !battler.toxic? || battler.has_ability?(:magic_guard)
-
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 243, battler))
-        scene.visual.show_rmxp_animation(battler, 469 + battler.status)
-        logic.damage_handler.damage_change(battler.toxic_effect, battler)
-      end
-    end
-
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Burn') do |logic, scene, battlers|
-      battlers.each do |battler|
-        next if !battler.burn? || battler.has_ability?(:magic_guard)
-
-        hp = battler.burn_effect
-        hp /= 2 if battler.has_ability?(:heatproof)
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 261, battler))
-        scene.visual.show_rmxp_animation(battler, 469 + battler.status)
-        logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), battler)
-      end
-    end
-
     EndTurnHandler.register_end_turn_event('PSDK end turn: Nightmare') do |logic, scene, battlers|
       battlers.each do |battler|
         next if !battler.effects.has?(:nightmare) || battler.has_ability?(:magic_guard)

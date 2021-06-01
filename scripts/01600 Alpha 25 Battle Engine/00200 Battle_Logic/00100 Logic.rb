@@ -136,7 +136,12 @@ module Battle
       # Effect on Pokemon & their position
       pokemons.each do |pokemon|
         next unless pokemon
+
+        # Status Effect
+        yielder.call(pokemon.status_effect)
+        # All other effect (move)
         pokemon.effects.each(&yielder)
+        # Position effects
         @position_effects[pokemon.bank][pokemon.position]&.each(&yielder)
       end
       # Effect on banks

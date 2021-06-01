@@ -84,7 +84,7 @@ module Battle
         if pokemon.burn?
           items = BURN_HEAL_ITEMS
           rate = 1 - pokemon.hp_rate / 4
-        elsif pokemon.poisoned?
+        elsif pokemon.poisoned? || pokemon.toxic?
           items = POISON_HEAL_ITEMS
           rate = 1 - pokemon.hp_rate / 4
         elsif pokemon.paralyzed?

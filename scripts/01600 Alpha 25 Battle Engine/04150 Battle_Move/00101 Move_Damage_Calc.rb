@@ -94,6 +94,10 @@ module Battle
       # HH * BP * IT * CHG * MS * WS * UA * FA
       # BP
       result = real_base_power(user, target)
+      # Effects
+      logic.each_effects(user, target) do |e|
+        result = (result * e.base_power_multiplier(user, target, self)).floor
+      end
       # HH
       result *= 1.5 if user.effects.has?(:helping_hand)
       result = result.floor # Round down between each multiplication, the first two can be reverted.
@@ -119,9 +123,13 @@ module Battle
       # [Sp]Atk = Stat * SM * AM * IM
       ph_move = physical?
       # Stat
-      result = ph_move ? user.atk_basis : user.ats_basis
+      result = calc_sp_atk_basis(user, target, ph_move)
       # SM (Only if non-critical hit)
       result = (result * calc_atk_stat_modifier(user, target, ph_move)).floor
+      # Effects
+      logic.each_effects(user, target) do |e|
+        result = (result * e.sp_atk_multiplier(user, target, self)).floor
+      end
       # Flower Gift
       result = (result * flower_gift_atk_calc(user, ph_move)).floor
       # AM
@@ -129,6 +137,15 @@ module Battle
       result = (result * am).floor
       # IM
       return (result * send((ph_move ? ATK_ITEM_MODIFIER : ATS_ITEM_MODIFIER)[user.battle_item_db_symbol], user, target)).floor
+    end
+
+    # Get the basis atk for the move
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
+    # @param ph_move [Boolean] true: physical, false: special
+    # @return [Integer]
+    def calc_sp_atk_basis(user, target, ph_move)
+      return ph_move ? user.atk_basis : user.ats_basis
     end
 
     UNAWARE_IGNORING_ABILITIES = %i[turboblaze teravolt mold_breaker]
@@ -168,6 +185,10 @@ module Battle
       # SM (Only if non-critical hit)
       unless user.has_ability?(:unaware) || critical_hit?
         result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor
+      end
+      # Effects
+      logic.each_effects(user, target) do |e|
+        result = (result * e.sp_def_multiplier(user, target, self)).floor
       end
       # Flower Gift & Sandstorm
       result = (result * flower_gift_dfe_calc(target, ph_move) * sandstorm_calc(target, ph_move)).floor
@@ -346,6 +367,17 @@ module Battle
       next nil unless user.db_symbol == :genesect && move.be_method == :s_techno_blast
 
       next TECHNODRIVES[user.item_db_symbol] || GameData::Types::NORMAL
+    end
+
+    Move.register_single_type_multiplier_overwrite_hook('PSDK Effect process') do |target, target_type, type, move|
+      overwrite = nil
+      move.logic.each_effects(target) do |e|
+        next if overwrite
+
+        result = e.on_single_type_multiplier_overwrite(target, target_type, type, move)
+        overwrite = result if result
+      end
+      next overwrite
     end
 
     Move.register_single_type_multiplier_overwrite_hook('PSDK Foresight') do |target, target_type, type|

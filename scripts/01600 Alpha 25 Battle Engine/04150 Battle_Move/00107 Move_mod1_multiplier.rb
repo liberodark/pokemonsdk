@@ -7,9 +7,12 @@ module Battle
     # @param target [PFM::PokemonBattler] target of the move
     # @return [Numeric]
     def calc_mod1(user, target)
+      result = 1
+      # Effects
+      logic.each_effects(user, target) do |e|
+        result *= e.mod1_multiplier(user, target, self)
+      end
       # Mod1 = BRN × RL × TVT × SR × FF
-      # BRN
-      result = calc_mod1_brn(user)
       # RL
       result *= calc_mod1_rl(user, target)
       # TVT
@@ -20,16 +23,6 @@ module Battle
       result *= calc_mod1_ft(user, target)
       # FF
       return result * calc_mod1_ff(user, target)
-    end
-
-    # Calculate the burn mod
-    # @param user [PFM::PokemonBattler] user of the move
-    # @return [Numeric]
-    def calc_mod1_brn(user)
-      return 1 unless physical? && user.burn?
-      return 1 if user.has_ability?(:guts)
-
-      return VAL_0_5
     end
 
     # Calculate the RL mod

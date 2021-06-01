@@ -198,50 +198,6 @@ module Battle
     user.ability_used = true
   end
 
-  # Frozen state registration
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Frozen') do |user, _, move|
-    next unless user.frozen?
-
-    if user.froze_check
-      if move.unfreeze?
-        move.scene.display_message_and_wait(parse_text_with_pokemon(19, 303, user))
-      else
-        move.scene.visual.show_rmxp_animation(user, 469 + user.status)
-        move.scene.display_message_and_wait(parse_text_with_pokemon(19, 288, user))
-        next :prevent
-      end
-    else
-      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 294, user))
-    end
-    user.cure
-    move.scene.visual.refresh_info_bar(user)
-  end
-
-  # Paralysis state registration
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Paralysis') do |user, _, move|
-    if user.paralyzed? && user.paralysis_check
-      move.scene.visual.show_rmxp_animation(user, 469 + user.status)
-      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 276, user))
-      next :prevent
-    end
-  end
-
-  # Sleep state registration
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Sleep') do |user, _, move|
-    if user.asleep?
-      if user.sleep_check
-        move.scene.visual.show_rmxp_animation(user, 469 + user.status)
-        move.scene.display_message_and_wait(parse_text_with_pokemon(19, 309, user))
-        next if GameData::Skill[move.db_symbol].sleeping_attack?
-
-        next :prevent
-      else
-        move.scene.visual.refresh_info_bar(user)
-        move.scene.display_message_and_wait(parse_text_with_pokemon(19, 312, user))
-      end
-    end
-  end
-
   # Powder registration
   Move.register_move_prevention_user_hook('PSDK Move prev user: Powder') do |user, _, move|
     next

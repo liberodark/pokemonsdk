@@ -257,15 +257,6 @@ module Battle
       end
     end
 
-    # Already sleeping
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: sleeping') do |handler, status, target|
-      next if status != :sleep || !target.asleep?
-
-      next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 315, target))
-      end
-    end
-
     # Leaf Guard
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Leaf Guard') do |handler, status, target, launcher|
       msg_id = StatusChangeHandler::STATUS_LEAF_GUARD_MSG[status]
@@ -309,15 +300,6 @@ module Battle
       end
     end
 
-    # Already frozen
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: frozen') do |handler, status, target|
-      next if status != :freeze || !target.frozen?
-
-      next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 297, target))
-      end
-    end
-
     # Magma Armor
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Magma Armor') do |handler, status, target, launcher|
       next unless status == :freeze && target.has_ability?(:magma_armor)
@@ -335,15 +317,6 @@ module Battle
 
       next handler.prevent_change do
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 300, target))
-      end
-    end
-
-    # Already poisoned
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: poisoned') do |handler, status, target|
-      next if status != :poison && status != :toxic || !target.poisoned?
-
-      next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 249, target))
       end
     end
 
@@ -367,15 +340,6 @@ module Battle
       end
     end
 
-    # Already paralyzed
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: paralyzed') do |handler, status, target|
-      next if status != :paralysis || !target.paralyzed?
-
-      next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 282, target))
-      end
-    end
-
     # Limber
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Limber') do |handler, status, target, launcher|
       next unless status == :paralysis && target.has_ability?(:limber)
@@ -388,20 +352,11 @@ module Battle
     end
 
     # Cannot be paralyzed
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: can_be_asleep') do |handler, status, target, _, skill|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: can_be_paralyzed') do |handler, status, target, _, skill|
       next if status != :paralysis || target.can_be_paralyzed? || skill&.db_symbol == :body_slam
 
       next handler.prevent_change do
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 285, target))
-      end
-    end
-
-    # Already burnt
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: burn') do |handler, status, target|
-      next if status != :burn || !target.burn?
-
-      next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 267, target))
       end
     end
 

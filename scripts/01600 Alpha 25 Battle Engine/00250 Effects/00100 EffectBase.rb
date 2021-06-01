@@ -297,6 +297,76 @@ module Battle
         nil && handler && target
       end
 
+      # Function that computes an overwrite of the type multiplier
+      # @param target [PFM::PokemonBattler]
+      # @param target_type [Integer] one of the type of the target
+      # @param type [Integer] one of the type of the move
+      # @param move [Battle::Move]
+      # @return [Float, nil] overwriten type multiplier
+      def on_single_type_multiplier_overwrite(target, target_type, type, move)
+        nil && target && target_type && type && move
+      end
+
+      # Give the move base power mutiplier
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @param move [Battle::Move] move
+      # @return [Float, Integer] multiplier
+      def base_power_multiplier(user, target, move)
+        return 1
+      end
+
+      # Give the move [Spe]atk mutiplier
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @param move [Battle::Move] move
+      # @return [Float, Integer] multiplier
+      def sp_atk_multiplier(user, target, move)
+        return 1
+      end
+
+      # Give the move [Spe]def mutiplier
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @param move [Battle::Move] move
+      # @return [Float, Integer] multiplier
+      def sp_def_multiplier(user, target, move)
+        return 1
+      end
+
+      # Give the move mod1 mutiplier (before the +2 in the formula)
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @param move [Battle::Move] move
+      # @return [Float, Integer] multiplier
+      def mod1_multiplier(user, target, move)
+        return 1
+      end
+
+      # Give the move mod1 mutiplier (after the critical)
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @param move [Battle::Move] move
+      # @return [Float, Integer] multiplier
+      def mod2_multiplier(user, target, move)
+        return 1
+      end
+
+      # Give the move mod1 mutiplier (after the critical)
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @param move [Battle::Move] move
+      # @return [Float, Integer] multiplier
+      def mod3_multiplier(user, target, move)
+        return 1
+      end
+
+      # Give the speed modifier over given to the Pokemon with this effect
+      # @return [Float, Integer] multiplier
+      def spd_modifier
+        return 1
+      end
+
       private
 
       # Function that disable all the hooks (putting aside on_delete)
@@ -304,6 +374,10 @@ module Battle
         class << self
           def on_stat_increase_prevention(*)
             return nil
+          end
+
+          def base_power_multiplier(*)
+            return 1
           end
           alias on_stat_decrease_prevention on_stat_increase_prevention
           alias on_stat_change on_stat_increase_prevention
@@ -327,6 +401,13 @@ module Battle
           alias on_move_type_change on_stat_increase_prevention
           alias on_move_disabled_check on_stat_increase_prevention
           alias on_transform_event on_stat_increase_prevention
+          alias on_single_type_multiplier_overwrite on_stat_increase_prevention
+          alias sp_atk_multiplier base_power_multiplier
+          alias sp_def_multiplier base_power_multiplier
+          alias mod1_multiplier base_power_multiplier
+          alias mod2_multiplier base_power_multiplier
+          alias mod3_multiplier base_power_multiplier
+          alias spd_modifier base_power_multiplier
         end
       end
     end

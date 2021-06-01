@@ -13,6 +13,10 @@ module Battle
     def calc_mod3(user, target)
       # Mod3 = SRF * EB * TL * TRB
       result = 1
+      # Effects
+      logic.each_effects(user, target) do |e|
+        result *= e.mod3_multiplier(user, target, self)
+      end
       if super_effective?
         # SRF
         result *= 0.75 if SUPER_EFFECTIVE_REDUCTION.include?(target.battle_ability_db_symbol) && user.can_be_lowered_or_canceled?
