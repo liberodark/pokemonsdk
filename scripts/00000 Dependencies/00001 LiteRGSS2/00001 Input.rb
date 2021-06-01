@@ -38,7 +38,7 @@ module Input
     B: [Sf::Keyboard::X, Sf::Keyboard::Backspace, Sf::Keyboard::Escape, Sf::Keyboard::RShift, -2],
     X: [Sf::Keyboard::V, Sf::Keyboard::Num3, Sf::Keyboard::Slash, Sf::Keyboard::V, -3],
     Y: [Sf::Keyboard::B, Sf::Keyboard::Num1, Sf::Keyboard::Quote, Sf::Keyboard::B, -4],
-    L: [Sf::Keyboard::F, Sf::Keyboard::S, Sf::Keyboard::LBracket, Sf::Keyboard::F, -5],
+    L: [Sf::Keyboard::F, Sf::Keyboard::F, Sf::Keyboard::LBracket, Sf::Keyboard::F, -5],
     R: [Sf::Keyboard::G, Sf::Keyboard::G, Sf::Keyboard::RBracket, Sf::Keyboard::G, -6],
     L2: [Sf::Keyboard::R, Sf::Keyboard::R, Sf::Keyboard::R, Sf::Keyboard::R, 255],
     R2: [Sf::Keyboard::T, Sf::Keyboard::T, Sf::Keyboard::T, Sf::Keyboard::T, 255],
