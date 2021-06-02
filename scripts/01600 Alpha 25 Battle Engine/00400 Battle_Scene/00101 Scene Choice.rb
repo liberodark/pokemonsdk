@@ -113,9 +113,11 @@ module Battle
       item_wrapper = @visual.show_item_choice
       if item_wrapper
         if item_wrapper.item.is_a?(GameData::FleeingItem)
+          remove_item(@logic.battler(0, @player_actions.size).bag, item_wrapper, 1)
           @logic.battle_result = 1
           @next_update = :battle_end
         elsif item_wrapper.item.is_a?(GameData::BallItem)
+          remove_item(@logic.battler(0, @player_actions.size).bag, item_wrapper, 1)
           if (caught = logic.catch_handler.try_to_catch_pokemon(logic.alive_battlers(1)[0], logic.alive_battlers(0)[0], item_wrapper.item))
             logic.battle_info.caught_pokemon = logic.alive_battlers(1)[0]
             give_pokemon_procedure(logic.battle_info.caught_pokemon.original, item_wrapper.item)
@@ -132,6 +134,16 @@ module Battle
         # If the player canceled we return to the player action
         @next_update = :player_action_choice
       end
+    end
+
+    # Remove the item if it can be for Special Items
+    # @param bag [PFM::Bag]
+    # @param item_wrapper [PFM::ItemDescriptor::Wrapper]
+    # @param amount [Integer]
+    def remove_item(bag, item_wrapper, amount)
+      return false unless item_wrapper.item.limited
+
+      bag.remove_item(item_wrapper.item.id, amount)
     end
 
     # Begin the Pokemon giving procedure
