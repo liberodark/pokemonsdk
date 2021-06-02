@@ -52,13 +52,15 @@ module Battle
 
       # Get the opponent moves in order to choose if we switch or not
       # @param pokemon [PFM::PokemonBattler]
-      # @return [Array<{ foe: PFM::PokemonBattler, move: Battle::Move}>]
+      # @return [Array<{ foe: PFM::PokemonBattler, move: Battle::Move }>]
       def switch_opponent_moves(pokemon)
         return [] unless @can_read_opponent_movepool
 
         return @scene.logic.foes_of(pokemon).flat_map do |foe|
-          { foe: foe, move: foe.move_history.map(&:move) }
-        end.uniq
+          foe.move_history.map(&:move).uniq(&:db_symbol).map do |move|
+            { foe: foe, move: move }
+          end
+        end
       end
     end
   end
