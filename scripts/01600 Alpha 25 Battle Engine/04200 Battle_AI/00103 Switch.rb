@@ -20,10 +20,10 @@ module Battle
       # @param move_heuristics [Array<Float>]
       # @return [Array<[Float, Actions::Switch]>]
       def switch_actions_for(pokemon, move_heuristics)
-        return nil unless @scene.logic.switch_handler.can_switch?(pokemon)
+        return [] unless @scene.logic.switch_handler.can_switch?(pokemon)
 
         danger_factor = switch_danger_processing(pokemon)
-        return nil if move_heuristics.max < danger_factor
+        return [] if move_heuristics.max < danger_factor
 
         return switch_actions_generate_for(pokemon)
       end
