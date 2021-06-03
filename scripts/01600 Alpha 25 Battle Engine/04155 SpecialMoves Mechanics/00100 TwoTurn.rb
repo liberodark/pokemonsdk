@@ -39,13 +39,13 @@ module Battle
         # @param targets [Array<PFM::PokemonBattler>] expected targets
         # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
         # @return [Boolean] if the procedure can continue
-        def move_usable_by_userturn2(super_result, user, targets)
+        def move_usable_by_user_turn2(super_result, user, targets)
           remove_effectsturn2(user, targets)
           return false unless super_result
 
           return true
         end
-        alias two_turn_move_usable_by_userturn2 move_usable_by_userturn2
+        alias two_turn_move_usable_by_user_turn2 move_usable_by_user_turn2
 
         # Check if the user can skip the first move
         # @param user [PFM::PokemonBattler] user of the move
