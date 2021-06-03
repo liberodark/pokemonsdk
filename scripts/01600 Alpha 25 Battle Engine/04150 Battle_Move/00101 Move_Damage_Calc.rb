@@ -49,7 +49,8 @@ module Battle
       damage = (damage * calc_type_n_multiplier(target, :type3, types)).floor
       log_data("damage = #{damage} # after type3 (#{GameData::Type[target.type3].name}) => new_eff = #{@effectiveness}")
       log_data("damage = #{(damage * calc_mod3(user, target)).floor} # after mod3") if debug?
-      return (damage * calc_mod3(user, target)).floor
+      damage = (damage * calc_mod3(user, target)).floor
+      return damage
     end
 
     # Function that calculate the type modifier (for specific uses)
@@ -98,8 +99,6 @@ module Battle
       logic.each_effects(user, target) do |e|
         result = (result * e.base_power_multiplier(user, target, self)).floor
       end
-      # HH
-      result *= 1.5 if user.effects.has?(:helping_hand)
       result = result.floor # Round down between each multiplication, the first two can be reverted.
       # IT
       result = (result * send(ITEM_MULTIPLIER[user.battle_item_db_symbol], user, target)).floor

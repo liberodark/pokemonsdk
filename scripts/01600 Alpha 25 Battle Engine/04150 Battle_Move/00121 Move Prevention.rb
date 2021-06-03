@@ -342,9 +342,19 @@ module Battle
   end
 
   # Sky Drop effect
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Confusion Effects') do |user, _, move|
+  Move.register_move_prevention_user_hook('PSDK Move prev user: Sky Drop Effect') do |user, _, move|
     next move.logic.each_effects(*move.logic.all_alive_battlers) do |effect|
       break :prevent if effect.name == :prevent_targets_move && effect.targetted?(user)
+    end
+  end
+
+  # Imprison effect
+  Move.register_move_prevention_user_hook('PSDK Move prev user: Imprison Effect') do |user, targets, move|
+    next move.logic.each_effects(*move.logic.all_alive_battlers) do |effect|
+      next unless effect.name == :imprison
+
+      result = effect.on_move_prevention_global(user, targets, move)
+      break result if result
     end
   end
 end

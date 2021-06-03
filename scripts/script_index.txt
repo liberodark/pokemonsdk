@@ -467,10 +467,12 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00200 PositionTied
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 Disturbable.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 ForceFlying.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 ForceNextMove.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 Mark.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 NeutralizeType.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 OutOfReach.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 SuccessiveSuccessfulUses.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00100 WithTargets.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00001 Mechanics/00200 WithMarkedTargets.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 AbilitySuppressed.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 AquaRing.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Attract.rb
@@ -490,3 +492,305 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Embargo.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Flinch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 FocusEnergy.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 ForceNextMove effects.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Foresight.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 FuryCutter.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 FutureSight.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Gravity.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Grudge.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 HappyHour.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 HealBlock.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 HealingWish.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 HelpingHand.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Imprison.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Ingrain.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 LeechSeed.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 LightScreen Reflect.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 LockOn.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 LuckyChant.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 LunarDance.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 MagicCoat.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 MagnetRise.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Minimize.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 MiracleEye.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Mist.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 MudSport.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Nightmare.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 OutOfReachBase.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 PerishSong.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 PreventTargetsMove.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Protect.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Rage.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Roost.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Safeguard.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 SmackDown.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Snatch.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Spikes.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 StealthRock.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 StickyWeb.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Stockpile.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Substitute.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Tailwind.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Taunt.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Telekinesis.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 ToxicSpikes.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Transform.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 TrickRoom.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 UpRoar.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Wish.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00001 GoingInOut.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00002 HideShow.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00003 MultiplePosition.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00100 PokemonSprite.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00101 InfoBar.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00102 TrainerPartyBalls.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00103 TrainerSprite.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00104 AbilityBar.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00105 ItemBar.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00106 Cursor.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00107 GenericChoice.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00200 PlayerChoice.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00300 SkillChoice.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00400 TargetSelection.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00500 ExpDistribution.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00400 Battle_Scene/00100 Scene.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00400 Battle_Scene/00101 Scene Choice.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00400 Battle_Scene/00102 Scene AI trigger.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00400 Battle_Scene/00103 Scene Battle Phase.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00400 Battle_Scene/00104 Scene Event.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00400 Battle_Scene/01000 Message.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00200 Visual.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00201 Visual_Trainer_transition.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00202 Visual_Show_player_choice.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00203 Visual_show_skill_or_target_choice.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00204 Visual_show_item_or_pokemon_choice.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00205 Visual_Info_Bars.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/00206 Battle procedure Animation.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/01000 IdlePokemonAnimation.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/01001 HPAnimation.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00500 Battle_Visual/01002 FakeHPAnimation.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00000 Transition.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00100 RBYTrainer.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00100 RBYWild.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00575 Battle_Visual_Transition/00200 Gen6Trainer.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00001 Actions.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00002 Attack.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00002 PreAttack.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00003 Mega.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00004 Item.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00005 Switch.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00006 Flee.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00007 HighPriorityItem.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00100 Move.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00101 Move_Damage_Calc.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00102 Move_ITEM_MULTIPLIER.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00103 Move_USER_ABILITY_MULTIPLIER.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00104 Move_FOE_ABILITY_MULTIPLIER.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00105 Move_spe_atk_multiplier.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00106 Move_spe_def_multiplier.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00107 Move_mod1_multiplier.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00108 Move_mod2_multiplier.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00109 Move_mod3_multiplier.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00110 Move_target.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00111 Move Chance of Hit.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00120 Move Procedure.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00121 Move Prevention.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00130 Move Type.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00131 BE24 Shit.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04155 SpecialMoves Mechanics/00100 Counter.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04155 SpecialMoves Mechanics/00100 ItemBased.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04155 SpecialMoves Mechanics/00100 TwoTurn.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00100 Basic.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00101 Self.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00102 Status Stat.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00103 TwoHit MultiHit.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00104 Reload.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00105 Heal.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00106 HealBlock.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00107 HealWeather.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00108 HealBell.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00109 Absorb.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00110 Curse.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00110 Splash.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00110 TwoTurnBase.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00111 Rest.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00112 Snore.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00113 WeatherMove.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00114 HealingSacrifice.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 Attract.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 Captivate.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 Gravity.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 MudSport.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 RecoilMove.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 SmackDown.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 StatAndStageEdit.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00200 TrickRoom.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00201 LeechSeed.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00202 FlyingPress.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00203 Electrify.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00204 MagicCoat.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00205 KnockOff.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00206 Spikes.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 AbilityChanging.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Acrobatics.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 AddThirdType.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 AquaRing.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Assist.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Autotomize.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 BatonPass.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 BrickBreak.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 ChangeType.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Charge.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Conversion.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Counter moves.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Embargo.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Encore.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Endeavor.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 FakeOut.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 FalseSwipe.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Feint.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 FinalGambit.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Fling.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 FocusPunch.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 FoulPlay.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 FutureSight.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Geomancy.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Growth.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Grudge.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Haze.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 HelpingHand.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Hex.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 HitThenCureStatus.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Imprison.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Ingrain.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Judgment.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 LastResort.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 LightScreen Reflect.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 MagnetRise.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 MagneticFlux.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Mimic.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 MirrorMove.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 NaturalGift.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 NaturePower.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 PainSplit.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 PayBack.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 PowerTrick.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Protect.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 PsychUp.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Rage.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Recycle.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Revenge.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Rollout.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Roost.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 SecretPower.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Sketch.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 SkyDrop.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Snatch.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 SolarBeam.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 SpitUp.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Stages split moves.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Stages swap moves.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 StealthRock.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 StickyWeb.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Stockpile.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 StoredPower.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Substitute.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Swallow.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Switcheroo.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Tailwind.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Telekinesis.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 TopsyTurvy.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Toxic_Spikes.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Transform.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 UpRoar.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Venoshock.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 WeatherBall.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Wish.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00301 GastroAcid.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00302 Foresight.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00303 MiracleEye.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00304 Fangs.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00304 SuperFang.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00305 TriAttack.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00306 FixedDamages.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00306 OHKO.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00307 Stomp.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00308 Minimize.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00309 HPEqLevel.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00309 UTurn.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00310 ForceSwitch.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00310 IceBall.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00311 CraftyShield.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00312 FocusEnergy.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00313 LockOn.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00314 HighJumpKick.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00314 Payday.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00315 HappyHour.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00316 Bind.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00318 Bide.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00319 Thrash.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00320 FullCrit.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00321 Memento.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00322 LuckyChant.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00323 SleepTalk.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00324 Metronome.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00325 Disable.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00325 Facade.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00325 Taunt.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00326 Mist.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00327 HeavySlam.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00327 LowKick.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00330 Thief.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00331 Pluck.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00332 Incinerate.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00333 TechnoBlast.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00334 CantSwitch.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00334 Return.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00335 Frustration.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00335 RapidSpin.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00336 Nightmare.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00336 Teleport.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00337 Flail.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00338 Spite.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00339 Psywave.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00340 BellyDrum.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00341 OriginPulse.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00342 Magnitude.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00342 VenomDrench.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00343 Present.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00343 TerrainMove.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00344 Yawn.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00345 Avalanche.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00346 DestinyBond.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00347 Acupressure.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00348 FlowerShield.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00349 FellStinger.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00349 FuryCutter.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00350 BeatUp.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00350 Eruption.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00351 PerishSong.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00351 WringOut.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00352 ElectroBall.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00352 HiddenPower.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00353 Safeguard.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00001 BattleSceneMock.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00002 BattleVisualMock.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00003 BattleLogicMock.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00100 Base.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00101 MoveActionFor.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00102 MegaEvolve.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00103 Switch.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00104 Item.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00105 Flee.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04200 Battle_AI/00200 GenericAI.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04400 Battle_Message/00001 BattleStart.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/05000 MoveAnimation/00000 MoveAnimation.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/05000 MoveAnimation/00001 Example.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 Pokemon_Script_Project/00100 RPG__Sprite.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 Pokemon_Script_Project/00200 Scene_Battle___PSP_add.rb
+pokemonsdk/scripts/02000 Nuri Yuri/00001 DynamicLight/00001 DynamicLight.rb
+pokemonsdk/scripts/02000 Nuri Yuri/00001 DynamicLight/00002 DynamicLightSprite.rb
+pokemonsdk/scripts/02000 Nuri Yuri/00001 DynamicLight/00003 DL PokemonParty.rb
+pokemonsdk/scripts/02000 Nuri Yuri/00001 DynamicLight/00004 ScalableDynamicLight.rb
+pokemonsdk/scripts/99999 Scripts_a_haute_dependences/00100 PSDK_Task.rb
+pokemonsdk/scripts/99999 Scripts_a_haute_dependences/00200 Yuki__SoftReset.rb
