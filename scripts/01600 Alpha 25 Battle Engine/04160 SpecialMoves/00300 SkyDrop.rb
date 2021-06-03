@@ -34,14 +34,14 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @return [Boolean] true if the move is actually one move
-      def check_shortcutturn1(user, targets)
+      def check_shortcut_turn1(user, targets)
         false
       end
 
       # Display the message and the animation of the turn
       # @param user [PFM::PokemonBattler]
       # @param targets [Array<PFM::PokemonBattler>] expected targets
-      def proceed_messageturn1(user, targets)
+      def proceed_message_turn1(user, targets)
         targets.each do |target|
           @scene.display_message_and_wait(parse_text_with_2pokemon(19, 1124, user, target))
         end
@@ -50,8 +50,8 @@ module Battle
       # Add the effects to the pokemons (first turn)
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
-      def proceed_effectsturn1(user, targets)
-        two_turn_proceed_effectsturn1(user, targets)
+      def proceed_effects_turn1(user, targets)
+        two_turn_proceed_effects_turn1(user, targets)
         user.effects.add(Effects::PreventTargetsMove.new(@logic, user, targets, 1))
       end
     end

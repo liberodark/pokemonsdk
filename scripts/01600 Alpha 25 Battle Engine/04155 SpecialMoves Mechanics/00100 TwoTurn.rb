@@ -25,11 +25,11 @@ module Battle
         # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
         # @return [Boolean] if the procedure can continue
         def move_usable_by_user_turn1(super_result, user, targets)
-          return true if check_shortcutturn1(user, targets)
+          return true if check_shortcut_turn1(user, targets)
 
-          proceed_effectsturn1(user, targets)
-          proceed_messageturn1(user, targets)
-          proceed_animationturn1(user, targets)
+          proceed_effects_turn1(user, targets)
+          proceed_message_turn1(user, targets)
+          proceed_animation_turn1(user, targets)
           return false
         end
         alias two_turn_move_usable_by_user_turn1 move_usable_by_user_turn1
@@ -40,7 +40,7 @@ module Battle
         # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
         # @return [Boolean] if the procedure can continue
         def move_usable_by_user_turn2(super_result, user, targets)
-          remove_effectsturn2(user, targets)
+          remove_effects_turn2(user, targets)
           return false unless super_result
 
           return true
@@ -51,7 +51,7 @@ module Battle
         # @param user [PFM::PokemonBattler] user of the move
         # @param targets [Array<PFM::PokemonBattler>] expected targets
         # @return [Boolean] true if the move is actually one move
-        def check_shortcutturn1(user, targets)
+        def check_shortcut_turn1(user, targets)
           if user.hold_item?(:power_herb)
             @scene.display_message_and_wait(parse_text_with_pokemon(19, 1028, user, PFM::Text::ITEM2[1] => user.item_name))
             @logic.item_change_handler.change_item(:none, true, user)
@@ -59,53 +59,53 @@ module Battle
           end
           return false
         end
-        alias two_turn_check_shortcutturn1 check_shortcutturn1
+        alias two_turn_check_shortcut_turn1 check_shortcut_turn1
 
         # Add the effects to the pokemons (first turn)
         # @param user [PFM::PokemonBattler] user of the move
         # @param targets [Array<PFM::PokemonBattler>] expected targets
-        def proceed_effectsturn1(user, targets)
-          user.effects.add(Battle::Effects::ForceNextMoveBase.new(@logic, user, self, targets))
-          user.effects.add(Battle::Effects::OutOfReachBase.new(@logic, user, can_hit_moves)) if can_hit_moves
-          stat_changesturn1(user, targets)&.each do |(stat, value)|
+        def proceed_effects_turn1(user, targets)
+          user.effects.add(Effects::ForceNextMoveBase.new(@logic, user, self, targets))
+          user.effects.add(Effects::OutOfReachBase.new(@logic, user, can_hit_moves)) if can_hit_moves
+          stat_changes_turn1(user, targets)&.each do |(stat, value)|
             @logic.stat_change_handler.stat_change_with_process(stat, value, user)
           end
         end
-        alias two_turn_proceed_effectsturn1 proceed_effectsturn1
+        alias two_turn_proceed_effects_turn1 proceed_effects_turn1
 
         # Display the message and the animation of the turn
         # @param user [PFM::PokemonBattler]
         # @param targets [Array<PFM::PokemonBattler>] expected targets
-        def proceed_messageturn1(user, targets)
+        def proceed_message_turn1(user, targets)
           nil
         end
-        alias two_turn_proceed_messageturn1 proceed_messageturn1
+        alias two_turn_proceed_message_turn1 proceed_message_turn1
 
         # Display the message and the animation of the turn
         # @param user [PFM::PokemonBattler]
         # @param targets [Array<PFM::PokemonBattler>] expected targets
-        def proceed_animationturn1(user, targets)
+        def proceed_animation_turn1(user, targets)
           nil
         end
-        alias two_turn_proceed_animationturn1 proceed_animationturn1
+        alias two_turn_proceed_animation_turn1 proceed_animation_turn1
 
         # Return the stat changes for the user 
         # @param user [PFM::PokemonBattler]
         # @param targets [Array<PFM::PokemonBattler>] expected targets
         # @return [Array<Array<[Symbol, Integer]>>] exemple : [[:dfe, -1], [:atk, 1]]
-        def stat_changesturn1(user, targets)
+        def stat_changes_turn1(user, targets)
           nil
         end
-        alias two_turn_stat_changesturn1 stat_changesturn1
+        alias two_turn_stat_changes_turn1 stat_changes_turn1
 
         # Remove effects on turn 2
         # @param user [PFM::PokemonBattler]
         # @param targets [Array<PFM::PokemonBattler>] expected targets
-        def remove_effectsturn2(user, targets)
+        def remove_effects_turn2(user, targets)
           user.effects.get(&:out_of_reach?)&.kill
           user.effects.deleted_dead_effects
         end
-        alias two_turn_remove_effectturn2 remove_effectsturn2
+        alias two_turn_remove_effect_turn2 remove_effects_turn2
 
         # Return the list of the moves that can reach the pokemon event in out_of_reach, nil if all attack reach the user
         # @return [Array<Symbol>]

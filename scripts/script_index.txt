@@ -538,6 +538,13 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 TrickRoom.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 UpRoar.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Wish.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00600 Status Effects/00001 StatusBase.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00600 Status Effects/00101 Poison.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00600 Status Effects/00102 Paralysis.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00600 Status Effects/00103 Burn.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00600 Status Effects/00104 Asleep.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00600 Status Effects/00105 Frozen.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00600 Status Effects/00108 Toxic.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00001 GoingInOut.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00002 HideShow.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00003 MultiplePosition.rb

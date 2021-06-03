@@ -12,7 +12,7 @@ module Battle
         # @param turn_count [Integer]
         def neutralize_type_initialize(target, turn_count)
           @target = target
-          target.ignore_types(*neutralyzed_type)
+          target.ignore_types(*neutralyzed_types)
           self.counter = turn_count
         end
 
