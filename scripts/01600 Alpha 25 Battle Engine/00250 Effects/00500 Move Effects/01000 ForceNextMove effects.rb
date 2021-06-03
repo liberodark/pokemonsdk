@@ -1,5 +1,28 @@
 module Battle
   module Effects
+    # Move that force the next move
+    class ForceNextMoveBase < PokemonTiedEffectBase
+      include Mechanics::ForceNextMove
+
+      # Create a new Forced next move effect
+      # @param logic [Battle::Logic]
+      # @param target [PFM::PokemonBattler]
+      # @param move [Battle::Move]
+      # @param counter [Integer] number of turn the move is forced to be used
+      # @param targets [Array<PFM::PokemonBattler>]
+      # @param turncount [Integer] (default: 5) number of turn the effect proc (including the current one)
+      def initialize(logic, target, move, targets, turncount = 2)
+        super(logic, target)
+        init_force_next_move(move, targets, turncount)
+      end
+
+      # Get the name of the effect
+      # @return [Symbol]
+      def name
+        :force_next_move_base
+      end
+    end
+
     # Forced Next Move that can be disturbed
     class ForceNextMoveDisturbable < PokemonTiedEffectBase
       include Mechanics::ForceNextMove
