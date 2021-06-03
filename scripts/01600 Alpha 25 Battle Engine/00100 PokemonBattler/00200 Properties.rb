@@ -17,7 +17,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_atk_basis
-      @battle_properties.remove(:atk_basis)
+      @battle_properties.delete(:atk_basis)
     end
 
     # Return the battler's combat property
@@ -34,7 +34,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_ats_basis
-      @battle_properties.remove(:ats_basis)
+      @battle_properties.delete(:ats_basis)
     end
 
     # Return the battler's combat property
@@ -51,7 +51,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_dfe_basis
-      @battle_properties.remove(:dfe_basis)
+      @battle_properties.delete(:dfe_basis)
     end
 
     # Return the battler's combat property
@@ -68,7 +68,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_dfs_basis
-      @battle_properties.remove(:dfs_basis)
+      @battle_properties.delete(:dfs_basis)
     end
 
     # Return the battler's combat property
@@ -85,7 +85,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_spd_basis
-      @battle_properties.remove(:spd_basis)
+      @battle_properties.delete(:spd_basis)
     end
 
     # Return the battler's combat property
@@ -104,7 +104,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_nature_id
-      @battle_properties.remove(:nature_id)
+      @battle_properties.delete(:nature_id)
     end
 
     # Return the battler's combat property
@@ -123,7 +123,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_ability
-      @battle_properties.remove(:ability)
+      @battle_properties.delete(:ability)
     end
 
     # Return the battler's combat property
@@ -140,7 +140,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_height
-      @battle_properties.remove(:height)
+      @battle_properties.delete(:height)
     end
 
     # Return the battler's combat property
@@ -157,7 +157,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_weight
-      @battle_properties.remove(:weight)
+      @battle_properties.delete(:weight)
     end
 
     # Return the battler's combat property
@@ -183,26 +183,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_gender
-      @battle_properties.remove(:gender)
-    end
-
-    # Return the battler's combat property
-    # @return [Integer]
-    def ability
-      return @battle_properties[:ability] || super
-    end
-
-    # Set the battler's combat property
-    # @param value [Integer]
-    def ability=(value)
-      return log_error("Wrong ability id : #{value}") unless GameData::Abilities.id_valid?(value)
-
-      @battle_properties[:ability] = value
-    end
-
-    # Restore the battler's property original value
-    def restore_ability
-      @battle_properties.remove(:ability)
+      @battle_properties.delete(:gender)
     end
 
     # Return the battler's combat property
@@ -219,7 +200,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_rareness
-      @battle_properties.remove(:rareness)
+      @battle_properties.delete(:rareness)
     end
 
     # Return the battler's combat property
@@ -236,7 +217,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_type1
-      @battle_properties.remove(:type1)
+      @battle_properties.delete(:type1)
     end
 
     # Return the battler's combat property
@@ -253,7 +234,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_type2
-      @battle_properties.remove(:type2)
+      @battle_properties.delete(:type2)
     end
 
     # Return the battler's combat property
@@ -270,7 +251,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_type3
-      @battle_properties.remove(:type3)
+      @battle_properties.delete(:type3)
     end
 
     # Restore all Pokemon types
@@ -294,7 +275,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_loyalty
-      @battle_properties.remove(:loyalty)
+      @battle_properties.delete(:loyalty)
     end
 
   end
