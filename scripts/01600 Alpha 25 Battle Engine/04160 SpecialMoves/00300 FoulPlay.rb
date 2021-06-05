@@ -18,7 +18,6 @@ module Battle
       # @return [Integer]
       def calc_atk_stat_modifier(user, target, ph_move)
         return 1 if critical_hit?
-        return 1 if target.has_ability?(:unaware) && !UNAWARE_IGNORING_ABILITIES.include?(user.battle_ability_db_symbol)
 
         return ph_move ? target.atk_modifier : target.ats_modifier
       end

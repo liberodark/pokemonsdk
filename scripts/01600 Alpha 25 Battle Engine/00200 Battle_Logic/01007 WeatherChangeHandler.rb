@@ -119,12 +119,12 @@ module Battle
     end
 
     WeatherChangeHandler.register_weather_prevention_hook('PSDK prev weather: Effects') do |handler, weather_type, last_weather|
-      next handler.logic.each_effects do |e|
+      next handler.logic.each_effects(*handler.logic.all_alive_battlers) do |e|
         next e.on_weather_prevention(handler, weather_type, last_weather)
       end
     end
     WeatherChangeHandler.register_post_weather_change_hook('PSDK post weather: Effects') do |handler, weather_type, last_weather|
-      next handler.logic.each_effects do |e|
+      next handler.logic.each_effects(*handler.logic.all_alive_battlers) do |e|
         next e.on_post_weather_change(handler, weather_type, last_weather)
       end
     end
@@ -133,44 +133,6 @@ module Battle
       next if weather != prev
 
       next :prevent
-    end
-
-    WeatherChangeHandler.register_weather_prevention_hook('PSDK prev weather: Air Lock') do |handler, weather|
-      next if weather == :none
-      next unless (air_lock = handler.logic.all_alive_battlers.find { |battler| battler.has_ability?(:air_lock) })
-
-      handler.prevent_change do
-        handler.scene.visual.show_ability(air_lock)
-      end
-    end
-
-    WeatherChangeHandler.register_weather_prevention_hook('PSDK prev weather: Cloud Nine') do |handler, weather|
-      next if weather == :none
-      next unless (cloud_nine = handler.logic.all_alive_battlers.find { |battler| battler.has_ability?(:cloud_nine) })
-
-      handler.prevent_change do
-        handler.scene.visual.show_ability(cloud_nine)
-      end
-    end
-
-    # Forecast
-    WeatherChangeHandler.register_post_weather_change_hook('PSDK post weather: Ensure form switch on weather') do |handler|
-      handler.logic.all_alive_battlers.each do |battler|
-        next unless battler.has_ability?(:forecast) && battler.form_calibrate(:weather)
-
-        handler.scene.visual.show_switch_form_animation(battler)
-      end
-    end
-
-    # Ice Face
-    WeatherChangeHandler.register_post_weather_change_hook('PSDK post weather: Ensure form switch on weather') do |handler|
-      handler.logic.all_alive_battlers.each do |battler|
-        next unless battler.has_ability?(:ice_face) && battler.form == 1
-
-        battler.form = 0
-        handler.scene.visual.show_ability(battler)
-        handler.scene.visual.show_switch_form_animation(battler)
-      end
     end
   end
 end

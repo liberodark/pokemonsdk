@@ -1,9 +1,5 @@
 module Battle
   class Move
-    # List of dfe modifier method from ability
-    DFE_ABILITY_MODIFIER = Hash.new(:calc_ua_1)
-    # List of dfs modifier method from ability
-    DFS_ABILITY_MODIFIER = Hash.new(:calc_ua_1)
     # List of dfe modifier method from item
     DFE_ITEM_MODIFIER = Hash.new(:calc_ua_1)
     # List of dfs modifier method from item
@@ -21,24 +17,6 @@ module Battle
       return 1.5
     end
 
-    # Marvel Scale ability multiplier
-    # @param user [PFM::PokemonBattler]
-    # @param target [PFM::PokemonBattler]
-    # @return [Numeric]
-    def calc_def_mod_marvel_scale(user, target)
-      return 1.5 if (target.paralyzed? || target.poisoned? || target.toxic? || target.burn? || target.asleep? ||
-                    target.frozen?) && user.can_be_lowered_or_canceled?
-      return 1
-    end
-
-    # Fur Coat ability multiplier
-    # @param user [PFM::PokemonBattler]
-    # @param target [PFM:PokemonBattler]
-    # @return [Numeric]
-    def calc_def_fur_coat(user, target)
-      return user.can_be_lowered_or_canceled? ? 2 : 1
-    end
-
     # Deep Sea Scale item multiplier
     # @param user [PFM::PokemonBattler]
     # @param target [PFM::PokemonBattler]
@@ -53,14 +31,6 @@ module Battle
     # @return [Numeric]
     def calc_def_mod_soul_dew(user, target)
       SOUL_DEW_POKEMON.include?(target.db_symbol) ? 1.5 : 1
-    end
-
-    # Grass Pelt ability multiplier
-    # @param user [PFM::PokemonBattler]
-    # @param target [PFM::PokemonBattler]
-    # @return [Numeric]
-    def calc_am_grass_pelt(user, target)
-      $env.terrain_grassy? ? 1.5 : 1
     end
 
     # Assault vest modifier
@@ -83,20 +53,6 @@ module Battle
     end
 
     class << self
-      # Define an ability that modifies dfe
-      # @param db_symbol [Symbol] db_symbol of the ability
-      # @param method_sym [Symbol] name of the method to call
-      def define_ability_dfe_modifier(db_symbol, method_sym)
-        DFE_ABILITY_MODIFIER[db_symbol] = method_sym
-      end
-
-      # Define an ability that modifies dfs
-      # @param db_symbol [Symbol] db_symbol of the ability
-      # @param method_sym [Symbol] name of the method to call
-      def define_ability_dfs_modifier(db_symbol, method_sym)
-        DFS_ABILITY_MODIFIER[db_symbol] = method_sym
-      end
-
       # Define an item that modifies dfe
       # @param db_symbol [Symbol] db_symbol of the ability
       # @param method_sym [Symbol] name of the method to call
@@ -111,10 +67,6 @@ module Battle
         DFS_ITEM_MODIFIER[db_symbol] = method_sym
       end
     end
-    define_ability_dfe_modifier(:marvel_scale, :calc_def_mod_marvel_scale)
-    define_ability_dfe_modifier(:fur_coat, :calc_def_fur_coat)
-    define_ability_dfe_modifier(:grass_pelt, :calc_am_grass_pelt)
-    define_ability_dfs_modifier(:flower_gift, :calc_am_flower_gift)
     define_item_dfe_modifier(:metal_powder, :calc_def_mod_metal_powder)
     define_item_dfe_modifier(:eviolite, :calc_def_mod_eviolite)
     define_item_dfs_modifier(:metal_powder, :calc_def_mod_metal_powder)

@@ -13,32 +13,13 @@ module Battle
         result *= e.mod1_multiplier(user, target, self)
       end
       # Mod1 = BRN × RL × TVT × SR × FF
-      # RL
-      result *= calc_mod1_rl(user, target)
       # TVT
       result *= calc_mod1_tvt(target)
       # SR
       result *= calc_mod1_sr
       # FT
       result *= calc_mod1_ft(user, target)
-      # FF
-      return result * calc_mod1_ff(user, target)
-    end
-
-    # Calculate the RL mod
-    # @param user [PFM::PokemonBattler] user of the move
-    # @param target [PFM::PokemonBattler] target of the move
-    # @return [Numeric]
-    def calc_mod1_rl(user, target)
-      return 1 if critical_hit?
-      return 1 if user.has_ability?(:infiltrator)
-
-      if physical?
-        return 1 unless logic.bank_effects[target.bank].has?(:reflect)
-      else
-        return 1 unless logic.bank_effects[target.bank].has?(:light_screen)
-      end
-      return $game_temp.vs_type == 2 ? (2 / 3.0) : VAL_0_5
+      return result
     end
 
     # Calculate the TVT mod
@@ -83,17 +64,6 @@ module Battle
         return 1.5 if type == GameData::Types::ELECTRIC && user.affected_by_terrain?
       elsif $env.terrain_misty?
         return VAL_0_5 if type == GameData::Types::DRAGON && target.affected_by_terrain? # Not a mistake, it's actually the target
-      end
-      return 1
-    end
-
-    # Calculate the Flash Fire mod
-    # @param user [PFM::PokemonBattler] user of the move
-    # @param target [PFM::PokemonBattler] target of the move
-    # @return [Numeric]
-    def calc_mod1_ff(user, target)
-      if target.can_be_lowered_or_canceled?(user.has_ability?(:flash_fire))
-        return 1.5 if user.last_hit_by_move&.type == GameData::Types::FIRE
       end
       return 1
     end

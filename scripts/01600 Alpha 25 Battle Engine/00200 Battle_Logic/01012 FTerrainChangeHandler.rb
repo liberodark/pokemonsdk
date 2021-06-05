@@ -13,11 +13,16 @@ module Battle
       }
       # Weather thingies copiepasted, I don't think this is really useful right now
       FTERRAIN_SYM_TO_MSG = {
-        terrainnone: 97,
-        electric_terrain: 88,
-        grassy_terrain: 87,
-        misty_terrain: 89,
-        psychic_terrain: 90
+        terrainnone: {
+          electric_terrain: 227,
+          grassy_terrain: 223,
+          misty_terrain: 225,
+          psychic_terrain: 347
+        },
+        electric_terrain: 226,
+        grassy_terrain: 222,
+        misty_terrain: 224,
+        psychic_terrain: 346
       }
 
       # Create a new Terrain Change Handler
@@ -50,6 +55,7 @@ module Battle
         log_data("# fterrain_change(#{fterrain_type}, #{nb_turn})")
         last_fterrain = FTERRAIN_SYM_TO_ID.key(@env.current_fterrain) || :terrainnone
         @env.apply_fterrain(FTERRAIN_SYM_TO_ID[fterrain_type] || 0, nb_turn)
+        show_fterrain_message(last_fterrain, @env.current_fterrain)
         exec_hooks(FTerrainChangeHandler, :post_fterrain_change, binding)
       rescue Hooks::ForceReturn => e
         log_data("# FR: fterrain_change #{e.data} from #{e.hook_name} (#{e.reason})")
@@ -73,10 +79,11 @@ module Battle
       def show_fterrain_message(last_fterrain, current_fterrain)
         return if last_fterrain == current_fterrain
 
-        if last_fterrain == :terrainnone
-          @scene.display_message_and_wait(parse_text(18, FTERRAIN_SYM_TO_MSG[current_fterrain]))
-        elsif current_fterrain == :terrainnone
-          @scene.display_message_and_wait(parse_text(18, FTERRAIN_SYM_TO_MSG[current_fterrain]))
+        if current_fterrain == :terrainnone
+          @scene.display_message_and_wait(parse_text(60, FTERRAIN_SYM_TO_MSG[current_fterrain][last_fterrain]))
+        else
+          @scene.display_message_and_wait(parse_text(60, FTERRAIN_SYM_TO_MSG[:terrainnone][last_fterrain])) if last_fterrain != :terrainnone
+          @scene.display_message_and_wait(parse_text(60, FTERRAIN_SYM_TO_MSG[current_fterrain]))
         end
       end
 
@@ -116,12 +123,12 @@ module Battle
     end
 
     FTerrainChangeHandler.register_fterrain_prevention_hook('PSDK prev field terrain: Effects') do |handler, fterrain_type, last_fterrain|
-      next handler.logic.each_effects do |e|
+      next handler.logic.each_effects(*handler.logic.all_alive_battlers) do |e|
         next e.on_fterrain_prevention(handler, fterrain_type, last_fterrain)
       end
     end
     FTerrainChangeHandler.register_post_fterrain_change_hook('PSDK post field terrain: Effects') do |handler, fterrain_type, last_fterrain|
-      next handler.logic.each_effects do |e|
+      next handler.logic.each_effects(*handler.logic.all_alive_battlers) do |e|
         next e.on_post_fterrain_change(handler, fterrain_type, last_fterrain)
       end
     end
@@ -130,66 +137,6 @@ module Battle
       next if fterrain != prev
 
       next :prevent
-    end
-
-    # Mimicry - No Terrain
-    FTerrainChangeHandler.register_post_fterrain_change_hook('PSDK post field terrain: Restart Mimicry type') do |handler, fterrain|
-      next unless fterrain == :terrainnone
-
-      mimicries = handler.logic.all_alive_battlers.select { |battler| battler.has_ability?(:mimicry) }
-      mimicries.each do |mimicry|
-        handler.scene.visual.show_ability(mimicry)
-        mimicry.type1 = mimicry.data.type1
-        mimicry.type2 = mimicry.data.type2
-      end
-    end
-
-    # Mimicry - Psychic Terrain
-    FTerrainChangeHandler.register_post_fterrain_change_hook('PSDK post field terrain: Psychic Mimicry type') do |handler, fterrain|
-      next unless fterrain == :psychic_terrain
-
-      mimicries = handler.logic.all_alive_battlers.select { |battler| battler.has_ability?(:mimicry) }
-      mimicries.each do |mimicry|
-        handler.scene.visual.show_ability(mimicry)
-        mimicry.type1 = 11
-        mimicry.type2 = 0
-      end
-    end
-
-    # Mimicry - Misty Terrain
-    FTerrainChangeHandler.register_post_fterrain_change_hook('PSDK post field terrain: Misty Mimicry type') do |handler, fterrain|
-      next unless fterrain == :misty_terrain
-
-      mimicries = handler.logic.all_alive_battlers.select { |battler| battler.has_ability?(:mimicry) }
-      mimicries.each do |mimicry|
-        handler.scene.visual.show_ability(mimicry)
-        mimicry.type1 = 18
-        mimicry.type2 = 0
-      end
-    end
-
-    # Mimicry - Grassy Terrain
-    FTerrainChangeHandler.register_post_fterrain_change_hook('PSDK post field terrain: Grassy Mimicry type') do |handler, fterrain|
-      next unless fterrain == :grassy_terrain
-
-      mimicries = handler.logic.all_alive_battlers.select { |battler| battler.has_ability?(:mimicry) }
-      mimicries.each do |mimicry|
-        handler.scene.visual.show_ability(mimicry)
-        mimicry.type1 = 5
-        mimicry.type2 = 0
-      end
-    end
-
-    # Mimicry - Electric Terrain
-    FTerrainChangeHandler.register_post_fterrain_change_hook('PSDK post field terrain: Electric Mimicry type') do |handler, fterrain|
-      next unless fterrain == :electric_terrain
-
-      mimicries = handler.logic.all_alive_battlers.select { |battler| battler.has_ability?(:mimicry) }
-      mimicries.each do |mimicry|
-        handler.scene.visual.show_ability(mimicry)
-        mimicry.type1 = 4
-        mimicry.type2 = 0
-      end
     end
   end
 end

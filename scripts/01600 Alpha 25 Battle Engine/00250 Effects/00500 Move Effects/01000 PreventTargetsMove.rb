@@ -11,6 +11,15 @@ module Battle
         self.counter = duration
       end
 
+      # Function called when we try to use a move as the user (returns :prevent if user fails)
+      # @param user [PFM::PokemonBattler]
+      # @param targets [Array<PFM::PokemonBattler>]
+      # @param move [Battle::Move]
+      # @return [:prevent, nil] :prevent if the move cannot continue
+      def on_move_prevention_user(user, targets, move)
+        return :prevent if targetted?(user)
+      end
+
       # Function giving the name of the effect
       # @return [Symbol]
       def name

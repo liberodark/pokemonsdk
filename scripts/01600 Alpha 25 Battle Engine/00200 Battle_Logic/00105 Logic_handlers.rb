@@ -43,7 +43,7 @@ module Battle
     end
 
     # Get a new field terrain change handler
-    # @return [Battle::Logic::WeatherChangeHandler]
+    # @return [Battle::Logic::FTerrainChangeHandler]
     def fterrain_change_handler
       return FTerrainChangeHandler.new(self, @scene)
     end

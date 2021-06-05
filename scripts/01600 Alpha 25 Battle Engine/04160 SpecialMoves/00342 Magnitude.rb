@@ -12,7 +12,7 @@ module Battle
       def real_base_power(user, targets)
         return @magnitude_power
       end
-      
+
       # Method calculating the damages done by the actual move
       # @note : I used the 4th Gen formula : https://www.smogon.com/dp/articles/damage_formula
       # @param user [PFM::PokemonBattler] user of the move

@@ -3,13 +3,6 @@ module Battle
     # Handler responsive of answering properly status changes requests
     class StatusChangeHandler < ChangeHandlerBase
       include Hooks
-      # List of status that cannot be overwritten by Synchro
-      # @type [Array]
-      NOT_OVERWRITTABLE = safe_const(:NOT_OVERWRITTABLE) do
-        [GameData::States::POISONED, GameData::States::BURN, GameData::States::PARALYZED, GameData::States::TOXIC]
-      end
-      # List of status Synchronize is applying
-      SYNCHRONIZED_STATUS = %i[poison toxic paralysis burn]
       # List of method to call in order to apply the status on the Pokemon
       STATUS_APPLY_METHODS = {
         poison: :status_poison,
@@ -26,8 +19,6 @@ module Battle
       STATUS_APPLY_MESSAGE = { poison: 234, toxic: 237, confusion: 345, sleep: 306, freeze: 288, paralysis: 273, burn: 255 }
       # List of animation ID when applying a status
       STATUS_APPLY_ANIMATION = { poison: 470, toxic: 477, confusion: 475, sleep: 473, freeze: 474, paralysis: 471, burn: 472, flinch: 476 }
-      # List of messages when leaf guard is active
-      STATUS_LEAF_GUARD_MSG = { poison: 252, toxic: 252, sleep: 318, freeze: 300, paralysis: 285, burn: 270 }
 
       # Function telling if a status can be applyied
       # @param status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :flinch
@@ -160,134 +151,12 @@ module Battle
       end
     end
 
-    # Steadfast ability
-    StatusChangeHandler.register_post_status_change_hook('PSDK post status: Steadfast') do |handler, status, target|
-      next unless status == :flinch && target.has_ability?(:steadfast)
-
-      handler.scene.visual.show_ability(target)
-      handler.logic.stat_change_handler.stat_change_with_process(:spd, 1, target)
-    end
-
-    # Inner Focus
-    StatusChangeHandler.register_status_prevention_hook('PSDK post status: Inner Focus') do |handler, status, target, launcher|
-      next unless status == :flinch && target.has_ability?(:inner_focus)
-      next unless launcher.can_be_lowered_or_canceled?
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(target)
-      end
-    end
-
-    # Synchronize ability
-    StatusChangeHandler.register_post_status_change_hook('PSDK post status: Synchronize') do |handler, status, target, launcher|
-      next if launcher == target || !launcher || !launcher.has_ability?(:synchronize)
-      next if StatusChangeHandler::NOT_OVERWRITTABLE.include?(launcher.status)
-      next unless StatusChangeHandler::SYNCHRONIZED_STATUS.include?(status)
-
-      launcher.send(StatusChangeHandler::STATUS_APPLY_METHODS[status], true)
-      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1159, launcher))
-    end
-
-    # Quick Feet ability
-    StatusChangeHandler.register_post_status_change_hook('PSDK post status: Quick Feet') do |handler, status, target, launcher, skill|
-      next if !target.has_ability?(:quick_feet) || status == :cure
-      next unless handler.logic.stat_change_handler.stat_increasable?(:spd, target, launcher, skill)
-
-      handler.scene.visual.show_ability(target)
-      handler.logic.stat_change_handler.stat_change(:spd, 1, target, launcher, skill)
-    end
-
     # Already confused
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: confused') do |handler, status, target|
       next if status != :confusion || !target.confused?
 
       next handler.prevent_change do
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 354, target))
-      end
-    end
-
-    # Safeguard effect
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Safeguard') do |handler, status, target, launcher, skill|
-      next
-=begin
-      next true if status == :cure || launcher == target || !skill || !target.battle_effect.has_safe_guard_effect?
-
-      next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 842, target))
-      end
-=end
-    end
-
-    # Flower Veil ability
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Flower Veil') do |handler, status, target, launcher, skill|
-      next if status == :cure || launcher == target || skill&.db_symbol == :rest
-
-      allies = handler.logic.alive_battlers(target.bank)
-      fv = allies.find { |ally| ally.has_ability?(:flower_veil) && ally.type_grass? }
-      next unless fv && launcher.can_be_lowered_or_canceled?
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(fv)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1180, target))
-      end
-    end
-
-    # Sweet Veil Ability
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Sweet Veil') do |handler, status, target, launcher, _|
-      next unless status == :sleep
-
-      allies = handler.logic.alive_battlers(target.bank)
-      fv = allies.find { |ally| ally.has_ability?(:sweet_veil) }
-      next unless fv && launcher.can_be_lowered_or_canceled?
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(fv)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1186, target))
-      end
-    end
-
-    # Own Tempo
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Own Tempo') do |handler, status, target, launcher|
-      next unless status == :confusion && target.has_ability?(:own_tempo)
-      next unless launcher.can_be_lowered_or_canceled?
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(target)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 357, target))
-      end
-    end
-
-    # Leaf Guard
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Leaf Guard') do |handler, status, target, launcher|
-      msg_id = StatusChangeHandler::STATUS_LEAF_GUARD_MSG[status]
-      next if !msg_id || !$env.sunny? || !target.has_ability?(:leaf_guard)
-      next unless launcher.can_be_lowered_or_canceled?
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(target)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, msg_id, target))
-      end
-    end
-
-    # Vital Spirit
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Vital Spirit') do |handler, status, target, launcher|
-      next unless status == :sleep && target.has_ability?(:vital_spirit)
-      next unless launcher.can_be_lowered_or_canceled?
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(target)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 318, target))
-      end
-    end
-
-    # Insomnia
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Insomnia') do |handler, status, target, launcher|
-      next unless status == :sleep && target.has_ability?(:insomnia)
-      next unless launcher.can_be_lowered_or_canceled?
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(target)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 318, target))
       end
     end
 
@@ -300,34 +169,12 @@ module Battle
       end
     end
 
-    # Magma Armor
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Magma Armor') do |handler, status, target, launcher|
-      next unless status == :freeze && target.has_ability?(:magma_armor)
-      next unless launcher.can_be_lowered_or_canceled?
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(target)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 300, target))
-      end
-    end
-
     # Cannot be frozen
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: can_be_frozen') do |handler, status, target, _, skill|
       next if status != :freeze || target.can_be_frozen?(skill&.type || 0)
 
       next handler.prevent_change do
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 300, target))
-      end
-    end
-
-    # Immunity
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Immunity') do |handler, status, target, launcher|
-      next if status != :poison && status != :toxic || !target.has_ability?(:immunity)
-      next unless launcher.can_be_lowered_or_canceled?
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(target)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 252, target))
       end
     end
 
@@ -340,34 +187,12 @@ module Battle
       end
     end
 
-    # Limber
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Limber') do |handler, status, target, launcher|
-      next unless status == :paralysis && target.has_ability?(:limber)
-      next unless launcher.can_be_lowered_or_canceled?
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(target)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 285, target))
-      end
-    end
-
     # Cannot be paralyzed
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: can_be_paralyzed') do |handler, status, target, _, skill|
       next if status != :paralysis || target.can_be_paralyzed? || skill&.db_symbol == :body_slam
 
       next handler.prevent_change do
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 285, target))
-      end
-    end
-
-    # Water Veil
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Water Veil') do |handler, status, target, launcher|
-      next unless status == :burn && target.has_ability?(:water_veil)
-      next unless launcher.can_be_lowered_or_canceled?
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(target)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 270, target))
       end
     end
 

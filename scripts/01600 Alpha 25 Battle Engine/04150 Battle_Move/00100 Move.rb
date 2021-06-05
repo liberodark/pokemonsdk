@@ -131,9 +131,11 @@ module Battle
     def priority(user = nil)
       priority = data.priority
       return priority unless user
-      return priority + 3 if heal? && user.has_ability?(:triage)
-      return priority + 1 if type_fly? && user.hp == user.max_hp && user.has_ability?(:gale_wings)
-      return priority + 1 if status? && user.has_ability?(:prankster)
+
+      logic.each_effects(user) do |e|
+        new_priority = e.on_move_priority_change(user, priority, self)
+        return new_priority if new_priority
+      end
 
       return priority
     end

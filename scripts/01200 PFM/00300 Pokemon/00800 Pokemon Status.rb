@@ -97,9 +97,7 @@ module PFM
     # Can the Pokemon be burnt?
     # @return [Boolean]
     def can_be_burn?
-      return false if @status != 0 || type_fire? || ($scene.is_a?(Battle::Scene) ? has_ability?(:water_bubble) : ability_db_symbol == :water_bubble)
-
-      return true
+      return @status == 0 && !type_fire?
     end
 
     # Is the Pokemon asleep?

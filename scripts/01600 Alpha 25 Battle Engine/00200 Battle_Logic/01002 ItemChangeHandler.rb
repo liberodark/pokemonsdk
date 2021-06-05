@@ -116,7 +116,6 @@ module Battle
       target.consumed_item = nil
     end
 
-
     # Register effects
     ItemChangeHandler.register_post_item_change_hook('PSDK item change post: Effects') do |handler, db_symbol, target, launcher, skill|
       handler.logic.each_effects(target, launcher) do |effect|
@@ -127,17 +126,6 @@ module Battle
       handler.logic.each_effects(target, launcher) do |effect|
         next effect.on_pre_item_change(handler, db_symbol, target, launcher, skill)
       end
-    end
-
-    # Register the Unburden ablility
-    ItemChangeHandler.register_post_item_change_hook('PSDK item change post: Unburden') do |handler, db_symbol, target|
-      next unless db_symbol == :none && target.has_ability?(:unburden)
-
-      if (st_ch = handler.logic.stat_change_handler).stat_increasable?(:spd, target)
-        handler.scene.visual.show_ability(target)
-        st_ch.stat_change(:spd, 1, target)
-      end
-      st_ch.reset_prevention_reason
     end
 
     # Register the Iron Ball addition

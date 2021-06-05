@@ -124,26 +124,26 @@ module Battle
     # Execute a block on each effect depending on what to select as effect
     # @param pokemons [Array<PFM::PokemonBattler>] list of battlers we want to see their effect executed
     # @yieldparam [Effects::EffectBase]
-    # @return [Symbol, Integer, nil] the first block return that was a symbol
+    # @return [Array<Effects::EffectBase>, Symbol, Integer, nil] the first block return that was a symbol
+    # @note This returns an enumerator if no block is given
+    # @note If the block returns a Symbol, this methods returns this symbol immediately without processing the other effects
     def each_effects(*pokemons)
+      return to_enum(__method__, *pokemons) unless block_given?
+
       # Define the proc that will ensure effects are properly called and stop the function if the result is a Symbol
       yielder = proc do |e|
         r = yield(e)
         return r if r.is_a?(Symbol)
       end
+      pokemons = pokemons.compact # Sometimes launcher is nil, it's easier to handle that here
       # Terrain effect
       @terrain_effects.each(&yielder)
       # Effect on Pokemon & their position
-      pokemons.each do |pokemon|
-        next unless pokemon
-
-        # Status Effect
-        yielder.call(pokemon.status_effect)
-        # All other effect (move)
-        pokemon.effects.each(&yielder)
-        # Position effects
-        @position_effects[pokemon.bank][pokemon.position]&.each(&yielder)
-      end
+      pokemons.each { |pokemon| pokemon.evaluate_effects(yielder) }
+      # Ability effect from allies
+      allies = pokemons.flat_map { |pokemon| @scene.logic.allies_of(pokemon).select { |ally| ally.ability_effect.affect_allies } }.uniq
+      allies.reject! { |pokemon| pokemons.include?(pokemon) } # <= Ability effect might already have been evaluated if the pokemon is in the list
+      allies.each { |pokemon| yielder.call(pokemon.ability_effect) }
       # Effect on banks
       pokemons.compact.map(&:bank).uniq.each { |bank| @bank_effects[bank]&.each(&yielder) }
       return nil

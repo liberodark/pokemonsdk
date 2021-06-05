@@ -9,6 +9,15 @@ module Battle
         self.counter = 5
       end
 
+      # Return the chance of hit multiplier
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @param move [Battle::Move]
+      # @return [Float]
+      def chance_of_hit_multiplier(user, target, move)
+        return 5.0 / 3
+      end
+
       # Get the name of the effect
       # @return [Symbol]
       def name

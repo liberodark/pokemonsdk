@@ -264,95 +264,9 @@ module Battle
       end
       next power
     end
-
-    # Register the no stat change effect
-    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: No Stat Change') do |_, _, target|
-      # next :prevent if target.battle_effect.has_no_stat_change_effect?
-    end
-    StatChangeHandler.register_stat_increase_prevention_hook('PSDK stat incr: No Stat Change') do |_, _, target|
-      # next :prevent if target.battle_effect.has_no_stat_change_effect?
-    end
-
-    # Register the Simple ability
-    StatChangeHandler.register_stat_change_hook('PSDK stat_change: Simple') do |handler, _, power, target, launcher|
-      next unless target.has_ability?(:simple)
-
-      if !launcher || launcher.can_be_lowered_or_canceled?(true)
-        handler.scene.visual.show_ability(target)
-        next power * 2
-      end
-      next nil
-    end
-
-    # Register the Contrary ability
-    StatChangeHandler.register_stat_change_hook('PSDK stat_change: Contrary') do |handler, _, power, target, launcher|
-      next unless target.has_ability?(:contrary)
-
-      if !launcher || launcher.can_be_lowered_or_canceled?(true)
-        handler.scene.visual.show_ability(target)
-        next -power
-      end
-      next nil
-    end
-
-    # Register the Flower Veil ability
-    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat_decr: Flower Veil') do |handler, _, target, launcher|
-      next if target == launcher || !launcher
-
-      allies = handler.logic.alive_battlers(target.bank)
-      fv = allies.find { |ally| ally.has_ability?(:flower_veil) && ally.type_grass? }
-      next unless fv && launcher.can_be_lowered_or_canceled?
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(fv)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 198, target))
-      end
-    end
-
-    # Register the Clear Body ability
-    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Clear Body') do |handler, _, target, launcher|
-      next if target == launcher || !launcher
-
-      if launcher.can_be_lowered_or_canceled?(target.has_ability?(:clear_body))
-        next handler.prevent_change do
-          handler.scene.visual.show_ability(target)
-          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 198, target))
-        end
-      end
-    end
-
-    # Register the Full Metal Body ability
-    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Full Metal Body') do |handler, _, target, launcher|
-      next if target == launcher || !launcher
-      next unless target.has_ability?(:full_metal_body)
-
-      next handler.prevent_change do
-        handler.scene.visual.show_ability(target)
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 198, target))
-      end
-    end
-
-    # Register the White Smoke ability
-    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: White Smoke') do |handler, _, target, launcher|
-      next if target == launcher || !launcher
-
-      if launcher.can_be_lowered_or_canceled?(target.has_ability?(:white_smoke))
-        next handler.prevent_change do
-          handler.scene.visual.show_ability(target)
-          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 198, target))
-        end
-      end
-    end
-
-    # Register the Hyper Cutter ability
-    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Hyper Cutter') do |handler, stat, target, launcher|
-      next if target == launcher || stat != :atk || !launcher
-
-      if launcher.can_be_lowered_or_canceled?(target.has_ability?(:hyper_cutter))
-        next handler.prevent_change do
-          handler.scene.visual.show_ability(target)
-          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 201, target))
-        end
+    StatChangeHandler.register_stat_change_post_event_hook('PSDK stat_change_post: Effects') do |handler, stat, power, target, launcher, skill|
+      next handler.logic.each_effects(target, launcher) do |effect|
+        next effect.on_stat_change_post(handler, stat, power, target, launcher, skill)
       end
     end
 
@@ -364,50 +278,6 @@ module Battle
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 198, target))
           handler.logic.item_change_handler.change_item(:white_herb, true, target, launcher, skill)
         end
-      end
-    end
-
-    # Register the Keen Eye ability
-    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Keen Eye') do |handler, stat, target, launcher|
-      next if target == launcher || stat != :acc || !launcher
-
-      if launcher.can_be_lowered_or_canceled?(target.has_ability?(:keen_eye))
-        next handler.prevent_change do
-          handler.scene.visual.show_ability(target)
-          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 207, target))
-        end
-      end
-    end
-
-    # Register the Big Pecks ability
-    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: Big Pecks') do |handler, stat, target, launcher|
-      next if target == launcher || stat != :dfe || !launcher
-
-      if launcher.can_be_lowered_or_canceled?(target.has_ability?(:big_pecks))
-        next handler.prevent_change do
-          handler.scene.visual.show_ability(target)
-          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 201, target))
-        end
-      end
-    end
-
-    # Register the Defiant ability
-    StatChangeHandler.register_stat_change_post_event_hook('PSDK stat post event: Defiant') do |handler, _, power, target, _|
-      handler.logic.foes_of(target).each do |foe|
-        next unless foe && target.has_ability?(:defiant) && power < 0
-
-        handler.scene.visual.show_ability(target)
-        handler.logic.stat_change_handler.stat_change_with_process(:atk, 2, target)
-      end
-    end
-
-    # Register the Competitive ability
-    StatChangeHandler.register_stat_change_post_event_hook('PSDK stat post event: Competitive') do |handler, _, power, target, _|
-      handler.logic.foes_of(target).each do |foe|
-        next unless foe && target.has_ability?(:competitive) && power < 0
-
-        handler.scene.visual.show_ability(target)
-        handler.logic.stat_change_handler.stat_change_with_process(:ats, 2, target)
       end
     end
   end

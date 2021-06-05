@@ -50,9 +50,13 @@ module Battle
       # Add the effects to the pokemons (first turn)
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
-      def proceed_effects_turn1(user, targets)
-        two_turn_proceed_effects_turn1(user, targets)
-        user.effects.add(Effects::PreventTargetsMove.new(@logic, user, targets, 1))
+      def proceed_effectsturn1(user, targets)
+        two_turn_proceed_effectsturn1(user, targets)
+        # TODO: check if that's allright but to me effect from move the should prevent a target from moving should be applied to targets
+        targets.each do |target|
+          target.effects.add(Effects::PreventTargetsMove.new(@logic, target, targets, 1))
+        end
+        # user.effects.add(Effects::PreventTargetsMove.new(@logic, user, targets, 1))
       end
     end
     Move.register(:s_sky_drop, SkyDrop)

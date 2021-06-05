@@ -9,11 +9,35 @@ module PFM
       @effects = Battle::Effects::EffectsHandler.new
     end
 
+    # Evaluate all the effects related to this Pokemon
+    # @param yielder [Proc] proc to call with the effect
+    def evaluate_effects(yielder)
+      # Status Effect
+      yielder.call(status_effect)
+      # Ability Effect
+      yielder.call(ability_effect)
+      # Item effect
+      # todo
+      # Move effect
+      effects.each(&yielder)
+      # Position effects
+      @scene.logic.position_effects[bank][position]&.each(&yielder)
+    end
+
     # Get the status effect
     # @return [Battle::Effects::Status]
     def status_effect
       @status_effect = Battle::Effects::Status.new(@scene.logic, self, @status) if !@status_effect || @status_effect.status_id != @status
       return @status_effect
+    end
+
+    # Get the ability effect
+    # @return [Battle::Effects::Ability]
+    def ability_effect
+      if !@ability_effect || @ability_effect.db_symbol != battle_ability_db_symbol
+        @ability_effect = Battle::Effects::Ability.new(@scene.logic, self, battle_ability_db_symbol)
+      end
+      return @ability_effect
     end
   end
 end

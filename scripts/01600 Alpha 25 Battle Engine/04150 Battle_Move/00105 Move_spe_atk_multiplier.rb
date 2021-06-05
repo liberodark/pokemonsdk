@@ -1,9 +1,8 @@
 module Battle
   class Move
-    # List of atk modifier method from ability
-    ATK_ABILITY_MODIFIER = Hash.new(:calc_ua_1)
-    # List of ats modifier method from ability
-    ATS_ABILITY_MODIFIER = Hash.new(:calc_ua_1)
+    def calc_ua_1(*)
+      return 1
+    end
     # List of atk modifier method from item
     ATK_ITEM_MODIFIER = Hash.new(:calc_ua_1)
     # List of ats modifier method from item
@@ -32,88 +31,6 @@ module Battle
     def calc_am_flower_gift(user, target)
       $env.sunny? && user.can_be_lowered_or_canceled? ? 1.5 : 1
     end
-
-    # Guts ability multiplier
-    # @param user [PFM::PokemonBattler]
-    # @param target [PFM::PokemonBattler]
-    # @return [Numeric]
-    def calc_am_guts(user, target)
-      return 1.5 if user.paralyzed? || user.poisoned? || user.toxic? || user.burn? || user.asleep?
-      return 1
-    end
-
-    # Water Bubble ability multiplier
-    # @param user [PFM::PokemonBattler]
-    # @param target [PFM::PokemonBattler]
-    # @return [Numeric]
-    def calc_am_water_bubble(user, target)
-      return 2 if type_water?
-      return 1
-    end
-
-    # Toxic Boost ability multiplier
-    # @param user [PFM::PokemonBattler]
-    # @param target [PFM::PokemonBattler]
-    # @return [Numeric]
-    def calc_am_toxic_boost(user, target)
-      return 1.5 if user.poisoned? || user.toxic?
-      return 1
-    end
-
-    # Hustle ability multiplier
-    # @param user [PFM::PokemonBattler]
-    # @param target [PFM::PokemonBattler]
-    # @return [Numeric]
-    def calc_am_hustle(user, target)
-      1.5
-    end
-
-    # Slow start ability multiplier
-    # @param user [PFM::PokemonBattler]
-    # @param target [PFM::PokemonBattler]
-    # @return [Numeric]
-    def calc_am_slow_start(user, target)
-      VAL_0_5 if user.turn_count < 5
-    end
-
-    # Plus/Minus ability multiplier
-    # @param user [PFM::PokemonBattler]
-    # @param target [PFM::PokemonBattler]
-    # @return [Numeric]
-    def calc_am_plus_minus(user, target)
-      return 1 unless PLUS_MINUS_ABILITIES.include?(user.battle_ability_db_symbol)
-
-      # The partner should have the other ability
-      partner_expectation = user.has_ability?(:plus) ? :minus : :plus
-      # Try all the adjacent partner
-      return 1.5 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(partner_expectation) }
-
-      # No partner with the right ability => 1
-      return 1
-    end
-
-    # Battery ability multiplier
-    # @param user [PFM::PokemonBattler]
-    # @param target [PFM::PokemonBattler]
-    # @return [Numeric]
-    def calc_am_battery(user, target)
-      # Try all the adjacent partner
-      return 1.3 if logic.adjacent_allies_of(user).any? { |partner| partner&.has_ability?(:battery) }
-
-      # No partner with the right ability => 1
-      return 1
-    end
-
-    # Flare Boost ability multiplier
-    # @param user [PFM::PokemonBattler]
-    # @param target [PFM::PokemonBattler]
-    # @return [Numeric]
-    def calc_am_flare_boost(user, target)
-      return 1.5 if user.burn?
-
-      return 1
-    end
-
     # Choice Band item multiplier
     # @param user [PFM::PokemonBattler]
     # @param target [PFM::PokemonBattler]
@@ -147,20 +64,6 @@ module Battle
     end
 
     class << self
-      # Define an ability that modifies atk
-      # @param db_symbol [Symbol] db_symbol of the ability
-      # @param method_sym [Symbol] name of the method to call
-      def define_ability_atk_modifier(db_symbol, method_sym)
-        ATK_ABILITY_MODIFIER[db_symbol] = method_sym
-      end
-
-      # Define an ability that modifies ats
-      # @param db_symbol [Symbol] db_symbol of the ability
-      # @param method_sym [Symbol] name of the method to call
-      def define_ability_ats_modifier(db_symbol, method_sym)
-        ATS_ABILITY_MODIFIER[db_symbol] = method_sym
-      end
-
       # Define an item that modifies atk
       # @param db_symbol [Symbol] db_symbol of the ability
       # @param method_sym [Symbol] name of the method to call
@@ -175,20 +78,6 @@ module Battle
         ATS_ITEM_MODIFIER[db_symbol] = method_sym
       end
     end
-    define_ability_atk_modifier(:pure_power, :calc_am_pure_power)
-    define_ability_atk_modifier(:huge_power, :calc_am_pure_power)
-    define_ability_atk_modifier(:flower_gift, :calc_am_flower_gift)
-    define_ability_atk_modifier(:guts, :calc_am_guts)
-    define_ability_atk_modifier(:toxic_boost, :calc_am_toxic_boost)
-    define_ability_atk_modifier(:water_bubble, :calc_am_water_bubble)
-    define_ability_atk_modifier(:hustle, :calc_am_hustle)
-    define_ability_atk_modifier(:slow_start, :calc_am_slow_start)
-    define_ability_atk_modifier(:gorilla_tactics, :calc_im_choice_band)
-    define_ability_ats_modifier(:solar_power, :calc_am_flower_gift)
-    define_ability_ats_modifier(:plus, :calc_am_plus_minus)
-    define_ability_ats_modifier(:minus, :calc_am_plus_minus)
-    define_ability_ats_modifier(:flare_boost, :calc_am_flare_boost)
-    define_ability_ats_modifier(:battery, :calc_am_battery)
     define_item_atk_modifier(:choice_band, :calc_im_choice_band)
     define_item_atk_modifier(:thick_club, :calc_im_thick_club)
     define_item_ats_modifier(:choice_specs, :calc_im_choice_band)

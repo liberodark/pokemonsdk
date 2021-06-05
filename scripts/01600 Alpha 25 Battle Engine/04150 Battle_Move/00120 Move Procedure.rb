@@ -41,6 +41,7 @@ module Battle
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def proceed_internal(user, targets)
       return unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
+      return scene.display_message_and_wait(parse_text(18, 106)) if targets.all?(&:dead?) && (on_move_failure(user, targets, :no_target) || true)
 
       usage_message(user)
       if pp == 0 && !(user.effects.has?(&:force_next_move?) && !@forced_next_move_decrease_pp)
@@ -54,9 +55,7 @@ module Battle
       user, targets = proceed_battlers_remap(user, targets)
 
       actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
-      if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
-        return scene.display_message_and_wait(parse_text(18, 106)) # Case of the fainted target
-      end
+      return if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
 
       play_animation(user, targets)
 
@@ -162,14 +161,8 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Boolean]
     def ability_immunity?(user, target)
-      # TODO: add hooks
-      return true if ballistics? && user.can_be_lowered_or_canceled?(target.has_ability?(:bulletproof))
-      return true if sound_attack? && user.can_be_lowered_or_canceled?(target.has_ability?(:soundproof))
-      return true if effectiveness <= 1 && user.can_be_lowered_or_canceled?(target.has_ability?(:wonder_guard))
-
-      if priority != priority(user)
-        return true if target.type_dark? && user.has_ability?(:prankster)
-        return true if logic.bank_effects[target.bank]&.has?(:quick_guard)
+      logic.each_effects(target) do |e|
+        return true if e.on_move_ability_immunity(user, target, self)
       end
 
       return false

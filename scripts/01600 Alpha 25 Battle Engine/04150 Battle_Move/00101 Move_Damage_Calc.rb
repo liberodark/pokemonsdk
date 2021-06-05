@@ -10,10 +10,6 @@ module Battle
     # @return [Integer]
     def damages(user, target)
       log_data("# damages(#{user}, #{target}) for #{db_symbol}")
-      log_data("# user_item_multiplier reason : #{user.battle_item_db_symbol}")
-      log_data("# foe_item_multiplier reason : #{target.battle_item_db_symbol}")
-      log_data("# user_ability_multiplier reason : #{user.battle_ability_db_symbol}")
-      log_data("# foe_ability_multiplier reason : #{target.battle_ability_db_symbol}")
       @critical = logic.calc_critical_hit(user, target, critical_rate)
       log_data("@critical = #{@critical} # critical_rate = #{critical_rate}")
       # Reset the effectiveness
@@ -108,10 +104,7 @@ module Battle
       result = (result * VAL_0_5).floor if logic.terrain_effects.has?(:mud_sport) && type == GameData::Types::ELECTRIC
       # WS
       result = (result * VAL_0_5).floor if logic.terrain_effects.has?(:water_sport) && type == GameData::Types::FIRE
-      # UA
-      result = (result * send(USER_ABILITY_MULTIPLIER[user.battle_ability_db_symbol], user, target)).floor
-      # FA
-      return (result * send(FOE_ABILITY_MULTIPLIER[target.battle_ability_db_symbol], user, target)).floor
+      return result
     end
 
     # [Spe]atk calculation
@@ -129,11 +122,6 @@ module Battle
       logic.each_effects(user, target) do |e|
         result = (result * e.sp_atk_multiplier(user, target, self)).floor
       end
-      # Flower Gift
-      result = (result * flower_gift_atk_calc(user, ph_move)).floor
-      # AM
-      am = send((ph_move ? ATK_ABILITY_MODIFIER : ATS_ABILITY_MODIFIER)[user.battle_ability_db_symbol], user, target)
-      result = (result * am).floor
       # IM
       return (result * send((ph_move ? ATK_ITEM_MODIFIER : ATS_ITEM_MODIFIER)[user.battle_item_db_symbol], user, target)).floor
     end
@@ -147,7 +135,6 @@ module Battle
       return ph_move ? user.atk_basis : user.ats_basis
     end
 
-    UNAWARE_IGNORING_ABILITIES = %i[turboblaze teravolt mold_breaker]
     # Statistic modifier calculation: ATK/ATS
     # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler] target of the move
@@ -155,20 +142,8 @@ module Battle
     # @return [Integer]
     def calc_atk_stat_modifier(user, target, ph_move)
       return 1 if critical_hit?
-      return 1 if target.has_ability?(:unaware) && !UNAWARE_IGNORING_ABILITIES.include?(user.battle_ability_db_symbol)
 
       return ph_move ? user.atk_modifier : user.ats_modifier
-    end
-
-    # Flower Gift calculation: ATK/ATS
-    # @param user [PFM::PokemonBattler] user of the move
-    # @param ph_move [Boolean] true: physical, false: special
-    # @return [Integer]
-    def flower_gift_atk_calc(user, ph_move)
-      return 1 unless ph_move && $env.sunny?
-      return 1 unless logic.allies_of(user).any? { |ally| ally.has_ability?(:flower_gift) } || user.has_ability?(:flower_gift)
-
-      return 1.5
     end
 
     EXPLOSION_SELF_DESTRUCT_MOVE = %i[explosion self-destruct]
@@ -182,35 +157,19 @@ module Battle
       # Stat
       result = ph_move ? target.dfe_basis : target.dfs_basis
       # SM (Only if non-critical hit)
-      unless user.has_ability?(:unaware) || critical_hit?
-        result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor
-      end
+      result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor unless critical_hit?
       # Effects
       logic.each_effects(user, target) do |e|
         result = (result * e.sp_def_multiplier(user, target, self)).floor
       end
-      # Flower Gift & Sandstorm
-      result = (result * flower_gift_dfe_calc(target, ph_move) * sandstorm_calc(target, ph_move)).floor
+      # Sandstorm
+      result = (result * sandstorm_calc(target, ph_move)).floor
       # Mod
-      mod = send((ph_move ? DFE_ABILITY_MODIFIER : DFS_ABILITY_MODIFIER)[target.battle_ability_db_symbol], user, target)
-      result = (result * mod).floor
       mod = send((ph_move ? DFE_ITEM_MODIFIER : DFS_ITEM_MODIFIER)[target.battle_item_db_symbol], user, target)
       result = (result * mod).floor
       # SX
       result = (result * VAL_0_5).floor if EXPLOSION_SELF_DESTRUCT_MOVE.include?(db_symbol)
       return result
-    end
-
-    # Flower Gift calculation: DFE/DFS
-    # @param target [PFM::PokemonBattler] target of the move
-    # @param ph_move [Boolean] true: physical, false: special
-    # @return [Integer]
-    def flower_gift_dfe_calc(target, ph_move)
-      return 1 if ph_move
-      return 1 unless $env.sunny?
-      return 1 unless logic.allies_of(target).any? { |ally| ally.has_ability?(:flower_gift) } || target.has_ability?(:flower_gift)
-
-      return 1.5
     end
 
     # Sandstorm calculation: DFE/DFS
@@ -309,11 +268,6 @@ module Battle
       end
     end
 
-    # Not added before effects to let it being overwritten by effects ;)
-    Move.register_move_type_change_hook('PSDK Normalize Ability') do |user, _, move|
-      next user.has_ability?(:normalize) && move.be_method != :s_weather_ball ? GameData::Types::NORMAL : nil
-    end
-
     Move.register_move_type_change_hook('PSDK Effect process') do |user, target, move, type|
       move.logic.each_effects(user, target) do |e|
         result = e.on_move_type_change(user, target, move, type)
@@ -322,39 +276,6 @@ module Battle
       next type
     end
 
-    # Note: added after effect to overwrite move effects ;)
-    Move.register_move_type_change_hook('PSDK Pixilate Ability') do |user, _, move|
-      next user.has_ability?(:pixilate) && move.type_normal? && move.be_method != :s_weather_ball ? GameData::Types::FAIRY : nil
-    end
-
-    Move.register_move_type_change_hook('PSDK Refrigerate Ability') do |user, _, move|
-      next user.has_ability?(:refrigerate) && move.type_normal? && move.be_method != :s_weather_ball ? GameData::Types::ICE : nil
-    end
-
-    Move.register_move_type_change_hook('PSDK Aerilate Ability') do |user, _, move|
-      next user.has_ability?(:aerilate) && move.type_normal? && move.be_method != :s_weather_ball ? GameData::Types::FLYING : nil
-    end
-
-    Move.register_move_type_change_hook('PSDK Galvanize Ability') do |user, _, move|
-      next user.has_ability?(:galvanize) && move.type_normal? && move.be_method != :s_weather_ball ? GameData::Types::ELECTRIC : nil
-    end
-
-    Move.register_move_type_change_hook('PSDK Scrappy Ability') do |user, target, move|
-      next user.has_ability?(:scrappy) && target.type_ghost? && (move.type_normal? || move.type_fighting?) ? 1 : nil
-    end
-=begin
-    Move.register_move_type_change_hook('PSDK Weather Ball') do |user, target, move|
-      next nil unless move.be_method == :s_weather_ball
-      next nil if $env.normal? || $env.fog?
-      next nil if target.has_ability?(:air_lock) || target.has_ability?(:cloud_nine)
-      next GameData::Types::FIRE if $env.sunny?
-      next GameData::Types::WATER if $env.rain?
-      next GameData::Types::ICE if $env.hail?
-      next GameData::Types::ROCK if $env.sandstorm?
-
-      next nil
-    end
-=end
     # TechnoBlast
     TECHNODRIVES = {
       douse_drive: GameData::Types::WATER,

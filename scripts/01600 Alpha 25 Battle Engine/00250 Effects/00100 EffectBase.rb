@@ -112,6 +112,18 @@ module Battle
         nil && handler && stat && target && launcher && skill
       end
 
+      # Function called when a stat_change has been applied
+      # @param handler [Battle::Logic::StatChangeHandler]
+      # @param stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva
+      # @param power [Integer] power of the stat change
+      # @param target [PFM::PokemonBattler]
+      # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+      # @param skill [Battle::Move, nil] Potential move used
+      # @return [Integer, nil] if integer, it will change the power
+      def on_stat_change_post(handler, stat, power, target, launcher, skill)
+        nil && handler && stat && target && launcher && skill
+      end
+
       # Function called when a pre_item_change is checked
       # @param handler [Battle::Logic::ItemChangeHandler]
       # @param db_symbol [Symbol] Symbol ID of the item
@@ -129,7 +141,6 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
-      # @return [:prevent, nil] :prevent if the item change cannot be applied
       def on_post_item_change(handler, db_symbol, target, launcher, skill)
         nil && handler && db_symbol && target && launcher && skill
       end
@@ -290,6 +301,24 @@ module Battle
         return nil
       end
 
+      # Function called when we try to check if the effect changes the definitive priority of the move
+      # @param user [PFM::PokemonBattler]
+      # @param priority [Integer]
+      # @param move [Battle::Move]
+      # @return [Proc, nil]
+      def on_move_priority_change(user, priority, move)
+        return nil
+      end
+
+      # Function called when we try to check if the effect changes the definitive priority of the move
+      # @param user [PFM::PokemonBattler]
+      # @param target [PFM::PokemonBattler]
+      # @param move [Battle::Move]
+      # @return [Boolean] if the target is immune to the move
+      def on_move_ability_immunity(user, target, move)
+        return nil
+      end
+
       # Function called when a Pokemon initialize a transformation
       # @param handler [Battle::Logic::TransformHandler]
       # @param target [PFM::PokemonBattler]
@@ -352,7 +381,7 @@ module Battle
         return 1
       end
 
-      # Give the move mod1 mutiplier (after the critical)
+      # Give the move mod3 mutiplier (after everything)
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
       # @param move [Battle::Move] move
@@ -364,6 +393,15 @@ module Battle
       # Give the speed modifier over given to the Pokemon with this effect
       # @return [Float, Integer] multiplier
       def spd_modifier
+        return 1
+      end
+
+      # Return the chance of hit multiplier
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @param move [Battle::Move]
+      # @return [Float]
+      def chance_of_hit_multiplier(user, target, move)
         return 1
       end
 
@@ -381,6 +419,7 @@ module Battle
           end
           alias on_stat_decrease_prevention on_stat_increase_prevention
           alias on_stat_change on_stat_increase_prevention
+          alias on_stat_change_post on_stat_increase_prevention
           alias on_pre_item_change on_stat_increase_prevention
           alias on_post_item_change on_stat_increase_prevention
           alias on_status_prevention on_stat_increase_prevention
@@ -400,6 +439,8 @@ module Battle
           alias on_move_prevention_target on_stat_increase_prevention
           alias on_move_type_change on_stat_increase_prevention
           alias on_move_disabled_check on_stat_increase_prevention
+          alias on_move_priority_change on_stat_increase_prevention
+          alias on_move_ability_immunity on_stat_increase_prevention
           alias on_transform_event on_stat_increase_prevention
           alias on_single_type_multiplier_overwrite on_stat_increase_prevention
           alias sp_atk_multiplier base_power_multiplier
@@ -408,6 +449,7 @@ module Battle
           alias mod2_multiplier base_power_multiplier
           alias mod3_multiplier base_power_multiplier
           alias spd_modifier base_power_multiplier
+          alias chance_of_hit_multiplier base_power_multiplier
         end
       end
     end

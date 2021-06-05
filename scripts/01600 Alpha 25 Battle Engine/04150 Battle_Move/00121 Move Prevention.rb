@@ -104,8 +104,6 @@ module Battle
   # Effects
   Move.register_move_prevention_user_hook('PSDK Move prev user: Effects') do |user, targets, move|
     next move.logic.each_effects(user, *targets) do |effect|
-      next if effect.name == :confusion
-
       result = effect.on_move_prevention_user(user, targets, move)
       break result if result
     end
@@ -132,45 +130,9 @@ module Battle
   # Choice item || Gorilla Tactics
   Move.register_move_disabled_check_hook('PSDK Move Disabled: Choice item') do |user, move|
     next unless Move::CHOICE_ITEMS.include?(user.battle_item_db_symbol) && user.move_history.any?
-    next unless user.has_ability?(:gorilla_tactics) && user.move_history.any?
     next if user.move_history.last.db_symbol == move.db_symbol
 
     next proc {}
-  end
-
-  Move.register_move_prevention_user_hook('PSDK Taunt Status Move Prevention') do |user, _, move|
-    next unless user.effects.has?(:taunt) && !user.has_ability?(:oblivious)
-
-    if move.status?
-      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 571, user, PFM::Text::MOVE[1] => move.name))
-      next :prevent
-    end
-  end
-
-  # Mold Breaker
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Mold Breaker') do |user, _, _|
-    next unless user.has_ability?(:mold_breaker)
-
-    user.ability_used = false
-  end
-
-  # Torment registration
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Torment') do |user, _, move|
-    next
-=begin
-    if user.battle_effect.has_torment_effect? && !user.last_successfull_move_is?(move.db_symbol)
-      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 580, user))
-      next :prevent
-    end
-=end
-  end
-  Move.register_move_disabled_check_hook('PSDK Move disabled: Torment') do |user, move|
-    next
-=begin
-    next unless user.battle_effect.has_torment_effect? && !user.last_successfull_move_is?(move.db_symbol)
-
-    next proc { move.scene.display_message_and_wait(parse_text_with_pokemon(19, 580, user)) }
-=end
   end
 
   # Assault vest
@@ -188,48 +150,11 @@ module Battle
     end
   end
 
-  # Truant registration
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Truant') do |user, _, move|
-    if user.has_ability?(:truant) && user.ability_used
-      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 445, user))
-      user.ability_used = false
-      next :prevent
-    end
-    user.ability_used = true
-  end
-
-  # Powder registration
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Powder') do |user, _, move|
-    next
-=begin
-    if user.battle_effect.has_powder_effect? && move.type_fire?
-      move.send(:usage_message, user)
-      if user.has_ability?(:magic_guard)
-        move.scene.display_message_and_wait(parse_text(18, 74))
-      else
-        move.scene.visual.show_hp_animations([user], [-user.max_hp / 4])
-        move.scene.display_message_and_wait(parse_text(18, 259, PFM::Text::MOVE[0] => move.name))
-      end
-      next :prevent
-    end
-=end
-  end
-
   # Crafty Shield registration
   Move.register_move_prevention_target_hook('PSDK Move prev target: Crafty Shield') do |user, target, move|
     next false unless target.effects.has?(:crafty_shield) && move.status? && user != target && move.db_symbol != :curse
 
     move.scene.display_message_and_wait(parse_text_with_pokemon(19, 803, target))
-    next true
-  end
-
-  # Sap Sipper registration
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Sap Sipper') do |user, target, move|
-    next false unless target.has_ability?(:sap_sipper) && move.type_grass? && move.db_symbol != :aromatherapy
-    next unless user.can_be_lowered_or_canceled?
-
-    move.scene.visual.show_ability(target)
-    move.logic.stat_change_handler.stat_change_with_process(:atk, 1, target, user, move)
     next true
   end
 
@@ -305,56 +230,5 @@ module Battle
 
     move.scene.display_message_and_wait(parse_text_with_pokemon(19, 1207, target))
     next true
-  end
-
-  # Queenly Majesty effect
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Queenly Majesty') do |user, _, move|
-    protector = move.logic.foes_of(user).find { |pokemon| pokemon.has_ability?(:queenly_majesty) }
-    next false unless protector && move.relative_priority >= 1 && move.blocable?
-    next false unless user.can_be_lowered_or_canceled?
-
-    move.scene.visual.show_ability(protector)
-    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, '[VAR MOVE(0001)]' => move.name))
-
-    next true
-  end
-
-  # Dazzling effect
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Dazzling') do |user, _, move|
-    protector = move.logic.foes_of(user).find { |pokemon| pokemon.has_ability?(:dazzling) }
-    next false unless protector && move.relative_priority >= 1 && move.blocable?
-    next false unless user.can_be_lowered_or_canceled?
-
-    move.scene.visual.show_ability(protector)
-    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, '[VAR MOVE(0001)]' => move.name))
-
-    next true
-  end
-
-  # Confusion effect
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Confusion Effects') do |user, targets, move|
-    next move.logic.each_effects(user) do |effect|
-      next if effect.name != :confusion
-
-      result = effect.on_move_prevention_user(user, targets, move)
-      break result if result
-    end
-  end
-
-  # Sky Drop effect
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Sky Drop Effect') do |user, _, move|
-    next move.logic.each_effects(*move.logic.all_alive_battlers) do |effect|
-      break :prevent if effect.name == :prevent_targets_move && effect.targetted?(user)
-    end
-  end
-
-  # Imprison effect
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Imprison Effect') do |user, targets, move|
-    next move.logic.each_effects(*move.logic.all_alive_battlers) do |effect|
-      next unless effect.name == :imprison
-
-      result = effect.on_move_prevention_global(user, targets, move)
-      break result if result
-    end
   end
 end
