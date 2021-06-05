@@ -395,6 +395,12 @@ module PFM
       self.type1, self.type2, self.type3 = types
     end
 
+    # Is the Pokemon typeless?
+    # @return [Boolean]
+    def typeless?
+      return type1 == 0 && type2 == 0 && type3 == 0
+    end
+
     private
 
     # Copy the properties of the original pokemon
