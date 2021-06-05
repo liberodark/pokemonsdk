@@ -137,7 +137,7 @@ module Battle
       end
     end
     SwitchHandler.register_switch_event_hook('PSDK switch: Effects') do |handler, who, with|
-      next handler.logic.each_effects(who, with) do |e|
+      next handler.logic.each_effects(*[who, with].uniq) do |e|
         next e.on_switch_event(handler, who, with)
       end
     end
