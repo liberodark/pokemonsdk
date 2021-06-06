@@ -121,18 +121,19 @@ module Battle
       (count = @logic.battler_count(0)).times do |i|
         @text.set_pknick(@logic.battler(0, i), i)
       end
-      if count == 3
-        return @text.parse(18, 14)
-      elsif count == 2
-        return @text.parse(18, 13)
-      end
+      return @text.parse(18, 14) if count == 3
+      return @text.parse(18, 13) if count == 2
+
       return @text.parse(18, 12)
+    ensure
+      @text.reset_variables
     end
 
     # When the trainer has a class and it sends out its Pokemon
     # @param name [String] name of the trainer
     # @param class_name [String] class of the trainer
     # @param index [String] index of the trainer in the name array
+    # @return [String]
     def trainer_sending_pokemon_start_class(name, class_name, index)
       hash = {
         TRNAME[1] => name,
@@ -143,15 +144,24 @@ module Battle
       arr = Array.new(@battle_info.vs_type) { |i| @logic.battler(1, i) }
       arr.select! { |pokemon| pokemon&.party_id == index }
       arr.each_with_index { |pokemon, i| @text.set_pknick(pokemon, i + 2) }
-      @text.parse(18, 15 + arr.size - 1, hash)
+      return @text.parse(18, 15 + arr.size - 1, hash)
+    ensure
+      @text.reset_variables
     end
 
+    # When the trainer has no class and it sends out its Pokemon
+    # @param name [String] name of the trainer
+    # @param class_name [String] class of the trainer
+    # @param index [String] index of the trainer in the name array
+    # @return [String]
     def trainer_sending_pokemon_start_no_class(name, index)
       # Get the pokemon
       arr = Array.new(@battle_info.vs_type) { |i| @logic.battler(1, i) }
       arr.select! { |pokemon| pokemon&.party_id == index }
       arr.each_with_index { |pokemon, i| @text.set_pknick(pokemon, i + 2) }
-      @text.parse(18, 18 + arr.size - 1, TRNAME[0] => name)
+      return @text.parse(18, 18 + arr.size - 1, TRNAME[0] => name)
+    ensure
+      @text.reset_variables
     end
   end
 end
