@@ -4,7 +4,7 @@ module Battle
     # @source https://bulbapedia.bulbagarden.net/wiki/Yawn_(move)
     class Yawn < Move
       private
-      
+
       # Test move accuracy
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
@@ -12,7 +12,7 @@ module Battle
       def proceed_move_accuracy(user, targets)
         return true
       end
-      
+
       # Function that tests if the targets blocks the move
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] expected target
@@ -21,6 +21,7 @@ module Battle
       def move_blocked_by_target?(user, target)
         return true if super
         return true unless logic.status_change_handler.status_appliable?(:sleep, target, user)
+
         return false
       end
 

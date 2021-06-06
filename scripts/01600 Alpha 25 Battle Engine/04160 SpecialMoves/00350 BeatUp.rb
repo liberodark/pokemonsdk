@@ -40,12 +40,13 @@ module Battle
           @bu_current_battler = @bu_battlers[i]
           actual_targets.each do |target|
             next if target.dead?
+
             deal_damage_to_target(user, actual_targets, target)
           end
         end
         final_message(nb_hit)
       end
-      
+
       # Function that deal the damage to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
@@ -84,7 +85,6 @@ module Battle
       def final_message(nb_hit)
         @scene.display_message_and_wait(parse_text(18, 33, PFM::Text::NUMB[1] => nb_hit.to_s))
       end
-
     end
     Move.register(:s_beat_up, BeatUp)
   end

@@ -6,6 +6,7 @@ module Battle
       BLOCKING_ABILITY = %i[aroma_veil]
 
       private
+
       # Test if the target is immune
       # @param user [PFM::PokemonBattler]
       # @param target [PFM::PokemonBattler]

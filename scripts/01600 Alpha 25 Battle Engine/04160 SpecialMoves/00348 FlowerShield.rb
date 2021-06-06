@@ -13,6 +13,7 @@ module Battle
       def move_usable_by_user?(user, targets)
         return false unless super
         return show_usage_failure(user) && false unless targets.any? {|target| target.type_grass? && !target.effects.has?(&:out_of_reach?)}
+
         return true
       end
 
@@ -24,7 +25,7 @@ module Battle
       def move_blocked_by_target?(user, target)
         return super || !target.type_grass? || target.effects.has?(&:out_of_reach?)
       end
-      
+
       private
 
       # Function that deals the stat to the pokemon

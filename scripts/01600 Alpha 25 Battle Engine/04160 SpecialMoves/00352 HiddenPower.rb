@@ -67,7 +67,6 @@ module Battle
       # IVs weighted from the litest to the heaviest in type / damage calculation
       # @return [Array<Symbol>]
       IV_LIST = %i[iv_hp iv_atk iv_dfe iv_spd iv_ats iv_dfs]
-      
       # IVs weighted from the litest to the heaviest in type / damage calculation
       # @return [Array<Symbol>]
       def iv_list

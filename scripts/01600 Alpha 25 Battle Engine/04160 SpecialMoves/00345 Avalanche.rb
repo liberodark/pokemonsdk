@@ -12,7 +12,7 @@ module Battle
       def calc_base_power(user, target)
         result = super
         damage_took = user.damage_history.any? { |dh| dh.current_turn? && dh.launcher == target }
-        log_data("power = #{result * (damage_took ? 2 : 1)} # after Move::Avalanche calc") 
+        log_data("power = #{result * (damage_took ? 2 : 1)} # after Move::Avalanche calc")
         return result * (damage_took ? 2 : 1)
       end
     end

@@ -1,6 +1,6 @@
 module Battle
   class Move
-    # Any Pokémon in play when this attack is used faints in 3 turns.
+    # Any Pokemon in play when this attack is used faints in 3 turns.
     # @see https://pokemondb.net/move/perish-song
     # @see https://bulbapedia.bulbagarden.net/wiki/Perish_Song_(move)
     # @see https://www.pokepedia.fr/Requiem

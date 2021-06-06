@@ -14,13 +14,13 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-        select_stage = -> (target) { (Logic::StatChangeHandler::ALL_STATS.select { |s| @logic.stat_change_handler.stat_increasable?(s, target, user, self) }).sample(random: @logic.generic_rng) }
-        @stages_ids = Hash[ targets.map { |target| [target, select_stage.call(target)] } ].reject { |_, stage_id| stage_id.nil? }
+
+        select_stage = ->(target) { (Logic::StatChangeHandler::ALL_STATS.select { |s| @logic.stat_change_handler.stat_increasable?(s, target, user, self) }).sample(random: @logic.generic_rng) }
+        @stages_ids = targets.map { |target| [target, select_stage.call(target)] }.to_h.compact
         return show_usage_failure(user) && false if @stages_ids.empty?
+
         return true
       end
-
-      private
 
       # All the stages that the move can modify
       # @return [Array[Symbol]]
@@ -34,6 +34,7 @@ module Battle
       def deal_stats(user, actual_targets)
         actual_targets.each do |target|
           next unless @stages_ids[target]
+
           @logic.stat_change_handler.stat_change(@stages_ids[target], 2, target, user, self)
         end
       end

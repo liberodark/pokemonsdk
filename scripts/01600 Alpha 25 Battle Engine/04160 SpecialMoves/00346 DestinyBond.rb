@@ -14,6 +14,7 @@ module Battle
       # @return [Boolean] if the target evade the move (and is not selected)
       def move_blocked_by_target?(user, target)
         return true if target.effects.has?(:destiny_bond)
+
         return super
       end
 
