@@ -14,17 +14,22 @@ module PFM
       # Get the move that cause the damages
       # @return [Battle::Move, nil]
       attr_reader :move
+      # Get if the Pokemon was knocked out 
+      # @return [Boolean]
+      attr_reader :ko
 
       # Create a new Damage History
       # @param damage [Integer]
       # @param launcher [PFM::PokemonBattler]
       # @param attack_order [Integer]
       # @param move [Battle::Move]
-      def initialize(damage, launcher, move)
+      # @param ko [Boolean]  
+      def initialize(damage, launcher, move, ko)
         @turn = $game_temp.battle_turn
         @damage = damage
         @launcher = launcher
         @move = move
+        @ko = ko
       end
 
       # Tell if the move was used during last turn

@@ -239,8 +239,9 @@ module PFM
     # @param damage [Integer]
     # @param launcher [PFM::PokemonBattler]
     # @param move [Battle::Move]
-    def add_damage_to_history(damage, launcher, move)
-      @damage_history << DamageHistory.new(damage, launcher, move)
+    # @param ko [Boolean]
+    def add_damage_to_history(damage, launcher, move, ko)
+      @damage_history << DamageHistory.new(damage, launcher, move, ko)
     end
 
     # Test if the last move was of a certain symbol

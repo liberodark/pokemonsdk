@@ -27,13 +27,13 @@ module Battle
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
       # @param messages [Proc] messages shown right before the post processing
-      def damage_change(hp, target, launcher = nil, skill = nil, &messages)
-        target.add_damage_to_history(hp, launcher, skill)
-        log_data("# damage_change(#{hp}, #{target}, #{launcher}, #{skill})")
+      def damage_change(hp, target, launcher = nil, skill = nil, &messages)        
         skill&.damage_dealt += hp
         @scene.visual.show_hp_animations([target], [-hp], [skill&.effectiveness], &messages)
         exec_hooks(DamageHandler, :post_damage, binding) if target.hp > 0
         exec_hooks(DamageHandler, :post_damage_death, binding) if target.hp <= 0
+        target.add_damage_to_history(hp, launcher, skill, target.hp <= 0)
+        log_data("# damage_change(#{hp}, #{target}, #{launcher}, #{skill}, #{target.hp <= 0})")
       rescue Hooks::ForceReturn => e
         log_data("# FR: damage_change #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
