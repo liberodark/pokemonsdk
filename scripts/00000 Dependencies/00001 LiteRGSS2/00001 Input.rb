@@ -40,26 +40,27 @@ module Input
     Y: [Sf::Keyboard::B, Sf::Keyboard::Num1, Sf::Keyboard::Quote, Sf::Keyboard::B, -4],
     L: [Sf::Keyboard::F, Sf::Keyboard::F, Sf::Keyboard::LBracket, Sf::Keyboard::F, -5],
     R: [Sf::Keyboard::G, Sf::Keyboard::G, Sf::Keyboard::RBracket, Sf::Keyboard::G, -6],
-    L2: [Sf::Keyboard::R, Sf::Keyboard::R, Sf::Keyboard::R, Sf::Keyboard::R, 255],
-    R2: [Sf::Keyboard::T, Sf::Keyboard::T, Sf::Keyboard::T, Sf::Keyboard::T, 255],
+    L2: [Sf::Keyboard::R, Sf::Keyboard::R, Sf::Keyboard::R, Sf::Keyboard::R, -7],
+    R2: [Sf::Keyboard::T, Sf::Keyboard::T, Sf::Keyboard::T, Sf::Keyboard::T, -8],
     L3: [Sf::Keyboard::Num4, Sf::Keyboard::Y, Sf::Keyboard::Y, Sf::Keyboard::Y, -9],
     R3: [Sf::Keyboard::Num5, Sf::Keyboard::U, Sf::Keyboard::U, Sf::Keyboard::U, -10],
     START: [Sf::Keyboard::J, Sf::Keyboard::RControl, Sf::Keyboard::J, Sf::Keyboard::J, -8],
     SELECT: [Sf::Keyboard::H, Sf::Keyboard::LControl, Sf::Keyboard::H, Sf::Keyboard::L, -7],
-    HOME: [Sf::Keyboard::M, Sf::Keyboard::LSystem, Sf::Keyboard::RSystem, Sf::Keyboard::M, -16],
-    UP: [Sf::Keyboard::Up, Sf::Keyboard::Z, Sf::Keyboard::W, Sf::Keyboard::Numpad8, 255],
-    DOWN: [Sf::Keyboard::Down, Sf::Keyboard::S, Sf::Keyboard::S, Sf::Keyboard::Numpad2, 255],
-    LEFT: [Sf::Keyboard::Left, Sf::Keyboard::Q, Sf::Keyboard::A, Sf::Keyboard::Numpad4, 255],
-    RIGHT: [Sf::Keyboard::Right, Sf::Keyboard::D, Sf::Keyboard::D, Sf::Keyboard::Numpad6, 255]
+    HOME: [Sf::Keyboard::M, Sf::Keyboard::LSystem, Sf::Keyboard::RSystem, Sf::Keyboard::M, 255],
+    UP: [Sf::Keyboard::Up, Sf::Keyboard::Z, Sf::Keyboard::W, Sf::Keyboard::Numpad8, -13],
+    DOWN: [Sf::Keyboard::Down, Sf::Keyboard::S, Sf::Keyboard::S, Sf::Keyboard::Numpad2, -14],
+    LEFT: [Sf::Keyboard::Left, Sf::Keyboard::Q, Sf::Keyboard::A, Sf::Keyboard::Numpad4, -15],
+    RIGHT: [Sf::Keyboard::Right, Sf::Keyboard::D, Sf::Keyboard::D, Sf::Keyboard::Numpad6, -16]
   }
-  # List of Axis mapping (joyid => axis => key_neg, key_pos)
+  # List of Axis mapping (axis => key_neg, key_pos)
   AXIS_MAPPING = {
-    0 => {
-      Sf::Joystick::Z => %i[L2 R2]
-    }
+    Sf::Joystick::Z => %i[R2 L2]
   }
   # List of previous state of axis position
   @previous_axis_positions = Hash.new { |hash, key| hash[key] = Hash.new { 0 } }
+
+  # List the id of joysticks connected
+  @joysticks_connected = []
 
   class << self
     # Get the main joystick
@@ -178,8 +179,11 @@ module Input
       window.on_text_entered = proc { |text| on_text_entered(text) }
       window.on_key_pressed = proc { |key, alt| on_key_down(key, alt) }
       window.on_key_released = proc { |key| on_key_up(key) }
-      window.on_joystick_button_pressed = proc { |id, button| on_key_down(-32 * id - button - 1) }
-      window.on_joystick_button_released = proc { |id, button| on_key_up(-32 * id - button - 1) }
+      window.on_joystick_button_pressed = proc { |id, button| on_joystick_button_pressed(id, button) }
+      window.on_joystick_button_released = proc { |id, button| on_joystick_button_released(id, button) }
+      window.on_joystick_connected = proc { |id| on_joystick_connected(id) }
+      window.on_joystick_disconnected = proc { |id| on_joystick_disconnected(id) }
+      window.on_joystick_moved = proc { |id, axis, position| on_axis_moved(id, axis, position) }
     end
 
     private
@@ -217,6 +221,9 @@ module Input
     # @param axis [Integer] axis
     # @param position [Integer] new position
     def on_axis_moved(id, axis, position)
+      on_joystick_connected(id)
+      return if id != main_joy
+
       last_position = @previous_axis_positions[id][axis]
       return if (position - last_position).abs <= AXIS_SENSITIVITY
 
@@ -226,7 +233,7 @@ module Input
         return on_axis_y(position) if axis == y_axis
       end
 
-      return unless (mapping = AXIS_MAPPING.dig(id, axis))
+      return unless (mapping = AXIS_MAPPING[axis])
 
       if DEAD_ZONE.include?(position)
         @current_state[mapping.first] = @current_state[mapping.last] = false
@@ -275,5 +282,34 @@ module Input
         @current_state[:UP] = false
       end
     end
+
+    # Add the joystick to the list of connected joysticks and the new joystick connected becomes the main joystick
+    # @param id [Integer] id of the joystick 
+    def on_joystick_connected(id)
+      return if @joysticks_connected.include?(id)
+      @joysticks_connected << id 
+      @main_joy = id      
+    end
+
+    # Remove the joystick to the list of connected joysticks and change the main joystick if other joystick are connected
+    # @param id [Integer] id of the joystick 
+    def on_joystick_disconnected(id)
+      @joysticks_connected.delete(id)
+      @main_joy = @joysticks_connected.empty? ? 0 : @joysticks_connected.last      
+    end
+
+    # Set a key down if the button pressed comes of main joystick
+    # @param id [Integer] id of the joystick
+    # @param button [Integer]
+    def on_joystick_button_pressed(id, button)
+      on_key_down(- button - 1) if id == main_joy
+    end   
+
+    # Set a key up if the button released comes of main joystick
+    # @param id [Integer] id of the joystick
+    # @param button [Integer]
+    def on_joystick_button_released(id, button)
+      on_key_up(- button - 1) if id == main_joy
+    end    
   end
 end
