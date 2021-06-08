@@ -253,5 +253,19 @@ module Battle
         $game_temp.common_event_id = 3
       end
     end
+
+    BattleEndHandler.register('Update Pokedex') do |handler|
+      handler.logic.all_battlers { |battler| 
+        next if battler.from_party? || battler.last_sent_turn == -1
+        $pokedex.mark_seen(battler.id, battler.form, forced: true)
+        $pokedex.pokemon_fought_inc(battler.id) unless battler.alive?
+      }
+    end
+
+    BattleEndHandler.register('Update Quest') do |handler|
+      handler.logic.all_battlers { |battler|      
+        $quests.see_pokemon(battler.id) unless battler.from_party? || battler.last_sent_turn == -1
+      }
+    end
   end
 end
