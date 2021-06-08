@@ -32,7 +32,6 @@ unless PARGV[:worldmap] || PARGV[:"animation-editor"] || PARGV[:test] || PARGV[:
         GC.start
         ts = 0.1
         sleep(ts) while Input::Keyboard.press?(Input::Keyboard::F12)
-        $scene = Scheduler.get_boot_scene
       end
 
       def update
