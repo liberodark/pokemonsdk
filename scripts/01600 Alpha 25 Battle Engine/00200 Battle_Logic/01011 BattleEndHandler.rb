@@ -263,8 +263,10 @@ module Battle
     end
 
     BattleEndHandler.register('Update Quest') do |handler|
-      handler.logic.all_battlers { |battler|      
-        $quests.see_pokemon(battler.id) unless battler.from_party? || battler.last_sent_turn == -1
+      handler.logic.all_battlers { |battler|
+        next if battler.from_party?
+        $quests.see_pokemon(battler.id) unless battler.last_sent_turn == -1
+        $quests.beat_pokemon(battler.id) unless battler.alive?
       }
     end
   end
