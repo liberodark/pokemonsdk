@@ -131,7 +131,7 @@ module Battle
 
       add_ball_rate_calculation(:net_ball) do |target, _pkm_ally|
         check = [target.type1, target.type2, target.type3].any? { |type| [3, 12].include? type }
-        next targer.rareness * (check ? 3 : 1)
+        next target.rareness * (check ? 3 : 1)
       end
 
       add_ball_rate_calculation(:quick_ball) do |target, _pkm_ally|
@@ -148,9 +148,9 @@ module Battle
         elsif $game_temp.battle_turn >= 21
           next target.rareness * 3
         elsif $game_temp.battle_turn >= 11
-          next targer.rareness * 2
+          next target.rareness * 2
         else
-          next targer.rareness
+          next target.rareness
         end
       end
 
