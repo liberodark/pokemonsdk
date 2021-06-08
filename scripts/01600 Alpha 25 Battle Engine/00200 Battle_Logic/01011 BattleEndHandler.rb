@@ -230,7 +230,12 @@ module Battle
 
         id, form = pokemon.evolve_check(:level_up)
         handler.scene.instance_variable_set(:@cfi_type, :none) # Prevent fade in in case of multiple evolution
-        handler.scene.call_scene(GamePlay::Evolve, pokemon, id, form) if id
+        return unless id
+        handler.scene.call_scene(GamePlay::Evolve, pokemon, id, form)
+        $pokedex.mark_seen(pokemon.id, pokemon.form, forced: true)
+        $pokedex.mark_captured(pokemon.id)
+        $quests.see_pokemon(pokemon.id)
+        $quests.catch_pokemon(pokemon)
       end
     end
 
