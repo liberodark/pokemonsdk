@@ -37,7 +37,7 @@ module PFM
     def initialize(game_state)
       self.game_state = game_state
       # @type [Array<Box>]
-      @boxes = Array.new(MAX_BOXES) { |index| Box.new(BOX_SIZE, text_get(16, index), index + 1) }
+      @boxes = Array.new(MAX_BOXES) { |index| Box.new(BOX_SIZE, send(*box_name_init(index)), index + 1) }
       @battle_boxes = Array.new(MAX_BATTLE_BOX) { |index| BattleBox.new("##{index + 1}") }
       @current_box = 0
       @current_battle_box = 0
@@ -93,6 +93,12 @@ module PFM
     # @param name [String] the new name
     def set_box_name(index, name)
       @boxes[index % @boxes.size].name = name.to_s
+    end
+
+    # Get the name of a box (initialize)
+    # @param index [Integer] the index of the box
+    def box_name_init(index)
+      return [:text_get, 16, index]
     end
 
     # Get a box theme
