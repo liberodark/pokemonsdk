@@ -134,7 +134,8 @@ class Interpreter
     $game_player.turn_toward_character(character)
     # We do the speech
     @message_waiting = true
-    $scene.display_message(phrase)
+    message = PFM::Text.parse_string_for_messages(phrase)
+    $scene.display_message(message)
     @message_waiting = false
     @wait_count = 2
   end
