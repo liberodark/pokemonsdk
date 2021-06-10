@@ -146,7 +146,7 @@ module Battle
     # @param battler [PFM::PokemonBattler]
     # @return [Boolean]
     def battler_attacks_last?(battler)
-      last_order = all_alive_battlers.map(&:attack_order).reject { |i| i == Float::INFINITY }.max
+      last_order = all_alive_battlers.map(&:attack_order).reject { |i| i == Float::INFINITY }.compact.max
       return battler.attack_order == last_order
     end
 
