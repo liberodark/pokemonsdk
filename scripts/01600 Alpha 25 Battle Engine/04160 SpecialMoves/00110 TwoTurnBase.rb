@@ -11,7 +11,8 @@ module Battle
         [], # Nothing
         %i[earthquake fissure magnitude], # Dig
         %i[gust whirlwind thunder swift sky_uppercut twister smack_down hurricane thousand_arrows], # Fly
-        %i[surf whirlpool] # Dive
+        %i[surf whirlpool], # Dive
+        nil # Others moves
       ]
 
       # Out of reach moves to type
@@ -21,7 +22,7 @@ module Battle
       # Return the list of the moves that can reach the pokemon event in out_of_reach, nil if all attack reach the user
       # @return [Array<Symbol>]
       def can_hit_moves
-        CAN_HIT_BY_TYPE[TYPES[db_symbol] || 0] || []
+        CAN_HIT_BY_TYPE[TYPES[db_symbol] || 4]
       end
 
       # List all the text_id used to announce the waiting turn in TwoTurnBase moves
