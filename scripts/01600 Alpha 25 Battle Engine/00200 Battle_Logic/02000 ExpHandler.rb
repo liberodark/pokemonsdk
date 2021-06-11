@@ -3,9 +3,6 @@ module Battle
     # Class responsive of calculating experience & EV of Pokemon when a Pokemon faints
     class ExpHandler
       include Hooks
-      # Constant telling if the game filters only Pokemon that fought or give exp to all Pokemon
-      # @return [Boolean]
-      EXP_ALL_MON = true
       # Get the logic object
       # @return [Battle::Logic]
       attr_reader :logic
@@ -56,7 +53,7 @@ module Battle
       # @param enemy [PFM::PokemonBattler]
       # @return [Array<PFM::PokemonBattler>]
       def expable_pokemon(enemy)
-        if EXP_ALL_MON || global_multi_exp_factor?
+        if !$game_switches[Yuki::Sw::BT_HardExp] || global_multi_exp_factor?
           return logic.trainer_battlers.reject { |receiver| receiver.max_level == receiver.level || receiver.dead? }
         else
           return logic.trainer_battlers.reject do |receiver|
