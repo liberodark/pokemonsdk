@@ -73,6 +73,7 @@ module Battle
         # @param target [PFM::PokemonBattler] expected target
         # @param move [Battle::Move]
         def play_protect_effect(user, target, move)
+          hp = user.hp / 8
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
           move.scene.visual.show_hp_animations([user], [-hp]) if move.direct?
         end
