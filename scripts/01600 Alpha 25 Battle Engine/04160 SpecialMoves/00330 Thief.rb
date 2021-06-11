@@ -1,7 +1,7 @@
 module Battle
   class Move
     # Class managing the Thief move
-    class Thief < Basic
+    class Thief < BasicWithSuccessfulEffect
       private
 
       # Function that deals the effect to the pokemon
