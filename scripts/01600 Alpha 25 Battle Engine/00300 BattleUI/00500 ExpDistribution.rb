@@ -114,7 +114,7 @@ module BattleUI
 
       target_exp = pokemon.exp + exp
       next_exp_value = pokemon.exp_lvl.clamp(0, target_exp)
-      @exp_data[pokemon] -= next_exp_value
+      @exp_data[pokemon] -= next_exp_value - pokemon.exp
 
       # actually create the animation
       original_exp = pokemon.exp

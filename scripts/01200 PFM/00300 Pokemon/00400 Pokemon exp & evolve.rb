@@ -51,7 +51,7 @@ module PFM
       return GameData::EXP_TABLE[exp_type]
     end
 
-    # Return the required exp to increase the Pokemon's level
+    # Return the required total exp (so including old levels) to increase the Pokemon's level
     # @return [Integer]
     def exp_lvl
       data = GameData::EXP_TABLE[exp_type]
