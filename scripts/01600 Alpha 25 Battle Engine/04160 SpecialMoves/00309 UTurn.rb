@@ -37,6 +37,8 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         return false unless @logic.switch_handler.can_switch?(user, self)
+        return false if user.item_effect.is_a?(Effects::Item::RedCard)
+        return false if actual_targets.any? { |target| target.item_effect.is_a?(Effects::Item::EjectButton) }
 
         @logic.switch_request << { who: user }
       end

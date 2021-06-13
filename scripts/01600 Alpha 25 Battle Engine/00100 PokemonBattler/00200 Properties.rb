@@ -89,13 +89,13 @@ module PFM
     end
 
     # Return the battler's combat property
-    # @return [Array<Integer>]
+    # @return [Integer]
     def nature_id
       return @battle_properties[:nature_id] || super
     end
 
     # Set the battler's combat property
-    # @param value [Array<Integer>]
+    # @param value [Integer]
     def nature_id=(value)
       return log_error("Wrong nature id : #{value}") unless GameData::Natures.id_valid?(value)
 

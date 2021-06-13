@@ -59,9 +59,6 @@ module PFM
     # @return [Integer] Position of the Pokemon in the bank
     attr_accessor :position
 
-    # @return [Numeric] Order of the Pokemon in the action chain (the lesser the faster)
-    attr_accessor :order
-
     # Get the original Pokemon
     # @return [PFM::Pokemon]
     attr_reader :original
@@ -140,7 +137,6 @@ module PFM
       @type3 = 0
       @bank = 0
       @position = -1
-      @order = -1
       @battle_item_data = []
       @battle_item = @item_holding
       @last_battle_turn = -1

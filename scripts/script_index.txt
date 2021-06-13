@@ -431,12 +431,10 @@ pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00100 PokemonBattler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00200 Properties.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00300 Statistics.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00301 Statistics Speed mod.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00400 Grounded.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00500 Effects.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/01000 MoveHistory.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/01100 DamageHistory.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/99999 PokemonBattler24.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00100 Logic.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00101 Logic_Battler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00102 Logic_Actions.rb
@@ -699,6 +697,38 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00700 Ability Effe
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00700 Ability Effects/00100 Wonder Guard.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00700 Ability Effects/00100 Wonder Skin.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00700 Ability Effects/00100 Zen Mode.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00001 ItemBase.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00002 Berry.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00050 HalfSpeedItems.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00050 ItemAttackMultiplier.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00050 ItemBasePowerMultiplier.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00050 ItemDefenseMultiplier.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00050 TypeResistingBerry.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Air Balloon.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Black Sludge.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Choice Scarf.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Eject Button.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Expert Belt.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Flame Orb.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Focus Band.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Focus Sash.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Kings Rock - Razor Fang.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Lax Incense.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Leftovers.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Life Orb.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Luminous Moss - Snowball.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Metronome.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Oran Berry - Sitrus Berry.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Quick Powder.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Red Card.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Rocky Helmet.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Shed Shell.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Shell Bell.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Sticky Barb.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Toxic Orb.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 White Herb.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Wide Lens.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Zoom Lens.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00001 GoingInOut.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00002 HideShow.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00300 BattleUI/00003 MultiplePosition.rb
@@ -744,9 +774,6 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00006 Flee.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00007 HighPriorityItem.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00100 Move.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00101 Move_Damage_Calc.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00102 Move_ITEM_MULTIPLIER.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00105 Move_spe_atk_multiplier.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00106 Move_spe_def_multiplier.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00107 Move_mod1_multiplier.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00108 Move_mod2_multiplier.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00109 Move_mod3_multiplier.rb
@@ -755,7 +782,6 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00111 Move Cha
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00120 Move Procedure.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00121 Move Prevention.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00130 Move Type.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00131 BE24 Shit.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04155 SpecialMoves Mechanics/00100 Counter.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04155 SpecialMoves Mechanics/00100 ItemBased.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04155 SpecialMoves Mechanics/00100 TwoTurn.rb

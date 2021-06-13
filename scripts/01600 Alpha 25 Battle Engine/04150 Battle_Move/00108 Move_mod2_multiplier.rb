@@ -8,14 +8,11 @@ module Battle
     # @return [Numeric]
     def calc_mod2(user, target)
       update_use_count(user)
-      item = user.battle_item_db_symbol
       result = 1
       # Effects
       logic.each_effects(user, target) do |e|
         result *= e.mod2_multiplier(user, target, self)
       end
-      result *= VAL_1_3 if item == :life_orb
-      result *= calc_mod2_metronome if item == :metronome
       result *= 1.5 if db_symbol == :me_first
       return result
     end
@@ -28,13 +25,6 @@ module Battle
       else
         @consecutive_use_count = 0
       end
-    end
-
-    # Calculate the multiplier of the metronome
-    def calc_mod2_metronome
-      return 1 if @consecutive_use_count == 0
-      return 2 if @consecutive_use_count >= 10
-      return 1 + @consecutive_use_count / 10.0
     end
   end
 end

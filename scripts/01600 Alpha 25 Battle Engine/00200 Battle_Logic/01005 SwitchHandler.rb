@@ -117,23 +117,16 @@ module Battle
       with.last_sent_turn = $game_temp.battle_turn
     end
 
-    # Shed Shell
-    SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: Shed Shell') do |_, pokemon, skill, reason|
-      next if reason == :flee
-      next if skill&.be_method == :s_teleport
-      next :passthrough if pokemon.hold_item?(:shed_shell)
-    end
-
     # Effects
-    SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: Effects') do |handler, pokemon, skill|
+    SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: Effects') do |handler, pokemon, skill, reason|
       next handler.logic.each_effects(pokemon) do |e|
-        next e.on_switch_passthrough(handler, pokemon, skill)
+        next e.on_switch_passthrough(handler, pokemon, skill, reason)
       end
     end
-    SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Effects') do |handler, pokemon, skill|
+    SwitchHandler.register_switch_prevention_hook('PSDK switch prev: Effects') do |handler, pokemon, skill, reason|
       # <= Here we need to scan all alive battlers to ensure the effects like Shadow Tag works
       next handler.logic.each_effects(*handler.logic.all_alive_battlers) do |e|
-        next e.on_switch_prevention(handler, pokemon, skill)
+        next e.on_switch_prevention(handler, pokemon, skill, reason)
       end
     end
     SwitchHandler.register_switch_event_hook('PSDK switch: Effects') do |handler, who, with|
@@ -143,15 +136,8 @@ module Battle
     end
 
     # U-Turn moves
-    SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: U-Turn moves') do |handler, pokemon, skill|
-      next :passthrough if skill&.self_user_switch? &&
-                           !pokemon.hold_item?(:red_card) &&
-                           skill&.battler_targets(pokemon, handler.logic).find { |target| target&.alive? && target&.hold_item?(:eject_button) }
-    end
-
-    # Mimic
-    SwitchHandler.register_switch_event_hook('PSDK switch: mimic') do |_, who|
-      who.moveset.each(&:reset)
+    SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: U-Turn moves') do |_, _, skill|
+      next :passthrough if skill&.self_user_switch?
     end
   end
 end

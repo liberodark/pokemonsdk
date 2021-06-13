@@ -25,9 +25,7 @@ module PFM
       @scene.logic.each_effects(self) do |e|
         raw_spd = (raw_spd * e.spd_modifier).floor
       end
-      item_spd = (raw_spd * send(SPEED_MODIFIER_ITEM[battle_item_db_symbol])).floor
-      # Tailwind
-      tailwind_spd = @scene.logic.bank_effects[bank]&.has?(:tailwind) ? 2 * item_spd : item_spd
+      tailwind_spd = @scene.logic.bank_effects[bank]&.has?(:tailwind) ? 2 * raw_spd : raw_spd
       return tailwind_spd
     end
 

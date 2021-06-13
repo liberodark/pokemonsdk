@@ -110,65 +110,6 @@ module Battle
       end
     end
 
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Black Sludge') do |logic, scene, battlers|
-      battlers.each do |battler|
-        next unless battler.hold_item?(:black_sludge)
-
-        if battler.type_poison?
-          scene.visual.show_item(battler)
-          scene.visual.show_hp_animations([battler], [(battler.max_hp / 16).clamp(1, Float::INFINITY)])
-        elsif !battler.has_ability?(:magic_guard)
-          scene.display_message_and_wait(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
-          logic.damage_handler.damage_change(-(battler.max_hp / 8).clamp(1, Float::INFINITY), battler)
-        end
-      end
-    end
-
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Flame Orb') do |logic, scene, battlers|
-      battlers.each do |battler|
-        next if !battler.hold_item?(:flame_orb) || battler.turn_count > 0 || battler.has_ability?(:magic_guard)
-
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
-        logic.status_change_handler.status_change(:burn, battler)
-      end
-    end
-
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Toxic Orb') do |logic, scene, battlers|
-      battlers.each do |battler|
-        next if !battler.hold_item?(:toxic_orb) || battler.turn_count > 0 || battler.has_ability?(:magic_guard)
-
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
-        logic.status_change_handler.status_change(:toxic, battler)
-      end
-    end
-
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Life Orb') do |logic, scene, battlers|
-      battlers.each do |battler|
-        next if !battler.hold_item?(:life_orb) || battler.attack_order.is_a?(Integer) || battler.has_ability?(:magic_guard)
-
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
-        logic.damage_handler.damage_change(-(battler.max_hp / 8).clamp(1, Float::INFINITY), battler)
-      end
-    end
-
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Sticky Barb') do |logic, scene, battlers|
-      battlers.each do |battler|
-        next if !battler.hold_item?(:sticky_barb) || battler.has_ability?(:magic_guard)
-
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 1048, battler, PFM::Text::ITEM2[1] => battler.item_name))
-        logic.damage_handler.damage_change(-(battler.max_hp / 8).clamp(1, Float::INFINITY), battler)
-      end
-    end
-
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Leftovers') do |_, scene, battlers|
-      battlers.each do |battler|
-        next unless battler.hold_item?(:leftovers)
-
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 918, battler, PFM::Text::ITEM2[1] => battler.item_name))
-        scene.visual.show_hp_animations([battler], [(battler.max_hp / 8).clamp(1, Float::INFINITY)])
-      end
-    end
-
     EndTurnHandler.register_end_turn_event('PSDK end turn: Nightmare') do |logic, scene, battlers|
       battlers.each do |battler|
         next if !battler.effects.has?(:nightmare) || battler.has_ability?(:magic_guard)
@@ -234,34 +175,6 @@ module Battle
       if $env.decrease_fterrain_duration # Return true if stopping!
         # TODO: Add gen7 text of Psychic Terrain
         logic.fterrain_change_handler.fterrain_change(:terrainnone, 0)
-      end
-    end
-
-    # Oran Berry
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Oran Berry') do |logic, scene, battlers|
-      battlers.each do |battler|
-        unnerve_foes = logic.foes_of(battler).select { |foe| foe.has_ability?(:unnerve) }
-        next unless battler.hold_item?(:oran_berry) && unnerve_foes.none?
-        next if battler.hp_rate > 0.5
-
-        scene.visual.show_item(battler)
-        scene.visual.show_hp_animations([battler], [10])
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 914, battler, PFM::Text::ITEM2[1] => battler.item_name))
-        logic.item_change_handler.change_item(:none, true, battler)
-      end
-    end
-
-    # Sitrus Berry
-    EndTurnHandler.register_end_turn_event('PSDK end turn: Sitrus Berry') do |logic, scene, battlers|
-      battlers.each do |battler|
-        unnerve_foes = logic.foes_of(battler).select { |foe| foe.has_ability?(:unnerve) }
-        next unless battler.hold_item?(:sitrus_berry) && unnerve_foes.none?
-        next if battler.hp_rate > 0.5
-
-        scene.visual.show_item(battler)
-        scene.visual.show_hp_animations([battler], [battler.max_hp / 4])
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 914, battler, PFM::Text::ITEM2[1] => battler.item_name))
-        logic.item_change_handler.change_item(:none, true, battler)
       end
     end
   end

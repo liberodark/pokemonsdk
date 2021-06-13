@@ -1,7 +1,5 @@
 module Battle
   class Move
-    # List of choice item
-    CHOICE_ITEMS = %i[choice_band choice_specs choice_scarf]
     # Function that tests if the user is able to use the move
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
@@ -125,21 +123,6 @@ module Battle
     next if move.class != Battle::Move
 
     next proc { move.scene.display_message_and_wait('\c[2]This move is not implemented!\c[0]') }
-  end
-
-  # Choice item || Gorilla Tactics
-  Move.register_move_disabled_check_hook('PSDK Move Disabled: Choice item') do |user, move|
-    next unless Move::CHOICE_ITEMS.include?(user.battle_item_db_symbol) && user.move_history.any?
-    next if user.move_history.last.db_symbol == move.db_symbol
-
-    next proc {}
-  end
-
-  # Assault vest
-  Move.register_move_disabled_check_hook('PSDK Move disabled: Assault vest') do |user, move|
-    next unless user.hold_item?(:assault_vest) && !move.status?
-
-    next proc { move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, PFM::Text::MOVE[1])) }
   end
 
   # Gravity registration

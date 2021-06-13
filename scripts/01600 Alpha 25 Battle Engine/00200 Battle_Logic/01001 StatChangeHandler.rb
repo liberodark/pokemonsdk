@@ -269,16 +269,5 @@ module Battle
         next effect.on_stat_change_post(handler, stat, power, target, launcher, skill)
       end
     end
-
-    # Register the White Herb item
-    StatChangeHandler.register_stat_decrease_prevention_hook('PSDK stat decr: White Herb') do |handler, _, target, launcher, skill|
-      if target.hold_item?(:white_herb)
-        next handler.prevent_change do # NOT FINISHED!
-          handler.scene.visual.show_item(target)
-          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 198, target))
-          handler.logic.item_change_handler.change_item(:white_herb, true, target, launcher, skill)
-        end
-      end
-    end
   end
 end

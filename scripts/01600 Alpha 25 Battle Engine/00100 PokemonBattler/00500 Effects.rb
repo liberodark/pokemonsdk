@@ -17,7 +17,7 @@ module PFM
       # Ability Effect
       yielder.call(ability_effect)
       # Item effect
-      # todo
+      yielder.call(item_effect)
       # Move effect
       effects.each(&yielder)
       # Position effects
@@ -38,6 +38,15 @@ module PFM
         @ability_effect = Battle::Effects::Ability.new(@scene.logic, self, battle_ability_db_symbol)
       end
       return @ability_effect
+    end
+
+    # Get the item effect
+    # @return [Battle::Effects::Item]
+    def item_effect
+      if !@item_effect || @item_effect.db_symbol != battle_item_db_symbol
+        @item_effect = Battle::Effects::Item.new(@scene.logic, self, battle_item_db_symbol)
+      end
+      return @item_effect
     end
   end
 end

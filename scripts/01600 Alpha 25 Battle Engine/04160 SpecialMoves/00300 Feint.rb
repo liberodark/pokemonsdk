@@ -10,7 +10,7 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        return increased_power if increased_power_move?(target.move_history.last)
+        return increased_power if target.move_history.any? && increased_power_move?(target.move_history.last)
 
         return super
       end

@@ -96,14 +96,12 @@ module Battle
         result = (result * e.base_power_multiplier(user, target, self)).floor
       end
       result = result.floor # Round down between each multiplication, the first two can be reverted.
-      # IT
-      result = (result * send(ITEM_MULTIPLIER[user.battle_item_db_symbol], user, target)).floor
       # CHG
       result = user.effects.has?(:charge) ? user.effects.get(:charge).calc_base_power_as_user(result, user, target, self) : result
       # MS
-      result = (result * VAL_0_5).floor if logic.terrain_effects.has?(:mud_sport) && type == GameData::Types::ELECTRIC
+      result = (result * 0.5).floor if logic.terrain_effects.has?(:mud_sport) && type == GameData::Types::ELECTRIC
       # WS
-      result = (result * VAL_0_5).floor if logic.terrain_effects.has?(:water_sport) && type == GameData::Types::FIRE
+      result = (result * 0.5).floor if logic.terrain_effects.has?(:water_sport) && type == GameData::Types::FIRE
       return result
     end
 
@@ -122,8 +120,7 @@ module Battle
       logic.each_effects(user, target) do |e|
         result = (result * e.sp_atk_multiplier(user, target, self)).floor
       end
-      # IM
-      return (result * send((ph_move ? ATK_ITEM_MODIFIER : ATS_ITEM_MODIFIER)[user.battle_item_db_symbol], user, target)).floor
+      return result
     end
 
     # Get the basis atk for the move
@@ -164,11 +161,8 @@ module Battle
       end
       # Sandstorm
       result = (result * sandstorm_calc(target, ph_move)).floor
-      # Mod
-      mod = send((ph_move ? DFE_ITEM_MODIFIER : DFS_ITEM_MODIFIER)[target.battle_item_db_symbol], user, target)
-      result = (result * mod).floor
       # SX
-      result = (result * VAL_0_5).floor if EXPLOSION_SELF_DESTRUCT_MOVE.include?(db_symbol)
+      result = (result * 0.5).floor if EXPLOSION_SELF_DESTRUCT_MOVE.include?(db_symbol)
       return result
     end
 

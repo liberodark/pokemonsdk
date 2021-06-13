@@ -6,8 +6,9 @@ module Battle
       # @param handler [Battle::Logic::SwitchHandler]
       # @param pokemon [PFM::PokemonBattler]
       # @param skill [Battle::Move, nil] potential skill used to switch
+      # @param reason [Symbol] the reason why the SwitchHandler is called
       # @return [:prevent, nil] if :prevent, can_switch? will return false
-      def on_switch_prevention(handler, pokemon, skill)
+      def on_switch_prevention(handler, pokemon, skill, reason)
         return true if skill&.be_method == :s_teleport
 
         return handler.prevent_change do

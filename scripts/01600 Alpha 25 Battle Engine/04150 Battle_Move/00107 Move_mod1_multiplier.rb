@@ -41,9 +41,9 @@ module Battle
     def calc_mod1_sr
       if $env.sunny?
         return 1.5 if type == GameData::Types::FIRE
-        return VAL_0_5 if type == GameData::Types::WATER
+        return 0.5 if type == GameData::Types::WATER
       elsif $env.rain?
-        return VAL_0_5 if type == GameData::Types::FIRE
+        return 0.5 if type == GameData::Types::FIRE
         return 1.5 if type == GameData::Types::WATER
       end
       return 1
@@ -59,11 +59,11 @@ module Battle
         return 1.5 if type == GameData::Types::PSYCHIC && user.affected_by_terrain?
       elsif $env.terrain_grassy?
         return 1.5 if type == GameData::Types::GRASS && user.affected_by_terrain?
-        return VAL_0_5 if GRASSY_REDUCED_MOVES.include?(db_symbol) && user.affected_by_terrain?
+        return 0.5 if GRASSY_REDUCED_MOVES.include?(db_symbol) && user.affected_by_terrain?
       elsif $env.terrain_electric?
         return 1.5 if type == GameData::Types::ELECTRIC && user.affected_by_terrain?
       elsif $env.terrain_misty?
-        return VAL_0_5 if type == GameData::Types::DRAGON && target.affected_by_terrain? # Not a mistake, it's actually the target
+        return 0.5 if type == GameData::Types::DRAGON && target.affected_by_terrain? # Not a mistake, it's actually the target
       end
       return 1
     end
