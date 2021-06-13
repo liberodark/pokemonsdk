@@ -119,11 +119,6 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
   # Return the current location type
   # @return [Symbol]
   def get_location_type(x, y)
-    return :grassy_terrain if $env.terrain_grassy?
-    return :misty_terrain if $env.terrain_misty?
-    return :electric_terrain if $env.terrain_electric?
-    return :psychic_terrain if $env.terrain_psychic?
-
     zone = $env.current_zone_data
     location = zone.global_location_type if zone.respond_to?(:global_location_type) # @todo add global_location_type to GameData::Zone
     location ||= TERRAIN_TAGS_TABLE.select {|tag, location| system_tag_here?(x, y, tag)}.values[0]

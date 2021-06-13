@@ -3,17 +3,9 @@ module Battle
     # Handler responsive of answering properly terrain changes requests
     class FTerrainChangeHandler < ChangeHandlerBase
       include Hooks
-      # Mapping between terrain symbol & terrain ID
-      FTERRAIN_SYM_TO_ID = {
-        terrainnone: 0,
-        electric_terrain: 1,
-        grassy_terrain: 2,
-        misty_terrain: 3,
-        psychic_terrain: 4
-      }
       # Weather thingies copiepasted, I don't think this is really useful right now
       FTERRAIN_SYM_TO_MSG = {
-        terrainnone: {
+        none: {
           electric_terrain: 227,
           grassy_terrain: 223,
           misty_terrain: 225,
@@ -25,22 +17,13 @@ module Battle
         psychic_terrain: 346
       }
 
-      # Create a new Terrain Change Handler
-      # @param logic [Battle::Logic]
-      # @param scene [Battle::Scene]
-      # @param env [PFM::Environnement]
-      def initialize(logic, scene, env = $env)
-        super(logic, scene)
-        @env = env
-      end
-
       # Function telling if a terrain can be applyied
-      # @param fterrain_type [Symbol] :terrainnone, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
+      # @param fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
       # @return [Boolean]
       def fterrain_appliable?(fterrain_type)
         log_data("# fterrain_appliable?(#{fterrain_type})")
         reset_prevention_reason
-        last_fterrain = FTERRAIN_SYM_TO_ID.key(@env.current_fterrain) || :terrainnone
+        last_fterrain = @logic.field_terrain || :none
         exec_hooks(FTerrainChangeHandler, :fterrain_prevention, binding)
         return true
       rescue Hooks::ForceReturn => e
@@ -49,13 +32,13 @@ module Battle
       end
 
       # Function that actually change the terrain
-      # @param fterrain_type [Symbol] :terrainnone, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
-      # @param nb_turn [Integer, nil] Number of turn, use nil for Infinity
-      def fterrain_change(fterrain_type, nb_turn)
-        log_data("# fterrain_change(#{fterrain_type}, #{nb_turn})")
-        last_fterrain = FTERRAIN_SYM_TO_ID.key(@env.current_fterrain) || :terrainnone
-        @env.apply_fterrain(FTERRAIN_SYM_TO_ID[fterrain_type] || 0, nb_turn)
-        show_fterrain_message(last_fterrain, @env.current_fterrain)
+      # @param fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
+      def fterrain_change(fterrain_type)
+        log_data("# fterrain_change(#{fterrain_type})")
+        last_fterrain = @logic.field_terrain || :none
+        @logic.field_terrain = fterrain_type
+        @logic.field_terrain_effect # <= This will force the field terrain effect to be initialized to the right value
+        show_fterrain_message(last_fterrain, fterrain_type)
         exec_hooks(FTerrainChangeHandler, :post_fterrain_change, binding)
       rescue Hooks::ForceReturn => e
         log_data("# FR: fterrain_change #{e.data} from #{e.hook_name} (#{e.reason})")
@@ -63,12 +46,11 @@ module Battle
       end
 
       # Function that test if the change is possible and perform the change if so
-      # @param fterrain_type [Symbol] :terrainnone, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
-      # @param nb_turn [Integer, nil] Number of turn, use nil for Infinity
-      def fterrain_change_with_process(fterrain_type, nb_turn)
+      # @param fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
+      def fterrain_change_with_process(fterrain_type)
         return process_prevention_reason unless fterrain_appliable?(fterrain_type)
 
-        fterrain_change(fterrain_type, nb_turn)
+        fterrain_change(fterrain_type)
       end
 
       private
@@ -79,10 +61,10 @@ module Battle
       def show_fterrain_message(last_fterrain, current_fterrain)
         return if last_fterrain == current_fterrain
 
-        if current_fterrain == :terrainnone
+        if current_fterrain == :none
           @scene.display_message_and_wait(parse_text(60, FTERRAIN_SYM_TO_MSG[current_fterrain][last_fterrain]))
         else
-          @scene.display_message_and_wait(parse_text(60, FTERRAIN_SYM_TO_MSG[:terrainnone][last_fterrain])) if last_fterrain != :terrainnone
+          @scene.display_message_and_wait(parse_text(60, FTERRAIN_SYM_TO_MSG[:none][last_fterrain])) if last_fterrain != :none
           @scene.display_message_and_wait(parse_text(60, FTERRAIN_SYM_TO_MSG[current_fterrain]))
         end
       end
@@ -91,8 +73,8 @@ module Battle
         # Function that registers a fterrain_prevetion hook
         # @param reason [String] reason of the fterrain_prevetion registration
         # @yieldparam handler [FTerrainChangeHandler]
-        # @yieldparam fterrain_type [Symbol] :terrainnone, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
-        # @yieldparam last_fterrain [Symbol] :terrainnone, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
+        # @yieldparam fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
+        # @yieldparam last_fterrain [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
         # @yieldreturn [:prevent, nil] :prevent if the status cannot be applied
         def register_fterrain_prevention_hook(reason)
           Hooks.register(FTerrainChangeHandler, :fterrain_prevention, reason) do |hook_binding|
@@ -108,8 +90,8 @@ module Battle
         # Function that registers a post_fterrain_handler hook
         # @param reason [String] reason of the post_fterrain_handler registration
         # @yieldparam handler [FTerrainChangeHandler]
-        # @yieldparam fterrain_type [Symbol] :terrainnone, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
-        # @yieldparam last_fterrain [Symbol] :terrainnone, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
+        # @yieldparam fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
+        # @yieldparam last_fterrain [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
         def register_post_fterrain_change_hook(reason)
           Hooks.register(FTerrainChangeHandler, :post_fterrain_change, reason) do |hook_binding|
             yield(

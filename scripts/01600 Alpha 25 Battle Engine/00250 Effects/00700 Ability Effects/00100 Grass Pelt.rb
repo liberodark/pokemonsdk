@@ -10,7 +10,7 @@ module Battle
         def sp_def_multiplier(user, target, move)
           return 1 if target != @target
 
-          return move.physical? && $env.terrain_grassy? ? 1.5 : 1
+          return move.physical? && @logic.field_terrain_effect.grassy? ? 1.5 : 1
         end
       end
       register(:grass_pelt, GrassPelt)

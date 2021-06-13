@@ -14,15 +14,6 @@ module Battle
     attr_reader :bags
     # @return [Battle::Logic::BattleInfo]
     attr_reader :battle_info
-    # Get the terrain effects
-    # @return [Effects::EffectsHandler]
-    attr_reader :terrain_effects
-    # Get the bank effects
-    # @return [Array<Effects::EffectsHandler>]
-    attr_reader :bank_effects
-    # Get the position effects
-    # @return [Array<Array<Battle::Effects::EffectsHandler>>]
-    attr_reader :position_effects
     # Get the evolve requests
     # @return [Array<PFM::PokemonBattler>]
     attr_reader :evolve_request
@@ -60,10 +51,7 @@ module Battle
       @bags = @battle_info.bags
       # @type [Array<Array<PFM::PokemonBattler>>]
       @battlers = []
-      @terrain_effects = Effects::EffectsHandler.new
-      @bank_effects = Array.new(@bags.size) { Effects::EffectsHandler.new }
-      # @type [Array<Array<Battle::Effects::EffectsHandler>>]
-      @position_effects = Array.new(@bags.size) { Array.new(@battle_info.vs_type) { Effects::EffectsHandler.new } }
+      init_effects
       # Mega Evolve helper
       @mega_evolve = MegaEvolve.new(scene)
       # TODO: Remove global_states bank_states
@@ -119,61 +107,6 @@ module Battle
         move_accuracy_rng: @move_accuracy_rng.seed,
         generic_rng: @generic_rng.seed
       }
-    end
-
-    # Execute a block on each effect depending on what to select as effect
-    # @param pokemons [Array<PFM::PokemonBattler>] list of battlers we want to see their effect executed
-    # @yieldparam [Effects::EffectBase]
-    # @return [Array<Effects::EffectBase>, Symbol, Integer, nil] the first block return that was a symbol
-    # @note This returns an enumerator if no block is given
-    # @note If the block returns a Symbol, this methods returns this symbol immediately without processing the other effects
-    def each_effects(*pokemons)
-      return to_enum(__method__, *pokemons) unless block_given?
-
-      # Define the proc that will ensure effects are properly called and stop the function if the result is a Symbol
-      yielder = proc do |e|
-        r = yield(e)
-        return r if r.is_a?(Symbol)
-      end
-      pokemons = pokemons.compact # Sometimes launcher is nil, it's easier to handle that here
-      # Terrain effect
-      @terrain_effects.each(&yielder)
-      # Effect on Pokemon & their position
-      pokemons.each { |pokemon| pokemon.evaluate_effects(yielder) }
-      # Ability effect from allies
-      allies = pokemons.flat_map { |pokemon| @scene.logic.allies_of(pokemon).select { |ally| ally.ability_effect.affect_allies } }.uniq
-      allies.reject! { |pokemon| pokemons.include?(pokemon) } # <= Ability effect might already have been evaluated if the pokemon is in the list
-      allies.each { |pokemon| yielder.call(pokemon.ability_effect) }
-      # Effect on banks
-      pokemons.compact.map(&:bank).uniq.each { |bank| @bank_effects[bank]&.each(&yielder) }
-      return nil
-    end
-
-    # Add an effect on a position
-    # @param effect [Battle::Effects::PositionTiedEffectBase]
-    def add_position_effect(effect)
-      bank = effect.bank
-      position = effect.position
-      # Safety code
-      @position_effects[bank] ||= []
-      @position_effects[bank][position] ||= Effects::EffectsHandler.new
-      @position_effects[bank][position].add(effect)
-    end
-
-    # Add an effect on a bank
-    # @param effect [Battle::Effects::PositionTiedEffectBase]
-    def add_bank_effect(effect)
-      bank = effect.bank
-      @bank_effects[bank] ||= Effects::EffectsHandler.new
-      @bank_effects[bank].add(effect)
-    end
-
-    # Delete all the dead effect by updating counters & removing them
-    def delete_dead_effects
-      @terrain_effects.update_counter
-      @bank_effects.each(&:update_counter)
-      @position_effects.each { |bank| bank.each { |position| position&.update_counter } }
-      all_alive_battlers.map(&:effects).each(&:update_counter)
     end
   end
 end

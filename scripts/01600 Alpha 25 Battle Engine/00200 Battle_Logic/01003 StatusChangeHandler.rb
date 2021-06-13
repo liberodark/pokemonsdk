@@ -205,24 +205,6 @@ module Battle
       end
     end
 
-    # Misty Terrain effect
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Misty Terrain') do |handler, status, target, _, _|
-      next unless $env.terrain_misty? && target.affected_by_terrain? && status != :flinch && status != :cure
-
-      next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 845, target))
-      end
-    end
-
-    # Electric Terrain effect
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Electric Terrain') do |handler, status, target, _, _|
-      next unless $env.terrain_electric? && target.affected_by_terrain? && status == :sleep
-
-      next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1207, target))
-      end
-    end
-
     # UpRoar
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: UpRoar') do |handler, status, target, launcher|
       next unless status == :sleep && handler.logic.all_alive_battlers.any? { |battler| battler.effects.has?(:uproar) }

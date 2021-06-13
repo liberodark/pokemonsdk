@@ -30,11 +30,11 @@ module Battle
           scene.display_message_and_wait(txt)
           return true
         # Fail if affected by Misty Terrain
-        elsif $env.terrain_misty? && target.affected_by_terrain?
+        elsif @logic.field_terrain_effect.misty? && target.affected_by_terrain?
           scene.display_message_and_wait(parse_text_with_pokemon(19, 845, target))
           return true
         # Fail if affected by Electric Terrain
-        elsif $env.terrain_electric? && target.affected_by_terrain?
+        elsif @logic.field_terrain_effect.electric? && target.affected_by_terrain?
           scene.display_message_and_wait(parse_text_with_pokemon(19, 1207, target))
           return true
         # Fail if affected by Uproar

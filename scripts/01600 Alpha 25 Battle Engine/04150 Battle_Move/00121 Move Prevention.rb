@@ -188,30 +188,4 @@ module Battle
     # Send the moves back to the user if target has magic bounce
     actual_targets.map! { |target| target.effects.has?(:magic_coat) ? user : target }
   end
-
-  # Psychic Terrain effect
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Psychic Terrain') do |_, target, move|
-    next false unless $env.terrain_psychic? && target.affected_by_terrain? && move.relative_priority >= 1 && move.blocable?
-
-    # TODO: Add gen7 text of Psychic Terrain
-    next true
-  end
-
-  # Misty Terrain effect
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Misty Terrain') do |_, target, move|
-    next false unless $env.terrain_misty? && target.affected_by_terrain? && move.status?
-    next false unless move.status_effect > 0 || move.db_symbol == :yawn
-
-    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 845, target))
-    next true
-  end
-
-  # Electric Terrain effect
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Electric Terrain') do |_, target, move|
-    next false unless $env.terrain_electric? && target.affected_by_terrain? && move.status?
-    next false unless move.status_effect == GameData::States::ASLEEP || move.db_symbol == :yawn
-
-    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 1207, target))
-    next true
-  end
 end

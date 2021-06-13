@@ -159,22 +159,9 @@ module Battle
       logic.each_effects(user, target) do |e|
         result = (result * e.sp_def_multiplier(user, target, self)).floor
       end
-      # Sandstorm
-      result = (result * sandstorm_calc(target, ph_move)).floor
       # SX
       result = (result * 0.5).floor if EXPLOSION_SELF_DESTRUCT_MOVE.include?(db_symbol)
       return result
-    end
-
-    # Sandstorm calculation: DFE/DFS
-    # @param target [PFM::PokemonBattler] target of the move
-    # @param ph_move [Boolean] true: physical, false: special
-    # @return [Integer]
-    def sandstorm_calc(target, ph_move)
-      return 1 if ph_move
-      return 1 unless $env.sandstorm? && target.type_rock?
-
-      return 1.5
     end
 
     # CH calculation

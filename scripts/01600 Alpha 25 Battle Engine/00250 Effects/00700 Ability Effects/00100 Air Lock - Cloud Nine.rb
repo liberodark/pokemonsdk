@@ -7,7 +7,7 @@ module Battle
         # @param who [PFM::PokemonBattler] Pokemon that is switched out
         # @param with [PFM::PokemonBattler] Pokemon that is switched in
         def on_switch_event(handler, who, with)
-          return if with != @target || $env.current_weather == 0
+          return if with != @target || $env.current_weather_db_symbol == :none
 
           handler.scene.visual.show_ability(with)
           handler.logic.weather_change_handler.weather_change(:none, 0)

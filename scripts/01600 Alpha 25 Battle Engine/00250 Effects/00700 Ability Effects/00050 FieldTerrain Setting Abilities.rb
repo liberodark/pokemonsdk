@@ -12,9 +12,8 @@ module Battle
           fterrain_handler = handler.logic.fterrain_change_handler
           return unless fterrain_handler.fterrain_appliable?(terrain_type)
 
-          nb_turn = 5
           handler.scene.visual.show_ability(with)
-          fterrain_handler.fterrain_change(terrain_type, nb_turn)
+          fterrain_handler.fterrain_change(terrain_type)
         end
 
         private

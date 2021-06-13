@@ -7,15 +7,15 @@ module Battle
         # @param who [PFM::PokemonBattler] Pokemon that is switched out
         # @param with [PFM::PokemonBattler] Pokemon that is switched in
         def on_switch_event(handler, who, with)
-          return if with != @target || $env.current_fterrain == 0
+          return if with != @target || @logic.field_terrain == :none
 
-          if $env.terrain_psychic?
+          if @logic.field_terrain_effect.psychic?
             @target.change_types(GameData::Types::PSYCHIC)
-          elsif $env.terrain_misty?
+          elsif @logic.field_terrain_effect.misty?
             @target.change_types(GameData::Types::FAIRY)
-          elsif $env.terrain_grassy?
+          elsif @logic.field_terrain_effect.grassy?
             @target.change_types(GameData::Types::GRASS)
-          elsif $env.terrain_electric?
+          elsif @logic.field_terrain_effect.electric?
             @target.change_types(GameData::Types::ELECTRIC)
           end
           handler.scene.visual.show_ability(@target)
@@ -23,11 +23,11 @@ module Battle
 
         # Function called after the weather was changed (post_weather_change)
         # @param handler [Battle::Logic::WeatherChangeHandler]
-        # @param weather_type [Symbol] :terrainnone, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
-        # @param last_weather [Symbol] :terrainnone, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
+        # @param weather_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
+        # @param last_weather [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
         def on_post_fterrain_change(handler, fterrain_type, last_fterrain)
           case fterrain_type
-          when :terrainnone
+          when :none
             @target.restore_types
           when :psychic_terrain
             @target.change_types(GameData::Types::PSYCHIC)

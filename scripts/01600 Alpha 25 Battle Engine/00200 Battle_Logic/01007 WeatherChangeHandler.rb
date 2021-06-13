@@ -3,15 +3,6 @@ module Battle
     # Handler responsive of answering properly weather changes requests
     class WeatherChangeHandler < ChangeHandlerBase
       include Hooks
-      # Mapping between weather symbol & weather ID
-      WEATHER_SYM_TO_ID = {
-        none: 0,
-        rain: 1,
-        sunny: 2,
-        sandstorm: 3,
-        hail: 4,
-        fog: 5
-      }
       # Mapping between weather symbol & message_id
       WEATHER_SYM_TO_MSG = {
         none: 97,
@@ -37,7 +28,7 @@ module Battle
       def weather_appliable?(weather_type)
         log_data("# weather_appliable?(#{weather_type})")
         reset_prevention_reason
-        last_weather = WEATHER_SYM_TO_ID.key(@env.current_weather) || :none
+        last_weather = @env.current_weather_db_symbol
         exec_hooks(WeatherChangeHandler, :weather_prevention, binding)
         return true
       rescue Hooks::ForceReturn => e
@@ -50,8 +41,8 @@ module Battle
       # @param nb_turn [Integer, nil] Number of turn, use nil for Infinity
       def weather_change(weather_type, nb_turn)
         log_data("# weather_change(#{weather_type}, #{nb_turn})")
-        last_weather = WEATHER_SYM_TO_ID.key(@env.current_weather) || :none
-        @env.apply_weather(WEATHER_SYM_TO_ID[weather_type] || 0, nb_turn)
+        last_weather = @env.current_weather_db_symbol
+        @env.apply_weather(weather_type, nb_turn)
         show_weather_message(last_weather, weather_type)
         exec_hooks(WeatherChangeHandler, :post_weather_change, binding)
       rescue Hooks::ForceReturn => e
@@ -76,11 +67,7 @@ module Battle
       def show_weather_message(last_weather, current_weather)
         return if last_weather == current_weather
 
-        if last_weather == :none
-          @scene.display_message_and_wait(parse_text(18, WEATHER_SYM_TO_MSG[current_weather]))
-        elsif current_weather == :none
-          @scene.display_message_and_wait(parse_text(18, WEATHER_SYM_TO_MSG[current_weather]))
-        end
+        @scene.display_message_and_wait(parse_text(18, WEATHER_SYM_TO_MSG[current_weather])) if last_weather == :none || current_weather == :none
       end
 
       class << self

@@ -20,6 +20,7 @@ module PFM
     # Return the modified worldmap position or nil
     # @return [Array, nil]
     attr_reader :modified_worldmap_position
+
     # Create a new Environnement object
     def initialize
       @weather = 0
@@ -42,154 +43,6 @@ module PFM
       @worldmap_custom_markers = []
     end
 
-    # Apply a new weather to the current environment
-    # @param id [Integer] ID of the weather : 0 = None, 1 = Rain, 2 = Sun/Zenith, 3 = Darud Sandstorm, 4 = Hail, 5 = Foggy
-    # @param duration [Integer, nil] the total duration of the weather (battle), nil = never stops
-    def apply_weather(id, duration = nil)
-      @battle_weather = id
-      @weather = id unless $game_temp.in_battle && !$game_switches[::Yuki::Sw::MixWeather]
-      @duration = (duration || Float::INFINITY)
-      ajust_weather_switches
-    end
-
-    # Apply a new terrain to the current environment
-    # @param id [Integrer] ID of the terrain : 0 = None 1 = Electric, 2 = Grassy, 3 = Mist, 4 = Psychic
-    # @param duration [Integrer, nil] the total duration of the terrain (battle), nil = never stops
-    def apply_fterrain(id, ftduration = nil)
-      @battle_fterrain = id
-      @fterrain = id unless $game_temp.in_battle && !$game_switches[::Yuki::Sw::MixTerrain]
-      @ftduration = (ftduration || Float::INFINITY)
-      adjust_fterrain_switches
-    end
-
-    # Ajust the weather switch to put the game in the correct state
-    def ajust_weather_switches
-      weather = current_weather
-      $game_switches[::Yuki::Sw::WT_Rain] = (weather == 1)
-      $game_switches[::Yuki::Sw::WT_Sunset] = (weather == 2)
-      $game_switches[::Yuki::Sw::WT_Sandstorm] = (weather == 3)
-      $game_switches[::Yuki::Sw::WT_Snow] = (weather == 4)
-      $game_switches[::Yuki::Sw::WT_Fog] = (weather == 5)
-    end
-
-    # Ajust the terrain switch to put the game in correct state
-    def adjust_fterrain_switches
-      fterrain = current_fterrain
-      $game_switches[::Yuki::Sw::FT_Electric] = (fterrain == 1)
-      $game_switches[::Yuki::Sw::FT_Grassy] = (fterrain == 2)
-      $game_switches[::Yuki::Sw::FT_Mist] = (fterrain == 3)
-      $game_switches[::Yuki::Sw::FT_Psychic] = (fterrain == 4)
-    end
-
-    # Return the current weather duration
-    # @return [Numeric] can be Float::INFINITY
-    def weather_duration
-      return @duration
-    end
-    alias get_weather_duration weather_duration
-
-    #Return the current terrain duration
-    def fterrain_duration
-      return @ftduration
-    end
-    alias get_fterrain_duration fterrain_duration
-
-    # Decrease the weather duration, set it to normal (none = 0) if the duration is less than 0
-    # @return [Boolean] true = the weather stopped
-    def decrease_weather_duration
-      @duration -= 1 if @duration > 0
-      if @duration <= 0 && @battle_weather != 0
-        apply_weather(0, 0)
-        return true
-      end
-      return false
-    end
-
-    # Decrease the field terrain duration, set it to normal (none = 0) if the duration is less than 0
-    # @return [Boolean] true = the terrain stopped
-    def decrease_fterrain_duration
-      @ftduration -= 1 if @ftduration > 0
-      if @ftduration <= 0 && @battle_fterrain != 0
-        apply_fterrain(0, 0)
-        return true
-      end
-      return false
-    end
-
-    # Return the current weather id according to the game state (in battle or not)
-    # @return [Integer]
-    def current_weather
-      return $game_temp.in_battle ? @battle_weather : @weather
-    end
-
-    #Return the current field terrain id according to the game state (in battle or not)
-    # @return [Integer]
-    def current_fterrain
-      return $game_temp.in_battle ? @battle_fterrain : @fterrain
-    end
-
-    # Is it rainning?
-    # @return [Boolean]
-    def rain?
-      return current_weather == 1
-    end
-
-    # Is it sunny?
-    # @return [Boolean]
-    def sunny?
-      return current_weather == 2
-    end
-
-    # Duuuuuuuuuuuuuuuuuuuuuuun
-    # Dun dun dun dun dun dun dun dun dun dun dun dundun dun dundundun dun dun dun dun dun dun dundun dundun
-    # @return [Boolean]
-    def sandstorm?
-      return current_weather == 3
-    end
-
-    # Does it hail ?
-    # @return [Boolean]
-    def hail?
-      return current_weather == 4
-    end
-
-    # Is it foggy ?
-    # @return [Boolean]
-    def fog?
-      return current_weather == 5
-    end
-
-    # Is the weather normal
-    # @return [Boolean]
-    def normal?
-      return current_weather == 0
-    end
-
-    #Is the terrain electric?
-    def terrain_electric?
-      return current_fterrain == 1
-    end
-
-    # Is the terrain grassy?
-    def terrain_grassy?
-      return current_fterrain == 2
-    end
-
-    # Is the terrain misty?
-    def terrain_misty?
-      return current_fterrain == 3
-    end
-
-    # Is the terrain psychic?
-    def terrain_psychic?
-      return current_fterrain == 4
-    end
-
-    # Is the terrain normal?
-    def terrain_normal?
-      return current_fterrain == 0
-    end
-  
     # Is the player inside a building (and not on a systemtag)
     # @return [Boolean]
     def building?
@@ -324,11 +177,11 @@ module PFM
     # @return [Integer]
     def get_worldmap(zone = @zone)
       if @modified_worldmap_position && @modified_worldmap_position[2]
-        return @modified_worldmap_position[2]
+        return @modified_worldmap_position[2] || 0
       elsif zone.is_a?(GameData::Zone)
-        return zone.worldmap_id
+        return zone.worldmap_id || 0
       else
-        return GameData::Zone.get(zone).worldmap_id
+        return GameData::Zone.get(zone).worldmap_id || 0
       end
     end
 

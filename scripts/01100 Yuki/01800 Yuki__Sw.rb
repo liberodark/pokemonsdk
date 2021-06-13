@@ -113,17 +113,6 @@ module Yuki
     WT_Snow = 59
     # Weather is fog
     WT_Fog = 60
-    
-    # If the terrain in Battle change the Terrain outside
-    MixTerrain = 61
-    # Terrain is Electric
-    FT_Electric = 62
-    # Terrain is Grassy
-    FT_Grassy = 63
-    # Terrain is Mist
-    FT_Mist = 64
-    # Terrain is Psychic
-    FT_Psychic = 65
 
     # Disable player detection by all the detection methods
     Env_Detection = 75

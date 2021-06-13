@@ -7,7 +7,6 @@ module Battle
         misty_terrain: :misty_terrain,
         psychic_terrain: :psychic_terrain
       }
-      TERRAIN_ITEMS = {}
 
       private
 
@@ -15,8 +14,7 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        nb_turn = user.hold_item?(TERRAIN_ITEMS[db_symbol]) ? 8 : 5
-        logic.fterrain_change_handler.fterrain_change_with_process(TERRAIN_MOVES[db_symbol], nb_turn)
+        logic.fterrain_change_handler.fterrain_change_with_process(TERRAIN_MOVES[db_symbol])
         # TODO: Add animations into the terrain_change_handler
       end
     end
