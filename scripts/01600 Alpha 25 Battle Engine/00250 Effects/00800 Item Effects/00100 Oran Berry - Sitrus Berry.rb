@@ -10,7 +10,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target
-          return if skill&.db_symbol == :thief && launcher&.item_db_symbol == :__undef__
+          return if skill&.be_method == :s_thief && launcher&.item_db_symbol == :__undef__
 
           process_effect(target, launcher, skill)
         end
