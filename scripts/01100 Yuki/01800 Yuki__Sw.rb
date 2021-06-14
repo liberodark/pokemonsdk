@@ -117,6 +117,9 @@ module Yuki
     # Disable player detection by all the detection methods
     Env_Detection = 75
 
+    # Enable/disable if pokemon die from poison in overworld
+    OW_Poison = 77
+
     # Failure switch (do not use)
     Alola = 96
     # Victory on the Alpha Ruins game

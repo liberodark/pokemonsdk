@@ -60,6 +60,12 @@ class Scene_Map < GamePlay::Base
     display_message(parse_text(22, 110))
   end
 
+  # Display text showing pokemon fainted from poison
+  def display_poison_faint(pokemon)
+		PFM::Text.set_pknick(pokemon, 0)
+		display_message(parse_text(22, 185))
+	end
+
   # Display the poisoning animation sequence
   def display_poison_animation
     Audio.se_play('Audio/SE/psn')
