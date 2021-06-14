@@ -180,6 +180,11 @@ module Battle
 
       target.last_hit_by_move = skill
     end
+    DamageHandler.register_post_damage_death_hook('PSDK Post damage death: Damage Update') do |_, hp, target, launcher, skill|
+      next unless skill && launcher
+
+      target.last_hit_by_move = skill
+    end
 
     # Destiny Bond
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Destiny Bond') do |handler, _, target, launcher, skill|
