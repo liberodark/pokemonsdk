@@ -54,8 +54,9 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        can_change_ability = targets.any? do |target|
-          @logic.ability_change_handler.can_change_ability?(target, ability_symbol(user, target), user, self)
+        can_change_ability = targets.any? do |target|          
+          @logic.ability_change_handler.can_change_ability?(target, ability_symbol(user, target), user, self) && 
+          target.ability_db_symbol != ability_symbol(user, target)
         end
 
         unless can_change_ability
