@@ -10,6 +10,7 @@ module Battle
         hit_amount = hit_amount(user, actual_targets)
         nb_hit = hit_amount.times.count do |i|
           next false unless actual_targets.all?(&:alive?)
+          next false if user.dead?
 
           play_animation(user, actual_targets) if i > 0
           actual_targets.each do |target|
@@ -26,6 +27,7 @@ module Battle
           next true
         end
         @scene.display_message_and_wait(parse_text(18, 33, PFM::Text::NUMB[1] => nb_hit.to_s))
+        return false if user.dead?
       end
 
       private
