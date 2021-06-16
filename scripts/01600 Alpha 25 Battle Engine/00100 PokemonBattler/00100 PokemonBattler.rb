@@ -71,6 +71,10 @@ module PFM
     # @return [Array<DamageHistory>]
     attr_reader :damage_history
 
+    # Get the encounter list
+    # @return [Array<PFM::PokemonBattler>]
+    attr_reader :encounter_list
+
     # Get the information if the Pokemon is actually a follower or not (changing its go-in-out animation)
     # @return [Boolean]
     attr_accessor :is_follower
@@ -143,6 +147,7 @@ module PFM
       @last_sent_turn = -1
       @move_history = []
       @damage_history = []
+      @encounter_list = []
       @mega_evolved = false
       @exp_distributed = false
       @item_burnt = false
@@ -238,6 +243,25 @@ module PFM
     # @param ko [Boolean]
     def add_damage_to_history(damage, launcher, move, ko)
       @damage_history << DamageHistory.new(damage, launcher, move, ko)
+    end
+
+    # Add a battler to the encounter list
+    # @note The battler is not added if it is already present in the list
+    # @param battler [PFM::PokemonBattler]
+    def add_battler_to_encounter_list(battler)
+      @encounter_list << battler unless @encounter_list.include?(battler)
+    end
+
+    # Delete a battler to the encounter list
+    # @param battler [PFM::PokemonBattler]
+    def delete_battler_to_encounter_list(battler)
+      @encounter_list.delete(battler)
+    end
+
+    # Test if the Pokemon has encountered the battler
+    # @param battler [PFM::PokemonBattler]
+    def has_encountered?(battler)
+      return @encounter_list.include?(battler)
     end
 
     # Test if the last move was of a certain symbol

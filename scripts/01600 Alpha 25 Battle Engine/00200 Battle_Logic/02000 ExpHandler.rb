@@ -57,7 +57,8 @@ module Battle
           return logic.trainer_battlers.reject { |receiver| receiver.max_level == receiver.level || receiver.dead? }
         else
           return logic.trainer_battlers.reject do |receiver|
-            next receiver.max_level == receiver.level || receiver.dead? || (receiver.last_battle_turn <= enemy.last_sent_turn && receiver.last_battle_turn != enemy.last_battle_turn)
+            receiver.delete_battler_to_encounter_list(enemy) if (has_encountered = receiver.has_encountered?(enemy))            
+            next receiver.max_level == receiver.level || receiver.dead? || !has_encountered
           end
         end
       end

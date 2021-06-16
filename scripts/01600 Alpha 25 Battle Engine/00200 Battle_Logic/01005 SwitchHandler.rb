@@ -139,5 +139,14 @@ module Battle
     SwitchHandler.register_switch_passthrough_hook('PSDK switch pass: U-Turn moves') do |_, _, skill|
       next :passthrough if skill&.self_user_switch?
     end
+
+    # Encounter list
+    SwitchHandler.register_switch_event_hook('Update encounter list') do |handler, _, with|
+      handler.logic.all_battlers do |battler|
+        next if battler.position == -1 || battler.dead? || battler == with
+        battler.add_battler_to_encounter_list(with)
+        with.add_battler_to_encounter_list(battler)
+      end
+    end
   end
 end
