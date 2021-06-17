@@ -41,9 +41,9 @@ module Battle
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def proceed_internal(user, targets)
       return unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
-      return scene.display_message_and_wait(parse_text(18, 106)) if targets.all?(&:dead?) && (on_move_failure(user, targets, :no_target) || true)
 
       usage_message(user)
+      return scene.display_message_and_wait(parse_text(18, 106)) if targets.all?(&:dead?) && (on_move_failure(user, targets, :no_target) || true)
       if pp == 0 && !(user.effects.has?(&:force_next_move?) && !@forced_next_move_decrease_pp)
         return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp)
       end
