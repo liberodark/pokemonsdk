@@ -789,14 +789,12 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00006 Flee.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00007 HighPriorityItem.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00100 Move.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00101 Move_Damage_Calc.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00107 Move_mod1_multiplier.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00108 Move_mod2_multiplier.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00109 Move_mod3_multiplier.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00102 Move Type.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00103 Move_Type_Processing.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00110 Move_target.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00111 Move Chance of Hit.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00120 Move Procedure.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00121 Move Prevention.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00130 Move Type.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04155 SpecialMoves Mechanics/00100 Counter.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04155 SpecialMoves Mechanics/00100 ItemBased.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04155 SpecialMoves Mechanics/00100 TwoTurn.rb

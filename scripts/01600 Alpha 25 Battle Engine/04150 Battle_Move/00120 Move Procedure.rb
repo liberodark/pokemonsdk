@@ -151,6 +151,7 @@ module Battle
       return true if user != target && ability_immunity?(user, target)
 
       types = definitive_types(user, target)
+      @effectiveness = -1
       return calc_type_n_multiplier(target, :type1, types) == 0 ||
              calc_type_n_multiplier(target, :type2, types) == 0 ||
              calc_type_n_multiplier(target, :type3, types) == 0

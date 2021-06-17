@@ -7,70 +7,37 @@ module Battle
     # @note : I used the 4th Gen formula : https://www.smogon.com/dp/articles/damage_formula
     # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler] target of the move
+    # @note The formula is the following:
+    #       (((((((Level * 2 / 5) + 2) * BasePower * [Sp]Atk / 50) / [Sp]Def) * Mod1) + 2) *
+    #         CH * Mod2 * R / 100) * STAB * Type1 * Type2 * Mod3)
     # @return [Integer]
     def damages(user, target)
+      # rubocop:disable Layout/ExtraSpacing
+      # rubocop:disable Style/Semicolon
+      # rubocop:disable Style/SpaceBeforeSemicolon
       log_data("# damages(#{user}, #{target}) for #{db_symbol}")
-      @critical = logic.calc_critical_hit(user, target, critical_rate)
-      log_data("@critical = #{@critical} # critical_rate = #{critical_rate}")
       # Reset the effectiveness
       @effectiveness = 1
-      # (((((((Level * 2 / 5) + 2) * BasePower * [Sp]Atk / 50) / [Sp]Def) * Mod1) + 2) *
-      # CH * Mod2 * R / 100) * STAB * Type1 * Type2 * Mod3)
-      damage = user.level * 2 / 5 + 2
-      log_data("damage = #{damage} # #{user.level} * 2 / 5 + 2")
-      damage = (damage * calc_base_power(user, target)).floor
-      log_data("damage = #{damage} # after calc_base_power")
-      damage = (damage * calc_sp_atk(user, target)).floor
-      damage /= 50
-      log_data("damage = #{damage} # after calc_sp_atk / 50")
-      damage = (damage / calc_sp_def(user, target)).floor
-      log_data("damage = #{damage} # after calc_sp_def")
-      damage = (damage * calc_mod1(user, target)).floor
-      log_data("damage = #{damage} # after calc_mod1")
-      damage += 2
-      damage = (damage * calc_ch(user)).floor
-      damage = (damage * calc_mod2(user, target)).floor
-      log_data("damage = #{damage} # after calc_mod2 & calc_ch")
+      @critical = logic.calc_critical_hit(user, target, critical_rate)        ; log_data("@critical = #{@critical} # critical_rate = #{critical_rate}")
+      damage = user.level * 2 / 5 + 2                                         ; log_data("damage = #{damage} # #{user.level} * 2 / 5 + 2")
+      damage = (damage * calc_base_power(user, target)).floor                 ; log_data("damage = #{damage} # after calc_base_power")
+      damage = (damage * calc_sp_atk(user, target)).floor / 50                ; log_data("damage = #{damage} # after calc_sp_atk / 50")
+      damage = (damage / calc_sp_def(user, target)).floor                     ; log_data("damage = #{damage} # after calc_sp_def")
+      damage = (damage * calc_mod1(user, target)).floor + 2                   ; log_data("damage = #{damage} # after calc_mod1 + 2")
+      damage = (damage * calc_ch(user, target)).floor                         ; log_data("damage = #{damage} # after calc_ch")
+      damage = (damage * calc_mod2(user, target)).floor                       ; log_data("damage = #{damage} # after calc_mod2")
       damage *= logic.move_damage_rng.rand(calc_r_range)
-      damage /= 100
-      log_data("damage = #{damage} # after rng")
-      damage = (damage * calc_stab(user)).floor
-      log_data("damage = #{damage} # after stab")
+      damage /= 100                                                           ; log_data("damage = #{damage} # after rng")
       types = definitive_types(user, target)
-      log_data("types = #{types} # ie: #{types.map do |t| GameData::Type[t].name end.join(', ')}")
-      damage = (damage * calc_type_n_multiplier(target, :type1, types)).floor
-      log_data("damage = #{damage} # after type1 (#{GameData::Type[target.type1].name}) => new_eff = #{@effectiveness}")
-      damage = (damage * calc_type_n_multiplier(target, :type2, types)).floor
-      log_data("damage = #{damage} # after type2 (#{GameData::Type[target.type2].name}) => new_eff = #{@effectiveness}")
-      damage = (damage * calc_type_n_multiplier(target, :type3, types)).floor
-      log_data("damage = #{damage} # after type3 (#{GameData::Type[target.type3].name}) => new_eff = #{@effectiveness}")
-      log_data("damage = #{(damage * calc_mod3(user, target)).floor} # after mod3") if debug?
-      damage = (damage * calc_mod3(user, target)).floor
+      damage = (damage * calc_stab(user, types)).floor                        ; log_data("damage = #{damage} # after stab")
+      damage = (damage * calc_type_n_multiplier(target, :type1, types)).floor ; log_data("damage = #{damage} # after type1")
+      damage = (damage * calc_type_n_multiplier(target, :type2, types)).floor ; log_data("damage = #{damage} # after type2")
+      damage = (damage * calc_type_n_multiplier(target, :type3, types)).floor ; log_data("damage = #{damage} # after type3")
+      damage = (damage * calc_mod3(user, target)).floor                       ; log_data("damage = #{damage}  # after mod3")
       return damage
-    end
-
-    # Function that calculate the type modifier (for specific uses)
-    # @param user [PFM::PokemonBattler] user of the move
-    # @param target [PFM::PokemonBattler]
-    # @return [Float]
-    def type_modifier(user, target)
-      types = definitive_types(user, target)
-      n = calc_type_n_multiplier(target, :type1, types) *
-          calc_type_n_multiplier(target, :type2, types) *
-          calc_type_n_multiplier(target, :type3, types)
-      return n
-    end
-
-    # STAB calculation
-    # @param user [PFM::PokemonBattler] user of the move
-    # @return [Numeric]
-    def calc_stab(user)
-      if user.type1 == type || user.type2 == type || user.type3 == type
-        return 2 if user.has_ability?(:adaptability)
-
-        return 1.5
-      end
-      return 1
+      # rubocop:enable Layout/ExtraSpacing
+      # rubocop:enable Style/Semicolon
+      # rubocop:enable Style/SpaceBeforeSemicolon
     end
 
     # Get the real base power of the move (taking in account all parameter)
@@ -156,48 +123,68 @@ module Battle
 
     # CH calculation
     # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
     # @return [Numeric]
-    def calc_ch(user)
+    def calc_ch(user, target)
       return 1 unless critical_hit?
       return 3 if user.has_ability?(:sniper)
 
       return 2
     end
 
-    # Calc TypeN multiplier of the move
+    # Mod1 multiplier calculation
+    # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler] target of the move
-    # @param type_to_check [Symbol] type to check on the target
-    # @param types [Array<Integer>] list of types the move has
     # @return [Numeric]
-    def calc_type_n_multiplier(target, type_to_check, types)
-      target_type = target.send(type_to_check)
-      result = types.inject(1) { |product, type| product * calc_single_type_multiplier(target, target_type, type) }
-      @effectiveness *= result
+    def calc_mod1(user, target)
+      result = 1
+      # Effects
+      logic.each_effects(user, target) do |e|
+        result *= e.mod1_multiplier(user, target, self)
+      end
+      # Mod1 = BRN × RL × TVT × SR × FF
+      # TVT
+      result *= calc_mod1_tvt(target)
       return result
     end
 
-    # Calc the single type multiplier
+    # Calculate the TVT mod
     # @param target [PFM::PokemonBattler] target of the move
-    # @param target_type [Integer] one of the type of the target
-    # @param type [Integer] one of the type of the move
-    # @return [Float] definitive multiplier
-    def calc_single_type_multiplier(target, target_type, type)
-      exec_hooks(Move, :single_type_multiplier_overwrite, binding)
-      return GameData::Type[target_type].hit_by(type)
-    rescue Hooks::ForceReturn => e
-      log_data("# calc_single_type_multiplier(#{target}, #{target_type}, #{type})")
-      log_data("# FR: calc_single_type_multiplier #{e.data} from #{e.hook_name} (#{e.reason})")
-      return e.data
+    # @return [Numeric]
+    def calc_mod1_tvt(target)
+      return 1 if one_target? || $game_temp.vs_type == 1
+
+      if self.target == :all_foe
+        count = logic.allies_of(target).size + 1
+      else
+        count = logic.adjacent_allies_of(target).size + 1
+      end
+      return count > 1 ? 0.75 : 1
     end
 
-    # Get the types of the move with 1st type being affected by effects
+    # Mod2 multiplier calculation
     # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler] target of the move
-    # @return [Array<Integer>] list of types of the move
-    def definitive_types(user, target)
-      type = self.type
-      exec_hooks(Move, :move_type_change, binding)
-      return [*type]
+    # @return [Numeric]
+    def calc_mod2(user, target)
+      update_use_count(user)
+      result = 1
+      # Effects
+      logic.each_effects(user, target) do |e|
+        result *= e.mod2_multiplier(user, target, self)
+      end
+      result *= 1.5 if db_symbol == :me_first
+      return result
+    end
+
+    # Update the move use count
+    # @param user [PFM::PokemonBattler] user of the move
+    def update_use_count(user)
+      if user.last_successfull_move_is?(db_symbol)
+        @consecutive_use_count += 1
+      else
+        @consecutive_use_count = 0
+      end
     end
 
     # "Calc" the R range value
@@ -206,68 +193,18 @@ module Battle
       R_RANGE
     end
 
-    class << self
-      # Function that registers a move_type_change hook
-      # @param reason [String] reason of the move_type_change registration
-      # @yieldparam user [PFM::PokemonBattler]
-      # @yieldparam target [PFM::PokemonBattler]
-      # @yieldparam move [Battle::Move]
-      # @yieldparam type [Integer] current type of the move
-      # @yieldreturn [Integer, nil] new move type
-      def register_move_type_change_hook(reason)
-        Hooks.register(Move, :move_type_change, reason) do |hook_binding|
-          result = yield(hook_binding.local_variable_get(:user), hook_binding.local_variable_get(:target), self,
-                         hook_binding.local_variable_get(:type))
-          hook_binding.local_variable_set(:type, result) if result.is_a?(Integer)
-        end
+    # Mod3 calculation
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
+    # @return [Numeric]
+    def calc_mod3(user, target)
+      # Mod3 = SRF * EB * TL * TRB
+      result = 1
+      # Effects
+      logic.each_effects(user, target) do |e|
+        result *= e.mod3_multiplier(user, target, self)
       end
-
-      # Function that registers a single_type_multiplier_overwrite hook
-      # @param reason [String] reason of the single_type_multiplier_overwrite registration
-      # @yieldparam target [PFM::PokemonBattler]
-      # @yieldparam target_type [Integer] one of the type of the target
-      # @yieldparam type [Integer] one of the type of the move
-      # @yieldparam move [Battle::Move]
-      # @yieldreturn [Float, nil] overwritten
-      def register_single_type_multiplier_overwrite_hook(reason)
-        Hooks.register(Move, :single_type_multiplier_overwrite, reason) do |hook_binding|
-          result = yield(hook_binding.local_variable_get(:target),
-                         hook_binding.local_variable_get(:target_type),
-                         hook_binding.local_variable_get(:type), self)
-          force_return(result) if result
-        end
-      end
-    end
-
-    Move.register_move_type_change_hook('PSDK Effect process') do |user, target, move, type|
-      move.logic.each_effects(user, target) do |e|
-        result = e.on_move_type_change(user, target, move, type)
-        type = result if result.is_a?(Integer)
-      end
-      next type
-    end
-
-    Move.register_single_type_multiplier_overwrite_hook('PSDK Effect process') do |target, target_type, type, move|
-      overwrite = nil
-      move.logic.each_effects(target) do |e|
-        next if overwrite
-
-        result = e.on_single_type_multiplier_overwrite(target, target_type, type, move)
-        overwrite = result if result
-      end
-      next overwrite
-    end
-
-    Move.register_single_type_multiplier_overwrite_hook('PSDK Freeze-Dry') do |_, target_type, _, move|
-      next 2 if move.db_symbol == :"freeze-dry" && target_type == GameData::Types::WATER
-
-      next nil
-    end
-
-    Move.register_single_type_multiplier_overwrite_hook('PSDK Grounded: Levitate & Air Balloon') do |target, _, type|
-      next 0 if type == GameData::Types::GROUND && !target.grounded?
-
-      next nil
+      return result
     end
   end
 end

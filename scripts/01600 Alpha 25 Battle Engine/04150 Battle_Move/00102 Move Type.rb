@@ -1,6 +1,5 @@
 module Battle
   class Move
-
     # Is the skill a specific type ?
     # @param type_id [Integer] ID of the type
     def type?(type_id)

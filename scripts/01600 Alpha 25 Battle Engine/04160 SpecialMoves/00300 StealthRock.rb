@@ -24,6 +24,7 @@ module Battle
       # @return [Integer, Float]
       def calc_factor(target)
         type = [self.type]
+        @effectiveness = -1
         n = calc_type_n_multiplier(target, :type1, type) *
             calc_type_n_multiplier(target, :type2, type) *
             calc_type_n_multiplier(target, :type3, type)
