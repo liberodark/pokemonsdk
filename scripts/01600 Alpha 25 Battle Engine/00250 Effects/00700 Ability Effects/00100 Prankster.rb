@@ -9,7 +9,7 @@ module Battle
         # @return [Proc, nil]
         def on_move_priority_change(user, priority, move)
           return nil if user != @target
-          return nil unless status?
+          return nil unless move.status?
 
           return priority + 1
         end
