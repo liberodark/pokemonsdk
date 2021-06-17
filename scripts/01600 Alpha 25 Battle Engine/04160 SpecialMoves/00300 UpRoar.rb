@@ -37,10 +37,11 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         return if user.effects.has?(effect_name)
-        
+
         user.effects.add(create_effect(user, actual_targets))
+        logic.terrain_effects.add(Effects::UpRoar::SleepPrevention.new(logic, user))
       end
-      
+
       # Method responsive testing accuracy and immunity.
       # It'll report the which pokemon evaded the move and which pokemon are immune to the move.
       # @param user [PFM::PokemonBattler] user of the move

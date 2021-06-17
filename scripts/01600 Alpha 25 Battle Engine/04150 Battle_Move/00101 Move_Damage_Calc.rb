@@ -88,21 +88,11 @@ module Battle
     # @param target [PFM::PokemonBattler] target of the move
     # @return [Integer]
     def calc_base_power(user, target)
-      # HH * BP * IT * CHG * MS * WS * UA * FA
-      # BP
-      result = real_base_power(user, target)
+      base_power = real_base_power(user, target)
       # Effects
-      logic.each_effects(user, target) do |e|
-        result = (result * e.base_power_multiplier(user, target, self)).floor
+      return logic.each_effects(user, target).reduce(base_power) do |product, e|
+        (product * e.base_power_multiplier(user, target, self)).floor
       end
-      result = result.floor # Round down between each multiplication, the first two can be reverted.
-      # CHG
-      result = user.effects.has?(:charge) ? user.effects.get(:charge).calc_base_power_as_user(result, user, target, self) : result
-      # MS
-      result = (result * 0.5).floor if logic.terrain_effects.has?(:mud_sport) && type == GameData::Types::ELECTRIC
-      # WS
-      result = (result * 0.5).floor if logic.terrain_effects.has?(:water_sport) && type == GameData::Types::FIRE
-      return result
     end
 
     # [Spe]atk calculation
@@ -257,19 +247,6 @@ module Battle
       next type
     end
 
-    # TechnoBlast
-    TECHNODRIVES = {
-      douse_drive: GameData::Types::WATER,
-      shock_drive: GameData::Types::ELECTRIC,
-      burn_drive: GameData::Types::FIRE,
-      chill_drive: GameData::Types::ICE
-    }
-    Move.register_move_type_change_hook('PSDK Techno Blast') do |user, _, move|
-      next nil unless user.db_symbol == :genesect && move.be_method == :s_techno_blast
-
-      next TECHNODRIVES[user.item_db_symbol] || GameData::Types::NORMAL
-    end
-
     Move.register_single_type_multiplier_overwrite_hook('PSDK Effect process') do |target, target_type, type, move|
       overwrite = nil
       move.logic.each_effects(target) do |e|
@@ -281,30 +258,8 @@ module Battle
       next overwrite
     end
 
-    Move.register_single_type_multiplier_overwrite_hook('PSDK Foresight') do |target, target_type, type|
-      next nil unless target.effects.has?(:foresight) && target_type == GameData::Types::GHOST
-      next 1 if type == GameData::Types::NORMAL
-      next 1 if type == GameData::Types::FIGHTING
-
-      next nil
-    end
-
-    Move.register_single_type_multiplier_overwrite_hook('PSDK Miracle Eye') do |target, target_type, type|
-      next nil unless target.effects.has?(:miracle_eye) && target_type == GameData::Types::DARK
-      next 1 if type == GameData::Types::PSYCHIC
-
-      next nil
-    end
-
     Move.register_single_type_multiplier_overwrite_hook('PSDK Freeze-Dry') do |_, target_type, _, move|
       next 2 if move.db_symbol == :"freeze-dry" && target_type == GameData::Types::WATER
-
-      next nil
-    end
-
-    Move.register_single_type_multiplier_overwrite_hook('PSDK Gravity') do |_, target_type, type, move|
-      next nil unless move.logic.terrain_effects.has?(:gravity) && target_type == GameData::Types::FLYING
-      next 1 if type == GameData::Types::GROUND
 
       next nil
     end

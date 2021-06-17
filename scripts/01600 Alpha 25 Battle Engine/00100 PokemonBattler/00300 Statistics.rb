@@ -22,11 +22,9 @@ module PFM
     # @return [Integer]
     def spd
       raw_spd = (spd_basis * spd_modifier).floor
-      @scene.logic.each_effects(self) do |e|
-        raw_spd = (raw_spd * e.spd_modifier).floor
+      return @scene.logic.each_effects(self).reduce(raw_spd) do |product, e|
+        (product * e.spd_modifier).floor
       end
-      tailwind_spd = @scene.logic.bank_effects[bank]&.has?(:tailwind) ? 2 * raw_spd : raw_spd
-      return tailwind_spd
     end
 
     # Return the current ats

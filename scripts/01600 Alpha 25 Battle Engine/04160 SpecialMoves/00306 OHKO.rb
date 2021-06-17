@@ -2,6 +2,15 @@ module Battle
   class Move
     # Class managing OHKO moves
     class OHKO < Basic
+      # Function that deals the damage to the pokemon
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+      def deal_damage(user, actual_targets)
+        super
+        scene.display_message_and_wait(parse_text(18, 100)) if actual_targets.any?(&:dead?) # "Its a one-hit KO!"
+        return true
+      end
+
       # Tell if the move is an OHKO move
       # @return [Boolean]
       def ohko?

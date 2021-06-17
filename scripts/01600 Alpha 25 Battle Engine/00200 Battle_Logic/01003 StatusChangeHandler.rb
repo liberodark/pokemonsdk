@@ -215,15 +215,5 @@ module Battle
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 270, target))
       end
     end
-
-    # UpRoar
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: UpRoar') do |handler, status, target, launcher|
-      next unless status == :sleep && handler.logic.all_alive_battlers.any? { |battler| battler.effects.has?(:uproar) }
-      
-      handler.prevent_change do 
-        message_id = target.effects.has?(:uproar) ? 712 : 709
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, message_id, target))
-      end
-    end
   end
 end

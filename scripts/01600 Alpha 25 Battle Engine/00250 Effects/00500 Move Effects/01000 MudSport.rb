@@ -15,6 +15,15 @@ module Battle
         return :mud_sport
       end
 
+      # Give the move base power mutiplier
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @param move [Battle::Move] move
+      # @return [Float, Integer] multiplier
+      def base_power_multiplier(user, target, move)
+        return move.type_electric? ? 0.5 : 1
+      end
+
       # Show the message when the effect gets deleted
       def on_delete
         @logic.scene.display_message_and_wait(parse_text(18, 121))
@@ -27,6 +36,15 @@ module Battle
       # @return [Symbol]
       def name
         return :water_sport
+      end
+
+      # Give the move base power mutiplier
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @param move [Battle::Move] move
+      # @return [Float, Integer] multiplier
+      def base_power_multiplier(user, target, move)
+        return move.type_fire? ? 0.5 : 1
       end
 
       # Show the message when the effect gets deleted

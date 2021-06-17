@@ -37,6 +37,39 @@ module Battle
         :uproar
       end
 
+      class SleepPrevention < EffectBase
+        # Create a new effect
+        # @param logic [Battle::Logic] logic used to get all the handler in order to allow the effect to work
+        # @param origin [PFM::PokemonBattler] origin of the effect
+        def initialize(logic, origin)
+          super(logic)
+          @origin = origin
+          self.counter = 3
+        end
+
+        # Function called when a status_prevention is checked
+        # @param handler [Battle::Logic::StatusChangeHandler]
+        # @param status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :flinch, :cure
+        # @param target [PFM::PokemonBattler]
+        # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @param skill [Battle::Move, nil] Potential move used
+        # @return [:prevent, nil] :prevent if the status cannot be applied
+        def on_status_prevention(handler, status, target, launcher, skill)
+          return if status != :sleep || @origin.dead?
+
+          return handler.prevent_change do
+            message_id = skill&.target == :user ? 712 : 709
+            handler.scene.display_message_and_wait(parse_text_with_pokemon(19, message_id, target))
+          end
+        end
+
+        # Name of the effect
+        # @return [Symbol]
+        def name
+          :uproar_sleep_prevention
+        end
+      end
+
       private
 
       # Wake up all the asleep pokemons

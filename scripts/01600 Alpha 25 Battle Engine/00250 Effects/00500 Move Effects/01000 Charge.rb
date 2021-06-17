@@ -10,20 +10,21 @@ module Battle
         self.counter = turncount
       end
 
+      # Give the move base power mutiplier
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @param move [Battle::Move] move
+      # @return [Float, Integer] multiplier
+      def base_power_multiplier(user, target, move)
+        return 1 if user != @pokemon
+
+        return move.type_electric? ? 2 : 1
+      end
+
       # Name of the effect
       # @return [Symbol]
       def name
         :charge
-      end
-
-      # Modify the power of a move when the effect owner is the user
-      # @param power [Integer]
-      # @param user [PFM::PokemonBattler]
-      # @param target [PFM::PokemonBattler]
-      # @param move [Battle::Move]
-      # @return [Integer] modifed power
-      def calc_base_power_as_user(power, user, target, move)
-        return power * (move.type_electric? ? 2 : 1)
       end
     end
   end

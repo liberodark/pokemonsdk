@@ -14,6 +14,12 @@ module Battle
         @logic.scene.display_message_and_wait(parse_text(18, @bank == 0 ? 148 : 149))
       end
 
+      # Give the speed modifier over given to the Pokemon with this effect
+      # @return [Float, Integer] multiplier
+      def spd_modifier
+        return 2
+      end
+
       # Get the effect name
       # @return [Symbol]
       def name

@@ -125,22 +125,6 @@ module Battle
     next proc { move.scene.display_message_and_wait('\c[2]This move is not implemented!\c[0]') }
   end
 
-  # Gravity registration
-  Move.register_move_prevention_user_hook('PSDK Move prev user: Gravity') do |user, _, move|
-    if move.scene.logic.terrain_effects.has?(:gravity) && move.gravity_affected?
-      move.scene.display_message_and_wait(parse_text_with_pokemon(19, 1092, user))
-      next :prevent
-    end
-  end
-
-  # Crafty Shield registration
-  Move.register_move_prevention_target_hook('PSDK Move prev target: Crafty Shield') do |user, target, move|
-    next false unless target.effects.has?(:crafty_shield) && move.status? && user != target && move.db_symbol != :curse
-
-    move.scene.display_message_and_wait(parse_text_with_pokemon(19, 803, target))
-    next true
-  end
-
   # Registers the magic bounce ability
   Hooks.register(Move, :effect_working, 'Magic Bounce Ability') do |move_binding|
     # @type [Battle::Move]

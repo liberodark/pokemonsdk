@@ -27,9 +27,10 @@ module Battle
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
       # @param messages [Proc] messages shown right before the post processing
-      def damage_change(hp, target, launcher = nil, skill = nil, &messages)        
+      def damage_change(hp, target, launcher = nil, skill = nil, &messages)
         skill&.damage_dealt += hp
         @scene.visual.show_hp_animations([target], [-hp], [skill&.effectiveness], &messages)
+        target.last_hit_by_move = skill if skill
         exec_hooks(DamageHandler, :post_damage, binding) if target.hp > 0
         exec_hooks(DamageHandler, :post_damage_death, binding) if target.hp <= 0
         target.add_damage_to_history(hp, launcher, skill, target.hp <= 0)
@@ -172,34 +173,6 @@ module Battle
       handler.logic.each_effects(launcher, target) do |e|
         e.on_post_damage_death(handler, hp, target, launcher, skill)
       end
-    end
-
-    # Damage update
-    DamageHandler.register_post_damage_hook('PSDK Post damage: Damage Update') do |_, hp, target, launcher, skill|
-      next unless skill && launcher
-
-      target.last_hit_by_move = skill
-    end
-    DamageHandler.register_post_damage_death_hook('PSDK Post damage death: Damage Update') do |_, hp, target, launcher, skill|
-      next unless skill && launcher
-
-      target.last_hit_by_move = skill
-    end
-
-    # Destiny Bond
-    DamageHandler.register_post_damage_death_hook('PSDK Post damage: Destiny Bond') do |handler, _, target, launcher, skill|
-      next unless skill && target.effects.has?(:destiny_bond) && launcher != target && launcher
-      next if handler.logic.allies_of(target).include?(launcher)
-
-      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 629, target))
-      handler.scene.visual.show_hp_animations([launcher], [-launcher.hp])
-    end
-
-    # OHKO Moves
-    DamageHandler.register_post_damage_death_hook('PSDK Post damage: OHKO Moves') do |handler, _, target, launcher, skill|
-      next unless skill&.be_method == :s_ohko && launcher != target && launcher
-
-      handler.scene.display_message_and_wait(parse_text(18, 100)) # "Its a one-hit KO!"
     end
 
     # Illusion
