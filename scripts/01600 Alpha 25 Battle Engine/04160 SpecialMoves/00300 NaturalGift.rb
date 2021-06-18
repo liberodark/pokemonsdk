@@ -7,6 +7,7 @@ module Battle
     class NaturalGift < Basic
       include Mechanics::PowerBasedOnItem
       include Mechanics::TypesBasedOnItem
+
       private
 
       # Tell if the item is consumed during the attack
@@ -36,90 +37,103 @@ module Battle
         NATURAL_GIFT_TABLE[name][1]
       end
 
-      # Table of the move caracteristics depending on the held item. item_db_symbol => [power, type]
-      # @return [Hash<Symbol, Array<Integer, Array<Integer>>>]
-      NATURAL_GIFT_TABLE = {
-        :chilan_berry => [60,  [GameData::Types::NORMAL]],
+      class << self
+        def reset
+          const_set(:NATURAL_GIFT_TABLE, {})
+        end
 
-        :cheri_berry => [60,  [GameData::Types::FIRE]],
-        :occa_berry => [60,  [GameData::Types::FIRE]],
-        :bluk_berry => [70,  [GameData::Types::FIRE]],
-        :watmel_berry => [80,  [GameData::Types::FIRE]],
+        def register(berry, power, *types)
+          NATURAL_GIFT_TABLE[berry] ||= []
+          NATURAL_GIFT_TABLE[berry] = [power, types]
+        end
+      end
 
-        :chesto_berry => [60,  [GameData::Types::WATER]],
-        :passho_berry => [60,  [GameData::Types::WATER]],
-        :nanab_berry => [70,  [GameData::Types::WATER]],
-        :durin_berry => [80,  [GameData::Types::WATER]],
+      reset
+      register(:chilan_berry, 80, GameData::Types::NORMAL)
 
-        :pecha_berry => [60,  [GameData::Types::ELECTRIC]],
-        :wacan_berry => [60,  [GameData::Types::ELECTRIC]],
-        :wepear_berry => [70,  [GameData::Types::ELECTRIC]],
-        :belue_berry => [80,  [GameData::Types::ELECTRIC]],
+      register(:cheri_berry, 80, GameData::Types::FIRE)
+      register(:occa_berry, 80, GameData::Types::FIRE)
+      register(:bluk_berry, 90, GameData::Types::FIRE)
+      register(:watmel_berry, 100, GameData::Types::FIRE)
 
-        :rawst_berry => [60,  [GameData::Types::GRASS]],
-        :rindo_berry => [60,  [GameData::Types::GRASS]],
-        :pinap_berry => [70,  [GameData::Types::GRASS]],
-        :liechi_berry => [80,  [GameData::Types::GRASS]],
+      register(:chesto_berry, 80, GameData::Types::WATER)
+      register(:passho_berry, 80, GameData::Types::WATER)
+      register(:nanab_berry, 90, GameData::Types::WATER)
+      register(:durin_berry, 100, GameData::Types::WATER)
 
-        :aspear_berry => [60,  [GameData::Types::ICE]],
-        :yache_berry => [60,  [GameData::Types::ICE]],
-        :pomeg_berry => [70,  [GameData::Types::ICE]],
-        :ganlon_berry => [80,  [GameData::Types::ICE]],
+      register(:pecha_berry, 80, GameData::Types::ELECTRIC)
+      register(:wacan_berry, 80, GameData::Types::ELECTRIC)
+      register(:wepear_berry, 90, GameData::Types::ELECTRIC)
+      register(:belue_berry, 100, GameData::Types::ELECTRIC)
 
-        :leppa_berry => [60,  [GameData::Types::FIGHTING]],
-        :chople_berry => [60,  [GameData::Types::FIGHTING]],
-        :kelpsy_berry => [70,  [GameData::Types::FIGHTING]],
-        :salac_berry => [80,  [GameData::Types::FIGHTING]],
+      register(:rawst_berry, 80, GameData::Types::GRASS)
+      register(:rindo_berry, 80, GameData::Types::GRASS)
+      register(:pinap_berry, 90, GameData::Types::GRASS)
+      register(:liechi_berry, 100, GameData::Types::GRASS)
 
-        :oran_berry => [60,  [GameData::Types::POISON]],
-        :kebia_berry => [60,  [GameData::Types::POISON]],
-        :qualot_berry => [70,  [GameData::Types::POISON]],
-        :petaya_berry => [80,  [GameData::Types::POISON]],
+      register(:aspear_berry, 80, GameData::Types::ICE)
+      register(:yache_berry, 80, GameData::Types::ICE)
+      register(:pomeg_berry, 90, GameData::Types::ICE)
+      register(:ganlon_berry, 100, GameData::Types::ICE)
 
-        :persim_berry => [60,  [GameData::Types::GROUND]],
-        :shuca_berry => [60,  [GameData::Types::GROUND]],
-        :hondew_berry => [70,  [GameData::Types::GROUND]],
-        :apicot_berry => [80,  [GameData::Types::GROUND]],
+      register(:leppa_berry, 80, GameData::Types::FIGHTING)
+      register(:chople_berry, 80, GameData::Types::FIGHTING)
+      register(:kelpsy_berry, 90, GameData::Types::FIGHTING)
+      register(:salac_berry, 100, GameData::Types::FIGHTING)
 
-        :lum_berry => [60,  [GameData::Types::FLYING]],
-        :coba_berry => [60,  [GameData::Types::FLYING]],
-        :grepa_berry => [70,  [GameData::Types::FLYING]],
-        :lansat_berry => [80,  [GameData::Types::FLYING]],
+      register(:oran_berry, 80, GameData::Types::POISON)
+      register(:kebia_berry, 80, GameData::Types::POISON)
+      register(:qualot_berry, 90, GameData::Types::POISON)
+      register(:petaya_berry, 100, GameData::Types::POISON)
 
-        :sitrus_berry => [60,  [GameData::Types::PSYCHIC]],
-        :payapa_berry => [60,  [GameData::Types::PSYCHIC]],
-        :tamato_berry => [70,  [GameData::Types::PSYCHIC]],
-        :starf_berry => [80,  [GameData::Types::PSYCHIC]],
+      register(:persim_berry, 80, GameData::Types::GROUND)
+      register(:shuca_berry, 80, GameData::Types::GROUND)
+      register(:hondew_berry, 90, GameData::Types::GROUND)
+      register(:apicot_berry, 100, GameData::Types::GROUND)
 
-        :figy_berry => [60,  [GameData::Types::BUG]],
-        :tanga_berry => [60,  [GameData::Types::BUG]],
-        :cornn_berry => [70,  [GameData::Types::BUG]],
-        :enigma_berry => [80,  [GameData::Types::BUG]],
+      register(:lum_berry, 80, GameData::Types::FLYING)
+      register(:coba_berry, 80, GameData::Types::FLYING)
+      register(:grepa_berry, 90, GameData::Types::FLYING)
+      register(:lansat_berry, 100, GameData::Types::FLYING)
 
-        :wiki_berry => [60,  [GameData::Types::ROCK]],
-        :charti_berry => [60,  [GameData::Types::ROCK]],
-        :magost_berry => [70,  [GameData::Types::ROCK]],
-        :micle_berry => [80,  [GameData::Types::ROCK]],
+      register(:sitrus_berry, 80, GameData::Types::PSYCHIC)
+      register(:payapa_berry, 80, GameData::Types::PSYCHIC)
+      register(:tamato_berry, 90, GameData::Types::PSYCHIC)
+      register(:starf_berry, 100, GameData::Types::PSYCHIC)
 
-        :mago_berry => [60,  [GameData::Types::GHOST]],
-        :kasib_berry => [60,  [GameData::Types::GHOST]],
-        :rabuta_berry => [70,  [GameData::Types::GHOST]],
-        :custap_berry => [80,  [GameData::Types::GHOST]],
+      register(:figy_berry, 80, GameData::Types::BUG)
+      register(:tanga_berry, 80, GameData::Types::BUG)
+      register(:cornn_berry, 90, GameData::Types::BUG)
+      register(:enigma_berry, 100, GameData::Types::BUG)
 
-        :aguav_berry => [60,  [GameData::Types::DRAGON]],
-        :haban_berry => [60,  [GameData::Types::DRAGON]],
-        :nomel_berry => [70,  [GameData::Types::DRAGON]],
-        :jaboca_berry => [80,  [GameData::Types::DRAGON]],
-       
-        :iapapa_berry => [60,  [GameData::Types::DARK]],
-        :colbur_berry => [60,  [GameData::Types::DARK]],
-        :spelon_berry => [70,  [GameData::Types::DARK]],
-        :rowap_berry => [80,  [GameData::Types::DARK]],
-        
-        :razz_berry => [60,  [GameData::Types::STEEL]],
-        :babiri_berry => [60,  [GameData::Types::STEEL]],
-        :pamtre_berry => [70,  [GameData::Types::STEEL]]
-      }
+      register(:wiki_berry, 80, GameData::Types::ROCK)
+      register(:charti_berry, 80, GameData::Types::ROCK)
+      register(:magost_berry, 90, GameData::Types::ROCK)
+      register(:micle_berry, 100, GameData::Types::ROCK)
+
+      register(:mago_berry, 80, GameData::Types::GHOST)
+      register(:kasib_berry, 80, GameData::Types::GHOST)
+      register(:rabuta_berry, 90, GameData::Types::GHOST)
+      register(:custap_berry, 100, GameData::Types::GHOST)
+
+      register(:aguav_berry, 80, GameData::Types::DRAGON)
+      register(:haban_berry, 80, GameData::Types::DRAGON)
+      register(:nomel_berry, 90, GameData::Types::DRAGON)
+      register(:jaboca_berry, 100, GameData::Types::DRAGON)
+
+      register(:iapapa_berry, 80, GameData::Types::DARK)
+      register(:colbur_berry, 80, GameData::Types::DARK)
+      register(:spelon_berry, 90, GameData::Types::DARK)
+      register(:rowap_berry, 100, GameData::Types::DARK)
+
+      register(:razz_berry, 80, GameData::Types::STEEL)
+      register(:babiri_berry, 80, GameData::Types::STEEL)
+      register(:pamtre_berry, 90, GameData::Types::STEEL)
+
+      register(:roseli_berry, 80, GameData::Types::FAIRY)
+      register(:kee_berry, 100, GameData::Types::FAIRY)
+
+      register(:maranga_berry, 100, GameData::Types::DARK)
     end
     Move.register(:s_natural_gift, NaturalGift)
   end
