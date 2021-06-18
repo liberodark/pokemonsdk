@@ -704,6 +704,8 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00002 Berry.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00050 Drives.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00050 HalfSpeedItems.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00050 HpTriggered Healing Berries.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00050 HpTriggered Stat Berries.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00050 ItemAttackMultiplier.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00050 ItemBasePowerMultiplier.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00050 ItemDefenseMultiplier.rb
@@ -712,17 +714,20 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Black Sludge.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Choice Scarf.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Eject Button.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Enigma Berry.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Expert Belt.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Flame Orb.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Focus Band.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Focus Sash.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Jaboca Berry.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Kings Rock - Razor Fang.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Lansat Berry.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Lax Incense.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Leftovers.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Life Orb.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Luminous Moss - Snowball.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Metronome.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Oran Berry - Sitrus Berry.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Micle Berry.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Quick Powder.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Red Card.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00800 Item Effects/00100 Rocky Helmet.rb
