@@ -37,6 +37,7 @@ module Battle
       critical_count += 2 if user.effects.has?(:focus_energy)
       critical_count += 1 if user.has_ability?(:super_luck)
       critical_count += 1 if calc_critical_count_item(user)
+      critical_count += 1 if user.effects.has?(:lansat_berry)
       return critical_count
     end
 

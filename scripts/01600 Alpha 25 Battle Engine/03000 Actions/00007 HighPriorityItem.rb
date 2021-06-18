@@ -21,7 +21,9 @@ module Battle
 
       # Execute the action
       def execute
-        @scene.display_message_and_wait(parse_text_with_pokemon(19, 1031, @holder, PFM::Text::ITEM2[1] => @holder.item_name))
+        item_name = @holder.item_name
+        @holder.send(:consume_berry, @holder) if @holder.item_effect.is_a?(Effects::Item::Berry)
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, 1031, @holder, PFM::Text::ITEM2[1] => item_name))
       end
     end
   end

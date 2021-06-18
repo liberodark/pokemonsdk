@@ -80,7 +80,7 @@ module Battle
         # Give the hp rate that triggers the berry
         # @return [Float]
         def hp_rate_trigger
-          return 0.25
+          return @target.has_ability?(:gluttony) ? 0.5 : 0.25
         end
 
         # Give the amount of HP healed

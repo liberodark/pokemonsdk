@@ -145,7 +145,7 @@ module Battle
     # @param pokemon [PFM::PokemonBattler]
     # @return [Boolean] if the item triggered
     def check_priority_trigger_custap_berry(pokemon)
-      return pokemon.hp_rate < VAL_0_25
+      return pokemon.has_ability?(:gluttony) ? pokemon.hp_rate < 0.5 : pokemon.hp_rate < 0.25
     end
   end
 end
