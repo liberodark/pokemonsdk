@@ -14,7 +14,11 @@ module Battle
           next unless @logic.item_change_handler.can_lose_item?(target, user) && target.hold_berry?(target.battle_item_db_symbol)
 
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 776, user, PFM::Text::ITEM2[1] => target.item_name))
-          # TODO: Add a method to use berry on the launcher.
+          if target.item_effect.is_a?(Effects::Item::Berry)
+            # @type [Effects::Item::Berry]
+            user_effect = Effects::Item.new(logic, user, target.item_effect.db_symbol)
+            user_effect.execute_berry_effect
+          end
           @logic.item_change_handler.change_item(:none, true, target, user, self)
         end
       end

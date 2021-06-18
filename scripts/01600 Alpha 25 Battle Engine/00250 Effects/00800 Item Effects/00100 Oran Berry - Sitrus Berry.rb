@@ -25,6 +25,13 @@ module Battle
           process_effect(@target, nil, nil)
         end
 
+        # Function that executes the effect of the berry (for Pluck & Bug Bite)
+        def execute_berry_effect
+          # Remove the following line if the berry should be executed only if the condition match
+          define_singleton_method(:hp_rate_trigger) { 1 }
+          process_effect(@target, nil, nil)
+        end
+
         private
 
         # Function that process the effect of the berry (if possible)
@@ -35,7 +42,7 @@ module Battle
           return if cannot_be_consumed? || target.hp_rate > hp_rate_trigger
 
           item_name = target.item_name
-          consume_berry(target, launcher, skill)
+          consume_berry(target, launcher, skill, should_confuse: should_confuse)
           @logic.scene.visual.show_hp_animations([target], [hp_healed])
           @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => item_name))
         end
@@ -51,6 +58,12 @@ module Battle
         def hp_healed
           return 10
         end
+
+        # Tell if the berry effect should confuse
+        # @return [Boolean]
+        def should_confuse
+          return false
+        end
       end
 
       class SitrusBerry < OranBerry
@@ -62,8 +75,33 @@ module Battle
           return (@target.max_hp / 4).clamp(1, Float::INFINITY)
         end
       end
+
+      class ConfusingBerries < OranBerry
+        # Give the hp rate that triggers the berry
+        # @return [Float]
+        def hp_rate_trigger
+          return 0.25
+        end
+
+        # Give the amount of HP healed
+        # @return [Integer]
+        def hp_healed
+          return (@target.max_hp / 3).clamp(1, Float::INFINITY)
+        end
+
+        # Tell if the berry effect should confuse
+        # @return [Boolean]
+        def should_confuse
+          return true
+        end
+      end
       register(:oran_berry, OranBerry)
       register(:sitrus_berry, SitrusBerry)
+      register(:figy_berry, ConfusingBerries)
+      register(:wiki_berry, ConfusingBerries)
+      register(:mago_berry, ConfusingBerries)
+      register(:aguav_berry, ConfusingBerries)
+      register(:iapapa_berry, ConfusingBerries)
     end
   end
 end

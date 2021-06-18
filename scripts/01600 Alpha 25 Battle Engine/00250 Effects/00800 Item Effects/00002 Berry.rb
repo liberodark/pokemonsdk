@@ -5,6 +5,11 @@ module Battle
         # List of berry flavors
         FLAVORS = %i[spicy dry sweet bitter sour]
 
+        # Function that executes the effect of the berry (for Pluck & Bug Bite)
+        def execute_berry_effect
+          return nil
+        end
+
         private
 
         # Function that consumes the berry
@@ -14,7 +19,7 @@ module Battle
         # @param should_confuse [Boolean] if the berry should confuse the Pokemon if he does not like the taste
         def consume_berry(holder, launcher = nil, move = nil, should_confuse: false)
           # TODO: show eating of berry
-          @logic.item_change_handler.change_item(:none, true, holder, launcher, move)
+          @logic.item_change_handler.change_item(:none, true, holder, launcher, move) if holder.hold_item?(db_symbol)
           if should_confuse && (data = Yuki::Berries::BERRY_DATA[db_symbol])
             taste = FLAVORS.max_by { |flavor| data.send(flavor) } || FLAVORS.first
             return unless GameData::Flavors::DISLIKED_FLAVORS[taste].include?(holder.nature_id)
