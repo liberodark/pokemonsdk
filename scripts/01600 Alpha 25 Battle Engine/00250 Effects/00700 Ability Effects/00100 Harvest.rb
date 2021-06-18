@@ -15,6 +15,7 @@ module Battle
           scene.visual.show_ability(@target)
           logic.item_change_handler.change_item(@target.consumed_item, true, @target)
           scene.display_message_and_wait(parse_text_with_pokemon(19, 475, @target, PFM::Text::ITEM2[1] => @target.item_name))
+          target.item_effect.execute_berry_effect if target.item_effect.is_a?(Effects::Item::Berry)
         end
       end
       register(:harvest, Harvest)

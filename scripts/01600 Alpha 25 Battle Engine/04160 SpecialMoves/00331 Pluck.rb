@@ -17,7 +17,7 @@ module Battle
           if target.item_effect.is_a?(Effects::Item::Berry)
             # @type [Effects::Item::Berry]
             user_effect = Effects::Item.new(logic, user, target.item_effect.db_symbol)
-            user_effect.execute_berry_effect
+            user_effect.execute_berry_effect(force_heal: true)
           end
           @logic.item_change_handler.change_item(:none, true, target, user, self)
         end

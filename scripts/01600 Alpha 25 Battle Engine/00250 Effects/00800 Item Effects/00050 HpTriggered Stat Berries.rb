@@ -26,9 +26,10 @@ module Battle
         end
 
         # Function that executes the effect of the berry (for Pluck & Bug Bite)
-        def execute_berry_effect
+        # @param force_heal [Boolean] tell if a healing berry should force the heal
+        def execute_berry_effect(force_heal: false)
           # Remove the following line if the berry should be executed only if the condition match
-          define_singleton_method(:hp_rate_trigger) { 1 }
+          define_singleton_method(:hp_rate_trigger) { 1 } if force_heal
           process_effect(@target, nil, nil)
         end
 

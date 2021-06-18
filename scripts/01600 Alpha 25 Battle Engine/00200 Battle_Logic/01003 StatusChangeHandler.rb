@@ -62,7 +62,8 @@ module Battle
           message_overwrite ||= cure_message_id(target)
           target.send(STATUS_APPLY_METHODS[status])
         elsif status == :confuse_cure
-          target.confuse = false
+          target.effects.get(:confusion)&.kill
+          target.effects.delete_specific_dead_effect(:confusion)
         else
           message_overwrite ||= STATUS_APPLY_MESSAGE[status]
           target.send(STATUS_APPLY_METHODS[status], true)

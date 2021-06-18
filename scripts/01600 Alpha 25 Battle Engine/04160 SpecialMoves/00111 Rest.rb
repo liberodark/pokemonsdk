@@ -63,10 +63,7 @@ module Battle
           hp = target.max_hp
           scene.visual.show_hp_animations([target], [hp])
           scene.display_message_and_wait(parse_text_with_pokemon(19, 638, target))
-          if target.asleep? && target.hold_item?(:chesto_berry)
-            logic.status_change_handler.status_change(:cure, target)
-            logic.item_change_handler.change_item(:none, true, target)
-          end
+          target.item_effect.execute_berry_effect if target.item_effect.instance_of?(Effects::Item::StatusBerry::Chesto)
         end
       end
     end

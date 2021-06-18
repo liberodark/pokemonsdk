@@ -6,7 +6,8 @@ module Battle
         FLAVORS = %i[spicy dry sweet bitter sour]
 
         # Function that executes the effect of the berry (for Pluck & Bug Bite)
-        def execute_berry_effect
+        # @param force_heal [Boolean] tell if a healing berry should force the heal
+        def execute_berry_effect(force_heal: false)
           return nil
         end
 
