@@ -36,7 +36,7 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @return [Float]
       def move_effectiveness(move, user, target)
-        effectiveness = Math.sqrt(move.calc_stab(user) * move.type_modifier(user, target))
+        effectiveness = Math.sqrt(move.calc_stab(user, move.definitive_types(user, target)) * move.type_modifier(user, target))
         return effectiveness == 0 ? 0 : 1.0 if move.status?
 
         return effectiveness

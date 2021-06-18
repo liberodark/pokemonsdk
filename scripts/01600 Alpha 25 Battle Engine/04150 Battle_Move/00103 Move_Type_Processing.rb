@@ -25,6 +25,18 @@ module Battle
       return 1
     end
 
+    # Get the types of the move with 1st type being affected by effects
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
+    # @return [Array<Integer>] list of types of the move
+    def definitive_types(user, target)
+      type = self.type
+      exec_hooks(Move, :move_type_change, binding)
+      return [*type]
+    ensure
+      log_data(format('types = %<types>s # ie: %<ie>s', types: type.to_s, ie: [*type].map { |t| GameData::Type[t].name }.join(', ')))
+    end
+
     private
 
     # Calc TypeN multiplier of the move
@@ -54,18 +66,6 @@ module Battle
       log_data("# calc_single_type_multiplier(#{target}, #{target_type}, #{type})")
       log_data("# FR: calc_single_type_multiplier #{e.data} from #{e.hook_name} (#{e.reason})")
       return e.data
-    end
-
-    # Get the types of the move with 1st type being affected by effects
-    # @param user [PFM::PokemonBattler] user of the move
-    # @param target [PFM::PokemonBattler] target of the move
-    # @return [Array<Integer>] list of types of the move
-    def definitive_types(user, target)
-      type = self.type
-      exec_hooks(Move, :move_type_change, binding)
-      return [*type]
-    ensure
-      log_data(format('types = %<types>s # ie: %<ie>s', types: type.to_s, ie: [*type].map { |t| GameData::Type[t].name }.join(', ')))
     end
 
     class << self
