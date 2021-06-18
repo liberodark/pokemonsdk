@@ -14,7 +14,7 @@ module Battle
 
           play_animation(user, actual_targets) if i > 0
           actual_targets.each do |target|
-            hp = damages(user, target)
+            hp = damages(user, target).clamp(1, target.hp)
             @logic.damage_handler.damage_change_with_process(hp, target, user, self) do
               if critical_hit?
                 scene.display_message_and_wait(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
