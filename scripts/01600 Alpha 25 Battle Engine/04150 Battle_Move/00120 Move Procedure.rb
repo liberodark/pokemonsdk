@@ -48,7 +48,7 @@ module Battle
         return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp)
       end
 
-      decrese_pp(user, targets)
+      decrease_pp(user, targets)
       # => proceed_move_accuracy will call display message if failure
       return unless proceed_move_accuracy(user, targets) || (on_move_failure(user, targets, :accuracy) && false)
 
@@ -169,10 +169,10 @@ module Battle
       return false
     end
 
-    # Decrese the PP of the move
+    # Decrease the PP of the move
     # @param user [PFM::PokemonBattler]
     # @param targets [Array<PFM::PokemonBattler>] expected targets
-    def decrese_pp(user, targets)
+    def decrease_pp(user, targets)
       return if user.effects.has?(&:force_next_move?) && !@forced_next_move_decrease_pp
 
       self.pp -= 1

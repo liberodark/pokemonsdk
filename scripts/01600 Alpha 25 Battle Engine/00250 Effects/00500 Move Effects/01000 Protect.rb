@@ -170,6 +170,32 @@ module Battle
         end
       end
       Protect.register(:endure, Endure)
+
+      # Implement the Quick Guard effect
+      class QuickGuard < PositionTiedEffectBase
+        # Create a new Position tied effect
+        # @param logic [Battle::Logic]
+        # @param bank [Integer]
+        # @param move [Battle::Move] move that applied this effect
+        def initialize(logic, bank, move)
+          super(logic, bank, 0)
+          self.counter = 1
+        end
+
+        # Function called when we try to check if the target evades the move
+        # @param user [PFM::PokemonBattler]
+        # @param target [PFM::PokemonBattler] expected target
+        # @param move [Battle::Move]
+        # @return [Boolean] if the target is evading the move
+        def on_move_prevention_target(user, target, move)
+          return false if @bank != target.bank
+          return false if move.relative_priority <= 0
+
+          move.scene.display_message_and_wait(parse_text_with_pokemon(19, 800, target))
+          return true
+        end
+      end
+      Protect.register(:quick_guard, QuickGuard)
     end
   end
 end

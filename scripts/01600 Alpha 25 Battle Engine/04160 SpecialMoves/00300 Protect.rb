@@ -35,8 +35,18 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        scene.display_message_and_wait(parse_text_with_pokemon(19, db_symbol == :endure ? 511 : 517, user))
-        user.effects.add(Effects::Protect.new(logic, user, self))
+        actual_targets.map(&:bank).uniq.each do |bank|
+          logic.bank_effects[bank].add(Effects::Protect.new(logic, bank, self))
+          scene.display_message_and_wait(deal_message(user))
+        end
+      end
+
+      def deal_message(user)
+        msg_id = 517
+        msg_id = 511 if db_symbol == :endure
+        msg_id = 800 if db_symbol == :quick_guard
+
+        return parse_text_with_pokemon(19, msg_id, user)
       end
     end
     Move.register(:s_protect, Protect)

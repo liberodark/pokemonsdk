@@ -118,10 +118,10 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
 
   # Return the current location type
   # @return [Symbol]
-  def get_location_type(x, y)
+  def location_type(x, y)
     zone = $env.current_zone_data
     location = zone.global_location_type if zone.respond_to?(:global_location_type) # @todo add global_location_type to GameData::Zone
-    location ||= TERRAIN_TAGS_TABLE.select {|tag, location| system_tag_here?(x, y, tag)}.values[0]
+    location ||= TERRAIN_TAGS_TABLE.select { |tag, _location| system_tag_here?(x, y, tag) }.values[0]
     location ||= zone.default_location_type if zone.respond_to?(:default_location_type) # @todo add default_location_type to GameData::Zone
     location ||= :__undef__
     return location
@@ -131,29 +131,29 @@ PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
   # @return [Hash<Integer, Symbol>]
   TERRAIN_TAGS_TABLE = {
     GameData::SystemTags::TGrass => :grass,
-    GameData::SystemTags::TTallGrass =>:grass,
-    GameData::SystemTags::HeadButt =>:grass,
+    GameData::SystemTags::TTallGrass => :grass,
+    GameData::SystemTags::HeadButt => :grass,
 
-    GameData::SystemTags::TSnow =>:snow,
+    GameData::SystemTags::TSnow => :snow,
 
-    GameData::SystemTags::TPond =>:shallow_water,
-    GameData::SystemTags::TWetSand =>:shallow_water,
-    GameData::SystemTags::SwampBorder =>:shallow_water,
-    GameData::SystemTags::DeepSwamp =>:shallow_water,
+    GameData::SystemTags::TPond => :shallow_water,
+    GameData::SystemTags::TWetSand => :shallow_water,
+    GameData::SystemTags::SwampBorder => :shallow_water,
+    GameData::SystemTags::DeepSwamp => :shallow_water,
 
-    GameData::SystemTags::TSand =>:desert,
+    GameData::SystemTags::TSand => :desert,
 
-    GameData::SystemTags::TCave =>:cave,
-    GameData::SystemTags::TMount =>:cave,
+    GameData::SystemTags::TCave => :cave,
+    GameData::SystemTags::TMount => :cave,
 
-    GameData::SystemTags::TIce =>:icy_cave,
+    GameData::SystemTags::TIce => :icy_cave,
 
-    GameData::SystemTags::TSea =>:water,
-    GameData::SystemTags::WaterFall =>:water,
-    GameData::SystemTags::RapidsL =>:water,
-    GameData::SystemTags::RapidsD =>:water,
-    GameData::SystemTags::RapidsU =>:water,
-    GameData::SystemTags::RapidsR =>:water
+    GameData::SystemTags::TSea => :water,
+    GameData::SystemTags::WaterFall => :water,
+    GameData::SystemTags::RapidsL => :water,
+    GameData::SystemTags::RapidsD => :water,
+    GameData::SystemTags::RapidsU => :water,
+    GameData::SystemTags::RapidsR => :water
   }
 
   # List of variable to remove in order to keep the map data safe

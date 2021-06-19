@@ -412,7 +412,6 @@ module PFM
     # Change the type of the pokemons
     # @param types [Array<GameData::Types>]
     def change_types(*types)
-      return unless types.all { |t| type?(t) }
       self.type1, self.type2, self.type3 = types
     end
 
