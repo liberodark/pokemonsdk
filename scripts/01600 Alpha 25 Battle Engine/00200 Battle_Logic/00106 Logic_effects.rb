@@ -83,7 +83,7 @@ module Battle
     # @return [Effects::FieldTerrain]
     def field_terrain_effect
       if !@field_terrain_effect || @field_terrain_effect.db_symbol != @field_terrain
-        @field_terrain_effect = Battle::Effects::Weather.new(self, @field_terrain)
+        @field_terrain_effect = Battle::Effects::FieldTerrain.new(self, @field_terrain)
       end
       return @field_terrain_effect
     end
