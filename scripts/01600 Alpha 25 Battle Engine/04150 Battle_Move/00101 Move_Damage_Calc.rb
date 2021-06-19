@@ -173,7 +173,6 @@ module Battle
       logic.each_effects(user, target) do |e|
         result *= e.mod2_multiplier(user, target, self)
       end
-      result *= 1.5 if db_symbol == :me_first
       return result
     end
 
