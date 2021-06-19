@@ -34,18 +34,18 @@ module PFM
     # Get the ability effect
     # @return [Battle::Effects::Ability]
     def ability_effect
-      if !@ability_effect || @ability_effect.db_symbol != battle_ability_db_symbol
-        @ability_effect = Battle::Effects::Ability.new(@scene.logic, self, battle_ability_db_symbol)
-      end
+      db_symbol = battle_ability_db_symbol
+      db_symbol = :__undef__ unless has_ability?(db_symbol)
+      @ability_effect = Battle::Effects::Ability.new(@scene.logic, self, db_symbol) if !@ability_effect || @ability_effect.db_symbol != db_symbol
       return @ability_effect
     end
 
     # Get the item effect
     # @return [Battle::Effects::Item]
     def item_effect
-      if !@item_effect || @item_effect.db_symbol != battle_item_db_symbol
-        @item_effect = Battle::Effects::Item.new(@scene.logic, self, battle_item_db_symbol)
-      end
+      db_symbol = battle_item_db_symbol
+      db_symbol = :__undef__ unless hold_item?(db_symbol)
+      @item_effect = Battle::Effects::Item.new(@scene.logic, self, db_symbol) if !@item_effect || @item_effect.db_symbol != db_symbol
       return @item_effect
     end
   end
