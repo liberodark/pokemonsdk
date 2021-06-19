@@ -15,12 +15,8 @@ module Battle
       possible_targets = battler_targets(user, logic).select { |target| target&.alive? }
       exec_hooks(Move, :possible_targets, binding)
       possible_targets.sort_by(&:spd)
-      if one_target?
-        right_target = possible_targets.find { |pokemon| pokemon.bank == target_bank && pokemon.position == target_position }
-        right_target ||= possible_targets.find { |pokemon| pokemon.bank == target_bank && (pokemon.position - target_position).abs == 1 }
-        right_target ||= possible_targets.find { |pokemon| pokemon.bank == target_bank }
-        return proceed_internal(user, [right_target].compact)
-      end
+      return proceed_one_target(user, possible_targets, target_bank, target_position) if one_target?
+
       # Sort target by decreasing spd
       possible_targets.reverse!
       # Choose the right bank if user could choose bank
@@ -36,26 +32,23 @@ module Battle
 
     private
 
+    # Function starting the move procedure for 1 target
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param possible_targets [Array<PFM::PokemonBattler>] expected targets
+    # @param target_bank [Integer] bank of the target
+    # @param target_position [Integer]
+    def proceed_one_target(user, possible_targets, target_bank, target_position)
+      right_target = possible_targets.find { |pokemon| pokemon.bank == target_bank && pokemon.position == target_position }
+      right_target ||= possible_targets.find { |pokemon| pokemon.bank == target_bank && (pokemon.position - target_position).abs == 1 }
+      right_target ||= possible_targets.find { |pokemon| pokemon.bank == target_bank }
+      return proceed_internal(user, [right_target].compact)
+    end
+
     # Internal procedure of the move
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def proceed_internal(user, targets)
-      return unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
-
-      usage_message(user)
-      return scene.display_message_and_wait(parse_text(18, 106)) if targets.all?(&:dead?) && (on_move_failure(user, targets, :no_target) || true)
-      if pp == 0 && !(user.effects.has?(&:force_next_move?) && !@forced_next_move_decrease_pp)
-        return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp)
-      end
-
-      decrease_pp(user, targets)
-      # => proceed_move_accuracy will call display message if failure
-      return unless proceed_move_accuracy(user, targets) || (on_move_failure(user, targets, :accuracy) && false)
-
-      user, targets = proceed_battlers_remap(user, targets)
-
-      actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
-      return if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
+      return unless (actual_targets = proceed_internal_precheck(user, targets))
 
       play_animation(user, targets)
 
@@ -70,12 +63,41 @@ module Battle
       @scene.visual.wait_for_animation
     end
 
+    # Internal procedure of the move
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param targets [Array<PFM::PokemonBattler>] expected targets
+    # @return [Array<PFM::PokemonBattler, nil] list of the right target to the move if success
+    # @note this function is responsive of calling on_move_failure and checking all the things related to target/user in regard of move usability
+    # @note it is forbiden to change anything in this function if you don't know what you're doing, the && and || are not ther because it's cute
+    def proceed_internal_precheck(user, targets)
+      # rubocop:disable Lint/LiteralAsCondition
+      return unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
+
+      usage_message(user)
+      return scene.display_message_and_wait(parse_text(18, 106)) if targets.all?(&:dead?) && (on_move_failure(user, targets, :no_target) || true)
+      if pp == 0 && !(user.effects.has?(&:force_next_move?) && !@forced_next_move_decrease_pp)
+        return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp) && nil
+      end
+
+      decrease_pp(user, targets)
+      # => proceed_move_accuracy will call display message if failure
+      return unless proceed_move_accuracy(user, targets) || (on_move_failure(user, targets, :accuracy) && false)
+
+      user, targets = proceed_battlers_remap(user, targets)
+
+      actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
+      return if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
+
+      return actual_targets
+      # rubocop:enable Lint/LiteralAsCondition
+    end
+
     # Test move accuracy
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     # @return [Boolean] if the move can continue
     def proceed_move_accuracy(user, targets)
-      if targets.all? {|target| user.effects.get(:lock_on)&.target == target }
+      if targets.all? { |target| user.effects.get(:lock_on)&.target == target }
         log_data("# accuracy= 100 (:lock_on effect)")
         return true
       end
@@ -101,7 +123,8 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     def usage_message(user)
       @scene.visual.hide_team_info
-      scene.display_message_and_wait(parse_text_with_pokemon(8999 - GameData::Text::CSV_BASE, 12, user, PFM::Text::PKNAME[0] => user.given_name, PFM::Text::MOVE[0] => name))
+      message = parse_text_with_pokemon(8999 - GameData::Text::CSV_BASE, 12, user, PFM::Text::PKNAME[0] => user.given_name, PFM::Text::MOVE[0] => name)
+      scene.display_message_and_wait(message)
       PFM::Text.reset_variables
     end
 
@@ -112,7 +135,7 @@ module Battle
     def proceed_battlers_remap(user, targets)
       # Snatch
       if snatchable? && logic.all_alive_battlers.any? { |pkm| pkm != user && pkm.effects.has?(:snatch) }
-        snatcher = logic.all_alive_battlers.max { |pkm| (pkm != user && pkm.effects.has?(:snatch)) ? pkm.spd : -1 }
+        snatcher = logic.all_alive_battlers.max_by { |pkm| pkm != user && pkm.effects.has?(:snatch) ? pkm.spd : -1 }
         snatcher.effects.get(:snatch).kill
         logic.scene.display_message_and_wait(parse_text_with_2pokemon(19, 754, snatcher, user))
         return snatcher, [snatcher]
