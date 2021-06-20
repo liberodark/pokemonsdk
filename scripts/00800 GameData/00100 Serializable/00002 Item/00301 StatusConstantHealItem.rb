@@ -50,8 +50,7 @@ safe_code('Define StatusConstantHealItem ItemDescriptor') do
     battle_item = GameData::StatusConstantHealItem.from(item)
     pokemon.loyalty -= battle_item.loyalty_malus
     was_dead = pokemon.dead?
-    scene.display_message_and_wait(parse_text_with_pokemon(19, 387, pokemon))
-    scene.logic.damage_handler.damage_change(-battle_item.hp_count, pokemon)
+    scene.logic.damage_handler.heal(pokemon, battle_item.hp_count, test_heal_block: false)
     if was_dead && pokemon.position >= 0 && pokemon.position < scene.battle_info.vs_type
       scene.visual.battler_sprite(pokemon.bank, pokemon.position).go_in
       scene.visual.show_info_bar(pokemon)

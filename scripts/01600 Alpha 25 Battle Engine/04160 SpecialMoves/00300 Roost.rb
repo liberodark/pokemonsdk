@@ -7,16 +7,8 @@ module Battle
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
           hp = target.max_hp / 2
-          scene.visual.show_hp_animations([target], [hp])
-          scene.display_message_and_wait(parse_text_with_pokemon(19, message_id, target))
-          target.effects.add(Effects::Roost.new(@logic, target, turn_count))
+          target.effects.add(Effects::Roost.new(@logic, target, turn_count)) if logic.damage_handler.heal(target, hp)
         end
-      end
-
-      # ID of the message
-      # @return Integer
-      def message_id
-        return 387
       end
 
       # Return the number of turns the effect works

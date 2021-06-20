@@ -26,7 +26,7 @@ module Battle
 
           return handler.prevent_change do
             handler.scene.visual.show_ability(target)
-            handler.scene.visual.show_hp_animations([target], [(target.max_hp / 4).clamp(1, Float::INFINITY)])
+            handler.logic.damage_handler.heal(target, target.max_hp / 4)
           end
         end
 
@@ -39,7 +39,7 @@ module Battle
 
           if $env.rain?
             scene.visual.show_ability(target)
-            scene.visual.show_hp_animations([target], [(target.max_hp / 16).clamp(1, Float::INFINITY)])
+            logic.damage_handler.heal(target, target.max_hp / 16)
           elsif $env.sunny?
             scene.visual.show_ability(target)
             logic.damage_handler.damage_change((target.max_hp / 8).clamp(1, Float::INFINITY), target)

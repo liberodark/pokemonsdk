@@ -15,10 +15,8 @@ module Battle
           else
             battlers.each do |battler|
               next unless battler.affected_by_terrain?
-              next unless battler.hp < battler.max_hp
 
-              scene.display_message_and_wait(parse_text_with_pokemon(19, 387, battler))
-              scene.visual.show_hp_animations([battler], [(battler.max_hp / 16).clamp(1, Float::INFINITY)])
+              logic.damage_handler.heal(battler, battler.max_hp / 16)
             end
           end
         end

@@ -61,8 +61,9 @@ module Battle
           target.status_sleep(true, 2)
           scene.display_message_and_wait(parse_text_with_pokemon(19, 306, target))
           hp = target.max_hp
-          scene.visual.show_hp_animations([target], [hp])
-          scene.display_message_and_wait(parse_text_with_pokemon(19, 638, target))
+          logic.damage_handler.heal(target, hp, test_heal_block: false) do
+            scene.display_message_and_wait(parse_text_with_pokemon(19, 638, target))
+          end
           target.item_effect.execute_berry_effect if target.item_effect.instance_of?(Effects::Item::StatusBerry::Chesto)
         end
       end

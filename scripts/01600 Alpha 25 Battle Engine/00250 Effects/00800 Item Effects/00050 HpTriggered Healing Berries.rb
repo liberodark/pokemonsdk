@@ -42,10 +42,11 @@ module Battle
         def process_effect(target, launcher, skill)
           return if cannot_be_consumed? || target.hp_rate > hp_rate_trigger
 
-          item_name = target.item_name
-          consume_berry(target, launcher, skill, should_confuse: should_confuse)
-          @logic.scene.visual.show_hp_animations([target], [hp_healed])
-          @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => item_name))
+          @logic.damage_handler.heal(target, hp_healed) do
+            item_name = target.item_name
+            consume_berry(target, launcher, skill, should_confuse: should_confuse)
+            @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => item_name))
+          end
         end
 
         # Give the hp rate that triggers the berry

@@ -13,7 +13,7 @@ module Battle
           return unless skill&.direct? && launcher != target
 
           handler.scene.visual.show_item(target)
-          handler.scene.visual.show_hp_animations([launcher], [(launcher.max_hp / 6).clamp(1, Float::INFINITY)])
+          handler.logic.damage_handler.damage_change((launcher.max_hp / 6).clamp(1, Float::INFINITY), launcher)
         end
       end
       register(:rocky_helmet, RockyHelmet)

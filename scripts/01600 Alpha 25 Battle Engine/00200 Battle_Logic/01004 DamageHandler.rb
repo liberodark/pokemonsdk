@@ -55,6 +55,36 @@ module Battle
         damage_change(hp, target, launcher, skill, &messages)
       end
 
+      # Function that proceed the heal of a Pokemon
+      # @param target [PFM::PokemonBattler]
+      # @param hp [Integer] number of HP to heal
+      # @param test_heal_block [Boolean]
+      # @param animation_id [Symbol, Integer] animation to use instead of the original one
+      # @yieldparam hp [Integer] the actual hp healed
+      # @return [Boolean] if the heal was successfull or not
+      # @note this method yields a block in order to show the message after the animation
+      # @note this shows the default message if no block has been given
+      def heal(target, hp, test_heal_block: true, animation_id: nil)
+        if test_heal_block && target.effects.has?(:heal_block)
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 890, target))
+          return false
+        end
+        if target.hp >= target.max_hp
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 896, target))
+          return false
+        end
+
+        actual_hp = hp.clamp(1, target.max_hp - target.hp)
+        # TODO: play the animation that should be played on all hp heal (+think about animation_id)
+        scene.visual.show_hp_animations([target], [actual_hp])
+        if block_given?
+          yield(actual_hp)
+        else
+          scene.display_message_and_wait(parse_text_with_pokemon(19, 387, target))
+        end
+        return true
+      end
+
       # Function that drains a certain quantity of HP from the target and give it to the user
       # @param hp_factor [Integer] the division factor of HP to drain
       # @param target [PFM::PokemonBattler] target that get HP drained

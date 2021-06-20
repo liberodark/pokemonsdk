@@ -30,14 +30,7 @@ module Battle
 
           # If target of the effect has poison heal, we attempt to heal
           if target.has_ability?(:poison_heal)
-            # If the target has heal block, we say it couldn't heal and stop
-            if target.effects.has?(:heal_block)
-              scene.display_message_and_wait(parse_text_with_pokemon(19, 890, target))
-              return
-            end
-            # Heal the Pokemon
-            scene.display_message_and_wait(parse_text_with_pokemon(19, 387, target))
-            scene.visual.show_hp_animations([target], [poison_effect])
+            logic.damage_handler.heal(target, poison_effect)
             return
           end
 

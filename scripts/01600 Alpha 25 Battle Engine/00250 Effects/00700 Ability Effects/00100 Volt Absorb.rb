@@ -16,8 +16,7 @@ module Battle
 
           return handler.prevent_change do
             handler.scene.visual.show_ability(target)
-            handler.scene.visual.show_hp_animations([target], [(target.max_hp / 4).clamp(1, Float::INFINITY)])
-            handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 387, target))
+            handler.logic.damage_handler.heal(target, target.max_hp / 4)
           end
         end
       end

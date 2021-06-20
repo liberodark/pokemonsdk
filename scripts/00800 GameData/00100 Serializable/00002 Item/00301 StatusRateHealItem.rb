@@ -50,8 +50,7 @@ safe_code('Define StatusRateHealItem ItemDescriptor') do
     battle_item = GameData::StatusRateHealItem.from(item)
     pokemon.loyalty -= battle_item.loyalty_malus
     was_dead = pokemon.dead?
-    scene.display_message_and_wait(parse_text_with_pokemon(19, 387, pokemon))
-    scene.logic.damage_handler.damage_change(-(pokemon.max_hp * battle_item.hp_rate).to_i, pokemon)
+    scene.logic.damage_handler.heal(pokemon, (pokemon.max_hp * battle_item.hp_rate).to_i, test_heal_block: false)
     if was_dead && pokemon.position >= 0 && pokemon.position < scene.battle_info.vs_type
       scene.visual.battler_sprite(pokemon.bank, pokemon.position).go_in
       scene.visual.show_info_bar(pokemon)

@@ -15,8 +15,11 @@ module Battle
       # Function called when the effect has been deleted from the effects handler
       def on_delete
         pkm = @logic.battler(bank, position)
-        @logic.scene.visual.show_hp_animations([pkm], [@hp]) if pkm && !pkm.dead?
-        @logic.scene.display_message_and_wait(message)
+        return unless pkm&.alive?
+
+        @logic.damage_handler.heal(pkm, @hp, test_heal_block: false) do
+          @logic.scene.display_message_and_wait(message)
+        end
       end
 
       def name

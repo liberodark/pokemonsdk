@@ -50,8 +50,7 @@ module Battle
             scene.display_message_and_wait(parse_text_with_pokemon(19, 896, target))
           else
             log_data('Healing time')
-            scene.visual.show_hp_animations([target], [hp])
-            scene.display_message_and_wait(parse_text_with_pokemon(19, 387, target))
+            logic.damage_handler.heal(target, hp, test_heal_block: false)
           end
         end
       end

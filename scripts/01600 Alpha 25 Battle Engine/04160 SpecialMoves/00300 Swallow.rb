@@ -12,12 +12,16 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-        return show_usage_failure(user) && false unless targets.any? { |target| target.effects.has?(effect_name) || target.effects.get(effect_name)&.usable? }
+
+        unless targets.any? { |target| target.effects.has?(effect_name) || target.effects.get(effect_name)&.usable? }
+          return show_usage_failure(user) && false
+        end
+
         return true
       end
 
       private
-      
+
       # Function that deals the heal to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
@@ -29,12 +33,12 @@ module Battle
           hp = target.max_hp * (ratio[effect.stockpile] || 0)
           log_error("Poorly configured moves, healed hp should be above zero. <stockpile:#{effect.stockpile}, ratios:#{ratio}") if hp <= 0
           log_data("# heal (swallow) #{hp}hp (stockpile:#{effect.stockpile}, ratio:#{ratio[effect.stockpile]}")
-          scene.visual.show_hp_animations([target], [hp])
-          scene.display_message_and_wait(parse_text_with_pokemon(19, 387, target))
-          effect.use
+          if logic.damage_handler.heal(target, hp)
+            effect.use
+          end
         end
       end
-      
+
       # Name of the effect
       # @return [Symbol]
       def effect_name
@@ -44,7 +48,7 @@ module Battle
       # Healing value depending on stockpile
       # @return [Array]
       RATIO = [nil, 0.25, 0.5, 1]
-      
+
       # Healing value depending on stockpile
       # @return [Array]
       def ratio

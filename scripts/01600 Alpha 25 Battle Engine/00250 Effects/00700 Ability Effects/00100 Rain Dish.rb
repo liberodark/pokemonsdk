@@ -11,7 +11,7 @@ module Battle
           return if @target.hp == @target.max_hp
 
           scene.visual.show_ability(@target)
-          scene.visual.show_hp_animations([@target], [(@target.max_hp / 16).clamp(1, Float::INFINITY)])
+          logic.damage_handler.heal(target, target.max_hp / 16)
         end
       end
       register(:rain_dish, RainDish)
