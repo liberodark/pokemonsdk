@@ -257,7 +257,7 @@ module BattleUI
         # TODO: separate in methods
         @background = add_background(@type == :descr ? 'battle/button_x' : 'battle/button_mega')
         @text = add_text(23, @type == :descr ? 4 : 9, 0, 16, nil.to_s, color: 10)
-        add_sprite(3, @type == :descr ? 3 : 8, NO_INITIAL_IMAGE, @type == :descr ? :X : :Y, type: UI::KeyShortcut)
+        add_sprite(3, @type == :descr ? 3 : 9, NO_INITIAL_IMAGE, @type == :descr ? :X : :Y, type: UI::KeyShortcut)
       end
     end
 
