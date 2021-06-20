@@ -7,7 +7,7 @@ module Battle
       # @param who [PFM::PokemonBattler] Pokemon that is switched out
       # @param with [PFM::PokemonBattler] Pokemon that is switched in
       def on_switch_event(handler, who, with)
-        return if who != @pokemon
+        return if who != @pokemon || with == @pokemon
 
         @pokemon.transform = nil
       end
