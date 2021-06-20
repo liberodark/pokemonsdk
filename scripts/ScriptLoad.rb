@@ -47,7 +47,7 @@ module ScriptLoader
       next unless File.basename(filename) =~ /^[0-9]{5}[ _].*/
       require(filename)
       file&.puts(filename.sub(File.expand_path('.') + '/', ''))
-    rescue StandardError
+    rescue Exception
       if Object.const_defined?(:Yuki) && Yuki.const_defined?(:EXC)
         Yuki::EXC.run($!)
         puts $!.message
