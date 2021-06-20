@@ -19,17 +19,12 @@ module BattleUI
       @target_y = 0
     end
 
-    # Set the sprite position
-    # @param x [Float]
-    # @param y [Float]
-    # @return [self]
-    def set_position(x, y)
-      super
+    # Register the positions so the cursor can animate itself
+    def register_positions
       @origin_x = x
       @origin_y = y
       @target_x = x - 5
       @target_y = y
-      return self
     end
 
     # Update the sprite

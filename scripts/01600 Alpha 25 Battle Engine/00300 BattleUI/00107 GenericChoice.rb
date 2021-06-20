@@ -108,10 +108,12 @@ module BattleUI
     def update_cursor(silent = false)
       if silent
         @cursor.set_position(buttons[@index].x + cursor_offset_x, buttons[@index].y + cursor_offset_y)
+        @cursor.register_positions
         update_button_opacity
       else
         root = (ya = Yuki::Animation).send_command_to(@cursor, :stop_animation)
         root.play_before(ya.move(0.1, @cursor, @cursor.x, @cursor.y, buttons[@index].x + cursor_offset_x, buttons[@index].y + cursor_offset_y))
+        root.play_before(ya.send_command_to(@cursor, :register_positions))
         root.play_before(ya.send_command_to(@cursor, :start_animation))
         root.play_before(ya.send_command_to(self, :update_button_opacity))
         root.start
@@ -168,6 +170,7 @@ module BattleUI
     def go_in_animation
       ya = Yuki::Animation
       root = ya.move_discreet(0.1, self, @viewport.rect.width, y, 0, y)
+      root.play_before(ya.send_command_to(@cursor, :register_positions))
       root.play_before(ya.send_command_to(@cursor, :start_animation))
       return root
     end
