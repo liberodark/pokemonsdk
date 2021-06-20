@@ -25,6 +25,7 @@ module Battle
         # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
         # @return [Boolean] if the procedure can continue
         def move_usable_by_user_turn1(super_result, user, targets)
+          decrease_pp(user, targets) # Ensure decrease_pp gets called because this method make the move virtually fail
           return false unless super_result
           return true if check_shortcut_turn1(user, targets)
 
