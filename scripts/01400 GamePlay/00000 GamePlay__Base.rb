@@ -222,7 +222,7 @@ module GamePlay
     # @return [Integer, nil] the choice result
     def display_message_and_wait(message, start = 1, *choices)
       choice = display_message(message, start, *choices)
-      close_message_window
+      close_message_window(&@__display_message_proc)
       return choice
     end
 
@@ -340,6 +340,7 @@ module GamePlay
     # Force the message window to "close"
     def close_message_window
       return unless @message_window
+
       while $game_temp.message_window_showing
         Graphics.update
         yield if block_given?
