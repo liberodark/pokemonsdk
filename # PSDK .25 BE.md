@@ -34,7 +34,7 @@ This page describe many things about Pokémon SDK .25 Battle Engine
     - [BattleEndHandler](#battleendhandler)
   - [The effects](#the-effects)
     - [How to define a hook inside effect?](#how-to-define-a-hook-inside-effect)
-  - [How to register a Status Effect](#how-to-register-a-status-effect)
+    - [How to register a Status Effect](#how-to-register-a-status-effect)
     - [How to register an Ability effect](#how-to-register-an-ability-effect)
     - [How to register Item effect](#how-to-register-item-effect)
     - [How to register O-Power effect](#how-to-register-o-power-effect)
@@ -528,7 +528,7 @@ If you want to manage some properties of the effect here's the methods you can f
 - `kill` : Kills the effect.
 - `on_delete` : Function that is called after the effect was removed from its handler. It allows you to specify a message.
 
-## How to register a Status Effect
+### How to register a Status Effect
 
 Status effect gets automatically applied whenever we try to check which status it is. In order to be able to define what happens when a Pokémon has a specific status, we need to register a Status Effect.
 
