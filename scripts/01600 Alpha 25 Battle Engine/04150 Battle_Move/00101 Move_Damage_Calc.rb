@@ -109,9 +109,9 @@ module Battle
       # [Sp]Def = Stat * SM * Mod * SX
       ph_move = physical?
       # Stat
-      result = ph_move ? target.dfe_basis : target.dfs_basis
+      result = calc_sp_def_basis(user, target, ph_move)
       # SM (Only if non-critical hit)
-      result = (result * (ph_move ? target.dfe_modifier : target.dfs_modifier)).floor unless critical_hit?
+      result = (result * calc_def_stat_modifier(user, target, ph_move)).floor
       # Effects
       logic.each_effects(user, target) do |e|
         result = (result * e.sp_def_multiplier(user, target, self)).floor
@@ -119,6 +119,26 @@ module Battle
       # SX
       result = (result * 0.5).floor if EXPLOSION_SELF_DESTRUCT_MOVE.include?(db_symbol)
       return result
+    end
+
+    # Get the basis dfe/dfs for the move
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
+    # @param ph_move [Boolean] true: physical, false: special
+    # @return [Integer]
+    def calc_sp_def_basis(user, target, ph_move)
+      return ph_move ? user.dfe_basis : user.dfs_basis
+    end
+
+    # Statistic modifier calculation: DFE/DFS
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
+    # @param ph_move [Boolean] true: physical, false: special
+    # @return [Integer]
+    def calc_def_stat_modifier(user, target, ph_move)
+      return 1 if critical_hit?
+
+      return ph_move ? user.dfe_modifier : user.dfs_modifier
     end
 
     # CH calculation
