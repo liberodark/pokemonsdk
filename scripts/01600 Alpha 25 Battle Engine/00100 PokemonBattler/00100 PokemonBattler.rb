@@ -203,6 +203,7 @@ module PFM
     # Get the item for battle
     # @return [Symbol]
     def battle_item_db_symbol
+      return :__undef__ if @scene.logic.terrain_effects.has?(&:on_held_item_use_prevention)
       return :__undef__ if battle_ability_db_symbol == :klutz
 
       return item_db_symbol
@@ -212,6 +213,7 @@ module PFM
     # @param db_symbol [Symbol] db_symbol of the item
     # @return [Boolean]
     def hold_item?(db_symbol)
+      return false if @scene.logic.terrain_effects.has?(&:on_held_item_use_prevention)
       return false if @item_stolen || @item_burnt
       return false if db_symbol == :__undef__
 

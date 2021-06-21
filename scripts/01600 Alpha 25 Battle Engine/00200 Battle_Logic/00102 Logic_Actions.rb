@@ -47,6 +47,12 @@ module Battle
       define_pokemon_action_properties
     end
 
+    # Sort the actions
+    # @param block [Block] block used to sort the actions take |Actions::Base, Actions::Base| as arguments
+    def force_sort_actions(&block)
+      @actions.sort!(&block)
+    end
+
     private
 
     # Process specific behaviours

@@ -78,6 +78,12 @@ module Battle
         false
       end
 
+      # Function called when a held item wants to perform its action
+      # @return [Boolean] weither or not the item can't proceed (true will stop the item)
+      def on_held_item_use_prevention
+        false
+      end
+
       # Function called when a stat_increase_prevention is checked
       # @param handler [Battle::Logic::StatChangeHandler] handler use to test prevention
       # @param stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva
@@ -419,6 +425,7 @@ module Battle
           def base_power_multiplier(*)
             return 1
           end
+          alias on_held_item_use_prevention on_stat_increase_prevention
           alias on_stat_decrease_prevention on_stat_increase_prevention
           alias on_stat_change on_stat_increase_prevention
           alias on_stat_change_post on_stat_increase_prevention
