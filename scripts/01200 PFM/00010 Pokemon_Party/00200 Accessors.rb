@@ -286,10 +286,10 @@ module PFM
         $scene.delay_display_call(:display_poison_animation) unless psn_event
         psn_event = true
         pokemon.hp -= (pokemon.toxic? ? 2 : 1)
-        if pokemon.hp <= 0
+        if pokemon.hp <= 0 && $game_switches[::Yuki::Sw::OW_Poison]
           $scene.delay_display_call(:display_poison_faint, pokemon)
         end
-        next unless pokemon.hp <= 1 && $game_switches[::Yuki::Sw::OW_Poison]
+        next unless pokemon.hp <= 1 && !$game_switches[::Yuki::Sw::OW_Poison]
 
         pokemon.hp = 1
         pokemon.cure
