@@ -1,6 +1,6 @@
 module Battle
   class Move
-    # Class managing Teleport move
+    # Class managing Rapid Spin move
     class RapidSpin < BasicWithSuccessfulEffect
       private
 
