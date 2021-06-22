@@ -270,5 +270,11 @@ module Battle
         $quests.beat_pokemon(battler.id) unless battler.alive?
       }
     end
+
+    BattleEndHandler.register('PSDK give back the items for Bestow Effects') do |handler|
+      next if (effects = handler.logic.terrain_effects.get_all(:bestow)).empty?
+
+      effects.each(&:give_back_item)
+    end
   end
 end

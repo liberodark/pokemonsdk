@@ -14,6 +14,7 @@ module Battle
                            heracronite mawilite manectite garchompite latiasite latiosite swampertite sceptilite sablenite
                            altarianite galladite audinite metagrossite sharpedonite slowbronite steelixite pidgeotite glalitite
                            diancite cameruptite lopunnite salamencite beedrillite red_orb blue_orb jade_orb]
+      # TO DO : Add Z-Crystals to PROTECTED_ITEMS (7G)
       # List of items that cannot be knocked off if the holder is a specific Pokemon
       PROTECTED_POKEMON_ITEMS = {
         giratina: %i[griseous_orb],
@@ -48,10 +49,24 @@ module Battle
       def can_lose_item?(target, launcher = nil)
         return false unless target.hold_item?(target.item_db_symbol)
         return false if target.battle_item_db_symbol == :__undef__ || PROTECTED_ITEMS.include?(target.item_db_symbol)
-        return false if target.dead? || target.effects.has?(:substitute)
+        return false if target.dead?
         return false if launcher&.can_be_lowered_or_canceled?(target.has_ability?(:sticky_hold))
         return false if PROTECTED_POKEMON_ITEMS[target.db_symbol]&.include?(target.battle_item_db_symbol)
-        return false if target.effects.has?(:substitute)
+        return false if target.effects.has?(:substitute) && target != launcher
+
+        return true
+      end
+
+      # Function that checks if the Pokemon can give its item to a target
+      # @param giver [PFM::PokemonBattler]
+      # @param target [PFM::PokemonBattler]
+      # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+      # @return [Boolean]
+      def can_give_item?(giver, target, launcher = giver)
+        return false unless can_lose_item?(giver, launcher)
+        return false if target.hold_item?(target.item_db_symbol)
+        return false if target.battle_item_db_symbol == :__undef__
+        return false if PROTECTED_POKEMON_ITEMS.keys.include?(target.db_symbol)
 
         return true
       end

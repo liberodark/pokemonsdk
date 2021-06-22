@@ -479,6 +479,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Attract.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Autotomize.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 BatonPass.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Bestow.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 Bind.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 CantSwitch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00250 Effects/00500 Move Effects/01000 ChangeType.rb
@@ -855,6 +856,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 AquaRin
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Assist.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Autotomize.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 BatonPass.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Bestow.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 BrickBreak.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Brine.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04160 SpecialMoves/00300 Camouflage.rb

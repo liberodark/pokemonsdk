@@ -53,6 +53,17 @@ module Battle
         return @effects.find { |e| e.name == name }
       end
 
+      # Get every effects responding to a name or a block
+      # @param name [Symbol, nil] name of the effects. Ignored if a block is given.
+      # @param &block [Block, nil] (optional) block testing each effect
+      # @return [Array<EffectBase>, Array<NilClass>]
+      # @yieldparam effect [EffectBase]
+      def get_all(name = nil, &block)
+        return @effects.find(&block) if block
+
+        return @effects.find_all { |e| e.name == name }
+      end
+
       # Call something on all effects
       # @param block [Proc] block that is called for the each process
       # @yieldparam effect [Battle::Effects::EffectBase]
