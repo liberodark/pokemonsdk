@@ -1,6 +1,6 @@
 module Battle
   class Move
-    class Frustration < Basic
+    class GyroBall < Basic
       private
 
       # Get the real base power of the move (taking in account all parameter)
@@ -8,12 +8,12 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        power = (255 - user.loyalty) / 2.5
-        power.floor.clamp(1, 102)
-        log_data("Frustration power: #{power}")
+        power = 25 * (target.spd / user.spd)
+        power.clamp(1, 150)
+        log_data("Gyro Ball power: #{power}")
         return power
       end
     end
-    Move.register(:s_frustration, Frustration)
+    Move.register(:s_gyro_ball, GyroBall)
   end
 end

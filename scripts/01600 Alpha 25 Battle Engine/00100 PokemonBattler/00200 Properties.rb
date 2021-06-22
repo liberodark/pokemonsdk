@@ -146,7 +146,11 @@ module PFM
     # Return the battler's combat property
     # @return [Integer]
     def weight
-      return @battle_properties[:weight] || super
+      w = @battle_properties[:weight] || super
+
+      w *= 2 if has_ability?(:heavy_metal)
+      w /= 2 if has_ability?(:light_metal)
+      return w
     end
 
     # Set the battler's combat property

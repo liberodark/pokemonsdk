@@ -128,7 +128,7 @@ module BattleUI
     # UI element showing the basic information
     class PokemonInfo < UI::SpriteStack
       # The information of the Exp Bar
-      EXP_BAR_INFO = [88, 2, 0, 0, 1]
+      EXP_BAR_INFO = [79, 2, 0, 0, 1]
       # Tell if the pokemon is leveling up or not
       # @return [Boolean]
       attr_reader :leveling_up
@@ -186,7 +186,7 @@ module BattleUI
       end
 
       def create_exp_bar
-        @exp_bar = push_sprite UI::Bar.new(@viewport, @x + 37, @y + 29, RPG::Cache.interface('battle/bars_exp'), *EXP_BAR_INFO)
+        @exp_bar = push_sprite UI::Bar.new(@viewport, @x + 37, @y + 29, RPG::Cache.interface('battle/bars_exp_distrib'), *EXP_BAR_INFO)
         @exp_bar.data_source = :exp_rate
       end
 

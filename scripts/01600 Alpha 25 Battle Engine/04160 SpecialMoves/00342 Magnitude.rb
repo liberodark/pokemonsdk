@@ -9,7 +9,7 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
-      def real_base_power(user, targets)
+      def real_base_power(user, target)
         return @magnitude_power
       end
 
