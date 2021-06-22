@@ -2,7 +2,6 @@ module Battle
   module Effects
     # Class that describe the bind effect
     class Bind < PokemonTiedEffectBase
-      
       # Hash giving the message info based on the db_symbol of the move
       MESSAGE_INFO = {
         bind: [806, true],
@@ -36,6 +35,8 @@ module Battle
       # @param scene [Battle::Scene] battle scene
       # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
       def on_end_turn_event(logic, scene, battlers)
+        return kill if @origin.dead?
+
         scene.display_message(message)
         logic.damage_handler.damage_change((@pokemon.max_hp / hp_factor).clamp(1, Float::INFINITY), @pokemon)
       end
