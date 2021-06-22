@@ -37,7 +37,9 @@ module Battle
         def on_move_prevention_target(user, target, move)
           return false if target != @oor_pokemon
 
-          return !can_hit_while_out_of_reach?(move.db_symbol)
+          result = !can_hit_while_out_of_reach?(move.db_symbol)
+          move.scene.display_message_and_wait(parse_text(18, 74)) if result
+          return result
         end
         alias oor_on_move_prevention_target on_move_prevention_target
       end
