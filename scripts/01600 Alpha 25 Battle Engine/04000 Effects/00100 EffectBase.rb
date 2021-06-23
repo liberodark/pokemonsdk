@@ -84,6 +84,15 @@ module Battle
         false
       end
 
+      # Function called after a battler proceed its two turn move's first turn
+      # @param user [PFM::PokemonBattler]
+      # @param targets [Array<PFM::PokemonBattler>, nil]
+      # @param skill [Battle::Move, nil]
+      # @return [Boolean] weither or not the two turns move is executed in one turn
+      def on_two_turn_shortcut(user, targets, skill)
+        false
+      end
+
       # Function called when a stat_increase_prevention is checked
       # @param handler [Battle::Logic::StatChangeHandler] handler use to test prevention
       # @param stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva
@@ -426,6 +435,7 @@ module Battle
             return 1
           end
           alias on_held_item_use_prevention on_stat_increase_prevention
+          alias on_two_turn_shortcut on_stat_increase_prevention
           alias on_stat_decrease_prevention on_stat_increase_prevention
           alias on_stat_change on_stat_increase_prevention
           alias on_stat_change_post on_stat_increase_prevention

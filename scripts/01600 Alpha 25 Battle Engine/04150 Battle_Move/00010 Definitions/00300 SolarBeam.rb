@@ -7,24 +7,24 @@ module Battle
     class SolarBeam < Basic
       include Mechanics::TwoTurn
 
-      # Return the actual base power of the move
+      # Get the real base power of the move (taking in account all parameter)
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
-      def power
-        return super / 2 if $env.sandstorm? || $env.hail? || $env.rain?
-
-        return super
+      def real_base_power(user, target)
+        return super / ($env.sandstorm? || $env.hail? || $env.rain? ? 2 : 1)
       end
 
       private
 
-      # Check if the user can skip the first move
+      # Check if the two turn move is executed in one turn
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
-      # @return [Boolean] true if the move is actually one move
-      def check_shortcut_turn1(user, targets)
+      # @return [Boolean]
+      def shortcut?(user, targets)
         return true if $env.sunny?
 
-        return two_turn_check_shortcut_turn1(user, targets)
+        return two_turns_shortcut?(user, targets)
       end
 
       # Display the message and the animation of the turn

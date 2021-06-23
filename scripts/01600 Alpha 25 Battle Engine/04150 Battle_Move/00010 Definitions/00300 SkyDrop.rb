@@ -30,14 +30,6 @@ module Battle
         return two_turn_move_usable_by_userturn1(super_result, user, targets)
       end
 
-      # Check if the user can skip the first move
-      # @param user [PFM::PokemonBattler] user of the move
-      # @param targets [Array<PFM::PokemonBattler>] expected targets
-      # @return [Boolean] true if the move is actually one move
-      def check_shortcut_turn1(user, targets)
-        false
-      end
-
       # Display the message and the animation of the turn
       # @param user [PFM::PokemonBattler]
       # @param targets [Array<PFM::PokemonBattler>] expected targets
@@ -50,13 +42,12 @@ module Battle
       # Add the effects to the pokemons (first turn)
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
-      def proceed_effectsturn1(user, targets)
-        two_turn_proceed_effectsturn1(user, targets)
+      def deal_effects_turn1(user, targets)
+        two_turn_deal_effects_turn1(user, targets)
         # TODO: check if that's allright but to me effect from move the should prevent a target from moving should be applied to targets
         targets.each do |target|
           target.effects.add(Effects::PreventTargetsMove.new(@logic, target, targets, 1))
         end
-        # user.effects.add(Effects::PreventTargetsMove.new(@logic, user, targets, 1))
       end
     end
     Move.register(:s_sky_drop, SkyDrop)
