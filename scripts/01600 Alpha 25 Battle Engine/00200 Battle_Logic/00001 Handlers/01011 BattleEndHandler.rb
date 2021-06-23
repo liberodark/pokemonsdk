@@ -224,14 +224,18 @@ module Battle
       players_pokemon.each do |pokemon|
         next unless handler.logic.evolve_request.include?(pokemon) && pokemon.alive?
 
-        id, form = pokemon.evolve_check(:level_up)
+        original = pokemon.original
+        id, form = original.evolve_check(:level_up)
         handler.scene.instance_variable_set(:@cfi_type, :none) # Prevent fade in in case of multiple evolution
         next unless id
-        handler.scene.call_scene(GamePlay::Evolve, pokemon, id, form)
-        $pokedex.mark_seen(pokemon.id, pokemon.form, forced: true)
-        $pokedex.mark_captured(pokemon.id)
-        $quests.see_pokemon(pokemon.id)
-        $quests.catch_pokemon(pokemon)
+
+        handler.scene.call_scene(GamePlay::Evolve, original, id, form)
+        $pokedex.mark_seen(original.id, original.form, forced: true)
+        $pokedex.mark_captured(original.id)
+        $quests.see_pokemon(original.id)
+        $quests.catch_pokemon(original)
+        pokemon.id = original.id
+        pokemon.form = original.form
       end
     end
 

@@ -439,6 +439,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00001 Battle_Scene/01000 Message
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00001 Battle_Scene/00001 BattleUI/00001 GoingInOut.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00001 Battle_Scene/00001 BattleUI/00002 HideShow.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00001 Battle_Scene/00001 BattleUI/00003 MultiplePosition.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00001 Battle_Scene/00001 BattleUI/00050 ExpDistributionAbstraction.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00001 Battle_Scene/00001 BattleUI/00050 PlayerChoiceAbstraction.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00001 Battle_Scene/00001 BattleUI/00050 SkillChoiceAbstraction.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00001 Battle_Scene/00001 BattleUI/00050 TargetSelectionAbstraction.rb

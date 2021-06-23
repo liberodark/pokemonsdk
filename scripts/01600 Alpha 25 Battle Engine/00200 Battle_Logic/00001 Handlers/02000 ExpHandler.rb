@@ -6,6 +6,7 @@ module Battle
       # Get the logic object
       # @return [Battle::Logic]
       attr_reader :logic
+
       # Create the exp handler
       # @param logic [Battle::Logic]
       def initialize(logic)
@@ -33,9 +34,9 @@ module Battle
       # @return [Hash{ PFM::PokemonBattler => Integer }]
       def distribute_exp_for(enemy)
         expable = expable_pokemon(enemy)
-        distribute_ev_to(expable, enemy)
         return {} if logic.battle_info.disallow_exp?
 
+        distribute_ev_to(expable, enemy)
         exp_data = global_multi_exp_factor? ? distribute_global_exp_for(enemy, expable) : distribute_separate_exp_for(enemy, expable)
         enemy.exp_distributed = true
         return exp_data.to_h
@@ -57,7 +58,7 @@ module Battle
           return logic.trainer_battlers.reject { |receiver| receiver.max_level == receiver.level || receiver.dead? }
         else
           return logic.trainer_battlers.reject do |receiver|
-            receiver.delete_battler_to_encounter_list(enemy) if (has_encountered = receiver.has_encountered?(enemy))            
+            receiver.delete_battler_to_encounter_list(enemy) if (has_encountered = receiver.has_encountered?(enemy))
             next receiver.max_level == receiver.level || receiver.dead? || !has_encountered
           end
         end
@@ -147,7 +148,7 @@ module Battle
       # @param enemy [PFM::PokemonBattler]
       def distribute_ev_to(expable, enemy)
         log_debug("# distribute_ev_to([#{expable.join(', ')}], #{enemy}")
-        expable.each do |receiver|
+        expable.map(&:original).each do |receiver| # <= Pokemon will receive EV only at end of battle
           receiver.add_bonus(enemy.battle_list)
           exec_hooks(ExpHandler, :power_ev_bonus, binding)
         end
@@ -156,7 +157,7 @@ module Battle
       class << self
         # Register a hook allowing a pokemon to receive a power_ev bonus
         # @param reason [String] reason of the power_ev_bonus call
-        # @yieldparam receiver [PFM::PokemonBattler] pokemon receiving the bonus
+        # @yieldparam receiver [PFM::Pokemon] pokemon receiving the bonus
         # @yieldparam enemy [PFM::PokemonBattler] pokemon causing the bonus to be distributed
         # @yieldparam handler [ExpHandler] exp handler managing everything
         def register_power_ev_bonus(reason)
@@ -171,37 +172,37 @@ module Battle
       end
 
       register_power_ev_bonus('Power band') do |receiver|
-        next unless receiver.hold_item?(:power_band)
+        next unless receiver.item_db_symbol == :power_band
 
         receiver.add_ev_dfs(4, receiver.total_ev)
       end
 
       register_power_ev_bonus('Power belt') do |receiver|
-        next unless receiver.hold_item?(:power_belt)
+        next unless receiver.item_db_symbol == :power_belt
 
         receiver.add_ev_dfe(4, receiver.total_ev)
       end
 
       register_power_ev_bonus('Power anklet') do |receiver|
-        next unless receiver.hold_item?(:power_anklet)
+        next unless receiver.item_db_symbol == :power_anklet
 
         receiver.add_ev_spd(4, receiver.total_ev)
       end
 
       register_power_ev_bonus('Power lens') do |receiver|
-        next unless receiver.hold_item?(:power_lens)
+        next unless receiver.item_db_symbol == :power_lens
 
         receiver.add_ev_ats(4, receiver.total_ev)
       end
 
       register_power_ev_bonus('Power weight') do |receiver|
-        next unless receiver.hold_item?(:power_weight)
+        next unless receiver.item_db_symbol == :power_weight
 
         receiver.add_ev_hp(4, receiver.total_ev)
       end
 
       register_power_ev_bonus('Power bracer') do |receiver|
-        next unless receiver.hold_item?(:power_bracer)
+        next unless receiver.item_db_symbol == :power_bracer
 
         receiver.add_ev_atk(4, receiver.total_ev)
       end

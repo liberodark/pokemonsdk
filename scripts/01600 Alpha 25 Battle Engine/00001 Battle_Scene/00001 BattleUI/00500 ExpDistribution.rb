@@ -2,6 +2,7 @@ module BattleUI
   # UI element showing the exp distribution
   class ExpDistribution < UI::SpriteStack
     include UI
+    include ExpDistributionAbstraction
 
     # Create a new exp distribution
     # @param viewport [Viewport]
@@ -11,6 +12,7 @@ module BattleUI
       super(viewport)
       @scene = scene
       @pokemon = find_expable_pokemon
+      @originals = map_to_original_with_forms(@pokemon)
       @exp_data = exp_data.dup
       @done = false
       create_sprites
@@ -33,7 +35,7 @@ module BattleUI
       animations = @exp_data.map do |pokemon, exp|
         create_exp_animation_for(pokemon, exp)
       end.compact
-      return if (@done = animations.empty?)
+      return restore_form_to_originals.then { align_exp(@pokemon) } if (@done = animations.empty?)
 
       # @type [Yuki::Animation::TimedAnimation]
       @animation = Yuki::Animation.se_play('exp_sound')
@@ -66,43 +68,23 @@ module BattleUI
       push_sprite(BlurScreenshot.new(@scene))
       # @type [Array<PokemonInfo>]
       @bars = @pokemon.map.with_index do |pokemon, index|
-        push_sprite(PokemonInfo.new(@viewport, index, pokemon, @exp_data[pokemon].to_i))
+        push_sprite(PokemonInfo.new(@viewport, index, @originals[index], @exp_data[pokemon].to_i))
       end
-    end
-
-    # Get the list of Pokemon that can get exp (are from player party)
-    # @return [Array<PFM::PokemonBattler>]
-    def find_expable_pokemon
-      return 2.times.map do |bank|
-        6.times.map { |position| @scene.logic.battler(bank, position) }.compact.select(&:from_party?)
-      end.flatten
     end
 
     # Function that shows level up of a Pokemon
     # @param pokemon [PFM::PokemonBattler]
     def show_level_up(pokemon)
-      list = pokemon.level_up_stat_refresh
-      Audio.me_play('audio/me/rosa_levelup')
-      index = @pokemon.index(pokemon)
-      @bars[index].leveling_up = true if index
-      @statistics = Statistics.new(@viewport, pokemon, list[0], list[1])
-      @statistics.go_in
-      @scene.visual.animations << @statistics
-      index = @pokemon.index(pokemon)
-      @bars[index].data = pokemon if index
-      level_up_message(pokemon) if pokemon.can_learn_skill_at_this_level?
-      @scene.logic.evolve_request << pokemon unless @scene.logic.evolve_request.include?(pokemon) # outside of message to prevent skips
+      super(pokemon) do |original, list|
+        Audio.me_play('audio/me/rosa_levelup')
+        index = @pokemon.index(pokemon)
+        @bars[index].leveling_up = true if index
+        @statistics = Statistics.new(@viewport, original, list[0], list[1])
+        @statistics.go_in
+        @scene.visual.animations << @statistics
+        @bars[index].data = original if index
+      end
       @scene.visual.scene_update_proc { update_statistics } while @statistics
-    end
-
-    # Show the level up message
-    # @param receiver [PFM::PokemonBattler]
-    # @param list [Array]
-    def level_up_message(receiver)
-      PFM::Text.set_num3(receiver.level.to_s, 1)
-      # @scene.display_message_and_wait(parse_text(18, 62, '[VAR 010C(0000)]' => receiver.given_name))
-      PFM::Text.reset_variables
-      receiver.check_skill_and_learn
     end
 
     # Function that create an exp animation for a specific pokemon
@@ -110,19 +92,20 @@ module BattleUI
     # @param exp [Integer] total exp he should receive
     # @return [Array(Yuki::Animation::TimedAnimation, PFM::PokemonBattler), nil]
     def create_exp_animation_for(pokemon, exp)
-      return nil if exp <= 0 || pokemon.max_level == pokemon.level
+      original = pokemon.original
+      return nil if exp <= 0 || original.max_level == original.level
 
-      target_exp = pokemon.exp + exp
-      next_exp_value = pokemon.exp_lvl.clamp(0, target_exp)
-      @exp_data[pokemon] -= next_exp_value - pokemon.exp
+      target_exp = original.exp + exp
+      next_exp_value = original.exp_lvl.clamp(0, target_exp)
+      @exp_data[pokemon] -= next_exp_value - original.exp
 
       # actually create the animation
-      original_exp = pokemon.exp
-      exp_rate = pokemon.exp_rate
-      pokemon.exp = next_exp_value
-      time_to_process = ((pokemon.exp_rate - exp_rate) * 2).clamp(0, (next_exp_value - original_exp).abs / 60.0)
-      animation = Yuki::Animation::DiscreetAnimation.new(time_to_process, pokemon, :exp=, original_exp, next_exp_value)
-      return [animation, pokemon.exp == pokemon.exp_lvl ? pokemon : nil]
+      original_exp = original.exp
+      exp_rate = original.exp_rate
+      original.exp = next_exp_value
+      time_to_process = ((original.exp_rate - exp_rate) * 2).clamp(0, (next_exp_value - original_exp).abs / 60.0)
+      animation = Yuki::Animation::DiscreetAnimation.new(time_to_process, original, :exp=, original_exp, next_exp_value)
+      return [animation, original.exp == original.exp_lvl ? pokemon : nil]
     end
 
     # UI element showing the basic information
@@ -137,7 +120,7 @@ module BattleUI
       # Create a new Pokemon Info
       # @param viewport [Viewport]
       # @param index [Integer]
-      # @param pokemon [PFM::PokemonBattler]
+      # @param pokemon [PFM::Pokemon]
       # @param exp_received [Integer]
       def initialize(viewport, index, pokemon, exp_received)
         super(viewport, *COORDINATES[index])
@@ -155,7 +138,7 @@ module BattleUI
       end
 
       # Set the data shown by the UI element
-      # @param pokemon [PFM::PokemonBattler]
+      # @param pokemon [PFM::Pokemon]
       def data=(pokemon)
         @pokemon = pokemon
         super(pokemon)

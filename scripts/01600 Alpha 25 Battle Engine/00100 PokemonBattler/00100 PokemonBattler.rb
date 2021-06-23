@@ -21,12 +21,11 @@ module PFM
     ]
     # List of properties to copy back to original
     BACK_PROPERTIES = %i[
-      @id @form @ability @level
-      @ev_hp @ev_atk @ev_dfe @ev_spd @ev_ats @ev_dfs
+      @id @form @ability
       @trainer_id @trainer_name @step_remaining @loyalty
-      @exp @hp @status @status_count @item_holding
+      @hp @status @status_count @item_holding
       @captured_with @captured_in @captured_at @captured_level
-      @gender @character @exp_rate @hp_rate
+      @gender @character @hp_rate
     ]
 
     # @return [Array<Battle::Move>] the moveset of the Pokemon
@@ -303,17 +302,6 @@ module PFM
       return false
     end
 
-    # Let the Pokemon learn skill when leveling up
-    # @param silent [Boolean] if the skill is automatically learnt or not (false = show skill learn interface & messages)
-    # @param level [Integer] The level to check in order to learn the moves
-    def check_skill_and_learn(silent = false, level = @level)
-      tmp_transform = @transform
-      copy_properties_back_to_original
-      @original.check_skill_and_learn(silent, level)
-      self.transform = tmp_transform if tmp_transform
-      copy_moveset
-    end
-
     # Return the Pokemon rareness
     # @return [Integer]
     def rareness
@@ -421,6 +409,34 @@ module PFM
     # @return [Boolean]
     def typeless?
       return type1 == 0 && type2 == 0 && type3 == 0
+    end
+
+    # Copy the moveset upon level up
+    # @param moveset_before [Array<PFM::Skill>]
+    def level_up_copy_moveset(moveset_before)
+      if moveset_before.size < original.skills_set.size
+        indexes = moveset_before.size.upto(original.skills_set.size - 1).to_a
+      else
+        indexes = (moveset_before - original.skills_set).map { |i| moveset_before.index(i) }
+      end
+      moveset = @transform ? @moveset_before_transform : @moveset
+      indexes.each do |i|
+        next unless (skill = original.skills_set[i])
+
+        moveset[i] = Battle::Move[skill.symbol].new(skill.id, skill.pp, skill.ppmax, @scene)
+      end
+    end
+
+    # Copy some important data upon level up
+    def level_up_copy
+      self.level = @original.level
+      self.exp = @original.exp
+      return level_up_stat_refresh if @transform
+
+      self.hp = original.hp
+      %i[@ev_hp @ev_atk @ev_dfe @ev_spd @ev_ats @ev_dfs].each do |ivar_name|
+        instance_variable_set(ivar_name, original.instance_variable_get(ivar_name))
+      end
     end
 
     private
