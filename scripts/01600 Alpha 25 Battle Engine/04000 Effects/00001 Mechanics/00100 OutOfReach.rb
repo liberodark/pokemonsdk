@@ -38,7 +38,7 @@ module Battle
           return false if target != @oor_pokemon
 
           result = !can_hit_while_out_of_reach?(move.db_symbol)
-          move.scene.display_message_and_wait(parse_text(18, 74)) if result
+          move.scene.display_message_and_wait(parse_text_with_pokemon(19, 213, target)) if result
           return result
         end
         alias oor_on_move_prevention_target on_move_prevention_target
