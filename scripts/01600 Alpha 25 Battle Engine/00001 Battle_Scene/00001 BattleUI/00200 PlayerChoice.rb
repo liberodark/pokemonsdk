@@ -8,39 +8,17 @@ module BattleUI
   # When result was taken, the scene should call #reset to undo the validated state
   class PlayerChoice < GenericChoice
     include UI
+    include PlayerChoiceAbstraction
     # Coordinate of each buttons
     BUTTON_COORDINATE = [[172, 172], [246, 182], [162, 201], [236, 211]]
-    # List of the possible result on validation (according to the index)
-    POSSIBLE_RESULT = %i[attack bag pokemon flee]
-    # The possible action made by the player (other than choosing a sub action)
-    # @return [Battle::Actions::Base]
-    attr_reader :action
-    # Tell if the player can switch or not
-    # @return [Boolean]
-    attr_accessor :can_switch
+
     # Create a new PlayerChoice Window
     # @param viewport [Viewport]
     # @param scene [Battle::Scene]
     def initialize(viewport, scene)
       @can_switch = true
+      @super_reset = true # Specify that the super class has the reset function
       super(viewport, scene)
-    end
-
-    # Reset the choice
-    def reset
-      @action = nil
-      @index = 0
-      @scene.visual.set_info_state(:choice)
-      super
-    end
-
-    # Force the action to use an item
-    # @param item [GameData::Item]
-    def use_item(item)
-      @result = :other
-      item_wrapper = PFM::ItemDescriptor.actions(item.id)
-      user = @scene.logic.battler(0, @scene.player_actions.size)
-      @action = Battle::Actions::Item.new(@scene, item_wrapper, $bag, user)
     end
 
     private
@@ -58,39 +36,39 @@ module BattleUI
 
     # Validate the player choice
     def validate
-      result = POSSIBLE_RESULT[@index]
       bounce_button
-      if (result == :pokemon || result == :flee) && !@can_switch
-        $game_system.se_play($data_system.buzzer_se)
-        hide
-        @scene.visual.animations << animation_handler[:hide_show]
-        @scene.visual.wait_for_animation
-        (handler = @scene.logic.switch_handler).can_switch?(@scene.logic.battler(0, @scene.player_actions.size))
-        handler.process_prevention_reason
-        show
+      case @index
+      when 0
+        success = choice_attack
+      when 1
+        success = choice_bag
+      when 2
+        success = choice_pokemon
+      when 3
+        success = choice_flee
       else
-        @result = result
-        $game_system.se_play($data_system.decision_se)
+        return
       end
+      return show_switch_choice_failure unless success
+
+      $game_system.se_play($data_system.decision_se)
     end
 
     # Cancel the player choice
     def cancel
-      return $game_system.se_play($data_system.buzzer_se) if @scene.player_actions.empty?
-
-      super
+      choice_cancel ? $game_system.se_play($data_system.cancel_se) : $game_system.se_play($data_system.buzzer_se)
     end
 
     # Update the index if a key was pressed
     def update_key_index
       if Input.trigger?(:UP)
-        @index = (@index - 2).clamp(0, POSSIBLE_RESULT.size - 1)
+        @index = (@index - 2).clamp(0, 3)
       elsif Input.trigger?(:LEFT)
-        @index = (@index - 1).clamp(0, POSSIBLE_RESULT.size - 1)
+        @index = (@index - 1).clamp(0, 3)
       elsif Input.trigger?(:RIGHT)
-        @index = (@index + 1).clamp(0, POSSIBLE_RESULT.size - 1)
+        @index = (@index + 1).clamp(0, 3)
       elsif Input.trigger?(:DOWN)
-        @index = (@index + 2).clamp(0, POSSIBLE_RESULT.size - 1)
+        @index = (@index + 2).clamp(0, 3)
       end
     end
 

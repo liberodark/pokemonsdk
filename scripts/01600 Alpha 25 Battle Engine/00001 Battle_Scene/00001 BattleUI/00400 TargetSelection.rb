@@ -1,8 +1,7 @@
 module BattleUI
   class TargetSelection < UI::SpriteStack
+    include TargetSelectionAbstraction
     SKIP_NO_CHOICE_SKILL = true
-    # @return [Array, :cancel] the position (bank, position) of the choosen target
-    attr_accessor :result
     # Create a new TargetSelection
     # @param viewport [Viewport]
     # @param launcher [PFM::PokemonBattler]
@@ -10,14 +9,8 @@ module BattleUI
     # @param logic [Battle::Logic]
     def initialize(viewport, launcher, move, logic)
       super(viewport)
-      @launcher = launcher
-      @move = move
-      @logic = logic
-      @row_size = logic.battle_info.vs_type
-      @targets = move.battler_targets(launcher, logic).select(&:alive?)
-      @allow_selection = !move.no_choice_skill?
-      @mons = generate_mon_list
-      @index = find_best_index
+      initialize_data(launcher, move, logic)
+      @animation_handler = Yuki::Animation::Handler.new
       create_sprites
       update_cursor(true) if @allow_selection
     end
@@ -25,6 +18,7 @@ module BattleUI
     # Update the Window cursor
     def update
       super
+      return @animation_handler.update unless @animation_handler.done?
       return if validated?
       return validate if Input.trigger?(:A) || Mouse.trigger?(:LEFT)
       return cancel if Input.trigger?(:B) || Mouse.trigger?(:RIGHT)
@@ -34,12 +28,6 @@ module BattleUI
       update_key_index
       update_mouse_index
       update_cursor if last_index != @index && @allow_selection
-    end
-
-    # If the player made a choice
-    # @return [Boolean]
-    def validated?
-      !@result.nil?
     end
 
     private
@@ -73,12 +61,7 @@ module BattleUI
 
     # Validate the player choice
     def validate
-      return @result = [1, 0] if @targets.empty?
-
-      target = @allow_selection ? @buttons[@index].data : @targets.first
-      target = @move.battler_targets(@launcher, @logic).sample(random: @logic.generic_rng) if @move.target == :random_foe
-      if @targets.include?(target)
-        @result = [target.bank, target.position]
+      if choose_target
         $game_system.se_play($data_system.decision_se)
       else
         $game_system.se_play($data_system.buzzer_se)
@@ -87,31 +70,33 @@ module BattleUI
 
     # Cancel the player choice
     def cancel
-      @result = :cancel
+      choice_cancel
       $game_system.se_play($data_system.cancel_se)
     end
 
     # Update the cursor position
     # @param silent [Boolean] if the cursor se should not be played
     def update_cursor(silent = false)
+      return finalize_cursor_update(false) if silent
+
+      create_cursor_move_animation
+    end
+
+    # Create the cursor move animation
+    def create_cursor_move_animation
+      # @type [Cursor]
+      cursor = @buttons.find(&:selected).cursor
+      selected_cursor = @buttons[@index].cursor
+      animation = Yuki::Animation.move(0.2, cursor, cursor.x, cursor.y, selected_cursor.origin_x, selected_cursor.origin_y)
+      animation.play_before(Yuki::Animation.send_command_to(self, :finalize_cursor_update, true))
+      animation.start
+      @animation_handler[:cursor_move] = animation
+    end
+
+    # Finalize the cursor update
+    def finalize_cursor_update(play_sound)
       @buttons.each_with_index { |button, index| button.selected = @index == index }
-      $game_system.se_play($data_system.cursor_se) unless silent
-    end
-
-    # Generate the list of mons shown by the UI
-    # @return [Array<PFM::PokemonBattler>]
-    def generate_mon_list
-      2.times.map do |bank|
-        @logic.battle_info.vs_type.times.map do |position|
-          @logic.battler(bank, position)
-        end
-      end.reverse.flatten
-    end
-
-    # Find the best possible index as default index
-    # @return [Integer]
-    def find_best_index
-      return @mons.index(@targets.first).to_i
+      $game_system.se_play($data_system.cursor_se) if play_sound
     end
 
     class << self
@@ -128,6 +113,10 @@ module BattleUI
       # Get the selected state of the button
       # @return [Boolean]
       attr_reader :selected
+      # Get the cursor
+      # @return [Cursor]
+      attr_reader :cursor
+
       # Create a new button
       # @param viewport [Viewport]
       # @param index [Integer]
@@ -151,6 +140,7 @@ module BattleUI
       def selected=(selected)
         @selected = selected
         @cursor.set_position(@x - 10, @y + 12)
+        @cursor.register_positions
         @cursor.visible = selected
       end
 
@@ -179,7 +169,10 @@ module BattleUI
         @name = add_text(41, 16, 0, 16, :name, color: 10, type: UI::SymText)
         @gender = add_sprite(5, 16, NO_INITIAL_IMAGE, type: UI::GenderSprite)
         @efficiency_text = add_text(18, 35, 102, 16, nil.to_s, 1, color: 10)
+        # @type [Cursor]
         @cursor = add_sprite(-10, 12, 'battle/arrow', type: Cursor)
+        @cursor.z = 1
+        @cursor.register_positions
         @cursor.visible = false
       end
 

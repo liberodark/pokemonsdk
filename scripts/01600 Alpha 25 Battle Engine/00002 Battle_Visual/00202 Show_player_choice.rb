@@ -33,8 +33,7 @@ module Battle
     def show_player_choice_begin(pokemon_index)
       pokemon = @scene.logic.battler(0, pokemon_index)
       @locking = true
-      @player_choice_ui.reset
-      @player_choice_ui.can_switch = @scene.logic.switch_handler.can_switch?(pokemon)
+      @player_choice_ui.reset(@scene.logic.switch_handler.can_switch?(pokemon))
       if @player_choice_ui.out?
         @player_choice_ui.go_in
         @animations << @player_choice_ui

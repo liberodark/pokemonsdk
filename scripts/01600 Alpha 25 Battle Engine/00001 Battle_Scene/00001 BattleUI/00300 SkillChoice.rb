@@ -8,20 +8,9 @@ module BattleUI
   #
   # When result was taken, the scene should call #reset to undo the validated state
   class SkillChoice < GenericChoice
+    include SkillChoiceAbstraction
     # Coordinate of each buttons
     BUTTON_COORDINATE = [[198, 124], [198, 153], [198, 182], [198, 211]]
-    # The selected move
-    # @return [Battle::Move, :cancel]
-    attr_reader :result
-    # The pokemon the player choosed a move
-    # @return [PFM::PokemonBattler]
-    attr_reader :pokemon
-    # Get the index of the choice
-    # @return [Integer]
-    attr_reader :index
-    # Tell if the mega evolution is enabled
-    # @return [Boolean]
-    attr_accessor :mega_enabled
     # Create a new SkillChoice UI
     # @param viewport [Viewport]
     # @param scene [Battle::Scene]
@@ -30,21 +19,17 @@ module BattleUI
       # @type [Hash{ PFM::PokemonBattler => Integer }]
       @last_indexes = {}
       @mega_enabled = false
+      @super_reset = true
       super(viewport, scene)
     end
 
-    # Reset the Skill choice
-    # @param pokemon [PFM::PokemonBattler]
-    def reset(pokemon)
-      @pokemon = pokemon
-      @mega_enabled = false
-      self.data = pokemon
-      @index = @last_indexes[pokemon].to_i.clamp(0, @buttons.rindex(&:visible))
-      update_button_opacity
-      super()
-    end
-
     private
+
+    # Give the max index of the choice
+    # @return [Integer]
+    def max_index
+      return @buttons.rindex(&:visible)
+    end
 
     def create_buttons
       # @type [Array<MoveButton>]
@@ -82,16 +67,21 @@ module BattleUI
     # Validate the user choice
     def validate
       bounce_button
-      move = @pokemon.moveset[@index]
-      if (blocked = move.disable_reason(@pokemon))
+      if choice_move
+        @last_indexes[pokemon] = @index
+        $game_system.se_play($data_system.decision_se)
+      else
         $game_system.se_play($data_system.buzzer_se)
         @scene.message_window.blocking = true
         @scene.message_window.wait_input = true
-        return blocked.call
+        show_move_choice_failure
       end
-      @result = move
-      @last_indexes[@pokemon] = @index
-      $game_system.se_play($data_system.decision_se)
+    end
+
+    # Cancel the player choice
+    def cancel
+      choice_cancel
+      $game_system.se_play($data_system.cancel_se)
     end
 
     # Update the index if a key was pressed

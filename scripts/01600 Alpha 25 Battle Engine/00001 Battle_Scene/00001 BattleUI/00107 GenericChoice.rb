@@ -27,9 +27,10 @@ module BattleUI
     # Get the animation handler
     # @return [Yuki::Animation::Handler{ Symbol => Yuki::Animation::TimedAnimation}]
     attr_reader :animation_handler
-    # The result
-    # @return [Symbol, nil]
-    attr_reader :result
+    # Get the scene
+    # @return [Battle::Scene]
+    attr_reader :scene
+
     # Create a new GenericChoice
     # @param viewport [Viewport]
     # @param scene [Battle::Scene]
@@ -65,12 +66,6 @@ module BattleUI
       return false if @sub_choice && !@sub_choice.done?
 
       return @animation_handler.done?
-    end
-
-    # If the player made a choice
-    # @return [Boolean]
-    def validated?
-      !@result.nil? && done?
     end
 
     # Reset the choice
@@ -143,12 +138,6 @@ module BattleUI
     # Tell if the player is validating his choice
     def validating?
       return Input.trigger?(:A) || (Mouse.trigger?(:LEFT) && @buttons.any?(&:simple_mouse_in?))
-    end
-
-    # Cancel the player choice
-    def cancel
-      @result = :cancel
-      $game_system.se_play($data_system.cancel_se)
     end
 
     # Tell if the player is canceling his choice
