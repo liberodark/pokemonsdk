@@ -102,9 +102,11 @@ module BattleUI
     class << self
       # Tell if the UI can be shown or not
       # @param move [Battle::Move]
+      # @param pokemon [PFM::PokemonBattler]
+      # @param logic [Battle::Logic]
       # @return [Boolean]
-      def cannot_show?(move)
-        move.no_choice_skill? && SKIP_NO_CHOICE_SKILL
+      def cannot_show?(move, pokemon, logic)
+        (move.no_choice_skill? && SKIP_NO_CHOICE_SKILL) || move.battler_targets(pokemon, logic).empty?
       end
     end
 

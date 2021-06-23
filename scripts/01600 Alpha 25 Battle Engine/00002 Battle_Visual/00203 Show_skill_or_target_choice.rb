@@ -96,7 +96,7 @@ module Battle
       elsif result == :auto
         targets = @skill_choice_ui.result.battler_targets(@skill_choice_ui.pokemon, @scene.logic)
         if targets.empty?
-          return nil
+          arr.concat([1, 0])
         else
           arr << targets.first.bank
           arr << targets.first.position
@@ -117,7 +117,8 @@ module Battle
     # Tell if we can choose a target
     # @return [Boolean]
     def stc_cannot_choose_target?
-      return @scene.logic.battle_info.vs_type == 1 || BattleUI::TargetSelection.cannot_show?(@skill_choice_ui.result)
+      return @scene.logic.battle_info.vs_type == 1 ||
+             BattleUI::TargetSelection.cannot_show?(@skill_choice_ui.result, @skill_choice_ui.pokemon, @scene.logic)
     end
   end
 end
