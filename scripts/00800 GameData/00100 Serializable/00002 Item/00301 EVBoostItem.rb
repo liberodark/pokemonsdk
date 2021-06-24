@@ -10,7 +10,7 @@ safe_code('Register EVBoostItem ItemDescriptor') do
   end
 
   PFM::ItemDescriptor.define_on_pokemon_usability(GameData::EVBoostItem) do |item, pokemon|
-    next false if pokemon.egg? || !PFM::PokemonBattler.from(pokemon).position
+    next false if pokemon.egg?
 
     ev_boost = GameData::EVBoostItem.from(item)
     next pokemon.ev_check(ev_boost.stat_index, false, ev_boost.count)
