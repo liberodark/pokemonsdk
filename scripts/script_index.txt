@@ -255,6 +255,7 @@ pokemonsdk/scripts/01300 UI/00100 Generic/00400 GenericBase.rb
 pokemonsdk/scripts/01300 UI/00100 Generic/00500 HelperSprites.rb
 pokemonsdk/scripts/01300 UI/00100 Generic/00600 KeyShortcut.rb
 pokemonsdk/scripts/01300 UI/00100 Generic/00700 UserInput.rb
+pokemonsdk/scripts/01300 UI/00100 Generic/00710 TextScroller.rb
 pokemonsdk/scripts/01300 UI/00300 Bag/00010 PocketList.rb
 pokemonsdk/scripts/01300 UI/00300 Bag/00020 WinPocket.rb
 pokemonsdk/scripts/01300 UI/00300 Bag/00030 ScrollBar.rb
