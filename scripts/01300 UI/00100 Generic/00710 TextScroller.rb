@@ -21,8 +21,8 @@ module UI
     end
 
     # Start the text scroll
-    # @param until_all_text_hiden [Boolean] if the animation should last until the last text is offscreen
-    def start(until_all_text_hiden: true)
+    # @param until_all_text_hidden [Boolean] if the animation should last until the last text is offscreen
+    def start(until_all_text_hidden: true)
       size = @texts.size * @line_height
       size += @viewport.rect.height if until_all_text_hiden
       @animation = Yuki::Animation.move_discreet(size / @speed, self, 0, 0, 0, -size)
