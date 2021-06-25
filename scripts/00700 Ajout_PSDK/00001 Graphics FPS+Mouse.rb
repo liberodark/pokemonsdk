@@ -1,5 +1,10 @@
 module Graphics
   class << self
+    # Function that resets the mouse viewport
+    def reset_mouse_viewport
+      @mouse_fps_viewport&.rect&.set(0, 0, width, height)
+    end
+
     private
 
     def mouse_fps_create_graphics
