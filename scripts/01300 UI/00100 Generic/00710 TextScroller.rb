@@ -24,7 +24,8 @@ module UI
     # @param until_all_text_hidden [Boolean] if the animation should last until the last text is offscreen
     def start(until_all_text_hidden: true)
       size = @texts.size * @line_height
-      size += @viewport.rect.height if until_all_text_hiden
+      size += @viewport.rect.height if until_all_text_hidden
+      preload_texts
       @animation = Yuki::Animation.move_discreet(size / @speed, self, 0, 0, 0, -size)
       @animation.start
     end
@@ -161,6 +162,18 @@ module UI
       else
         return nil
       end
+    end
+
+    # Function that preload some text in order to make the starting a bit smoother
+    def preload_texts
+      nb_text = @viewport.rect.height / @line_height * 2
+      nb_text.times { load_text(' ') }
+      5.times do
+        load_text('#  ')
+        load_text('##  ')
+        load_text('###  ')
+      end
+      stack.each { |text| text.visible = false }
     end
   end
 end
