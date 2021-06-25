@@ -2,6 +2,7 @@ pokemonsdk/scripts/00000 PSDK_CONFIG.rb
 pokemonsdk/scripts/00002 state.rb
 pokemonsdk/scripts/00003 SafeExec.rb
 pokemonsdk/scripts/00010 Hooks.rb
+pokemonsdk/scripts/00020 Config.rb
 pokemonsdk/scripts/00100 Yuki__EXC.rb
 pokemonsdk/scripts/00000 Dependencies/00000 Repository/00000 Repository.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00000 DataClasses.rb
@@ -386,6 +387,7 @@ pokemonsdk/scripts/01400 GamePlay/02000 Hall_Of_Fame/00006 Inputs.rb
 pokemonsdk/scripts/01400 GamePlay/09000 Games/00001 Casino__VoltorbFlip.rb
 pokemonsdk/scripts/01400 GamePlay/09000 Games/00002 Ruine_Alpha_by_FL0RENT_.rb
 pokemonsdk/scripts/01400 GamePlay/09000 Games/00003 Casino__SlotMachine.rb
+pokemonsdk/scripts/01450 Systems/00001 Title/00001 Configs.rb
 pokemonsdk/scripts/01450 Systems/00010 Storage/00001 PFM_Storage/00001 Main.rb
 pokemonsdk/scripts/01450 Systems/00010 Storage/00001 PFM_Storage/00002 Box.rb
 pokemonsdk/scripts/01450 Systems/00010 Storage/00001 PFM_Storage/00003 BattleBox.rb
