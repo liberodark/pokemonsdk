@@ -47,6 +47,8 @@ module Configs
       end
 
       real_filename = format('Data/configs/%<filename>s.%<ext>s', filename: info[:filename], ext: info[:type])
+      dirname = File.dirname(real_filename)
+      Dir.mkdir!(dirname) unless Dir.exist?(dirname)
       data = load_config_data(info, rxdata_filename, real_filename)
 
       define_singleton_method(name) { data }
