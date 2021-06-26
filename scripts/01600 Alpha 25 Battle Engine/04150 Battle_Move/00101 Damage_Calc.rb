@@ -33,7 +33,8 @@ module Battle
       damage = (damage * calc_type_n_multiplier(target, :type1, types)).floor ; log_data("damage = #{damage} # after type1")
       damage = (damage * calc_type_n_multiplier(target, :type2, types)).floor ; log_data("damage = #{damage} # after type2")
       damage = (damage * calc_type_n_multiplier(target, :type3, types)).floor ; log_data("damage = #{damage} # after type3")
-      damage = (damage * calc_mod3(user, target)).floor                       ; log_data("damage = #{damage}  # after mod3")
+      damage = (damage * calc_mod3(user, target)).floor                       ; log_data("damage = #{damage} # after mod3")
+      damage = damage.clamp(1, target.hp)                                     ; log_data("damage = #{damage} # after clamp")
       return damage
       # rubocop:enable Layout/ExtraSpacing
       # rubocop:enable Style/Semicolon

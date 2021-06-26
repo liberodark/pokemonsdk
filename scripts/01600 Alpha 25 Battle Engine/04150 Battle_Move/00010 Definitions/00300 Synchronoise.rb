@@ -24,7 +24,7 @@ module Battle
         actual_targets.each do |target|
           next unless share_types?(user, target)
 
-          hp = damages(user, target).clamp(1, target.hp)
+          hp = damages(user, target)
           @logic.damage_handler.damage_change_with_process(hp, target, user, self) do
             if critical_hit?
               scene.display_message_and_wait(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))

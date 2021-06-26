@@ -52,7 +52,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       # @param target [PFM::PokemonBattler] the current target
       def deal_damage_to_target(user, actual_targets, target)
-        hp = damages(user, target).clamp(1, target.hp)
+        hp = damages(user, target)
         @logic.damage_handler.damage_change_with_process(hp, target, user, self) do
           if critical_hit?
             critical_hit_message(target, actual_targets, target)
