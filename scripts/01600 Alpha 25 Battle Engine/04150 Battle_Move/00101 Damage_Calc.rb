@@ -128,7 +128,7 @@ module Battle
     # @param ph_move [Boolean] true: physical, false: special
     # @return [Integer]
     def calc_sp_def_basis(user, target, ph_move)
-      return ph_move ? user.dfe_basis : user.dfs_basis
+      return ph_move ? target.dfe_basis : target.dfs_basis
     end
 
     # Statistic modifier calculation: DFE/DFS
@@ -139,7 +139,7 @@ module Battle
     def calc_def_stat_modifier(user, target, ph_move)
       return 1 if critical_hit?
 
-      return ph_move ? user.dfe_modifier : user.dfs_modifier
+      return ph_move ? target.dfe_modifier : target.dfs_modifier
     end
 
     # CH calculation
