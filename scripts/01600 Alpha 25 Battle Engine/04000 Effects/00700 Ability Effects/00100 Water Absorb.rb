@@ -16,7 +16,7 @@ module Battle
 
           return handler.prevent_change do
             handler.scene.visual.show_ability(target)
-            logic.damage_handler.heal(target, target.max_hp / 4)
+            handler.logic.damage_handler.heal(target, target.max_hp / 4)
           end
         end
       end
