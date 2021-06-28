@@ -106,7 +106,7 @@ module Battle
         elsif launcher.hp < launcher.max_hp
           hp = hp * 130 / 100 if launcher.hold_item?(:big_root)
           hp = hp * 3 / 2 if skill&.pulse? && launcher.has_ability?(:mega_launcher)
-          @scene.visual.show_hp_animations([launcher], [hp / drain_factor])
+          @scene.visual.show_hp_animations([launcher], [(hp / drain_factor).clamp(1, Float::INFINITY)])
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 905, target))
         end
       end
