@@ -15,9 +15,7 @@ module Battle
       # @param ph_move [Boolean] true: physical, false: special
       # @return [Integer]
       def calc_def_stat_modifier(user, target, ph_move)
-        return 1 if critical_hit?
-
-        return ph_move ? user.dfe_modifier : user.dfs_modifier
+        return 1
       end
     end
     Move.register(:s_sacred_sword, SacredSword)
