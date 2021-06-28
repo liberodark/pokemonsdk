@@ -321,7 +321,6 @@ pokemonsdk/scripts/01300 UI/09003 Casino/00002 BandDisplay.rb
 pokemonsdk/scripts/01300 UI/09003 Casino/00004 BaseUI.rb
 pokemonsdk/scripts/01400 GamePlay/00000 GamePlay__Base.rb
 pokemonsdk/scripts/01400 GamePlay/00099 Movie.rb
-pokemonsdk/scripts/01400 GamePlay/00100 Scene_Title.rb
 pokemonsdk/scripts/01400 GamePlay/00200 Scene_Map.rb
 pokemonsdk/scripts/01400 GamePlay/00201 Scene_Map calling.rb
 pokemonsdk/scripts/01400 GamePlay/00202 Scene_Map warp.rb
@@ -388,6 +387,12 @@ pokemonsdk/scripts/01400 GamePlay/09000 Games/00001 Casino__VoltorbFlip.rb
 pokemonsdk/scripts/01400 GamePlay/09000 Games/00002 Ruine_Alpha_by_FL0RENT_.rb
 pokemonsdk/scripts/01400 GamePlay/09000 Games/00003 Casino__SlotMachine.rb
 pokemonsdk/scripts/01450 Systems/00001 Title/00001 Configs.rb
+pokemonsdk/scripts/01450 Systems/00001 Title/00002 Scene_Title.rb
+pokemonsdk/scripts/01450 Systems/00001 Title/00003 Actions.rb
+pokemonsdk/scripts/01450 Systems/00001 Title/00004 IntroMovie.rb
+pokemonsdk/scripts/01450 Systems/00001 Title/00010 Splashes.rb
+pokemonsdk/scripts/01450 Systems/00001 Title/00020 Title Animation.rb
+pokemonsdk/scripts/01450 Systems/00001 Title/00002 UI_Title/00001 TitleControls.rb
 pokemonsdk/scripts/01450 Systems/00010 Storage/00001 PFM_Storage/00001 Main.rb
 pokemonsdk/scripts/01450 Systems/00010 Storage/00001 PFM_Storage/00002 Box.rb
 pokemonsdk/scripts/01450 Systems/00010 Storage/00001 PFM_Storage/00003 BattleBox.rb

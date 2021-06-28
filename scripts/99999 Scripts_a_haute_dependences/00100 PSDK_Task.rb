@@ -59,6 +59,8 @@ module Scheduler
   end
 
   add_proc(:on_scene_switch, ::Scene_Title, 'Correction du TJN', 1000) do
+    next unless $scene.is_a?(Scene_Map)
+
     Yuki::TJN.init_variables
   end
 
@@ -84,45 +86,14 @@ module Scheduler
     $wild_battle.load_groups
   end
 
-  add_proc(:on_scene_switch, ::Scene_Title, 'Correction des Pokémon', 1000) do
-    if $scene.class != ::Scene_Title && $trainer.current_version.to_i <= 4864
-      log_info('Conversion des Pokémon (skill_learnt / ribbons)')
-      block = proc do |pokemon|
-        if pokemon
-          pokemon.skill_learnt ||= []
-          pokemon.ribbons ||= []
-        end
-      end
-      $actors.each(&block)
-      $storage.each_pokemon(&block)
-      $storage.other_party(&block)
-      $wild_battle.each_roaming_pokemon(&block)
-    end
-  end
-
   add_proc(:on_scene_switch, ::Scene_Title, 'Correction des formes', 1000) do
     next unless $scene.is_a?(Scene_Map)
+
     log_info('Correction des formes des Pokémon')
     block = proc { |pokemon| pokemon&.form_calibrate(:load) }
     $actors.each(&block)
     $storage.each_pokemon(&block)
     $wild_battle.each_roaming_pokemon(&block)
-  end
-
-  add_proc(:on_scene_switch, ::Scene_Title, 'Correction des quêtes', 1000) do
-    if $scene.class != ::Scene_Title && $trainer.current_version.to_i <= 5635
-      log_info('Conversion des quêtes')
-      $quests.__convert
-    end
-  end
-
-  add_proc(:on_scene_switch, ::Scene_Title, 'Event fix (new tilemap)', 1000) do
-    if $scene.class != ::Scene_Title && $trainer.current_version.to_i <= 6211
-      $game_map.instance_variable_set(:@events_info, nil)
-      unless $game_switches[Yuki::Sw::MapLinkerDisabled]
-        $game_player.moveto($game_player.x - Yuki::MapLinker::OFFSET_X, $game_player.y - Yuki::MapLinker::OFFSET_Y)
-      end
-    end
   end
 
   add_proc(:on_update, :any, 'KeyBinding addition', 0) do
@@ -132,15 +103,6 @@ module Scheduler
         GamePlay::KeyBinding.new.main
         Graphics.transition
       end
-    end
-  end
-
-  add_proc(:on_scene_switch, ::Scene_Title, 'Custom worldmap marker correction', 1000) do
-    next unless $scene.is_a?(Scene_Map) && $trainer.current_version.to_i <= 6177
-
-    unless $env.worldmap_custom_markers.is_a?(Array)
-      log_debug('Fixing Worldmap markers')
-      $env.instance_variable_set(:@worldmap_custom_markers, [])
     end
   end
 

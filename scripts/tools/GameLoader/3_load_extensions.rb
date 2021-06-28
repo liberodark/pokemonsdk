@@ -1,7 +1,7 @@
 # Load the extensions
 begin
   $DEBUG = false
-  STDERR.reopen(IO::NULL) # This should remove SFML messages (most of the time they're success)
+  STDERR.reopen(IO::NULL) if File.exist?('Data/Scripts.dat') # This should remove SFML messages (most of the time they're success)
   ENV['__GL_THREADED_OPTIMIZATIONS'] = '0'
   require 'zlib'
   require 'socket'

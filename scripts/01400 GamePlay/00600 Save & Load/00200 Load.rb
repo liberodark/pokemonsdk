@@ -39,6 +39,7 @@ module GamePlay
       RPG::Cache.load_title(true)
       RPG::Cache.load_interface(true)
       ::Scheduler.start(:on_scene_switch, ::Scene_Title) if !@running && $scene.is_a?(Scene_Map)
+      $scene = Scene_Title.new unless $scene.is_a?(Scene_Map)
     end
 
     def update
@@ -50,7 +51,7 @@ module GamePlay
         action
       elsif Mouse.trigger?(:left)
         mouse_action
-      elsif Input.trigger?(:B) && $scene.class == ::Scene_Title
+      elsif Input.trigger?(:B) && $scene == self
         @running = false
       end
     end

@@ -15,6 +15,9 @@ module Configs
     # Get the additional splash played after the PSDK splash
     # @return [Array<String>]
     attr_accessor :additional_splashes
+    # Get the duration the controls has to wait before showing
+    # @return [Float]
+    attr_accessor :control_wait
 
     # Create a new config
     def initialize
@@ -23,6 +26,7 @@ module Configs
       @bgm_name = 'audio/bgm/rosa_title'
       @language_selection_enabled = true
       @additional_splashes = %w[pokemon_workshop]
+      @control_wait = 0.5
     end
   end
 
