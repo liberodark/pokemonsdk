@@ -37,7 +37,7 @@ class Scene_Title
   end
 
   def action_show_credits
-    play_buzzer_se
-    # TODO
+    $scene = GamePlay::CreditScene.new
+    @running = false
   end
 end

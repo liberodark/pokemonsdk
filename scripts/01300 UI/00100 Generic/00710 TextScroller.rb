@@ -142,9 +142,9 @@ module UI
     def color_id(kind)
       case kind
       when :h1
-        return 12
-      when :h2
         return 11
+      when :h2
+        return 12
       when :h3
         return 13
       else

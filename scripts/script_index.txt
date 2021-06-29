@@ -393,6 +393,8 @@ pokemonsdk/scripts/01450 Systems/00001 Title/00004 IntroMovie.rb
 pokemonsdk/scripts/01450 Systems/00001 Title/00010 Splashes.rb
 pokemonsdk/scripts/01450 Systems/00001 Title/00020 Title Animation.rb
 pokemonsdk/scripts/01450 Systems/00001 Title/00002 UI_Title/00001 TitleControls.rb
+pokemonsdk/scripts/01450 Systems/00002 Credits/00001 Configs.rb
+pokemonsdk/scripts/01450 Systems/00002 Credits/00002 Credit Scene.rb
 pokemonsdk/scripts/01450 Systems/00010 Storage/00001 PFM_Storage/00001 Main.rb
 pokemonsdk/scripts/01450 Systems/00010 Storage/00001 PFM_Storage/00002 Box.rb
 pokemonsdk/scripts/01450 Systems/00010 Storage/00001 PFM_Storage/00003 BattleBox.rb
