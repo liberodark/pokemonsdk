@@ -359,6 +359,12 @@ module Battle
       false
     end
 
+    # Tell if the move is a powder move
+    # @return [Boolean]
+    def powder?
+      return data.powder
+    end
+
     # Get the effectiveness
     attr_reader :effectiveness
 

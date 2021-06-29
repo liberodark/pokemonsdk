@@ -11,6 +11,7 @@ module Battle
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target
           return unless skill&.direct? && launcher && launcher.hp > 0
+          return if launcher&.has_ability?(:overcoat)
           return if (n = handler.logic.generic_rng.rand(10)) > 2 # ~30%
 
           status = %i[poison sleep paralysis][n]
