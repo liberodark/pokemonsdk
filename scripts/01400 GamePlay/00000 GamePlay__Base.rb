@@ -610,6 +610,8 @@ module GamePlay
 
     # Base that takes frame balancing in account
     class FrameBalanced < self
+      include Graphics::FPSBalancer::Marker
+
       # Update with frame balancing
       def update
         if Graphics::FPSBalancer.global.skipping?

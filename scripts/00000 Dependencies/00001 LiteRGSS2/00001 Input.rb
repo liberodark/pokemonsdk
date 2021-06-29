@@ -284,18 +284,19 @@ module Input
     end
 
     # Add the joystick to the list of connected joysticks and the new joystick connected becomes the main joystick
-    # @param id [Integer] id of the joystick 
+    # @param id [Integer] id of the joystick
     def on_joystick_connected(id)
       return if @joysticks_connected.include?(id)
-      @joysticks_connected << id 
-      @main_joy = id      
+
+      @joysticks_connected << id
+      @main_joy = id
     end
 
     # Remove the joystick to the list of connected joysticks and change the main joystick if other joystick are connected
-    # @param id [Integer] id of the joystick 
+    # @param id [Integer] id of the joystick
     def on_joystick_disconnected(id)
       @joysticks_connected.delete(id)
-      @main_joy = @joysticks_connected.empty? ? 0 : @joysticks_connected.last      
+      @main_joy = @joysticks_connected.empty? ? 0 : @joysticks_connected.last
     end
 
     # Set a key down if the button pressed comes of main joystick
@@ -303,13 +304,13 @@ module Input
     # @param button [Integer]
     def on_joystick_button_pressed(id, button)
       on_key_down(- button - 1) if id == main_joy
-    end   
+    end
 
     # Set a key up if the button released comes of main joystick
     # @param id [Integer] id of the joystick
     # @param button [Integer]
     def on_joystick_button_released(id, button)
       on_key_up(- button - 1) if id == main_joy
-    end    
+    end
   end
 end

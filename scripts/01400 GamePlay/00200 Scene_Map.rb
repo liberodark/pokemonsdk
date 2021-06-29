@@ -1,6 +1,7 @@
 # The map gameplay scene
 class Scene_Map < GamePlay::Base
   include Hooks
+  include Graphics::FPSBalancer::Marker
   # Access to the spriteset of the map
   # @return [Spriteset_Map]
   attr_reader :spriteset
@@ -62,9 +63,9 @@ class Scene_Map < GamePlay::Base
 
   # Display text showing pokemon fainted from poison
   def display_poison_faint(pokemon)
-		PFM::Text.set_pknick(pokemon, 0)
-		display_message(parse_text(22, 185))
-	end
+    PFM::Text.set_pknick(pokemon, 0)
+    display_message(parse_text(22, 185))
+  end
 
   # Display the poisoning animation sequence
   def display_poison_animation

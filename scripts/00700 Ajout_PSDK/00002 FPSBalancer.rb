@@ -51,6 +51,13 @@ module Graphics
       attr_reader :global
     end
 
+    module Marker
+      # Function telling the object is supposed to be frame balanced
+      def frame_balanced?
+        return true
+      end
+    end
+
     @global = new
   end
 
@@ -59,7 +66,7 @@ module Graphics
     # Update with fps balancing
     def update
       FPSBalancer.global.update
-      if FPSBalancer.global.skipping? && !frozen?
+      if FPSBalancer.global.skipping? && !frozen? && $scene.is_a?(FPSBalancer::Marker)
         fps_update if respond_to?(:fps_update, true)
         update_no_input
         fps_gpu_update if respond_to?(:fps_gpu_update, true)
