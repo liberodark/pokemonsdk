@@ -92,6 +92,8 @@ module Yuki
     BT_NoCatch = 43
     # If the Moves are replaced by no moves when Pokemon are generated for battle
     BT_NO_MOVE_WHEN_DEFAULT = 44
+    # If the trainer first Pokemon is sent without ball animation
+    BT_NO_BALL_ANIMATION = 45
 
     # If the Water Reflection is disabled
     WATER_REFLECTION_DISABLED = 51

@@ -199,7 +199,8 @@ module BattleUI
     # Creates the go_in animation (Exiting the ball)
     # @return [Yuki::Animation::TimedAnimation]
     def go_in_animation
-      return follower_go_in_animation if pokemon.is_follower
+      no_ball_trainer = $game_switches[Yuki::Sw::BT_NO_BALL_ANIMATION] && enemy?
+      return follower_go_in_animation if pokemon.is_follower || no_ball_trainer
 
       return regular_go_in_animation
     end
@@ -218,6 +219,7 @@ module BattleUI
     def follower_go_in_animation
       x, y = sprite_position
       bx = enemy? ? viewport.rect.width + width : -width
+      $game_switches[Yuki::Sw::BT_NO_BALL_ANIMATION] = false if enemy?
       ya = Yuki::Animation
       animation = ya.send_command_to(self, :visible=, true)
       animation.play_before(ya.send_command_to(self, :zoom=, sprite_zoom))
