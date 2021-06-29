@@ -231,6 +231,7 @@ module PFM
     def evolve(id, form)
       old_evolution_id = self.id
       old_evolution_form = self.form
+      hp_diff = self.max_hp - self.hp
       self.id = id
       if form
         self.form = form
@@ -245,12 +246,14 @@ module PFM
       self.item_holding = 0 if evolution_items.include?(item_holding) || evolution_items.include?(item_db_symbol)
       # Normal skill learn
       check_skill_and_learn
-      # Evovolution skill learn
+      # Evolution skill learn
       check_skill_and_learn(false, 0)
       # Pokedex register (self is used to be sure we get the right information)
       $pokedex.mark_seen(self.id, self.form, forced: true)
       $pokedex.mark_captured(self.id)
       $pokedex.pokemon_captured_inc(self.id)
+      # Refresh hp
+      self.hp = (self.max_hp - hp_diff) if self.hp > 0
       exec_hooks(PFM::Pokemon, :evolution, binding)
     end
 
