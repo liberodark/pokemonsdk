@@ -186,16 +186,16 @@ module Battle
       next if status != :freeze || target.can_be_frozen?(skill&.type || 0)
 
       next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 300, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 300, target)) if skill.nil? || skill.status?
       end
     end
 
     # Cannot be poisoned
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: can_be_poisoned') do |handler, status, target|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: can_be_poisoned') do |handler, status, target, _, skill|
       next if status != :poison && status != :toxic || target.can_be_poisoned?
 
       next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 252, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 252, target)) if skill.nil? || skill.status?
       end
     end
 
@@ -204,16 +204,16 @@ module Battle
       next if status != :paralysis || target.can_be_paralyzed? || skill&.db_symbol == :body_slam
 
       next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 285, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 285, target)) if skill.nil? || skill.status?
       end
     end
 
     # Cannot be burn
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: can_be_burn') do |handler, status, target|
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: can_be_burn') do |handler, status, target, _, skill|
       next if status != :burn || target.can_be_burn?
 
       next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 270, target))
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 270, target)) if skill.nil? || skill.status?
       end
     end
   end
