@@ -25,9 +25,6 @@ module UI
       @index = index
       @play_bg.visible = index == 0
       @credit_bg.visible = index == 1
-      # TODO: Fix LiteRGSS2 and remove this fix
-      @play_bg.shader = @shader if index == 0
-      @credit_bg.shader = @shader if index == 1
     end
 
     # Update the animation
