@@ -22,8 +22,6 @@ module Battle
       end
 =end
 
-      private
-
       # Get the types of the move with 1st type being affected by effects
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
@@ -36,6 +34,8 @@ module Battle
         log_data("Hidden power : internal index=#{index} > GameData::Types::#{GameData::Type[type_id].name.upcase}")
         return [type_id]
       end
+
+      private
 
       # Hidden power move types
       # @return [Array<Integer>] array of types

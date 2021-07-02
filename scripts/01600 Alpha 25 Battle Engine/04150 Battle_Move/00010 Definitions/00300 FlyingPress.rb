@@ -2,8 +2,6 @@ module Battle
   class Move
     # Move that has a flying type as second type
     class FlyingPress < Move
-      private
-
       # Get the types of the move with 1st type being affected by effects
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
