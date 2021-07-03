@@ -202,6 +202,7 @@ pokemonsdk/scripts/01100 Yuki/00100 Animation/00101 Commands.rb
 pokemonsdk/scripts/01100 Yuki/00100 Animation/00102 MessageLocked.rb
 pokemonsdk/scripts/01100 Yuki/00100 Animation/00103 Handler.rb
 pokemonsdk/scripts/01100 Yuki/00100 Animation/00104 MoveAnimationHelper.rb
+pokemonsdk/scripts/01100 Yuki/00100 Animation/00105 SignalWaiter.rb
 pokemonsdk/scripts/01100 Yuki/00200 FollowMe/00001 Config.rb
 pokemonsdk/scripts/01100 Yuki/00200 FollowMe/00300 Core.rb
 pokemonsdk/scripts/01100 Yuki/00300 Tilemap/00001 Tilemap.rb
