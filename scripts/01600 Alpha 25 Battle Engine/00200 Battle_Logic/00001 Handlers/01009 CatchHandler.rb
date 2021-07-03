@@ -95,7 +95,7 @@ module Battle
         if (e_level * 4) <= p_level
           next target.rareness * 8
         elsif (e_level * 2) <= p_level
-          next target.raress * 4
+          next target.rareness * 4
         elsif e_level < p_level
           next target.rareness * 2
         end
@@ -181,7 +181,7 @@ module Battle
       def catch_rate(target, pkm_ally, ball)
         return (target.rareness * 0.1) if ULTRA_BEAST.include?(target.db_symbol) && ball != :beast_ball
         return (target.rareness * 5) if ULTRA_BEAST.include?(target.db_symbol) && ball == :beast_ball
-        return BALL_RATE_CALCULATION[ball].call(target, pkm_ally) if BALL_RATE_CALCULATION.keys.include? ball.db_symbol
+        return BALL_RATE_CALCULATION[ball.db_symbol].call(target, pkm_ally) if BALL_RATE_CALCULATION.keys.include?(ball.db_symbol)
 
         return target.rareness
       end
