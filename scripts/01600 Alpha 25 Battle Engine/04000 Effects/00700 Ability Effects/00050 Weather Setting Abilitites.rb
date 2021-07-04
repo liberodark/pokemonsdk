@@ -12,9 +12,9 @@ module Battle
           weather_handler = handler.logic.weather_change_handler
           return unless weather_handler.weather_appliable?(weather)
 
+          handler.scene.visual.show_ability(with)
           nb_turn = with.hold_item?(item_db_symbol) ? 8 : 5
           weather_handler.weather_change(weather, nb_turn)
-          handler.scene.visual.show_ability(with)
           handler.scene.visual.show_rmxp_animation(with, animation_id)
         end
 
