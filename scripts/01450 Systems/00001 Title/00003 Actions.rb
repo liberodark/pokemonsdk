@@ -27,12 +27,7 @@ class Scene_Title
   def action_play_game
     Yuki::MapLinker.reset
     Audio.bgm_stop
-    $scene = GamePlay::Load.new(
-      #> Suppression de sauvegarde : X+B+Haut
-      Input.press?(:X) &
-      Input.press?(:B) &
-      Input.press?(:UP)
-    )
+    $scene = GamePlay::Load.new
     @running = false
   end
 
