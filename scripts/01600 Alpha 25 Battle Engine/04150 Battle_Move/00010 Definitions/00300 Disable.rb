@@ -28,8 +28,8 @@ module Battle
       # @return [Boolean] if the target evade the move (and is not selected)
       def move_blocked_by_target?(user, target)
         return true if super
-        return true unless (move = target.move_history.last)
-        return true if move.turn != $game_temp.battle_turn
+        return failure_message unless (move = target.move_history.last)
+        return failure_message if move.turn != $game_temp.battle_turn
 
         return false
       end
@@ -44,6 +44,15 @@ module Battle
           target.effects.add(Effects::Disable.new(@logic, target, move))
           @scene.display_message_and_wait(message)
         end
+      end
+
+      private
+
+      # Display failure message
+      # @return [Boolean] true for blocking
+      def failure_message
+        @logic.scene.display_message_and_wait(parse_text(18, 74))
+        return true
       end
     end
     Move.register(:s_disable, Disable)

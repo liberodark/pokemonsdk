@@ -1,21 +1,13 @@
 module Battle
   class Move
     # Move that inflict Knock Off to the ennemy
-    class KnockOff < Basic
-      # Function that tests if the user is able to use the move
+    class KnockOff < BasicWithSuccessfulEffect
+      # Get the real base power of the move (taking in account all parameter)
       # @param user [PFM::PokemonBattler] user of the move
-      # @param targets [Array<PFM::PokemonBattler>] expected targets
-      # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
-      # @return [Boolean] if the procedure can continue
-      def move_usable_by_user(user, targets)
-        return false unless super
-
-        if @logic.battler_attacks_last?(user)
-          show_usage_failure(user)
-          return false
-        end
-
-        return true
+      # @param target [PFM::PokemonBattler] target of the move
+      # @return [Integer]
+      def real_base_power(user, target)
+        return @logic.item_change_handler.can_lose_item?(target, user) ? super * 1.5 : super
       end
 
       private

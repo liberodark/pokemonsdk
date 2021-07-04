@@ -15,9 +15,10 @@ module Battle
           end
           return if foes.none?
 
+          target = foes.sample(random: handler.logic.generic_rng)
           handler.scene.visual.show_ability(with)
-          handler.logic.ability_change_handler.change_ability(with, foes.sample(random: handler.logic.generic_rng).ability_db_symbol)
-          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 381, with, PFM::Text::ABILITY[1] => with.ability_name))
+          handler.logic.ability_change_handler.change_ability(with, target.ability_db_symbol)
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 381, target, PFM::Text::ABILITY[1] => with.ability_name))
         end
       end
       register(:trace, Trace)

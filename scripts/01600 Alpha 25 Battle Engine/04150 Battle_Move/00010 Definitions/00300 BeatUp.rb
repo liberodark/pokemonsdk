@@ -22,6 +22,13 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
+        unless @bu_current_battler # @bu_current_battler = nil when called by AI
+          bu_power = 0
+          @logic.all_battlers do |battler|
+            bu_power += (battler.atk_basis / 10 + 5).ceil if battler.bank == user.bank
+          end
+          return bu_power
+        end
         bu_power = (@bu_current_battler.atk_basis / 10 + 5).ceil
         log_data("power = %i # BeatUp from %s on %s (through %s)" % [bu_power, @bu_current_battler.name, target.name, user.name])
         return bu_power
