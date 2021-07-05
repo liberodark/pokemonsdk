@@ -8,6 +8,7 @@ module Battle
       log_data("# chance_of_hit(#{user}, #{target}) for #{db_symbol}")
       return 100 if user.effects.get(:lock_on)&.target == target
       return 100 if user.has_ability?(:no_guard) || target.has_ability?(:no_guard)
+      return 100 if status? && accuracy <= 0
 
       factor = logic.each_effects(user, target).reduce(1) { |product, e| product * e.chance_of_hit_multiplier(user, target, self) }
       factor *= accuracy_mod(user)
