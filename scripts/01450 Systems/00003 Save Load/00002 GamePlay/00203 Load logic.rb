@@ -1,5 +1,16 @@
 module GamePlay
   class Load
+    # Create a new game and start it
+    def create_new_game
+      create_new_party
+      $pokemon_party.expand_global_var
+      $pokemon_party.load_parameters
+      $trainer.redefine_var
+      $scene = Scene_Map.new
+      Yuki::TJN.force_update_tone
+      @running = false
+    end
+
     private
 
     # Load the current game
@@ -20,17 +31,6 @@ module GamePlay
       $trainer.redefine_var
       Yuki::FollowMe.set_battle_entry
       $pokemon_party.env.reset_zone
-      $scene = Scene_Map.new
-      Yuki::TJN.force_update_tone
-      @running = false
-    end
-
-    # Create a new game and start it
-    def create_new_game
-      create_new_party
-      $pokemon_party.expand_global_var
-      $pokemon_party.load_parameters
-      $trainer.redefine_var
       $scene = Scene_Map.new
       Yuki::TJN.force_update_tone
       @running = false

@@ -9,14 +9,18 @@ module GamePlay
       @index = 0
       @all_saves = load_all_saves
       @all_saves.clear if @all_saves.size == 1 && @all_saves.first.nil?
-      @mode = :auto_create_new_game
-      create_new_game if @all_saves.empty?
       @mode = :waiting_input
     end
 
     def update_graphics
       @base_ui&.update_background_animation
       @signs.each(&:update)
+    end
+
+    # Tell if the Title should automatically create a new game instead
+    # @return [Boolean]
+    def should_make_new_game?
+      @all_saves.empty?
     end
 
     private

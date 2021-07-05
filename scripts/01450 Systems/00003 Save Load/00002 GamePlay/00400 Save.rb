@@ -55,6 +55,6 @@ module GamePlay
       Dir.mkdir!(directory)
     end
 
-    alias create_new_game void
+    undef create_new_game
   end
 end

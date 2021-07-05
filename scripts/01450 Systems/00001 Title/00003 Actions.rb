@@ -28,6 +28,10 @@ class Scene_Title
     Yuki::MapLinker.reset
     Audio.bgm_stop
     $scene = GamePlay::Load.new
+    if $scene.should_make_new_game?
+      self.visible = false
+      $scene.create_new_game
+    end
     @running = false
   end
 
