@@ -153,6 +153,7 @@ module Battle
       Audio.bgm_play(*@battle_info.victory_bgm)
       message_window.blocking = true
       $quests.catch_pokemon(pkmn)
+      $quests.beat_pokemon(pkmn.id)
       $wild_battle.remove_roaming_pokemon(pkmn)
       display_message_and_wait(parse_text(18, 67, PKNAME[0] => pkmn.name))
       unless $pokedex.pokemon_caught?(pkmn.id)
