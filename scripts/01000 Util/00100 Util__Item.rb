@@ -63,6 +63,7 @@ module Util
         if extend_data.on_use(self) != :unused
           $bag.remove_item(extend_data.item.id, 1) if extend_data.item.limited
           display_message(message) if $scene == self
+          return_to_scene(Scene_Map) if $game_temp.common_event_id > 0
           return extend_data
         end
         return false
