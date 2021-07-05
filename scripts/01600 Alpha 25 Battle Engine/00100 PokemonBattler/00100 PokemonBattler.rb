@@ -322,7 +322,7 @@ module PFM
       self.transform = nil
       original = @original
       BACK_PROPERTIES.each do |ivar_name|
-        original.instance_variable_set(ivar_name, instance_variable_get(ivar_name))
+        original.instance_variable_set(ivar_name, @original.instance_variable_get(ivar_name))
       end
       @moveset.each_with_index do |move, i|
         @original.skills_set[i]&.pp = move.pp
