@@ -11,7 +11,10 @@ module Battle
         exec_hooks(BattleEndHandler, :battle_end, binding)
         exec_hooks(BattleEndHandler, :battle_end_no_defeat, binding) if @logic.battle_result != 2
         @logic.all_battlers(&:copy_properties_back_to_original)
-        $game_map.autoplay unless $scene.is_a?(Yuki::SoftReset) || $scene.is_a?(Scene_Title)
+        unless $scene.is_a?(Yuki::SoftReset) || $scene.is_a?(Scene_Title)
+          $game_system.bgm_play($game_system.playing_bgm)
+          $game_system.bgs_play($game_system.playing_bgs)
+        end
       end
 
       # Get the item to pick up
