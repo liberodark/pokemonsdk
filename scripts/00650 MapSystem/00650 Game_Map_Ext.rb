@@ -9,13 +9,16 @@ class Game_Map
   # @return [Integer]
   # @author Nuri Yuri
   def system_tag(x, y)
+    return Yuki::MapLinker.system_tag(x, y) unless valid?(x, y)
+
     if @map_id != 0
-      tiles = self.data
+      tiles = data
       2.downto(0) do |i|
         tile_id = tiles[x, y, i]
         return 0 unless tile_id
+
         tag_id = @system_tags[tile_id]
-        return tag_id if tag_id and tag_id > 0
+        return tag_id if tag_id && tag_id > 0
       end
     end
     return 0
@@ -28,8 +31,10 @@ class Game_Map
   # @return [Boolean]
   # @author Nuri Yuri
   def system_tag_here?(x, y, tag)
+    return Yuki::MapLinker.system_tag_here?(x, y) unless valid?(x, y)
+
     if @map_id != 0
-      tiles = self.data
+      tiles = data
       2.downto(0) do |i|
         tile_id = tiles[x, y, i]
         next unless tile_id

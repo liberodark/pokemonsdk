@@ -184,9 +184,9 @@ module Yuki
       # @author Nuri Yuri
       def system_tag(x, y)
         # @type [Yuki::Tilemap::MapData]
-        return false unless (target_map = @map_datas.find { |map| map.x_range.include?(x) && map.y_range.include?(y) })
+        return 0 unless (target_map = @map_datas.find { |map| map.x_range.include?(x) && map.y_range.include?(y) })
 
-        system_tags = $data_system_tags[@map.tileset_id]
+        system_tags = $data_system_tags[target_map.map.tileset_id]
         tiles = target_map.map.data
         x += target_map.offset_x
         y += target_map.offset_y
@@ -210,7 +210,7 @@ module Yuki
         # @type [Yuki::Tilemap::MapData]
         return false unless (target_map = @map_datas.find { |map| map.x_range.include?(x) && map.y_range.include?(y) })
 
-        system_tags = $data_system_tags[@map.tileset_id]
+        system_tags = $data_system_tags[target_map.map.tileset_id]
         tiles = target_map.map.data
         x += target_map.offset_x
         y += target_map.offset_y
