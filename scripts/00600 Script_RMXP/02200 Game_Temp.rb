@@ -64,6 +64,9 @@ class Game_Temp
   # ID of the currently processed map by the maplinker (to fetch the tileset)
   # @return [String]
   attr_accessor :maplinker_map_id
+  # Store the id of last repel used
+  attr_accessor :last_repel_used_id
+
   # Initialize with default game state
   def initialize
     @map_bgm = nil
@@ -119,5 +122,6 @@ class Game_Temp
     @trainer_battle=false
     @last_menu_index=0
     @temp_team = []
+    @last_repel_used_id = 0
   end
 end
