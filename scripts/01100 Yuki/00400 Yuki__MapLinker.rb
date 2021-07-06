@@ -254,7 +254,7 @@ module Yuki
           min = map.map.width - OFFSET_X - 2
           max = map.map.width - DELTA_MAKER - 1
           @last_event_id = ajust_events(map.map, min, max, ox, oy, @last_event_id, events, map_id, :x)
-        end        
+        end
       end
 
       # Adjust the event position and id. Move them on the current map
