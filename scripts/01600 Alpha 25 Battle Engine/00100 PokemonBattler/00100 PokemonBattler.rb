@@ -21,7 +21,7 @@ module PFM
     ]
     # List of properties to copy back to original
     BACK_PROPERTIES = %i[
-      @id @form @ability
+      @id @form
       @trainer_id @trainer_name @step_remaining @loyalty
       @hp @status @status_count @item_holding
       @captured_with @captured_in @captured_at @captured_level
@@ -322,7 +322,7 @@ module PFM
       self.transform = nil
       original = @original
       BACK_PROPERTIES.each do |ivar_name|
-        original.instance_variable_set(ivar_name, @original.instance_variable_get(ivar_name))
+        original.instance_variable_set(ivar_name, instance_variable_get(ivar_name))
       end
       @moveset.each_with_index do |move, i|
         @original.skills_set[i]&.pp = move.pp
