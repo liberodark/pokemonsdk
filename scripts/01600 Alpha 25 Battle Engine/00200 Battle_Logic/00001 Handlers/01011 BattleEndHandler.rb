@@ -136,7 +136,7 @@ module Battle
       handler.logic.battle_phase_exp
       if (v = handler.scene.battle_info.additional_money) > 0
         $pokemon_party.add_money(v)
-        handler.scene.display_message_and_wait(parse_text(18, 61, PFM::Text::TRNAME[0] => $trainer.name, '[VAR NUM6(0001,E07F)]' => v.to_s))
+        handler.scene.display_message_and_wait(parse_text(18, 61, PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => v.to_s))
       end
     end
 
