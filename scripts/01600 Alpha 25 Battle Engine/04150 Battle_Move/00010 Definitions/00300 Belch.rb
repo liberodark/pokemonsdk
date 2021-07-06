@@ -11,7 +11,7 @@ module Battle
         return false unless super
         return true if user.item_consumed && Effects::Item.new(logic, user, user.consumed_item).is_a?(Effects::Item::Berry)
 
-        show_usage_failure
+        show_usage_failure(user)
         return false
       end
     end
