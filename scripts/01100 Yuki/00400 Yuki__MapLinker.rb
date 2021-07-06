@@ -156,7 +156,9 @@ module Yuki
       # @param x [Integer] x coordinate of the tile on the map
       # @param y [Integer] y coordinate of the tile on the map
       # @param d [Integer] direction to check
-      def passable?(x, y, d = 0)
+      # @param event [Game_Character]
+      def passable?(x, y, d = 0, event = $game_player)
+        return false unless !event || event.passage_surf_check?(system_tag(x, y))
         # @type [Yuki::Tilemap::MapData]
         return false unless (target_map = @map_datas.find { |map| map.x_range.include?(x) && map.y_range.include?(y) })
 
