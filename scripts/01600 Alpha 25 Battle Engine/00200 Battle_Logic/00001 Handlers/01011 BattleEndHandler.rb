@@ -118,9 +118,10 @@ module Battle
           handler.scene.display_message_and_wait(text_get(48, id))
         end
         # Add money
-        v = handler.scene.battle_info.total_money(handler.logic)
-        $pokemon_party.add_money(v)
-        handler.scene.display_message_and_wait(parse_text(18, 60, PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => v.to_s))
+        if (v = handler.scene.battle_info.total_money(handler.logic)) > 0
+          $pokemon_party.add_money(v)
+          handler.scene.display_message_and_wait(parse_text(18, 60, PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => v.to_s))
+        end
       else
         # Victory message
         ids.each do |id|
