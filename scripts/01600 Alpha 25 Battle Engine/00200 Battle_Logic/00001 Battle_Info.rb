@@ -130,7 +130,9 @@ module Battle
       # Return the basic info about the player
       # @return [Array]
       def player_basic_info
-        return $actors, $trainer.name, GameData::Trainer.class_name(0), $game_actors[1].battler_name, $bag
+        battler_name = $game_actors[1].battler_name
+        battler_name = $game_player.charset_base if !battler_name || battler_name.empty?
+        return $actors, $trainer.name, GameData::Trainer.class_name(0), battler_name, $bag
       end
 
       # Add a party to a bank

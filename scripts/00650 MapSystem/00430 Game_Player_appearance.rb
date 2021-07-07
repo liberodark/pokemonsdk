@@ -7,7 +7,7 @@ class Game_Player
   def update_appearance(forced_pattern = 0)
     return unless @charset_base
 
-    set_appearance("#{@charset_base}_#{$game_switches[Yuki::Sw::Gender] ? 'f' : 'm'}#{chara_by_state}")
+    set_appearance("#{@charset_base}#{chara_by_state}")
     @pattern = forced_pattern
     update_pattern_state
     return true

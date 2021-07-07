@@ -115,10 +115,11 @@ class Game_Character
 
   def reset_follower
     return unless (current_follower = @follower)
+
     while (next_follower = current_follower.follower)
-      break unless next_follower.is_a?(Game_Event)
       current_follower.set_follower(nil)
       current_follower = next_follower
+      break unless next_follower.is_a?(Game_Event)
     end
     # @follower = nil
     set_follower(nil)
