@@ -158,13 +158,19 @@ module Scheduler
   # Return the object of the Boot Scene (usually Scene_Title)
   # @return [Object]
   def get_boot_scene
-    return Yuki::SystemTagEditor if PARGV[:tags]
+    if PARGV[:tags]
+      ScriptLoader.load_tool('Editors/SystemTags')
+      return Editors::SystemTags.new
+    end
     return Yuki::WorldMapEditor if PARGV[:worldmap]
     return Yuki::AnimationEditor if PARGV[:"animation-editor"]
+
     test = PARGV[:test].to_s # ARGV.grep(/--test=./).first.to_s.gsub("--test=","")
     return Scene_Title.new if test.empty?
+
     test = "tests/#{test}.rb"
     return Tester.new(test) if File.exist?(test)
+
     return Scene_Title.new
   end
 end

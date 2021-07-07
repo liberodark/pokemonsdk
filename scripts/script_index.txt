@@ -177,11 +177,7 @@ pokemonsdk/scripts/01100 Yuki/00100 Yuki__Sprite.rb
 pokemonsdk/scripts/01100 Yuki/00400 Yuki__MapLinker.rb
 pokemonsdk/scripts/01100 Yuki/00600 Yuki__TJN.rb
 pokemonsdk/scripts/01100 Yuki/00700 Yuki__Berries.rb
-pokemonsdk/scripts/01100 Yuki/00800 Yuki__Utils.rb
-pokemonsdk/scripts/01100 Yuki/01100 Yuki__SystemTagEditor.rb
 pokemonsdk/scripts/01100 Yuki/01200 Yuki__WorldMapEditor.rb
-pokemonsdk/scripts/01100 Yuki/01400 Yuki__VisualDebug.rb
-pokemonsdk/scripts/01100 Yuki/01500 Yuki__ScrollBar.rb
 pokemonsdk/scripts/01100 Yuki/01600 Yuki__Transitions.rb
 pokemonsdk/scripts/01100 Yuki/01800 Yuki__Sw.rb
 pokemonsdk/scripts/01100 Yuki/01900 Yuki__Var.rb

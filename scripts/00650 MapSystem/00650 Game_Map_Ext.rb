@@ -47,13 +47,8 @@ class Game_Map
   # Loads the SystemTags of the map
   # @author Nuri Yuri
   def load_systemtags
+    $data_system_tags[@map.tileset_id] ||= Array.new($data_tilesets[@map.tileset_id].priorities.xsize, 0)
     @system_tags = $data_system_tags[@map.tileset_id]
-    unless @system_tags
-      print "Les tags du tileset #{@map.tileset_id} n'existent pas. 
-PSDK va entrer en configuration des SystemTags merci de les sauvegarder"
-      Yuki::SystemTagEditor.start
-      @system_tags = $data_system_tags[@map.tileset_id]
-    end
   end
 
   # Retrieve the id of a specific tile
