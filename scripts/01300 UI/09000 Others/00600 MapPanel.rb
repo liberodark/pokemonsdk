@@ -38,7 +38,8 @@ module UI
     end
 
     def create_animation
-      @animation = Yuki::Animation.move_discreet(0.54, self, x, y, x, y + DELTA_Y)
+      @animation = Yuki::Animation.wait_signal { $game_temp.transition_processing == false }
+      @animation.play_before(Yuki::Animation.move_discreet(0.54, self, x, y, x, y + DELTA_Y))
       @animation.play_before(Yuki::Animation.wait(1.5))
       @animation.play_before(Yuki::Animation.move_discreet(0.54, self, x, y + DELTA_Y, x, y))
       @animation.start
