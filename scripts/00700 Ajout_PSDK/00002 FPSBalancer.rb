@@ -1,6 +1,8 @@
 module Graphics
   # Class helping to balance FPS on FPS based things
   class FPSBalancer
+    # Tell if the system tolerate 10% error in order to avoid unecessary skip
+    TEN_TOLERANCE = true
     @globally_enabled = true
     @last_f3_up = Time.new - 10
     # Create a new FPSBalancer
@@ -13,9 +15,11 @@ module Graphics
 
     # Update the metrics of the FPSBalancer
     def update
-      @delta_accumulator += Graphics.delta
       expected_delta = (1.0 / Graphics.frame_rate)
-      @frame_to_execute = (real_frame_to_execute = (@delta_accumulator / expected_delta).floor).clamp(0, 3)
+      delta = Graphics.delta
+      delta = expected_delta if TEN_TOLERANCE && (delta / expected_delta) <= 0.1
+      @delta_accumulator += delta
+      @frame_to_execute = (real_frame_to_execute = (@delta_accumulator / expected_delta).floor).clamp(0, 10)
       @delta_accumulator -= (real_frame_to_execute * expected_delta)
       if Sf::Keyboard.press?(Sf::Keyboard::F3)
         FPSBalancer.last_f3_up = Graphics.current_time
