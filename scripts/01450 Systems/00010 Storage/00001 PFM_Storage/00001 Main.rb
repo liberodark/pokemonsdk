@@ -188,6 +188,17 @@ module PFM
       end
     end
 
+    # Yield a block on each Pokemon of storage and check if any answers to the block
+    # @yieldparam pokemon [PFM::Pokemon]
+    # @return [Boolean]
+    def any_pokemon?
+      @boxes.any? do |box|
+        box.content.any? do |pokemon|
+          yield(pokemon) if pokemon
+        end
+      end
+    end
+
     # Delete a box
     # @param index [Integer] index of the box to delete
     def delete_box(index)
