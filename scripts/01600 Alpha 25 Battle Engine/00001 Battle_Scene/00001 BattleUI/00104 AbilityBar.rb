@@ -16,6 +16,9 @@ module BattleUI
     # Get the scene linked to this object
     # @return [Battle::Scene]
     attr_reader :scene
+    # Get if the animation out should be not played automatically
+    # @return [Boolean]
+    attr_reader :no_go_out
 
     # Create a new Ability Bar
     # @param viewport [Viewport]
@@ -28,6 +31,7 @@ module BattleUI
       @bank = bank
       @position = position
       @animation_handler = Yuki::Animation::Handler.new
+      @no_go_out = false
       create_sprites
       set_position(*sprite_position)
     end
@@ -41,6 +45,18 @@ module BattleUI
     # @return [Boolean]
     def done?
       return @animation_handler.done?
+    end
+
+    # @!method animation_handler
+    #   Get the animation handler
+    #   @return [Yuki::Animation::Handler{ Symbol => Yuki::Animation::TimedAnimation}]
+    # Tell the ability to go into the scene
+    # @param [Boolean] no_go_out Set if the animation out should be not played automatically
+    def go_in_ability(no_go_out = false)
+      delta = go_in_out_delta
+      animation_handler[:in_out] ||= go_in_animation(no_go_out)
+      animation_handler[:in_out].start(delta)
+      @__in_out = :in
     end
 
     private
@@ -61,11 +77,15 @@ module BattleUI
     end
 
     # Creates the go_in animation
+    # @param [Boolean] no_go_out Set if the out animation should be not played automatically
     # @return [Yuki::Animation::TimedAnimation]
-    def go_in_animation
+    def go_in_animation(no_go_out)
+      @no_go_out = no_go_out
       origin_x = enemy? ? @viewport.rect.width : -@background.width
 
       animation = Yuki::Animation.move_discreet(0.1, self, origin_x, y, *sprite_position)
+      return animation if @no_go_out
+
       animation.play_before(Yuki::Animation.wait(1.2))
       animation.play_before(go_out_animation)
 
@@ -75,6 +95,7 @@ module BattleUI
     # Creates the go_out animation
     # @return [Yuki::Animation::TimedAnimation]
     def go_out_animation
+      @no_go_out = false
       target_x = enemy? ? @viewport.rect.width : -@background.width
 
       return Yuki::Animation.move_discreet(0.1, self, *sprite_position, target_x, y)

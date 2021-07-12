@@ -43,18 +43,28 @@ module Battle
 
     # Show the ability animation
     # @param target [PFM::PokemonBattler]
-    def show_ability(target)
+    # @param [Boolean] no_go_out Set if the out animation should be not played automatically
+    def show_ability(target, no_go_out = false)
       ability_bar = @ability_bars[target.bank][target.position]
       item_bar = @item_bars[target.bank][target.position]
       return unless ability_bar
 
       ability_bar.data = target
-      ability_bar.go_in
+      ability_bar.go_in_ability(no_go_out)
       if !item_bar || item_bar.done?
         ability_bar.z = 0
       else
         ability_bar.z = item_bar.z + 1
       end
+    end
+
+    # Hide the ability animation (no effect if no_go_out = false)
+    # @param target [PFM::PokemonBattler]
+    def hide_ability(target)
+      ability_bar = @ability_bars[target.bank][target.position]
+      return unless ability_bar || ability_bar.no_go_out
+
+      ability_bar.go_out
     end
 
     # Show the item user animation
