@@ -8,6 +8,7 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, _actual_targets)
+        return unless user.from_party?
         m = user.level * 5
         scene.battle_info.additional_money += m
         scene.display_message_and_wait(parse_text(18, 128))
