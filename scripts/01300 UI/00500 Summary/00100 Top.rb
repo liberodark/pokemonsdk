@@ -60,7 +60,7 @@ module UI
 
     # @return [Sprite]
     def create_ball
-      push(107, 11, nil, ox: 16, oy: 16)
+      push(97, 16, nil, ox: 16, oy: 16)
     end
 
     # @return [Sprite]
