@@ -152,6 +152,7 @@ module Battle
     def give_pokemon_procedure(pkmn, ball)
       Audio.bgm_play(*@battle_info.victory_bgm)
       message_window.blocking = true
+      message_window.wait_input = true
       $quests.catch_pokemon(pkmn)
       $quests.beat_pokemon(pkmn.id)
       $wild_battle.remove_roaming_pokemon(pkmn)
