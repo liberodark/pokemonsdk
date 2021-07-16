@@ -7,7 +7,7 @@ module Battle
       # - Call initialize_with_targets
       module WithTargets
         # Init the mechanic
-        # @param pokemon [Array<PFM::PokemonBattler>, PFM::PokemonBattler] battler targetted by the effect
+        # @param targets [Array<PFM::PokemonBattler>, PFM::PokemonBattler] battler targetted by the effect
         def initialize_with_targets(targets)
           @wt_targets = [targets].flatten
         end

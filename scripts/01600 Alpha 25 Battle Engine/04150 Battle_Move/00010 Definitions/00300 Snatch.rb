@@ -13,6 +13,7 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
         return show_usage_failure(user) && false if targets.all? { |pkm| pkm.effects.has?(effect_name) }
+
         return true
       end
 
@@ -24,7 +25,7 @@ module Battle
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
           next if target.effects.has?(effect_name)
-          
+
           target.effects.add(create_effect(user, target))
           scene.display_message_and_wait(deal_message(user, target))
         end
@@ -44,7 +45,7 @@ module Battle
 
       # Message displayed when the move succeed
       # @param user [PFM::PokemonBattler] user of the move
-      # @param actual_target [PFM::PokemonBattler]
+      # @param target [PFM::PokemonBattler]
       # @return [String]
       def deal_message(user, target)
         parse_text_with_pokemon(19, 751, target)

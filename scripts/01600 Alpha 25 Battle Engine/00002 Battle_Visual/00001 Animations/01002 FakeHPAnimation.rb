@@ -5,7 +5,6 @@ module Battle
       # Create the HP Animation
       # @param scene [Battle::Scene] scene responsive of holding all the battle information
       # @param target [PFM::PokemonBattler] Pokemon getting its HP down/up
-      # @param quantity [Integer] quantity of HP the Pokemon is getting
       # @param effectiveness [Integer, nil] optional param to play the effectiveness sound if that comes from using a move
       def initialize(scene, target, effectiveness = nil)
         @scene = scene

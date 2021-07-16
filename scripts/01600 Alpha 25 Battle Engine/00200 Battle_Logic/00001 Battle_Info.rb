@@ -81,7 +81,7 @@ module Battle
         # @param id_trainer1 [Integer]
         # @param id_trainer2 [Integer]
         # @param id_friend [Integer]
-        # @return battle_info [Battle::Logic::BattleInfo]
+        # @return [Battle::Logic::BattleInfo]
         def from_old_psdk_settings(id_trainer1, id_trainer2 = 0, id_friend = 0)
           battle_info = BattleInfo.new
           # Add Player party

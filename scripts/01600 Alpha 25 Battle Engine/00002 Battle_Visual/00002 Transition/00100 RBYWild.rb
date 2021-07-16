@@ -79,7 +79,6 @@ module Battle
         end
 
         # Function that creates the fade in animation
-        # @param ya [Module<Yuki::Animation>]
         def create_fadein_animation
           # We need to display all the cells in order so we will build an array from that
           cells = (@top_sprite.nb_x * @top_sprite.nb_y).times.map { |i| [i % @top_sprite.nb_x, i / @top_sprite.nb_x] }

@@ -18,7 +18,6 @@ module Battle
       # Return the effect of the move
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target that will be affected by the effect
-      # @param countdown [Integer] THe number of turn before the effect proc
       # @return [Effects::EffectBase]
       def create_effect(user, target)
         Effects::PerishSong.new(logic, target, 4)

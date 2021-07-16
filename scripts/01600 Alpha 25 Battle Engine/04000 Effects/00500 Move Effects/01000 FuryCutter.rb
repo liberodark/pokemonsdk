@@ -7,7 +7,7 @@ module Battle
       # Create a new Pokemon tied effect
       # @param logic [Battle::Logic]
       # @param pokemon [PFM::PokemonBattler]
-      # @param pokemon [Battle::Move]
+      # @param move [Battle::Move]
       def initialize(logic, pokemon, move)
         super(logic, pokemon)
         init_successive_successful_uses(pokemon, move)

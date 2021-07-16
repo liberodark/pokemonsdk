@@ -1,7 +1,7 @@
 module Battle
   module Effects
     # Drowsiness make the pokemon fall asleep after a certain amount of turns, applied by Yawn
-    # @source https://bulbapedia.bulbagarden.net/wiki/Yawn_(move)
+    # @see https://bulbapedia.bulbagarden.net/wiki/Yawn_(move)
     class Drowsiness < PokemonTiedEffectBase
       # Create a new Pokemon tied effect
       # @param logic [Battle::Logic]

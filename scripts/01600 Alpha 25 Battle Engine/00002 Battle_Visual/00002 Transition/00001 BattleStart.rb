@@ -151,7 +151,6 @@ module Battle
 
     # When the trainer has no class and it sends out its Pokemon
     # @param name [String] name of the trainer
-    # @param class_name [String] class of the trainer
     # @param index [String] index of the trainer in the name array
     # @return [String]
     def trainer_sending_pokemon_start_no_class(name, index)

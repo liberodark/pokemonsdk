@@ -13,7 +13,7 @@
 | [Event Making Tutorial](https://psdk.pokemonworkshop.fr/wiki/en/event_making/index.html)
 | [Edit Database](https://psdk.pokemonworkshop.fr/wiki/en/ruby_host/index.html)
 | [Wiki](https://psdk.pokemonworkshop.com/en/)
-| [LiteRGSS Documentation](https://psdk.pokemonworkshop.com/litergss/)
+| [LiteRGSS Documentation](https://psdk.pokemonworkshop.fr/yard/LiteRGSS.html)
 
 ### Database Indexes
 
@@ -26,7 +26,7 @@
 
 Contrary to `PSP` or `Essentials`, `PSDK` doesn't use the RGSS. We wrote a graphic engine called `LiteRGSS` using `SFML`, which allows a better mastering of the Graphic part of PSDK like adding Shaders, turning some graphic process to C++ side etc...
 
-* Game Engine : `LiteRGSS` (under `Ruby 2.5.0`)
+* Game Engine : `LiteRGSS2` (under `Ruby 3.0.1`)
 * Default screen size : `320x240` (upscaled to `640x480`)
 * Sound : [FMOD](http://www.fmod.org/) (Support: Midi, WMA, MP3, OGG, MOD, WAVE)
 * Map Editor
@@ -34,10 +34,9 @@ Contrary to `PSP` or `Essentials`, `PSDK` doesn't use the RGSS. We wrote a graph
     * [Tiled](https://pokemonworkshop.fr/forum/index.php?topic=4617.0)
 * Event Editor
     * `RMXP`
-    * WIP : VSCODE
 * Database Editor
     * `RubyHost`
-* Dependencies : `SFML`, `LodePNG`, `libnsgif`, `FMOD`, `OpenGL`
+* Dependencies : `SFML`, `LodePNG`, `libnsgif`, `FMOD`, `OpenGL`, `sfeMovie`, `ffmpeg`
 
 ## PSDK Features
 ### System Features
@@ -46,13 +45,12 @@ Contrary to `PSP` or `Essentials`, `PSDK` doesn't use the RGSS. We wrote a graph
 - Particle System (display animation on characters according to the terrain without using RMXP animations)
 - [FollowMe](https://psdk.pokemonworkshop.fr/wiki/en/event_making/followme.html) (also known as Following Pokémon)
 - [Quests](https://psdk.pokemonworkshop.fr/wiki/en/ruby_host/quest.html)
-- Double & Online Battles (P2P)
+- Double Battles
 - Running shoes
 - Key Binding UI (F1)
 - Multi-DayCare
 - Berry System
-- Online Trades (P2P)
-- GTS (you need to add an [external script](https://reliccastle.com/resources/314/))
+- GTS
 
 ### Mapping & Event Making Features
 
@@ -78,3 +76,5 @@ Contrary to `PSP` or `Essentials`, `PSDK` doesn't use the RGSS. We wrote a graph
 ### Mini-Games
 - Voltorb Flip
 - Ruins of Alph puzzle
+- Mining Game
+- Slot Machines

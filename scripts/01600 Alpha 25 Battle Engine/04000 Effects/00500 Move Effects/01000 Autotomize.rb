@@ -8,7 +8,7 @@ module Battle
       WEIGHT_MOVES.default = 100
       # Create a new autotomize effect
       # @param logic [Battle::Logic]
-      # @param bank [Integer] bank where the effect acts
+      # @param pokemon [PFM::PokemonBattler]
       # @param move [Battle::Move] the move that created the effect
       def initialize(logic, pokemon, move)
         super(logic, pokemon)

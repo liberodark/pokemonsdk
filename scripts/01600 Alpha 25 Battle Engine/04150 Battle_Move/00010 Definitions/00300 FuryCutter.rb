@@ -27,13 +27,13 @@ module Battle
       end
 
       # Max base power of the move.
-      # @type [Integer]
+      # @return [Integer]
       def max_power
         160
       end
 
       # Class of the effect
-      # @type [Class]
+      # @return [Symbol]
       def effect_name
         :fury_cutter
       end

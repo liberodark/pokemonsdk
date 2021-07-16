@@ -5,7 +5,7 @@ module Battle
       #
       # **Requirement**
       # - Call initialize_with_marked_targets
-      # 
+      #
       # **Initialization exemple**
       # ```ruby
       # # Inside EffectBase child class
@@ -17,7 +17,7 @@ module Battle
         # Initialize the mechanic
         # @param user [PFM::PokemonBattler, nil]
         # @param targets [Array<PFM::PokemonBattler>]
-        # @param &block block taking one argument (PFM::PokemonBattler) and return an EffectBase
+        # @param block [Proc] block taking one argument (PFM::PokemonBattler) and return an EffectBase
         def initialize_with_marked_targets(user, targets, &block)
           initialize_with_targets(targets)
           @wmt_user = user

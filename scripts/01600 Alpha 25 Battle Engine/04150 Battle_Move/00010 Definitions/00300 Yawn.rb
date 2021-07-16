@@ -1,7 +1,7 @@
 module Battle
   class Move
     # Class that manage the Yawn skill, works together with the Effects::Drowsiness class
-    # @source https://bulbapedia.bulbagarden.net/wiki/Yawn_(move)
+    # @see https://bulbapedia.bulbagarden.net/wiki/Yawn_(move)
     class Yawn < Move
       private
 

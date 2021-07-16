@@ -7,10 +7,10 @@ module Battle
       # Create a new Pokemon tied effect
       # @param logic [Battle::Logic]
       # @param pokemon [PFM::PokemonBattler]
-    # @param turn_count [Integer]
-      def initialize(logic, pokemon, turncount)
+      # @param turn_count [Integer]
+      def initialize(logic, pokemon, turn_count)
         super(logic, pokemon)
-        neutralize_type_initialize(pokemon, turncount)
+        neutralize_type_initialize(pokemon, turn_count)
       end
 
       # Get the name of the effect

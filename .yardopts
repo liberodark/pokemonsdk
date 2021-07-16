@@ -12,10 +12,11 @@
 --exclude "scripts/my_scripts/"
 --exclude "scripts/tools/"
 --exclude "scripts/01500 *"
---exclude "scripts/01600 Alpha 25 Battle Engine/"
+--exclude "scripts/LiteRGSS.rb"
 --readme README.md
 
 --no-private scripts/*.rb
 --no-private scripts/**/*.rb
+LiteRGSS.rb.yard.rb
 
 - "# Describe Item.md" "# PSDK .25 AI.md" "# PSDK .25 BE.md" "# Yuki Animation.md"

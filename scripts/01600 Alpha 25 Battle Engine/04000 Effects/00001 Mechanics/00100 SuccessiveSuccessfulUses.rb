@@ -30,7 +30,6 @@ module Battle
         end
 
         # List of the moves that don't break the continuity and don't increment
-        # @type [Array[Symbol]]
         ACCEPTED_MOVES = %i[mirror_move]
 
         # List of the moves that don't break the continuity and don't increment

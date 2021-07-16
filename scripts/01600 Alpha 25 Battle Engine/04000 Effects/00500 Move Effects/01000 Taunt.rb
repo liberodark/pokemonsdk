@@ -5,7 +5,6 @@ module Battle
       # Create a new Pokemon tied effect
       # @param logic [Battle::Logic]
       # @param pokemon [PFM::PokemonBattler]
-      # @param move [Battle::Move] move that is disabled
       def initialize(logic, pokemon)
         super(logic, pokemon)
         self.counter = 3

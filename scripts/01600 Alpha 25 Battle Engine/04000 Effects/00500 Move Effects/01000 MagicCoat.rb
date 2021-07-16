@@ -5,7 +5,6 @@ module Battle
       # Create a new Electrify effect
       # @param logic [Battle::Logic]
       # @param target [PFM::PokemonBattler]
-      # @param type [Integer]
       def initialize(logic, target)
         super(logic, target)
         self.counter = 1

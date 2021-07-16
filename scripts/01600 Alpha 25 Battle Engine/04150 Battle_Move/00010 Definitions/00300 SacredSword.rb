@@ -3,7 +3,7 @@ module Battle
     # Inflict Sacred Sword to an enemy (ignore evasion and defense stats change)
     class SacredSword < Basic
       # Return the evasion modifier of the target
-      # @param target [PFM::PokemonBattler]
+      # @param _target [PFM::PokemonBattler]
       # @return [Float]
       def evasion_mod(_target)
         return 1

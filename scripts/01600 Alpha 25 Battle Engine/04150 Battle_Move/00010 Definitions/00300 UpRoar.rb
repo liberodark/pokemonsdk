@@ -60,7 +60,7 @@ module Battle
       # Create the effect
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets
-      # @eturn [Effects::EffectBase]
+      # @return [Effects::EffectBase]
       def create_effect(user, actual_targets)
         Effects::UpRoar.new(logic, user, self, actual_targets, 3)
       end

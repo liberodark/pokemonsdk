@@ -18,7 +18,7 @@ module Battle
 
       # Tell if an effect is present
       # @param name [Symbol, nil] name of the effect. Ignored if a block is given.
-      # @param &block [Block, nil] (optional) block testing each effect
+      # @param block [Proc, nil] (optional) block testing each effect
       # @return [Boolean] if the effect is present
       # @yieldparam effect [EffectBase]
       def has?(name = nil, &block)
@@ -35,7 +35,7 @@ module Battle
 
       # Replace the effects matching the block by the new one
       # @param effect [EffectBase]
-      # @param block [Block]
+      # @param block [Proc]
       def replace(effect, &block)
         @effects.find_all(&block).each(&:kill)
         deleted_dead_effects
@@ -44,7 +44,7 @@ module Battle
 
       # Get an effect using its name or a block
       # @param name [Symbol, nil] name of the effect. Ignored if a block is given.
-      # @param &block [Block, nil] (optional) block testing each effect
+      # @param block [Proc, nil] (optional) block testing each effect
       # @return [EffectBase, nil]
       # @yieldparam effect [EffectBase]
       def get(name = nil, &block)
@@ -55,7 +55,7 @@ module Battle
 
       # Get every effects responding to a name or a block
       # @param name [Symbol, nil] name of the effects. Ignored if a block is given.
-      # @param &block [Block, nil] (optional) block testing each effect
+      # @param block [Proc, nil] (optional) block testing each effect
       # @return [Array<EffectBase>, Array<NilClass>]
       # @yieldparam effect [EffectBase]
       def get_all(name = nil, &block)

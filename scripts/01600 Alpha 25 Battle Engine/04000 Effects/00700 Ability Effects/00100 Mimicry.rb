@@ -23,8 +23,8 @@ module Battle
 
         # Function called after the weather was changed (post_weather_change)
         # @param handler [Battle::Logic::WeatherChangeHandler]
-        # @param weather_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
-        # @param last_weather [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
+        # @param fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
+        # @param last_fterrain [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
         def on_post_fterrain_change(handler, fterrain_type, last_fterrain)
           case fterrain_type
           when :none

@@ -12,7 +12,7 @@ module Battle
 
     # Call a named event to let the Maker put some personnal configuration of the battle
     # @param name [Symbol] name of the event
-    # @param *args [Array] arguments of the event if any
+    # @param args [Array] arguments of the event if any
     def call_event(name, *args)
       return unless (event = @battle_events[name]) && event.is_a?(Proc)
       log_debug("Calling #{name} battle event.")

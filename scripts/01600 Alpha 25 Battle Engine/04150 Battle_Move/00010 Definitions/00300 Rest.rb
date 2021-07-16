@@ -1,7 +1,7 @@
 module Battle
   class Move
     # Class managing Rest
-    # @source https://bulbapedia.bulbagarden.net/wiki/Rest_(move)
+    # @see https://bulbapedia.bulbagarden.net/wiki/Rest_(move)
     class Rest < Move
       # Function that tests if the targets blocks the move
       # @param user [PFM::PokemonBattler] user of the move

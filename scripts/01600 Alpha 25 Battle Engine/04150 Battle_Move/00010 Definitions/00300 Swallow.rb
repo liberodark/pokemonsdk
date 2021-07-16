@@ -24,7 +24,7 @@ module Battle
 
       # Function that deals the heal to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
-      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+      # @param targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, targets)
         targets.each do |target|
           effect = target.effects.get(effect_name)

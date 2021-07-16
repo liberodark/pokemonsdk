@@ -65,7 +65,6 @@ module BattleUI
     # Show the level up message
     # @param receiver [PFM::PokemonBattler]
     # @param show_message [Boolean] tell if the level up message should be shown
-    # @param list [Array]
     def level_up_message(receiver, show_message: false)
       original = receiver.original
       PFM::Text.set_num3(original.level.to_s, 1)

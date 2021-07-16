@@ -275,7 +275,7 @@ module LiteRGSS
     #   @param y [Numeric]
     #   @return [self]
     # @!method set_origin(ox, oy)
-    # Define the origine of the sprite (inside the texture)
+    #   Define the origine of the sprite (inside the texture)
     #   @param ox [Numeric]
     #   @param oy [Numeric]
     #   @return [self]
@@ -456,7 +456,7 @@ module LiteRGSS
     #   @return [Integer, nil] y coordinate of the pause sprite in the Window (if nil, bottom of the window)
     # @!attribute [rw] active
     #   @return [Boolean] if the Window show the cursor
-    # @!attrbute [rw] stretch
+    # @!attribute [rw] stretch
     #   @return [Boolean] if the Window draw the frame by stretching the border (true) or by repeating the middle border tiles (false)
     # @!attribute [rw] opacity
     #   @return [Integer] opacity of the whole Window
@@ -469,7 +469,7 @@ module LiteRGSS
     #   @return [Rect] rect corresponding to the view of the Window (Viewport compatibility)
     # @!attribute [rw] visible
     #   @return [Boolean] if the window is visible or not
-    # @!attribute [r]
+    # @!attribute [r] __index__
     #   @return [Integer] internal index of the Window in the Viewport stack when it was created
   end
   # Class allowing to draw Shapes in a viewport
@@ -514,9 +514,9 @@ module LiteRGSS
     #   @return [Integer] z order of the Shape in the viewport
     # @!attribute [rw] ox
     #   @return [Integer] origin x of the Shape
-    # !@attribute [rw] oy
+    # @!attribute [rw] oy
     #   @return [Integer] origin y of the Shape
-    # !@method set_origin(ox, oy)
+    # @!method set_origin(ox, oy)
     #   Change the origin of the Shape
     #   @param ox [Integer]
     #   @param oy [Integer]

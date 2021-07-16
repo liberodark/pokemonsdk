@@ -8,7 +8,6 @@ module Battle
       # @param logic [Battle::Logic]
       # @param target [PFM::PokemonBattler]
       # @param move [Battle::Move]
-      # @param counter [Integer] number of turn the move is forced to be used
       # @param targets [Array<PFM::PokemonBattler>]
       # @param turncount [Integer] (default: 5) number of turn the effect proc (including the current one)
       def initialize(logic, target, move, targets, turncount = 2)
@@ -56,7 +55,6 @@ module Battle
       # @param logic [Battle::Logic]
       # @param target [PFM::PokemonBattler]
       # @param move [Battle::Move]
-      # @param counter [Integer] number of turn the move is forced to be used
       # @param targets [Array<PFM::PokemonBattler>]
       # @param turncount [Integer] (default: 5) number of turn the effect proc (including the current one)
       def initialize(logic, target, move, targets, turncount = 2)
@@ -80,7 +78,6 @@ module Battle
       # @param logic [Battle::Logic]
       # @param target [PFM::PokemonBattler]
       # @param move [Battle::Move]
-      # @param counter [Integer] number of turn the move is forced to be used
       # @param targets [Array<PFM::PokemonBattler>]
       # @param turncount [Integer] (default: 5) number of turn the effect proc (including the current one)
       def initialize(logic, target, move, targets, turncount = 3)
