@@ -3,13 +3,13 @@ module UI
     # Class responsive of handling the selection
     class SelectionHandler
       # Set the current storage object
-      # @param storage [PFM::Storage]
+      # @return [PFM::Storage]
       attr_writer :storage
       # Set the current cursor handler
-      # @param cursor [CursorHandler]
+      # @return [CursorHandler]
       attr_writer :cursor
       # Set the current party
-      # @param party [Array<PFM::Pokemon>]
+      # @return [Array<PFM::Pokemon>]
       attr_writer :party
       # Create a new selection handler
       # @param mode_handler [ModeHandler] object responsive of handling the mode
@@ -140,7 +140,7 @@ module UI
       end
 
       # Define the party selection display
-      # @parma party_display [#update_selection(arr)]
+      # @param party_display [#update_selection(arr)]
       def party_selection_display=(party_display)
         @party_display = party_display
       end

@@ -83,7 +83,6 @@ module UI
     # Create a new KeyBinding sprite
     # @param viewport [Viewport]
     # @param key [Symbol] Input.trigger? argument
-    # @param index [Integer] Index of the key in the Keys constant
     def initialize(viewport, key)
       super(viewport)
       @key = key

@@ -42,10 +42,8 @@ module Util
       end
     end
 
-    # Display the give item message
-    # @param item1 [Integer] taken item
-    # @param item2 [Integer] given item
-    # @param pokemon [PFM::Pokemon] Pokemong getting the item
+    # Display the give item message to an egg
+    # @param item [Integer] given item
     def givetake_give_egg_message(item)
       display_message(parse_text(22, 94, PFM::Text::ITEM2[0] => GameData::Item[item].name))
     end

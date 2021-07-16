@@ -103,7 +103,7 @@ module UI
       end
 
       # Set the current mode
-      # @param selection_mode [Symbol]
+      # @param mode [Symbol]
       def mode=(mode)
         @mode = mode
         update_graphics

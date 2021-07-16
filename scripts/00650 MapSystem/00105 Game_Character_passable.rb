@@ -42,7 +42,7 @@ class Game_Character
   # Check the bridge related passabilities
   # @param x [Integer] current x position
   # @param y [Integer] current y position
-  # @param z [Integer] current direction
+  # @param d [Integer] current direction
   # @param new_x [Integer] new x position
   # @param new_y [Integer] new y position
   # @param z [Integer] current z position

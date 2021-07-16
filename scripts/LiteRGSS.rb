@@ -717,7 +717,7 @@ module LiteRGSS
     Geometry = sf::Shader::Type::Geometry
     # @!method load(fragment_code)
     #   Load a fragment shader from memory
-    #   @param framgment_code [String] shader code of the fragment shader
+    #   @param fragment_code [String] shader code of the fragment shader
     # @!method load(code, type)
     #   Load a shader from memory
     #   @param code [String] the code of the shader
@@ -733,7 +733,7 @@ module LiteRGSS
     #   @param fragment_code [String]
     # @!method self.new(fragment_code)
     #   Load a fragment shader from memory
-    #   @param framgment_code [String] shader code of the fragment shader
+    #   @param fragment_code [String] shader code of the fragment shader
     # @!method self.new(code, type)
     #   Load a shader from memory
     #   @param code [String] the code of the shader

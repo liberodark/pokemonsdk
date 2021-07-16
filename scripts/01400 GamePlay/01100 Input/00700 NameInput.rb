@@ -63,16 +63,16 @@ module GamePlay
     # Update the displayed name (according to a list of chars)
     # @param chars [Array<String>] all the chars that controls the name (add / remove / validate)
     # @param from_clipboard [Boolean] if the chars comes from the clipboard
-    def update_name(chars, from_clipboad = false)
+    def update_name(chars, from_clipboard = false)
       chars.each do |char|
         ord = char.ord
         if char_valid?(ord)
           @name_input_ui.add_char(char)
-        elsif ord == 13 && !from_clipboad
+        elsif ord == 13 && !from_clipboard
           confirm_name
         elsif ord == 8
           @name_input_ui.remove_char
-        elsif ord == 22 && !from_clipboad
+        elsif ord == 22 && !from_clipboard
           update_name(Yuki.get_clipboard.to_s.chars, true)
         end
       end

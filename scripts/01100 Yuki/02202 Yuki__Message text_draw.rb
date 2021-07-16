@@ -228,14 +228,14 @@ module Yuki
     end
 
     # Call a marker action
-    # @param maker [Array]
+    # @param marker [Array]
     def call_marker_action(marker)
       sym = :"execute_marker_#{marker.first}"
       send(sym, marker)
     end
 
     # Change the color
-    # @param maker [Array]
+    # @param marker [Array]
     def execute_marker_1(marker)
       @color = translate_color(marker.last % GameData::Colors::COLOR_COUNT)
       marker_fix_x
@@ -247,21 +247,21 @@ module Yuki
     end
 
     # Wait
-    # @param maker [Array]
+    # @param marker [Array]
     def execute_marker_2(marker)
       marker.last.times { message_update_processing }
       marker_fix_x
     end
 
     # Style
-    # @param maker [Array]
+    # @param marker [Array]
     def execute_marker_3(marker)
       @style = marker.last
       marker_fix_x
     end
 
     # Bigger text
-    # @param _maker [Array]
+    # @param _marker [Array]
     def execute_marker_4(_marker)
       @style ^= 0x04
     end

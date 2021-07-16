@@ -126,7 +126,7 @@ module BattleUI
       # @param pokemon [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler]
       # @param move [Battle::Move]
-      # @parma is_target [Boolean]
+      # @param is_target [Boolean]
       def initialize(viewport, index, row_size, pokemon, launcher, move, is_target)
         super(viewport, *process_coordinates(index, row_size))
         create_sprites

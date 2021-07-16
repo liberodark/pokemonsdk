@@ -14,7 +14,7 @@ module Yuki
       # @return [RPG::Map]
       attr_reader :map
       # Get the map id
-      # @reutrn [Integer]
+      # @return [Integer]
       attr_reader :map_id
       # Get the map X coordinate range
       # @return [Range]

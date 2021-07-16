@@ -29,7 +29,7 @@ module GamePlay
     # @param diggable [PFM::MiningGame::Diggable, Boolean] either the actual object or a boolean (true for iron, false otherwise)
     # @param reveal [Boolean] if an item is revealed by the hit
     # @param newly_revealed [Boolean] if an item is fully revealed for the first time
-    # @return animation [Yuki::Animation::ResolverObjectCommand]
+    # @return [Yuki::Animation::ResolverObjectCommand]
     def tool_sprite_anim(diggable, reveal, newly_revealed)
       anim = Yuki::Animation
       animation = anim.send_command_to(@tool_sprite, :sx=, 0)
@@ -73,7 +73,7 @@ module GamePlay
     # Setup the animation for @tool_hit_sprite or @iron_hit_sprite
     # @param diggable [PFM::MiningGame::Diggable, Boolean] either the actual object or a boolean (true for iron, false otherwise)
     # @param reveal [Boolean] if an item is revealed by the hit
-    # @return animation [Yuki::Animation::ResolverObjectCommand]
+    # @return [Yuki::Animation::ResolverObjectCommand]
     def tool_hit_sprite_anim(diggable, reveal)
       anim = Yuki::Animation
       nb = diggable ? 1 : 0
@@ -101,7 +101,7 @@ module GamePlay
     # @param diggable [PFM::MiningGame::Diggable, Boolean] either the actual object or a boolean (true for iron, false otherwise)
     # @param reveal [Boolean] if an item is revealed by the hit
     # @param newly_revealed [Boolean] if an item is fully revealed for the first time
-    # @return animation [Yuki::Animation::TimedAnimation]
+    # @return [Yuki::Animation::TimedAnimation]
     def sound_anim(diggable, reveal, newly_revealed)
       anim = Yuki::Animation
       animation = anim.wait(0)

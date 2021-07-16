@@ -76,7 +76,7 @@ class Interpreter
 
   # Start a trainer battle
   # @param trainer_id [Integer] ID of the trainer in Ruby Host
-  # @param trainer_id_2 [Integer] ID of the second trainer in Ruby Host
+  # @param second_trainer_id [Integer] ID of the second trainer in Ruby Host
   # @param bgm [String, Array] BGM to play for battle
   # @param disable [String] Name of the local switch to disable (if defeat)
   # @param enable [String] Name of the local switch to enable (if victory)
@@ -88,7 +88,8 @@ class Interpreter
 
   # Start a trainer battle
   # @param trainer_id [Integer] ID of the trainer in Ruby Host
-  # @param trainer_id_2 [Integer] ID of the second trainer in Ruby Host
+  # @param second_trainer_id [Integer] ID of the second trainer in Ruby Host
+  # @param friend_trainer_id [Integer] ID of the friend trainer in Ruby Host
   # @param bgm [String, Array] BGM to play for battle
   # @param disable [String] Name of the local switch to disable (if defeat)
   # @param enable [String] Name of the local switch to enable (if victory)

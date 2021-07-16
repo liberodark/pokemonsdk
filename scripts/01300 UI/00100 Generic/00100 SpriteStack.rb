@@ -224,7 +224,7 @@ module UI
 
     # Set the origin (does nothing)
     # @param _ox [Integer] new origin x
-    # @parma _oy [Integer] new origin y
+    # @param _oy [Integer] new origin y
     # @note this function is only for compatibility, it does nothing
     def set_origin(_ox, _oy)
       # Does nothing

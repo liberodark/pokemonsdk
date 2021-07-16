@@ -55,7 +55,6 @@ module UI
       end
 
       # Change the tool buttons state and set the new tool
-      # @param index [Integer] the index of the button
       # @return [Symbol] the symbol of the new tool to use
       def button_state_change
         @stack.each_with_index { |button, i| button.sx = i == @index ? 1 : 0 }

@@ -178,8 +178,8 @@ module UI
     # Set the region name
     # @param place [String] the name to display
     # @param color [Integer] the color code
-    def set_region(reg, color = 10)
-      @region.multiline_text = reg.upcase
+    def set_region(place, color = 10)
+      @region.multiline_text = place.upcase
       @location.load_color color
     end
   end

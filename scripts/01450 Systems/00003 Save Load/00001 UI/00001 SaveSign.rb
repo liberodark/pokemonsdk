@@ -5,7 +5,7 @@ module UI
     # @return [Integer]
     attr_accessor :save_index
     # Get the visual index of the save sign
-    # @param [Integer]
+    # @return [Integer]
     attr_accessor :visual_index
 
     # String shown when a save is corrupted

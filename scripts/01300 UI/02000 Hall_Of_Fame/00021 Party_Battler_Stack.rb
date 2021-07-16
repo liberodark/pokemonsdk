@@ -23,7 +23,7 @@ module UI
       end
 
       # The Pokemon initial coordinates
-      # @return x [Integer], y [Integer] the coordinates
+      # @return [Array<Integer>] the coordinates
       def pkm_initial_coordinates(index)
         x = index.even? ? -48 : 368
         y = Y_PARTY[index / 2]

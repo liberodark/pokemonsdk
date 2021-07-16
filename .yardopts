@@ -15,5 +15,7 @@
 --exclude "scripts/01600 Alpha 25 Battle Engine/"
 --readme README.md
 
-scripts/*.rb
-scripts/**/*.rb
+--no-private scripts/*.rb
+--no-private scripts/**/*.rb
+
+- "# Describe Item.md" "# PSDK .25 AI.md" "# PSDK .25 BE.md" "# Yuki Animation.md"

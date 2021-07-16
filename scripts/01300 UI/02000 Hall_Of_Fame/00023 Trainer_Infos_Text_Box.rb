@@ -46,7 +46,7 @@ module UI
       end
 
       # Get the constant's value
-      # @return Y_FINAL [Integer]
+      # @return [Integer]
       def y_final
         Y_FINAL
       end

@@ -89,7 +89,7 @@ class Sprite < LiteRGSS::ShaderedSprite
   end
 end
 
-# @depreacted Please use Sprite directly
+# @deprecated Please use Sprite directly
 class ShaderedSprite < Sprite
 
 end

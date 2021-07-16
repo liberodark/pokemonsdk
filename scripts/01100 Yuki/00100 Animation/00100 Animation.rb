@@ -392,8 +392,10 @@ module Yuki
       # @param time_to_process [Float] number of seconds (with generic time) to process the animation
       # @param on [Object] object that will receive the property
       # @param property [Symbol] name of the property to affect (add the = sign in the symbol name)
-      # @param a [Float, Symbol] origin position
-      # @param b [Float, Symbol] destination position
+      # @param a_x [Float, Symbol] origin x position
+      # @param a_y [Float, Symbol] origin y position
+      # @param b_x [Float, Symbol] destination x position
+      # @param b_y [Float, Symbol] destination y position
       # @param distortion [#call, Symbol] callable taking one paramater (between 0 & 1) and
       # convert it to another number (between 0 & 1) in order to distord time
       # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
@@ -508,8 +510,10 @@ module Yuki
       # @param time_to_process [Float] number of seconds (with generic time) to process the animation
       # @param on [Object] object that will receive the property
       # @param property [Symbol] name of the property to affect (add the = sign in the symbol name)
-      # @param a [Float, Symbol] origin position
-      # @param b [Float, Symbol] destination position
+      # @param a_x [Float, Symbol] origin x position
+      # @param a_y [Float, Symbol] origin y position
+      # @param b_x [Float, Symbol] destination x position
+      # @param b_y [Float, Symbol] destination y position
       # @param distortion [#call, Symbol] callable taking one paramater (between 0 & 1) and
       # convert it to another number (between 0 & 1) in order to distord time
       # @param time_source [#call, Symbol] callable taking no parameter and giving the current time

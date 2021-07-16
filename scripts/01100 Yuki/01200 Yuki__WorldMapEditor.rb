@@ -91,7 +91,7 @@ module Yuki
     end
 
     # Update the origin x/y
-    # @param wm [Class] should contain TileSize and BitmapOffset constants
+    # @param worldmap [Class<GamePlay::WorldMap>] should contain TileSize and BitmapOffset constants
     def update_origin(worldmap)
       @ox += 1 if Input.repeat?(:RIGHT)
       max_ox = (@map_sprite.width - Graphics.width + worldmap::BitmapOffset) / worldmap::TileSize

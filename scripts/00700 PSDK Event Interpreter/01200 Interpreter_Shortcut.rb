@@ -208,13 +208,13 @@ class Interpreter
     index = party.send(method_name, *args) if index < 0
     return index
   end
-  
+
   # Shortcut for get_character(@event_id).find_path(*args).
   # Exemple : find_path to:[10,15], radius:5
-  # @param to: [Array<Integer, Integer>, Game_Character] the target, [x, y] or Game_Character object
-  # @param radius: [Integer] <default : 0> the distance from the target to consider it as reached
-  # @param priority: [Integer] <default : Pathfinding::PRIORITY_NORMAL> the priority in front of the other requests
-  # @param tries: [Integer, Symbol] <default : 5> the number of tries allowed to this request, use :infinity to unlimited tris count
+  # @param to [Array<Integer, Integer>, Game_Character] the target, [x, y] or Game_Character object
+  # @param radius [Integer] <default : 0> the distance from the target to consider it as reached
+  # @param priority [Integer] <default : Pathfinding::PRIORITY_NORMAL> the priority in front of the other requests
+  # @param tries [Integer, Symbol] <default : 5> the number of tries allowed to this request, use :infinity to unlimited tris count
   def find_path(**kwargs)
     get_character(@event_id).find_path(**kwargs)
   end
@@ -246,7 +246,7 @@ class Interpreter
   def animate_from_charset(*args)
     return get_character(@event_id).animate_from_charset(*args)
   end
-  
+
   # Shortcut for wait_character_move_completion(0)
   # Wait for the end of the player movement
   def wait_for_player

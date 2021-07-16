@@ -25,7 +25,7 @@ module UI
 
     # Create a new Input number
     # @param viewport [Viewport]
-    # @param max_digit [Integer] maximum number of digit
+    # @param max_digits [Integer] maximum number of digit
     # @param default_number [Integer] default number
     # @param accept_negatives [Boolean] if we can provide negative values
     def initialize(viewport, max_digits, default_number = 0, accept_negatives = false)
