@@ -1,0 +1,27 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "How to get PSDK",
+      "description": "**[Download Links](https://download.psdk.pokemonworkshop.fr)** | **[Database Editor](https://www.mediafire.com/file/5cmmx92aqm25y0g/RubyHost_EN.zip)** | **[Changelog](https://download.psdk.pokemonworkshop.fr/changelog.html)**",
+      "color": 420601
+    },
+    {
+      "title": "Getting started with PSDK",
+      "description": "**[How to install](https://www.youtube.com/watch?v=YG45wNa20vo)**\n**[How to upgrade from .24 to .25](https://www.youtube.com/watch?v=hheo0h3x0XA)**\n**[How to make events in PSDK](https://psdk.pokemonworkshop.fr/wiki/en/event_making/index.html)**\n**[How to edit database](https://psdk.pokemonworkshop.fr/wiki/en/ruby_host/index.html)**\n**[Scripting in PSDK EN (video)](https://www.youtube.com/watch?v=BSb3YwxnvIQ)** | **[Scripting in PSDK FR (playlist)](https://www.youtube.com/playlist?list=PLkMkCRxAbTH_bCYicED5wE_RMvOB6uLaX)**\n**[Battle Engine Documentation](https://gitlab.com/pokemonsdk/pokemonsdk/-/blob/development/%23%20PSDK%20.25%20BE.md)** | **[AI Documentation](https://gitlab.com/pokemonsdk/pokemonsdk/-/blob/development/%23%20PSDK%20.25%20AI.md)** | **[Full PSDK documentation](https://psdk.pokemonworkshop.fr/yard/)**",
+      "color": 16470126
+    },
+    {
+      "title": "Other links",
+      "description": "**[Game.exe source code](https://github.com/NuriYuri/Windows-PSDK-Game.exe/blob/master/Game.cpp)** | **[PSDK project git](https://gitlab.com/pokemonsdk/project)** | **[PSDK engine git](https://gitlab.com/pokemonsdk/pokemonsdk)** | **[LiteRGSS2 git](https://gitlab.com/pokemonsdk/litergss2)** | **[LiteCGSS git](https://gitlab.com/NuriYuri/litecgss)** | **[Credits (text)](https://psdk.pokemonworkshop.fr/wiki/en/credits.html)** | **[Credits (video)](https://youtu.be/V_tc25f0oZQ?t=25)**\n\nDependencies for project git:\n**[git_binaries](http://www.mediafire.com/file/sjdw35xqs0noxxz/git_binaries.7z/file)** | **[Graphics & Audio](http://www.mediafire.com/file/zk6nikgn4r19dvs/pokemonsdk.7z/file)** (Open them with [7-Zip](https://www.7-zip.org/))",
+      "color": 381319
+    },
+    {
+      "title": "Social Links",
+      "description": "**[Twitter](https://twitter.com/PokemonSDK)** | **[Facebook](https://www.facebook.com/pokemonSDK)** | **[Instagram](https://www.instagram.com/pokemon.workshop/)**\n**[Youtube (Nuri Yuri)](https://www.youtube.com/channel/UCa0j7MsfjmqWmVC4dTK0XYw)** | **[Youtube (PokémonWorkshop)](https://www.youtube.com/channel/UCD2oyZEaNLCG6u4fcU89IQA)**",
+      "color": 16369670
+    }
+  ],
+  "username": "PokémonSDK",
+  "avatar_url": "https://pbs.twimg.com/profile_images/1416038618863374339/p-oU-vCE_400x400.png"
+}
