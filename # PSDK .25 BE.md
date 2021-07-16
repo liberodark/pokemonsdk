@@ -516,7 +516,7 @@ module Battle
 end
 ```
 
-This effect has the name `:attract` so we can detect that it's already applied to the pokemon like this: `pokemon.effects.has?(:attrack)`. Each time the user will try to use a move on a target, the method `on_move_prevention_user` will be called and will potentially prevents the user to use the move on the specified target.
+This effect has the name `:attract` so we can detect that it's already applied to the pokemon like this: `pokemon.effects.has?(:attract)`. Each time the user will try to use a move on a target, the method `on_move_prevention_user` will be called and will potentially prevents the user to use the move on the specified target.
 
 If you want to manage some properties of the effect here's the methods you can find on an effect:
 - `counter=(new_counter)` : allows you to set how many turn the effect is active
