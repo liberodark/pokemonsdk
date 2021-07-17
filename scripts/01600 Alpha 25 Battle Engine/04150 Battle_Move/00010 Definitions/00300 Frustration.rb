@@ -1,8 +1,6 @@
 module Battle
   class Move
     class Frustration < Basic
-      private
-
       # Get the real base power of the move (taking in account all parameter)
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
