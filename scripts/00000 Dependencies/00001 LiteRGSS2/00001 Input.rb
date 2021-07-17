@@ -52,6 +52,8 @@ module Input
     LEFT: [Sf::Keyboard::Left, Sf::Keyboard::Q, Sf::Keyboard::A, Sf::Keyboard::Numpad4, -15],
     RIGHT: [Sf::Keyboard::Right, Sf::Keyboard::D, Sf::Keyboard::D, Sf::Keyboard::Numpad6, -16]
   }
+  # List of key ALIAS
+  ALIAS_KEYS = { up: :UP, down: :DOWN, left: :LEFT, right: :RIGHT, a: :A, b: :B, x: :X, y: :Y, start: :START, select: :SELECT }
   # List of Axis mapping (axis => key_neg, key_pos)
   AXIS_MAPPING = {
     Sf::Joystick::Z => %i[R2 L2]
@@ -122,6 +124,7 @@ module Input
     def press?(key)
       return false unless Graphics.focus?
 
+      key = ALIAS_KEYS[key] || key unless Keys[key]
       return @current_state[key]
     end
 
@@ -131,6 +134,7 @@ module Input
     def trigger?(key)
       return false unless Graphics.focus?
 
+      key = ALIAS_KEYS[key] || key unless Keys[key]
       return @current_state[key] && !@last_state[key]
     end
 
@@ -140,6 +144,7 @@ module Input
     def released?(key)
       return false unless Graphics.focus?
 
+      key = ALIAS_KEYS[key] || key unless Keys[key]
       return @last_state[key] && !@current_state[key]
     end
 
@@ -148,6 +153,8 @@ module Input
     # @return [Boolean]
     def repeat?(key)
       return false unless Graphics.focus?
+
+      key = ALIAS_KEYS[key] || key unless Keys[key]
       return false unless @current_state[key]
 
       # Note: we cannot compare with Graphics.current_time because its updated after the events
