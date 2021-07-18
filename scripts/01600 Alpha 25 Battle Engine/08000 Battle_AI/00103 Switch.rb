@@ -5,7 +5,7 @@ module Battle
       # @param who [PFM::PokemonBattler]
       # @return [PFM::PokemonBattler, nil]
       def request_switch(who)
-        actions = switch_actions_generate_for(who)
+        actions = clean_switch_actions(switch_actions_generate_for(who))
         return nil if actions.empty?
 
         best = actions.compact.shuffle(random: @scene.logic.generic_rng).max_by(&:first)
@@ -26,6 +26,17 @@ module Battle
         return [] if move_heuristics.max < danger_factor
 
         return switch_actions_generate_for(pokemon)
+      end
+
+      # Function that clean the switch action:
+      #  - Exclude duplicate switch in action
+      #  - Ensure a Pokemon that is already on the field cannot get in the field
+      # @param actions [Array<[Float, Actions::Switch]>]
+      # @return [Array<[Float, Actions::Switch]>]
+      def clean_switch_actions(actions)
+        pokemon_in_field = @scene.logic.all_alive_battlers
+        actions = actions.reject { |action| pokemon_in_field.include?(Actions::Switch.from(action[1]).with) }
+        return actions.uniq { |action| action[1].with }
       end
 
       # Generate the actual switch actions for the pokemon
