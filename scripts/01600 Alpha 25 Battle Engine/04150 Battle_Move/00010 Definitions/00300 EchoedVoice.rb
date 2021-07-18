@@ -22,7 +22,7 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        mod = logic.terrain_effects.get(:echoed_voice).successive_turns
+        mod = logic.terrain_effects.get(:echoed_voice)&.successive_turns || 1
         real_power = (super + (echo_boost * mod)).clamp(0, max_power)
         log_data("power = #{real_power} # echoed voice successive turns #{mod}")
         return real_power

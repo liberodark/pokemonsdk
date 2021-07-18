@@ -14,7 +14,7 @@ module Battle
         user.type1 = (target.type1 == 0 && target.type2 == 0) ? 1 : target.type1
         user.type2 = target.type2
         user.type3 = target.type3
-        logic.scene.display_message_and_wait(message)
+        logic.scene.display_message_and_wait(message(user, target))
       end
 
       # Get the db_symbol of the Pokemon on which the move always fails
@@ -28,7 +28,7 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @return [String]
       def message(user, target)
-        return parse_text_with_2pokemon(19, 1095 ,user, target)
+        return parse_text_with_2pokemon(19, 1095, user, target)
       end
     end
     Move.register(:s_reflect_type, ReflectType)
