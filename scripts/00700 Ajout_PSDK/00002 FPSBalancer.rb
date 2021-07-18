@@ -1,26 +1,32 @@
 module Graphics
   # Class helping to balance FPS on FPS based things
   class FPSBalancer
-    # Tell if the system tolerate 10% error in order to avoid unecessary skip
-    TEN_TOLERANCE = true
     @globally_enabled = true
     @last_f3_up = Time.new - 10
     # Create a new FPSBalancer
     def initialize
-      # Accumulator to help FPS balancing
-      @delta_accumulator = 0
       # Tell the number of frame to execute
       @frame_to_execute = 0
+      # Get the last framerate
+      @last_frame_rate = 0
+      # Get the frame delta in usec
+      @frame_delta = 1
+      # Get the last interval index when the graphics were updated
+      @last_interval_index = 0
     end
 
     # Update the metrics of the FPSBalancer
     def update
-      expected_delta = (1.0 / Graphics.frame_rate)
-      delta = Graphics.delta
-      delta = expected_delta if TEN_TOLERANCE && (delta / expected_delta) <= 0.1
-      @delta_accumulator += delta
-      @frame_to_execute = (real_frame_to_execute = (@delta_accumulator / expected_delta).floor).clamp(0, 10)
-      @delta_accumulator -= (real_frame_to_execute * expected_delta)
+      update_intervals if @last_frame_rate != Graphics.frame_rate
+      current_index = (Graphics.current_time.usec / @frame_delta).floor
+      if current_index == @last_interval_index
+        @frame_to_execute = 0
+      elsif current_index > @last_interval_index
+        @frame_to_execute = current_index - @last_interval_index
+      else
+        @frame_to_execute = Graphics.frame_rate - @last_interval_index + current_index
+      end
+      @last_interval_index = current_index
       if Sf::Keyboard.press?(Sf::Keyboard::F3)
         FPSBalancer.last_f3_up = Graphics.current_time
       elsif FPSBalancer.last_f3_up == Graphics.last_time
@@ -41,6 +47,19 @@ module Graphics
     # Tell if the balancer is skipping frames
     def skipping?
       FPSBalancer.globally_enabled && @frame_to_execute == 0
+    end
+
+    private
+
+    def update_intervals
+      @last_frame_rate = Graphics.frame_rate
+      @frame_delta = 1_000_000.0 / @last_frame_rate
+      @last_interval_index = (Graphics.current_time.usec / @frame_delta).floor - 1
+      @last_interval_index += Graphics.frame_rate if @last_interval_index < 0
+    end
+
+    Hooks.register(Graphics, :post_transition, 'Reset interval after transition') do
+      FPSBalancer.global.send(:update_intervals)
     end
 
     class << self
