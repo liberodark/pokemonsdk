@@ -243,8 +243,8 @@ class Interpreter
   # @param reverse [Boolean] <default: false> set it to true if the animation is reversed
   # @param repeat [Boolean] <default: false> set it to true if the animation is looped
   # @return [Boolean]
-  def animate_from_charset(*args)
-    return get_character(@event_id).animate_from_charset(*args)
+  def animate_from_charset(lines, duration, reverse: false, repeat: false)
+    return get_character(@event_id).animate_from_charset(lines, duration, reverse: reverse, repeat: repeat)
   end
 
   # Shortcut for wait_character_move_completion(0)
