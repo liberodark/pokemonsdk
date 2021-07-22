@@ -22,7 +22,7 @@ module ProjectCompilation
 
     def get_data_files
       return @map_files, @data_files if @map_files && @data_files
-      data_files = Dir['Data/*.*'] + Dir['Data/Buildings/*.rxdata'] + Dir['Data/configs/*.rxdata']
+      data_files = Dir['Data/*.*'] + Dir['Data/Buildings/*.rxdata'] + Dir['Data/configs/**/*.rxdata']
       data_files.delete('Data/Scripts.rxdata')
       data_files.delete('Data/PSDK_BOOT.rxdata')
       data_files.delete('Data/PSDK_BOOT.rb')

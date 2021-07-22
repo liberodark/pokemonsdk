@@ -22,7 +22,7 @@ begin
   PSDK_Version = File.read("#{PSDK_PATH}/version.txt").to_i
 rescue Exception
   puts('Failed to load PSDK Version')
-  PSDK_Version = 6197
+  PSDK_Version = 6401
 end
 # Display PSDK version
 arr = [PSDK_Version].pack('I>').unpack('C*')

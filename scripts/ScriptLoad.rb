@@ -23,8 +23,10 @@ module ScriptLoader
         load_vscode_scripts(VSCODE_SCRIPT_PATH, file)
       end
     end
-    # Load RMXP Scripts
+    return if PARGV[:util].any?
+
     load_rmxp_scripts
+    load_plugins
     # Load Project Scripts
     load_vscode_scripts(PROJECT_SCRIPT_PATH) if index_filename == SCRIPT_INDEX_PATH
   end
@@ -126,6 +128,14 @@ module ScriptLoader
   # @param relative_path [String] path from pokemonsdk/scripts/tools to access to the script
   def load_tool(relative_path)
     require "#{VSCODE_SCRIPT_PATH}/tools/#{relative_path}"
+  end
+
+  # Load the plugin manager & the plugin (install)
+  def load_plugins
+    ScriptLoader.load_tool('PluginManager')
+    PluginManager.start(:load)
+  rescue Exception
+    pcc "Plugins couldn't be loaded or installed..."
   end
 end
 
