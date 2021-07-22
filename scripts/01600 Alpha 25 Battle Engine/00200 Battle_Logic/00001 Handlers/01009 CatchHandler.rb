@@ -57,7 +57,7 @@ module Battle
       end
 
       add_ball_rate_calculation(:dive_ball) do |target, _pkm_ally|
-        next (target.rareness * 3.5) if @scene.battle_info.fishing
+        next (target.rareness * 3.5) if $scene.battle_info.fishing
         next (target.rareness * 3.5) if $game_player.surfing?
 
         next target.rareness
@@ -111,7 +111,7 @@ module Battle
       end
 
       add_ball_rate_calculation(:lure_ball) do |target, _pkm_ally|
-        next target.rareness * (@scene.battle_info.fishing ? 3 : 1)
+        next target.rareness * ($scene.battle_info.fishing ? 3 : 1)
       end
 
       add_ball_rate_calculation(:moon_ball) do |target, _pkm_ally|
