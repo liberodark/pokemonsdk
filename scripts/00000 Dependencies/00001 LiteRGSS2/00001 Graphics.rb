@@ -121,8 +121,12 @@ module Graphics
       sp.bitmap = LiteRGSS::Bitmap.new(width, height)
       bk.copy_to_bitmap(sp.bitmap)
       texture_to_dispose = all_viewport.map do |vp|
+        shader = vp.shader
+        vp.shader = nil
         texture = vp.snap_to_bitmap
-        sprite = LiteRGSS::Sprite.new(tmp)
+        vp.shader = shader
+        sprite = LiteRGSS::ShaderedSprite.new(tmp)
+        sprite.shader = shader
         sprite.bitmap = texture
         sprite.set_position(vp.rect.x, vp.rect.y)
         next texture
