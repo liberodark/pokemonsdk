@@ -224,6 +224,8 @@ module PFM
     add_evolution_criteria(:form) { true }
     # On a specific switch
     add_evolution_criteria(:switch) { |value| $game_switches[value] }
+    # Having a specific nature
+    add_evolution_criteria(:nature) { |value| nature_id == value }
 
     # Method that actually make a Pokemon evolve
     # @param id [Integer] ID of the Pokemon that evolve
