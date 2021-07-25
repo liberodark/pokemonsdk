@@ -17,7 +17,9 @@ module Battle
       # @param other [Base] other action
       # @return [Integer]
       def <=>(other)
-        -1
+        return 1 if other.is_a?(Attack) && Attack.from(other).move.relative_priority > 0
+
+        return -1
       end
 
       # Execute the action

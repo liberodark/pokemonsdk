@@ -40,6 +40,7 @@ module Battle
       def <=>(other)
         return 1 if other.is_a?(HighPriorityItem)
         return -1 if @pursuit_enabled
+        return -1 if other.is_a?(Flee) && move.relative_priority > 0
         return 1 unless other.is_a?(Attack)
 
         attack = Attack.from(other)

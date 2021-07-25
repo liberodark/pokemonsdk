@@ -9,7 +9,7 @@ module Battle
       def flee_action_for(pokemon)
         return [] unless @scene.logic.switch_handler.can_switch?(pokemon)
 
-        return [Float::Infinity, Actions::Flee.new(@scene, pokemon)]
+        return [Float::INFINITY, Actions::Flee.new(@scene, pokemon)]
       end
     end
   end
