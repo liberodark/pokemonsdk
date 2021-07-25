@@ -261,7 +261,7 @@ module PFM
 
     # Test if the Pokemon has encountered the battler
     # @param battler [PFM::PokemonBattler]
-    def has_encountered?(battler)
+    def encountered?(battler)
       return @encounter_list.include?(battler)
     end
 

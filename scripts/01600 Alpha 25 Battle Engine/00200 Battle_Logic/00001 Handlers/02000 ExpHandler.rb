@@ -33,10 +33,11 @@ module Battle
       # @param enemy [PFM::PokemonBattler]
       # @return [Hash{ PFM::PokemonBattler => Integer }]
       def distribute_exp_for(enemy)
+        evable = evable_pokemon(enemy)
         expable = expable_pokemon(enemy)
         return {} if logic.battle_info.disallow_exp?
 
-        distribute_ev_to(expable, enemy)
+        distribute_ev_to(evable, enemy)
         exp_data = global_multi_exp_factor? ? distribute_global_exp_for(enemy, expable) : distribute_separate_exp_for(enemy, expable)
         enemy.exp_distributed = true
         return exp_data.to_h
@@ -58,7 +59,7 @@ module Battle
           return logic.trainer_battlers.reject { |receiver| receiver.max_level == receiver.level || receiver.dead? }
         else
           return logic.trainer_battlers.reject do |receiver|
-            receiver.delete_battler_to_encounter_list(enemy) if (has_encountered = receiver.has_encountered?(enemy))
+            receiver.delete_battler_to_encounter_list(enemy) if (has_encountered = receiver.encountered?(enemy))
             next receiver.max_level == receiver.level || receiver.dead? || !has_encountered
           end
         end
@@ -143,12 +144,26 @@ module Battle
         return (multi_exp_count > 0 ? 14.0 : 7.0) / fought
       end
 
-      # Distribute the ev to expables depending on the enemy that was taken down
-      # @param expable [Array<PFM::PokemonBattler>]
+      # Get the list of Pokemon that should receive the EV
       # @param enemy [PFM::PokemonBattler]
-      def distribute_ev_to(expable, enemy)
-        log_debug("# distribute_ev_to([#{expable.join(', ')}], #{enemy}")
-        expable.map(&:original).each do |receiver| # <= Pokemon will receive EV only at end of battle
+      # @return [Array<PFM::PokemonBattler>]
+      def evable_pokemon(enemy)
+        if !$game_switches[Yuki::Sw::BT_HardExp] || global_multi_exp_factor?
+          return logic.trainer_battlers.reject(&:dead?)
+        else
+          return logic.trainer_battlers.reject do |receiver|
+            has_encountered = receiver.encountered?(enemy)
+            next receiver.dead? || !has_encountered
+          end
+        end
+      end
+
+      # Distribute the ev to evables depending on the enemy that was taken down
+      # @param evable [Array<PFM::PokemonBattler>]
+      # @param enemy [PFM::PokemonBattler]
+      def distribute_ev_to(evable, enemy)
+        log_debug("# distribute_ev_to([#{evable.join(', ')}], #{enemy}")
+        evable.map(&:original).each do |receiver| # <= Pokemon will receive EV only at end of battle
           receiver.add_bonus(enemy.battle_list)
           exec_hooks(ExpHandler, :power_ev_bonus, binding)
         end
