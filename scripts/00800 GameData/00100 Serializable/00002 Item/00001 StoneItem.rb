@@ -12,7 +12,7 @@ safe_code('Register StoneItem ItemDescriptor') do
   PFM::ItemDescriptor.define_on_pokemon_usability(GameData::StoneItem) do |item, pokemon|
     next false if pokemon.egg?
 
-    next pokemon.evolve_check(:stone, item.id)
+    next pokemon.evolve_check(:stone, item.id) && true # Party menu expect true, false or nil!
   end
 
   PFM::ItemDescriptor.define_on_pokemon_use(GameData::StoneItem) do |item, pokemon, scene|
