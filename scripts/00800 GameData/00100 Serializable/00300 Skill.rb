@@ -159,7 +159,7 @@ module GameData
                         focus_punch: 1213 }
     # List of Punch moves
     Punching_Moves = %i[dynamic_punch mach_punch hammer_arm focus_punch bullet_punch
-                        power-up_punch comet_punch needle_arm fire_punch meteor_mash
+                        power_up_punch comet_punch needle_arm fire_punch meteor_mash
                         shadow_punch thunder_punch ice_punch sky_uppercut mega_punch
                         dizzy_punch drain_punch karate_chop]
 

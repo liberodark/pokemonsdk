@@ -5,7 +5,7 @@ module Battle
       # List of factor depending on the move
       RECOIL_FACTORS = {
         brave_bird: 3,
-        "double-edge": 3,
+        double_edge: 3,
         flare_blitz: 3,
         head_charge: 4,
         head_smash: 2,

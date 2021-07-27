@@ -97,7 +97,7 @@ module Battle
       register(:__undef__, :body_slam, :sp_status, :paralysis)
       register(:building, :body_slam, :sp_status, :paralysis)
       register(:grass, :vine_whip, :sp_status, :sleep)
-      register(:desert, :"mud-slap", :sp_stat, :acc, -1)
+      register(:desert, :mud_slap, :sp_stat, :acc, -1)
       register(:cave, :rock_throw, :sp_status, :flinch)
       register(:water, :water_pulse, :sp_stat, :atk, -1)
       register(:shallow_water, :mud_shot, :sp_stat, :spd, -1)

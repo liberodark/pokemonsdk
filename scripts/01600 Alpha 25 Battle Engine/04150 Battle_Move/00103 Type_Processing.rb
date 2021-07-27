@@ -121,7 +121,7 @@ module Battle
     end
 
     Move.register_single_type_multiplier_overwrite_hook('PSDK Freeze-Dry') do |_, target_type, _, move|
-      next 2 if move.db_symbol == :"freeze-dry" && target_type == GameData::Types::WATER
+      next 2 if move.db_symbol == :freeze_dry && target_type == GameData::Types::WATER
 
       next nil
     end

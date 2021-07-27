@@ -9,7 +9,7 @@ module Battle
         # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
-          return if launcher != @target || launcher.hold_item?(:king’s_rock) || launcher.hold_item?(:razor_fang)
+          return if launcher != @target || launcher.hold_item?(:king_s_rock) || launcher.hold_item?(:razor_fang)
           return unless skill&.direct? && launcher.hp > 0 && bchance?(0.1, @logic)
 
           handler.scene.visual.show_ability(launcher)

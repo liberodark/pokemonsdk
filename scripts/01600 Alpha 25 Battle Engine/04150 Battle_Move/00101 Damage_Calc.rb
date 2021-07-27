@@ -101,7 +101,7 @@ module Battle
       return ph_move ? user.atk_modifier : user.ats_modifier
     end
 
-    EXPLOSION_SELF_DESTRUCT_MOVE = %i[explosion self-destruct]
+    EXPLOSION_SELF_DESTRUCT_MOVE = %i[explosion self_destruct]
     # [Spe]def calculation
     # @param user [PFM::PokemonBattler] user of the move
     # @param target [PFM::PokemonBattler] target of the move

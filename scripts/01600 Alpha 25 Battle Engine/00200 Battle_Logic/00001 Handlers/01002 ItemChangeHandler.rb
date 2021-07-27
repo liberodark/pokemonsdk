@@ -5,7 +5,7 @@ module Battle
       include Hooks
 
       # List of item that cannot be knocked off
-      PROTECTED_ITEMS = %i[exp._share lucky_egg amulet_coin oak’s_letter gram_1 gram_2 gram_3 prof’s_letter letter
+      PROTECTED_ITEMS = %i[exp_share lucky_egg amulet_coin oak_s_letter gram_1 gram_2 gram_3 prof_s_letter letter
                            greet_mail favored_mail rsvp_mail thanks_mail inquiry_mail like_mail reply_mail
                            bridge_mail_s bridge_mail_d bridge_mail_t bridge_mail_v bridge_mail_m gengarite
                            gardevoirite ampharosite venusaurite charizardite_x blastoisinite mewtwonite_x mewtwonite_y

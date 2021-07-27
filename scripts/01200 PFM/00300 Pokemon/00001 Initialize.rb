@@ -120,7 +120,7 @@ module PFM
     # Method that initialize the data related to caching
     # @param opts [Hash] Hash describing optional value you want to assign to the Pokemon
     def catch_data_initialize(opts)
-      @captured_with = GameData::Item[opts[:captured_with] || :"poké_ball"].id
+      @captured_with = GameData::Item[opts[:captured_with] || :poke_ball].id
       @captured_at = (opts[:captured_at] || Time.now).to_i
       @captured_level = opts[:captured_level] || @level
       @egg_in = opts[:egg_in]

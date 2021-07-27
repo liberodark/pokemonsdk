@@ -2,7 +2,7 @@ module UI
   # UI part displaying the generic information of the Pokemon in the Summary
   class Summary_Top < SpriteStack
     # List of Pokemon that shouldn't show the gender sprite
-    NO_GENDER = %i[nidoran♀ nidoran♂]
+    NO_GENDER = %i[nidoranf nidoranm]
     # Create a new Memo UI for the summary
     # @param viewport [Viewport]
     def initialize(viewport)

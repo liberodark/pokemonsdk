@@ -2,7 +2,7 @@ module Battle
   module AI
     class Base
       # List of boosting items
-      BOOSTING_ITEMS = %i[x_attack x_sp._atk x_speed x_defense x_sp._def]
+      BOOSTING_ITEMS = %i[x_attack x_sp_atk x_speed x_defense x_sp_def]
       # List of healing items
       HEALING_ITEMS = %i[full_restore hyper_potion energy_root moomoo_milk lemonade
                          super_potion energy_powder soda_pop fresh_water

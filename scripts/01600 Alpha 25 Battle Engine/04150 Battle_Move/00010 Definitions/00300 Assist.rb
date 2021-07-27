@@ -4,7 +4,7 @@ module Battle
     class Assist < Move
       CANNOT_BE_SELECTED_MOVES = %i[
         assist baneful_bunker beak_blast belch bestow bounce celebrate chatter circle_throw copycat counter covet destiny_bound detect dig
-        dive dragon_tail endure feint fly focus_punch follow_me helping_hand hold_hands king’s_shield mat_block me_first metronome mimic
+        dive dragon_tail endure feint fly focus_punch follow_me helping_hand hold_hands king_s_shield mat_block me_first metronome mimic
         mirror_coat mirror_move nature_power phantom_force protect rage_powder roar shadow_force shell_trap sketch sky_drop sleep_talk snatch
         spiky_shield spotlight struggle switcheroo thief transform trick whirlwind
       ]

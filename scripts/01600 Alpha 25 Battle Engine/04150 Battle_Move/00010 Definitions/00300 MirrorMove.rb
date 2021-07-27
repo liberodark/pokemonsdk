@@ -4,7 +4,7 @@ module Battle
     class MirrorMove < Move
       COPY_CAT_MOVE_EXCLUDED = %i[
         baneful_bunker beak_blast behemoth_blade bestow celebrate chatter circle_throw copycat counter covet destiny_bond
-        detect dragon_tail endure feint focus_punch follow_me helping_hand hold_hands king’s_shield mat_block assist
+        detect dragon_tail endure feint focus_punch follow_me helping_hand hold_hands king_s_shield mat_block assist
         me_first metronome mimic mirror_coat mirror_move protect rage_powder roar shell_trap sketch sleep_talk snatch
         struggle spiky_shield spotlight switcheroo thief transform trick whirlwind
       ]

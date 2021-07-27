@@ -13,9 +13,9 @@ module Battle
         # @return [:prevent, nil] :prevent if the move cannot continue
         def on_move_prevention_user(user, targets, move)
           return if user != @target
-         
+
           blade if move.real_base_power(user, targets.first) > 0
-          shield if move.db_symbol == :king’s_shield
+          shield if move.db_symbol == :king_s_shield
         end
 
         private

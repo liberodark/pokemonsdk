@@ -93,7 +93,7 @@ module Battle
           move.scene.logic.stat_change_handler.stat_change_with_process(:atk, -1, user) if move.direct?
         end
       end
-      Protect.register(:king’s_shield, KingsShield)
+      Protect.register(:king_s_shield, KingsShield)
 
       # Implement the Baneful Bunker effect
       class BanefulBunker < Protect

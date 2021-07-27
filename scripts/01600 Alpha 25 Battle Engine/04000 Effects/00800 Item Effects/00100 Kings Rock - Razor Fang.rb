@@ -16,7 +16,7 @@ module Battle
           handler.logic.status_change_handler.status_change_with_process(:flinch, target)
         end
       end
-      register(:king’s_rock, KingsRock)
+      register(:king_s_rock, KingsRock)
       register(:razor_fang, KingsRock)
     end
   end

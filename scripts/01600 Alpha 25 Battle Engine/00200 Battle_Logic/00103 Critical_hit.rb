@@ -48,8 +48,9 @@ module Battle
     def calc_critical_count_item(user)
       item = user.battle_item_db_symbol
       return true if UNCONDITIONAL_CRITICAL_ITEMS.include?(item)
-      return true if item == :stick && user.db_symbol == :"farfetch’d"
+      return true if item == :leek && user.db_symbol == :farfetch_d
       return true if item == :lucky_punch && user.db_symbol == :chansey
+
       return false
     end
   end

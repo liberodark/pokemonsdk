@@ -26,7 +26,7 @@ module Battle
           end
         end
       end
-      register(:"soul-heart", SoulHeart)
+      register(:"soul_heart", SoulHeart)
     end
   end
 end

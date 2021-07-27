@@ -48,7 +48,7 @@ module Battle
       # Tell if the exp factor is global or on pokemon that fought
       # @return [Boolean]
       def global_multi_exp_factor?
-        $bag.contain_item?(:"exp._share")
+        $bag.contain_item?(:exp_share)
       end
 
       # Get the list of Pokemon that should receive the exp
@@ -85,7 +85,7 @@ module Battle
       def distribute_separate_exp_for(enemy, expable)
         base_exp = exp_base(enemy)
         fought_count_during_this_turn = expable.count { |battler| battler.last_battle_turn == $game_temp.battle_turn && battler.alive? }.clamp(1, 6)
-        multi_exp_count = expable.count { |battler| battler.item_db_symbol == :"exp._share" && battler.alive? }
+        multi_exp_count = expable.count { |battler| battler.item_db_symbol == :exp_share && battler.alive? }
         multi_exp_factor = exp_multi_exp_factor(multi_exp_count)
         fought_exp_factor = exp_fought_factor(multi_exp_count, fought_count_during_this_turn)
         return expable.map do |receiver|
@@ -93,7 +93,7 @@ module Battle
           if receiver.last_battle_turn != $game_temp.battle_turn # Did not fight this turn
             next [receiver, (exp / multi_exp_factor).to_i]
           else
-            next [receiver, (exp / fought_exp_factor).to_i + (receiver.item_db_symbol == :"exp._share" ? exp / multi_exp_factor : 0).to_i]
+            next [receiver, (exp / fought_exp_factor).to_i + (receiver.item_db_symbol == :exp_share ? exp / multi_exp_factor : 0).to_i]
           end
         end
       end
