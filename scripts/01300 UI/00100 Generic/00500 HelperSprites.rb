@@ -296,8 +296,9 @@ module UI
   # Class that show the item icon
   class ItemSprite < Sprite
     # Set the item that should be shown
-    # @param item_id [Integer, Symbol]
+    # @param item_id [Integer, Symbol, GameData::Item]
     def data=(item_id)
+      item_id = item_id.db_symbol if item_id.is_a?(GameData::Item)
       set_bitmap(GameData::Item[item_id].icon, :icon)
     end
   end

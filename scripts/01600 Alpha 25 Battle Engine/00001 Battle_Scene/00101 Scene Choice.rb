@@ -36,6 +36,8 @@ module Battle
         @player_actions << Actions::Base.new(self)
       when :action
         # The player choice returned an action to use
+        return if forced_action.is_a?(Actions::Item) && special_item_choice_action(forced_action.item_wrapper)
+
         @player_actions << forced_action
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else
@@ -112,17 +114,7 @@ module Battle
     def item_choice
       item_wrapper = @visual.show_item_choice
       if item_wrapper
-        if item_wrapper.item.is_a?(GameData::FleeingItem)
-          @logic.battle_result = 1
-          @next_update = :battle_end
-        elsif item_wrapper.item.is_a?(GameData::BallItem)
-          if (caught = logic.catch_handler.try_to_catch_pokemon(logic.alive_battlers(1)[0], logic.alive_battlers(0)[0], item_wrapper.item))
-            logic.battle_info.caught_pokemon = logic.alive_battlers(1)[0]
-            give_pokemon_procedure(logic.battle_info.caught_pokemon.original, item_wrapper.item)
-            @logic.battle_phase_end_caught
-          end
-          return @next_update = caught ? :battle_end : :trigger_all_AI
-        end
+        return if special_item_choice_action(item_wrapper)
 
         # The player made a choice we store the action and we check if he can make other choices
         @player_actions << Actions::Item.new(self, item_wrapper, @logic.battler(0, @player_actions.size).bag, @logic.battler(0, @player_actions.size))
@@ -132,6 +124,29 @@ module Battle
         # If the player canceled we return to the player action
         @next_update = :player_action_choice
       end
+    end
+
+    # Method that test if the item_wrapper has different logic and execute is
+    # @param item_wrapper [PFM::ItemDescriptor::Wrapper]
+    # @return [Boolean] if the battle should not continue normally
+    def special_item_choice_action(item_wrapper)
+      case item_wrapper.item
+      when GameData::FleeingItem
+        @logic.battle_result = 1
+        @next_update = :battle_end
+      when GameData::BallItem
+        if (caught = logic.catch_handler.try_to_catch_pokemon(logic.alive_battlers(1)[0], logic.alive_battlers(0)[0], item_wrapper.item))
+          logic.battle_info.caught_pokemon = logic.alive_battlers(1)[0]
+          give_pokemon_procedure(logic.battle_info.caught_pokemon.original, item_wrapper.item)
+          @logic.battle_phase_end_caught
+        end
+        @next_update = caught ? :battle_end : :trigger_all_AI
+      else
+        return false # None of the specific case
+      end
+      # Store the last item id if a specific case was executed
+      $bag.last_battle_item_id = item_wrapper.item.id
+      return true
     end
 
     # Begin the Pokemon giving procedure

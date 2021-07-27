@@ -30,16 +30,17 @@ module BattleUI
       !@result.nil? && (respond_to?(:done?, true) ? done? : true)
     end
 
-    private
-
     # Force the action to use an item
     # @param item [GameData::Item]
     def use_item(item)
       @result = :action
       item_wrapper = PFM::ItemDescriptor.actions(item.id)
       user = scene.logic.battler(0, scene.player_actions.size)
+      item_wrapper.bind(scene, user)
       @action = Battle::Actions::Item.new(scene, item_wrapper, $bag, user)
     end
+
+    private
 
     # Set the choice as wanting to switch pokemon
     # @return [Boolean] if the operation was a success

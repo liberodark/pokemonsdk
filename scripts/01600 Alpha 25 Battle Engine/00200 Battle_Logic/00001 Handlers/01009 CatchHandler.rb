@@ -30,6 +30,8 @@ module Battle
       def try_to_catch_pokemon(target, pkm_ally, ball)
         log_data("# FR: try_to_catch_pokemon(#{target}, #{pkm_ally}, #{ball})")
         @bounces = -1
+        @scene.message_window.blocking = true
+        @scene.message_window.wait_input = true
         exec_hooks(Battle::Logic::CatchHandler, :ball_blocked, binding)
         catching_procedure(target, pkm_ally, ball)
         show_message_and_animation(target, ball, @bounces, caught?)
@@ -242,7 +244,7 @@ module Battle
 
       def show_message_and_animation(target, ball, nb_bounce, caught)
         @scene.visual.show_catch_animation(target, ball, nb_bounce, caught)
-        @scene.display_message_and_wait(parse_text(*TEXT_CATCH[nb_bounce], PFM::Text::PKNAME[0] => target.name)) unless caught
+        @scene.display_message_and_wait(parse_text(*TEXT_CATCH[(nb_bounce + 1) % 4], PFM::Text::PKNAME[0] => target.name)) unless caught
         return caught
       end
 

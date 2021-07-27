@@ -39,6 +39,7 @@ module Battle
         message = parse_text(18, 34, PFM::Text::ITEM2[1] => @item_wrapper.item.name, PFM::Text::TRNAME[0] => trname)
         @scene.display_message_and_wait(message)
         @bag.remove_item(@item_wrapper.item.id, 1) if @item_wrapper.item.limited
+        @bag.last_battle_item_id = @item_wrapper.item.id
         @item_wrapper.execute_battle_action
       end
     end

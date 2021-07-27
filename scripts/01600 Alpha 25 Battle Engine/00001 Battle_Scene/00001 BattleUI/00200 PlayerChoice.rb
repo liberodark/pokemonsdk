@@ -168,10 +168,10 @@ module BattleUI
         @y = 61
         @item_name = add_text(14, 13, 0, 16, :exact_name, color: 0, type: UI::SymText)
         @item_icon = add_sprite(240, 2, NO_INITIAL_IMAGE, type: UI::ItemSprite)
-        @remaining = add_text(289, 13, 0, 16, nil.to_s, 2)
+        @remaining = add_text(287, 13, 0, 16, nil.to_s, 0)
         @description = add_text(14, 34, 284, 16, :descr, color: 0, type: UI::SymMultilineText)
-        @use_text = add_text(151, 88, 0, 16, text_get(22, 0), color: 10)
-        @icon = add_sprite(131, 90, NO_INITIAL_IMAGE, :X, type: UI::KeyShortcut)
+        @use_text = add_text(151, 88, 0, 16, text_get(22, 0), color: 0)
+        @icon = add_sprite(129, 88, NO_INITIAL_IMAGE, :X, type: UI::KeyShortcut)
       end
     end
 
