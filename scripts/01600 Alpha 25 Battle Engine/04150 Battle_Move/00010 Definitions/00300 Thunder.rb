@@ -1,6 +1,6 @@
 module Battle
   class Move
-    # Accuracy depends of weather. 
+    # Accuracy depends of weather.
     # @see https://pokemondb.net/move/thunder
     # @see https://bulbapedia.bulbagarden.net/wiki/Thunder_(move)
     # @see https://www.pokepedia.fr/Fatal-Foudre
@@ -17,5 +17,6 @@ module Battle
       end
     end
     Move.register(:s_thunder, Thunder)
+    Move.register(:s_hurricane, Thunder)
   end
 end

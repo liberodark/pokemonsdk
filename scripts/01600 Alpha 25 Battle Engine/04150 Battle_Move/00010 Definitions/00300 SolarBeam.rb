@@ -12,7 +12,9 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        return super / ($env.sandstorm? || $env.hail? || $env.rain? ? 2 : 1)
+        power2 = power
+        power2 *= 0.5 if $env.sandstorm? || $env.hail? || $env.rain?
+        return power2
       end
 
       private
