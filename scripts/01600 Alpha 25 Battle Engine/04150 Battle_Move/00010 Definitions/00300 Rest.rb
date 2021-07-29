@@ -58,7 +58,7 @@ module Battle
       def deal_status(user, actual_targets)
         actual_targets.each do |target|
           scene.visual.show_info_bar(target)
-          target.status_sleep(true, 2)
+          target.status_sleep(true, 3) # Two turns + the current turn
           scene.display_message_and_wait(parse_text_with_pokemon(19, 306, target))
           hp = target.max_hp
           logic.damage_handler.heal(target, hp, test_heal_block: false) do
