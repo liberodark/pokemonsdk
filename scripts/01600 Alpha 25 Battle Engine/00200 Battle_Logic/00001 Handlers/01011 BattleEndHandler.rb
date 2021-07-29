@@ -11,6 +11,7 @@ module Battle
         exec_hooks(BattleEndHandler, :battle_end, binding)
         exec_hooks(BattleEndHandler, :battle_end_no_defeat, binding) if @logic.battle_result != 2
         @logic.all_battlers(&:copy_properties_back_to_original)
+        exec_hooks(BattleEndHandler, :battle_end_nuzlocke, binding) if $pokemon_party.nuzlocke.enabled?
         unless $scene.is_a?(Yuki::SoftReset) || $scene.is_a?(Scene_Title)
           $game_system.bgm_play($game_system.playing_bgm)
           $game_system.bgs_play($game_system.playing_bgs)
@@ -85,6 +86,16 @@ module Battle
         # @yieldparam players_pokemon [Array<PFM::PokemonBattler>]
         def register_no_defeat(reason)
           Hooks.register(BattleEndHandler, :battle_end_no_defeat, reason) do |hook_binding|
+            yield(self, hook_binding.local_variable_get(:players_pokemon))
+          end
+        end
+
+        # Function that registers a battle end procedure when nuzlocke mode is enabled
+        # @param reason [String] reason of the battle_end_nuzlocke registration
+        # @yieldparam handler [BattleEndHandler]
+        # @yieldparam players_pokemon [Array<PFM::PokemonBattler>]
+        def register_nuzlocke(reason)
+          Hooks.register(BattleEndHandler, :battle_end_nuzlocke, reason) do |hook_binding|
             yield(self, hook_binding.local_variable_get(:players_pokemon))
           end
         end
@@ -263,7 +274,7 @@ module Battle
       end
     end
 
-    BattleEndHandler.register('Update Pokedex') do |handler|
+    BattleEndHandler.register('PSDK Update Pokedex') do |handler|
       handler.logic.all_battlers { |battler| 
         next if battler.from_party? || battler.last_sent_turn == -1
         $pokedex.mark_seen(battler.id, battler.form, forced: true)
@@ -271,7 +282,7 @@ module Battle
       }
     end
 
-    BattleEndHandler.register('Update Quest') do |handler|
+    BattleEndHandler.register('PSDK Update Quest') do |handler|
       handler.logic.all_battlers { |battler|
         next if battler.from_party?
         $quests.see_pokemon(battler.id) unless battler.last_sent_turn == -1
@@ -283,6 +294,15 @@ module Battle
       next if (effects = handler.logic.terrain_effects.get_all(:bestow)).empty?
 
       effects.each(&:give_back_item)
+    end
+
+    BattleEndHandler.register_nuzlocke('PSDK Nuzlocke') do |handler|
+      $pokemon_party.nuzlocke.clear_dead_pokemon
+      handler.logic.all_battlers do |battler|
+        $pokemon_party.nuzlocke.lock_catch_in_current_zone(battler.id) unless battler.from_party?
+      end
+      caught_pokemon = handler.logic.battle_info.caught_pokemon
+      $pokemon_party.nuzlocke.lock_catch_in_current_zone(caught_pokemon.id) if caught_pokemon
     end
   end
 end

@@ -135,12 +135,7 @@ module Battle
         @logic.battle_result = 1
         @next_update = :battle_end
       when GameData::BallItem
-        if (caught = logic.catch_handler.try_to_catch_pokemon(logic.alive_battlers(1)[0], logic.alive_battlers(0)[0], item_wrapper.item))
-          logic.battle_info.caught_pokemon = logic.alive_battlers(1)[0]
-          give_pokemon_procedure(logic.battle_info.caught_pokemon.original, item_wrapper.item)
-          @logic.battle_phase_end_caught
-        end
-        @next_update = caught ? :battle_end : :trigger_all_AI
+        caught(item_wrapper) unless catch_prevented(item_wrapper)
       else
         return false # None of the specific case
       end
@@ -222,6 +217,31 @@ module Battle
       else
         @next_update = :trigger_all_AI
       end
+    end
+
+    # Method that checks if nuzlocke mode prevents capture
+    # @param item_wrapper [PFM::ItemDescriptor::Wrapper]
+    # @return [Boolean] if nuzlocke mode prevents capture
+    def catch_prevented(item_wrapper)
+      return false unless $pokemon_party.nuzlocke.enabled? && $pokemon_party.nuzlocke.catching_locked_here?
+
+      message_window.blocking = true
+      message_window.wait_input = true
+      display_message_and_wait(ext_text(8999, 20)) # You can't catch anymore pokemon here
+      $bag.add_item(item_wrapper.item.id, 1)
+      @next_update = :player_action_choice
+      return true
+    end
+
+    # Method to caught a Pokémon
+    # @param item_wrapper [PFM::ItemDescriptor::Wrapper]
+    def caught(item_wrapper)
+      if (caught = logic.catch_handler.try_to_catch_pokemon(logic.alive_battlers(1)[0], logic.alive_battlers(0)[0], item_wrapper.item))
+        logic.battle_info.caught_pokemon = logic.alive_battlers(1)[0]
+        give_pokemon_procedure(logic.battle_info.caught_pokemon.original, item_wrapper.item)
+        @logic.battle_phase_end_caught
+      end
+      @next_update = caught ? :battle_end : :trigger_all_AI
     end
   end
 end
