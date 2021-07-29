@@ -3,6 +3,13 @@ module Battle
     class Base
       private
 
+      # Get the move heuristic for a move
+      # @param move [Battle::Move]
+      # @return [AI::MoveHeuristicBase]
+      def move_heuristic_object(move)
+        @move_heuristic_cache[move]
+      end
+
       # List all the possible action for a move
       # @param move [Battle::Move]
       # @param pokemon [PFM::PokemonBattler]
@@ -24,9 +31,10 @@ module Battle
       # @return [Float]
       def move_heuristic(move, user, target)
         heuristic = 1.0
-        effectiveness = @can_see_effectiveness ? move_effectiveness(move, user, target) : 1.0
-        heuristic *= move_power(move, user, target, effectiveness) if @can_see_power
-        heuristic *= move_special_modifier(move, user, target) if @can_see_move_kind
+        move_heuristic = move_heuristic_object(move)
+        effectiveness = @can_see_effectiveness && !move_heuristic.ignore_effectiveness? ? move_effectiveness(move, user, target) : 1.0
+        heuristic *= move_power(move, user, target, effectiveness) if @can_see_power && !move_heuristic.ignore_power?
+        heuristic *= move_heuristic.compute(move, user, target, self) if @can_see_move_kind || move_heuristic.overwrite_move_kind_flag?
         return heuristic
       end
 
@@ -36,6 +44,9 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @return [Float]
       def move_effectiveness(move, user, target)
+        # Stab => 1 ~ 2
+        # type_modifier => 0.125 ~ 8
+        # SQRT(Stab * type_modifier) => 0.354 ~ 4
         effectiveness = Math.sqrt(move.calc_stab(user, move.definitive_types(user, target)) * move.type_modifier(user, target))
         return effectiveness == 0 ? 0 : 1.0 if move.status?
 
@@ -55,20 +66,9 @@ module Battle
           return Math.exp((user.last_sent_turn - $game_temp.battle_turn + 1) / 10.0) * effectiveness * 0.85
         end
 
-        return 0.75 + move.real_base_power(user, target) * effectiveness / 8000
-      end
-
-      # Process the move special modifier
-      # @param move [Battle::Move]
-      # @param user [PFM::PokemonBattler]
-      # @param target [PFM::PokemonBattler]
-      # @return [Float]
-      def move_special_modifier(move, user, target)
-        if move.respond_to?(:special_ai_modifier)
-          return move.special_ai_modifier(user, target, self)
-        else
-          return Math.sqrt(move.special? ? user.ats / target.dfs.to_f : user.atk / target.dfe.to_f)
-        end
+        # Constrict: 10 + lowest effectiveness => 0.750885
+        # Explosion: 250 + best effectiveness => 1.0
+        return 0.75 + move.real_base_power(user, target) * effectiveness / 4000
       end
 
       # Group the move actions when they're hitting several targets

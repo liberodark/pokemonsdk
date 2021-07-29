@@ -45,8 +45,9 @@ module Battle
       def switch_actions_generate_for(pokemon)
         switchable = (party - [pokemon] - @scene.logic.allies_of(pokemon)).select(&:alive?)
         return switchable.map do |battler|
-          [
-            usable_moves(battler).map { |move| move_action_for(move, battler) }.compact.map(&:first).max || 0,
+          damaging_move = usable_moves(battler).reject(&:status?)
+          next [
+            damaging_move.map { |move| move_action_for(move, battler) }.compact.map(&:first).max || 0,
             Actions::Switch.new(@scene, pokemon, battler)
           ]
         end

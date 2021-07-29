@@ -4,6 +4,9 @@ module Battle
     # Base class of AI, it holds the most important data
     class Base
       include Hooks
+      # Get the scene that initialized the AI
+      # @return [Battle::Scene]
+      attr_reader :scene
       # Get the bank the AI controls
       # @return [Integer]
       attr_reader :bank
@@ -18,10 +21,13 @@ module Battle
       # @param scene [Battle::Scene] scene that hold the logic object
       # @param bank [Integer] bank where the AI acts
       # @param party_id [Integer] ID of the party the AI look for Pokemon info
-      def initialize(scene, bank, party_id)
+      # @param level [Integer] level of tha AI
+      def initialize(scene, bank, party_id, level)
         @scene = scene
         @bank = bank
         @party_id = party_id
+        @level = level
+        @move_heuristic_cache = Hash.new { |hash, key| hash[key] = MoveHeuristicBase.new(key.be_method, @level) }
         init_capability
       end
 
