@@ -229,9 +229,11 @@ module Yuki
     end
 
     # Test if a character is a Follower of the player
-    def is_player_follower?(c)
-      return unless @followers
-      return @followers.include?(c)
+    # @param character [Game_Character]
+    def is_player_follower?(character)
+      return false unless @followers
+
+      return @followers.any? { |follower_sprite| follower_sprite.character == character }
     end
 
     # Set the Follower Manager in Battle mode. When getting out of battle every character will get its particle pushed.
