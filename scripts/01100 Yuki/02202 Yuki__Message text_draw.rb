@@ -214,6 +214,8 @@ module Yuki
           skip = (counter == -1 || Input.trigger?(:A) || panel_skip?)
         end
       end
+      marker = @markers[@instructions.size]
+      call_marker_action(marker) if marker
       @text = nil
     end
 
