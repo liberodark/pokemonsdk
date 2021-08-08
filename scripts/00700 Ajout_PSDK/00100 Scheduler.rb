@@ -61,7 +61,7 @@ module Scheduler
   # @param name [String] the name that describe the task
   # @param priority [Integer] its priority
   def __remove_task(reason, klass, name, priority)
-    task_array = @tasks.dig(reason, klass.to_s)
+    task_array = @tasks.dig(reason, klass.is_a?(Symbol) ? klass : klass.to_s)
     return unless task_array
 
     priority = -priority
