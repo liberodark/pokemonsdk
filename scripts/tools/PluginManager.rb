@@ -521,7 +521,7 @@ class PluginManager
         data = File.read(File.join(SCRIPTS_FOLDER, @name, @config.psdk_compatibility_script))
         @yuki_vd.write_data("\x01", data)
       end
-      if @config.psdk_compatibility_script
+      if @config.additional_compatibility_script
         data = File.read(File.join(SCRIPTS_FOLDER, @name, @config.additional_compatibility_script))
         @yuki_vd.write_data("\x02", data)
       end
