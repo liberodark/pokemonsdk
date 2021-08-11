@@ -394,11 +394,13 @@ module GamePlay
       if Mouse.trigger?(:left)
         buttons.each_with_index do |sp, i|
           next if only_test_return && i != return_index
+          next unless actions[i]
           sp.set_press(sp.simple_mouse_in?)
         end
       elsif Mouse.released?(:left)
         buttons.each_with_index do |sp, i|
           next if only_test_return && i != return_index
+          next unless actions[i]
           if sp.simple_mouse_in?
             send(actions[i])
             sp.set_press(false)
