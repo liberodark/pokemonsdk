@@ -27,7 +27,7 @@ module Battle
         r = yield(e)
         return r if r.is_a?(Symbol)
       end
-      pokemons = pokemons.compact # Sometimes launcher is nil, it's easier to handle that here
+      pokemons = pokemons.compact.uniq # Sometimes launcher is nil, it's easier to handle that here
       # Terrain effect
       @terrain_effects.each(&yielder)
       yielder.call(weather_effect)

@@ -11,7 +11,7 @@ module Battle
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target || target.item_db_symbol != :__undef__
           return unless skill&.direct? && launcher && launcher.hp > 0
-          return unless handler.logic.item_change_handler.can_lose_item?(launcher)
+          return unless handler.logic.item_change_handler.can_lose_item?(launcher, target)
 
           handler.scene.visual.show_ability(target)
           handler.logic.item_change_handler.change_item(launcher.item_db_symbol, !$game_temp.trainer_battle, target)
@@ -37,7 +37,7 @@ module Battle
         def on_post_damage(handler, hp, target, launcher, skill)
           return if launcher != @target || launcher == target || launcher.item_db_symbol != :__undef__
           return unless skill&.direct? && launcher && launcher.hp > 0
-          return unless handler.logic.item_change_handler.can_lose_item?(target)
+          return unless handler.logic.item_change_handler.can_lose_item?(target, launcher)
 
           handler.scene.visual.show_ability(launcher)
           handler.logic.item_change_handler.change_item(target.item_db_symbol, !$game_temp.trainer_battle, launcher)

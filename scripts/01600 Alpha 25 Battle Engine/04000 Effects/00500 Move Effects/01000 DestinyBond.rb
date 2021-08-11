@@ -5,6 +5,18 @@ module Battle
     # @see https://bulbapedia.bulbagarden.net/wiki/Destiny_Bond_(move)
     # @see https://www.pokepedia.fr/Lien_du_Destin
     class DestinyBond < PokemonTiedEffectBase
+      # Function called when we try to use a move as the user (returns :prevent if user fails)
+      # @param user [PFM::PokemonBattler]
+      # @param targets [Array<PFM::PokemonBattler>]
+      # @param move [Battle::Move]
+      # @return [:prevent, nil] :prevent if the move cannot continue
+      def on_move_prevention_user(user, targets, move)
+        return if dead? || user != @pokemon
+
+        log_debug('PSDK Destiny Bond Effect: Effect removed with on_move_prevention_user.')
+        kill
+      end
+
       # Function called after damages were applied and when target died (post_damage_death)
       # @param handler [Battle::Logic::DamageHandler]
       # @param hp [Integer] number of hp (damage) dealt

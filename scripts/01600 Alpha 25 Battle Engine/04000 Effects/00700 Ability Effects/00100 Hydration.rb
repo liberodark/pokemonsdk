@@ -9,9 +9,8 @@ module Battle
         def on_end_turn_event(logic, scene, battlers)
           return unless battlers.include?(@target) && $env.rain?
 
-          original_form = @target.form
-          @target.form_calibrate
-          scene.visual.show_switch_form_animation(@target) if @target.form != original_form
+          scene.visual.show_ability(@target)
+          logic.status_change_handler.status_change(:cure, @target)
         end
       end
       register(:hydration, Hydration)

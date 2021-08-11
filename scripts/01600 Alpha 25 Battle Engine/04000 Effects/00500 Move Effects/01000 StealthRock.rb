@@ -41,7 +41,9 @@ module Battle
       def on_switch_event(handler, who, with)
         return if with.has_ability?(:magic_guard)
 
-        hp = (with.max_hp * DMG_FACTOR[@move.calc_factor(with)] / 100).floor.clamp(1, Float::INFINITY)
+        calc_factor = @move.calc_factor(with) >= 1 ? @move.calc_factor(with).floor : @move.calc_factor(with)
+        log_data("DMG_FACTOR: #{DMG_FACTOR[calc_factor]}")
+        hp = (with.max_hp * DMG_FACTOR[calc_factor] / 100).floor.clamp(1, Float::INFINITY)
         handler.logic.damage_handler.damage_change(hp, with)
         handler.scene.display_message_and_wait(damage_message(with))
       end

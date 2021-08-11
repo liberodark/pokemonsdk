@@ -10,10 +10,12 @@ module Battle
           return unless battlers.include?(@target)
 
           sleeping_foes = logic.foes_of(@target).select(&:asleep?)
+          return unless sleeping_foes.any?
+
           scene.visual.show_ability(@target) if sleeping_foes.any?
           sleeping_foes.each do |sleeping_foe|
             hp = sleeping_foe.max_hp / 8
-            logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), @target)
+            logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), sleeping_foe)
           end
         end
       end

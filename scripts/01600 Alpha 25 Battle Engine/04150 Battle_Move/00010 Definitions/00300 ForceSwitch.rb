@@ -42,12 +42,10 @@ module Battle
             @battler_s.flee_animation
             @logic.scene.visual.wait_for_animation
             @logic.battle_result = 1
-          elsif @logic.battle_info.trainer_battle? && @logic.alive_battlers_without_check(target.bank).size > 1
-            @battler_s = @scene.visual.battler_sprite(target.bank, target.position)
-            @battler_s.go_out
-            @logic.scene.visual.wait_for_animation
           end
-          @logic.switch_request << { who: target }
+          rand_pkmn = (@logic.alive_battlers_without_check(target.bank).select { |p| p if p.party_id == target.party_id && p.position == -1 }).compact
+          @logic.actions.reject! { |a| a.is_a?(Actions::Attack) && a.launcher == target }
+          @logic.switch_request << { who: target, with: rand_pkmn.sample } unless rand_pkmn.empty?
         end
       end
     end

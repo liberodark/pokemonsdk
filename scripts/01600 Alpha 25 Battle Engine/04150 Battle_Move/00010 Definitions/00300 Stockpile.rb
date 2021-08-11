@@ -13,6 +13,7 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
         return show_usage_failure(user) && false unless targets.any? { |target| !target.effects.has?(effect_name) || target.effects.get(effect_name).increasable? }
+
         return true
       end
 

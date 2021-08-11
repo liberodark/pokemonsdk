@@ -1,7 +1,7 @@
 module Battle
   module Effects
     # Implementation of Leech Seed effect
-    # This classs drains the target hp to the Pokemon in the position of its user
+    # This class drains the target hp to the Pokemon in the position of its user
     class LeechSeed < PositionTiedEffectBase
       include Mechanics::WithMarkedTargets
 
@@ -45,6 +45,12 @@ module Battle
           super(logic, pokemon)
           initialize_mark(origin)
           @leech_power = leech_power
+        end
+
+        # Function that tells if the move is affected by Rapid Spin
+        # @return [Boolean]
+        def rapid_spin_affected?
+          return true
         end
 
         # Get the name of the effect

@@ -75,7 +75,7 @@ module Battle
       return unless item_bar
 
       item_bar.data = target
-      item_bar.go_in
+      item_bar.go_in_ability
       item_bar.z = ability_bar.z + 1 unless !ability_bar || ability_bar.done?
       if !ability_bar || ability_bar.done?
         item_bar.z = 0

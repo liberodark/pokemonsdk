@@ -84,7 +84,7 @@ module Battle
         @logic.stat_change_handler.stat_change_with_process(:dfs, -@stages_bonus[:dfs], @pokemon)
         log_data("stockpile # restore stages <dfe:#{@pokemon.dfe_stage}, dfs:#{@pokemon.dfs_stage}>")
       end
-      
+
       # Message displayed after a pokemon stockpile
       # @return [String]
       def on_increase_message

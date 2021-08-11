@@ -30,13 +30,19 @@ module Battle
         def process_effect(target, launcher, skill)
           return if cannot_be_consumed?
 
-          item_name = target.item_name
           consume_berry(target, launcher, skill)
           move = target.moveset.find { |s| s.pp == 0 }
           move ||= target.moveset.reject { |s| s.pp == s.ppmax }.min_by(&:pp)
           move ||= target.moveset.min_by(&:pp)
-          parse_text_with_pokemon(19, 917, target, PFM::Text::ITEM2[1] => item_name, PFM::Text::MOVE[2] => move.name)
-          @logic.scene.display_message_and_wait(message)
+          @logic.scene.display_message_and_wait(message(target, move))
+        end
+
+        # Give the message
+        # @param target [PFM::PokemonBattler]
+        # @param move [Battle::Move, nil] Potential move used
+        # @return String
+        def message(target, move)
+          return parse_text_with_pokemon(19, 917, target, PFM::Text::ITEM2[1] => target.item_name, PFM::Text::MOVE[2] => move.name)
         end
       end
       register(:leppa_berry, LeppaBerry)
