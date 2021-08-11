@@ -69,6 +69,9 @@ class Interpreter
     $game_temp.battle_can_lose = false
     $game_temp.battle_proc = proc do |n|
       yield if block_given?
+      $game_variables[Yuki::Var::Trainer_Battle_ID] = 0
+      $game_variables[Yuki::Var::Second_Trainer_ID] = 0
+      $game_variables[Yuki::Var::Allied_Trainer_ID] = 0
       set_self_switch(true, enable, @event_id) if n == 0
       $game_system.battle_bgm = original_battle_bgm
     end
