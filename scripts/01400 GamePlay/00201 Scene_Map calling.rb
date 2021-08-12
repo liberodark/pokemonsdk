@@ -57,25 +57,10 @@ class Scene_Map
   # Call the Battle scene if the play encounter Pokemon or trainer and its party has Pokemon that can fight
   def call_battle
     $game_temp.battle_calling = false
-    unless $pokemon_party.alive?
-      log_error('Battle were called but you have no Pokemon able to fight in your party')
-      return
-    end
-    $game_temp.menu_calling = false
-    $game_temp.menu_beep = false
-    $game_player.make_encounter_count
-    $game_temp.map_bgm = $game_system.playing_bgm.clone if $game_system.playing_bgm
-    $game_system.bgm_stop if $game_variables[::Yuki::Var::BT_Mode] != 1
-    $game_system.se_play($data_system.battle_start_se)
-    $game_player.straighten
+    return log_error('Battle were called but you have no Pokemon able to fight in your party') unless $pokemon_party.alive?
+
     case $game_variables[::Yuki::Var::BT_Mode]
-    when 1
-      raise 'Battle server not yet implemented in .25'
-    when 2
-      raise 'Battle client not yet implemented in .25'
-    when 3
-      raise 'Battle magneto not yet implement in .25'
-    else # Regular battle
+    when 0 # Regular mode
       if RMXP_WILD_BATTLE_GROUPS.include?($game_temp.battle_troop_id)
         battle_info = $wild_battle.setup
       else
@@ -83,9 +68,28 @@ class Scene_Map
                                                                        $game_variables[Yuki::Var::Second_Trainer_ID],
                                                                        $game_variables[Yuki::Var::Allied_Trainer_ID])
       end
-      Graphics.freeze
-      $scene = Battle::Scene.new(battle_info)
+
+      setup_start_battle(Battle::Scene, battle_info)
+    else
+      log_error('This mode is not programmed yet in .25')
     end
+  end
+
+  # Ensure the battle will start without any weird behaviour
+  # @param klass [Class<Battle::Scene>] class of the scene to setup
+  # @param battle_info [Battle::Logic::BattleInfo]
+  def setup_start_battle(klass, battle_info)
+    return unless battle_info
+
+    Graphics.freeze
+    $game_temp.menu_calling = false
+    $game_temp.menu_beep = false
+    $game_player.make_encounter_count
+    $game_temp.map_bgm = $game_system.playing_bgm.clone if $game_system.playing_bgm
+    $game_system.bgm_stop if $game_variables[::Yuki::Var::BT_Mode] != 1
+    $game_system.se_play($data_system.battle_start_se)
+    $game_player.straighten
+    $scene = klass.new(battle_info)
     @running = false
     Yuki::FollowMe.set_battle_entry
   end
