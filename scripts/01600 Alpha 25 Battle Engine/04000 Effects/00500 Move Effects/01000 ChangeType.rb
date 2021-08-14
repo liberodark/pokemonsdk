@@ -8,7 +8,7 @@ module Battle
       # @param type [Integer] the ID of the type to apply to the Pokemon
       def initialize(logic, pokemon, type)
         super(logic, pokemon)
-        @pokemon.change_type(type)
+        @pokemon.change_types(type)
       end
 
       # Function called when a Pokemon initialize a transformation
