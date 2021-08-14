@@ -287,6 +287,12 @@ module Graphics
       window.settings = settings
     end
 
+    def screen_scale=(scale)
+      settings = window.settings
+      settings[3] = scale
+      window.settings = settings
+    end
+
     private
 
     # Update the frozen state of graphics

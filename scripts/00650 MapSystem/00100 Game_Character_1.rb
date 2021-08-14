@@ -80,7 +80,7 @@ class Game_Character
     @sliding_parameter = nil # Variable giving extra information for sliding
     @pattern_state = false # Indicateur de la direction du pattern
     @can_make_footprint = true
-    @reflection_enabled = true
+    @reflection_enabled = $game_player&.reflection_enabled 
   end
 
   # Set the move_frequency (and define the max_stop_count value)
@@ -133,6 +133,11 @@ class Game_Character
     # Update the stop count
     self.move_frequency = @move_frequency
     moveto_system_tag_manage
+  end
+
+  # Change the reflection of a Game_Character
+  def reflection_enabled=(bool)
+    @reflection_enabled = bool
   end
 
   private
