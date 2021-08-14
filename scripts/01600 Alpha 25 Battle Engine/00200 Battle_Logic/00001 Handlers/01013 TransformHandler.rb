@@ -48,6 +48,7 @@ module Battle
       next unless handler.can_transform?(target)
 
       party = handler.logic.battle_info.party(target)
+      party = party&.reject(&:dead?)
       next if party.empty? || party.index(target) == (party.size - 1)
 
       target.transform = party.last

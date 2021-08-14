@@ -15,7 +15,7 @@ module PFM
     ]
     # List of properties to copy with transform
     TRANSFORM_COPIED_PROPERTIES = %i[
-      @id @form @nature
+      @id @form @ability @nature
       @ev_hp @ev_atk @ev_dfe @ev_spd @ev_ats @ev_dfs
       @gender
     ]

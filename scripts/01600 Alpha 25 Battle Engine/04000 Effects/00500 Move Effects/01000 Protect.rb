@@ -187,6 +187,23 @@ module Battle
         end
       end
       Protect.register(:quick_guard, QuickGuard)
+
+      # Implement the Wide Guard effect
+      class WideGuard < Protect
+        # Function called when we try to check if the target evades the move
+        # @param user [PFM::PokemonBattler]
+        # @param target [PFM::PokemonBattler] expected target
+        # @param move [Battle::Move]
+        # @return [Boolean] if the target is evading the move
+        def on_move_prevention_target(user, target, move)
+          return false if @pokemon.bank != target.bank
+          return false if move.is_one_target?
+
+          move.scene.display_message_and_wait(parse_text_with_pokemon(19, 797, target))
+          return true
+        end
+      end
+      Protect.register(:wide_guard, WideGuard)
     end
   end
 end

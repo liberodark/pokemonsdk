@@ -45,6 +45,7 @@ module Battle
         msg_id = 517
         msg_id = 511 if db_symbol == :endure
         msg_id = 800 if db_symbol == :quick_guard
+        msg_id = 797 if db_symbol == :wide_guard
 
         return parse_text_with_pokemon(19, msg_id, user)
       end
