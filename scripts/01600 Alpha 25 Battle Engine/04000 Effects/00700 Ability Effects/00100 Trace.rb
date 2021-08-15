@@ -19,6 +19,7 @@ module Battle
           handler.scene.visual.show_ability(with)
           handler.logic.ability_change_handler.change_ability(with, target.ability_db_symbol)
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 381, target, PFM::Text::ABILITY[1] => with.ability_name))
+          with.ability_effect.on_switch_event(handler, who, with) if with.ability_effect.class != Trace
         end
       end
       register(:trace, Trace)
