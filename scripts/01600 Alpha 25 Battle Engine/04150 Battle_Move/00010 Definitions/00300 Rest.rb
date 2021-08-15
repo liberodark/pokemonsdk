@@ -10,7 +10,6 @@ module Battle
       # @return [Boolean] if the target evade the move (and is not selected)
       def move_blocked_by_target?(user, target)
         return true if super
-        return true unless logic.status_change_handler.status_appliable?(:sleep, target)
 
         # Pseudo logic.status_change_handler.status_appliable? (because of the cure effect)
         # Don't forget to update this function when adding a new move
