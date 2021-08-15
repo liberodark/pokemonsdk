@@ -188,6 +188,7 @@ module Battle
       logic.each_effects(target) do |e|
         return true if e.on_move_ability_immunity(user, target, self)
       end
+      return true if powder? && target.type_grass?
 
       return false
     end
