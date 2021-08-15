@@ -316,6 +316,7 @@ pokemonsdk/scripts/01300 UI/09003 Casino/00001 NumberDisplay.rb
 pokemonsdk/scripts/01300 UI/09003 Casino/00002 BandDisplay.rb
 pokemonsdk/scripts/01300 UI/09003 Casino/00004 BaseUI.rb
 pokemonsdk/scripts/01400 GamePlay/00000 GamePlay__Base.rb
+pokemonsdk/scripts/01400 GamePlay/00001 GamePlay__StateMachine.rb
 pokemonsdk/scripts/01400 GamePlay/00099 Movie.rb
 pokemonsdk/scripts/01400 GamePlay/00200 Scene_Map.rb
 pokemonsdk/scripts/01400 GamePlay/00201 Scene_Map calling.rb
@@ -353,6 +354,10 @@ pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00300 MoveTeaching/00301 
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00300 MoveTeaching/00302 scene Inputs.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00300 MoveTeaching/00303 scene Processes.rb
 pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00300 MoveTeaching/00304 scene Mouse.rb
+pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00400 RSE Clock/00001 RSEClockLogic.rb
+pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00400 RSE Clock/00002 RSEClockUI.rb
+pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00400 RSE Clock/00003 RSEClockQuestions.rb
+pokemonsdk/scripts/01400 GamePlay/00700 Pokemon Scenes/00400 RSE Clock/00004 RSEClock.rb
 pokemonsdk/scripts/01400 GamePlay/01100 Input/00700 NameInput.rb
 pokemonsdk/scripts/01400 GamePlay/01100 Input/00701 NumberInput.rb
 pokemonsdk/scripts/01400 GamePlay/01200 Shop/00100 Shop.rb
