@@ -22,6 +22,7 @@ module Battle
       # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
       def on_end_turn_event(logic, scene, battlers)
         return unless battlers.include?(@pokemon)
+        return if @pokemon.dead?
 
         heal_hp = (@pokemon.max_hp / hp_factor).clamp(1, Float::INFINITY)
         heal_hp += heal_hp * 30 / 100 if @pokemon.hold_item?(:big_root)

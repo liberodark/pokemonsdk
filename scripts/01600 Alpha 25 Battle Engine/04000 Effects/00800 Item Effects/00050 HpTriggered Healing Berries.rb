@@ -41,6 +41,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def process_effect(target, launcher, skill)
           return if cannot_be_consumed? || target.hp_rate > hp_rate_trigger
+          return if target.dead?
 
           @logic.damage_handler.heal(target, hp_healed) do
             item_name = target.item_name

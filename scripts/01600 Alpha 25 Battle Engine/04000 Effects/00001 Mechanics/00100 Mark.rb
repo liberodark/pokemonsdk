@@ -6,6 +6,10 @@ module Battle
       # **Requirement**
       # - Call initialize_mark
       module Mark
+        # Get the origin mark
+        # @return [EffectBase]
+        attr_reader :mark_origin
+
         # Initialize the mechanic
         # @param origin [EffectBase]
         def initialize_mark(origin)

@@ -65,11 +65,14 @@ module Battle
         # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
         def on_end_turn_event(logic, scene, battlers)
           return if dead?
+
+          origin = LeechSeed.from(mark_origin)
+          return if origin.launcher.dead? || @pokemon.dead?
           return if @pokemon.has_ability?(:magic_guard)
 
           scene.display_message_and_wait(parse_text_with_pokemon(19, 610, @pokemon))
           # TODO: Add an animation
-          logic.damage_handler.drain(@leech_power, @pokemon, @mark_origin.launcher)
+          logic.damage_handler.drain(@leech_power, @pokemon, origin.launcher)
         end
 
         # Transfer the effect to the given pokemon via baton switch

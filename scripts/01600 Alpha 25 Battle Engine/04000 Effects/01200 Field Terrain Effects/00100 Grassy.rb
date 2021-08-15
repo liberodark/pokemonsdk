@@ -15,6 +15,7 @@ module Battle
           else
             battlers.each do |battler|
               next unless battler.affected_by_terrain?
+              next if battler.dead?
 
               logic.damage_handler.heal(battler, battler.max_hp / 16)
             end

@@ -36,6 +36,7 @@ module Battle
         # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
         def on_end_turn_event(logic, scene, battlers)
           return unless battlers.include?(target)
+          return if target.dead?
 
           if $env.rain?
             scene.visual.show_ability(target)

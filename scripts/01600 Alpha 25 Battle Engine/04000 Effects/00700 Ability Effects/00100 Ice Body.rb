@@ -9,6 +9,7 @@ module Battle
         def on_end_turn_event(logic, scene, battlers)
           return unless battlers.include?(@target) && $env.hail?
           return if @target.hp == @target.max_hp
+          return if @target.dead?
 
           scene.visual.show_ability(@target)
           logic.damage_handler.heal(target, target.max_hp / 16)
