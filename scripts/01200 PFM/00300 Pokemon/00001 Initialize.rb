@@ -95,7 +95,6 @@ module PFM
       @status = 0
       @status_count = 0
       @battle_stage = Array.new(7, 0)
-      @last_skill = 0
       @position = 0
       @battle_turns = 0
       @mega_evolved = false

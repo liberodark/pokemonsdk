@@ -125,15 +125,6 @@ module PFM
       return false
     end
 
-    # Find the last skill used position in the moveset of the Pokemon
-    # @return [Integer]
-    def find_last_skill_position
-      @skills_set.each_with_index do |skill, i|
-        return i if skill && skill.id == @last_skill
-      end
-      return 0
-    end
-
     # Check if the Pokemon can learn a new skill and make it learn the skill
     # @param silent [Boolean] if the skill is automatically learnt or not (false = show skill learn interface & messages)
     # @param level [Integer] The level to check in order to learn the moves

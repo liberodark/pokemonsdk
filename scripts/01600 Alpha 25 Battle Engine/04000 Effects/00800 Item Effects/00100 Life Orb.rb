@@ -13,21 +13,32 @@ module Battle
           return 1.3
         end
 
-        # Function called at the end of a turn
-        # @param logic [Battle::Logic] logic of the battle
-        # @param scene [Battle::Scene] battle scene
-        # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
-        def on_end_turn_event(logic, scene, battlers)
-          return unless battlers.include?(@target)
+        # Function called after damages were applied (post_damage, when target is still alive)
+        # @param handler [Battle::Logic::DamageHandler]
+        # @param hp [Integer] number of hp (damage) dealt
+        # @param target [PFM::PokemonBattler]
+        # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @param skill [Battle::Move, nil] Potential move used
+        def on_post_damage(handler, hp, target, launcher, skill)
+          return unless launcher == @target
+          return if launcher.has_ability?(:magic_guard) || launcher.dead?
 
-          # Check if target hitted and dealt damage the current turn
-          check = @target.move_history.last&.current_turn? && @target.move_history.last&.targets.any? { |target| 
-            target.last_hit_by_move&.id == @target.move_history.last.move.id
-          }
-          return if !check || @target.has_ability?(:magic_guard)
+          @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 1044, launcher, PFM::Text::ITEM2[1] => launcher.item_name))
+          @logic.damage_handler.damage_change((launcher.max_hp / 10).clamp(1, Float::INFINITY), launcher)
+        end
 
-          scene.display_message_and_wait(parse_text_with_pokemon(19, 1044, @target, PFM::Text::ITEM2[1] => @target.item_name))
-          logic.damage_handler.damage_change((@target.max_hp / 10).clamp(1, Float::INFINITY), @target)
+        # Function called after damages were applied and when target died (post_damage_death)
+        # @param handler [Battle::Logic::DamageHandler]
+        # @param hp [Integer] number of hp (damage) dealt
+        # @param target [PFM::PokemonBattler]
+        # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @param skill [Battle::Move, nil] Potential move used
+        def on_post_damage_death(handler, hp, target, launcher, skill)
+          return unless launcher == @target
+          return if launcher.has_ability?(:magic_guard) || launcher.dead?
+
+          @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 1044, launcher, PFM::Text::ITEM2[1] => launcher.item_name))
+          @logic.damage_handler.damage_change((launcher.max_hp / 10).clamp(1, Float::INFINITY), launcher)
         end
       end
       register(:life_orb, LifeOrb)

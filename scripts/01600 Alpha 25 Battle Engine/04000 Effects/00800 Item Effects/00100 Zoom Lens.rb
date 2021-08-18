@@ -10,7 +10,7 @@ module Battle
         def chance_of_hit_multiplier(user, target, move)
           return 1 if user != @target
 
-          return @logic.battler_attacks_after?(user, target)
+          return @logic.battler_attacks_after?(user, target) ? 1.2 : 1
         end
       end
       register(:zoom_lens, ZoomLens)

@@ -155,12 +155,6 @@ module PFM
     def critical_modifier
       @critical_modifier || 0
     end
-    # Last skill ID used in battle
-    # @return [Integer]
-    attr_accessor :last_skill
-    # Number of times the last skill was used
-    # @return [Integer]
-    attr_accessor :skill_use_times
     # The position in the Battle, > 0 = actor, < 0 = enemy (index = -position-1), nil = not fighting
     # @return [Integer, nil]
     attr_accessor :position

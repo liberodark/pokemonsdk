@@ -161,6 +161,7 @@ module Battle
     BattleEndHandler.register_no_defeat('PSDK honey gather') do |handler, players_pokemon|
       players_pokemon.each do |pokemon|
         next unless pokemon.original.ability_db_symbol == :honey_gather && pokemon.item_holding == 0 && handler.logic.generic_rng.rand(100) < (pokemon.level / 2)
+        next if pokemon.original.egg?
 
         pokemon.item_holding = GameData::Item[:honey].id
       end
@@ -169,6 +170,7 @@ module Battle
     BattleEndHandler.register_no_defeat('PSDK pickup') do |handler, players_pokemon|
       players_pokemon.each do |pokemon|
         next unless pokemon.original.ability_db_symbol == :pickup && pokemon.item_holding == 0 && handler.logic.generic_rng.rand(100) < 10
+        next if pokemon.original.egg?
 
         pokemon.item_holding = handler.pickup_item(pokemon.original)
       end
