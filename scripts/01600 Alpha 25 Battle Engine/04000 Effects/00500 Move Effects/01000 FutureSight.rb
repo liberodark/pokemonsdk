@@ -23,6 +23,7 @@ module Battle
       def on_delete
         return unless appliable?
         return unless (target = find_target)
+        return if target.type_dark?
 
         @logic.scene.display_message_and_wait(proc_message(target))
         # @todo add animation

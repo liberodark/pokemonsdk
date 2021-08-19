@@ -15,6 +15,7 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
         return show_usage_failure(user) && false if targets.all? { |t| @logic.position_effects[t.bank][t.position].has?(effect_name) }
+
         return true
       end
 
