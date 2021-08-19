@@ -44,7 +44,7 @@ module Battle
       # @param target [PFM::PokemonBattler] expected target
       # @return [Effects::PositionTiedEffectBase]
       def create_effect(user, target)
-        Effects::FutureSight.new(@logic, target.bank, target.position, 2, damages(user, target))
+        Effects::FutureSight.new(@logic, target.bank, target.position, 3, damages(user, target))
       end
 
       # Message displayed when the effect is dealt
