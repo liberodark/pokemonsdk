@@ -9,6 +9,7 @@ module Battle
         # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
+          return unless launcher
           return if target != @target && launcher != target
 
           if launcher.item_db_symbol == :__undef__
@@ -16,6 +17,7 @@ module Battle
             handler.logic.item_change_handler.change_item(:none, false, target)
           end
         end
+        alias on_post_damage_death on_post_damage
 
         # Function called at the end of a turn
         # @param logic [Battle::Logic] logic of the battle
