@@ -37,6 +37,7 @@ module BattleUI
       item_wrapper = PFM::ItemDescriptor.actions(item.id)
       user = scene.logic.battler(0, scene.player_actions.size)
       item_wrapper.bind(scene, user)
+      $bag.remove_item(item_wrapper.item.id, 1) if item_wrapper.item.limited && item_wrapper.item.is_a?(GameData::BallItem)
       @action = Battle::Actions::Item.new(scene, item_wrapper, $bag, user)
     end
 
