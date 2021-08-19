@@ -9,7 +9,7 @@ module Battle
       def move_usable_by_user(user, targets)
         return failure(user) unless user.moveset.map(&:db_symbol).include?(:last_resort)
         return failure(user) if user.moveset.size == 1
-        return failure(user) unless user.move_history.flat_map(&:move).flat_map(&:db_symbol).uniq.size >= 1
+        return failure(user) unless all_other_move_used?(user)
 
         return super
       end
@@ -20,6 +20,17 @@ module Battle
       def failure(user)
         show_usage_failure(user)
         return false
+      end
+
+      private
+
+      # Test if the user has used all the other moves
+      # @param user [PFM::PokemonBattler]
+      def all_other_move_used?(user)
+        moves = user.moveset.reject { |move| move == self }
+        used_moves = user.move_history.map(&:original_move).uniq
+
+        return (moves - used_moves).size == 0
       end
     end
     Move.register(:s_last_resort, LastResort)
