@@ -10,7 +10,9 @@ module Battle
         def on_move_ability_immunity(user, target, move)
           return false if target != @target
 
-          return move.type_modifier(user, target) <= 1 && user.can_be_lowered_or_canceled?
+          check = move.type_modifier(user, target) <= 1 && move.real_base_power(user, target) != 0 && user.can_be_lowered_or_canceled?
+          @logic.scene.visual.show_ability(@target) if check
+          return check
         end
       end
       register(:wonder_guard, WonderGuard)
