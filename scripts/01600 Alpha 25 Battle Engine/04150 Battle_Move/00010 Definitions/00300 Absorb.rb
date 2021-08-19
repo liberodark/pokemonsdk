@@ -24,7 +24,7 @@ module Battle
 
         actual_targets.each do |target|
           hp = damages(user, target)
-          @logic.damage_handler.drain(hp, target, user, self, hp_overwrite: hp, drain_factor: 2) do
+          @logic.damage_handler.drain_with_process(hp, target, user, self, hp_overwrite: hp, drain_factor: 2) do
             if critical_hit?
               scene.display_message_and_wait(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
             elsif hp > 0
