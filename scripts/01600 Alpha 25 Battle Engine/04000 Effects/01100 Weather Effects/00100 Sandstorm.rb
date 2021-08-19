@@ -16,6 +16,7 @@ module Battle
             scene.visual.show_rmxp_animation(battlers.first || logic.battler(0, 0), 494)
             scene.display_message_and_wait(parse_text(18, 98))
             battlers.each do |battler|
+              next if battler.dead?
               next if battler.type_rock? || battler.type_ground? || battler.type_steel?
               next if SANDSTORM_BLOCKING_ABILITIES.include?(battler.battle_ability_db_symbol)
 

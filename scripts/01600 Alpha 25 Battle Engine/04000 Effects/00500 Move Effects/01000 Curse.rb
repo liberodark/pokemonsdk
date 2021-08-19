@@ -7,6 +7,7 @@ module Battle
       # @param scene [Battle::Scene] battle scene
       # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
       def on_end_turn_event(logic, scene, battlers)
+        return if @pokemon.dead?
         return if @pokemon.has_ability?(:magic_guard)
 
         hp = @pokemon.max_hp / 4

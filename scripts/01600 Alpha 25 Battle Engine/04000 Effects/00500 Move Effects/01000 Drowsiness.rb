@@ -30,7 +30,9 @@ module Battle
       # @param scene [Battle::Scene] battle scene
       # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
       def on_end_turn_event(logic, scene, battlers)
+        return if @pokemon.dead?
         return unless triggered?
+
         logic.status_change_handler.status_change_with_process(:sleep, @pokemon)
       end
     end

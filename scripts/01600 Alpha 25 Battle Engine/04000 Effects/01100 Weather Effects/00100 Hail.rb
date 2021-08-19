@@ -17,6 +17,7 @@ module Battle
             scene.display_message_and_wait(parse_text(18, 99))
             battlers.each do |battler|
               next if battler.type_ice?
+              next if battler.dead?
               next if HAIL_BLOCKING_ABILITIES.include?(battler.battle_ability_db_symbol)
 
               logic.damage_handler.damage_change((battler.max_hp / 16).clamp(1, Float::INFINITY), battler)

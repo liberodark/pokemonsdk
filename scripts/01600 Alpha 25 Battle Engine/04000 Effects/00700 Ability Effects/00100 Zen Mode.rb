@@ -25,6 +25,7 @@ module Battle
         # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
         def on_end_turn_event(logic, scene, battlers)
           return unless battlers.include?(@target)
+          return if @target.dead?
 
           original_form = @target.form
           @target.form_calibrate(:battle)

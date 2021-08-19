@@ -8,6 +8,7 @@ module Battle
         # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
         def on_end_turn_event(logic, scene, battlers)
           return unless battlers.include?(@target)
+          return if @target.dead?
           return if @target.moveset.none? { |move| move.pp == 0 }
 
           process_effect(@target, nil, nil)

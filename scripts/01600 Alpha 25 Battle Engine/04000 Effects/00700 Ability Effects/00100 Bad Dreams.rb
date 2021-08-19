@@ -8,6 +8,7 @@ module Battle
         # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
         def on_end_turn_event(logic, scene, battlers)
           return unless battlers.include?(@target)
+          return if @target.dead?
 
           sleeping_foes = logic.foes_of(@target).select(&:asleep?)
           return unless sleeping_foes.any?

@@ -31,6 +31,8 @@ module Battle
       # @param scene [Battle::Scene] battle scene
       # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
       def on_end_turn_event(logic, scene, battlers)
+        return if @pokemon.dead?
+
         scene.display_message_and_wait(parse_text_with_pokemon(19, 863, @pokemon, { PFM::Text::NUMB[2] => (@counter - 1).to_s }))
         logic.damage_handler.damage_change(@pokemon.max_hp, @pokemon) if triggered?
       end

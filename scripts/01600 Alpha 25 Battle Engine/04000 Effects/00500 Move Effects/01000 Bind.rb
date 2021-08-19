@@ -36,6 +36,7 @@ module Battle
       # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
       def on_end_turn_event(logic, scene, battlers)
         return kill if @origin.dead?
+        return if @pokemon.dead?
 
         scene.display_message(message)
         logic.damage_handler.damage_change((@pokemon.max_hp / hp_factor).clamp(1, Float::INFINITY), @pokemon)
