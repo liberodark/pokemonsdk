@@ -14,7 +14,7 @@ module Battle
             scene.visual.show_item(@target)
             logic.damage_handler.heal(@target, @target.max_hp / 16)
           elsif !@target.has_ability?(:magic_guard)
-            scene.display_message_and_wait(parse_text_with_pokemon(19, 1048, @target, PFM::Text::ITEM2[1] => @target.item_name))
+            scene.display_message_and_wait(parse_text_with_pokemon(19, 1044, @target, PFM::Text::ITEM2[1] => @target.item_name))
             logic.damage_handler.damage_change((@target.max_hp / 8).clamp(1, Float::INFINITY), @target)
           end
         end
