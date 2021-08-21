@@ -8,10 +8,10 @@ module Battle
       # List of move that can hit a Pokemon when he's out of reach
       #   CAN_HIT_BY_TYPE[oor_type] = [move db_symbol list]
       CAN_HIT_BY_TYPE = [
-        [], # Nothing
-        %i[earthquake fissure magnitude], # Dig
-        %i[gust whirlwind thunder swift sky_uppercut twister smack_down hurricane thousand_arrows], # Fly
-        %i[surf whirlpool], # Dive
+        %i[spikes toxic_spikes stealth_rock], # Phantom Force & Shadow Force
+        %i[earthquake fissure magnitude spikes toxic_spikes stealth_rock], # Dig
+        %i[gust whirlwind thunder swift sky_uppercut twister smack_down hurricane thousand_arrows spikes toxic_spikes stealth_rock], # Fly & Bounce
+        %i[surf whirlpool spikes toxic_spikes stealth_rock], # Dive
         nil # Others moves
       ]
 
