@@ -18,6 +18,8 @@ module Battle
         :magic_room
       end
 
+      # Function called when a held item wants to perform its action
+      # @return [Boolean] weither or not the item can't proceed (true will stop the item)
       def on_held_item_use_prevention
         true
       end
