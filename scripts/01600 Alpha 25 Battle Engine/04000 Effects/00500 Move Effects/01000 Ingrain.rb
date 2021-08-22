@@ -45,6 +45,12 @@ module Battle
         return parse_text_with_pokemon(19, 739, @pokemon)
       end
 
+      # Get the flee message text
+      # @return [String]
+      def flee_message
+        return parse_text_with_pokemon(19, 742, @pokemon)
+      end
+
       # Get the HP factor delt by the move
       # @return [Integer]
       def hp_factor
