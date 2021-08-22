@@ -65,8 +65,9 @@ module Battle
         # @type [Effects::Rollout]
         effect = user.effects.get(effect_name)
         return super unless effect
+
         # Acuracy lower 10% each use (90 -> 81 -> 73 -> 66 -> 57)
-        result = (super * 0.9 ** effect.successive_uses).round
+        result = (super * 0.9**effect.successive_uses).round
         log_data("chance of hit = #{result} # ice ball successive use : #{effect.successive_uses}")
         return result
       end

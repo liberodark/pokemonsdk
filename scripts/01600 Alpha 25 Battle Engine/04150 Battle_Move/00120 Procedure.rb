@@ -97,10 +97,7 @@ module Battle
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     # @return [Boolean] if the move can continue
     def proceed_move_accuracy(user, targets)
-      if targets.all? { |target| user.effects.get(:lock_on)&.target == target }
-        log_data("# accuracy= 100 (:lock_on effect)")
-        return true
-      end
+      return log_data('# proceed_move_accuracy: bypassed') && true if bypass_accuracy?(user, targets)
 
       accuracy_dice = logic.move_accuracy_rng.rand(100)
       log_data("# accuracy= #{accuracy}, value = #{accuracy_dice} (testing=#{accuracy > 0}, failure=#{accuracy_dice >= accuracy})")
@@ -110,6 +107,21 @@ module Battle
       end
 
       return true
+    end
+
+    # Tell if the move accuracy is bypassed
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param targets [Array<PFM::PokemonBattler>] expected targets
+    # @return [Boolean]
+    def bypass_accuracy?(user, targets)
+      if targets.all? { |target| user.effects.get(:lock_on)&.target == target }
+        log_data('# accuracy= 100 (:lock_on effect)')
+        return true
+      end
+      return true if user.has_ability?(:no_guard) || targets.any? { |target| target.has_ability?(:no_guard) }
+      return true if db_symbol == :blizzard && $env.hail?
+
+      return false
     end
 
     # Show the usage failure when move is not usable by user
