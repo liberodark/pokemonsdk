@@ -5,7 +5,7 @@ module GameData
 end
 
 safe_code('Register StoneItem ItemDescriptor') do
-  PFM::ItemDescriptor.define_chen_prevension(GameData::StoneItem) do
+  PFM::ItemDescriptor.define_chen_prevention(GameData::StoneItem) do
     next $game_temp.in_battle
   end
 

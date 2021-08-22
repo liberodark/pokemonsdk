@@ -145,16 +145,36 @@ module Battle
     end
 
     # Begin the Pokemon giving procedure
-    # @param pkmn [PFM::Pokemon] pokemon that was just caught
+    # @param battler [PFM::PokemonBattler] pokemon that was just caught
     # @param ball [GameData::BallItem]
-    def give_pokemon_procedure(pkmn, ball)
+    def give_pokemon_procedure(battler, ball)
+      pkmn = battler.original
       Audio.bgm_play(*@battle_info.victory_bgm)
       message_window.blocking = true
       message_window.wait_input = true
-      $quests.catch_pokemon(pkmn)
-      $quests.beat_pokemon(pkmn.id)
+      update_pokemon_related_quests(pkmn)
       $wild_battle.remove_roaming_pokemon(pkmn)
       display_message_and_wait(parse_text(18, 67, PKNAME[0] => pkmn.name))
+      update_pokedex_related_infos(pkmn)
+      rename_sequence(pkmn)
+      battler.loyalty = 200 if ball&.db_symbol == :friend_ball
+      $game_system.map_interpreter.add_pokemon(pkmn)
+      # Stocked
+      if $game_switches[Yuki::Sw::SYS_Stored]
+        display_message_and_wait(parse_text(30, 1, PKNICK[0] => pkmn.given_name, '[VAR BOX(0001)]' => $storage.get_box_name($storage.current_box)))
+      end
+    end
+
+    # Pokemon related quests update
+    # @param pkmn [PFM::Pokemon] pokemon that was just caught
+    def update_pokemon_related_quests(pkmn)
+      $quests.catch_pokemon(pkmn)
+      $quests.beat_pokemon(pkmn.id)
+    end
+
+    # Pokemon related Pokedex update
+    # @param pkmn [PFM::Pokemon] pokemon that was just caught
+    def update_pokedex_related_infos(pkmn)
       unless $pokedex.pokemon_caught?(pkmn.id)
         $pokedex.mark_captured(pkmn.id)
         if $pokedex.enabled?
@@ -163,16 +183,15 @@ module Battle
         end
       end
       $pokedex.pokemon_captured_inc(pkmn.id)
-      # Rename
+    end
+
+    # Rename question and scene
+    # @param pkmn [PFM::Pokemon] pokemon that was just caught
+    def rename_sequence(pkmn)
       if display_message_and_wait(parse_text(30, 0, PKNAME[0] => pkmn.name), 0, text_get(25, 20), text_get(25, 21)) == 0
         call_scene(GamePlay::NameInput, pkmn.name, 12, pkmn) do |scene|
           pkmn.given_name = scene.return_name
         end
-      end
-      $game_system.map_interpreter.add_pokemon(pkmn)
-      # Stocked
-      if $game_switches[Yuki::Sw::SYS_Stored]
-        display_message_and_wait(parse_text(30, 1, PKNICK[0] => pkmn.given_name, '[VAR BOX(0001)]' => $storage.get_box_name($storage.current_box)))
       end
     end
 
@@ -238,7 +257,7 @@ module Battle
     def caught(item_wrapper)
       if (caught = logic.catch_handler.try_to_catch_pokemon(logic.alive_battlers(1)[0], logic.alive_battlers(0)[0], item_wrapper.item))
         logic.battle_info.caught_pokemon = logic.alive_battlers(1)[0]
-        give_pokemon_procedure(logic.battle_info.caught_pokemon.original, item_wrapper.item)
+        give_pokemon_procedure(logic.battle_info.caught_pokemon, item_wrapper.item)
         @logic.battle_phase_end_caught
       end
       @next_update = caught ? :battle_end : :trigger_all_AI

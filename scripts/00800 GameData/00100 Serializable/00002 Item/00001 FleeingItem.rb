@@ -5,7 +5,7 @@ module GameData
 end
 
 safe_code('Register FleeingItem ItemDescriptor') do
-  PFM::ItemDescriptor.define_chen_prevension(GameData::FleeingItem) do
+  PFM::ItemDescriptor.define_chen_prevention(GameData::FleeingItem) do
     !$game_temp.in_battle
   end
   PFM::ItemDescriptor.define_bag_use(GameData::FleeingItem, true) do |item, scene|

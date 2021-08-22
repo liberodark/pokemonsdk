@@ -264,23 +264,5 @@ module PFM
       restore_type2
       restore_type3
     end
-
-    # Return the battler's combat property
-    # @return [Integer]
-    def loyalty
-      return @battle_properties[:loyalty] || super
-    end
-
-    # Set the battler's combat property
-    # @param value [Integer]
-    def loyalty=(value)
-      @battle_properties[:loyalty] = value.clamp(0, 255)
-    end
-
-    # Restore the battler's property original value
-    def restore_loyalty
-      @battle_properties.delete(:loyalty)
-    end
-
   end
 end

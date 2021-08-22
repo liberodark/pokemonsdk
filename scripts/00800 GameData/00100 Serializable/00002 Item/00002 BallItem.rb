@@ -25,7 +25,7 @@ module GameData
 end
 
 safe_code('Register BallItem ItemDescriptor') do
-  PFM::ItemDescriptor.define_chen_prevension(GameData::BallItem) do
+  PFM::ItemDescriptor.define_chen_prevention(GameData::BallItem) do
     next !$game_temp.in_battle || $game_temp.trainer_battle || $game_switches[Yuki::Sw::BT_NoCatch]
   end
   PFM::ItemDescriptor.define_bag_use(GameData::BallItem, true) do |item, scene|
@@ -42,7 +42,7 @@ safe_code('Register BallItem ItemDescriptor') do
       scene.return_to_scene(Battle::Scene)
     end
   end
-  PFM::ItemDescriptor.define_chen_prevension(:rocket_ball) do
+  PFM::ItemDescriptor.define_chen_prevention(:rocket_ball) do
     next !$game_temp.in_battle || $game_switches[Yuki::Sw::BT_NoCatch]
   end
   PFM::ItemDescriptor.define_bag_use(:rocket_ball, true) do |item, scene|

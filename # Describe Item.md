@@ -52,14 +52,14 @@ end
 Some item like sacred ash can only be used if any Pokemon of the party is dead. In order to prevent the item from being used if the condition are not meet you can use the following function:
 
 ```ruby
-PFM::ItemDescriptor.define_chen_prevension(klass_or_symbol) do |item|
+PFM::ItemDescriptor.define_chen_prevention(klass_or_symbol) do |item|
   # return true if chen tells it's not time
 end
 ```
 
 Example:
 ```ruby
-PFM::ItemDescriptor.define_chen_prevension(:sacred_ash) do
+PFM::ItemDescriptor.define_chen_prevention(:sacred_ash) do
   next $actors.none? { |pokemon| pokemon.dead? && !pokemon.egg? }
 end
 ```

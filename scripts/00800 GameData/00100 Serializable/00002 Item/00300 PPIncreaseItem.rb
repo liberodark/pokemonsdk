@@ -16,7 +16,7 @@ module GameData
 end
 
 safe_code('Register PPIncreaseItem ItemDescriptor') do
-  PFM::ItemDescriptor.define_chen_prevension(GameData::PPIncreaseItem) do
+  PFM::ItemDescriptor.define_chen_prevention(GameData::PPIncreaseItem) do
     next $game_temp.in_battle
   end
 

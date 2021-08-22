@@ -5,7 +5,7 @@ module GameData
 end
 
 safe_code('Register EVBoostItem ItemDescriptor') do
-  PFM::ItemDescriptor.define_chen_prevension(GameData::EVBoostItem) do
+  PFM::ItemDescriptor.define_chen_prevention(GameData::EVBoostItem) do
     next $game_temp.in_battle
   end
 

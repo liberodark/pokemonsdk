@@ -34,7 +34,7 @@ module GameData
 end
 
 safe_code('Register TechItem ItemDescriptor') do
-  PFM::ItemDescriptor.define_chen_prevension(GameData::TechItem) do
+  PFM::ItemDescriptor.define_chen_prevention(GameData::TechItem) do
     next $game_temp.in_battle
   end
 

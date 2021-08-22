@@ -21,7 +21,7 @@ module GameData
 end
 
 safe_code('Register StatBoostItem ItemDescriptor') do
-  PFM::ItemDescriptor.define_chen_prevension(GameData::StatBoostItem) do
+  PFM::ItemDescriptor.define_chen_prevention(GameData::StatBoostItem) do
     next !$game_temp.in_battle
   end
 

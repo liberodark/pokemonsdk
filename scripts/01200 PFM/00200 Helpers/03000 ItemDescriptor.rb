@@ -90,7 +90,7 @@ module PFM
     # @param klass [Class<GameData::Item>, Symbol] class or db_symbol of the item
     # @yieldparam item [GameData::Item] item used
     # @yieldreturn [Boolean] if chen tells it's not time for that!
-    def define_chen_prevension(klass, &block)
+    def define_chen_prevention(klass, &block)
       CHEN_PREVENTIONS[klass] = block
     end
 
@@ -293,7 +293,7 @@ module PFM
     end
 
     # Specific case sacred_ash
-    define_chen_prevension(:sacred_ash) { $actors.none? { |pokemon| pokemon.dead? && !pokemon.egg? } }
+    define_chen_prevention(:sacred_ash) { $actors.none? { |pokemon| pokemon.dead? && !pokemon.egg? } }
     define_bag_use(:sacred_ash) do
       $actors.compact.each do |pkmn|
         next unless pkmn.hp <= 0
@@ -305,7 +305,7 @@ module PFM
       end
     end
     # Specific case honey
-    define_chen_prevension(:honey) { !$env.normal? || $env.grass? || $env.building? }
+    define_chen_prevention(:honey) { !$env.normal? || $env.grass? || $env.building? }
     define_bag_use(:honey) do
       next $scene.display_message(text_get(39, 7).clone) unless $wild_battle.available?
 
