@@ -116,11 +116,14 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
-      def drain_with_process(hp_factor, target, launcher, skill = nil)
-        hp = (target.max_hp / hp_factor).clamp(0, Float::INFINITY)
+      # @param hp_overwrite [Integer, nil] for the number of hp drained by the move
+      # @param drain_factor [Integer] the division factor of HP drained
+      # @param messages [Proc] messages shown right before the post processing
+      def drain_with_process(hp_factor, target, launcher, skill = nil, hp_overwrite: nil, drain_factor: 1, &messages)
+        hp = hp_overwrite || (target.max_hp / hp_factor).clamp(0, Float::INFINITY)
         return process_prevention_reason unless (hp = damage_appliable(hp, target, launcher, skill))
 
-        drain(hp_factor, target, launcher, skill, hp_overwrite: hp)
+        drain(hp_factor, target, launcher, skill, hp_overwrite: hp, drain_factor: drain_factor, &messages)
       end
 
       class << self
