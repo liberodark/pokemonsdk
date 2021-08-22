@@ -2,12 +2,12 @@ module Battle
   class Move
     # Move that share HP between targets
     class PainSplit < Move
-      # Return the chance of hit of the move
+      # Check if the move bypass chance of hit and cannot fail
       # @param _user [PFM::PokemonBattler] user of the move
       # @param _target [PFM::PokemonBattler] target of the move
-      # @return [Float]
-      def chance_of_hit(_user, _target)
-        return 100
+      # @return [Boolean]
+      def bypass_chance_of_hit?(_user, _target)
+        return true
       end
 
       # Function that deals the effect to the pokemon

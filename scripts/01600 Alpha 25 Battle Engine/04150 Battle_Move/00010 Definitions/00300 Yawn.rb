@@ -5,11 +5,11 @@ module Battle
     class Yawn < Move
       private
 
-      # Test move accuracy
+      # Tell if the move accuracy is bypassed
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
-      # @return [Boolean] if the move can continue
-      def proceed_move_accuracy(user, targets)
+      # @return [Boolean]
+      def bypass_accuracy?(user, targets)
         return true
       end
 

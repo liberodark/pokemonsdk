@@ -6,16 +6,29 @@ module Battle
     # @return [Float]
     def chance_of_hit(user, target)
       log_data("# chance_of_hit(#{user}, #{target}) for #{db_symbol}")
-      return 100 if user.effects.get(:lock_on)&.target == target
-      return 100 if user.has_ability?(:no_guard) || target.has_ability?(:no_guard)
-      return 100 if db_symbol == :blizzard && $env.hail?
-      return 100 if status? && accuracy <= 0
+      if bypass_chance_of_hit?(user, target)
+        log_data('# chance_of_hit: bypassed')
+        return 100
+      end
 
       factor = logic.each_effects(user, target).reduce(1) { |product, e| product * e.chance_of_hit_multiplier(user, target, self) }
       factor *= accuracy_mod(user)
       factor *= evasion_mod(target)
       log_data("result = #{factor * 100}")
       return factor * 100
+    end
+
+    # Check if the move bypass chance of hit and cannot fail
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
+    # @return [Boolean]
+    def bypass_chance_of_hit?(user, target)
+      return true if user.effects.get(:lock_on)&.target == target
+      return true if user.has_ability?(:no_guard) || target.has_ability?(:no_guard)
+      return true if db_symbol == :blizzard && $env.hail?
+      return true if status? && accuracy <= 0
+
+      return false
     end
 
     # Return the accuracy modifier of the user
