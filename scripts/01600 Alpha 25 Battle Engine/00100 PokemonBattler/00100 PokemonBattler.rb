@@ -420,6 +420,7 @@ module PFM
         indexes = (moveset_before - original.skills_set).map { |i| moveset_before.index(i) }
       end
       moveset = @transform ? @moveset_before_transform : @moveset
+      moveset = @moveset unless @moveset_before_transform
       indexes.each do |i|
         next unless (skill = original.skills_set[i])
 
