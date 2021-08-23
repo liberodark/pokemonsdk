@@ -30,6 +30,7 @@ module Yuki
       texts.each { |sub_text| x = adjust_text_lines(x, max_width, sub_text, instructions) }
       @markers = markers
       @instructions = instructions
+      @x_offsets = compute_x_offsets(instructions, max_width)
     end
 
     # Adjust the line of text by adding instructions to the stack
@@ -70,6 +71,28 @@ module Yuki
         end
       end
       return x
+    end
+    
+    # Compute x offsets for text alignment
+    # @param instructions [Array]
+    # @param max_width [Integer]
+    # @return [Array<Integer>]
+    def compute_x_offsets(instructions, max_width)
+      return [] if @align == :left
+      instructions = instructions.flatten
+      # @type [Array<String>]
+      lines = instructions.reduce(['']) do |prev, curr|
+        curr.is_a?(String) ? prev.last << curr : prev << '' 
+        next prev
+      end
+      lines.pop if lines.last.empty?
+      widths = lines.map { |line| @text_sample.text_width(line) }
+      if @align == :center
+        return widths.map { |width| (max_width - width) / 2 }
+      elsif @align == :right
+        return widths.map { |width| max_width - width }
+      end
+      return widths.map { 0 }
     end
 
     # Progress in the text display
@@ -169,6 +192,7 @@ module Yuki
       return unless $game_temp.message_text
 
       @drawing_message = true
+      @align = :left
       set_origin(0, 0)
       @can_skip_message = false
       text = replace_message_codes($game_temp.message_text)
@@ -188,6 +212,7 @@ module Yuki
     def refresh_internal(lineheight)
       skip = false
       counter = 0
+      @x += @x_offsets.shift || 0
       @instructions.each_with_index do |instr_arr, i|
         marker = @markers[i]
         call_marker_action(marker) if marker
@@ -199,7 +224,7 @@ module Yuki
             redo
           end
           if instr == :new_line
-            @x = origin_x
+            @x = origin_x + (@x_offsets.shift || 0)
             @y += lineheight
             if @y >= lineheight * line_number
               wait_user_input
