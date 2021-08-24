@@ -10,6 +10,8 @@ module GameData
     NOT_BREEDING = %i[phione manaphy]
     # List of Pokemon that only breed with Ditto
     BREEDING_WITH_DITTO = %i[phione manaphy]
+    # ID of the Ditto group
+    DITTO_GROUP = 13
     # ID of the breed group that forbid breeding
     NOT_BREEDING_GROUP = 15
     # List of price rate for all daycare
