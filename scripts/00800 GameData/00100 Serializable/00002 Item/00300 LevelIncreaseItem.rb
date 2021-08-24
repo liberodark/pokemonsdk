@@ -21,6 +21,8 @@ safe_code('Register LevelIncreaseItem ItemDescriptor') do
   end
 
   PFM::ItemDescriptor.define_on_pokemon_usability(GameData::LevelIncreaseItem) do |item, pokemon|
+    next false if pokemon.egg?
+
     next (pokemon.level + GameData::LevelIncreaseItem.from(item).level_count) <= pokemon.max_level
   end
 
