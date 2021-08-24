@@ -43,7 +43,7 @@ module Battle
           def on_move_disabled_check(user, move)
             return unless move.status? && user == @target
 
-            return proc { move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, PFM::Text::MOVE[1])) }
+            return proc { move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, PFM::Text::MOVE[1] => move.name)) }
           end
         end
 

@@ -43,8 +43,12 @@ module Battle
           def on_move_disabled_check(user, move)
             return unless user == @target && user.move_history.any?
             return if user.move_history.last.db_symbol == move.db_symbol
+            return if user.move_history.last.turn < user.last_sent_turn
 
-            return proc {}
+            return proc {
+              move.scene.visual.show_item(user)
+              move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, PFM::Text::MOVE[1] => move.name))
+            }
           end
         end
 

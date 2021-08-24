@@ -7,9 +7,9 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        check = @logic.all_battlers.any? { |battler| 
+        check = @logic.all_battlers.any? { |battler|
           battler.from_party? && battler.damage_history.any? { |history| history.ko && history.last_turn? }
-        }                
+        }
         return check ? power * 2 : power
       end
     end
