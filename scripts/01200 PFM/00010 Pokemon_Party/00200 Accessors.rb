@@ -320,10 +320,15 @@ module PFM
 
     # Update the loyalty process of the pokemon
     def loyalty_update
-      return unless (@steps - (@steps / 512) * 512) == 0
+      return unless (@steps - (@steps / 128) * 128) == 0 && rand(2) == 0
       return if cant_process_event_tasks?
 
-      @actors.each { |pokemon| pokemon.loyalty += 1 }
+      @actors.each do |pokemon|
+        value = pokemon.loyalty < 200 ? 2 : 1
+        value *= 2 if GameData::Item.db_symbol(pokemon.captured_with) == :luxury_ball
+        value *= 1.5 if pokemon.item_db_symbol == :soothe_bell
+        pokemon.loyalty += value.floor
+      end
     end
 
     # Tell if EventTasks can't process

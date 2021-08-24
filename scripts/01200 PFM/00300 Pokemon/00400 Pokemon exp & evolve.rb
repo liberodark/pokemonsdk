@@ -98,7 +98,18 @@ module PFM
       exp_last = GameData::EXP_TABLE[exp_type][@level]
       delta = exp_lvl - exp_last
       self.exp += (delta - (exp - exp_last))
+      update_loyalty if $game_temp.in_battle
       return true
+    end
+
+    # Update the Pokemon loyalty
+    def update_loyalty
+      value = 3
+      value = 4 if loyalty < 200
+      value = 5 if loyalty < 100
+      value *= 2 if GameData::Item.db_symbol(captured_with) == :luxury_ball
+      value *= 1.5 if item_db_symbol == :soothe_bell
+      self.loyalty += value.floor
     end
 
     # Generate the level up stat list for the level up window
