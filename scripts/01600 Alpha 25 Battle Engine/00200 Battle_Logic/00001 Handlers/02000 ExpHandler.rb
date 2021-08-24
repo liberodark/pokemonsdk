@@ -141,7 +141,7 @@ module Battle
       # @param multi_exp_count [Integer] number of Pokemon with multi_exp
       # @param fought [Integer] number of Pokemon that fought
       def exp_fought_factor(multi_exp_count, fought)
-        return (multi_exp_count > 0 ? 14.0 : 7.0) / fought
+        return (multi_exp_count > 0 ? 14.0 : 7.0) * fought
       end
 
       # Get the list of Pokemon that should receive the EV
