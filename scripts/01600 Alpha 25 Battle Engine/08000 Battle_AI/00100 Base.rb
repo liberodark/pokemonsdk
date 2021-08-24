@@ -71,7 +71,7 @@ module Battle
         mega = mega_evolve_action_for(pokemon) if @can_mega_evolve
         actions.concat(clean_switch_actions(switch_actions_for(pokemon, move_heuristics))) if @can_switch
         actions.concat(item_actions_for(pokemon, move_heuristics)) if @can_use_item
-        actions.concat([flee_action_for(pokemon)]) if @can_flee
+        actions.concat([flee_action_for(pokemon)].compact) if @can_flee
 
         exec_hooks(Base, :battle_action_for, binding)
         final_action = actions.compact.shuffle(random: @scene.logic.generic_rng).max_by(&:first)&.last
