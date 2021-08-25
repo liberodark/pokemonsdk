@@ -27,7 +27,11 @@ module Battle
             PFM::Text::PKNICK[1] => target.given_name
           }
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 1056, user, additionnal_variables))
-          @logic.item_change_handler.change_item(:none, true, target)
+          if target.from_party?
+            target.item_stolen = true
+          else
+            @logic.item_change_handler.change_item(:none, true, target)
+          end
         end
       end
     end

@@ -208,6 +208,17 @@ module Battle
       end
     end
 
+    # Loyalty
+    DamageHandler.register_post_damage_death_hook('PSDK post damage death: Loyalty update') do |_, _, target, launcher, _|
+      high_level_opponent = launcher.level - target.level >= 30
+      low_loyalty = target.loyalty < 200
+      if high_level_opponent
+        target.loyalty -= low_loyalty ? 5 : 10
+      else
+        target.loyalty -= 1
+      end
+    end
+
     # Illusion
     DamageHandler.register_post_damage_hook('PSDK Post damage: Illusion') do |handler, _, target, launcher, skill|
       next unless skill && launcher != target
