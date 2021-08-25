@@ -205,7 +205,7 @@ module PFM
     def try_to_lay(daycare)
       return if daycare[:egg]
 
-      daycare[:egg] = true if rand(100) < daycare[:rate]
+      daycare[:egg] = true if rand(100) < 100 #daycare[:rate]
       log_debug "==== Pension Infos ====\nLay attempt : #{!daycare[:egg] ? 'Failure' : 'Success'}\n"
     end
 
@@ -359,16 +359,29 @@ module PFM
         next unless female.skill_learnt?(skill_id)
         learn_skill(pokemon, skill_id)
       end
+      # Try to teach Volt Tackle
+      learn_volt_tackle(pokemon, male, female)
     end
 
     # Teach a skill to the Pokemon
     # @param pokemon [PFM::Pokemon]
-    # @param skill_id [Integer] ID of the skill in the database
+    # @param skill_id [Integer, Symbol] ID of the skill in the database
     def learn_skill(pokemon, skill_id)
       return unless pokemon.learn_skill(skill_id).nil? # Skill learn with success or already learnt
 
       pokemon.skills_set.shift
       pokemon.learn_skill(skill_id)
+    end
+
+    # Try to teach Volt Tackle to Pichu
+    # @param pokemon [PFM::Pokemon]
+    # @param male [PFM::Pokemon]
+    # @param female [PFM::Pokemon]
+    def learn_volt_tackle(pokemon, male, female)
+      return unless pokemon.db_symbol == :pichu
+      return unless male.item_db_symbol == :light_ball || female.item_db_symbol == :light_ball
+
+      learn_skill(pokemon, :volt_tackle)
     end
 
     # Inherit the IV
