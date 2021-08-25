@@ -272,19 +272,19 @@ module PFM
         return 0
       end
       common_in_group = (female_data.breed_groupes - (female_data.breed_groupes - male_data.breed_groupes)).uniq
-      return 0 unless check_common_in_group(common_in_group, male_data, female_data)
+      return 0 unless check_group_compatibility(common_in_group, male_data, female_data)
 
       common_ot = male.trainer_id == female.trainer_id
       oval_charm = $bag.contain_item?(:oval_charm)
       return EGG_RATE.dig(common_in_group.any?.to_i, common_ot.to_i, oval_charm.to_i) || 0
     end
 
-    # Return if the parents have a common in group
+    # Return if the parents breed groupes are compatible
     # @param common_in_group [Array]
     # @param male_data [GameData::Pokemon]
     # @param female_data [GameData::Pokemon]
     # @return [Boolean]
-    def check_common_in_group(common_in_group, male_data, female_data)
+    def check_group_compatibility(common_in_group, male_data, female_data)
       return true if male_data.breed_groupes.include?(DITTO_GROUP) || female_data.breed_groupes.include?(DITTO_GROUP)
       return false if common_in_group.empty?
 
