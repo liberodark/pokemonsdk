@@ -309,7 +309,7 @@ module PFM
     # @param male [PFM::Pokemon]
     def inherit_nature(pokemon, female, male)
       if male.item_db_symbol == :everstone && female.item_db_symbol == :everstone
-        rand(100) < 50 ? pokemon.nature = male.nature_id : pokemon.nature = female.nature_id
+        pokemon.nature = rand(100) < 50 ? male.nature_id : female.nature_id
       else
         pokemon.nature = male.nature_id if male.item_db_symbol == :everstone
         pokemon.nature = female.nature_id if female.item_db_symbol == :everstone
