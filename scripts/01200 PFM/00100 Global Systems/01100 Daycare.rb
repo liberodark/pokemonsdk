@@ -205,7 +205,7 @@ module PFM
     def try_to_lay(daycare)
       return if daycare[:egg]
 
-      daycare[:egg] = true if rand(100) < 100 #daycare[:rate]
+      daycare[:egg] = true if rand(100) < daycare[:rate]
       log_debug "==== Pension Infos ====\nLay attempt : #{!daycare[:egg] ? 'Failure' : 'Success'}\n"
     end
 
