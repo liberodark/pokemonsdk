@@ -65,7 +65,13 @@ module Yuki
         return x if text.empty?
         return (arr << :new_line; x) if text == S_n
 
-        text.split(S_n).each_with_index do |line, i|
+        texts = text.split(S_n)
+        if texts.size == 1 && text[-1] == S_n
+          adjust_text_lines(x, max_width, texts[0], arr, true)
+          return (arr << :new_line; x = 0)
+        end
+
+        texts.each_with_index do |line, i|
           (arr << :new_line; x = 0) if i > 0
           x = adjust_text_lines(x, max_width, line, arr, true)
         end
