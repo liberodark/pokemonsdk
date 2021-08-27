@@ -276,7 +276,7 @@ module Yuki
 
     # Try to fix the x error introduced with markers
     def marker_fix_x
-      @x += 1 if @text && @text.text.getbyte(-1) != 32
+      @x += 1 if @text && @text.text.getbyte(-1) != 32 && @x != 0
     end
 
     # Wait
