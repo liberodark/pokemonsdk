@@ -6,6 +6,8 @@ module RPG
     LOADS = %i[load_animation load_autotile load_ball load_battleback load_battler load_character load_fog load_icon
                load_panorama load_particle load_pc load_picture load_pokedex load_title load_tileset
                load_transition load_interface load_foot_print load_b_icon load_poke_front load_poke_back]
+    # Extension of gif files
+    GIF_EXTENSION = '.gif'
     # Common filename of the image to load
     Common_filename = 'Graphics/%s/%s'
     # Common filename with .png
@@ -81,6 +83,8 @@ module RPG
     def test_file_existence(filename, path, file_data = nil)
       return true if file_data&.exists?(filename.downcase)
       return true if File.exist?(format(Common_filename_format, path, filename).downcase)
+      return true if File.exist?(format(Common_filename, path, filename).downcase)
+
       false
     end
 
@@ -96,12 +100,12 @@ module RPG
     def load_image(cache_tab, filename, path, file_data = nil, image_class = Texture)
       complete_filename = format(Common_filename, path, filename).downcase
       return bitmap = image_class.new(16, 16) if File.directory?(complete_filename) || filename.empty?
+      return File.binread(complete_filename) if File.exist?(complete_filename)
+
       bitmap = cache_tab.fetch(filename, nil)
       if !bitmap || bitmap.disposed?
-        filename_ext = complete_filename + '.png'
-        if File.exist?(filename_ext) || !file_data.exists?(filename.downcase)
-          bitmap = image_class.new(filename_ext)
-        end
+        filename_ext = "#{complete_filename}.png"
+        bitmap = image_class.new(filename_ext) if File.exist?(filename_ext) || !file_data.exists?(filename.downcase)
         bitmap = load_image_from_file_data(filename, file_data, image_class) if (!bitmap || bitmap.disposed?) && file_data
         bitmap ||= image_class.new(16, 16)
       end
@@ -120,6 +124,8 @@ module RPG
     # @return [Texture] the image loaded from the virtual directory
     def load_image_from_file_data(filename, file_data, image_class)
       bitmap_data = file_data.read_data(filename.downcase)
+      return bitmap_data if filename.end_with?(GIF_EXTENSION)
+
       bitmap = image_class.new(bitmap_data, true) if bitmap_data
       bitmap
     end

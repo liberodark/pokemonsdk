@@ -189,6 +189,7 @@ pokemonsdk/scripts/01100 Yuki/02203 Yuki__Message sub_window.rb
 pokemonsdk/scripts/01100 Yuki/02204 Yuki__Message speaker.rb
 pokemonsdk/scripts/01100 Yuki/02300 Yuki__ChoiceWindow.rb
 pokemonsdk/scripts/01100 Yuki/02301 Yuki__ChoiceWindow__But.rb
+pokemonsdk/scripts/01100 Yuki/02310 GifReader.rb
 pokemonsdk/scripts/01100 Yuki/02400 Yuki_Debug.rb
 pokemonsdk/scripts/01100 Yuki/02401 Yuki__Debug MainUI.rb
 pokemonsdk/scripts/01100 Yuki/02402 Debug_SystemTags.rb
