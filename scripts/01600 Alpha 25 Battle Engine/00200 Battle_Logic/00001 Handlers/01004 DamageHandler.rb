@@ -210,6 +210,8 @@ module Battle
 
     # Loyalty
     DamageHandler.register_post_damage_death_hook('PSDK post damage death: Loyalty update') do |_, _, target, launcher, _|
+      next target.loyalty -= 1 unless launcher
+
       high_level_opponent = launcher.level - target.level >= 30
       low_loyalty = target.loyalty < 200
       if high_level_opponent
