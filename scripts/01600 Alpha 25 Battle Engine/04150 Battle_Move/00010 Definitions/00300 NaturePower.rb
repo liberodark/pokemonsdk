@@ -32,7 +32,7 @@ module Battle
       # Element by location type.
       # @return [Hash<Symbol, Array<Symbol>]
       def element_table
-        MOVES_TABLE_6G
+        MOVES_TABLE
       end
 
       class << self
