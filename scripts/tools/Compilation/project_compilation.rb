@@ -176,9 +176,12 @@ module ProjectCompilation
       next if File.directory?(filename)
       IO.copy_stream(filename, File.join(RELEASE_PATH, filename))
     end
+    # Copy EXE
+    IO.copy_stream('Gamew.exe', File.join(RELEASE_PATH, 'Game.exe'))
+    IO.copy_stream('Game.exe', File.join(RELEASE_PATH, 'Game-debug.exe'))
     %w[
-      Game.exe
-      Game-noconsole.exe
+      ruby.exe
+      rubyw.exe
       msvcrt-ruby300.dll
     ].each { |filename| IO.copy_stream(filename, File.join(RELEASE_PATH, filename)) }
   end
