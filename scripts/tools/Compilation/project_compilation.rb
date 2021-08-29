@@ -242,6 +242,7 @@ module ProjectCompilation
   add_data_files(2) { Dir['Data/Text/Dialogs/*.dat'] }
   add_data_files(3) { Dir['Data/PSDK/*.rxdata'] }
   add_data_files(4) { Dir['Data/Animations/*.dat'] }
+  add_data_files(5) { Dir['Data/Events/Battle/*.yarbc'] }
 
   def delete_data_files(id)
     DATA_FILES.delete(id)

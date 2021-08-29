@@ -59,6 +59,18 @@ module Battle
         end
       end
 
+      # Get all Pokemon in the party of the AI
+      # @return [Array<PFM::PokemonBattler>]
+      def party
+        @scene.logic.all_battlers.select { |battler| battler.bank == @bank && battler.party_id == @party_id }
+      end
+
+      # Get all the controlled Pokemon
+      # @return [Array<PFM::PokemonBattler>]
+      def controlled_pokemon
+        0.upto(@scene.battle_info.vs_type - 1).map { |i| @scene.logic.battler(@bank, i) }.compact.select { |battler| battler.party_id == @party_id }
+      end
+
       private
 
       # Try to find the battle action for a dedicated pokemon
@@ -99,18 +111,6 @@ module Battle
         @can_read_opponent_movepool = false
         @can_mega_evolve = false
         @heal_threshold = 0.1
-      end
-
-      # Get all Pokemon in the party of the AI
-      # @return [Array<PFM::PokemonBattler>]
-      def party
-        @scene.logic.all_battlers.select { |battler| battler.bank == @bank && battler.party_id == @party_id }
-      end
-
-      # Get all the controlled Pokemon
-      # @return [Array<PFM::PokemonBattler>]
-      def controlled_pokemon
-        0.upto(@scene.battle_info.vs_type - 1).map { |i| @scene.logic.battler(@bank, i) }.compact.select { |battler| battler.party_id == @party_id }
       end
 
       # Get all the move the pokemon can use

@@ -109,6 +109,7 @@ module Battle
           battle_info.add_party(bank, party, name, klass, battler, nil, nil, ai_level(trainer.base_money || 0))
           battle_info.base_moneys[bank] << trainer.base_money if bank == 1
           battle_info.trainer_is_couple = battle_info.parties[1].size == 1 if bank == 1 && trainer.vs_type == 2
+          battle_info.battle_id = trainer.special_group if trainer.special_group != 0
         end
 
         # Guess the AI level based on the base money (or a variable)
