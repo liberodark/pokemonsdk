@@ -47,7 +47,7 @@ module ScriptLoader
   def load_scripts(path, file = nil)
     Dir[File.join(path, '*.rb')].sort.each do |filename|
       next unless File.basename(filename) =~ /^[0-9]{5}[ _].*/
-      require(filename)
+      require(File.join('.', filename))
       file&.puts(filename.sub(File.expand_path('.') + '/', ''))
     rescue Exception
       if Object.const_defined?(:Yuki) && Yuki.const_defined?(:EXC)
