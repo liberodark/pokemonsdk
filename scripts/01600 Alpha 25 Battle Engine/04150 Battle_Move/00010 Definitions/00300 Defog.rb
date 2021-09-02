@@ -16,7 +16,7 @@ module Battle
         logic.bank_effects.each_with_index do |bank_effect, bank_index|
           bank_effect.each do |e|
             e.kill if e.rapid_spin_affected?
-            e.kill if bank_index != user.bank && effects_to_kill.include(e.name)
+            e.kill if bank_index != user.bank && effects_to_kill.include?(e.name)
           end
         end
       end
