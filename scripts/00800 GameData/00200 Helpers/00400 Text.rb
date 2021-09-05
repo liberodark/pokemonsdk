@@ -166,7 +166,7 @@ module GameData
          File.mtime("Data/Text/Dialogs/#{CSV_BASE}.#{langs.first}.dat") < File.mtime("Data/Text/#{langs.first}.dat")
         langs << PSDK_CONFIG.default_language_code if langs.empty?
         log_debug('Updating Text files')
-        filename = 'plugins/text2csv' # Just to avoid the warning
+        filename = './plugins/text2csv' # Just to avoid the warning
         require filename
         Available_Langs.clear
         Available_Langs.concat(langs)
