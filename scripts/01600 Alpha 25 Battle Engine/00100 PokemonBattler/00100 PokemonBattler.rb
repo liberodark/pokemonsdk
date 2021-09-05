@@ -153,6 +153,7 @@ module PFM
       @item_stolen = false
       @item_consumed = false
       @consumed_item = :__undef__
+      self.hp = (max_hp * hp_rate).to_i
       initialize_set_is_follower
     end
 
