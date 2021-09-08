@@ -9,7 +9,7 @@ module Battle
       @logic.add_actions(@player_actions.flatten)
       @player_actions.clear
       @logic.sort_actions
-      @message_window.width = @visual.viewport.rect.width
+      @message_window.width = @visual.viewport.rect.width if @visual.viewport
       @message_window.wait_input = true
       # Tell to call udpdate_battle_phase on the next frame
       @next_update = :udpdate_battle_phase

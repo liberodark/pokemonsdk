@@ -225,7 +225,7 @@ module Battle
 
     # Method that checks if the flee is possible
     def flee_attempt
-      @message_window.width = @visual.viewport.rect.width
+      @message_window.width = @visual.viewport.rect.width if @visual.viewport
       @message_window.wait_input = true
       result = @logic.flee_handler.attempt(@player_actions.size)
       if result == :success
