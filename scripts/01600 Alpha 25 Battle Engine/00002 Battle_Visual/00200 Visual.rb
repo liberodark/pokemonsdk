@@ -24,7 +24,7 @@ module Battle
     # @param scene [Scene] scene that hold the logic object
     def initialize(scene)
       @scene = scene
-      @screenshot = $scene.snap_to_bitmap
+      @screenshot = take_snapshot
       # All the battler by bank
       @battlers = {}
       # All the bars by bank
@@ -304,6 +304,12 @@ module Battle
     def create_battle_animation_handler
       PSP.make_sprite(@viewport)
       @move_animator = PSP
+    end
+
+    # Take a snapshot
+    # @return [Texture]
+    def take_snapshot
+      $scene.snap_to_bitmap
     end
   end
 end
