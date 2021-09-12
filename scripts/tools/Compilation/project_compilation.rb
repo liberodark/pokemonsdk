@@ -58,6 +58,8 @@ module ProjectCompilation
       if filename.end_with?(VD_SCRIPT)
         @scripts.insert(@yuki_vd, Utils.compile(filename, script))
         @yuki_vd += 1
+      elsif Utils.script_bootloader?(script)
+        Utils.process_bootloader(script, @scripts, File.dirname(filename))
       else
         @scripts << Utils.compile(filename, script)
       end
@@ -74,11 +76,14 @@ module ProjectCompilation
   def compile_scripts(path)
     Dir[File.join(path, '*.rb')].sort.each do |filename|
       next unless File.basename(filename) =~ /^[0-9]{5}[ _].*/
+
       puts "Compiling #{filename}"
       script = File.read(filename)
       if filename.end_with?(VD_SCRIPT)
         @scripts.insert(@yuki_vd, Utils.compile(filename, script))
         @yuki_vd += 1
+      elsif Utils.script_bootloader?(script)
+        Utils.process_bootloader(script, @scripts, File.dirname(filename))
       else
         @scripts << Utils.compile(filename, script)
       end
