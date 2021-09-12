@@ -2,7 +2,7 @@ module ScriptLoader
   # Path of the scripts of PSDK
   VSCODE_SCRIPT_PATH = __FILE__.force_encoding(Encoding::UTF_8).tr('\\', '/').sub(%r{/[^/]+\.rb$}, '') # .sub(File.expand_path('.') + '/', '')
   # Path of the scripts of the Project
-  PROJECT_SCRIPT_PATH = 'scripts'
+  PROJECT_SCRIPT_PATH = File.expand_path('scripts')
   # Path to the script index
   SCRIPT_INDEX_PATH = File.join(VSCODE_SCRIPT_PATH, 'script_index.txt')
   # Path to the deflate scripts
@@ -47,7 +47,8 @@ module ScriptLoader
   def load_scripts(path, file = nil)
     Dir[File.join(path, '*.rb')].sort.each do |filename|
       next unless File.basename(filename) =~ /^[0-9]{5}[ _].*/
-      require(File.join('.', filename))
+
+      require(filename)
       file&.puts(filename.sub(File.expand_path('.') + '/', ''))
     rescue Exception
       if Object.const_defined?(:Yuki) && Yuki.const_defined?(:EXC)
@@ -119,7 +120,8 @@ module ScriptLoader
       # @type [String]
       name = script[1].force_encoding(Encoding::UTF_8)
       next if name.downcase.start_with?(ban1, ban2, ban3)
-      eval(Zlib::Inflate.inflate(script[2]).force_encoding(Encoding::UTF_8), $global_binding, name)
+
+      eval(Zlib::Inflate.inflate(script[2]).force_encoding(Encoding::UTF_8), TOPLEVEL_BINDING, name)
       GC.start
     end
   end
@@ -146,6 +148,3 @@ module Kernel
   end
 end
 alias pc puts
-
-# Binding allowing to load RMXP Scripts
-$global_binding = binding

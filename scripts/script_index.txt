@@ -449,6 +449,8 @@ pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00
 pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00005 MiningGame_Logic.rb
 pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00006 MiningGame_Mouse.rb
 pokemonsdk/scripts/01450 Systems/00090 GTS/09000 GTS.rb
+pokemonsdk/scripts/01450 Systems/90000 Online/00001 Configs.rb
+pokemonsdk/scripts/01450 Systems/90000 Online/00002 BootLoader.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00001 Battle_Scene/00100 Scene.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00001 Battle_Scene/00101 Scene Choice.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00001 Battle_Scene/00102 Scene AI trigger.rb
