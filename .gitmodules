@@ -4,3 +4,6 @@
 [submodule "scripts/01450 Systems/90000 Online/ngop"]
 	path = scripts/01450 Systems/90000 Online/ngop
 	url = git@gitlab.com:NuriYuri/nuri_game-online-proxy.git
+[submodule "scripts/01450 Systems/90000 Online/poe"]
+	path = scripts/01450 Systems/90000 Online/poe
+	url = git@gitlab.com:NuriYuri/psdk_online_engine.git
