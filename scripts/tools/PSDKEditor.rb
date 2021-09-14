@@ -148,7 +148,7 @@ module PSDKEditor
         evolutionId: pokemon.evolution_id, evolutionLevel: pokemon.evolution_level, specialEvolutions: pokemon.special_evolution,
         experienceType: pokemon.exp_type, baseExperience: pokemon.base_exp, baseLoyalty: pokemon.base_loyalty, catchRate: pokemon.rareness,
         femaleRate: pokemon.female_rate, breedGroups: pokemon.breed_groupes, hatchSteps: pokemon.hatch_step, babyId: pokemon.baby,
-        itemHeld: pokemon.items.each_slice(2).map { |(id, chance)| { id: id, chance: chance.to_i } },
+        itemHeld: pokemon.items.each_slice(2).map { |(id, chance)| { dbSymbol: GameData::Item[id].db_symbol, chance: chance.to_i } },
         abilities: pokemon.abilities, frontOffsetY: pokemon.front_offset_y.to_i,
         moveSet: build_moveset(pokemon)
       }
@@ -161,12 +161,12 @@ module PSDKEditor
   def build_moveset(pokemon)
     # @type [Array]
     moveset = pokemon.move_set.each_slice(2).select { |(level, _)| level > 0 }
-                     .map { |(level, id)| { klass: 'LevelLearnableMove', level: level, move: id.to_i } }
-    moveset.concat(pokemon.master_moves.map { |id| { klass: 'TutorLearnableMove', move: id.to_i } })
-    moveset.concat(pokemon.tech_set.map { |id| { klass: 'TechLearnableMove', move: id } })
+                     .map { |(level, id)| { klass: 'LevelLearnableMove', level: level, move: GameData::Skill[id].db_symbol } }
+    moveset.concat(pokemon.master_moves.map { |id| { klass: 'TutorLearnableMove', move: GameData::Skill[id].db_symbol } })
+    moveset.concat(pokemon.tech_set.map { |id| { klass: 'TechLearnableMove', move: GameData::Skill[id].db_symbol } })
     moveset.concat(pokemon.move_set.each_slice(2).select { |(level, _)| level <= 0 }
-      .map { |(_, id)| { klass: 'EvolutionLearnableMove', move: id.to_i } })
-    moveset.concat(pokemon.breed_moves.map { |id| { klass: 'BreedLearnableMove', move: id } })
+      .map { |(_, id)| { klass: 'EvolutionLearnableMove', move: GameData::Skill[id].db_symbol } })
+    moveset.concat(pokemon.breed_moves.map { |id| { klass: 'BreedLearnableMove', move: GameData::Skill[id].db_symbol } })
     return moveset
   end
 
