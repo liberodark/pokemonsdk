@@ -205,14 +205,14 @@ module PSDKEditor
         pkmn = level
         level = level[:level]
         setup = {
-          specie: id, formIndex: pkmn[:form] || 0, shinySetup: { kind: 'automatic' },
+          specie: GameData::Pokemon[id].db_symbol, formIndex: pkmn[:form] || 0, shinySetup: { kind: 'automatic' },
           levelSetup: { kind: 'minmax', minimumLevel: level + minus, maximumLevel: level + plus, randomEncounterChance: chance }
         }
         expand_pokemon_setup(setup, pkmn)
         next setup
       else
         next {
-          specie: id, formIndex: 0, shinySetup: { kind: 'automatic' },
+          specie: GameData::Pokemon[id].db_symbol, formIndex: 0, shinySetup: { kind: 'automatic' },
           levelSetup: { kind: 'minmax', minimumLevel: level + minus, maximumLevel: level + plus, randomEncounterChance: chance }
         }
       end
@@ -225,7 +225,7 @@ module PSDKEditor
   def convert_trainer_party(party)
     return party.map do |pkmn|
       setup = {
-        specie: pkmn[:id], formIndex: pkmn[:form] || 0, shinySetup: { kind: 'automatic' },
+        specie: GameData::Pokemon[pkmn[:id]].db_symbol, formIndex: pkmn[:form] || 0, shinySetup: { kind: 'automatic' },
         levelSetup: { kind: 'fixed', fixedLevel: pkmn[:level] }
       }
       expand_pokemon_setup(setup, pkmn)
@@ -276,7 +276,7 @@ module GameData
     # Convert extra data to PSDK Editor data
     # @return [Hash]
     def extra_psdk_editor_data
-      return super.merge(move: move_learnt, isHm: is_hm)
+      return super.merge(move: GameData::Skill[move_learnt].db_symbol, isHm: is_hm)
     end
   end
 
@@ -364,7 +364,7 @@ module GameData
     # Convert extra data to PSDK Editor data
     # @return [Hash]
     def extra_psdk_editor_data
-      return super.merge(leveCount: level_count)
+      return super.merge(levelCount: level_count)
     end
   end
 
