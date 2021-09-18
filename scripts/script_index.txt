@@ -127,7 +127,6 @@ pokemonsdk/scripts/00800 GameData/00100 Serializable/00200 Pokemon.rb
 pokemonsdk/scripts/00800 GameData/00100 Serializable/00300 Skill.rb
 pokemonsdk/scripts/00800 GameData/00100 Serializable/00300 Type.rb
 pokemonsdk/scripts/00800 GameData/00100 Serializable/00400 Trainer.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00500 Quest.rb
 pokemonsdk/scripts/00800 GameData/00100 Serializable/00900 Zone.rb
 pokemonsdk/scripts/00800 GameData/00100 Serializable/00950 WorldMap.rb
 pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00000 FixData.rb
@@ -221,7 +220,6 @@ pokemonsdk/scripts/01200 PFM/00100 Global Systems/01100 Daycare.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01200 Environnement.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01201 Weather.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01300 MagnetoVS.rb
-pokemonsdk/scripts/01200 PFM/00100 Global Systems/01400 Quest.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01500 HoneyTree.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/01600 Nuzlocke.rb
 pokemonsdk/scripts/01200 PFM/00100 Global Systems/02000 Hall_of_Fame.rb
@@ -372,9 +370,6 @@ pokemonsdk/scripts/01400 GamePlay/01300 Pokemon_Shop/00110 Shop_Graphics.rb
 pokemonsdk/scripts/01400 GamePlay/01300 Pokemon_Shop/00120 Shop_Inputs.rb
 pokemonsdk/scripts/01400 GamePlay/01300 Pokemon_Shop/00130 Shop_Actions.rb
 pokemonsdk/scripts/01400 GamePlay/01300 Pokemon_Shop/00140 Shop_Mouse.rb
-pokemonsdk/scripts/01400 GamePlay/01400 Quest/03200 GamePlay__QuestBookMenu.rb
-pokemonsdk/scripts/01400 GamePlay/01400 Quest/03300 GamePlay__QuestBookList.rb
-pokemonsdk/scripts/01400 GamePlay/01400 Quest/03400 GamePlay__QuestBookQuest.rb
 pokemonsdk/scripts/01400 GamePlay/02000 Hall_Of_Fame/00001 Initialize.rb
 pokemonsdk/scripts/01400 GamePlay/02000 Hall_Of_Fame/00002 Graphics.rb
 pokemonsdk/scripts/01400 GamePlay/02000 Hall_Of_Fame/00003 Animation_Phase_1.rb
@@ -448,6 +443,22 @@ pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00
 pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00004 MiningGame_Animations.rb
 pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00005 MiningGame_Logic.rb
 pokemonsdk/scripts/01450 Systems/00020 Mining_Game/00040 GamePlay_Mining_Game/00006 MiningGame_Mouse.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00000 GameData_Quest/00001 GameData Quest.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00001 PFM_Quest/00001 PFM Quests.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00001 PFM_Quest/00002 PFM Quests Quest.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00002 UI_Quest/00060 ScrollBar.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00002 UI_Quest/00070 Arrow.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00002 UI_Quest/00100 Quest_Button.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00002 UI_Quest/00110 RewardScreen.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00002 UI_Quest/00200 Category_Display.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00002 UI_Quest/00300 QuestBanner.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00002 UI_Quest/00500 Quest_List.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00002 UI_Quest/00600 ObjectiveList.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00002 UI_Quest/09999 Composition.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00003 GamePlay_Quest/00001 Main.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00003 GamePlay_Quest/00002 Logic.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00003 GamePlay_Quest/00003 Inputs.rb
+pokemonsdk/scripts/01450 Systems/00040 Quest/00003 GamePlay_Quest/00004 Mouse.rb
 pokemonsdk/scripts/01450 Systems/00090 GTS/09000 GTS.rb
 pokemonsdk/scripts/01450 Systems/90000 Online/00001 Configs.rb
 pokemonsdk/scripts/01450 Systems/90000 Online/00002 BootLoader.rb

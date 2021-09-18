@@ -175,11 +175,12 @@ class Interpreter
   alias appel_menu_equipe call_party_menu
   # Show the quest book
   def quest_book
-    GamePlay::QuestBookMenu.new.main
+    GamePlay::QuestUI.new.main
     Graphics.transition
     @wait_count = 2
   end
   alias livre_quetes quest_book
+  alias quest_ui quest_book
   # Add a parallax
   # @overload add_parallax(image, x, y, z, zoom_x = 1, zoom_y = 1, opacity = 255, blend_type = 0)
   #   @param image [String] name of the image in Graphics/Pictures/

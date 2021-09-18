@@ -154,8 +154,10 @@ module UI
       # Set the text shown by the button
       # @param value [String] text to show
       def text=(value)
-        return unless value.is_a?(String)
-        @text.text = value
+        return unless value.is_a?(String) || value.nil?
+
+        @text.text = value if value
+        self.visible = (value ? true : false)
       end
 
       # Set the key shown by the button

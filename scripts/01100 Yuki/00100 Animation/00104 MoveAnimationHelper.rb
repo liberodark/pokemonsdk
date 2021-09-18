@@ -56,6 +56,15 @@ module Yuki
       MoveSpritePosition.new(time_to_process, on, a, b, distortion: :UNICITY_DISTORTION, time_source: :GENERIC_TIME_SOURCE)
     end
 
+    # Create a new TimedLoopAnimation
+    # @param time_to_process [Float] number of seconds (with generic time) to process the animation
+    # @param distortion [#call, Symbol] callable taking one paramater (between 0 & 1) and
+    # convert it to another number (between 0 & 1) in order to distord time
+    # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
+    def timed_loop_animation(time_to_process, distortion = :UNICITY_DISTORTION, time_source = :GENERIC_TIME_SOURCE)
+      TimedLoopAnimation.new(time_to_process, distortion, time_source)
+    end
+
     # Class that help to handle animations that depends on sprite creation commands
     #
     # @example Create a fully resolved animation
