@@ -31,6 +31,7 @@ module Yuki
       @markers = markers
       @instructions = instructions
       @x_offsets = compute_x_offsets(instructions, max_width)
+      instructions_fix_new_line
     end
 
     # Adjust the line of text by adding instructions to the stack
@@ -265,6 +266,11 @@ module Yuki
     def call_marker_action(marker)
       sym = :"execute_marker_#{marker.first}"
       send(sym, marker)
+    end
+
+    # Delete the last new_line if no text after
+    def instructions_fix_new_line
+      @instructions.last&.pop if @instructions.last&.last == :new_line
     end
 
     # Change the color
