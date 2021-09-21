@@ -10,7 +10,7 @@ class Game_Character
   # @author Nuri Yuri
   def follower_move
     return unless @follower
-    return if @sliding && @follower.sliding
+    return if @sliding && @follower.sliding && ROCKET_TAGS.include?(@sliding_parameter)
     return if $game_variables[Yuki::Var::FM_Sel_Foll] > 0 && @follower.class == Game_Character
 
     @follower.move_speed = @move_speed
