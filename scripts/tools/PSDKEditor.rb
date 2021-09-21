@@ -21,6 +21,7 @@ module PSDKEditor
     convert_zones
     convert_worldmaps
     convert_trainers
+    convert_quests
   end
 
   # Function that creates all the necessary path
@@ -252,6 +253,77 @@ module PSDKEditor
     setup[:moves] = pkmn[:moves] if pkmn[:moves]
     setup[:OriginalTrainerName] = pkmn[:trainer_name] if pkmn[:trainer_name]
     setup[:OriginalTrainerId] = pkmn[:trainer_id] if pkmn[:trainer_id]
+  end
+
+  # Function that converts the quests
+  def convert_quests
+    GameData::Quest.all.each do |quest|
+      quest_data = {
+        klass: 'Quest', id: quest.id, primary: quest.primary,
+        objectives: build_objectives(quest.objectives),
+        earnings: build_earnings(quest.earnings)
+      }
+      File.write(File.join(ROOT, 'quests', "#{quest.id}.json"), quest_data.to_json)
+    end
+  end
+
+  # Function that builds the objective of a quest
+  # @param objectives [Array<GameData::Quest::Objective>] the objectives of the quest
+  # @return [Array<Hash>]
+  def build_objectives(objectives)
+    return objectives.map do |objective|
+      next {
+        objectiveMethodName: objective.test_method_name,
+        objectiveMethodArgs: build_objective_method_args(objective),
+        textFormatMethodName: objective.text_format_method_name,
+        hiddenByDefault: objective.hidden_by_default
+      }
+    end
+  end
+
+  # Function that build the objective method arguments
+  # @param objective [GameData::Quest::Objective] an objectif of the quest
+  # @return [Array]
+  def build_objective_method_args(objective)
+    method_name = objective.test_method_name
+    if method_name == :objective_obtain_item
+      item_id = objective.test_method_args[0]
+      return [GameData::Item[item_id].db_symbol, objective.test_method_args[1]]
+    end
+    if method_name == :objective_see_pokemon
+      pokemon_id = objective.test_method_args[0]
+      return [GameData::Pokemon[pokemon_id].db_symbol]
+    end
+    if [:objective_beat_pokemon, :objective_catch_pokemon].include?(method_name)
+      pokemon_id = objective.test_method_args[0]
+      return [GameData::Pokemon[pokemon_id].db_symbol, objective.test_method_args[1]]
+    end
+    return objective.test_method_args
+  end
+ 
+  # Function that builds the earning of a quest
+  # @param earnings [Array<GameData::Quest::Earnings>] earnings of the quest
+  # @return [Array<Hash>]
+  def build_earnings(earnings)
+    return earnings.map do |earning|
+      next {
+        earningMethodName: earning.give_method_name,
+        earningArgs: build_earning_args(earning),
+        textFormatMethodName: earning.text_format_method_name
+      }
+    end
+  end
+
+  # Function that build the earning method arguments
+  # @param earning [GameData::Quest::Earnings] an earning of the quest
+  # @return [Array]
+  def build_earning_args(earning)
+    method_name = earning.give_method_name
+    if method_name == :earning_item
+      item_id = earning.give_args[0]
+      return [GameData::Item[item_id].db_symbol, earning.give_args[1]]
+    end
+    return earning.give_args
   end
 end
 
