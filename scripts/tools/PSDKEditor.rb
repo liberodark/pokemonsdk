@@ -259,7 +259,7 @@ module PSDKEditor
   def convert_quests
     GameData::Quest.all.each do |quest|
       quest_data = {
-        klass: 'Quest', id: quest.id, primary: quest.primary,
+        klass: 'Quest', id: quest.id, isPrimary: quest.primary,
         objectives: build_objectives(quest.objectives),
         earnings: build_earnings(quest.earnings)
       }
