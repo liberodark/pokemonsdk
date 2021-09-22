@@ -29,6 +29,8 @@ module GamePlay
 
     # Launch the quest switching mode procedure
     def switch_quest_mode
+      return unless @composition.current_list
+
       commute_quest_deployed
       @composition.change_mode_quest(@quest_deployed)
       @composition.change_deployed_mode(@deployed_mode)

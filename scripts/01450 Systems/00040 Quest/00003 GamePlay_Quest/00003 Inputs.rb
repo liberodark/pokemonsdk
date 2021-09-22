@@ -101,6 +101,7 @@ module GamePlay
     # @param direction [Symbol]
     # @param timing [Symbol]
     def action_scroll(direction, timing = :slow)
+      return unless @composition.current_list
       return @composition.scroll_objective_list(direction) if deployed? && @deployed_mode == :objectives
       return if deployed?
 

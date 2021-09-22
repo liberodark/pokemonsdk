@@ -21,7 +21,7 @@ module UI
         @quests = quests
         @animation_handler = Yuki::Animation::Handler.new
         @category = :primary
-        @state = :compact # Possible states being :compact and :stretched
+        @state = :compact # Possible states being :compact and :deployed
         create_quest_list
         create_frame
         create_category_window
@@ -73,7 +73,6 @@ module UI
       # @param direction [Symbol]
       # @param timing [Symbol] the timing of the scrolling
       def input_direction(direction, timing = :slow)
-        return unless current_list
         return if current_list.last_index? && direction == :DOWN
         return if current_list.index == 0 && direction == :UP
 
@@ -84,8 +83,6 @@ module UI
       # Change the mode of the first button
       # @param mode [Symbol]
       def change_mode_quest(mode)
-        return if current_list.nil?
-
         reload_deployed_components if mode == :deployed
         animation = current_list.change_mode(mode)
         anim = Yuki::Animation
@@ -121,6 +118,12 @@ module UI
       # @param direction [Symbol]
       def scroll_objective_list(direction)
         @objective_list.scroll_text(direction)
+      end
+
+      # Get the current QuestList
+      # @return [QuestList, nil]
+      def current_list
+        return @sym_to_list[@category]
       end
 
       private
@@ -180,7 +183,8 @@ module UI
       def update_quest_current_objective
         data = current_list.buttons[0].quest.objective_text_list
         data = data.find { |objective| objective[1] == false }
-        @current_objective.text = data[0]
+        data = data ? data[0] : ''
+        @current_objective.text = data
       end
 
       def create_quest_rewards
@@ -203,12 +207,6 @@ module UI
       def update_quest_objective_list
         data = current_list.buttons[0].quest.objective_text_list
         @objective_list.update_text(data)
-      end
-
-      # Get the current QuestList
-      # @return [QuestList, nil]
-      def current_list
-        return @sym_to_list[@category]
       end
 
       # Engage the swapping between old and new category
