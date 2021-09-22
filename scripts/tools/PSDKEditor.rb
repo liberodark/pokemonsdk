@@ -42,7 +42,9 @@ module PSDKEditor
         isMapUsable: item.map_usable, isLimited: item.limited, isHoldable: item.holdable, flingPower: item.fling_power,
         **item.extra_psdk_editor_data
       }
-      File.write(File.join(ROOT, 'items', "#{item.id}.json"), item_data.to_json)
+      next if check_db_symbol(item)
+
+      File.write(File.join(ROOT, 'items', "#{item.db_symbol}.json"), item_data.to_json)
     end
   end
 
@@ -55,7 +57,9 @@ module PSDKEditor
           def_type.on_hit_tbl[index] != 1 ? { defensiveType: def_type.id, factor: def_type.on_hit_tbl[index] } : nil
         end.compact
       }
-      File.write(File.join(ROOT, 'types', "#{type.id}.json"), type_data.to_json)
+      next if check_db_symbol(type)
+
+      File.write(File.join(ROOT, 'types', "#{type.db_symbol}.json"), type_data.to_json)
     end
   end
 
@@ -77,7 +81,9 @@ module PSDKEditor
         end.compact
       }
       move_data.merge!(moveStatus: [{ status: GameData::States::PSDK_EDITOR_VALUES[move.status], luckRate: move.effect_chance }]) if move.status
-      File.write(File.join(ROOT, 'moves', "#{move.id}.json"), move_data.to_json)
+      next if check_db_symbol(move)
+
+      File.write(File.join(ROOT, 'moves', "#{move.db_symbol}.json"), move_data.to_json)
     end
   end
 
@@ -132,7 +138,9 @@ module PSDKEditor
       id = pokemon_array.first.id
       db_symbol = pokemon_array.first.db_symbol
       specie_data = map_pokemon_array_to_forms(pokemon_array.compact)
-      filename = File.join(ROOT, 'pokemon', "#{id}.json")
+      next if check_db_symbol(pokemon_array.first)
+
+      filename = File.join(ROOT, 'pokemon', "#{db_symbol}.json")
       File.write(filename, { id: id, dbSymbol: db_symbol, forms: specie_data, klass: 'Specie' }.to_json)
     end
   end
@@ -324,6 +332,14 @@ module PSDKEditor
       return [GameData::Item[item_id].db_symbol, earning.give_args[1]]
     end
     return earning.give_args
+  end
+
+  # Function that check the db_symbol
+  # @param data [GameData::Base] a game data
+  # @return [Boolean] true if db_symbol is null or equals to :none, :undef, :egg
+  def check_db_symbol(data)
+    return true unless data.db_symbol
+    return [:none, :__undef__, :egg].include?(data.db_symbol)
   end
 end
 
