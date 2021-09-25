@@ -33,7 +33,8 @@ module ProjectCompilation
     def lib_files_to_copy
       lib_path = File.expand_path('lib')
       curr_path = File.expand_path('.') + '/'
-      features_in_lib = $LOADED_FEATURES.select { |filename| filename.start_with?(lib_path) }
+      ld_feature = $LOADED_FEATURES.map { |filename| filename.dup.force_encoding(Encoding::UTF_8) }
+      features_in_lib = ld_feature.select { |filename| filename.start_with?(lib_path) }
       Dir["#{lib_path}/ruby/3.0.0/i386-mingw32/enc/*.so"].each do |so|
         features_in_lib << so unless features_in_lib.include?(so)
       end
