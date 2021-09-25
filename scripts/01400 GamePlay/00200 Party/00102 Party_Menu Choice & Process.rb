@@ -184,7 +184,7 @@ module GamePlay
         display_message(parse_text(20, 34))
       elsif pokemon.dead?
         display_message(parse_text(20, 33, ::PFM::Text::PKNICK[1] => pokemon.given_name))
-      elsif @index < $game_temp.vs_type
+      elsif pokemon.position.between?(0, $game_temp.vs_type)
         display_message(parse_text(20, 32, ::PFM::Text::PKNICK[1] => pokemon.given_name))
       else
         @return_data = @index
