@@ -9,9 +9,6 @@
 #
 # Note : Environment variable TEXT_EVENT_OFFSET change the base ID of csv file (1000 by default)
 module EventText2CSV
-  # Constant describing the begining of a csv message in RMXP
-  CSV_PREFIX = /^([0-9]+),( |)([0-9]+)/
-
   module_function
 
   # Start the convertion
@@ -22,7 +19,6 @@ module EventText2CSV
     @langs = langs.empty? ? GameData::Text::Available_Langs : langs
     Dir['Data/Map*.rxdata'].each do |filename|
       map_id = filename.gsub(%r{^Data/Map}i, '').to_i
-
       next if map_id == 0
 
       process_map(filename, @offset + map_id)
@@ -33,7 +29,7 @@ module EventText2CSV
   # @param filename [String] filename of the map to process
   # @param csv_id [Integer] ID of the CSV file to process
   def process_map(filename, csv_id)
-    csv_indexes, csv_header, csv_rows = init_csv(csv_id)
+    csv_indexes, csv_header, csv_rows = load_csv(csv_id)
     map = load_data(filename)
     processing_message = nil
     processing_message_command = nil
@@ -47,26 +43,22 @@ module EventText2CSV
         end
       end
     end
-
-    # Prevents the creation of a file if it is empty
-    unless csv_rows.empty?
-      save_csv(csv_id, csv_header, csv_rows)
-      save_data(map, filename)
-    end
+    save_csv(csv_id, csv_header, csv_rows)
+    save_data(map, filename)
   end
 
   # Function that process a message
   def process_message(command, processing_message, processing_message_command, csv_id, csv_indexes, csv_rows)
     if command.code != 401 && processing_message_command
-      processing_message_command.parameters[0] = "#{csv_id}, #{csv_rows.size} #{processing_message_command.parameters[0].gsub(CSV_PREFIX, '').strip}"
+      processing_message_command.parameters[0] = "#{csv_id}, #{csv_rows.size} #{processing_message_command.parameters[0]}"
       push_text_to_csv(csv_indexes, csv_rows, processing_message)
       processing_message = processing_message_command = nil
     end
     if command.code == 101
-      text = command.parameters[0].dup.force_encoding(Encoding::UTF_8).gsub(/^#{csv_id},( |)([0-9]+)/, '').strip
-      return text, command unless text.match?(CSV_PREFIX)
+      text = command.parameters[0].dup.force_encoding(Encoding::UTF_8)
+      return text, command unless text.match?(/^([0-9]+),( |)([0-9]+)/)
     elsif command.code == 401 && processing_message_command
-      processing_message << ' ' << command.parameters[0].dup.force_encoding(Encoding::UTF_8).gsub(CSV_PREFIX, '').strip
+      processing_message << "\\nl" << command.parameters[0].dup.force_encoding(Encoding::UTF_8)
     end
     return processing_message, processing_message_command
   end
@@ -74,9 +66,8 @@ module EventText2CSV
   # Function that process a choice
   def process_choice(command, csv_id, csv_indexes, csv_rows)
     command.parameters[0].map! do |choice|
-      text = choice.dup.force_encoding(Encoding::UTF_8).gsub(/^#{csv_id},( |)([0-9]+)/, '').strip
-      next(text) if text.match?(CSV_PREFIX)
-
+      text = choice.dup.force_encoding(Encoding::UTF_8)
+      next(text) if text.match?(/^([0-9]+),( |)([0-9]+)/)
       push_text_to_csv(csv_indexes, csv_rows, text)
       next("#{csv_id}, #{csv_rows.size - 1} #{text}")
     end
@@ -89,6 +80,20 @@ module EventText2CSV
     csv_rows << new_row
   end
 
+  # Load a CSV file
+  # @param csv_id [Integer]
+  # @return [Array<Array>]
+  def load_csv(csv_id)
+    filename = csv_filename(csv_id)
+    return [(0...@langs.size).to_a, @langs, []] unless File.exist?(filename)
+
+    rows = CSV.read(filename)
+    header = rows.shift
+    indexes = (0...rows.size).to_a
+    indexes.keep_if { |index| @langs.include?(header[index].to_s.strip) }
+    return [indexes, header, rows]
+  end
+
   # Save a CSV file
   # @param csv_id [Integer]
   # @param csv_header [Array<String>]
@@ -99,16 +104,6 @@ module EventText2CSV
     CSV.open(filename, 'w') do |csv|
       csv_rows.each { |row| csv << row }
     end
-  end
-
-  # Initialize a CSV content and remove a CSV file if exist
-  # @param csv_id [Integer]
-  # @return [Array<Array>]
-  def init_csv(csv_id)
-    filename = csv_filename(csv_id)
-    File.delete(filename) if File.exist?(filename)
-
-    return [(0...@langs.size).to_a, @langs, []]
   end
 
   # Return the filename of a csv file
