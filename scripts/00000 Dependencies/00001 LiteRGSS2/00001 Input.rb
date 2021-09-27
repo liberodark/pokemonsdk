@@ -30,6 +30,10 @@ module Input
   @x_axis = Sf::Joystick::POV_X
   # Y axis
   @y_axis = Sf::Joystick::POV_Y
+  # X Joystick Axis
+  @x_joy_axis = Sf::Joystick::X
+  # Y Joystick Axis
+  @y_joy_axis = Sf::Joystick::Y
   # Last text user entered
   @last_text = nil
   # List of keys the input knows
@@ -72,6 +76,10 @@ module Input
     attr_accessor :x_axis
     # Get the Y axis
     attr_accessor :y_axis
+    # Get the Joystick X axis
+    attr_accessor :x_joy_axis
+    # Get the Joystick Y axis
+    attr_accessor :y_joy_axis
 
     # Get the 4 direction status
     # @return [Integer] 2 = down, 4 = left, 6 = right, 8 = up, 0 = none
@@ -236,8 +244,9 @@ module Input
 
       @previous_axis_positions[id][axis] = position
       if id == main_joy
-        return on_axis_x(position) if axis == x_axis
+        return on_axis_x(position) if axis == x_axis || axis == x_joy_axis
         return on_axis_y(position) if axis == y_axis
+        return on_axis_joy_y(position) if axis == y_joy_axis
       end
 
       return unless (mapping = AXIS_MAPPING[axis])
@@ -273,7 +282,7 @@ module Input
       end
     end
 
-    # Trigger a UP or DOWN thing depending on y axis position
+    # Trigger a UP or DOWN thing depending on y axis position (D-Pad)
     # @param position [Integer] new position
     def on_axis_y(position)
       if NON_TRIGGER_ZONE.include?(position)
@@ -287,6 +296,23 @@ module Input
         @current_state[:DOWN] = true
         @last_down_times[:DOWN] = Graphics.current_time unless @last_state[:DOWN]
         @current_state[:UP] = false
+      end
+    end
+
+    # Trigger a UP or DOWN thing depending on y axis position (Joystick)
+    # @param position [Integer] new position
+    def on_axis_joy_y(position)
+      if NON_TRIGGER_ZONE.include?(position)
+        @current_state[:UP] = @current_state[:DOWN] = false
+        return
+      elsif position.positive?
+        @current_state[:DOWN] = true
+        @last_down_times[:DOWN] = Graphics.current_time unless @last_state[:DOWN]
+        @current_state[:UP] = false
+      else
+        @current_state[:UP] = true
+        @last_down_times[:UP] = Graphics.current_time unless @last_state[:UP]
+        @current_state[:DOWN] = false
       end
     end
 
