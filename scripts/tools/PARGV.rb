@@ -76,7 +76,7 @@ module PARGV
     end
 
     new_opts = last_opts + opts
-    File.write(GAME_OPTS, new_opts.join("\r\n"))
+    File.write(GAME_OPTS, new_opts.join("\n"))
   end
 
   # Return the value of an argument
