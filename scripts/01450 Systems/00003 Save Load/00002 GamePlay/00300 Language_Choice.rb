@@ -66,7 +66,7 @@ module GamePlay
 
       if Input.trigger?(:A)
         @running = false
-        $pokemon_party = PFM::Pokemon_Party.new(false, @lang_list[@index])
+        PSDK_CONFIG.default_language_code = @lang_list[@index]
       end
     end
 

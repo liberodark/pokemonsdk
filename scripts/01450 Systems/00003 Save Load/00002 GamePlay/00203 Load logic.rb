@@ -38,13 +38,8 @@ module GamePlay
 
     # Creaye a new Pokemon Party object and ask the language if possible
     def create_new_party
-      # No language choice => default language
-      if PSDK_CONFIG.choosable_language_code.empty? || !Configs.scene_title_config.language_selection_enabled
-        $pokemon_party = PFM::Pokemon_Party.new(false, PSDK_CONFIG.default_language_code)
-      else
-        # This will create the $pokemon_party object
-        call_scene(Language_Choice) { @running = false }
-      end
+      $pokemon_party = PFM::Pokemon_Party.new(false, PSDK_CONFIG.default_language_code)
+      PARGV.update_game_opts("--lang=#{PSDK_CONFIG.default_language_code}") if @all_saves.empty?
     end
   end
 end

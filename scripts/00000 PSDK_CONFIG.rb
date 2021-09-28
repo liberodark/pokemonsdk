@@ -8,7 +8,7 @@ module ScriptLoader
     # @return [String] the game resolution
     attr_reader :native_resolution
     # @return [String] default language of the game
-    attr_reader :default_language_code
+    attr_accessor :default_language_code
     # @return [Array<String>] list of language the player can choose
     attr_reader :choosable_language_code
     # @return [Array<String>] list of language the player can choose (names)
@@ -133,9 +133,9 @@ module ScriptLoader
     def fix_variables(save)
       @game_title = (@game_title || 'Pokémon SDK').to_s
       @game_version = (@game_version || 256).to_i
-      @default_language_code = (@default_language_code || 'en').to_s
       @choosable_language_code ||= %w[en fr es]
       @choosable_language_texts ||= %w[English French Spanish]
+      @default_language_code = guess_language_code
       @maximum_saves = (@maximum_saves || 4).to_i
       @mouse_skin = nil unless @mouse_skin.is_a?(String)
       fix_resolution
@@ -172,6 +172,9 @@ module ScriptLoader
     def fix_scale
       @window_scale = (PARGV[:scale] || @window_scale).to_i
       @window_scale = 2 if @window_scale < 0.1
+      if PARGV[:scale] && ARGV.include?(new_opt = "--scale=#{PARGV[:scale].to_i}")
+        PARGV.update_game_opts(new_opt)
+      end
     end
 
     # Function that fix the fullscreen
@@ -249,6 +252,15 @@ module ScriptLoader
       return false if release?
       return (!File.exist?(DAT_FILENAME) || !File.exist?(YAML_FILENAME)) ||
              (File.mtime(DAT_FILENAME) < File.mtime(YAML_FILENAME))
+    end
+
+    # Function that guess the default language code based on PARGV
+    # @return [String]
+    def guess_language_code
+      return PARGV[:lang] if @choosable_language_code.include?(PARGV[:lang])
+
+      value = @default_language_code || 'en'
+      return @choosable_language_code.include?(value) ? value : (@choosable_language_code.first || 'en')
     end
 
     # Class describing the tilemap configuation

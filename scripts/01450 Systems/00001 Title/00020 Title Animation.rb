@@ -3,6 +3,7 @@ class Scene_Title
 
   # Create the title animation
   def create_title_animation
+    checkup_language
     GamePlay::Save.save_index = Configs.save_config.single_save? ? 0 : 1
     GameData::Text.load unless GamePlay::Save.load
     start_intro_movie(@movie_map_id) if @movie_map_id > 0
@@ -31,5 +32,12 @@ class Scene_Title
 
   def create_title_controls
     @title_controls = UI::TitleControls.new(@viewport)
+  end
+
+  def checkup_language
+    return if PSDK_CONFIG.choosable_language_code.empty? || !Configs.scene_title_config.language_selection_enabled
+
+    base_filename = GamePlay::Save.save_filename
+    call_scene(GamePlay::Language_Choice) if Dir["#{base_filename}*"].reject { |i| i.end_with?('.bak') }.empty?
   end
 end
