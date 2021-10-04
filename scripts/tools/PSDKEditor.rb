@@ -123,7 +123,7 @@ module PSDKEditor
       trainer_data = {
         klass: 'TrainerBattleSetup', id: trainer.id, dbSymbol: trainer.db_symbol,
         vsType: trainer.vs_type, isCouple: false, baseMoney: trainer.base_money,
-        battlers: [trainer.battler], bags: [], battleId: 0,
+        battlers: [trainer.battler], bags: [], battleId: 0, ai: 0,
         parties: [convert_trainer_party(trainer.team)]
       }
       File.write(File.join(ROOT, 'trainers', "#{trainer.id}.json"), trainer_data.to_json)
