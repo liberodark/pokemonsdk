@@ -92,8 +92,8 @@ module PSDKEditor
     GameData::Zone.all.each do |zone|
       zone_data = {
         id: zone.id, dbSymbol: zone.db_symbol, klass: 'Zone', maps: [zone.map_id].compact.flatten, worldmaps: [zone.worldmap_id].flatten,
-        pannelId: zone.panel_id, warpX: zone.warp_x, warpY: zone.warp_y, positionX: zone.pos_x, positionY: zone.pos_y, flyAllowed: zone.fly_allowed,
-        warpDisallowed: zone.warp_disallowed, subZones: [], wildGroups: create_wild_groups(zone)
+        pannelId: zone.panel_id, warpX: zone.warp_x, warpY: zone.warp_y, positionX: zone.pos_x, positionY: zone.pos_y, isFlyAllowed: zone.fly_allowed,
+        isWarpDisallowed: zone.warp_disallowed, subZones: [], wildGroups: create_wild_groups(zone)
       }
       File.write(File.join(ROOT, 'zones', "#{zone.id}.json"), zone_data.to_json)
     end
@@ -158,7 +158,7 @@ module PSDKEditor
         experienceType: pokemon.exp_type, baseExperience: pokemon.base_exp, baseLoyalty: pokemon.base_loyalty, catchRate: pokemon.rareness,
         femaleRate: pokemon.female_rate, breedGroups: pokemon.breed_groupes, hatchSteps: pokemon.hatch_step, babyId: pokemon.baby,
         itemHeld: pokemon.items.each_slice(2).map { |(id, chance)| { dbSymbol: GameData::Item[id].db_symbol, chance: chance.to_i } },
-        abilities: pokemon.abilities, frontOffsetY: pokemon.front_offset_y.to_i,
+        abilities: pokemon.abilities.map { |id| GameData::Abilities.db_symbol(id) }, frontOffsetY: pokemon.front_offset_y.to_i,
         moveSet: build_moveset(pokemon)
       }
     end
@@ -249,18 +249,18 @@ module PSDKEditor
     setup[:shinySetup] = { kind: 'rate', rate: 1 } if pkmn[:shiny]
     setup[:shinySetup] = { kind: 'rate', rate: 0 } if pkmn[:no_shiny]
     setup[:givenName] = pkmn[:given_name] if pkmn[:given_name]
-    setup[:caughtWith] = pkmn[:captured_with] if pkmn[:captured_with]
+    setup[:caughtWith] = GameData::Item[pkmn[:captured_with]].db_symbol if pkmn[:captured_with]
     setup[:gender] = pkmn[:gender] if pkmn[:gender]
     setup[:nature] = pkmn[:nature] if pkmn[:nature]
     setup[:ivs] = %i[hp atk dfe spd ats dfs].map.with_index { |stat, i| [stat, pkmn[:stats][i]] }.to_h if pkmn[:stats]
     setup[:evs] = %i[hp atk dfe spd ats dfs].map.with_index { |stat, i| [stat, pkmn[:bonus][i]] }.to_h if pkmn[:bonus]
-    setup[:itemHeld] = pkmn[:item] if pkmn[:item]
-    setup[:ability] = pkmn[:ability] if pkmn[:ability]
+    setup[:itemHeld] = GameData::Item[pkmn[:item]].db_symbol if pkmn[:item]
+    setup[:ability] = GameData::Abilities.db_symbol(pkmn[:ability]) if pkmn[:ability]
     setup[:rareness] = pkmn[:rareness] if pkmn[:rareness]
     setup[:loyalty] = pkmn[:loyalty] if pkmn[:loyalty]
-    setup[:moves] = pkmn[:moves] if pkmn[:moves]
-    setup[:OriginalTrainerName] = pkmn[:trainer_name] if pkmn[:trainer_name]
-    setup[:OriginalTrainerId] = pkmn[:trainer_id] if pkmn[:trainer_id]
+    setup[:moves] = pkmn[:moves].map { |id| GameData::Skill[id].db_symbol } if pkmn[:moves]
+    setup[:originalTrainerName] = pkmn[:trainer_name] if pkmn[:trainer_name]
+    setup[:originalTrainerId] = pkmn[:trainer_id] if pkmn[:trainer_id]
   end
 
   # Function that converts the quests
@@ -302,13 +302,13 @@ module PSDKEditor
       pokemon_id = objective.test_method_args[0]
       return [GameData::Pokemon[pokemon_id].db_symbol]
     end
-    if [:objective_beat_pokemon, :objective_catch_pokemon].include?(method_name)
+    if %i[objective_beat_pokemon objective_catch_pokemon].include?(method_name)
       pokemon_id = objective.test_method_args[0]
       return [GameData::Pokemon[pokemon_id].db_symbol, objective.test_method_args[1]]
     end
     return objective.test_method_args
   end
- 
+
   # Function that builds the earning of a quest
   # @param earnings [Array<GameData::Quest::Earnings>] earnings of the quest
   # @return [Array<Hash>]
@@ -339,7 +339,7 @@ module PSDKEditor
   # @return [Boolean] true if db_symbol is null or equals to :none, :undef, :egg
   def check_db_symbol(data)
     return true unless data.db_symbol
-    return [:none, :__undef__, :egg].include?(data.db_symbol)
+    return %i[none __undef__ egg].include?(data.db_symbol)
   end
 end
 
