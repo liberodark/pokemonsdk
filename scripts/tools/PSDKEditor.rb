@@ -93,7 +93,7 @@ module PSDKEditor
       zone_data = {
         id: zone.id, dbSymbol: zone.db_symbol, klass: 'Zone', maps: [zone.map_id].compact.flatten, worldmaps: [zone.worldmap_id].flatten,
         pannelId: zone.panel_id, warpX: zone.warp_x, warpY: zone.warp_y, positionX: zone.pos_x, positionY: zone.pos_y, isFlyAllowed: zone.fly_allowed,
-        isWarpDisallowed: zone.warp_disallowed, subZones: [], wildGroups: create_wild_groups(zone)
+        isWarpDisallowed: zone.warp_disallowed, forcedWeather: zone.forced_weather, subZones: [], wildGroups: create_wild_groups(zone)
       }
       File.write(File.join(ROOT, 'zones', "#{zone.id}.json"), zone_data.to_json)
     end
