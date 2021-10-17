@@ -199,7 +199,7 @@ module Battle
         log_debug("Bonus ball = #{bonus_ball}")
         bonus_status = STATUS_MODIFIER[target.status] || 1
         log_debug("Status modifier = #{bonus_status}")
-        a = (((3 * target.max_hp) - (2 * target.hp)) * rate * bonus_ball / (3 * target.max_hp) * bonus_status).floor
+        a = (((3 * target.max_hp) - (2 * target.hp)) * rate * bonus_ball / (3 * target.max_hp).to_f * bonus_status).floor
         log_debug("Final rate = #{a}")
         exec_hooks(Battle::Logic::CatchHandler, :special_rate_modifier, binding)
         return a
@@ -231,7 +231,7 @@ module Battle
       end
 
       def check_bounce(a)
-        b = (65_536 / ((255 / a)**0.1875)).floor
+        b = (65_536 / ((255 / a.to_f)**0.1875)).floor
         check = logic.generic_rng.rand(0..65_535)
         if check < b
           log_debug("Success as #{check} is inferior to #{b}")
@@ -239,6 +239,7 @@ module Battle
           log_debug("@bounces = #{@bounces}")
           return true
         end
+        log_debug("Failure as #{check} is superior to #{b}")
         return false
       end
 
