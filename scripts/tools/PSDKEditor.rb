@@ -154,7 +154,7 @@ module PSDKEditor
         form: pokemon.form, height: pokemon.height, weight: pokemon.weight, type1: pokemon.type1, type2: pokemon.type2, baseHp: pokemon.base_hp,
         baseAtk: pokemon.base_atk, baseDfe: pokemon.base_dfe, baseSpd: pokemon.base_spd, baseAts: pokemon.base_ats, baseDfs: pokemon.base_dfs,
         evHp: pokemon.ev_hp, evAtk: pokemon.ev_atk, evDfe: pokemon.ev_dfe, evSpd: pokemon.ev_spd, evAts: pokemon.ev_ats, evDfs: pokemon.ev_dfs,
-        evolutionId: pokemon.evolution_id, evolutionLevel: pokemon.evolution_level, specialEvolutions: pokemon.special_evolution,
+        evolutionId: pokemon.evolution_id, evolutionLevel: pokemon.evolution_level, specialEvolutions: build_special_evolution(pokemon),
         experienceType: pokemon.exp_type, baseExperience: pokemon.base_exp, baseLoyalty: pokemon.base_loyalty, catchRate: pokemon.rareness,
         femaleRate: pokemon.female_rate, breedGroups: pokemon.breed_groupes, hatchSteps: pokemon.hatch_step, babyId: pokemon.baby,
         itemHeld: pokemon.items.each_slice(2).map { |(id, chance)| { dbSymbol: GameData::Item[id].db_symbol, chance: chance.to_i } },
@@ -177,6 +177,39 @@ module PSDKEditor
       .map { |(_, id)| { klass: 'EvolutionLearnableMove', move: GameData::Skill[id].db_symbol } })
     moveset.concat(pokemon.breed_moves.map { |id| { klass: 'BreedLearnableMove', move: GameData::Skill[id].db_symbol } })
     return moveset
+  end
+
+  # Function that build the special evolution of a Pokemon
+  # @param pokemon [GameData::Pokemon]
+  # @return [Array<Hash>]
+  def build_special_evolution(pokemon)
+    return nil unless pokemon.special_evolution
+
+    special_evolutions = []
+    pokemon.special_evolution.each do |special_evolution|
+      data = {}
+      data[:dbSymbol] = GameData::Pokemon[special_evolution[:id]].db_symbol if special_evolution[:id]
+      data[:minLevel] = special_evolution[:min_level] if special_evolution[:min_level]
+      data[:maxLevel] = special_evolution[:max_level] if special_evolution[:max_level]
+      data[:tradeWith] = GameData::Pokemon[special_evolution[:trade_with]].db_symbol if special_evolution[:trade_with]
+      data[:trade] = GameData::Pokemon[special_evolution[:trade]].db_symbol if special_evolution[:trade]
+      data[:stone] = GameData::Item[special_evolution[:stone]].db_symbol if special_evolution[:stone]
+      data[:itemHold] = GameData::Item[special_evolution[:item_hold]].db_symbol if special_evolution[:item_hold]
+      data[:minLoyalty] = special_evolution[:min_loyalty] if special_evolution[:min_loyalty]
+      data[:maxLoyalty] = special_evolution[:max_loyalty] if special_evolution[:max_loyalty]
+      data[:skill1] = GameData::Skill[special_evolution[:skill_1]].db_symbol if special_evolution[:skill_1]
+      data[:skill2] = GameData::Skill[special_evolution[:skill_2]].db_symbol if special_evolution[:skill_2]
+      data[:skill3] = GameData::Skill[special_evolution[:skill_3]].db_symbol if special_evolution[:skill_3]
+      data[:skill4] = GameData::Skill[special_evolution[:skill_4]].db_symbol if special_evolution[:skill_4]
+      data[:weather] = special_evolution[:weather] if special_evolution[:weather]
+      data[:env] = special_evolution[:env] if special_evolution[:env]
+      data[:gender] = special_evolution[:gender] if special_evolution[:gender]
+      data[:dayNight] = special_evolution[:day_night] if special_evolution[:day_night]
+      data[:func] = special_evolution[:func] if special_evolution[:func]
+      data[:maps] = special_evolution[:maps] if special_evolution[:maps]
+      special_evolutions << data
+    end
+    return special_evolutions
   end
 
   GROUP_TOOLS = { 8 => 'OldRod', 9 => 'GoodRod', 10 => 'SuperRod', 11 => 'RockSmash', 12 => 'HeadButt' }
