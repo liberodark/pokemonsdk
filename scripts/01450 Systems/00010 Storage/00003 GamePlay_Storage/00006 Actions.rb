@@ -125,6 +125,8 @@ module GamePlay
 
     # Release a Pokemon
     def release_pokemon
+      return display_message(text_get(33, 108)) if @current_pokemon.db_symbol == :kyurem && @current_pokemon.absofusionned?
+
       name = @current_pokemon.given_name
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 0)
       choices

@@ -163,6 +163,15 @@ module Battle
       end
     end
 
+    # Shaymin form
+    StatusChangeHandler.register_post_status_change_hook('Shaymin form') do |handler, _, target, _, _|
+      next unless target.db_symbol == :shaymin && target.frozen?
+      next unless target.form_calibrate(:none)
+
+      handler.scene.visual.battler_sprite(target.bank, target.position).pokemon = target
+      handler.scene.display_message_and_wait(parse_text(22, 157, ::PFM::Text::PKNAME[0] => target.given_name))
+    end
+
     # Already confused
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: confused') do |handler, status, target|
       next if status != :confusion || !target.confused?

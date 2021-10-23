@@ -148,5 +148,10 @@ module Battle
         with.add_battler_to_encounter_list(battler)
       end
     end
+
+    # Meloetta form
+    SwitchHandler.register_switch_event_hook('Meloetta form') do |_, who, _|
+      who.form_calibrate(:none) if who.db_symbol == :meloetta
+    end
   end
 end

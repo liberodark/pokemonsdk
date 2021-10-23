@@ -26,6 +26,7 @@ module PFM
       if @skills_set.size < 4
         @skills_set << PFM::Skill.new(id)
         @skill_learnt << id unless @skill_learnt.include?(id)
+        form_calibrate if db_symbol == :keldeo
         return true
       end
       return nil
@@ -36,6 +37,7 @@ module PFM
     def forget_skill_index(index)
       @skills_set[index] = nil
       @skills_set.compact!
+      form_calibrate if db_symbol == :keldeo
     end
 
     # Forget a skill by its id
@@ -46,6 +48,7 @@ module PFM
         @skills_set[i] = nil if skill && skill.id == id
       end
       @skills_set.compact!
+      form_calibrate if db_symbol == :keldeo
     end
 
     # Replace a skill to an other skill
@@ -84,6 +87,7 @@ module PFM
       return if index >= 4
       @skills_set[index] = PFM::Skill.new(id)
       @skill_learnt << id unless @skill_learnt.include?(id)
+      form_calibrate if db_symbol == :keldeo
     end
 
     # Has the pokemon already learnt a skill ?

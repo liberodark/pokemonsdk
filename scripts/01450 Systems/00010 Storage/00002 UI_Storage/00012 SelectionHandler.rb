@@ -70,7 +70,8 @@ module UI
 
         process = proc do |box, i|
           pokemon = get_pokemon.call(index)
-          set_pokemon.call(index, box[i])
+          pokemon_stored = set_pokemon.call(index, box[i])
+          reset_form(pokemon_stored)
           index = (index + 1) % size
           box[i] = pokemon
         end
@@ -252,6 +253,13 @@ module UI
         @party_selection.each do |i|
           yield(@party, i)
         end
+      end
+
+      # Reset the form of the Pokemon
+      # @param pokemon [PFM::Pokemon] the pokemon stored
+      def reset_form(pokemon)
+        list = %i[shaymin]
+        pokemon.form_calibrate(:none) if list.include?(pokemon.db_symbol)
       end
     end
   end

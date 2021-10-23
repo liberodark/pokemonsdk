@@ -8,7 +8,9 @@ module GamePlay
       battle: :show_battle_mode_choice,
       item: :show_item_mode_choice,
       hold: :show_hold_mode_choice,
-      select: :show_select_mode_choice
+      select: :show_select_mode_choice,
+      absofusion: :process_absofusion_mode,
+      separate: :process_separate_mode
     }
     # Show the proper choice
     def show_choice
@@ -425,6 +427,49 @@ module GamePlay
       @base_ui.hide_win_text
       hide_item_name
       @intern_mode = :normal
+    end
+
+    # Process the fusion when the party is in mode :absofusion
+    def process_absofusion_mode
+      # @type [PFM::Pokemon]
+      pokemon = @party[@index]
+      extend_data = @extend_data
+      if @temp_team.size == 1
+        pokemon_selected = @temp_team.first
+        if pokemon_selected == pokemon || !extend_data[1].include?(pokemon.db_symbol)
+          display_message(text_get(22, 151))
+        elsif pokemon.dead?
+          display_message(text_get(22, 152))
+        elsif pokemon.egg?
+          display_message(text_get(22, 153))
+        else
+          pokemon_selected.absofusion(pokemon)
+          refresh_team_buttons
+          display_message(parse_text(22, 157, ::PFM::Text::PKNAME[0] => pokemon_selected.given_name))
+          @running = false
+        end
+      else
+        return display_message(text_get(18, 70)) if pokemon.db_symbol != extend_data[0] || pokemon.absofusionned? || pokemon.egg? || pokemon.dead?
+
+        @temp_team << pokemon
+        display_message(text_get(22, 155))
+        @base_ui.show_win_text(text_get(22, 155))
+      end
+    end
+
+    # Process the separation when the party is in mode :separate
+    def process_separate_mode
+      # @type [PFM::Pokemon]
+      pokemon = @party[@index]
+      extend_data = @extend_data
+      return display_message(text_get(18, 70)) if pokemon.db_symbol != extend_data || !pokemon.absofusionned? || pokemon.egg? || pokemon.dead?
+      return display_message(text_get(22, 154)) if $actors.size >= 6
+
+      pokemon.separate
+      @team_buttons.each(&:dispose)
+      create_team_buttons
+      display_message(parse_text(22, 157, ::PFM::Text::PKNAME[0] => pokemon.given_name))
+      @running = false
     end
   end
 end

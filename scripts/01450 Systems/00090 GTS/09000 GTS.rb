@@ -601,8 +601,13 @@ module GTS
           display_message(ext_text(8997, 35))
           return
         end
+        if pkmn.absofusionned?
+          display_message(parse_text(33, 118))
+          return
+        end
         data = nil
         call_scene(WantedDataScene) { |scene| data = scene.wanted_data }
+        pkmn.form_calibrate(:none) if %i[shaymin tornadus thundurus landorus].include?(pkmn.db_symbol)
         if data.is_a?(Array) && Core.upload_pokemon(pkmn, data)
           $pokemon_party.online_pokemon = pkmn.clone
           party ? $pokemon_party.remove_pokemon(choice - 31) : $storage.remove(choice - 1)

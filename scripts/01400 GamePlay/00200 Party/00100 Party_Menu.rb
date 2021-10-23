@@ -37,7 +37,7 @@ module GamePlay
     # @param party [Array<PFM::Pokemon>] list of Pokemon in the party
     # @param mode [Symbol] :map => from map (select), :menu => from menu, :battle => from Battle, :item => Use an item,
     #                      :hold => Hold an item, :choice => processing a choice related proc (do not use)
-    # @param extend_data [Integer, PFM::ItemDescriptor::Wrapper] extend_data informations
+    # @param extend_data [Integer, PFM::ItemDescriptor::Wrapper, Array, Symbol] extend_data informations
     # @param no_leave [Boolean] tells the interface to disallow leaving without choosing
     def initialize(party, mode = :map, extend_data = nil, no_leave: false)
       super()
@@ -156,7 +156,7 @@ module GamePlay
     # Initialize the win_text according to the mode
     def init_win_text
       case @mode
-      when :map, :battle
+      when :map, :battle, :absofusion, :separate
         return @base_ui.show_win_text(text_get(23, 17))
       when :hold
         return @base_ui.show_win_text(text_get(23, 23))
@@ -254,6 +254,13 @@ module GamePlay
       string = string.sub('', 'er')
       string.sub!('', 'ème')
       return string
+    end
+
+    # Refresh all team buttons, update the selector and reset the index to 0
+    def refresh_team_buttons
+      @team_buttons.each(&:dispose)
+      create_team_buttons
+      update_selector_coordinates(@index = 0)
     end
   end
 end

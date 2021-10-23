@@ -73,6 +73,30 @@ module PFM
       return @mega_evolved != false
     end
 
+    # Absofusion of the Pokemon (if possible)
+    # @param pokemon PFM::Pokemon The Pokemon used in the fusion
+    def absofusion(pokemon)
+      return if @fusion
+      return unless form_calibrate(pokemon.db_symbol)
+
+      @fusion = pokemon
+      $actors.delete(pokemon)
+    end
+
+    # Separate (if possible) the Pokemon and restore the Pokemon used in the fusion
+    def separate
+      return unless @fusion || $actors.size != 6
+
+      form_calibrate(:none)
+      $actors << @fusion
+      @fusion = nil
+    end
+
+    # If the Pokemon is a absofusion
+    def absofusionned?
+      return !@fusion.nil?
+    end
+
     # Automatically generate the form index of the Pokemon
     # @note It calls the block stored in the hash FORM_GENERATION where the key is the Pokemon db_symbol
     # @param form [Integer] if form != 0 does not generate the form (protection)
@@ -127,6 +151,24 @@ module PFM
       return 0
     end
 
+    # Determine the form of the Kyurem
+    # @param [Symbol] reason The db_symbol of the Pokemon used for the fusion
+    def kyurem_form(reason)
+      return @form = 1 if reason == :zekrom
+      return @form = 2 if reason == :reshiram
+
+      return 0
+    end
+
+    # Determine the form of the Necrozma
+    # @param [Symbol] reason The db_symbol of the Pokemon used for the fusion
+    def necrozma_form(reason)
+      return @form = 1 if reason == :solgaleo
+      return @form = 2 if reason == :lunala
+
+      return 0
+    end
+
     FORM_GENERATION[:unown] = proc { @code % 28 }
     FORM_GENERATION[:castform] = proc do
       env = $env
@@ -154,12 +196,19 @@ module PFM
 
     FORM_CALIBRATE[:giratina] = proc { @form = item_db_symbol == :griseous_orb ? 1 : 0 }
     FORM_CALIBRATE[:arceus] = proc { @form = ArceusItem.index(item_db_symbol).to_i }
-    FORM_CALIBRATE[:shaymin] = proc { @form = (item_db_symbol == :gracidea) && !($env.night? || $env.sunset?) ? 1 : 0 }
+    FORM_CALIBRATE[:shaymin] = proc { |reason| @form = reason == :gracidea && !frozen? && ($env.morning? || $env.day?) ? 1 : 0 }
     FORM_CALIBRATE[:genesect] = proc { @form = GenesectModules.index(item_db_symbol).to_i }
     FORM_CALIBRATE[:silvally] = proc { @form = SilvallyROM.index(item_db_symbol).to_i }
     FORM_CALIBRATE[:deerling] = FORM_CALIBRATE[:sawsbuck] = proc { @form = current_deerling_form }
     FORM_CALIBRATE[:darmanitan] = proc { |reason| @form = hp_rate <= 0.5 && reason == :battle ? @form | 1 : @form & ~1 }
-    FORM_CALIBRATE[:aegislash] = proc { |reason| @form = reason == :blade ? 0 : 1}
+    FORM_CALIBRATE[:tornadus] = proc { |reason| @form = reason == :therian ? 1 : 0 }
+    FORM_CALIBRATE[:thundurus] = proc { |reason| @form = reason == :therian ? 1 : 0 }
+    FORM_CALIBRATE[:landorus] = proc { |reason| @form = reason == :therian ? 1 : 0 }
+    FORM_CALIBRATE[:kyurem] = proc { |reason| @form = kyurem_form(reason) }
+    FORM_CALIBRATE[:keldeo] = proc { @form = find_skill(:secret_sword) ? 1 : 0 }
+    FORM_CALIBRATE[:meloetta] = proc { |reason| @form = reason == :dance ? 1 : 0 }
+    FORM_CALIBRATE[:aegislash] = proc { |reason| @form = reason == :blade ? 0 : 1 }
+    FORM_CALIBRATE[:necrozma] = proc { |reason| @form = necrozma_form(reason) }
     FORM_CALIBRATE[:mimikyu] = proc { |reason| @form = reason == :battle ? 1 : 0 }
     FORM_CALIBRATE[:eiscue] = proc { |reason| @form = reason == :battle ? 1 : 0 }
     FORM_CALIBRATE[:zacian] = proc { @form = item_db_symbol == :rusted_sword ? 1 : 0 }

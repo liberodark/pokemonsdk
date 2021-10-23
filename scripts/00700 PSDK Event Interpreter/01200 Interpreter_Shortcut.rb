@@ -163,10 +163,11 @@ class Interpreter
   # @param id_var [Integer] id of the variable in which the index will be store (-1 = no selection)
   # @param party [Array<PFM::Pokemon>] the array of Pokemon to show in the menu
   # @param mode [Symbol] the mode of the Menu (:map, :menu, :item, :hold, :battle)
+  # @param extend_data [Integer, PFM::ItemDescriptor::Wrapper, Array, Symbol] extend_data informations
   # @author Nuri Yuri
-  def call_party_menu(id_var = ::Yuki::Var::Party_Menu_Sel, party = $actors, mode = :map)
+  def call_party_menu(id_var = ::Yuki::Var::Party_Menu_Sel, party = $actors, mode = :map, extend_data = nil)
     Graphics.freeze
-    scene = GamePlay::Party_Menu.new(party, mode)
+    scene = GamePlay::Party_Menu.new(party, mode, extend_data)
     scene.main
     $game_variables[id_var] = scene.return_data
     Graphics.transition

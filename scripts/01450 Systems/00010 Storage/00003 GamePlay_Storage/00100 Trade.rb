@@ -52,6 +52,7 @@ module GamePlay
 
     def choice_trade
       return play_buzzer_se if @current_pokemon.nil?
+      return @utils.display_message(parse_text(33, 118)) if @current_pokemon.absofusionned?
 
       play_decision_se
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)

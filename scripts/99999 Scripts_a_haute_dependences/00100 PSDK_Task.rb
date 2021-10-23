@@ -86,6 +86,11 @@ module Scheduler
     $wild_battle.load_groups
   end
 
+  add_proc(:on_hour_update, ::Scene_Map, 'Actualisation de la forme de Shaymin', 1000) do
+    selected = $actors.select { |pkmn| pkmn.db_symbol == :shaymin }
+    selected.each { |pkmn| pkmn.form_calibrate(:none) if $env.sunset? || $env.night? }
+  end
+
   add_proc(:on_scene_switch, ::Scene_Title, 'Correction des formes', 1000) do
     next unless $scene.is_a?(Scene_Map)
 
