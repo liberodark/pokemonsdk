@@ -75,6 +75,8 @@ class Game_Character
     @follower.move_follower_to_character # Fix left<->right stair issue but there's still a graphic glitch ^^'
     @follower.x = @x
     @follower.y = @y
+    @follower.increase_steps
+    @follower.update
   end
 
   # Check if the follower slides
