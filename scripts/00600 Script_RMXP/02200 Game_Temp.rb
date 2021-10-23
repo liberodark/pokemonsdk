@@ -21,7 +21,11 @@ class Game_Temp
   attr_accessor :battle_can_escape        # バトル 逃走可能フラグ
   attr_accessor :battle_can_lose          # バトル 敗北可能フラグ
   attr_accessor :battle_proc              # バトル コールバック (Proc)
-  attr_accessor :battle_turn              # バトル ターン数
+  # Current turn of the battle
+  # - each time AI is about to get triggered, this counter increase by 1 (after player choice)
+  # - starts at 0 before 1st AI trigger (meaning that launching all Pokemon phase is 0)
+  # @return [Integer]
+  attr_accessor :battle_turn
   attr_accessor :battle_event_flags       # バトル イベント実行済みフラグ
   attr_accessor :battle_abort             # バトル 中断フラグ
   attr_accessor :battle_main_phase        # バトル メインフェーズフラグ

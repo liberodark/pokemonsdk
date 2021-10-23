@@ -81,7 +81,7 @@ module Battle
         actions = usable_moves(pokemon).map { |move| move_action_for(move, pokemon) }
         move_heuristics = actions.compact.map(&:first)
         mega = mega_evolve_action_for(pokemon) if @can_mega_evolve
-        actions.concat(clean_switch_actions(switch_actions_for(pokemon, move_heuristics))) if @can_switch
+        actions.concat(clean_switch_trigger_actions(switch_actions_for(pokemon, move_heuristics))) if @can_switch
         actions.concat(item_actions_for(pokemon, move_heuristics)) if @can_use_item
         actions.concat([flee_action_for(pokemon)].compact) if @can_flee
 

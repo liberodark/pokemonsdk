@@ -39,6 +39,27 @@ module Battle
         return actions.uniq { |action| action[1].with }
       end
 
+      # Function that clean the switch action for AI trigger
+      #  - Exclude duplicate switch in action
+      #  - Ensure a Pokemon that is already on the field cannot get in the field
+      #  - Remove actions if the Pokemon was recently sent out and the random number was not less than 1
+      # @param actions [Array<[Float, Actions::Switch]>]
+      # @return [Array<[Float, Actions::Switch]>]
+      def clean_switch_trigger_actions(actions)
+        return clean_switch_actions(actions).select { |action| can_switch_be_performed?(action[1]) }
+      end
+
+      # Function that tell if a Pokemon can be switched out based on the current turn & some random factor
+      # @param action [Actions::Switch]
+      # @return [Boolean]
+      def can_switch_be_performed?(action)
+        delta = ($game_temp.battle_turn - action.who.last_sent_turn).clamp(1, 5)
+        return true if delta == 5
+
+        rand_factor = (10 / (delta**1.2)).floor
+        return @scene.logic.generic_rng.rand(rand_factor) < 1
+      end
+
       # Generate the actual switch actions for the pokemon
       # @param pokemon [PFM::PokemonBattler]
       # @return [Array<[Float, Actions::Switch]>]
