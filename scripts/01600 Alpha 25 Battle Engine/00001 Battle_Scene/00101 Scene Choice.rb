@@ -107,7 +107,7 @@ module Battle
     def no_player_action?
       return true if @no_player_action
 
-      return @logic.all_battlers.none?(&:from_party?)
+      return @logic.all_battlers.none?(&:from_party?) || (@logic.alive_battlers(0).any? && @logic.alive_battlers(0).none?(&:from_party?))
     end
 
     # Method that asks the item to use
