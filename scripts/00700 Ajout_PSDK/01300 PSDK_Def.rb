@@ -60,4 +60,59 @@ class Object
   def ext_text(file_id, text_id)
     GameData::Text.get_external(file_id, text_id)
   end
+
+  # Play decision SE
+  def play_decision_se
+    $game_system&.se_play($data_system&.decision_se)
+  end
+
+  # Play cursor SE
+  def play_cursor_se
+    $game_system&.se_play($data_system&.cursor_se)
+  end
+
+  # Play buzzer SE
+  def play_buzzer_se
+    $game_system&.se_play($data_system&.buzzer_se)
+  end
+
+  # Play cancel SE
+  def play_cancel_se
+    $game_system&.se_play($data_system&.cancel_se)
+  end
+
+  # Play the Equip SE
+  def play_equip_se
+    $game_system&.se_play($data_system&.equip_se)
+  end
+
+  # Play the Shop SE
+  def play_shop_se
+    $game_system&.se_play($data_system&.shop_se)
+  end
+
+  # Play the Save SE
+  def play_save_se
+    $game_system&.se_play($data_system&.save_se)
+  end
+
+  # Play the Load SE
+  def play_load_se
+    $game_system&.se_play($data_system&.load_se)
+  end
+
+  # Play the Escape SE
+  def play_escape_se
+    $game_system&.se_play($data_system&.escape_se)
+  end
+
+  # Play the Actor collapse SE
+  def play_actor_collapse_se
+    $game_system&.se_play($data_system&.actor_collapse_se)
+  end
+
+  # Play the Enemy collapse SE
+  def play_enemy_collapse_se
+    $game_system&.se_play($data_system&.enemy_collapse_se)
+  end
 end
