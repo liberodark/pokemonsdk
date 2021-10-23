@@ -79,7 +79,7 @@ module Battle
     # @return [Array<Actions::Base>]
     def sort_action_and_add_effects
       highest_priority = @actions.reject { |action| action.is_a?(Actions::Attack) }
-      switching = highest_priority.select { |action| action.is_a?(Actions::Switch) && action.who }
+      switching = process_and_list_switching_actions(highest_priority)
       # @type [Array<Actions::Attack>]
       move_action = @actions.select { |action| action.is_a?(Actions::Attack) }
       # Setting pursuit priority
@@ -97,6 +97,20 @@ module Battle
       # Sort actions
       actions = highest_priority.concat(move_by_priority.values.flatten)
       return actions.sort
+    end
+
+    # List & add effect of switching actions
+    # @param highest_priority [Array<Actions::Base>] list of actions that are not attack
+    # @return [Array<Actions::Switch>] list of switch action
+    def process_and_list_switching_actions(highest_priority)
+      # @type [Array<Actions::Switch>]
+      switching_actions = highest_priority.select { |action| action.is_a?(Actions::Switch) && action.who }
+      # Tell that the Pokemon are switching (for moves)
+      switching_actions.each do |action|
+        action.who.switching = true
+        action.with.switching = true
+      end
+      return switching_actions
     end
 
     # Check for item held that gives more priority and put the pokemon on top

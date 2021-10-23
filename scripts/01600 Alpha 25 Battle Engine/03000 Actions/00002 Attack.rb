@@ -39,7 +39,11 @@ module Battle
       # @return [Integer]
       def <=>(other)
         return 1 if other.is_a?(HighPriorityItem)
-        return -1 if @pursuit_enabled
+
+        unless @pursuit_enabled && other.is_a?(Attack) && other.pursuit_enabled
+          return -1 if @pursuit_enabled
+          return 1 if other.is_a?(Attack) && other.pursuit_enabled
+        end
         return -1 if other.is_a?(Flee) && move.relative_priority > 0
         return 1 unless other.is_a?(Attack)
 
@@ -66,7 +70,12 @@ module Battle
       # Get the target of the move
       # @return [PFM::PokemonBattler, nil]
       def target
-        @move.battler_targets(@launcher, @scene.logic).select(&:alive?).first
+        targets = @move.battler_targets(@launcher, @scene.logic).select(&:alive?)
+        best_target = targets.select { |battler| battler.position == @target_position && battler.bank == @target_bank }.first
+        return best_target if best_target
+
+        best_target = targets.select { |battler| battler.bank == @target_bank }.first
+        return best_target || targets.first
       end
 
       # Execute the action
