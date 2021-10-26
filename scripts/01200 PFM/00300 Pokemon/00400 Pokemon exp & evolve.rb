@@ -214,7 +214,7 @@ module PFM
     # Move 4
     add_evolution_criteria(:skill_4) { |value| skill_learnt?(value) }
     # On specific weather
-    add_evolution_criteria(:weather) { |value| $env.weather == value }
+    add_evolution_criteria(:weather) { |value| $env.current_weather_db_symbol == value }
     # Being on a specfic tag
     add_evolution_criteria(:env) { |value| $game_player.system_tag == value }
     # Having a specific gender
