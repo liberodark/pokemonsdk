@@ -120,6 +120,7 @@ module Battle
       end
       return true if user.has_ability?(:no_guard) || targets.any? { |target| target.has_ability?(:no_guard) }
       return true if db_symbol == :blizzard && $env.hail?
+      return true if accuracy <= 0
 
       return false
     end
