@@ -141,6 +141,7 @@ module GamePlay
         option = @options[option_symbol]
         next @options_copy.send(option.getter) != option.current_value
       end
+      PARGV.update_game_opts("--scale=#{$options.screen_scale}")
       return @running = false
     end
 

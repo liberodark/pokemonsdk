@@ -25,6 +25,10 @@ module PFM
     # The message frame
     # @return [String]
     attr_reader :message_frame
+    # The display resolution
+    # @return [Integer]
+    attr_reader :screen_scale
+
     # Create a new Option object with a language
     # @param starting_language [String] the lang id the game will start
     def initialize(starting_language)
@@ -34,6 +38,7 @@ module PFM
       @battle_mode = true
       @show_animation = true
       @language = starting_language
+      @screen_scale = Graphics.window.settings[3]
       self.message_frame = GameData::Windows::MESSAGE_FRAME.first
     end
 
@@ -41,6 +46,7 @@ module PFM
     # @param value [Integer] the new master volume
     def music_volume=(value)
       return unless value.between?(0, 100)
+
       @music_volume = Audio.music_volume = value
     end
 
@@ -48,6 +54,7 @@ module PFM
     # @param value [Integer] the new sfx volume
     def sfx_volume=(value)
       return unless value.between?(0, 100)
+
       @sfx_volume = Audio.sfx_volume = value
     end
 
@@ -64,6 +71,7 @@ module PFM
     # @param value [String] the new lang id
     def language=(value)
       return unless GameData::Text::Available_Langs.include?(value)
+
       @language = value
       GameData::Text.load
     end
@@ -79,8 +87,16 @@ module PFM
     # @param value [String] the new message frame
     def message_frame=(value)
       return unless GameData::Windows::MESSAGE_FRAME.include?(value)
+
       @message_frame = value
       $game_system&.windowskin_name = @message_frame
+    end
+
+    # Change the display resolution
+    # @param value [Integer] the new display resolution
+    def screen_scale=(value)
+      Graphics.screen_scale = value
+      @screen_scale = value
     end
   end
 
@@ -88,6 +104,7 @@ module PFM
     # The game options
     # @return [PFM::Options]
     attr_accessor :options
+
     on_player_initialize(:options) { @options = PFM::Options.new(@starting_language) }
     on_expand_global_variables(:options) do
       # Variable containing all the game options
