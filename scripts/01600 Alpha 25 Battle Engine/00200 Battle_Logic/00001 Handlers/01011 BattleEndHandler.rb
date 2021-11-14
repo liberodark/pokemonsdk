@@ -11,7 +11,7 @@ module Battle
         exec_hooks(BattleEndHandler, :battle_end, binding)
         exec_hooks(BattleEndHandler, :battle_end_no_defeat, binding) if @logic.battle_result != 2
         @logic.all_battlers(&:copy_properties_back_to_original)
-        exec_hooks(BattleEndHandler, :battle_end_nuzlocke, binding) if $pokemon_party.nuzlocke.enabled?
+        exec_hooks(BattleEndHandler, :battle_end_nuzlocke, binding) if PFM.game_state.nuzlocke.enabled?
         unless $scene.is_a?(Yuki::SoftReset) || $scene.is_a?(Scene_Title)
           $game_system.bgm_play($game_system.playing_bgm)
           $game_system.bgs_play($game_system.playing_bgs)
@@ -130,7 +130,7 @@ module Battle
         end
         # Add money
         if (v = handler.scene.battle_info.total_money(handler.logic)) > 0
-          $pokemon_party.add_money(v)
+          PFM.game_state.add_money(v)
           handler.scene.display_message_and_wait(parse_text(18, 60, PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => v.to_s))
         end
       else
@@ -147,7 +147,7 @@ module Battle
       Audio.bgm_play(*handler.scene.battle_info.victory_bgm)
       handler.logic.battle_phase_exp
       if (v = handler.scene.battle_info.additional_money) > 0
-        $pokemon_party.add_money(v)
+        PFM.game_state.add_money(v)
         handler.scene.display_message_and_wait(parse_text(18, 61, PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => v.to_s))
       end
     end
@@ -246,7 +246,7 @@ module Battle
         handler.scene.instance_variable_set(:@cfi_type, :none) # Prevent fade in in case of multiple evolution
         next unless id
 
-        handler.scene.call_scene(GamePlay::Evolve, original, id, form)
+        GamePlay.make_pokemon_evolve(original, id, form)
         $pokedex.mark_seen(original.id, original.form, forced: true)
         $pokedex.mark_captured(original.id)
         $quests.see_pokemon(original.id)
@@ -299,12 +299,12 @@ module Battle
     end
 
     BattleEndHandler.register_nuzlocke('PSDK Nuzlocke') do |handler|
-      $pokemon_party.nuzlocke.clear_dead_pokemon
+      PFM.game_state.nuzlocke.clear_dead_pokemon
       handler.logic.all_battlers do |battler|
-        $pokemon_party.nuzlocke.lock_catch_in_current_zone(battler.id) unless battler.from_party?
+        PFM.game_state.nuzlocke.lock_catch_in_current_zone(battler.id) unless battler.from_party?
       end
       caught_pokemon = handler.logic.battle_info.caught_pokemon
-      $pokemon_party.nuzlocke.lock_catch_in_current_zone(caught_pokemon.id) if caught_pokemon
+      PFM.game_state.nuzlocke.lock_catch_in_current_zone(caught_pokemon.id) if caught_pokemon
     end
   end
 end
