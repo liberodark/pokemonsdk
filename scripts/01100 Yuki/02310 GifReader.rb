@@ -25,5 +25,15 @@ module Yuki
         return RPG::Cache.send(cache_exist, filename, hue)
       end
     end
+
+    alias old_update update
+    # Update function that takes in account framerate of the game
+    # @param bitmap [LiteRGSS::Bitmap] texture that receive the update
+    # @return [self]
+    def update(bitmap)
+      old_update(bitmap) unless Graphics::FPSBalancer.global.skipping? && @was_updated
+      @was_updated = true
+      return self
+    end
   end
 end

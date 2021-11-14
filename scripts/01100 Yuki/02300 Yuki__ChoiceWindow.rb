@@ -220,7 +220,7 @@ module Yuki
       return UI::Window.window_builder(current_windowskin)
     end
 
-    # Function that creates a new ChoiceWindow for Yuki::Message
+    # Function that creates a new ChoiceWindow for the message system
     # @param window [Window] a window that has the right window_builder (to calculate the width)
     # @return [ChoiceWindow] the choice window.
     def self.generate_for_message(window)

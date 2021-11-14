@@ -25,8 +25,9 @@ class Interpreter_RMXP
       end
       @index += 1
     end
-    $game_temp.message_text.gsub!(/\n([^ ])|\n /, ' \1') if $game_switches[Yuki::Sw::MSG_Recalibrate]
     return true
+  ensure
+    $game_temp.message_text.gsub!(/\n([^ ])|\n /, ' \1') if $game_switches[Yuki::Sw::MSG_Recalibrate]
   end
 
   # Command that display a choice if possible (no message)

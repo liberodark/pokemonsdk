@@ -18,6 +18,7 @@ class Scene_Map < GamePlay::Base
     Graphics::FPSBalancer.global.run { auto_transfert_update }
     update_graphics
     return false if switched_to_main_rmxp_scene
+    return false if Graphics::FPSBalancer.global.skipping? && message_processing?
     return false unless super # Update message window & break if messages are shown
 
     update_scene_calling

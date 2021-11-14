@@ -82,12 +82,6 @@ module Util
       else
         $scene.display_message(message_text)
       end
-      if @message_window.is_a?(Yuki::Message)
-        while $game_temp.message_window_showing
-          Graphics.update
-          @message_window.update
-        end
-      end
     end
 
     # Parse the message opts

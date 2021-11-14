@@ -80,8 +80,6 @@ module GamePlay
     # Parameters of the transition
     # @return [Integer, Array] (usually the number of frame for the transition)
     DEFAULT_TRANSITION_PARAMETER = 16
-    # Message the displays when a GamePlay scene has been initialized without message processing and try to display a message
-    MESSAGE_ERROR = 'This interface has no MessageWindow, you cannot call display_message'
     ::PFM::Text.define_const(self)
     include Input
     # The viewport in which the scene is shown
@@ -90,15 +88,14 @@ module GamePlay
     # The scene that called this scene (usefull when this scene needs to return to the last scene)
     # @return [#main]
     attr_reader :__last_scene
-    # The message window
-    # @return [Yuki::Message, nil]
-    attr_reader :message_window
     # The process that is called when the call_scene method returns
     # @return [Proc, nil]
     attr_accessor :__result_process
     # If the current scene is still running
     # @return [Boolean]
     attr_accessor :running
+
+    # rubocop: disable Style/OptionalBooleanParameter
     # Create a new GamePlay scene
     # @param no_message [Boolean] if the scene is created wihout the message management
     # @param message_z [Integer] the z superiority of the message
@@ -107,23 +104,21 @@ module GamePlay
       # List of object to dispose in #dispose
       @object_to_dispose = []
       # Force the message window of the map to be closed
-      $scene.window_message_close(true) if $scene.class == Scene_Map
+      Scene_Map.from($scene).window_message_close(true) if $scene.instance_of?(Scene_Map)
       message_initialize(no_message, message_z, message_viewport_args)
       # Store the current scene
       @__last_scene = $scene
       message_soft_lock_prevent
     end
+    # rubocop: enable Style/OptionalBooleanParameter
 
     # Scene update process
     # @return [Boolean] if the scene should continue the update process or abort it (message/animation etc...)
     def update
-      continue = true
-      # We update the message window if there's a message window
-      if @message_window
-        @message_window.update
-        return false if $game_temp.message_window_showing
-      end
-      return continue
+      message_update
+      return false if message_processing?
+
+      return true
     end
 
     # Dispose the scene graphics.
@@ -131,7 +126,7 @@ module GamePlay
     def dispose
       message_soft_lock_prevent
       Scheduler.start(:on_dispose, self.class)
-      @message_window&.dispose(with_viewport: true) unless @inherited_message_window || @message_window == false
+      message_dispose
       @object_to_dispose.each { |object| object.dispose unless object.disposed? }
       instance_variables.grep(/viewport/).collect { |ivar| instance_variable_get(ivar) }.each do |vp|
         vp.dispose if vp.is_a?(Viewport) && !vp.disposed?
@@ -166,64 +161,16 @@ module GamePlay
     # @param value [Boolean]
     def visible=(value)
       @viewport.visible = value if @viewport
-      @message_window.viewport.visible = value if @message_window
+      self.message_visible = value
     end
 
     # Tell if the scene is visible
     # @return [Boolean]
     def visible
       return @viewport.visible if @viewport
-      return @message_window.viewport.visible if @message_window
+      return message_visible if @message_window
 
       return true
-    end
-
-    # Display a message with choice or not
-    # @param message [String] the message to display
-    # @param start [Integer] the start choice index (1..nb_choice)
-    # @param choices [Array<String>] the list of choice options
-    # @return [Integer, nil] the choice result
-    def display_message(message, start = 1, *choices)
-      raise ScriptError, MESSAGE_ERROR unless @message_window
-      # message = @message_window.contents.multiline_calibrate(message)
-      $game_temp.message_text = message
-      processing_message = true
-      $game_temp.message_proc = proc { processing_message = false }
-      # Choice management
-      choice = nil
-      unless choices.empty?
-        $game_temp.choice_max = choices.size
-        $game_temp.choice_cancel_type = choices.size
-        $game_temp.choice_proc = proc { |i| choice = i }
-        $game_temp.choice_start = start
-        $game_temp.choices = choices
-      end
-      edit_max = $game_temp.num_input_start > 0
-      # Message update
-      while processing_message
-        Graphics.update
-        next if Graphics::FPSBalancer.global.skipping?
-
-        @message_window.update
-        @__display_message_proc&.call
-        if edit_max && @message_window.input_number_window
-          edit_max = false
-          @message_window.input_number_window.max = $game_temp.num_input_start
-        end
-      end
-      Graphics.update
-      return choice
-    end
-
-    # Display a message with choice or not. This method will wait the message window to disappear
-    # @param message [String] the message to display
-    # @param start [Integer] the start choice index (1..nb_choice)
-    # @param choices [Array<String>] the list of choice options
-    # @return [Integer, nil] the choice result
-    def display_message_and_wait(message, start = 1, *choices)
-      choice = display_message(message, start, *choices)
-      close_message_window(&@__display_message_proc)
-      return choice
     end
 
     # Call an other scene
@@ -320,34 +267,6 @@ module GamePlay
       dispose
     end
 
-    # Initialize the window related interface of the UI
-    # @param no_message [Boolean] if the scene is created wihout the message management
-    # @param message_z [Integer] the z superiority of the message
-    # @param message_viewport_args [Array] if empty : [:main, message_z] will be used.
-    def message_initialize(no_message, message_z, message_viewport_args)
-      if no_message.is_a?(::Yuki::Message)
-        @message_window = no_message
-        @inherited_message_window = true
-      elsif no_message
-        @message_window = false
-      else
-        message_viewport_args = [:main, message_z] if message_viewport_args.empty?
-        @message_window = message_class.new(Viewport.create(*message_viewport_args), self)
-        @message_window.z = message_z
-      end
-    end
-
-    # Force the message window to "close"
-    def close_message_window
-      return unless @message_window
-
-      while $game_temp.message_window_showing
-        Graphics.update
-        yield if block_given?
-        @message_window.update
-      end
-    end
-
     # Perform an index change test and update the index (rotative)
     # @param varname [Symbol] name of the instance variable that plays the index
     # @param sub_key [Symbol] name of the key that substract 1 to the index
@@ -409,12 +328,6 @@ module GamePlay
           sp.set_press(false)
         end
       end
-    end
-
-    # Return the message class used
-    # @return [Class]
-    def message_class
-      Yuki::Message
     end
 
     # Process the fade out process (going through black)
@@ -480,14 +393,6 @@ module GamePlay
     def define_call_scene_fade_in(type, parameters = nil)
       @cfi_type = type
       @cfi_param = parameters
-    end
-
-    # Function performing some tests to prevent softlock from messages at certain points
-    def message_soft_lock_prevent
-      if $game_temp.message_window_showing
-        log_error('Message were still showing!')
-        $game_temp.message_window_showing = false
-      end
     end
 
     # Return the text according to the param
@@ -596,11 +501,7 @@ module GamePlay
 
       # Update with frame balancing
       def update
-        if Graphics::FPSBalancer.global.skipping?
-          @message_window.update if @message_window
-        else
-          super
-        end
+        super unless Graphics::FPSBalancer.global.skipping?
       end
     end
   end
