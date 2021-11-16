@@ -15,6 +15,12 @@ module GamePlay
       @message_window&.showing_message?
     end
 
+    # Tell if the display_message function can be called
+    # @return [Boolean]
+    def can_display_message_be_called?
+      !@still_in_display_message
+    end
+
     # Force the message window to "close" (but does not update scene)
     # @yield yield to allow some process before updating the message window
     def close_message_window
@@ -57,7 +63,7 @@ module GamePlay
     # @return [Integer, nil] the choice result
     def display_message(message, start = 1, *choices, &block)
       raise ScriptError, MESSAGE_ERROR unless @message_window
-      raise ScriptError, MESSAGE_PROCESS_ERROR unless @message_done_processing
+      raise ScriptError, MESSAGE_PROCESS_ERROR unless @message_done_processing && can_display_message_be_called?
 
       block ||= @__display_message_proc
       setup_message_display(message, start, choices)
@@ -68,6 +74,8 @@ module GamePlay
       end
       Graphics.update
       return @message_choice
+    ensure
+      @still_in_display_message = false
     end
 
     # Display a message with choice or not. This method will wait the message window to disappear
@@ -79,8 +87,11 @@ module GamePlay
     def display_message_and_wait(message, start = 1, *choices, &block)
       block ||= @__display_message_proc
       choice = display_message(message, start, *choices, &block)
+      @still_in_display_message = true
       close_message_window(&block)
       return choice
+    ensure
+      @still_in_display_message = false
     end
 
     private
@@ -96,6 +107,7 @@ module GamePlay
       @message_window = message_class.new(Viewport.create(*message_viewport_args), self)
       @message_window.z = message_z
       @message_done_processing = true
+      @still_in_display_message = false
     end
 
     # Setup the message display
@@ -105,6 +117,7 @@ module GamePlay
     def setup_message_display(message, start, choices)
       # Setup variables used to check if message is processing & which choice we do
       @message_done_processing = false
+      @still_in_display_message = true
       @message_choice = nil
       $game_system.map_interpreter.instance_variable_set(:@message_waiting, true) if (was_scene_map = $scene.is_a?(Scene_Map))
       # Setup the game_temp variable to declare message is in progress

@@ -71,6 +71,8 @@ module GamePlay
 
     # Update the message to show according to the counter
     def update_message
+      return unless can_display_message_be_called?
+
       # Show the "What?" message
       if @counter == 0
         @message_window.auto_skip = true

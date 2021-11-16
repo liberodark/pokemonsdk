@@ -34,7 +34,7 @@ module GamePlay
     def update_graphics
       @pokemon_gif&.update(@sprite_pokemon.bitmap)
       @clone_gif&.update(@sprite_clone.bitmap)
-      return if $game_temp.message_window_showing
+      return unless can_display_message_be_called?
 
       if @counter == 0
         evolution_first_step
@@ -76,6 +76,7 @@ module GamePlay
       $game_system.cry_play(@pokemon.id)
       @message_window.auto_skip = true
       @message_window.stay_visible = true
+      p "=> #{caller}"
       display_message(parse_text(31, 0, ::PFM::Text::PKNICK[0] => @pokemon.given_name))
     end
 
