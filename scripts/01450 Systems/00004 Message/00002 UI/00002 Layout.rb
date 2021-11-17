@@ -39,13 +39,6 @@ module UI
         return config[$scene.class.to_s] || config[:any]
       end
 
-      # Change the Z coordinate of the layout
-      # @param value [Integer] new z coordinate
-      def z=(value)
-        super(value = value.to_i)
-        @sub_stack.z = value + 1
-      end
-
       # Dispose the layout
       # @param with_viewport [Boolean] tell to also dispose the viewport of the layout
       def dispose(with_viewport: false)
