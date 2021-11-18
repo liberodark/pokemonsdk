@@ -99,10 +99,10 @@ module UI
       # Load the sub layout based on properties
       def load_sub_layout
         @sub_stack.dispose
+        properties.faces.each { |face| show_face(face) }
         show_name_window if properties.name
         show_city_image if properties.city_filename
         show_gold_window if properties.show_gold_window
-        properties.faces.each { |face| show_face(face) }
         properties.process_look_to
         viewport.sort_z
       end
