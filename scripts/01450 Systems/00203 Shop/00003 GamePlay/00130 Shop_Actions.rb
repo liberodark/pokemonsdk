@@ -39,7 +39,6 @@ module GamePlay
       return if $game_variables[::Yuki::Var::EnteredNumber] == 0
 
       quantity = $game_variables[::Yuki::Var::EnteredNumber]
-      
       return if confirm_buy(@list_price[@index], @list_item[@index], quantity)
 
       money_checkout(quantity)
@@ -54,8 +53,9 @@ module GamePlay
       if quantity > 0
         item_str = quantity > 1 ? ext_text(9001, item_id) : ::GameData::Item[item_id].exact_name
         message = parse_text(11, 25,
-                          ITEM2[0] => item_str,
-                          NUM2[1] => quantity.to_s, NUM7R => (quantity * price).to_s)
+                             ITEM2[0] => item_str,
+                             NUM2[1] => quantity.to_s,
+                             NUM7R => (quantity * price).to_s)
         # Would you like to buy x item for $y ? Yes / No
         c = display_message(message, 1, text_get(11, 27), text_get(11, 28))
         return c != 0
@@ -71,14 +71,11 @@ module GamePlay
       max_amount = PFM.game_state.money / price
       if (max = GameData::Bag::MaxItem) > 0
         max -= $bag.item_quantity(item_id)
-        if max <= 0
-          # Not enough space
-          display_message(parse_text(11, 31))
-          return true
-        end
+        return display_message(parse_text(11, 31)) && true if max <= 0 # Not enough space
+
         max_amount = max if max < max_amount
-        if @symbol_or_list.is_a?(Symbol)
-          max_amount = @item_quantity[@index] if @item_quantity[@index] < max_amount
+        if @symbol_or_list.is_a?(Symbol) && @item_quantity[@index] < max_amount
+          max_amount = @item_quantity[@index]
         end
       end
       $game_temp.num_input_variable_id = ::Yuki::Var::EnteredNumber
@@ -91,19 +88,12 @@ module GamePlay
       return false
     end
 
+    VOWELS = %w[A E I O U Y]
     def determine_article
       case $options.language
       when 'fr'
-        name = @list_item[@index]
-        if %w[A E I O U Y].include?([name[0]])
-          return "d'"
-        else
-          return 'de '
-        end
-      when 'es'
-        return ''
-      when 'it'
-        return ''
+        name = GameData::Item[@list_item[@index]].name
+        return name.start_with?(*VOWELS) ? "d'" : 'de '
       else
         return ''
       end
@@ -152,14 +142,7 @@ module GamePlay
     # Check the scenario in which the player leaves
     # @return [Integer] the number of the scenario for the player leaving
     def how_do_the_player_leave
-      return 0 if @what_was_buyed.empty?
-      return 1 if @what_was_buyed.size == 1
-      if @what_was_buyed.size >= 2
-        return 2
-      else 
-        return 1
-      end
+      return @what_was_buyed.size.clamp(0, 2)
     end
-
   end
 end
