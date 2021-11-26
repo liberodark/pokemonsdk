@@ -275,7 +275,54 @@ module PFM
       return quest.data_get(:earnings_distributed, false)
     end
 
+    def import_from_dot24
+      mapper = ->((id, quest)) { [id, convert_quest_from_dot24_to_dot25(id, quest)] }
+      @active_quests = @active_quests.map(&mapper).to_h
+      @finished_quests = @finished_quests.map(&mapper).to_h
+      @failed_quests = @failed_quests.map(&mapper).to_h
+    end
+
     private
+
+    # Convert a quest from .24 to .25
+    # @param id [Integer] ID of the quest
+    # @param quest [Hash]
+    # @return [PFM::Quests::Quest]
+    def convert_quest_from_dot24_to_dot25(id, quest)
+      return quest if quest.is_a?(PFM::Quests::Quest)
+
+      mapper = ->(v, i) { [i, v] }
+      new_quest = PFM::Quests::Quest.new(id)
+      objectives = GameData::Quest[id].objectives
+      new_quest.data_set(:goals_visibility, quest[:shown])
+      new_quest.data_set(:earnings_distributed, quest[:earnings])
+      new_quest.data_set(:npc_beaten, quest[:npc_beaten].map.with_index(&mapper).to_h) if quest[:npc_beaten]
+      new_quest.data_set(:spoken, quest[:spoken].map.with_index(&mapper).to_h) if quest[:spoken]
+      import_data_id_like_objective(objectives, quest, new_quest, :objective_obtain_item, :obtained_items, :items)
+      import_data_id_like_objective(objectives, quest, new_quest, :objective_beat_pokemon, :pokemon_beaten, :pokemon_beaten)
+      import_data_id_like_objective(objectives, quest, new_quest, :objective_catch_pokemon, :pokemon_caught, :pokemon_catch)
+      import_data_id_like_objective(objectives, quest, new_quest, :objective_see_pokemon, :pokemon_seen, :pokemon_seen)
+      new_quest.data_set(:obtained_eggs, quest[:egg_counter]) if quest[:egg_counter]
+      new_quest.data_set(:hatched_eggs, nil, quest[:egg_hatched]) if quest[:egg_hatched]
+
+      return new_quest
+    end
+
+    # Import data from ID like objective
+    # @param objectives [Array<GameData::Quest::Objective>]
+    # @param quest [Hash] old quest
+    # @param new_quest [PFM::Quests::Quest] new quest
+    # @param test_method_name [Symbol] test method name of the objective
+    # @param new_key [Symbol] new symbol key for the objective in new quest
+    # @param old_key [Symbol] old symbol key for the objective in old quest
+    def import_data_id_like_objective(objectives, quest, new_quest, test_method_name, new_key, old_key)
+      return unless quest[old_key]
+
+      objectives = objectives.select { |objective| objective.test_method_name == test_method_name }
+      objectives.each_with_index do |objective, i|
+        new_quest.data_set(new_key, objective.test_method_args.first, quest[old_key][i])
+      end
+    end
 
     # Give a specific earning
     # @param earning [Hash]
