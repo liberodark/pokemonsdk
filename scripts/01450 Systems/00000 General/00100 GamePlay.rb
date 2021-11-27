@@ -334,7 +334,7 @@ module GamePlay
     # @param mode [Integer] 0 = bread_moves + learnt + potentially_learnt, 2 = all moves, other = learnt + potentially_learnt
     # @yieldparam move_teaching_scene [MoveReminderMixin]
     def open_move_reminder(pokemon, mode = 0, &block)
-      current_scene.call_scene(move_reminder_class, pokemon, skill, &block)
+      current_scene.call_scene(move_reminder_class, pokemon, mode, &block)
     end
 
     # Get the evolve scene mixin
