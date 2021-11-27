@@ -102,7 +102,7 @@ module Battle
       accuracy_dice = logic.move_accuracy_rng.rand(100)
       log_data("# accuracy= #{accuracy}, value = #{accuracy_dice} (testing=#{accuracy > 0}, failure=#{accuracy_dice >= accuracy})")
       if accuracy > 0 && accuracy_dice >= accuracy
-        scene.display_message_and_wait(parse_text(18, 74))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 213, targets.first))
         return false
       end
 
