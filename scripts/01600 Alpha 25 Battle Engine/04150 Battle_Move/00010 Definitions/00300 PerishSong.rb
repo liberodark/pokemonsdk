@@ -13,7 +13,7 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        if targets.all? { |target| target.effects.has?(:perish_song) } || user.effects.has?(:perish_song)
+        if targets.any? { |target| target.effects.has?(:perish_song) } || user.effects.has?(:perish_song)
           show_usage_failure(user)
           return false
         end
