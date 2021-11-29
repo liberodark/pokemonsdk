@@ -151,12 +151,13 @@ module PSDKEditor
   def map_pokemon_array_to_forms(pokemon_array)
     return pokemon_array.map do |pokemon|
       next {
-        form: pokemon.form, height: pokemon.height, weight: pokemon.weight, type1: pokemon.type1, type2: pokemon.type2, baseHp: pokemon.base_hp,
-        baseAtk: pokemon.base_atk, baseDfe: pokemon.base_dfe, baseSpd: pokemon.base_spd, baseAts: pokemon.base_ats, baseDfs: pokemon.base_dfs,
-        evHp: pokemon.ev_hp, evAtk: pokemon.ev_atk, evDfe: pokemon.ev_dfe, evSpd: pokemon.ev_spd, evAts: pokemon.ev_ats, evDfs: pokemon.ev_dfs,
-        evolutionId: pokemon.evolution_id, evolutionLevel: pokemon.evolution_level, specialEvolutions: build_special_evolution(pokemon),
-        experienceType: pokemon.exp_type, baseExperience: pokemon.base_exp, baseLoyalty: pokemon.base_loyalty, catchRate: pokemon.rareness,
-        femaleRate: pokemon.female_rate, breedGroups: pokemon.breed_groupes, hatchSteps: pokemon.hatch_step, babyId: pokemon.baby,
+        form: pokemon.form, height: pokemon.height, weight: pokemon.weight, type1: GameData::Type[pokemon.type1].db_symbol,
+        type2: GameData::Type[pokemon.type2].db_symbol, baseHp: pokemon.base_hp, baseAtk: pokemon.base_atk, baseDfe: pokemon.base_dfe,
+        baseSpd: pokemon.base_spd, baseAts: pokemon.base_ats, baseDfs: pokemon.base_dfs, evHp: pokemon.ev_hp, evAtk: pokemon.ev_atk,
+        evDfe: pokemon.ev_dfe, evSpd: pokemon.ev_spd, evAts: pokemon.ev_ats, evDfs: pokemon.ev_dfs, evolutionId: pokemon.evolution_id,
+        evolutionLevel: pokemon.evolution_level, specialEvolutions: build_special_evolution(pokemon), experienceType: pokemon.exp_type,
+        baseExperience: pokemon.base_exp, baseLoyalty: pokemon.base_loyalty, catchRate: pokemon.rareness, femaleRate: pokemon.female_rate,
+        breedGroups: pokemon.breed_groupes, hatchSteps: pokemon.hatch_step, babyId: pokemon.baby,
         itemHeld: pokemon.items.each_slice(2).map { |(id, chance)| { dbSymbol: GameData::Item[id].db_symbol, chance: chance.to_i } },
         abilities: pokemon.abilities.map { |id| GameData::Abilities.db_symbol(id) }, frontOffsetY: pokemon.front_offset_y.to_i,
         moveSet: build_moveset(pokemon)
