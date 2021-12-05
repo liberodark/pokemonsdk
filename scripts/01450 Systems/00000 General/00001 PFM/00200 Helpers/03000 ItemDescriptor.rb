@@ -228,6 +228,12 @@ module PFM
         @on_skill_use = nil
       end
 
+      # Tell if the wrapper has a Pokemon choice
+      # @return [Boolean]
+      def on_pokemon_choice?
+        !!@on_pokemon_choice
+      end
+
       # Call the on_pokemon_choice block
       # @param pokemon [PFM::Pokemon]
       # @param scene [GamePlay::Base]
