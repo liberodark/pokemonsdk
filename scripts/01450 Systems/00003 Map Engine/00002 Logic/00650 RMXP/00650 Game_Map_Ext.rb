@@ -1,4 +1,6 @@
 class Game_Map
+  # Regular expression catching follower id
+  FOLLOWER_ID_REGEXP = /\[follow=([0-9]+)\]/
   # If an event has been erased (helps removing it)
   # @return [Boolean]
   attr_accessor :event_erased
@@ -269,5 +271,18 @@ class Game_Map
     $game_player.check_event_trigger_here([1, 2])
     @events_info = nil
     $game_system.magic_number = $data_system.magic_number
+  end
+
+  # Function that loads the events that are following
+  def load_following_events
+    @events.each do |i, event|
+      next unless event
+      next unless (match = event.event.name.match(FOLLOWER_ID_REGEXP))
+
+      follow_id = match.captures.first.to_i
+      next if follow_id == i
+
+      @events[follow_id]&.set_follower(event)
+    end
   end
 end

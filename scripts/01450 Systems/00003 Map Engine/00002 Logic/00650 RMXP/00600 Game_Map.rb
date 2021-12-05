@@ -101,6 +101,7 @@ class Game_Map
     @need_refresh = false
     # マップイベントのデータを設定
     env = $env
+    # @type [Hash{ Integer => Game_Event }]
     @events = {}
     @events_sym_to_id = { player: -1 }
     @map.events.each do |i, event|
@@ -114,6 +115,7 @@ class Game_Map
       end
     end
     load_events
+    load_following_events
     Yuki::ElapsedTime.show(:map_loading, 'Loading events took')
     # コモンイベントのデータを設定
     @common_events = {}
