@@ -13,6 +13,7 @@ module UI
         self.visible = true
         text_stack.dispose
         init_window
+        yield if block_given?
         self.opacity = 255
         transition_duration = (255.0 - contents_opacity) / fade_in_opacity_speed
         @fade_in_animation = Yuki::Animation.scalar(transition_duration, self, :contents_opacity=, contents_opacity, 255)

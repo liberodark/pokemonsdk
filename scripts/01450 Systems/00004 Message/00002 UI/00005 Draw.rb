@@ -9,8 +9,7 @@ module UI
       # Start to draw the message
       def start_drawing
         parse_and_show_new_message
-        load_sub_layout
-        init_fade_in
+        init_fade_in { load_sub_layout }
       end
 
       # Update the text drawing
