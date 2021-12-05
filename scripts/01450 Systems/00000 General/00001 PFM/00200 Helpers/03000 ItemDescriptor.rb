@@ -307,7 +307,7 @@ module PFM
         pkmn.cure
         pkmn.hp = pkmn.max_hp
         pkmn.skills_set.compact.each { |j| j.pp = j.ppmax }
-        $scene.display_message(parse_text(22, 115, be::PKNICK[0] => pkmn.given_name))
+        $scene.display_message(parse_text(22, 115, PFM::Text::PKNICK[0] => pkmn.given_name))
       end
     end
     # Specific case honey
