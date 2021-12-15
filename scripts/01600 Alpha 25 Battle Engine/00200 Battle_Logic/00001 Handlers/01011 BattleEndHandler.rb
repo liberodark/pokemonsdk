@@ -37,9 +37,11 @@ module Battle
         lost_money = calculate_lost_money
         variables = { PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => lost_money.to_s }
         @scene.message_window.stay_visible = true
-        @scene.display_message(parse_text(18, 56, variables))
-        @scene.display_message(parse_text(18, @scene.battle_info.trainer_battle? ? 58 : 57, variables))
-        @scene.display_message(parse_text(18, 59, variables))
+        @scene.visual.lock do
+          @scene.display_message(parse_text(18, 56, variables))
+          @scene.display_message(parse_text(18, @scene.battle_info.trainer_battle? ? 58 : 57, variables))
+          @scene.display_message(parse_text(18, 59, variables))
+        end
       end
 
       private
