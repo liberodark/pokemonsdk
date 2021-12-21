@@ -68,10 +68,11 @@ module PSDKEditor
     attack_category = %w[Physical Physical Special Status]
     GameData::Skill.all.each do |move|
       move_data = {
-        id: move.id, dbSymbol: move.db_symbol, klass: 'Move', mapUse: move.map_use, battleEngineMethod: move.be_method, type: move.type,
-        power: move.power, accuracy: move.accuracy, pp: move.pp_max, category: attack_category[move.atk_class], movecriticalRate: move.critical_rate,
-        priority: move.priority - Battle::Logic::MOVE_PRIORITY_OFFSET, isDirect: move.direct, isCharge: move.charge, isBlocable: move.blocable,
-        isSnatchable: move.snatchable, isMirrorMove: move.mirror_move, isPunch: move.punch, isGravity: move.gravity,
+        id: move.id, dbSymbol: move.db_symbol, klass: 'Move', mapUse: move.map_use, battleEngineMethod: move.be_method,
+        type: GameData::Type[move.type].db_symbol, power: move.power, accuracy: move.accuracy, pp: move.pp_max,
+        category: attack_category[move.atk_class], movecriticalRate: move.critical_rate,
+        priority: move.priority + Battle::Logic::MOVE_PRIORITY_OFFSET, isDirect: move.direct, isCharge: move.charge,
+        isBlocable: move.blocable, isSnatchable: move.snatchable, isMirrorMove: move.mirror_move, isPunch: move.punch, isGravity: move.gravity,
         isMagicCoatAffected: move.magic_coat_affected, isUnfreeze: move.unfreeze, isSoundAttack: move.sound_attack, isDistance: move.distance,
         isHeal: move.heal, isAuthentic: move.authentic, isBite: move.bite, isPulse: move.pulse, isBallistics: move.ballistics,
         isMental: move.mental, isNonSkyBattle: move.non_sky_battle, isDance: move.dance, isKingRockUtility: move.king_rock_utility,
@@ -124,7 +125,7 @@ module PSDKEditor
         klass: 'TrainerBattleSetup', id: trainer.id, dbSymbol: trainer.db_symbol,
         vsType: trainer.vs_type, isCouple: false, baseMoney: trainer.base_money,
         battlers: [trainer.battler], bags: [], battleId: 0, ai: 0,
-        parties: [convert_trainer_party(trainer.team)]
+        party: [convert_trainer_party(trainer.team)]
       }
       File.write(File.join(ROOT, 'trainers', "#{trainer.id}.json"), trainer_data.to_json)
     end
