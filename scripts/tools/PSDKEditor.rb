@@ -22,12 +22,13 @@ module PSDKEditor
     convert_worldmaps
     convert_trainers
     convert_quests
+    convert_abilities
   end
 
   # Function that creates all the necessary path
   def create_paths
     Dir.mkdir(ROOT) unless Dir.exist?(ROOT)
-    all_paths = %w[pokemon items types moves zones worldmaps trainers quests].map { |dirname| File.join(ROOT, dirname) }
+    all_paths = %w[pokemon items types moves zones worldmaps trainers quests abilities].map { |dirname| File.join(ROOT, dirname) }
     all_paths.each do |path|
       Dir.mkdir(path) unless Dir.exist?(path)
     end
@@ -65,7 +66,7 @@ module PSDKEditor
 
   # Function that convert Move data to PSDK Editor format
   def convert_moves
-    attack_category = %w[Physical Physical Special Status]
+    attack_category = %w[physical physical special status]
     GameData::Skill.all.each do |move|
       move_data = {
         id: move.id, dbSymbol: move.db_symbol, klass: 'Move', mapUse: move.map_use, battleEngineMethod: move.be_method,
@@ -367,6 +368,17 @@ module PSDKEditor
       return [GameData::Item[item_id].db_symbol, earning.give_args[1]]
     end
     return earning.give_args
+  end
+
+  def convert_abilities
+    GameData::Abilities.db_symbols.each do |ability_db_symbol|
+      ability_data = {
+        klass: 'Ability', dbSymbol: ability_db_symbol, id: GameData::Abilities.find_using_symbol(ability_db_symbol)
+      }
+      next if %i[none __undef__ egg].include?(ability_db_symbol)
+
+      File.write(File.join(ROOT, 'abilities', "#{ability_db_symbol}.json"), ability_data.to_json)
+    end
   end
 
   # Function that check the db_symbol
