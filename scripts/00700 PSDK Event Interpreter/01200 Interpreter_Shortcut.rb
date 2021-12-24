@@ -186,14 +186,10 @@ class Interpreter
     else
       GamePlay.open_party_menu(party, &block)
     end
-
-    scene = GamePlay::Party_Menu.new(party, mode, extend_data)
-    scene.main
-    $game_variables[id_var] = scene.return_data
-    Graphics.transition
     @wait_count = 2
   end
   alias appel_menu_equipe call_party_menu
+
   # Show the quest book
   def quest_book
     GamePlay::QuestUI.new.main
