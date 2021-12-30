@@ -152,6 +152,7 @@ module Battle
       Audio.bgm_play(*@battle_info.victory_bgm)
       message_window.blocking = true
       message_window.wait_input = true
+      battler.captured_with = ball.id
       update_pokemon_related_quests(pkmn)
       $wild_battle.remove_roaming_pokemon(pkmn)
       display_message_and_wait(parse_text(18, 67, PKNAME[0] => pkmn.name))
