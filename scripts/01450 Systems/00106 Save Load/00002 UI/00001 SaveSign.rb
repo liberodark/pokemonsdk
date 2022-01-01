@@ -118,7 +118,9 @@ module UI
     def show_save_data(value)
       @player_sprite.load(value.game_player.character_name, :character)
       @player_sprite.set_origin(@player_sprite.width / 2, @player_sprite.height)
-      @location_text.text = value.env.current_zone_name
+      $game_actors = value.game_actors
+      $game_variables = value.game_variables
+      @location_text.text = PFM::Text.parse_string_for_messages(value.env.current_zone_name)
       @player_name.text = value.trainer.name
       @badge_value&.text = value.trainer.badge_counter.to_s
       @pokedex_value&.text = value.pokedex.pokemon_seen.to_s
@@ -126,6 +128,9 @@ module UI
       @pokemon_sprites.each_with_index do |sprite, index|
         sprite.data = value.actors[index]
       end
+    ensure
+      $game_actors = PFM.game_state&.game_actors
+      $game_variables = PFM.game_state&.game_variables
     end
 
     def create_sprites
