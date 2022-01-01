@@ -240,6 +240,7 @@ class Game_Character
       @y += 1
       if @follower && $game_variables[Yuki::Var::FM_Sel_Foll] == 0
         @memorized_move = :move_lower_left
+        @memorized_move_arg = nil
         @follower.direction = @direction
       end
       movement_process_end(true)
@@ -259,6 +260,7 @@ class Game_Character
       @y += 1
       if @follower && $game_variables[Yuki::Var::FM_Sel_Foll] == 0
         @memorized_move = :move_lower_right
+        @memorized_move_arg = nil
         @follower.direction = @direction
       end
       movement_process_end(true)
@@ -278,6 +280,7 @@ class Game_Character
       @y -= 1
       if @follower && $game_variables[Yuki::Var::FM_Sel_Foll] == 0
         @memorized_move = :move_upper_left
+        @memorized_move_arg = nil
         @follower.direction = @direction
       end
       movement_process_end(true)
@@ -297,6 +300,7 @@ class Game_Character
       @y -= 1
       if @follower && $game_variables[Yuki::Var::FM_Sel_Foll] == 0
         @memorized_move = :move_upper_right
+        @memorized_move_arg = nil
         @follower.direction = @direction
       end
       movement_process_end(true)

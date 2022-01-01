@@ -222,6 +222,7 @@ module Yuki
         c.moveto(x,y)
         c.direction = $game_player.direction
         c.instance_variable_set(:@memorized_move, nil)
+        c.instance_variable_set(:@memorized_move_arg, nil)
         c.update
         v.update
         v.z -= 1
