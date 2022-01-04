@@ -10,6 +10,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target
+          return if launcher&.dead?
           return unless skill&.direct? && launcher != target
 
           handler.scene.visual.show_item(target)

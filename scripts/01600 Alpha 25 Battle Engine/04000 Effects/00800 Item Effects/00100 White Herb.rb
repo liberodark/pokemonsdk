@@ -2,21 +2,19 @@ module Battle
   module Effects
     class Item
       class WhiteHerb < Item
-        # Function called when a stat_decrease_prevention is checked
-        # @param handler [Battle::Logic::StatChangeHandler] handler use to test prevention
-        # @param stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva
-        # @param target [PFM::PokemonBattler]
-        # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
-        # @param skill [Battle::Move, nil] Potential move used
-        # @return [:prevent, nil] :prevent if the stat decrease cannot apply
-        def on_stat_decrease_prevention(handler, stat, target, launcher, skill)
-          return if target != @target
+        # Function called at the end of an action
+        # @param logic [Battle::Logic] logic of the battle
+        # @param scene [Battle::Scene] battle scene
+        # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
+        def on_post_action_event(logic, scene, battlers)
+          return unless battlers.include?(@target)
+          return if @target.dead?
+          return if @target.battle_stage.none?(&:negative?)
 
-          return handler.prevent_change do
-            handler.scene.visual.show_item(target)
-            handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 198, target))
-            handler.logic.item_change_handler.change_item(:none, true, target, launcher, skill)
-          end
+          scene.visual.show_item(@target)
+          scene.display_message_and_wait(parse_text_with_pokemon(19, 1016, @target, PFM::Text::ITEM2[1] => @target.item_name))
+          @target.battle_stage.map! { |stage| stage.negative? ? 0 : stage }
+          logic.item_change_handler.change_item(:none, true, @target)
         end
       end
       register(:white_herb, WhiteHerb)

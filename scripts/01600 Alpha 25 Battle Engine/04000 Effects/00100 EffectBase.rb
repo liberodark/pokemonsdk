@@ -240,6 +240,14 @@ module Battle
         nil && handler && who && with
       end
 
+      # Function called at the end of an action
+      # @param logic [Battle::Logic] logic of the battle
+      # @param scene [Battle::Scene] battle scene
+      # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
+      def on_post_action_event(logic, scene, battlers)
+        nil && logic && scene && battlers
+      end
+
       # Function called at the end of a turn
       # @param logic [Battle::Logic] logic of the battle
       # @param scene [Battle::Scene] battle scene
@@ -449,6 +457,7 @@ module Battle
           alias on_switch_passthrough on_stat_increase_prevention
           alias on_switch_prevention on_stat_increase_prevention
           alias on_switch_event on_stat_increase_prevention
+          alias on_post_action_event on_stat_increase_prevention
           alias on_end_turn_event on_stat_increase_prevention
           alias on_weather_prevention on_stat_increase_prevention
           alias on_post_weather_change on_stat_increase_prevention

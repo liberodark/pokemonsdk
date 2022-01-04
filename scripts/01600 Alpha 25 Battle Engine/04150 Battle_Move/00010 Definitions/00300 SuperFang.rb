@@ -10,8 +10,8 @@ module Battle
       def damages(user, target)
         @critical = false
         @effectiveness = 1
-        log_data("Forced HP Move: #{(target.max_hp / 2).clamp(1, Float::INFINITY)} HP")
-        return (target.max_hp / 2).clamp(1, Float::INFINITY)
+        log_data("Forced HP Move: #{(target.hp / 2).clamp(1, Float::INFINITY)} HP")
+        return (target.hp / 2).clamp(1, Float::INFINITY)
       end
     end
 

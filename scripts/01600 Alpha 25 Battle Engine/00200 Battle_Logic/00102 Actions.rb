@@ -33,6 +33,7 @@ module Battle
       @scene.message_window.blocking = false
       PFM::Text.reset_variables # Prevent wrong pokemon name from being shown
       action.execute
+      execute_post_action_events
       battle_phase_switch_exp_check
       return true
     end
@@ -59,6 +60,12 @@ module Battle
     def refine_actions
       handle_pre_attack_action
       handle_dancer
+    end
+
+    # Execute post action effects
+    def execute_post_action_events
+      log_debug('Execution of the on_post_action_event effects')
+      each_effects(*all_alive_battlers) { |e| e.on_post_action_event(self, @scene, all_alive_battlers) }
     end
 
     # Define all pokemon action properties based on the actions
