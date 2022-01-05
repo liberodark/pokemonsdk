@@ -10,9 +10,9 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        bank = targets.map(&:bank).first
+        target_bank = user.bank == 1 ? 0 : 1
         # @type [Effects::StealthRock]
-        if @logic.bank_effects[bank]&.get(:stealth_rock)
+        if @logic.bank_effects[target_bank]&.get(:stealth_rock)
           show_usage_failure(user)
           return false
         end
@@ -39,7 +39,7 @@ module Battle
       def deal_effect(user, actual_targets)
         bank = actual_targets.map(&:bank).first
         @logic.add_bank_effect(Effects::StealthRock.new(@logic, bank, self))
-        @scene.display_message_and_wait(parse_text(18, bank != 0 ? 163 : 162))
+        @scene.display_message_and_wait(parse_text(18, bank == 0 ? 162 : 163))
       end
     end
 

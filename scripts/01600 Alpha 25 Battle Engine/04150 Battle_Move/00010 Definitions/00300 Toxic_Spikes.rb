@@ -27,7 +27,7 @@ module Battle
         else
           @logic.add_bank_effect(Effects::ToxicSpikes.new(@logic, bank))
         end
-        @scene.display_message_and_wait(parse_text(18, bank != 0 ? 159 : 158))
+        @scene.display_message_and_wait(parse_text(18, bank == 0 ? 158 : 159))
       end
     end
 

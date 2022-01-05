@@ -10,9 +10,9 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        bank = targets.map(&:bank).first
+        target_bank = user.bank == 1 ? 0 : 1
         # @type [Effects::StickyWeb]
-        if @logic.bank_effects[bank]&.get(:sticky_web)
+        if @logic.bank_effects[target_bank]&.get(:sticky_web)
           show_usage_failure(user)
           return false
         end
@@ -27,7 +27,7 @@ module Battle
       def deal_effect(user, actual_targets)
         bank = actual_targets.map(&:bank).first
         @logic.add_bank_effect(Effects::StickyWeb.new(@logic, bank))
-        @scene.display_message_and_wait(parse_text(18, bank != 0 ? 215 : 214))
+        @scene.display_message_and_wait(parse_text(18, bank == 0 ? 214 : 215))
       end
     end
 

@@ -10,9 +10,9 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        bank = targets.map(&:bank).first
+        target_bank = user.bank == 1 ? 0 : 1
         # @type [Effects::Spikes]
-        return true unless (effect = @logic.bank_effects[bank]&.get(:spikes))
+        return true unless (effect = @logic.bank_effects[target_bank]&.get(:spikes))
 
         if effect.max_power?
           show_usage_failure(user)
@@ -36,7 +36,7 @@ module Battle
         else
           @logic.add_bank_effect(Effects::Spikes.new(@logic, bank))
         end
-        @scene.display_message_and_wait(parse_text(18, bank != 0 ? 155 : 154))
+        @scene.display_message_and_wait(parse_text(18, bank == 0 ? 154 : 155))
       end
     end
 
