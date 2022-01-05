@@ -16,11 +16,16 @@ module Battle
 
           # Turn 1
           if @turn == 1
-            decrease_pp(user, targets)
-            play_animation_turn1(user, targets)
-            proceed_message_turn1(user, targets)
-            deal_effects_turn1(user, targets)
-            return prepare_turn2(user, targets) unless shortcut?(user, targets)
+            return unless (actual_targets = proceed_internal_precheck(user, targets))
+
+            play_animation_turn1(user, actual_targets)
+            proceed_message_turn1(user, actual_targets)
+            deal_effects_turn1(user, actual_targets)
+
+            user.add_move_to_history(self, actual_targets)
+            @scene.visual.set_info_state(:move_animation)
+            @scene.visual.wait_for_animation
+            return prepare_turn2(user, actual_targets) unless shortcut?(user, actual_targets)
           end
 
           # Turn 2

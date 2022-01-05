@@ -39,6 +39,7 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
+
         # Pick a random magnitude data
         dice = logic.generic_rng.rand(100).floor
         @magnitude_found = magnitude_table.find { |row| row[0] > dice } || magnitude_table[0]

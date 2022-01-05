@@ -10,12 +10,9 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        if logic.bank_effects[user.bank].has?(db_symbol)
+        if logic.bank_effects[user.bank].has?(db_symbol) || (db_symbol == :aurora_veil && !$env.hail?)
           show_usage_failure(user)
           return false
-        elsif db_symbol == :aurora_veil && !$env.hail?
-          show_usage_failure(user)
-		      return false
         end
 
         return true

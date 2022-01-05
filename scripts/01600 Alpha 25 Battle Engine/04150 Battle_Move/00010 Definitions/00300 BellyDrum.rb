@@ -9,6 +9,8 @@ module Battle
       # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
+        return false unless super
+
         hp = (user.max_hp / 2).floor
         can_change_atk = logic.stat_change_handler.stat_increasable?(:atk, user)
         if user.hp < hp || !can_change_atk

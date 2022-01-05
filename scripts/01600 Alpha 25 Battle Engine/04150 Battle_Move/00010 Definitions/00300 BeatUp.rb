@@ -14,6 +14,7 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
         return show_usage_failure(user) && false if (@bu_battlers = battlers_that_hit(user, targets)).empty?
+
         return true
       end
 
