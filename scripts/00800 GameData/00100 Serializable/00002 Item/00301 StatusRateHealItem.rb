@@ -24,6 +24,7 @@ safe_code('Define StatusRateHealItem ItemDescriptor') do
     include_death = states.include?(GameData::States::DEATH)
     next false if pokemon.dead? && !include_death
     next false if pokemon.alive? && include_death && states.size == 1
+    next false if $game_temp.in_battle && pokemon.dead? && include_death && PFM.game_state.nuzlocke.enabled?
 
     confuse_check = $game_temp.in_battle && pokemon.confused? && states.include?(GameData::States::CONFUSED)
     next pokemon.hp < pokemon.max_hp || confuse_check || states.include?(pokemon.status)
