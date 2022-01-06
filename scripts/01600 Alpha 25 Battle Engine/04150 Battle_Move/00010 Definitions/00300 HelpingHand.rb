@@ -11,7 +11,10 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-        return show_usage_failure(user) && false if targets.reject { |t| t == user }.empty?
+
+        if targets.reject { |t| t == user }.empty? || logic.battle_info.vs_type == 1 || targets.all? { |t| t.effects.has?(:helping_hand) }
+          return show_usage_failure(user) && false
+        end
 
         return true
       end
@@ -33,6 +36,8 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
+          next if target.effects.has?(:helping_hand)
+
           user.effects.add(create_effect(user, target))
           scene.display_message_and_wait(deal_message(user, target))
         end
