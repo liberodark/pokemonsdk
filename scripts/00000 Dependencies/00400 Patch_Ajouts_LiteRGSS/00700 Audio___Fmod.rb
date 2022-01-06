@@ -299,6 +299,7 @@ if Object.const_defined?(:FMOD)
         end
       end
       channel = FMOD::System.playSound(sound, true)
+      channel.setPriority(250)
       channel.setVolume(volume / 100.0)
       channel.setPitch(pitch / 100.0)
       channel.setPaused(false)
@@ -455,6 +456,7 @@ if Object.const_defined?(:FMOD)
     # @param volume [Numeric] target volume
     # @param pitch [Numeric] target pitch
     def adjust_channel(channel, volume, pitch)
+      channel.setPriority([@bgm_channel, @me_channel, @bgs_channel].index(channel) || 128)
       channel.setVolume(volume / 100.0)
       channel.setPitch(pitch / 100.0)
       channel.setPaused(false)
