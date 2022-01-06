@@ -54,6 +54,8 @@ module Battle
         # @note I think this ability is not designed to be implemented like this, it should kill the passthrough
         # @todo fix this ability
         def effect_prevented?(pokemon, skill)
+          return true if pokemon.can_be_lowered_or_canceled?
+
           return pokemon.bank == @target.bank || !skill || skill.force_switch?
         end
       end

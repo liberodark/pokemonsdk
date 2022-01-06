@@ -34,6 +34,7 @@ module Battle
         # @return [:prevent, nil] :prevent if the status cannot be applied
         def on_status_prevention(handler, status, target, launcher, skill)
           return if status != :burn || target != @target
+          return unless launcher&.can_be_lowered_or_canceled?
 
           return handler.prevent_change do
             handler.scene.visual.show_ability(target)
