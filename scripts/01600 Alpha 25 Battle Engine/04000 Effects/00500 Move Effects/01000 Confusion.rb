@@ -32,8 +32,9 @@ module Battle
           move.scene.visual.show_rmxp_animation(user, 475)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 348, user))
           if bchance?(damage_chance)
-            move.scene.visual.show_hp_animations([user], [-confuse_damage])
-            move.scene.display_message_and_wait(parse_text(18, 83))
+            move.scene.visual.show_hp_animations([user], [-confuse_damage]) do
+              move.scene.display_message_and_wait(parse_text(18, 83))
+            end
             return :prevent
           end
         end
