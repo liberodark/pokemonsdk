@@ -11,7 +11,7 @@ module Battle
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target
           return unless skill&.direct? && launcher && launcher.hp > 0
-          return if target.effects.has?(:substitute) || target.type1 == skill.type
+          return if (target.effects.has?(:substitute) && !skill.authentic?) || target.type1 == skill.type
 
           handler.scene.visual.show_ability(target)
           target.type1 = skill.type

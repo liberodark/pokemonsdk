@@ -25,7 +25,7 @@ module Battle
       # @return [:prevent, nil] :prevent if the stat increase cannot apply
       def on_stat_increase_prevention(handler, stat, target, launcher, skill)
         return if target != @pokemon
-        return :prevent if target != launcher && skill && skill.db_symbol != :defog
+        return :prevent if target != launcher && skill && !skill.authentic?
 
         return nil
       end
@@ -39,7 +39,7 @@ module Battle
       # @return [:prevent, nil] :prevent if the stat decrease cannot apply
       def on_stat_decrease_prevention(handler, stat, target, launcher, skill)
         return if target != @pokemon
-        return :prevent if target != launcher && skill && skill.db_symbol != :defog
+        return :prevent if target != launcher && skill && !skill.authentic?
 
         return nil
       end
@@ -53,7 +53,7 @@ module Battle
       # @return [:prevent, Integer, nil] :prevent if the damage cannot be applied, Integer if the hp variable should be updated
       def on_damage_prevention(handler, hp, target, launcher, skill)
         return if target != @pokemon || !skill
-        return if skill.sound_attack?
+        return if skill.authentic?
 
         result_hp = hp - @hp
         handler.prevent_change do
@@ -81,6 +81,7 @@ module Battle
       # @return [:prevent, nil] :prevent if the status cannot be applied
       def on_status_prevention(handler, status, target, launcher, skill)
         return if target != @pokemon || !skill || status == :cure || launcher == target
+        return if skill.authentic?
 
         return handler.prevent_change do
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 24, target))

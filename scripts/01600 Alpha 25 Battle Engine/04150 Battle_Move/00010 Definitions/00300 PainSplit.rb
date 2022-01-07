@@ -20,7 +20,7 @@ module Battle
         hp_total = (hp_total / actual_targets.size).to_i
         scene.display_message_and_wait(message)
         actual_targets.each do |target|
-          if target.effects.has?(:substitute)
+          if target.effects.has?(:substitute) && !authentic?
             substitute = target.effects.get(:substitute)
             substitute.hp = hp_total.clamp(1, substitute.max_hp)
           else

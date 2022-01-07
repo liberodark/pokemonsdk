@@ -12,7 +12,7 @@ module Battle
           return if target != @target || launcher == target
           return unless skill&.direct? && launcher && launcher.hp > 0
           return unless skill.type_ghost? || skill.type_dark? || skill.type_bug?
-          return if target.effects.has?(:substitute)
+          return if target.effects.has?(:substitute) && !skill.authentic?
 
           handler.scene.visual.show_ability(target)
           handler.logic.stat_change_handler.stat_change_with_process(:spd, 1, target)

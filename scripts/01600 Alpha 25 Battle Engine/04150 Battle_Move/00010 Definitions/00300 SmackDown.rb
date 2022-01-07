@@ -10,7 +10,7 @@ module Battle
       # @return [Boolean]
       def effect_working?(user, actual_targets)
         return false if actual_targets.all?(&:grounded?)
-        return false if actual_targets.all? { |target| target.effects.has?(:substitute) }
+        return false if actual_targets.all? { |target| target.effects.has?(:substitute) } && !authentic?
 
         return true
       end
@@ -20,7 +20,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
-          next if target.grounded? || target.effects.has?(:substitute)
+          next if target.grounded? || (target.effects.has?(:substitute) && !authentic?)
 
           # TODO: Add Sky Drop exception
           target.effects.add(Effects::SmackDown.new(@scene.logic, target))

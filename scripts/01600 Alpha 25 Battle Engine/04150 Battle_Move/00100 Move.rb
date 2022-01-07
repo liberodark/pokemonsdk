@@ -365,6 +365,12 @@ module Battle
       return data.powder
     end
 
+    # Tell if the move is a move that can bypass Substitute
+    # @return [Boolean]
+    def authentic?
+      return data.authentic
+    end
+
     # Get the effectiveness
     attr_reader :effectiveness
 

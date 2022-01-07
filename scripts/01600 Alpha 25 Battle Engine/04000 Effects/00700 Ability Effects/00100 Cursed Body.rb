@@ -11,7 +11,7 @@ module Battle
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target
           return unless skill&.direct? && launcher && launcher.hp > 0
-          return if target.effects.has?(:substitute) || skill.db_symbol == :struggle
+          return if (target.effects.has?(:substitute) && !skill.authentic?) || skill.db_symbol == :struggle
 
           handler.scene.visual.show_ability(target)
           launcher.effects.add(Effects::Disable.new(@logic, launcher, skill))
