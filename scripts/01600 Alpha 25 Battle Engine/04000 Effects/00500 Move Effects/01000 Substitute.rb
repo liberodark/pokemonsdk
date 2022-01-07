@@ -54,6 +54,7 @@ module Battle
       def on_damage_prevention(handler, hp, target, launcher, skill)
         return if target != @pokemon || !skill
         return if skill.authentic?
+        return if launcher&.has_ability?(:infiltrator)
 
         result_hp = hp - @hp
         handler.prevent_change do

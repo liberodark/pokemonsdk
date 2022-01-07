@@ -72,7 +72,6 @@ module Battle
       end
     end
 
-
     # Effect describing Aurora Veil
     class AuroraVeil < LightScreen
       # Give the move mod1 mutiplier (before the +2 in the formula)
@@ -97,7 +96,7 @@ module Battle
       # ID of the message responsive of telling the end of the effect
       # @return [Integer]
       def message_id
-        return 287 #"The opposing team's Aurora Veil wore off!"
+        return 287
       end
     end
   end
