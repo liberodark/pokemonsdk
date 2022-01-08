@@ -23,7 +23,7 @@ module Battle
         return [] unless @scene.logic.switch_handler.can_switch?(pokemon)
 
         danger_factor = switch_danger_processing(pokemon)
-        return [] if move_heuristics.max < danger_factor
+        return [] if (move_heuristics.max || 0) > danger_factor
 
         return switch_actions_generate_for(pokemon)
       end
@@ -44,9 +44,10 @@ module Battle
       #  - Ensure a Pokemon that is already on the field cannot get in the field
       #  - Remove actions if the Pokemon was recently sent out and the random number was not less than 1
       # @param actions [Array<[Float, Actions::Switch]>]
+      # @param force_switch [Boolean] if we ignore the fact switch can be performed or not and let the pokemon switch anyway
       # @return [Array<[Float, Actions::Switch]>]
-      def clean_switch_trigger_actions(actions)
-        return clean_switch_actions(actions).select { |action| can_switch_be_performed?(action[1]) }
+      def clean_switch_trigger_actions(actions, force_switch = false)
+        return clean_switch_actions(actions).select { |action| force_switch || can_switch_be_performed?(action[1]) }
       end
 
       # Function that tell if a Pokemon can be switched out based on the current turn & some random factor

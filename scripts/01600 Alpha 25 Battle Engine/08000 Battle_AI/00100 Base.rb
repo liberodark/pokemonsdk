@@ -81,7 +81,8 @@ module Battle
         actions = usable_moves(pokemon).map { |move| move_action_for(move, pokemon) }
         move_heuristics = actions.compact.map(&:first)
         mega = mega_evolve_action_for(pokemon) if @can_mega_evolve
-        actions.concat(clean_switch_trigger_actions(switch_actions_for(pokemon, move_heuristics))) if @can_switch
+        force_switch = move_heuristics.all? { |heuristic| heuristic == 0 }
+        actions.concat(clean_switch_trigger_actions(switch_actions_for(pokemon, move_heuristics), force_switch)) if @can_switch
         actions.concat(item_actions_for(pokemon, move_heuristics)) if @can_use_item
         actions.concat([flee_action_for(pokemon)].compact) if @can_flee
 
@@ -117,17 +118,21 @@ module Battle
       # @param pokemon [PFM::PokemonBattler]
       # @return [Array<Battle::Move>]
       def usable_moves(pokemon)
-        moves = pokemon.moveset.reject { |move| move.disable_reason(pokemon) || move.instance_of?(Battle::Move) || oblivious_reject?(pokemon, move) }
+        moves = pokemon.moveset.reject { |move| move_unusable?(pokemon, move) }
         return moves if moves.any?
 
         return [Battle::Move[:s_struggle].new(GameData::Skill[:struggle].id, 1, 1, @scene)]
       end
 
-      # Function that check if the move is not usable because of oblivious
+      # Function that check if the move is not usable
       # @param pokemon [PFM::PokemonBattler]
       # @param move [Battle::Move]
       # @return [Boolean] if the move should be rejeced from the moveset
-      def oblivious_reject?(pokemon, move)
+      def move_unusable?(pokemon, move)
+        return true if move.pp == 0
+        return true if move.disable_reason(pokemon)
+        return true if move.instance_of?(Battle::Move)
+
         return move.status? && pokemon.effects.has?(:oblivious)
       end
     end
