@@ -60,6 +60,8 @@ module Battle
       # @param effectiveness [Float]
       # @return [Float]
       def move_power(move, user, target, effectiveness)
+        return 0 if effectiveness == 0
+
         if move.status?
           return effectiveness if move.respond_to?(:special_ai_modifier) && @can_see_move_kind
 
