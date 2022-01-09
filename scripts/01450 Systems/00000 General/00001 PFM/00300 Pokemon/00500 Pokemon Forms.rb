@@ -134,21 +134,21 @@ module PFM
       time = Time.new
       case time.month
       when 1, 2
-        return 3
+        return @form = 3
       when 3
-        return time.day < 21 ? 3 : 0
+        return @form = (time.day < 21 ? 3 : 0)
       when 6
-        return time.day < 21 ? 0 : 1
+        return @form = (time.day < 21 ? 0 : 1)
       when 7, 8
-        return 1
+        return @form = 1
       when 9
-        return time.day < 21 ? 1 : 2
+        return @form = (time.day < 21 ? 1 : 2)
       when 10, 11
-        return 2
+        return @form = 2
       when 12
-        return time.day < 21 ? 2 : 3
+        return @form = (time.day < 21 ? 2 : 3)
       end
-      return 0
+      return @form = 0
     end
 
     # Determine the form of the Kyurem
@@ -157,7 +157,7 @@ module PFM
       return @form = 1 if reason == :zekrom
       return @form = 2 if reason == :reshiram
 
-      return 0
+      return @form = 0
     end
 
     # Determine the form of the Necrozma
@@ -166,33 +166,33 @@ module PFM
       return @form = 1 if reason == :solgaleo
       return @form = 2 if reason == :lunala
 
-      return 0
+      return @form = 0
     end
 
-    FORM_GENERATION[:unown] = proc { @code % 28 }
+    FORM_GENERATION[:unown] = proc { @form = @code % 28 }
     FORM_GENERATION[:castform] = proc do
       env = $env
       if env.sunny?
-        next 2
+        next @form = 2
       elsif env.rain?
-        next 3
+        next @form = 3
       elsif env.hail?
-        next 6
+        next @form = 6
       end
-      next 0
+      next @form = 0
     end
     FORM_GENERATION[:burmy] = FORM_GENERATION[:wormadam] = proc do
       env = $env
       if env.building?
-        next 2
+        next @form = 2
       elsif env.grass? || env.tall_grass? || env.very_tall_grass?
-        next 0
+        next @form = 0
       end
-      next 1
+      next @form = 1
     end
-    FORM_GENERATION[:cherrim] = proc { $env.sunny? ? 1 : 0 }
-    FORM_GENERATION[:deerling] = FORM_GENERATION[:sawsbuck] = proc { current_deerling_form }
-    FORM_GENERATION[:meowstic] = proc { @gender == 2 ? 1 : 0 }
+    FORM_GENERATION[:cherrim] = proc { @form = $env.sunny? ? 1 : 0 }
+    FORM_GENERATION[:deerling] = FORM_GENERATION[:sawsbuck] = proc { @form = current_deerling_form }
+    FORM_GENERATION[:meowstic] = proc { @form = @gender == 2 ? 1 : 0 }
 
     FORM_CALIBRATE[:giratina] = proc { @form = item_db_symbol == :griseous_orb ? 1 : 0 }
     FORM_CALIBRATE[:arceus] = proc { @form = ArceusItem.index(item_db_symbol).to_i }

@@ -21,7 +21,7 @@ module Battle
           handler.scene.visual.show_ability(@target)
         end
 
-        # Function called after the weather was changed (post_weather_change)
+        # Function called after the weather was changed (on_post_weather_change)
         # @param handler [Battle::Logic::WeatherChangeHandler]
         # @param fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
         # @param last_fterrain [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain

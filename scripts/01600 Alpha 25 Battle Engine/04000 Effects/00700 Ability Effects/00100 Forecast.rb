@@ -11,16 +11,18 @@ module Battle
           return if @target.dead?
 
           original_form = @target.form
-          @target.form_calibrate
-          scene.visual.show_switch_form_animation(@target) if @target.form != original_form
+          return unless @target.form_generation(-1) != original_form
+
+          scene.visual.show_switch_form_animation(@target)
         end
 
-        # Function called after the weather was changed (post_weather_change)
+        # Function called after the weather was changed (on_post_weather_change)
         # @param handler [Battle::Logic::WeatherChangeHandler]
         # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
         # @param last_weather [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
         def on_post_weather_change(handler, weather_type, last_weather)
-          return unless @target.form_calibrate(:weather)
+          original_form = @target.form
+          return unless @target.form_generation(-1) != original_form
 
           handler.scene.visual.show_switch_form_animation(@target)
         end

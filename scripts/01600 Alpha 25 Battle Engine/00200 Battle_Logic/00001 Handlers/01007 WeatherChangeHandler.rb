@@ -44,7 +44,7 @@ module Battle
         last_weather = @env.current_weather_db_symbol
         @env.apply_weather(weather_type, nb_turn)
         show_weather_message(last_weather, weather_type)
-        exec_hooks(WeatherChangeHandler, :post_weather_change, binding)
+        exec_hooks(WeatherChangeHandler, :on_post_weather_change, binding)
       rescue Hooks::ForceReturn => e
         log_data("# FR: weather_change #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
@@ -88,13 +88,13 @@ module Battle
           end
         end
 
-        # Function that registers a post_weather_change hook
-        # @param reason [String] reason of the post_weather_change registration
+        # Function that registers a on_post_weather_change hook
+        # @param reason [String] reason of the on_post_weather_change registration
         # @yieldparam handler [WeatherChangeHandler]
         # @yieldparam weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
         # @yieldparam last_weather [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
         def register_post_weather_change_hook(reason)
-          Hooks.register(WeatherChangeHandler, :post_weather_change, reason) do |hook_binding|
+          Hooks.register(WeatherChangeHandler, :on_post_weather_change, reason) do |hook_binding|
             yield(
               self,
               hook_binding.local_variable_get(:weather_type),

@@ -265,7 +265,7 @@ module Battle
         nil && handler && weather_type && last_weather
       end
 
-      # Function called after the weather was changed (post_weather_change)
+      # Function called after the weather was changed (on_post_weather_change)
       # @param handler [Battle::Logic::WeatherChangeHandler]
       # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
       # @param last_weather [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
@@ -273,7 +273,7 @@ module Battle
         nil && handler && weather_type && last_weather
       end
 
-      # Function called when a fterrain_prevetion is checked
+      # Function called when a fterrain_prevention is checked
       # @param handler [Battle::Logic::FTerrainChangeHandler]
       # @param fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
       # @param last_fterrain [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
@@ -282,8 +282,8 @@ module Battle
         nil && handler && fterrain_type && last_fterrain
       end
 
-      # Function called after the weather was changed (post_weather_change)
-      # @param handler [Battle::Logic::WeatherChangeHandler]
+      # Function called after the terrain was changed
+      # @param handler [Battle::Logic::FTerrainChangeHandler]
       # @param fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
       # @param last_fterrain [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
       def on_post_fterrain_change(handler, fterrain_type, last_fterrain)
