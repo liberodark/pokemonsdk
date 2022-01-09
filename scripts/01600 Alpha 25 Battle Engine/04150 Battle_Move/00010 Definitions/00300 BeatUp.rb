@@ -76,7 +76,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       # @return [Array[PFM::Battler]]
       def battlers_that_hit(user, actual_targets)
-        logic.battle_info.party(user).select { |battler| battler.alive? && !battler.status? }
+        logic.allies_of(user).select { |battler| battler.alive? && !battler.status? } << user
       end
 
       # Display the right message in case of critical hit

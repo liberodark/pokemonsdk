@@ -1088,6 +1088,9 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/08000 Battle_AI/00105 Flee.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/08000 Battle_AI/00200 GenericAI.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/08000 Battle_AI/00001 MoveHeuristic/00001 MoveHeuristicBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/08000 Battle_AI/00001 MoveHeuristic/00002 Rest.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/08000 Battle_AI/00001 MoveHeuristic/00003 HealingMoves.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/08000 Battle_AI/00001 MoveHeuristic/00004 CuringMoves.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/08000 Battle_AI/00001 MoveHeuristic/00005 ReflectMoves.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 Pokemon_Script_Project/00100 RPG__Sprite.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/99999 Pokemon_Script_Project/00200 Scene_Battle___PSP_add.rb
 pokemonsdk/scripts/02000 Nuri Yuri/00001 DynamicLight/00001 DynamicLight.rb

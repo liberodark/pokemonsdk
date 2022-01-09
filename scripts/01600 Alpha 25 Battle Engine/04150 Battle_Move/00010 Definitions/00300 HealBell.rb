@@ -22,15 +22,15 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, targets)
-        targets = scene.logic.alive_battlers_without_check(0) unless db_symbol == :refresh
+        targets = scene.logic.all_battlers.select { |p| p.bank == user.bank && p.party_id == user.party_id && p.alive? } unless db_symbol == :refresh
         target_cure = false
         targets.each do |target|
-          if !target.dead? && target.status != 0
-            scene.logic.status_change_handler.status_change(:cure, target)
-            target_cure = true
-          end
-          scene.display_message_and_wait(parse_text(18, 70)) unless target_cure
+          next if target.status == 0
+
+          scene.logic.status_change_handler.status_change(:cure, target)
+          target_cure = true
         end
+        scene.display_message_and_wait(parse_text(18, 70)) unless target_cure
       end
     end
 

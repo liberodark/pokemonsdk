@@ -12,7 +12,7 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-        return show_usage_failure(user) && false unless logic.battle_info.party(user).count(&:alive?) > 1 + logic.allies_of(user).length
+        return show_usage_failure(user) && false unless logic.allies_of(user).count { |pokemon| pokemon.party_id == user.party_id } > 0
 
         return true
       end
