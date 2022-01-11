@@ -72,12 +72,12 @@ module PSDKEditor
         id: move.id, dbSymbol: move.db_symbol, klass: 'Move', mapUse: move.map_use, battleEngineMethod: move.be_method,
         type: GameData::Type[move.type].db_symbol, power: move.power, accuracy: move.accuracy, pp: move.pp_max,
         category: attack_category[move.atk_class], movecriticalRate: move.critical_rate,
-        priority: move.priority + Battle::Logic::MOVE_PRIORITY_OFFSET, isDirect: move.direct, isCharge: move.charge,
+        priority: move.priority + Battle::Logic::MOVE_PRIORITY_OFFSET, isDirect: move.direct, isCharge: move.charge, isRecharge: move.recharge,
         isBlocable: move.blocable, isSnatchable: move.snatchable, isMirrorMove: move.mirror_move, isPunch: move.punch, isGravity: move.gravity,
         isMagicCoatAffected: move.magic_coat_affected, isUnfreeze: move.unfreeze, isSoundAttack: move.sound_attack, isDistance: move.distance,
         isHeal: move.heal, isAuthentic: move.authentic, isBite: move.bite, isPulse: move.pulse, isBallistics: move.ballistics,
         isMental: move.mental, isNonSkyBattle: move.non_sky_battle, isDance: move.dance, isKingRockUtility: move.king_rock_utility,
-        isEffectChance: move.effect_chance == 100, battleEngineAimedTarget: move.target,
+        isPowder: move.powder, isEffectChance: move.effect_chance == 100, battleEngineAimedTarget: move.target,
         battleStageMod: move.battle_stage_mod.map.with_index do |value, index|
           value != 0 ? { battleStage: GameData::Stages::PSDK_EDITOR_VALUES[index], modificator: value } : nil
         end.compact
