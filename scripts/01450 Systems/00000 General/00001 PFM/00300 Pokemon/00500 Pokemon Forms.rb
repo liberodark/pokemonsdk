@@ -32,7 +32,7 @@ module PFM
     # @return [Integer, false] form index if the Pokemon can mega evolve, false otherwise
     def can_mega_evolve?
       return false if mega_evolved?
-      return true if db_symbol == :rayquaza && skills_set.any? { |skill| skill.db_symbol == :dragon_ascent }
+      return 30 if db_symbol == :rayquaza && skills_set.any? { |skill| skill.db_symbol == :dragon_ascent }
 
       data = GameData::Pokemon.get_forms(@id)
       item_id = @item_holding
