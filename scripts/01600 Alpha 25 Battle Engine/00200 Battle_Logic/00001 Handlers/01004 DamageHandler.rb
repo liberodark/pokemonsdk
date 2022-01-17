@@ -94,7 +94,7 @@ module Battle
       # @param drain_factor [Integer] the division factor of HP drained
       # @param messages [Proc] messages shown right before the post processing
       def drain(hp_factor, target, launcher, skill = nil, hp_overwrite: nil, drain_factor: 1, &messages)
-        hp = hp_overwrite || (target.max_hp / hp_factor).clamp(0, Float::INFINITY)
+        hp = hp_overwrite || (target.max_hp / hp_factor).clamp(1, Float::INFINITY)
         damage_change(hp, target, launcher, skill, &messages)
         # TODO: Add hooks for all those stuff
         if target.has_ability?(:liquid_ooze)

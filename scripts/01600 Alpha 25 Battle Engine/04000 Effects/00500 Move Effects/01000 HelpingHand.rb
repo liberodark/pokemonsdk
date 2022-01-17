@@ -29,14 +29,14 @@ module Battle
         Mark.new(@logic, target, self, duration)
       end
 
-      # Class marking the target of the LeechSeed so we cannot apply the effect twice
+      # Class marking the target of the HelpingHand so we cannot apply the effect twice
       class Mark < PokemonTiedEffectBase
         include Mechanics::Mark
 
         # Create a new mark
         # @param logic [Battle::Logic]
         # @param pokemon [PFM::PokemonBattler]
-        # @param origin [LeechSeed] origin of the mark
+        # @param origin [HelpingHand] origin of the mark
         def initialize(logic, pokemon, origin, duration)
           super(logic, pokemon)
           initialize_mark(origin)

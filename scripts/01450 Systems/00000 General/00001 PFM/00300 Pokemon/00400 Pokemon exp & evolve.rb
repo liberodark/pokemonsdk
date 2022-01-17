@@ -278,6 +278,7 @@ module PFM
       munja = dup
       munja.id = 292
       munja.hp = munja.max_hp
+      munja.item_holding = 0
       $actors << munja
       $bag.remove_item(4, 1)
       $pokedex.mark_seen(292, forced: true)
