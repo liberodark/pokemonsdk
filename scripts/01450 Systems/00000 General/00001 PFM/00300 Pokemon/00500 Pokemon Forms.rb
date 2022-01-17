@@ -169,6 +169,15 @@ module PFM
       return @form = 0
     end
 
+    # Determine the form of the Calyrex
+    # @param [Symbol] reason The db_symbol of the Pokemon used for the fusion
+    def calyrex_form(reason)
+      return @form = 1 if reason == :glastrier
+      return @form = 2 if reason == :spectrier
+
+      return @form = 0
+    end
+
     FORM_GENERATION[:unown] = proc { @form = @code % 28 }
     FORM_GENERATION[:castform] = proc do
       env = $env
@@ -213,5 +222,6 @@ module PFM
     FORM_CALIBRATE[:eiscue] = proc { |reason| @form = reason == :battle ? 1 : 0 }
     FORM_CALIBRATE[:zacian] = proc { @form = item_db_symbol == :rusted_sword ? 1 : 0 }
     FORM_CALIBRATE[:zamazenta] = proc { @form = item_db_symbol == :rusted_shield ? 1 : 0 }
+    FORM_CALIBRATE[:calyrex] = proc { |reason| @form = calyrex_form(reason) }
   end
 end
