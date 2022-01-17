@@ -47,10 +47,22 @@ module PFM
       return current_weather_db_symbol == :rain
     end
 
+    # Is it hardrainning?
+    # @return [Boolean]
+    def hardrain?
+      return current_weather_db_symbol == :hardrain
+    end
+
     # Is it sunny?
     # @return [Boolean]
     def sunny?
       return current_weather_db_symbol == :sunny
+    end
+
+    # Is it hardsunny?
+    # @return [Boolean]
+    def hardsun?
+      return current_weather_db_symbol == :hardsun
     end
 
     # Duuuuuuuuuuuuuuuuuuuuuuun

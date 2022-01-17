@@ -223,5 +223,7 @@ module PFM
     FORM_CALIBRATE[:zacian] = proc { @form = item_db_symbol == :rusted_sword ? 1 : 0 }
     FORM_CALIBRATE[:zamazenta] = proc { @form = item_db_symbol == :rusted_shield ? 1 : 0 }
     FORM_CALIBRATE[:calyrex] = proc { |reason| @form = calyrex_form(reason) }
+    FORM_CALIBRATE[:groudon] = proc { @form = item_db_symbol == :red_orb ? 1 : 0 }
+    FORM_CALIBRATE[:kyogre] = proc { @form = item_db_symbol == :blue_orb ? 1 : 0 }
   end
 end

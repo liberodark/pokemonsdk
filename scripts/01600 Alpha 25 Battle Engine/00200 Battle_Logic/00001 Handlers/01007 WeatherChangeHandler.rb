@@ -10,7 +10,9 @@ module Battle
         sunny: 87,
         sandstorm: 89,
         hail: 90,
-        fog: 91
+        fog: 91,
+        hardsun: 271,
+        hardrain: 269
       }
 
       # Create a new Weather Change Handler
@@ -23,7 +25,7 @@ module Battle
       end
 
       # Function telling if a weather can be applyied
-      # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
+      # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog, :hardsun, :hardrain
       # @return [Boolean]
       def weather_appliable?(weather_type)
         log_data("# weather_appliable?(#{weather_type})")
@@ -37,7 +39,7 @@ module Battle
       end
 
       # Function that actually change the weather
-      # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
+      # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog, :hardsun, :hardrain
       # @param nb_turn [Integer, nil] Number of turn, use nil for Infinity
       def weather_change(weather_type, nb_turn)
         log_data("# weather_change(#{weather_type}, #{nb_turn})")
@@ -51,7 +53,7 @@ module Battle
       end
 
       # Function that test if the change is possible and perform the change if so
-      # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
+      # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog, :hardsun, :hardrain
       # @param nb_turn [Integer, nil] Number of turn, use nil for Infinity
       def weather_change_with_process(weather_type, nb_turn)
         return process_prevention_reason unless weather_appliable?(weather_type)
@@ -74,8 +76,8 @@ module Battle
         # Function that registers a weather_prevention hook
         # @param reason [String] reason of the weather_prevention registration
         # @yieldparam handler [WeatherChangeHandler]
-        # @yieldparam weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
-        # @yieldparam last_weather [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
+        # @yieldparam weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog, :hardsun, :hardrain
+        # @yieldparam last_weather [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog, :hardsun, :hardrain
         # @yieldreturn [:prevent, nil] :prevent if the status cannot be applied
         def register_weather_prevention_hook(reason)
           Hooks.register(WeatherChangeHandler, :weather_prevention, reason) do |hook_binding|
@@ -91,8 +93,8 @@ module Battle
         # Function that registers a on_post_weather_change hook
         # @param reason [String] reason of the on_post_weather_change registration
         # @yieldparam handler [WeatherChangeHandler]
-        # @yieldparam weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
-        # @yieldparam last_weather [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
+        # @yieldparam weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog, :hardsun, :hardrain
+        # @yieldparam last_weather [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog, :hardsun, :hardrain
         def register_post_weather_change_hook(reason)
           Hooks.register(WeatherChangeHandler, :on_post_weather_change, reason) do |hook_binding|
             yield(
