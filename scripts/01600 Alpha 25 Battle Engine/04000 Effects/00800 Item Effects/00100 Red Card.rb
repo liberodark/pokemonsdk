@@ -13,7 +13,9 @@ module Battle
           return unless skill && launcher != target && handler.logic.can_battler_be_replaced?(launcher)
 
           handler.scene.visual.show_item(target)
-          handler.logic.switch_request << { who: launcher }
+          rand_pkmn = (@logic.alive_battlers_without_check(launcher.bank).select { |p| p if p.party_id == launcher.party_id && p.position == -1 }).compact
+          @logic.switch_request << { who: launcher, with: rand_pkmn.sample } unless rand_pkmn.empty?
+          target.item_holding = target.battle_item = 0
         end
       end
       register(:red_card, RedCard)

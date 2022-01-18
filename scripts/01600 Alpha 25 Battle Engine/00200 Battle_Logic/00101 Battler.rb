@@ -183,7 +183,7 @@ module Battle
       bank = who.bank
       party_id = who.party_id
       allies = allies_of(who)
-      number = all_battlers.count { |pokemon| pokemon.alive? && pokemon.bank == bank && pokemon.party_id == party_id && !allies.include?(pokemon) }
+      number = all_battlers.count { |pokemon| pokemon != who && pokemon.alive? && pokemon.bank == bank && pokemon.party_id == party_id && !allies.include?(pokemon) }
       return number > 0
     end
 
