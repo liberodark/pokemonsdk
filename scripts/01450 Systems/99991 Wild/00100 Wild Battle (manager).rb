@@ -166,6 +166,8 @@ module PFM
     def setup(battle_id = 1)
       # If it was a forced battle
       return configure_battle(@forced_wild_battle, battle_id) if @forced_wild_battle
+      # Security for when a Repel is used at the same time an encounter is happening
+      return nil if PFM.game_state.repel_count > 0
       # @type [Wild_Info]
       return nil unless (wi = @fish_battle || @remaining_pokemons[$env.get_zone_type][$game_player.terrain_tag])
 
