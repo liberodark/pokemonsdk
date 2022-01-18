@@ -76,7 +76,7 @@ module Battle
 
         actual_hp = hp.clamp(1, target.max_hp - target.hp)
         # TODO: play the animation that should be played on all hp heal (+think about animation_id)
-        scene.visual.show_hp_animations([target], [actual_hp])
+        target.position == -1 ? target.hp += actual_hp : scene.visual.show_hp_animations([target], [actual_hp])
         if block_given?
           yield(actual_hp)
         else
