@@ -18,7 +18,7 @@ module UI
       super
       @nature_text.text = PFM::Text.parse(28, pokemon.nature_id)
       # Load the stat color according to the nature
-      nature = pokemon.nature
+      nature = pokemon.nature.partition.with_index { |nat, i| i != 3}.flatten(1)
       1.upto(5) do |i|
         color = nature[i] < 100 ? 23 : 22
         color = 0 if nature[i] == 100
