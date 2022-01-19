@@ -156,10 +156,9 @@ module PSDKEditor
         form: pokemon.form, height: pokemon.height, weight: pokemon.weight, type1: GameData::Type[pokemon.type1].db_symbol,
         type2: GameData::Type[pokemon.type2].db_symbol, baseHp: pokemon.base_hp, baseAtk: pokemon.base_atk, baseDfe: pokemon.base_dfe,
         baseSpd: pokemon.base_spd, baseAts: pokemon.base_ats, baseDfs: pokemon.base_dfs, evHp: pokemon.ev_hp, evAtk: pokemon.ev_atk,
-        evDfe: pokemon.ev_dfe, evSpd: pokemon.ev_spd, evAts: pokemon.ev_ats, evDfs: pokemon.ev_dfs, evolutionId: pokemon.evolution_id,
-        evolutionLevel: pokemon.evolution_level, specialEvolutions: build_special_evolution(pokemon), experienceType: pokemon.exp_type,
-        baseExperience: pokemon.base_exp, baseLoyalty: pokemon.base_loyalty, catchRate: pokemon.rareness, femaleRate: pokemon.female_rate,
-        breedGroups: pokemon.breed_groupes, hatchSteps: pokemon.hatch_step, babyId: pokemon.baby,
+        evDfe: pokemon.ev_dfe, evSpd: pokemon.ev_spd, evAts: pokemon.ev_ats, evDfs: pokemon.ev_dfs, evolutions: build_evolutions(pokemon),
+        experienceType: pokemon.exp_type, baseExperience: pokemon.base_exp, baseLoyalty: pokemon.base_loyalty, catchRate: pokemon.rareness,
+        femaleRate: pokemon.female_rate, breedGroups: pokemon.breed_groupes, hatchSteps: pokemon.hatch_step, babyId: pokemon.baby,
         itemHeld: pokemon.items.each_slice(2).map { |(id, chance)| { dbSymbol: GameData::Item[id].db_symbol, chance: chance.to_i } },
         abilities: pokemon.abilities.map { |id| GameData::Abilities.db_symbol(id) }, frontOffsetY: pokemon.front_offset_y.to_i,
         moveSet: build_moveset(pokemon)
@@ -182,37 +181,45 @@ module PSDKEditor
     return moveset
   end
 
-  # Function that build the special evolution of a Pokemon
+  # Function that build the evolution of a Pokemon
   # @param pokemon [GameData::Pokemon]
   # @return [Array<Hash>]
-  def build_special_evolution(pokemon)
-    return nil unless pokemon.special_evolution
-
-    special_evolutions = []
-    pokemon.special_evolution.each do |special_evolution|
+  def build_evolutions(pokemon)
+    evolutions = []
+    if pokemon.evolution_id != 0 && pokemon.evolution_level && pokemon.evolution_level != 0
       data = {}
-      data[:dbSymbol] = GameData::Pokemon[special_evolution[:id]].db_symbol if special_evolution[:id]
-      data[:minLevel] = special_evolution[:min_level] if special_evolution[:min_level]
-      data[:maxLevel] = special_evolution[:max_level] if special_evolution[:max_level]
-      data[:tradeWith] = GameData::Pokemon[special_evolution[:trade_with]].db_symbol if special_evolution[:trade_with]
-      data[:trade] = GameData::Pokemon[special_evolution[:trade]].db_symbol if special_evolution[:trade]
-      data[:stone] = GameData::Item[special_evolution[:stone]].db_symbol if special_evolution[:stone]
-      data[:itemHold] = GameData::Item[special_evolution[:item_hold]].db_symbol if special_evolution[:item_hold]
-      data[:minLoyalty] = special_evolution[:min_loyalty] if special_evolution[:min_loyalty]
-      data[:maxLoyalty] = special_evolution[:max_loyalty] if special_evolution[:max_loyalty]
-      data[:skill1] = GameData::Skill[special_evolution[:skill_1]].db_symbol if special_evolution[:skill_1]
-      data[:skill2] = GameData::Skill[special_evolution[:skill_2]].db_symbol if special_evolution[:skill_2]
-      data[:skill3] = GameData::Skill[special_evolution[:skill_3]].db_symbol if special_evolution[:skill_3]
-      data[:skill4] = GameData::Skill[special_evolution[:skill_4]].db_symbol if special_evolution[:skill_4]
-      data[:weather] = special_evolution[:weather] if special_evolution[:weather]
-      data[:env] = special_evolution[:env] if special_evolution[:env]
-      data[:gender] = special_evolution[:gender] if special_evolution[:gender]
-      data[:dayNight] = special_evolution[:day_night] if special_evolution[:day_night]
-      data[:func] = special_evolution[:func] if special_evolution[:func]
-      data[:maps] = special_evolution[:maps] if special_evolution[:maps]
-      special_evolutions << data
+      data[:dbSymbol] = GameData::Pokemon[pokemon.evolution_id].db_symbol
+      data[:form] = pokemon.form
+      data[:minLevel] = pokemon.evolution_level
+      evolutions << data
     end
-    return special_evolutions
+    return evolutions unless pokemon.special_evolution
+
+    pokemon.special_evolution.each do |evolution|
+      data = {}
+      data[:dbSymbol] = GameData::Pokemon[evolution[:id]].db_symbol if evolution[:id]
+      data[:form] = pokemon.form
+      data[:minLevel] = evolution[:min_level] if evolution[:min_level]
+      data[:maxLevel] = evolution[:max_level] if evolution[:max_level]
+      data[:tradeWith] = GameData::Pokemon[evolution[:trade_with]].db_symbol if evolution[:trade_with]
+      data[:trade] = GameData::Pokemon[evolution[:trade]].db_symbol if evolution[:trade]
+      data[:stone] = GameData::Item[evolution[:stone]].db_symbol if evolution[:stone]
+      data[:itemHold] = GameData::Item[evolution[:item_hold]].db_symbol if evolution[:item_hold]
+      data[:minLoyalty] = evolution[:min_loyalty] if evolution[:min_loyalty]
+      data[:maxLoyalty] = evolution[:max_loyalty] if evolution[:max_loyalty]
+      data[:skill1] = GameData::Skill[evolution[:skill_1]].db_symbol if evolution[:skill_1]
+      data[:skill2] = GameData::Skill[evolution[:skill_2]].db_symbol if evolution[:skill_2]
+      data[:skill3] = GameData::Skill[evolution[:skill_3]].db_symbol if evolution[:skill_3]
+      data[:skill4] = GameData::Skill[evolution[:skill_4]].db_symbol if evolution[:skill_4]
+      data[:weather] = evolution[:weather] if evolution[:weather]
+      data[:env] = evolution[:env] if evolution[:env]
+      data[:gender] = evolution[:gender] if evolution[:gender]
+      data[:dayNight] = evolution[:day_night] if evolution[:day_night]
+      data[:func] = evolution[:func] if evolution[:func]
+      data[:maps] = evolution[:maps] if evolution[:maps]
+      evolutions << data
+    end
+    return evolutions
   end
 
   GROUP_TOOLS = { 8 => 'OldRod', 9 => 'GoodRod', 10 => 'SuperRod', 11 => 'RockSmash', 12 => 'HeadButt' }
