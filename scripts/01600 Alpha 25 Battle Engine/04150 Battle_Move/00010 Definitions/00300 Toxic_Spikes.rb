@@ -15,6 +15,14 @@ module Battle
 
       private
 
+      # Test if the target is immune
+      # @param user [PFM::PokemonBattler]
+      # @param target [PFM::PokemonBattler]
+      # @return [Boolean]
+      def target_immune?(user, target)
+        return false
+      end
+
       # Function that deals the effect to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move

@@ -93,7 +93,6 @@ module Battle
       class Encore < Attack
         # Execute the action
         def execute
-          @scene.display_message_and_wait(parse_text_with_pokemon(19, 559, @launcher))
           @move.forced_next_move_decrease_pp = true
           super
           @move.forced_next_move_decrease_pp = false

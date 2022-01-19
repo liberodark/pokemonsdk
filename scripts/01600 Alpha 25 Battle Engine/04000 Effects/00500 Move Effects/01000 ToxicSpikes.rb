@@ -40,7 +40,7 @@ module Battle
       # @param with [PFM::PokemonBattler] Pokemon that is switched in
       def on_switch_event(handler, who, with)
         return unless with.grounded?
-        return if with.has_ability?(:magic_guard)
+        return kill if with.grounded? && with.type_poison?
 
         status = @power == 1 ? :poison : :toxic
         handler.logic.status_change_handler.status_change_with_process(status, with)

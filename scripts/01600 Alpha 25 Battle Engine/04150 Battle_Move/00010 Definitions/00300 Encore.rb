@@ -41,6 +41,7 @@ module Battle
         target = actual_targets.first
         move_history = target.move_history.last
         target.effects.add(effect = create_effect(move_history.original_move, target, move_history.targets))
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, 559, target))
         # Poison actions
         if (index = logic.actions.find_index { |action| action.is_a?(Actions::Attack) && action.launcher == target })
           logic.actions[index] = effect.make_action
