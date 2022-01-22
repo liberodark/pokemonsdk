@@ -38,6 +38,7 @@ module Battle
         actual_targets.each do |target|
           next false unless @logic.switch_handler.can_switch?(target, self) && user.alive?
           next false if target.effects.has?(:substitute) && be_method == :s_dragon_tail
+          next false if @logic.switch_request.any? { |request| request[:who] == target }
 
           if !@logic.battle_info.trainer_battle? && @logic.alive_battlers_without_check(target.bank).size == 1 && target.bank == 1 && user.level >= target.level && !$game_switches[Yuki::Sw::BT_NoEscape]
             @battler_s = @scene.visual.battler_sprite(target.bank, target.position)

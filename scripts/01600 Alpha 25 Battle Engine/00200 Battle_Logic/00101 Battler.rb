@@ -102,6 +102,7 @@ module Battle
     # @param who [PFM::PokemonBattler]
     # @param with [PFM::PokemonBattler, nil] if nil, ask the player
     def request_switch(who, with)
+      @switch_request.delete_if { |request| request[:who] == who }
       @switch_request << { who: who, with: with }
     end
 
