@@ -20,6 +20,7 @@ module GamePlay
       make_save_directory
       @saved = false
       @index = Configs.save_config.single_save? ? 0 : Save.save_index - 1
+      @index = 0 if @index < 0
     end
 
     # Return the current GameState object
