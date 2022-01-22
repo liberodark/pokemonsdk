@@ -32,6 +32,8 @@ module Battle
 
       # Execute the action
       def execute
+        return if !@who.position || !@who.position.between?(0, $game_temp.vs_type - 1)
+
         visual = @scene.visual
         # @type [BattleUI::PokemonSprite]
         sprite = visual.battler_sprite(@who.bank, @who.position)
