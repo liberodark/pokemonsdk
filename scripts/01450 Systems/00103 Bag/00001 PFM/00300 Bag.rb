@@ -16,6 +16,9 @@ module PFM
     # Set the last battle item
     # @return [Integer]
     attr_accessor :last_battle_item_id
+    # Tell if the bag is alpha sorted
+    # @return [Boolean]
+    attr_accessor :alpha_sorted
     # Get the game state responsive of the whole game state
     # @return [PFM::GameState]
     attr_accessor :game_state
@@ -33,6 +36,7 @@ module PFM
       @shortcut = Array.new(SHORTCUT_AMOUNT, 0)
       @locked = false
       @last_battle_item_id = 0
+      @alpha_sorted = false
     end
 
     # If the bag contain a specific item
@@ -42,6 +46,12 @@ module PFM
       return item_quantity(id) > 0
     end
     alias has_item? contain_item?
+
+    # Tell if the bag is empty
+    # @return [Boolean]
+    def empty?
+      return @items.all?(&:zero?)
+    end
 
     # The quantity of an item in the bag
     # @param id [Integer, Symbol] id of the item in the database
@@ -105,16 +115,26 @@ module PFM
         arr.clear
         arr.concat(@items.each_index.select { |item_id| gdi[item_id].socket == socket && (@items[item_id] || 0) > 0 })
       end
-      arr.sort! { |item_ida, item_idb| gdi[item_ida].position <=> gdi[item_idb].position }
+      unless gdi.all.select { |item| item.socket == socket }.all? { |item| item.position.zero? }
+        arr.sort! { |item_ida, item_idb| gdi[item_idb].position <=> gdi[item_ida].position }
+      end
+      @alpha_sorted = false
       return arr
     end
     alias sort_ids reset_order
 
     # Sort the item of a socket by their names
     # @param socket [Integer] ID of the socket
-    def sort_alpha(socket)
+    # @param reverse [Boolean] if we want to sort reverse
+    def sort_alpha(socket, reverse = false)
       gdi = GameData::Item
-      reset_order(socket).sort! { |item_ida, item_idb| gdi[item_ida].name <=> gdi[item_idb].name }
+      if reverse
+        reset_order(socket).sort! { |item_ida, item_idb| gdi[item_idb].name <=> gdi[item_ida].name }
+        @alpha_sorted = false
+      else
+        reset_order(socket).sort! { |item_ida, item_idb| gdi[item_ida].name <=> gdi[item_idb].name }
+        @alpha_sorted = true
+      end
     end
 
     # Define a shortcut
