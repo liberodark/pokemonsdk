@@ -11,13 +11,13 @@ module Battle
       @logic.sort_actions
       @message_window.width = @visual.viewport.rect.width if @visual.viewport
       @message_window.wait_input = true
-      # Tell to call udpdate_battle_phase on the next frame
-      @next_update = :udpdate_battle_phase
+      # Tell to call update_battle_phase on the next frame
+      @next_update = :update_battle_phase
     end
 
     # Method that makes the battle logic perform an action
     # @note Should call the after_action_dialog event
-    def udpdate_battle_phase
+    def update_battle_phase
       return if @logic.perform_next_action
 
       # If the battle logic couldn't perform the next action (ie there's nothing to do)

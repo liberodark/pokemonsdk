@@ -51,7 +51,7 @@ module Battle
       log_data("Pokemon switched with #{who} : #{with}")
       return unless with
 
-      during_end_of_turn = @actions.empty?
+      during_end_of_turn = @actions.empty? && !@scene.force_ia_switch?
       request_switch_to_trainer(with) if who.bank != 0 && who.dead? && during_end_of_turn
       Actions::Switch.new(@scene, who, with).execute
     end

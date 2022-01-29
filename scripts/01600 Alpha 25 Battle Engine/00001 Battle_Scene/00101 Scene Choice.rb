@@ -1,9 +1,23 @@
 module Battle
   class Scene
+    # Tell if the ia should force a switch in case of no foe alive
+    # @return [Boolean]
+    def force_ia_switch?
+      @logic.bank_count.times do |bank|
+        next if @logic.alive_battlers(bank).any?(&:from_party?)
+
+        alive_foes = (@logic.alive_battlers_without_check(bank).select { |p| p if p.position == -1 }).compact
+        return true if @logic.battler_count(bank).zero? && alive_foes.any?
+      end
+      return false
+    end
+
     private
 
     # Method that ask for the player choice (it calls @visual.show_player_choice)
     def player_action_choice
+      # If no enemy is alive force IA to switch
+      return @next_update = :update_battle_phase if force_ia_switch?
       # If the battle does not allow player choice we skip
       return @next_update = :trigger_all_AI if no_player_action?
       # If the method was called and the player cannot make another choice it's a bug so we end the battle
