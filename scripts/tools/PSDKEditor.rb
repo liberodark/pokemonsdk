@@ -139,6 +139,7 @@ module PSDKEditor
       # @type [Integer]
       id = pokemon_array.first.id
       db_symbol = pokemon_array.first.db_symbol
+      move_mega_evolution(pokemon_array.compact)
       specie_data = map_pokemon_array_to_forms(pokemon_array.compact)
       next if check_db_symbol(pokemon_array.first)
 
@@ -159,7 +160,8 @@ module PSDKEditor
         evDfe: pokemon.ev_dfe, evSpd: pokemon.ev_spd, evAts: pokemon.ev_ats, evDfs: pokemon.ev_dfs, evolutions: build_evolutions(pokemon),
         experienceType: pokemon.exp_type, baseExperience: pokemon.base_exp, baseLoyalty: pokemon.base_loyalty, catchRate: pokemon.rareness,
         femaleRate: pokemon.female_rate, breedGroups: pokemon.breed_groupes, hatchSteps: pokemon.hatch_step,
-        babyDbSymbol: !pokemon.baby || pokemon.baby == 0 ? '__undef__' : GameData::Pokemon[pokemon.baby].db_symbol, babyForm: pokemon.form,
+        babyDbSymbol: !pokemon.baby || pokemon.baby == 0 ? '__undef__' : GameData::Pokemon[pokemon.baby].db_symbol, 
+        babyForm: pokemon.form && pokemon.form < 30 ? pokemon.form : 0,
         itemHeld: pokemon.items.each_slice(2).map { |(id, chance)| { dbSymbol: GameData::Item[id].db_symbol, chance: chance.to_i } },
         abilities: pokemon.abilities.map { |id| GameData::Abilities.db_symbol(id) }, frontOffsetY: pokemon.front_offset_y.to_i,
         moveSet: build_moveset(pokemon)
@@ -199,7 +201,7 @@ module PSDKEditor
     pokemon.special_evolution.each do |evolution|
       data = {}
       data[:dbSymbol] = GameData::Pokemon[evolution[:id]].db_symbol if evolution[:id]
-      data[:form] = pokemon.form
+      data[:form] = evolution[:form] || pokemon.form
       data[:minLevel] = evolution[:min_level] if evolution[:min_level]
       data[:maxLevel] = evolution[:max_level] if evolution[:max_level]
       data[:tradeWith] = GameData::Pokemon[evolution[:trade_with]].db_symbol if evolution[:trade_with]
@@ -218,9 +220,30 @@ module PSDKEditor
       data[:dayNight] = evolution[:day_night] if evolution[:day_night]
       data[:func] = evolution[:func] if evolution[:func]
       data[:maps] = evolution[:maps] if evolution[:maps]
+      data[:gemme] = GameData::Item[evolution[:gemme]].db_symbol if evolution[:gemme]
       evolutions << data
     end
     return evolutions
+  end
+
+  # Move mega evolution (the evolution of the mega evolved form is moved in the form 0)
+  # @param pokemon_array [Array<GameData::Pokemon>]
+  def move_mega_evolution(pokemon_array)
+    pokemon_array.each do |pokemon|
+      next if !pokemon.form || pokemon.form < 30
+      next unless pokemon.special_evolution
+
+      pokemon_array.first.special_evolution = [] unless pokemon_array.first.special_evolution
+      pokemon.special_evolution.each do |evolution|
+        next unless evolution[:gemme]
+
+        data = {}
+        data[:form] = pokemon.form
+        data[:gemme] = evolution[:gemme]
+        pokemon_array.first.special_evolution.push << data
+      end
+      pokemon.special_evolution = []
+    end
   end
 
   GROUP_TOOLS = { 8 => 'OldRod', 9 => 'GoodRod', 10 => 'SuperRod', 11 => 'RockSmash', 12 => 'HeadButt' }
@@ -380,8 +403,9 @@ module PSDKEditor
 
   def convert_abilities
     GameData::Abilities.db_symbols.each do |ability_db_symbol|
+      id = GameData::Abilities.find_using_symbol(ability_db_symbol)
       ability_data = {
-        klass: 'Ability', dbSymbol: ability_db_symbol, id: GameData::Abilities.find_using_symbol(ability_db_symbol)
+        klass: 'Ability', dbSymbol: ability_db_symbol, id: id, textId: GameData::Abilities.psdk_id_to_gf_id[id]
       }
       next if %i[none __undef__ egg].include?(ability_db_symbol)
 
