@@ -95,7 +95,9 @@ module Battle
       # @param messages [Proc] messages shown right before the post processing
       def drain(hp_factor, target, launcher, skill = nil, hp_overwrite: nil, drain_factor: 1, &messages)
         hp = hp_overwrite || (target.max_hp / hp_factor).clamp(1, Float::INFINITY)
-        damage_change(hp, target, launcher, skill, &messages)
+        skill&.damage_dealt += hp
+        @scene.visual.show_hp_animations([target], [-hp], [skill&.effectiveness], &messages)
+        target.last_hit_by_move = skill if skill
         # TODO: Add hooks for all those stuff
         if target.has_ability?(:liquid_ooze)
           @scene.visual.show_ability(target)
@@ -103,12 +105,21 @@ module Battle
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 457, launcher))
         elsif launcher.effects.has?(:heal_block)
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 890, launcher))
-        elsif launcher.hp < launcher.max_hp
+        elsif launcher.alive? && launcher.hp < launcher.max_hp
           hp = hp * 130 / 100 if launcher.hold_item?(:big_root)
           hp = hp * 3 / 2 if skill&.pulse? && launcher.has_ability?(:mega_launcher)
           @scene.visual.show_hp_animations([launcher], [(hp / drain_factor).clamp(1, Float::INFINITY)])
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 905, target))
         end
+        exec_hooks(DamageHandler, :post_damage, binding) if target.hp > 0
+        exec_hooks(DamageHandler, :post_damage_death, binding) if target.hp <= 0
+        target.add_damage_to_history(hp, launcher, skill, target.hp <= 0)
+        log_data("# drain damage_change(#{hp}, #{target}, #{launcher}, #{skill}, #{target.hp <= 0})")
+      rescue Hooks::ForceReturn => e
+        log_data("# FR: drain damage_change #{e.data} from #{e.hook_name} (#{e.reason})")
+        return e.data
+      ensure
+        @scene.visual.refresh_info_bar(target)
       end
 
       # Function that test if the drain damages can be dealt and perform the drain if so
