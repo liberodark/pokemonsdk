@@ -18,12 +18,16 @@ module ScriptLoader
     # Load PSDK Scripts
     if File.exist?(index_filename)
       load_script_from_index
+    elsif PARGV.game_launched_by_studio?
+      STDERR.puts({ type: :load_error, message: 'Script Index is missing' }.to_json)
+      Process.exit!(1)
     else
       File.open(SCRIPT_INDEX_PATH, 'w') do |file|
         load_vscode_scripts(VSCODE_SCRIPT_PATH, file)
       end
     end
     return if PARGV[:util].any?
+    return if PARGV.game_launched_by_studio?
 
     load_rmxp_scripts
     load_plugins
@@ -51,7 +55,10 @@ module ScriptLoader
       require(filename)
       file&.puts(filename.sub(File.expand_path('.') + '/', ''))
     rescue Exception
-      if Object.const_defined?(:Yuki) && Yuki.const_defined?(:EXC)
+      if PARGV.game_launched_by_studio?
+        STDERR.puts({ type: :load_error, message: "Script: #{filename} is corrupted", klass: $!.class.to_s, error_message: $!.message }.to_json)
+        Process.exit!(1)
+      elsif Object.const_defined?(:Yuki) && Yuki.const_defined?(:EXC)
         Yuki::EXC.run($!)
         puts $!.message
         puts $!.backtrace.join("\n")
@@ -69,6 +76,11 @@ module ScriptLoader
     path = ENV['ALTERNATIVE_PATH'] || '.'
     lines.each do |filename|
       require(File.join(path, filename.chomp))
+    end
+  rescue Exception
+    if PARGV.game_launched_by_studio?
+      STDERR.puts({ type: :load_error, message: 'A script could not load', klass: $!.class.to_s, error_message: $!.message }.to_json)
+      Process.exit!(1)
     end
   end
 
@@ -107,7 +119,7 @@ module ScriptLoader
     else
       @index_filename = SCRIPT_INDEX_PATH
     end
-    puts "Script Index : #{@index_filename}"
+    puts "Script Index : #{@index_filename}" unless PARGV.game_launched_by_studio?
     return @index_filename
   end
 

@@ -5,6 +5,7 @@ module Graphics
     def io_initialize
       STDOUT.sync = true unless STDOUT.tty?
       return if PSDK_CONFIG.release?
+      return if PARGV.game_launched_by_studio?
 
       @cmd_thread = create_command_thread
     rescue StandardError

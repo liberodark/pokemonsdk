@@ -11,6 +11,7 @@
 module PARGV
   @args = {}
   @unamed = []
+  LAUNCHED_BY_STUDIO = 'studio'
   GAME_OPTS = '.gameopts'
 
   module_function
@@ -55,6 +56,12 @@ module PARGV
   # Retreive all the unamed arguments
   def unamed
     @unamed.clone
+  end
+
+  # Tell if the game was launched from Pokemon studio
+  # @return [Boolean]
+  def game_launched_by_studio?
+    @unamed.include?(LAUNCHED_BY_STUDIO)
   end
 
   # Retreive a default value
