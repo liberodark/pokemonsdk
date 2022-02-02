@@ -161,7 +161,7 @@ module PFM
         # @type [GameData::Quest]
         quest_data = GameData::Quest[quest.quest_id]
         quest_data.objectives.each do |objective|
-          next unless objective.test_method_name != :objective_catch_pokemon
+          next unless objective.test_method_name == :objective_catch_pokemon
 
           pokemon_id = objective.test_method_args.first
           next unless quest.objective_catch_pokemon_test(pokemon_id, pokemon)

@@ -100,8 +100,8 @@ module PFM
         return pokemon.id == pkm unless pkm.is_a?(Hash)
         return false if pkm[:nature] && pokemon.nature_id != pkm[:nature]
         return false if pkm[:type] && pokemon.type1 != pkm[:type] && pokemon.type2 != pkm[:type]
-        return false if pkm[:min_level] && pokemon.level < pkm[:min_level]
-        return false if pkm[:max_level] && pokemon.level > pkm[:max_level]
+        return false if pkm[:min_level] && pokemon.level <= pkm[:min_level]
+        return false if pkm[:max_level] && pokemon.level >= pkm[:max_level]
         return false if pkm[:level] && pokemon.level != pkm[:level]
 
         return true
