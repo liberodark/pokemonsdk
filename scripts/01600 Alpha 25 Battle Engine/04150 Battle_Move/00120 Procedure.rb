@@ -220,6 +220,8 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def play_animation(user, targets)
+      return unless $options.show_animation
+
       @scene.visual.set_info_state(:move_animation)
       @scene.visual.wait_for_animation
       play_animation_internal(user, targets)
