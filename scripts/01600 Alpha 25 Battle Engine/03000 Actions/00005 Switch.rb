@@ -40,7 +40,7 @@ module Battle
         if @who.alive?
           sprite.go_out
           visual.hide_info_bar(@who)
-          switch_out_message
+          switch_out_message unless forced_switch?(who)
           wait_for(sprite, visual)
         end
         # Logically switching the Pokemon
@@ -50,7 +50,7 @@ module Battle
         sprite.visible = false # Ensure there's no glitch with animation (the animation sets visible :))
         sprite.go_in
         visual.show_info_bar(@with)
-        switch_in_message
+        switch_in_message unless forced_switch?(who)
         wait_for(sprite, visual)
         @scene.logic.switch_handler.execute_switch_events(@who, @with)
         @who.reset_states
@@ -92,6 +92,19 @@ module Battle
         }
         message = parse_text(18, msg_id, hash)
         @scene.display_message_and_wait(message)
+      end
+
+      # Tell if the Pokemon was forced to switch
+      # @param who [PFM::PokemonBattler] the switched out Pokemon
+      # @return [Boolean]
+      def forced_switch?(who)
+        @scene.logic.all_alive_battlers.each do |pokemon|
+          pmh = pokemon.move_history
+          next if pmh.empty?
+
+          return true if pmh.last.move.force_switch? && pmh.last.targets.include?(who) && pmh.last.current_turn?
+        end
+        return false
       end
     end
   end
