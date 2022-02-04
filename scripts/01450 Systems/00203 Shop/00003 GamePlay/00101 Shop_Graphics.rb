@@ -13,6 +13,7 @@ module GamePlay
         create_arrow
         create_item_desc_window
         create_scrollbar
+        Graphics.sort_z
       end
     end
 
