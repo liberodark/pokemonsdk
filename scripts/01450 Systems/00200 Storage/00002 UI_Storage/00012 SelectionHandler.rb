@@ -258,6 +258,8 @@ module UI
       # Reset the form of the Pokemon
       # @param pokemon [PFM::Pokemon] the pokemon stored
       def reset_form(pokemon)
+        return unless pokemon
+
         list = %i[shaymin]
         pokemon.form_calibrate(:none) if list.include?(pokemon.db_symbol)
       end
