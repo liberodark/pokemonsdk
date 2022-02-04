@@ -19,6 +19,9 @@ module PFM
     # If the battle show move animations
     # @return [Boolean]
     attr_accessor :show_animation
+    # If the battle ask to rename Pokémon at capture
+    # @return [Boolean]
+    attr_accessor :catch_rename
     # The lang id of the GameData::Text loads
     # @return [String]
     attr_reader :language
@@ -41,6 +44,7 @@ module PFM
       @message_speed = 3
       @battle_mode = true
       @show_animation = true
+      @catch_rename = true
       @language = starting_language
       @screen_scale = Graphics.window.settings[3]
       @game_state = game_state

@@ -171,7 +171,7 @@ module Battle
       $wild_battle.remove_roaming_pokemon(pkmn)
       display_message_and_wait(parse_text(18, 67, PKNAME[0] => pkmn.name))
       update_pokedex_related_infos(pkmn)
-      rename_sequence(pkmn)
+      rename_sequence(pkmn) if $options.catch_rename
       battler.loyalty = 200 if ball&.db_symbol == :friend_ball
       $game_system.map_interpreter.add_pokemon(pkmn)
       # Stocked
