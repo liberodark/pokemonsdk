@@ -262,6 +262,10 @@ module Battle
       $game_player.leave_cycling_state if players_pokemon.all?(&:dead?) && !$game_temp.battle_can_lose
     end
 
+    BattleEndHandler.register('Reset Z position of the player') do |_, players_pokemon|
+      $game_player.z = 0 if players_pokemon.all?(&:dead?) && !$game_temp.battle_can_lose
+    end
+
     BattleEndHandler.register('PSDK send player back to Pokemon Center') do |handler, players_pokemon|
       next unless players_pokemon.all?(&:dead?)
 
