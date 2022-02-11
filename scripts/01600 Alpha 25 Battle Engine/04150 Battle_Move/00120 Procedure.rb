@@ -183,7 +183,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Boolean]
     def target_immune?(user, target)
-      return false if status? && target == user
+      return false if status?
       return true if user != target && ability_immunity?(user, target)
 
       types = definitive_types(user, target)
