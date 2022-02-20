@@ -28,8 +28,8 @@ module Battle
       # @return [Boolean] if the target evade the move (and is not selected)
       def move_blocked_by_target?(user, target)
         return true if super
-        return failure_message unless (move = target.move_history.last)
-        return failure_message if move.turn != $game_temp.battle_turn
+        return failure_message unless target.move_history.last
+        return failure_message if target.effects.has?(:disable)
 
         return false
       end
