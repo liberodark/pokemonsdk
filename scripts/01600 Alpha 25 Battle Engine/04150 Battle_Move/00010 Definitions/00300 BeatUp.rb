@@ -13,7 +13,7 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-        return show_usage_failure(user) && false if (@bu_battlers = battlers_that_hit(user, targets)).empty?
+        return show_usage_failure(user) && false if (@bu_battlers = battlers_that_hit(user)).empty?
 
         return true
       end
@@ -73,10 +73,9 @@ module Battle
 
       # Function that retrieve the battlers that hit the targets
       # @param user [PFM::PokemonBattler] user of the move
-      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       # @return [Array[PFM::Battler]]
-      def battlers_that_hit(user, actual_targets)
-        logic.allies_of(user).select { |battler| battler.alive? && !battler.status? } << user
+      def battlers_that_hit(user)
+        logic.alive_battlers_without_check(user.bank)
       end
 
       # Display the right message in case of critical hit
