@@ -94,6 +94,8 @@ module Yuki
     BT_NO_MOVE_WHEN_DEFAULT = 44
     # If the trainer first Pokemon is sent without ball animation
     BT_NO_BALL_ANIMATION = 45
+    # Authorize defeat in the battle in nuzlocke mode
+    BT_AUTHORIZE_DEFEAT_NUZLOCKE = 46
 
     # If the Water Reflection is disabled
     WATER_REFLECTION_DISABLED = 51

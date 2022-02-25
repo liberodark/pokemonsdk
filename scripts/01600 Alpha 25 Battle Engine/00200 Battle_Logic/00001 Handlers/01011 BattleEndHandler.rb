@@ -8,6 +8,7 @@ module Battle
       def process
         @scene.message_window.blocking = true
         players_pokemon = @logic.all_battlers.select(&:from_party?)
+        $game_temp.battle_can_lose = false if PFM.game_state.nuzlocke.enabled? && !$game_switches[Yuki::Sw::BT_AUTHORIZE_DEFEAT_NUZLOCKE]
         exec_hooks(BattleEndHandler, :battle_end, binding)
         exec_hooks(BattleEndHandler, :battle_end_no_defeat, binding) if @logic.battle_result != 2
         @logic.all_battlers(&:copy_properties_back_to_original)
@@ -283,19 +284,21 @@ module Battle
     end
 
     BattleEndHandler.register('PSDK Update Pokedex') do |handler|
-      handler.logic.all_battlers { |battler| 
+      handler.logic.all_battlers do |battler|
         next if battler.from_party? || battler.last_sent_turn == -1
+
         $pokedex.mark_seen(battler.id, battler.form, forced: true)
         $pokedex.pokemon_fought_inc(battler.id) unless battler.alive?
-      }
+      end
     end
 
     BattleEndHandler.register('PSDK Update Quest') do |handler|
-      handler.logic.all_battlers { |battler|
+      handler.logic.all_battlers do |battler|
         next if battler.from_party?
+
         $quests.see_pokemon(battler.id) unless battler.last_sent_turn == -1
         $quests.beat_pokemon(battler.id) unless battler.alive?
-      }
+      end
     end
 
     BattleEndHandler.register('PSDK give back the items for Bestow Effects') do |handler|
