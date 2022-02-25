@@ -14,6 +14,7 @@ module ProjectCompilation
     # @param script [String] script contents
     # @return [String] compiled script
     def compile(filename, script)
+      filename = filename.sub(File.expand_path('.'), nil.to_s)
       case File.dirname(filename).split('/').first.downcase
       when '.'
         tag = 'RMXP'
