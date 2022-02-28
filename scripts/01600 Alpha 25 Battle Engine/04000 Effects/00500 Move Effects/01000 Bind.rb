@@ -64,6 +64,12 @@ module Battle
         kill if who == @origin
       end
 
+      # Tell if the effect is dead
+      # @return [Boolean]
+      def dead?
+        super || !@origin.position
+      end
+
       # Function that tells if the move is affected by Rapid Spin
       # @return [Boolean]
       def rapid_spin_affected?
