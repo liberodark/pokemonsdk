@@ -8,7 +8,7 @@ module Battle
       # @return [Integer]
       def damages(user, target)
         hp_total = super
-        hp_total = target.hp - 1 if hp_total >= target.hp
+        hp_total = target.hp - 1 if hp_total >= target.hp && !target.effects.has?(:substitute)
         return hp_total
       end
     end
