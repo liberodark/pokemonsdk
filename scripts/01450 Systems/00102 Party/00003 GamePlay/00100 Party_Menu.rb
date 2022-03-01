@@ -96,6 +96,7 @@ module GamePlay
       create_frames #  Must be after team buttons to ensure the black frame to work
       create_selector
       init_win_text
+      Graphics.sort_z
     end
 
     # Create the base UI
