@@ -93,7 +93,7 @@ module PSDKEditor
   def convert_zones
     GameData::Zone.all.each do |zone|
       zone_data = {
-        id: zone.id, dbSymbol: zone.db_symbol, klass: 'Zone', maps: [zone.map_id].compact.flatten, worldmaps: [zone.worldmap_id].flatten,
+        id: zone.id, dbSymbol: "zone_#{zone.id}", klass: 'Zone', maps: [zone.map_id].compact.flatten, worldmaps: [zone.worldmap_id].flatten,
         pannelId: zone.panel_id, warpX: zone.warp_x, warpY: zone.warp_y, positionX: zone.pos_x, positionY: zone.pos_y, isFlyAllowed: zone.fly_allowed,
         isWarpDisallowed: zone.warp_disallowed, forcedWeather: zone.forced_weather, subZones: [], wildGroups: create_wild_groups(zone)
       }
@@ -123,7 +123,7 @@ module PSDKEditor
   def convert_trainers
     GameData::Trainer.all.each do |trainer|
       trainer_data = {
-        klass: 'TrainerBattleSetup', id: trainer.id, dbSymbol: trainer.db_symbol,
+        klass: 'TrainerBattleSetup', id: trainer.id, dbSymbol: "trainer_#{trainer.id}",
         vsType: trainer.vs_type, isCouple: false, baseMoney: trainer.base_money,
         battlers: [trainer.battler], bags: [], battleId: 0, ai: 0,
         party: [convert_trainer_party(trainer.team)]
@@ -334,7 +334,7 @@ module PSDKEditor
   def convert_quests
     GameData::Quest.all.each do |quest|
       quest_data = {
-        klass: 'Quest', id: quest.id, isPrimary: quest.primary,
+        klass: 'Quest', id: quest.id, dbSymbol: "quest_#{quest.id}", isPrimary: quest.primary,
         objectives: build_objectives(quest.objectives),
         earnings: build_earnings(quest.earnings)
       }
