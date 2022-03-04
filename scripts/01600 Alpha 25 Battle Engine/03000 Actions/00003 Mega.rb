@@ -32,6 +32,7 @@ module Battle
         @scene.display_message_and_wait(message)
         @user.mega_evolve
         @scene.visual.show_switch_form_animation(@user)
+        @user.ability_effect.on_switch_event(@scene.logic.switch_handler, @user, @user)
         # TODO!
       end
 
