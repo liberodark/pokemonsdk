@@ -3,6 +3,8 @@ module Battle
     # Tell if the ia should force a switch in case of no foe alive
     # @return [Boolean]
     def force_ia_switch?
+      return if logic.actions.empty?
+
       @logic.bank_count.times do |bank|
         next if @logic.alive_battlers(bank).any?(&:from_party?)
 
