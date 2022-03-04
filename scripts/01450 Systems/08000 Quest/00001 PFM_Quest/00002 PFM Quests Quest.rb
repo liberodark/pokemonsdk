@@ -98,6 +98,7 @@ module PFM
       # @return [Boolean] if the Pokemon pokemon check the criterions
       def objective_catch_pokemon_test(pkm, pokemon)
         return pokemon.id == pkm unless pkm.is_a?(Hash)
+        return false if pkm[:id] && !(pokemon.id == pkm[:id] || pokemon.db_symbol == pkm[:id])
         return false if pkm[:nature] && pokemon.nature_id != pkm[:nature]
         return false if pkm[:type] && pokemon.type1 != pkm[:type] && pokemon.type2 != pkm[:type]
         return false if pkm[:min_level] && pokemon.level <= pkm[:min_level]
@@ -199,7 +200,7 @@ module PFM
       def text_catch_pokemon_name(data)
         return GameData::Pokemon[data].name if data.is_a?(Integer)
 
-        str = 'Pokémon'
+        str = data[:id] ? GameData::Pokemon[data[:id]].name.dup : 'Pokémon'
         str << format(ext_text(9000, 63), GameData::Type.get(data[:type]).name) if data[:type]
         str << format(ext_text(9000, 64), text_get(8, data[:nature])) if data[:nature]
         if (id = data[:min_level])
