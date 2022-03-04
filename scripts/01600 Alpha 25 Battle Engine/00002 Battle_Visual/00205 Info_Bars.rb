@@ -22,7 +22,7 @@ module Battle
       enum.each do |info_bars|
         info_bars.each do |bar|
           bar.pokemon = bar.pokemon
-          next unless bar.pokemon&.alive?
+          next bar.visible = false unless bar.pokemon&.alive?
 
           bar.go_in unless bar.in?
         end
