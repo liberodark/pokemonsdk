@@ -40,6 +40,7 @@ module GamePlay
       choices
         .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
         .register_choice(text_get(23, 8), on_validate: method(:action_move_current_pokemon), disable_detect: proc { @party.size <= 1 }) # Move
+      choices.register_choice(ext_text(9009, 0), on_validate: method(:launch_reminder)) if $game_switches[Yuki::Sw::BT_Party_Menu_Reminder]
       unless pokemon.egg?
         if Yuki::FollowMe.in_lets_go_mode?
           if $storage.lets_go_follower == pokemon
@@ -124,6 +125,14 @@ module GamePlay
     def launch_summary(mode = :view, extend_data = nil)
       @base_ui.hide_win_text
       call_scene(Summary, @party[@index], mode, @party, extend_data)
+      Graphics.wait(4) { update_during_process }
+    end
+
+    # Action of launching the Pokemon Reminder
+    # @param mode [Integer] mode used to launch the reminder
+    def launch_reminder(mode = 0)
+      @base_ui.hide_win_text
+      GamePlay.open_move_reminder(@party[@index], mode) { |scene| result = scene.reminded_move? }
       Graphics.wait(4) { update_during_process }
     end
 

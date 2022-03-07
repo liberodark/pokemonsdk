@@ -96,7 +96,8 @@ module Yuki
     BT_NO_BALL_ANIMATION = 45
     # Authorize defeat in the battle in nuzlocke mode
     BT_AUTHORIZE_DEFEAT_NUZLOCKE = 46
-
+    # Add the Reminder in the Party Menu
+    BT_Party_Menu_Reminder = 47
     # If the Water Reflection is disabled
     WATER_REFLECTION_DISABLED = 51
     # If the player is running
