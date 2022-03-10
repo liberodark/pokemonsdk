@@ -260,7 +260,7 @@ module PFM
       # Normal skill learn
       check_skill_and_learn
       # Evolution skill learn
-      check_skill_and_learn(false, 1)
+      check_skill_and_learn(false, 0)
       # Pokedex register (self is used to be sure we get the right information)
       $pokedex.mark_seen(self.id, self.form, forced: true)
       $pokedex.mark_captured(self.id)
