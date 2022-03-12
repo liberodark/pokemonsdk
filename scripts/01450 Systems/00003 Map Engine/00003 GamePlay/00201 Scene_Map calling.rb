@@ -41,7 +41,6 @@ class Scene_Map
     $game_temp.menu_beep = false
     $game_player.make_encounter_count
     $game_temp.map_bgm = $game_system.playing_bgm.clone if $game_system.playing_bgm
-    $game_system.bgm_stop if $game_variables[::Yuki::Var::BT_Mode] != 1
     $game_system.se_play($data_system.battle_start_se)
     $game_player.straighten
     $scene = klass.new(battle_info)
