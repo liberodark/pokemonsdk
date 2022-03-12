@@ -81,6 +81,9 @@ module ScriptLoader
     if PARGV.game_launched_by_studio?
       STDERR.puts({ type: :load_error, message: 'A script could not load', klass: $!.class.to_s, error_message: $!.message }.to_json)
       Process.exit!(1)
+    else
+      STDERR.puts $!.message
+      STDERR.puts $!.backtrace.join("\n")
     end
   end
 
