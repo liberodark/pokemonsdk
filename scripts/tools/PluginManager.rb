@@ -530,7 +530,7 @@ class PluginManager
     # Load the plugin configuration
     # @return [Config]
     def load_plugin_configuration
-      YAML.load(File.read(File.join(SCRIPTS_FOLDER, @name, 'config.yml')))
+      YAML.unsafe_load(File.read(File.join(SCRIPTS_FOLDER, @name, 'config.yml')))
     end
   end
 end

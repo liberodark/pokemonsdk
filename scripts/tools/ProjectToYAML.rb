@@ -32,7 +32,7 @@ module ProjectToYAML
             Dir['Data/PSDK/*.rxdata.yml']
     files.each do |filename|
       print "\r#{filename}".ljust(60)
-      save_data(YAML.load(File.read(filename)), filename.sub(/\.yml$/, ''))
+      save_data(YAML.unsafe_load(File.read(filename)), filename.sub(/\.yml$/, ''))
     end
     puts "\rSuccess!".ljust(61)
     nil

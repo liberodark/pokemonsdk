@@ -110,7 +110,7 @@ class StateMachineBuilder
   private
 
   def load
-    data = YAML.load(File.read(@filename))
+    data = YAML.unsafe_load(File.read(@filename))
     # @type [String]
     @class_name = data['class_name']
     # @type [String, nil]

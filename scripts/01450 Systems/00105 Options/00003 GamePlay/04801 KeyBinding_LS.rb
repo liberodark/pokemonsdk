@@ -16,7 +16,7 @@ module GamePlay
 
       # Perform the internal operation of loading the inputs
       def load_inputs_internal
-        data = YAML.load(File.read(input_filename), fallback: false)
+        data = YAML.unsafe_load(File.read(input_filename), fallback: false)
         raise 'Bad Input data' unless data.is_a?(Hash)
         UI::KeyBindingViewer::KEYS.each do |infos|
           key = infos[0]
