@@ -1,4 +1,4 @@
-#encoding: utf-8
+# encoding: utf-8
 
 module PFM
   class Pokemon
@@ -40,6 +40,7 @@ module PFM
         30.step(data.size - 1) do |i|
           d = data[i]
           next unless d.special_evolution
+
           d.special_evolution.each do |j|
             next if j[:form] && j[:form] != @form
             return i if item_id == j[:gemme]
@@ -54,6 +55,7 @@ module PFM
     def mega_evolve
       mega_evolution = can_mega_evolve?
       return unless mega_evolution
+
       @mega_evolved = @form
       @form = mega_evolution
       self.ability = data.abilities[rand(3)] # Pokemon will always be a PFM::PokemonBattler
@@ -104,9 +106,11 @@ module PFM
     def form_generation(form, old_value = nil)
       form = old_value if old_value
       return form if form != -1
+
       @character = nil
       block = FORM_GENERATION[db_symbol]
       return instance_exec(&block).to_i if block
+
       return 0
     end
 
@@ -188,6 +192,7 @@ module PFM
       elsif env.hail?
         next @form = 6
       end
+
       next @form = 0
     end
     FORM_GENERATION[:burmy] = FORM_GENERATION[:wormadam] = proc do
@@ -197,6 +202,7 @@ module PFM
       elsif env.grass? || env.tall_grass? || env.very_tall_grass?
         next @form = 0
       end
+
       next @form = 1
     end
     FORM_GENERATION[:cherrim] = proc { @form = $env.sunny? ? 1 : 0 }
@@ -225,5 +231,8 @@ module PFM
     FORM_CALIBRATE[:calyrex] = proc { |reason| @form = calyrex_form(reason) }
     FORM_CALIBRATE[:groudon] = proc { @form = item_db_symbol == :red_orb ? 1 : 0 }
     FORM_CALIBRATE[:kyogre] = proc { @form = item_db_symbol == :blue_orb ? 1 : 0 }
+    FORM_CALIBRATE[:wishiwashi] = proc { |reason| @form = hp_rate >= 0.25 && level >= 20 && reason == :battle ? 1 : 0 }
+    FORM_CALIBRATE[:minior] = proc { |reason| @form = hp_rate <= 0.5 && reason == :battle ? @form | 1 : 0 }
+    FORM_CALIBRATE[:zygarde] = proc { |reason| @form = hp_rate <= 0.5 && reason == :battle ? @form | 1 : 3 }
   end
 end
