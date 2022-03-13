@@ -20,6 +20,7 @@ module Battle
       def on_move_prevention_target(user, target, move)
         return false if target != @pokemon
         return false unless move.blocked_by?(target, @move.db_symbol)
+        return false if user.has_ability?(:unseen_fist) && move.direct?
 
         play_protect_effect(user, target, move)
         return true

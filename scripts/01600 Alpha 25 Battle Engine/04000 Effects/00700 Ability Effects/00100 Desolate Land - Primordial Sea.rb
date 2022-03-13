@@ -10,7 +10,7 @@ module Battle
           if with == @target
             weather_handler = handler.logic.weather_change_handler
             return unless weather_handler.weather_appliable?(env)
-   
+
             handler.scene.visual.show_ability(with)
             weather_handler.weather_change(env, nil)
             handler.scene.visual.show_rmxp_animation(with, anim)
@@ -29,12 +29,8 @@ module Battle
         # @return [:prevent, Integer, nil] :prevent if the damage cannot be applied, Integer if the hp variable should be updated
         def on_damage_prevention(handler, hp, target, launcher, skill)
           return if target != @target
-          if skill&.db_symbol(:rain_dance) || skill&.db_symbol(:sunny_day) 
-            return handler.prevent_change do
-              handler.scene.visual.show_ability(target)
-              handler.scene.display_message_and_wait(parse_text_with_pokemon(18, temps, who))
-            end
-          elsif skill&.db_symbol(:hail) || skill&.db_symbol(:sandstorm)
+
+          if %i[rain_dance sunny_day hail sandstorm].include?(skill&.db_symbol)
             return handler.prevent_change do
               handler.scene.visual.show_ability(target)
               handler.scene.display_message_and_wait(parse_text_with_pokemon(18, temps, who))
@@ -55,7 +51,7 @@ module Battle
         # @param last_weather [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog, :hardsun, :hardrain
         # @return [:prevent, nil] :prevent if the status cannot be applied
         def on_weather_prevention(handler, weather_type, last_weather)
-          return if weather_type == :hardsun || weather_type == :hardrain 
+          return if weather_type == :hardsun || weather_type == :hardrain
 
           return handler.prevent_change do
             handler.scene.visual.show_ability(@target)
@@ -65,7 +61,7 @@ module Battle
         private
 
         def env
-          return :hardsun 
+          return :hardsun
         end
 
         def env!
@@ -77,13 +73,13 @@ module Battle
         end
 
         def env?
-          return $env.hardsun? 
+          return $env.hardsun?
         end
 
         def anim
           return 492
         end
-        
+
         def msg
           return 272
         end
@@ -95,7 +91,6 @@ module Battle
         def temps
           return 278
         end
-
       end
       register(:desolate_land, DesolateLand)
 
@@ -129,14 +124,12 @@ module Battle
         def prevent
           return 275
         end
-        
+
         def temps
           return 277
         end
-
       end
       register(:primordial_sea, PrimordialSea)
     end
   end
 end
-  
