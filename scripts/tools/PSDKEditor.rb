@@ -365,14 +365,12 @@ module PSDKEditor
       item_id = objective.test_method_args[0]
       return [GameData::Item[item_id].db_symbol, objective.test_method_args[1]]
     end
-    if method_name == :objective_see_pokemon
-      pokemon_id = objective.test_method_args[0]
-      return [GameData::Pokemon[pokemon_id].db_symbol]
-    end
+    return [build_pokemon_hash_quest(objective.test_method_args[0])] if method_name == :objective_see_pokemon
+
     if %i[objective_beat_pokemon objective_catch_pokemon].include?(method_name)
-      pokemon_id = objective.test_method_args[0]
-      return [GameData::Pokemon[pokemon_id].db_symbol, objective.test_method_args[1]]
+      return [build_pokemon_hash_quest(objective.test_method_args[0]), objective.test_method_args[1]]
     end
+
     return objective.test_method_args
   end
 
@@ -401,6 +399,18 @@ module PSDKEditor
     return earning.give_args
   end
 
+  # Function build Pokemon hash for the quest
+  # @param pokemon [Hash, Integer] the hash or the id of the Pokemon
+  # @return [Hash, Symbol]
+  def build_pokemon_hash_quest(pokemon)
+    return GameData::Pokemon[pokemon].db_symbol if pokemon.is_a?(Integer)
+
+    pokemon[:dbSymbol] = GameData::Pokemon[pokemon[:id]].db_symbol
+    pokemon.delete(:id)
+    return pokemon
+  end
+
+  # Function that convert Abilities data to PSDK Editor format
   def convert_abilities
     GameData::Abilities.db_symbols.each do |ability_db_symbol|
       id = GameData::Abilities.find_using_symbol(ability_db_symbol)
@@ -418,6 +428,7 @@ module PSDKEditor
   # @return [Boolean] true if db_symbol is null or equals to :none, :undef, :egg
   def check_db_symbol(data)
     return true unless data.db_symbol
+
     return %i[none __undef__ egg].include?(data.db_symbol)
   end
 end
