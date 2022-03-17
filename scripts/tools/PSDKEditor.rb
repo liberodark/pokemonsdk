@@ -97,7 +97,7 @@ module PSDKEditor
         pannelId: zone.panel_id, warpX: zone.warp_x, warpY: zone.warp_y, positionX: zone.pos_x, positionY: zone.pos_y, isFlyAllowed: zone.fly_allowed,
         isWarpDisallowed: zone.warp_disallowed, forcedWeather: zone.forced_weather, subZones: [], wildGroups: create_wild_groups(zone)
       }
-      File.write(File.join(ROOT, 'zones', "#{zone.id}.json"), zone_data.to_json)
+      File.write(File.join(ROOT, 'zones', "zone_#{zone.id}.json"), zone_data.to_json)
     end
   end
 
@@ -128,7 +128,7 @@ module PSDKEditor
         battlers: [trainer.battler], bags: [], battleId: 0, ai: 0,
         party: [convert_trainer_party(trainer.team)]
       }
-      File.write(File.join(ROOT, 'trainers', "#{trainer.id}.json"), trainer_data.to_json)
+      File.write(File.join(ROOT, 'trainers', "trainer_#{trainer.id}.json"), trainer_data.to_json)
     end
   end
 
@@ -334,11 +334,11 @@ module PSDKEditor
   def convert_quests
     GameData::Quest.all.each do |quest|
       quest_data = {
-        klass: 'Quest', id: quest.id, dbSymbol: "quest_#{quest.id}", isPrimary: quest.primary,
+        klass: 'Quest', id: quest.id, dbSymbol: "quest_#{quest.id}", isPrimary: quest.primary, resolution: 'default',
         objectives: build_objectives(quest.objectives),
         earnings: build_earnings(quest.earnings)
       }
-      File.write(File.join(ROOT, 'quests', "#{quest.id}.json"), quest_data.to_json)
+      File.write(File.join(ROOT, 'quests', "quest_#{quest.id}.json"), quest_data.to_json)
     end
   end
 
