@@ -190,37 +190,40 @@ module PSDKEditor
   def build_evolutions(pokemon)
     evolutions = []
     if pokemon.evolution_id != 0 && pokemon.evolution_level && pokemon.evolution_level != 0
-      data = {}
+      data = { conditions: [] }
       data[:dbSymbol] = GameData::Pokemon[pokemon.evolution_id].db_symbol
       data[:form] = pokemon.form
-      data[:minLevel] = pokemon.evolution_level
+      data[:conditions] << { type: :minLevel, value: pokemon.evolution_level }
       evolutions << data
     end
     return evolutions unless pokemon.special_evolution
 
     pokemon.special_evolution.each do |evolution|
-      data = {}
+      data = { conditions: [] }
       data[:dbSymbol] = GameData::Pokemon[evolution[:id]].db_symbol if evolution[:id]
       data[:form] = evolution[:form] || pokemon.form
-      data[:minLevel] = evolution[:min_level] if evolution[:min_level]
-      data[:maxLevel] = evolution[:max_level] if evolution[:max_level]
-      data[:tradeWith] = GameData::Pokemon[evolution[:trade_with]].db_symbol if evolution[:trade_with]
-      data[:trade] = GameData::Pokemon[evolution[:trade]].db_symbol if evolution[:trade]
-      data[:stone] = GameData::Item[evolution[:stone]].db_symbol if evolution[:stone]
-      data[:itemHold] = GameData::Item[evolution[:item_hold]].db_symbol if evolution[:item_hold]
-      data[:minLoyalty] = evolution[:min_loyalty] if evolution[:min_loyalty]
-      data[:maxLoyalty] = evolution[:max_loyalty] if evolution[:max_loyalty]
-      data[:skill1] = GameData::Skill[evolution[:skill_1]].db_symbol if evolution[:skill_1]
-      data[:skill2] = GameData::Skill[evolution[:skill_2]].db_symbol if evolution[:skill_2]
-      data[:skill3] = GameData::Skill[evolution[:skill_3]].db_symbol if evolution[:skill_3]
-      data[:skill4] = GameData::Skill[evolution[:skill_4]].db_symbol if evolution[:skill_4]
-      data[:weather] = evolution[:weather] if evolution[:weather]
-      data[:env] = evolution[:env] if evolution[:env]
-      data[:gender] = evolution[:gender] if evolution[:gender]
-      data[:dayNight] = evolution[:day_night] if evolution[:day_night]
-      data[:func] = evolution[:func] if evolution[:func]
-      data[:maps] = evolution[:maps] if evolution[:maps]
-      data[:gemme] = GameData::Item[evolution[:gemme]].db_symbol if evolution[:gemme]
+      data[:conditions] << { type: :minLevel, value: evolution[:min_level] } if evolution[:min_level]
+      data[:conditions] << { type: :maxLevel, value: evolution[:max_level] } if evolution[:max_level]
+      data[:conditions] << { type: :tradeWith, value: GameData::Pokemon[evolution[:trade_with]].db_symbol } if evolution[:trade_with]
+      if evolution[:trade]
+        data[:conditions] << { type: :trade, value: true }
+        data[:dbSymbol] = GameData::Pokemon[evolution[:trade]].db_symbol
+      end
+      data[:conditions] << { type: :stone, value: GameData::Item[evolution[:stone]].db_symbol } if evolution[:stone]
+      data[:conditions] << { type: :itemHold, value: GameData::Item[evolution[:item_hold]].db_symbol } if evolution[:item_hold]
+      data[:conditions] << { type: :minLoyalty, value: evolution[:min_loyalty] } if evolution[:min_loyalty]
+      data[:conditions] << { type: :maxLoyalty, value: evolution[:max_loyalty] } if evolution[:max_loyalty]
+      data[:conditions] << { type: :skill1, value: GameData::Skill[evolution[:skill_1]].db_symbol } if evolution[:skill_1]
+      data[:conditions] << { type: :skill2, value: GameData::Skill[evolution[:skill_2]].db_symbol } if evolution[:skill_2]
+      data[:conditions] << { type: :skill3, value: GameData::Skill[evolution[:skill_3]].db_symbol } if evolution[:skill_3]
+      data[:conditions] << { type: :skill4, value: GameData::Skill[evolution[:skill_4]].db_symbol } if evolution[:skill_4]
+      data[:conditions] << { type: :weather, value: evolution[:weather] } if evolution[:weather]
+      data[:conditions] << { type: :env, value: evolution[:env] } if evolution[:env]
+      data[:conditions] << { type: :gender, value: evolution[:gender] } if evolution[:gender]
+      data[:conditions] << { type: :dayNight, value: evolution[:day_night] } if evolution[:day_night]
+      data[:conditions] << { type: :func, value: evolution[:func] } if evolution[:func]
+      data[:conditions] << { type: :maps, value: evolution[:maps] } if evolution[:maps]
+      data[:conditions] << { type: :gemme, value: GameData::Item[evolution[:gemme]].db_symbol } if evolution[:gemme]
       evolutions << data
     end
     return evolutions
