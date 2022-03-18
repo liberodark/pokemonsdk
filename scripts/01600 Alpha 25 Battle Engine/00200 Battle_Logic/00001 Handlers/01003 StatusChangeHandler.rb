@@ -225,5 +225,23 @@ module Battle
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 270, target)) if skill.nil? || skill.status?
       end
     end
+
+    # Ground types not affected by Thunder-wave
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Ground type immune to thunder-wave') do |handler, status, target, _, skill|
+      next if status != :paralysis || skill&.db_symbol != :thunder_wave || !target.type_ground?
+
+      next handler.prevent_change do
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 285, target)) if skill.nil? || skill.status?
+      end
+    end
+
+    # Grass types not affected by Powder moves
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Grass types immune to powder moves') do |handler, _, target, _, skill|
+      next if !skill&.powder? || !target.type_grass?
+
+      next handler.prevent_change do
+        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 216, target)) if skill.nil? || skill.status?
+      end
+    end
   end
 end
