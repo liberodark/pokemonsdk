@@ -14,6 +14,18 @@ module Battle
       def name
         return :lucky_chant
       end
+
+      def on_delete
+        @logic.scene.display_message_and_wait(parse_text(18, message_id + bank.clamp(0, 1)))
+      end
+
+      private
+
+      # ID of the message that is responsible for telling the end of the effect
+      # @return [Integer]
+      def message_id
+        return 152
+      end
     end
   end
 end

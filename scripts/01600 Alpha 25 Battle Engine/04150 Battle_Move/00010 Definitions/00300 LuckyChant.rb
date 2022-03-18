@@ -21,7 +21,13 @@ module Battle
       # @param _actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, _actual_targets)
         @logic.add_bank_effect(Effects::LuckyChant.new(@logic, user.bank))
-        @scene.display_message_and_wait(parse_text(18, 152 + user.bank))
+        @scene.display_message_and_wait(parse_text(18, message_id + user.bank))
+      end
+
+      # ID of the message that is responsible for telling the beginning of the effect
+      # @return [Integer]
+      def message_id
+        return 150
       end
     end
 
