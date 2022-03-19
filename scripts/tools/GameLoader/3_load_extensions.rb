@@ -21,6 +21,14 @@ begin
   require 'csv'
   require 'json'
   require 'yaml'
+  module YAML
+    unless method_defined?(:unsafe_load)
+      module_function
+      def unsafe_load(*args)
+        load(*args)
+      end
+    end
+  end
   # require 'rexml/document'
   load_extension_multiplatform('LiteRGSS')
   # Attempt to load audio
