@@ -321,7 +321,7 @@ module PSDKEditor
     setup[:givenName] = pkmn[:given_name] if pkmn[:given_name]
     setup[:caughtWith] = GameData::Item[pkmn[:captured_with]].db_symbol if pkmn[:captured_with]
     setup[:gender] = pkmn[:gender] if pkmn[:gender]
-    setup[:nature] = pkmn[:nature] if pkmn[:nature]
+    setup[:nature] = convert_natures(pkmn[:nature]) if pkmn[:nature]
     setup[:ivs] = %i[hp atk dfe spd ats dfs].map.with_index { |stat, i| [stat, pkmn[:stats][i]] }.to_h if pkmn[:stats]
     setup[:evs] = %i[hp atk dfe spd ats dfs].map.with_index { |stat, i| [stat, pkmn[:bonus][i]] }.to_h if pkmn[:bonus]
     setup[:itemHeld] = GameData::Item[pkmn[:item]].db_symbol if pkmn[:item]
@@ -331,6 +331,15 @@ module PSDKEditor
     setup[:moves] = pkmn[:moves].map { |id| GameData::Skill[id].db_symbol } if pkmn[:moves]
     setup[:originalTrainerName] = pkmn[:trainer_name] if pkmn[:trainer_name]
     setup[:originalTrainerId] = pkmn[:trainer_id] if pkmn[:trainer_id]
+  end
+
+  # Function that converts the Pokemon natures from ID to String
+  # @param nature [Integer] current Pokemon nature
+  # @return [String]
+  def convert_natures(nature)
+    return nature if nature.is_a?(Symbol)
+
+    return text_get(8, nature).downcase
   end
 
   # Function that converts the quests
@@ -410,6 +419,7 @@ module PSDKEditor
 
     pokemon[:dbSymbol] = GameData::Pokemon[pokemon[:id]].db_symbol
     pokemon.delete(:id)
+    pokemon[:nature] = convert_natures(pokemon[:nature]) if pokemon[:nature]
     return pokemon
   end
 
