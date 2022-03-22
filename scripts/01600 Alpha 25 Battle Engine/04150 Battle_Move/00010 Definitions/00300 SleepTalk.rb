@@ -13,12 +13,10 @@ module Battle
       # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
-        if !user.asleep? || usable_moves.empty?
-          show_usage_failure(user)
-          return false
-        end
+        return false unless super
+        return show_usage_failure(user) && false if !user.asleep? || usable_moves(user).empty?
 
-        return true if super
+        return true
       end
 
       private
@@ -27,8 +25,8 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        move = usable_moves.sample(random: @logic.generic_rng).dup
-        move.pp = move.ppmax
+        move = usable_moves(user).sample(random: @logic.generic_rng).dup
+        move = Battle::Move[move.be_method].new(move.id, move.ppmax, move.ppmax, @scene)
         def move.move_usable_by_user(user, targets)
           return true
         end
