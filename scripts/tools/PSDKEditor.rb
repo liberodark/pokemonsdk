@@ -372,15 +372,15 @@ module PSDKEditor
   # @param objective [GameData::Quest::Objective] an objectif of the quest
   # @return [Array]
   def build_objective_method_args(objective)
-    method_name = objective.test_method_name
-    if method_name == :objective_obtain_item
-      item_id = objective.test_method_args[0]
-      return [GameData::Item[item_id].db_symbol, objective.test_method_args[1]]
-    end
-    return [build_pokemon_hash_quest(objective.test_method_args[0])] if method_name == :objective_see_pokemon
-
-    if %i[objective_beat_pokemon objective_catch_pokemon].include?(method_name)
-      return [build_pokemon_hash_quest(objective.test_method_args[0]), objective.test_method_args[1]]
+    case objective.test_method_name
+    when :objective_obtain_item
+      return [GameData::Item[objective.test_method_args[0]].db_symbol, objective.test_method_args[1]]
+    when :objective_see_pokemon
+      return [GameData::Pokemon[objective.test_method_args[0]].db_symbol]
+    when :objective_beat_pokemon
+      return [GameData::Pokemon[objective.test_method_args[0]].db_symbol, objective.test_method_args[1]]
+    when :objective_catch_pokemon
+      return [build_conditions_catch_pokemon(objective.test_method_args[0]), objective.test_method_args[1]]
     end
 
     return objective.test_method_args
@@ -411,16 +411,22 @@ module PSDKEditor
     return earning.give_args
   end
 
-  # Function build Pokemon hash for the quest
+  # Function build the conditions for the catch pokemon objective
   # @param pokemon [Hash, Integer] the hash or the id of the Pokemon
   # @return [Hash, Symbol]
-  def build_pokemon_hash_quest(pokemon)
-    return GameData::Pokemon[pokemon].db_symbol if pokemon.is_a?(Integer)
-
-    pokemon[:dbSymbol] = GameData::Pokemon[pokemon[:id]].db_symbol
-    pokemon.delete(:id)
-    pokemon[:nature] = convert_natures(pokemon[:nature]) if pokemon[:nature]
-    return pokemon
+  def build_conditions_catch_pokemon(pokemon)
+    conditions = []
+    if pokemon.is_a?(Integer)
+      conditions << { type: 'pokemon', value: GameData::Pokemon[pokemon].db_symbol }
+      return conditions
+    end
+    conditions << { type: 'pokemon', value: GameData::Pokemon[pokemon[:id]].db_symbol } if pokemon[:id]
+    conditions << { type: 'type', value: GameData::Type[pokemon[:type]].db_symbol } if pokemon[:type]
+    conditions << { type: 'nature', value: convert_natures(pokemon[:nature]) } if pokemon[:nature]
+    conditions << { type: 'minLevel', value: pokemon[:min_level] } if pokemon[:min_level]
+    conditions << { type: 'maxLevel', value: pokemon[:max_level] } if pokemon[:max_level]
+    conditions << { type: 'level', value: pokemon[:level] } if pokemon[:level]
+    return conditions
   end
 
   # Function that convert Abilities data to PSDK Editor format
