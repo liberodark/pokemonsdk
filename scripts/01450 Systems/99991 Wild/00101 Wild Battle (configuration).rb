@@ -12,7 +12,8 @@ module PFM
       lightning_rod: :rate_static,
       flash_fire: :rate_flash_fire,
       synchronize: :rate_synchronize,
-      storm_drain: :rate_storm_drain
+      storm_drain: :rate_storm_drain,
+      harvest: :rate_harvest
     }
 
     private
@@ -90,6 +91,14 @@ module PFM
     # @return [Float] new rate or 1
     def rate_flash_fire(pkmn, main_pokemon)
       return pkmn.type_fire? ? 1.5 : 1
+    end
+
+    # Get rate for Harvest case
+    # @param pkmn [PFM::Pokemon] pokemon to select
+    # @param main_pokemon [PFM::Pokemon] pokemon that caused the rate verification
+    # @return [Float] new rate or 1
+    def rate_harvest(pkmn, main_pokemon)
+      return pkmn.type_grass? ? 1.5 : 1
     end
 
     # Get rate for Synchronize case
