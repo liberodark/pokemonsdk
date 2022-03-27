@@ -71,7 +71,7 @@ module RPG
     # Update the max number of sprites to show
     # @param max [Integer]
     def max=(max)
-      max = max * MAX_TOP / MAX_BOTTOM # Upscale to 60
+      max = max.to_i * MAX_TOP / MAX_BOTTOM # Upscale to 60
       return if @max == max
       @max = [[max, 0].max, MAX_SPRITE - 1].min
       @sprites.each_with_index do |sprite, i|
