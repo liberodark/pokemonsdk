@@ -153,6 +153,34 @@ module Battle
     end
   end
 
+  # Registers the Mirror armor ability
+  Hooks.register(Move, :effect_working, 'Mirror Armor Ability') do |move_binding|
+    # @type [Battle::Move]
+    move = self
+    # @type [PFM::PokemonBattler]
+    user = move_binding.local_variable_get(:user)
+    # @type [Array<PFM::PokemonBattler>]
+    actual_targets = move_binding.local_variable_get(:actual_targets)
+
+    next if move.db_symbol == :octolock
+    next unless user.can_be_lowered_or_canceled?(actual_targets.any? { |target| target.has_ability?(:mirror_armor) || target.effects.has?(:magic_coat) })
+
+    if move.affects_bank? # Send move back to user if affects the bank in order to apply the effect to the bank
+      blocker = actual_targets.find { |target| target.has_ability?(:mirror_armor) }
+      move.scene.visual.show_ability(blocker)
+      actual_targets.clear << user
+      next
+    end
+
+    # Send the moves back to the user if target has mirror armor
+    actual_targets.map! do |target|
+      next target unless target.has_ability?(:mirror_armor) || target.effects.has?(:magic_coat)
+
+      move.scene.visual.show_ability(target)
+      next user
+    end
+  end
+
   Hooks.register(Move, :effect_working, 'Magic Coat effect') do |move_binding|
     # @type [Battle::Move]
     move = self
