@@ -21,7 +21,7 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        if targets.all? { |target| target.effects.has?(:drowsiness) || target.effects.has?(:substitute) } ||
+        if targets.all? { |target| target.effects.has?(:drowsiness) || target.effects.has?(:substitute) || target.has_ability?(:comatose) } ||
            @logic.terrain_effects.has?(:electric_terrain) && targets.all?(&:grounded?)
           show_usage_failure(user)
           return false
@@ -37,7 +37,7 @@ module Battle
       # @return [Boolean] if the target evade the move (and is not selected)
       def move_blocked_by_target?(user, target)
         return true if super
-        return failure_message if target.effects.has?(:drowsiness) || target.effects.has?(:substitute)
+        return failure_message if target.effects.has?(:drowsiness) || target.effects.has?(:substitute) || target.has_ability?(:comatose)
         return failure_message if @logic.terrain_effects.has?(:electric_terrain) && target.grounded?
         return true unless logic.status_change_handler.status_appliable?(:sleep, target, user)
 

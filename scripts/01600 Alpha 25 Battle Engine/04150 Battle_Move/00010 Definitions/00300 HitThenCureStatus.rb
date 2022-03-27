@@ -48,7 +48,7 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Boolean] tell if the Pokemon has this status
       def status_check(target)
-        return target.asleep?
+        return target.asleep? || target.has_ability?(:comatose)
       end
     end
 

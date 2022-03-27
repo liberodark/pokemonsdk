@@ -8,6 +8,7 @@ module Battle
       # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
+        return true if targets.all? { |target| target.has_ability?(:comatose) }
         return false unless super
 
         if targets.all? { |target| target.effects.has?(:nightmare) }

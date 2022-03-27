@@ -9,6 +9,7 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @return [Boolean]
       def target_immune?(user, target)
+        return false if target.has_ability?(:comatose) && be_method == :s_dream_eater
         return true if !target.asleep? && be_method == :s_dream_eater
 
         return super

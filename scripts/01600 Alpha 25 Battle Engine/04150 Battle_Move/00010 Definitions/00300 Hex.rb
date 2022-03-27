@@ -10,6 +10,7 @@ module Battle
       def damages(user, target)
         hp_dealt = super
         hp_dealt *= 2 if states.include? target.status
+        hp_dealt *= 2 if target.has_ability?(:comatose)
         return hp_dealt
       end
 

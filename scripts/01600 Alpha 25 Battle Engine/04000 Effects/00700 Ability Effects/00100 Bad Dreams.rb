@@ -10,7 +10,7 @@ module Battle
           return unless battlers.include?(@target)
           return if @target.dead?
 
-          sleeping_foes = logic.foes_of(@target).select(&:asleep?)
+          sleeping_foes = logic.foes_of(@target).select(&:asleep?) + logic.foes_of(@target).select { |p| p.has_ability?(:comatose) }
           return unless sleeping_foes.any?
 
           scene.visual.show_ability(@target) if sleeping_foes.any?

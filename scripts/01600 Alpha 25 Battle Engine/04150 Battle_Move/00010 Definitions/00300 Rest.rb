@@ -14,8 +14,8 @@ module Battle
         # Pseudo logic.status_change_handler.status_appliable? (because of the cure effect)
         # Don't forget to update this function when adding a new move
 
-        # Fail if has Insomnia, Vital Spirit, Sweet Veil
-        if target.has_ability?(:insomnia) || target.has_ability?(:vital_spirit) || target.has_ability?(:sweet_veil)
+        # Fail if has Insomnia, Vital Spirit, Sweet Veil, Comatose
+        if target.has_ability?(:insomnia) || target.has_ability?(:vital_spirit) || target.has_ability?(:sweet_veil) || target.has_ability?(:comatose)
           scene.visual.show_ability(target)
           scene.display_message_and_wait(parse_text_with_pokemon(19, 451, target))
           return true

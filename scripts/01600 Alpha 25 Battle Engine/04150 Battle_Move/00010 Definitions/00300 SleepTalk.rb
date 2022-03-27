@@ -13,6 +13,8 @@ module Battle
       # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
+        return true if user.has_ability?(:comatose) && !usable_moves(user).empty?
+
         return false unless super
         return show_usage_failure(user) && false if !user.asleep? || usable_moves(user).empty?
 

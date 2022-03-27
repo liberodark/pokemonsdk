@@ -8,6 +8,7 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
+        return true if user.has_ability?(:comatose)
 
         unless user.asleep?
           show_usage_failure(user)
