@@ -40,8 +40,8 @@ module GamePlay
       choices
         .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
         .register_choice(text_get(23, 8), on_validate: method(:action_move_current_pokemon), disable_detect: proc { @party.size <= 1 }) # Move
-      choices.register_choice(ext_text(9009, 0), on_validate: method(:launch_reminder)) if $game_switches[Yuki::Sw::BT_Party_Menu_Reminder]
       unless pokemon.egg?
+        choices.register_choice(ext_text(9009, 0), on_validate: method(:launch_reminder), disable_detect: proc { pokemon.remindable_skills == [] }) if $game_switches[Yuki::Sw::BT_Party_Menu_Reminder]
         if Yuki::FollowMe.in_lets_go_mode?
           if $storage.lets_go_follower == pokemon
             choices.register_choice(text_get(23, 165), on_validate: method(:deselect_follower)) # Unfollow
