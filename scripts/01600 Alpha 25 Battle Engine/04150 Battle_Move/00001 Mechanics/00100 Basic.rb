@@ -11,11 +11,13 @@ module Battle
 
         actual_targets.each do |target|
           hp = damages(user, target)
-          @logic.damage_handler.damage_change_with_process(hp, target, user, self) do
+          damage_handler = @logic.damage_handler
+          damage_handler.damage_change_with_process(hp, target, user, self) do
             scene.display_message_and_wait(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target)) if critical_hit?
             efficent_message(effectiveness, target) if hp > 0
           end
-          recoil(hp, user) if recoil?
+          recoil(hp, user) if recoil? && damage_handler.instance_variable_get(:@reason).nil?
+          return false if damage_handler.instance_variable_get(:@reason)
         end
         return true
       end

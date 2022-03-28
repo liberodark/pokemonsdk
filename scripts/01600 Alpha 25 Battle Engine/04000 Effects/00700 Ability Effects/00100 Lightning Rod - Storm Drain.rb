@@ -21,9 +21,10 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         # @return [:prevent, Integer, nil] :prevent if the damage cannot be applied, Integer if the hp variable should be updated
         def on_damage_prevention(handler, hp, target, launcher, skill)
+          return unless launcher != @target
           return unless move_check?(skill)
           return unless launcher&.can_be_lowered_or_canceled?
-          return unless @logic.all_alive_battlers.any? { |battler| BLOCKING_EFFECTS.any? { |e| battler.effects.has?(e) } }
+          return if @logic.all_alive_battlers.any? { |battler| BLOCKING_EFFECTS.any? { |e| battler.effects.has?(e) } }
 
           return handler.prevent_change do
             handler.scene.visual.show_ability(@target)
