@@ -46,6 +46,7 @@ module PFM
       # Setup the right level
       adjusted_level = hashes.map do |hash|
         level = hash[:level] - delta / 2 + (maxed ? delta - 1 : rand(delta))
+        level = level.clamp(1, GameData::MAX_LEVEL)
         next hash.merge(level: level)
       end
 

@@ -273,6 +273,7 @@ module Battle
       unless $game_temp.battle_can_lose
         handler.player_loose_sequence
         $wild_battle.reset
+        $game_temp.transition_processing = true
         $game_temp.player_transferring = true
         $game_map.setup($game_temp.player_new_map_id = $game_variables[::Yuki::Var::E_Return_ID])
         $game_temp.player_new_x = $game_variables[::Yuki::Var::E_Return_X] + ::Yuki::MapLinker.get_OffsetX
