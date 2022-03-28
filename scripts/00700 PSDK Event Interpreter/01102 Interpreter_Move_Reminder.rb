@@ -18,7 +18,7 @@ class Interpreter
     var = $game_variables[::Yuki::Var::Party_Menu_Sel]
     return false if var < 0 || var >= $actors.size
 
-    return $actors[var].remindable_skills(mode).any?
+    return $actors[var].remindable_skills(mode).any? && !$actors[var].egg?
   end
   alias maitre_capacites_appelable? can_move_reminder_be_called?
 end
