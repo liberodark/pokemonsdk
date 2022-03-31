@@ -6,7 +6,7 @@ module Battle
       # @param logic [Battle::Logic]
       # @param pokemon [PFM::PokemonBattler]
       # @param turn_count [Integer] number of turn for the confusion (not including current turn)
-      def initialize(logic, pokemon, turn_count = logic.generic_rng.rand(4..6))
+      def initialize(logic, pokemon, turn_count = logic.generic_rng.rand(1..4))
         super(logic, pokemon)
         self.counter = turn_count + 1
       end
