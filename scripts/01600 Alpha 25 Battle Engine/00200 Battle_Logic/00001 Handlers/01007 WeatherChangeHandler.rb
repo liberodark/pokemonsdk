@@ -12,7 +12,8 @@ module Battle
         hail: 90,
         fog: 91,
         hardsun: 271,
-        hardrain: 269
+        hardrain: 269,
+        wind: 273
       }
 
       # Create a new Weather Change Handler
