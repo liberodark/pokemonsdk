@@ -143,6 +143,24 @@ class Interpreter < Interpreter_RMXP
     return rangex.any? { |tx| rangey.any? { |ty| gm.get_tile(tx, ty) == tile_id } }
   end
 
+  # Save the current fog
+  # @return [Array] the fog info
+  def save_this_fog
+    $fog_info = [$game_map.fog_name,
+                  $game_map.fog_hue,
+                  $game_map.fog_opacity,
+                  $game_map.fog_blend_type,
+                  $game_map.fog_zoom,
+                  $game_map.fog_sx,
+                  $game_map.fog_sy
+                ]
+  end
+
+  # Clear the saved fog
+  def clear_saved_fog
+    $fog_info = nil
+  end
+
   private
 
   # Tell if detecting the player is disabled

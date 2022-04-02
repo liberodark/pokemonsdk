@@ -372,4 +372,17 @@ class Spriteset_Map
     @quest_informers.clear if @quest_informers.all?(&:done?)
   end
   Hooks.register(self, :update, 'Quest Informer') { update_quest_informer }
+
+  # Hook that load the saved fog if we are on a outdoor map without any fog
+  Hooks.register(Spriteset_Map, :reload, 'Spriteset_Map reloaded') do 
+    if $game_map.fog_name == nil.to_s && $game_switches[Yuki::Sw::Env_CanFly] && $fog_info
+      $game_map.fog_name = $fog_info[0]
+      $game_map.fog_hue = $fog_info[1]
+      $game_map.fog_opacity = $fog_info[2]
+      $game_map.fog_blend_type = $fog_info[3]
+      $game_map.fog_zoom = $fog_info[4]
+      $game_map.fog_sx = $fog_info[5]
+      $game_map.fog_sy = $fog_info[6]
+    end
+  end
 end
