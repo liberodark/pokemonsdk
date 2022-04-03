@@ -53,6 +53,7 @@ module Battle
         switch_in_message unless forced_switch?(who)
         wait_for(sprite, visual)
         @scene.logic.switch_handler.execute_switch_events(@who, @with)
+        @scene.logic.request_switch(@with, nil) if @with.dead?
         @who.reset_states
       end
 

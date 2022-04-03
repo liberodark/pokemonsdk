@@ -17,6 +17,7 @@ module Battle
       )
       log_data("Number of switch request (enemy + actors) : #{@switch_request.size}")
       @switch_request.uniq! { |h| h[:who] }
+      @switch_request.select! { |h| h[:who].position&.between?(0, @battle_info.vs_type - 1) }
       battle_phase_switch_exp_check
       log_debug('battle_phase_switch_exp_check called')
       all_alive_battlers.each { |pokemon| pokemon.switching = false }
