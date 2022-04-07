@@ -8,6 +8,8 @@
 module PSDKEditor
   # Root folder of the PSDK Editor data
   ROOT = 'Data/PSDK-Editor'
+  # Root folder of the PSDK config
+  ROOT_CONFIGS = 'Data/configs'
 
   module_function
 
@@ -23,6 +25,7 @@ module PSDKEditor
     convert_trainers
     convert_quests
     convert_abilities
+    convert_configs
   end
 
   # Function that creates all the necessary path
@@ -449,6 +452,214 @@ module PSDKEditor
     return true unless data.db_symbol
 
     return %i[none __undef__ egg].include?(data.db_symbol)
+  end
+
+  # Function that convert PSDK config to PSDK Editor format
+  def convert_configs
+    convert_infos_settings
+    convert_language_settings
+    convert_settings
+    convert_texts_settings
+    convert_game_options_settings
+    convert_devices_settings
+    convert_display_settings
+    convert_graphic_settings
+    convert_save_settings
+    convert_scene_title_settings
+    convert_credits_settings
+    convert_online_settings
+  end
+
+  # Function that convert PSDK config infos settings to PSDK Editor format
+  def convert_infos_settings
+    data_infos = { klass: 'InfosConfig' }
+    data_infos[:gameTitle] = PSDK_CONFIG.game_title
+    data_infos[:gameVersion] = PSDK_CONFIG.game_version
+    File.write(File.join(ROOT_CONFIGS, 'infos_config.json'), data_infos.to_json)
+  end
+
+  # Function that convert PSDK config language settings to PSDK Editor format
+  def convert_language_settings
+    data_language = { klass: 'LanguageConfig' }
+    data_language[:defaultLanguage] = PSDK_CONFIG.default_language_code
+    data_language[:choosableLanguageCode] = PSDK_CONFIG.choosable_language_code
+    data_language[:choosableLanguageTexts] = PSDK_CONFIG.choosable_language_texts
+    File.write(File.join(ROOT_CONFIGS, 'language_config.json'), data_language.to_json)
+  end
+
+  # Function that convert PSDK config settings to PSDK Editor format
+  def convert_settings
+    data_settings = { klass: 'SettingsConfig' }
+    data_settings[:pokemonMaxLevel] = PSDK_CONFIG.pokemon_max_level
+    data_settings[:isAlwaysUseForm0ForEvolution] = PSDK_CONFIG.always_use_form0_for_evolution
+    data_settings[:isUseForm0WhenNoEvolutionData] = PSDK_CONFIG.use_form0_when_no_evolution_data
+    File.write(File.join(ROOT_CONFIGS, 'settings_config.json'), data_settings.to_json)
+  end
+
+  # Function that convert PSDK config texts settings to PSDK Editor format
+  def convert_texts_settings
+    data_texts = { klass: 'TextsConfig' }
+    data_texts[:fonts] = build_fonts
+    data_texts[:messages] = build_messages
+    data_texts[:choices] = build_choices
+    File.write(File.join(ROOT_CONFIGS, 'texts_config.json'), data_texts.to_json)
+  end
+
+  # Function build fonts for PSDK config texts
+  def build_fonts
+    data_fonts = {}
+    data_fonts[:supportsPokemonNumber] = PSDK_CONFIG.layout.general.supports_pokemon_number
+    data_fonts[:ttfFiles] = []
+    data_fonts[:altSizes] = []
+    PSDK_CONFIG.layout.general.ttf_files.each do |ttf_file|
+      data_ttf_file = {}
+      data_ttf_file[:id] = ttf_file[:id]
+      data_ttf_file[:name] = ttf_file[:name]
+      data_ttf_file[:size] = ttf_file[:size]
+      data_ttf_file[:lineHeight] = ttf_file[:line_height]
+      data_fonts[:ttfFiles] << data_ttf_file
+    end
+    PSDK_CONFIG.layout.general.alt_sizes.each do |alt_size|
+      data_alt_size = {}
+      data_alt_size[:id] = alt_size[:id]
+      data_alt_size[:size] = alt_size[:size]
+      data_alt_size[:lineHeight] = alt_size[:line_height]
+      data_fonts[:altSizes] << data_alt_size
+    end
+    return data_fonts
+  end
+
+  # Function build messages for PSDK config texts
+  def build_messages
+    messages = {}
+    # @type key [String]
+    # @type psdk_message [ScriptLoader::PSDKConfig::LayoutConfig::Message]
+    PSDK_CONFIG.layout.messages.each do |key, psdk_message|
+      message = {}
+      message[:windowSkin] = psdk_message.windowskin
+      message[:nameWindowSkin] = psdk_message.name_windowskin
+      message[:lineCount] = psdk_message.line_count
+      message[:borderSpacing] = psdk_message.border_spacing
+      message[:defaultFont] = psdk_message.default_font
+      message[:defaultColor] = psdk_message.default_color
+      message[:colorMapping] = psdk_message.color_mapping
+      messages[key.to_sym] = message
+    end
+    return messages
+  end
+
+  # Function build choices for PSDK config texts
+  def build_choices
+    choices = {}
+    # @type key [String]
+    # @type psdk_choice [ScriptLoader::PSDKConfig::LayoutConfig::Choice]
+    PSDK_CONFIG.layout.choices.each do |key, psdk_choice|
+      choice = {}
+      choice[:windowSkin] = psdk_choice.windowskin
+      choice[:borderSpacing] = psdk_choice.border_spacing
+      choice[:defaultFont] = psdk_choice.default_font
+      choice[:defaultColor] = psdk_choice.default_color
+      choice[:colorMapping] = psdk_choice.color_mapping
+      choices[key.to_sym] = choice
+    end
+    return choices
+  end
+
+  # Function that convert PSDK config game options settings to PSDK Editor format
+  def convert_game_options_settings
+    data_game_options = { klass: 'GameOptionsConfig' }
+    data_game_options[:order] = PSDK_CONFIG.options.order
+    data_game_options[:options] = PSDK_CONFIG.options.options
+    File.write(File.join(ROOT_CONFIGS, 'game_options_config.json'), data_game_options.to_json)
+  end
+
+  # Function that convert PSDK config devices settings to PSDK Editor format
+  def convert_devices_settings
+    data_devices = { klass: 'DevicesConfig' }
+    data_devices[:isMouseDisabled] = PSDK_CONFIG.mouse_disabled
+    data_devices[:mouseSkin] = PSDK_CONFIG.mouse_skin
+    File.write(File.join(ROOT_CONFIGS, 'devices_config.json'), data_devices.to_json)
+  end
+
+  # Function that convert PSDK config display settings to PSDK Editor format
+  def convert_display_settings
+    data_display = { klass: 'DisplayConfig' }
+    game_resolution = PSDK_CONFIG.native_resolution.split('x').collect(&:to_i)
+    data_display[:gameResolution] = { x: game_resolution.first, y: game_resolution.last }
+    data_display[:windowScale] = PSDK_CONFIG.window_scale
+    data_display[:isFullscreen] = PSDK_CONFIG.running_in_full_screen
+    data_display[:isPlayerAlwaysCentered] = PSDK_CONFIG.player_always_centered
+    data_display[:tilemapSettings] = build_tilemap_settings
+    File.write(File.join(ROOT_CONFIGS, 'display_config.json'), data_display.to_json)
+  end
+
+  # Function build tilemap settings for PSDK config display
+  def build_tilemap_settings
+    data_tilemap = {}
+    data_tilemap[:tilemapClass] = PSDK_CONFIG.tilemap.tilemap_class
+    data_tilemap[:tilemapSize] = { x: PSDK_CONFIG.tilemap.tilemap_size_x, y: PSDK_CONFIG.tilemap.tilemap_size_y }
+    data_tilemap[:autotileIdleFrameCount] = PSDK_CONFIG.tilemap.autotile_idle_frame_count
+    data_tilemap[:characterTileZoom] = PSDK_CONFIG.tilemap.character_tile_zoom
+    data_tilemap[:characterSpriteZoom] = PSDK_CONFIG.tilemap.character_sprite_zoom
+    data_tilemap[:center] = { x: PSDK_CONFIG.tilemap.center_x, y: PSDK_CONFIG.tilemap.center_y }
+    data_tilemap[:maplinkerOffset] = { x: PSDK_CONFIG.tilemap.maplinker_offset_x, y: PSDK_CONFIG.tilemap.maplinker_offset_y }
+    data_tilemap[:isOldMaplinker] = PSDK_CONFIG.tilemap.old_maplinker || false
+    return data_tilemap
+  end
+
+  # Function that convert PSDK config graphic settings to PSDK Editor format
+  def convert_graphic_settings
+    data_graphic = { klass: 'GraphicConfig' }
+    data_graphic[:smoothTexture] = PSDK_CONFIG.smooth_texture
+    data_graphic[:isVsyncEnabled] = PSDK_CONFIG.vsync_enabled
+    File.write(File.join(ROOT_CONFIGS, 'graphic_config.json'), data_graphic.to_json)
+  end
+
+  # Function that convert PSDK config save settings to PSDK Editor format
+  def convert_save_settings
+    data_save = { klass: 'SaveConfig' }
+    data_save[:maximumSave] = Configs.save_config.maximum_save_count
+    data_save[:saveKey] = Configs.save_config.save_key
+    data_save[:saveHeader] = Configs.save_config.save_header
+    data_save[:baseFilename] = Configs.save_config.base_filename
+    data_save[:isCanSaveOnAnySave] = Configs.save_config.can_save_on_any_save
+    File.write(File.join(ROOT_CONFIGS, 'save_config.json'), data_save.to_json)
+  end
+
+  # Function that convert PSDK config scene title settings to PSDK Editor format
+  def convert_scene_title_settings
+    data_scene_title = { klass: 'SceneTitleConfig' }
+    data_scene_title[:introMovieMapId] = Configs.scene_title_config.intro_movie_map_id
+    data_scene_title[:bgmName] = Configs.scene_title_config.bgm_name
+    data_scene_title[:bgmDuration] = Configs.scene_title_config.bgm_duration
+    data_scene_title[:isLanguageSelectionEnabled] = Configs.scene_title_config.language_selection_enabled
+    data_scene_title[:additionalSplashes] = Configs.scene_title_config.additional_splashes
+    data_scene_title[:controlWaitTime] = Configs.scene_title_config.control_wait
+    File.write(File.join(ROOT_CONFIGS, 'scene_title_config.json'), data_scene_title.to_json)
+  end
+
+  # Function that convert PSDK config credits settings to PSDK Editor format
+  def convert_credits_settings
+    data_credits = { klass: 'CreditsConfig' }
+    data_credits[:projectSplash] = Configs.credits_config.project_splash
+    data_credits[:bgm] = Configs.credits_config.bgm
+    data_credits[:lineHeight] = Configs.credits_config.line_height
+    data_credits[:scrollSpeed] = Configs.credits_config.speed
+    data_credits[:leaderSpacing] = Configs.credits_config.leader_spacing
+    data_credits[:chiefProjectTitle] = Configs.credits_config.chief_project_title
+    data_credits[:chiefProjectName] = Configs.credits_config.chief_project_name
+    data_credits[:leaders] = Configs.credits_config.leaders
+    data_credits[:gameCredits] = Configs.credits_config.game_credits
+    File.write(File.join(ROOT_CONFIGS, 'credits_config.json'), data_credits.to_json)
+  end
+
+  # Function that convert PSDK config online settings to PSDK Editor format
+  def convert_online_settings
+    data_online = { klass: 'OnlineConfig' }
+    data_online[:isEnabled] = Configs.online_configs.enabled
+    data_online[:serverIp] = Configs.online_configs.server_ip
+    data_online[:serverPort] = Configs.online_configs.server_port
+    File.write(File.join(ROOT_CONFIGS, 'online_config.json'), data_online.to_json)
   end
 end
 
