@@ -508,7 +508,7 @@ module PSDKEditor
   # Function build fonts for PSDK config texts
   def build_fonts
     data_fonts = {}
-    data_fonts[:supportsPokemonNumber] = PSDK_CONFIG.layout.general.supports_pokemon_number
+    data_fonts[:isSupportsPokemonNumber] = PSDK_CONFIG.layout.general.supports_pokemon_number
     data_fonts[:ttfFiles] = []
     data_fonts[:altSizes] = []
     PSDK_CONFIG.layout.general.ttf_files.each do |ttf_file|
@@ -610,7 +610,7 @@ module PSDKEditor
   # Function that convert PSDK config graphic settings to PSDK Editor format
   def convert_graphic_settings
     data_graphic = { klass: 'GraphicConfig' }
-    data_graphic[:smoothTexture] = PSDK_CONFIG.smooth_texture
+    data_graphic[:isSmoothTexture] = PSDK_CONFIG.smooth_texture
     data_graphic[:isVsyncEnabled] = PSDK_CONFIG.vsync_enabled
     File.write(File.join(ROOT_CONFIGS, 'graphic_config.json'), data_graphic.to_json)
   end
