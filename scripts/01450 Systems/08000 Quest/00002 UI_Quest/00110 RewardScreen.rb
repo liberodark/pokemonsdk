@@ -102,7 +102,11 @@ module UI
       end
 
       def create_icon
-        @icon = add_sprite(1, 1, NO_INITIAL_IMAGE, type: @icon_type)
+        if @icon_type.is_a?(UI::PokemonIconSprite)
+          @icon = add_sprite(1, 1, NO_INITIAL_IMAGE, false, type: @icon_type)
+        else
+          @icon = add_sprite(1, 1, NO_INITIAL_IMAGE, type: @icon_type)
+        end
         @icon.data = @reward_id
       end
 
@@ -133,6 +137,19 @@ module UI
           id: @reward.give_args[0],
           name: GameData::Item[@reward.give_args[0]].name,
           quantity: @reward.give_args[1]
+        }
+      end
+
+      # Hash defining how the reward should be created if it's a Pokemon
+      # @return [Hash]
+      def earning_pokemon
+        data = @reward.give_args[0]
+        pokemon_id = data.is_a?(Hash) ? data[:id] : data
+        return {
+          type: UI::PokemonIconSprite,
+          id: pokemon_id,
+          name: GameData::Pokemon[pokemon_id].name,
+          quantity: 1
         }
       end
     end

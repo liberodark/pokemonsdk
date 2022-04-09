@@ -306,6 +306,23 @@ module PFM
       def text_earn_item(item_id, amount)
         return format('%<amount>d %<name>s', amount: amount, name: GameData::Item[item_id].name)
       end
+
+      # Getting Pokemon from a quest
+      # @param data [Integer, Symbol, Hash] data of the Pokémon to give
+      def earning_pokemon(data)
+        pokemon = data.is_a?(Hash) ? PFM::Pokemon.generate_from_hash(data) : PFM::Pokemon.new(data, 5)
+        return if data_get(:earnings, :pokemon, pokemon, false)
+
+        PFM.game_state.add_pokemon(pokemon)
+        data_set(:earnings, :pokemon, pokemon, true)
+      end
+
+      # Earning Pokemon text
+      # @param data [Integer, Symbol, Hash] data of the Pokémon to give
+      def text_earn_pokemon(data)
+        pokemon_id = data.is_a?(Hash) ? data[:id] : data
+        return format('1 %<name>s', name: GameData::Pokemon[pokemon_id].name)
+      end
     end
   end
 end

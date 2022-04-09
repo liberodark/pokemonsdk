@@ -331,6 +331,9 @@ module PFM
         PFM.game_state.add_money(earning[:money])
       elsif earning[:item]
         $bag.add_item(earning[:item], earning[:item_amount])
+      elsif earning[:pokemon]
+        pokemon_data = earning[:pokemon]
+        PFM.game_state.add_pokemon(pokemon_data.is_a?(Hash) ? PFM::Pokemon.generate_from_hash(pokemon_data) : PFM::Pokemon.new(pokemon_data, 5))
       end
     end
 
