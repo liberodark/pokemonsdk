@@ -234,5 +234,7 @@ module PFM
     FORM_CALIBRATE[:wishiwashi] = proc { |reason| @form = hp_rate >= 0.25 && level >= 20 && reason == :battle ? 1 : 0 }
     FORM_CALIBRATE[:minior] = proc { |reason| @form = hp_rate <= 0.5 && reason == :battle ? @form | 1 : 0 }
     FORM_CALIBRATE[:zygarde] = proc { |reason| @form = hp_rate <= 0.5 && reason == :battle ? @form | 1 : 3 }
+    FORM_CALIBRATE[:morpeko] = proc { |reason| @form = reason == :battle ? 1 : 0 }
+    FORM_CALIBRATE[:greninja] = proc { |reason| @form = reason == :battle ? 1 : 0 }
   end
 end
