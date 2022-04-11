@@ -45,6 +45,7 @@ module GamePlay
         create_texts
         create_board
         create_memo
+        Graphics.sort_z
         # Init logic
         generate_board
         # Cursor
