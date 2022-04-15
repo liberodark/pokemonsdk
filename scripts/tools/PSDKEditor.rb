@@ -7,7 +7,7 @@
 #   PSDKEditor.convert
 module PSDKEditor
   # Root folder of the PSDK Editor data
-  ROOT = 'Data/PSDK-Editor'
+  ROOT = 'Data/Studio'
   # Root folder of the PSDK config
   ROOT_CONFIGS = 'Data/configs'
 
