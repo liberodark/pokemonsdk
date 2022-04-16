@@ -31,7 +31,7 @@ module PSDKEditor
   # Function that creates all the necessary path
   def create_paths
     Dir.mkdir(ROOT) unless Dir.exist?(ROOT)
-    all_paths = %w[pokemon items types moves zones worldmaps trainers quests abilities].map { |dirname| File.join(ROOT, dirname) }
+    all_paths = %w[pokemon items types moves zones worldmaps trainers quests abilities groups].map { |dirname| File.join(ROOT, dirname) }
     all_paths.each do |path|
       Dir.mkdir(path) unless Dir.exist?(path)
     end
@@ -97,8 +97,8 @@ module PSDKEditor
     GameData::Zone.all.each do |zone|
       zone_data = {
         id: zone.id, dbSymbol: "zone_#{zone.id}", klass: 'Zone', maps: [zone.map_id].compact.flatten, worldmaps: [zone.worldmap_id].flatten,
-        pannelId: zone.panel_id, warpX: zone.warp_x, warpY: zone.warp_y, positionX: zone.pos_x, positionY: zone.pos_y, isFlyAllowed: zone.fly_allowed,
-        isWarpDisallowed: zone.warp_disallowed, forcedWeather: zone.forced_weather, subZones: [], wildGroups: create_wild_groups(zone)
+        pannelId: zone.panel_id, warp: { x: zone.warp_x, y: zone.warp_y }, position: { x: zone.pos_x, y: zone.pos_y }, isFlyAllowed: zone.fly_allowed,
+        isWarpDisallowed: zone.warp_disallowed, forcedWeather: zone.forced_weather, wildGroups: create_wild_groups(zone)
       }
       File.write(File.join(ROOT, 'zones', "zone_#{zone.id}.json"), zone_data.to_json)
     end
@@ -254,25 +254,34 @@ module PSDKEditor
 
   GROUP_TOOLS = { 8 => 'OldRod', 9 => 'GoodRod', 10 => 'SuperRod', 11 => 'RockSmash', 12 => 'HeadButt' }
   GROUP_ZONE_SYSTEM_TAG = %w[RegularGround Grass TallGrass Cave Mountain Sand Pond UnderWater Snow Ice]
+  @group_index = 0
   # Function that creates the wild groups of a Zone
   # @param zone
   def create_wild_groups(zone)
-    zone.groups&.map do |group|
+    group_db_symbols = []
+    zone.groups&.each do |group|
       group_terrain_tag = group[1] >= 8 ? { tool: GROUP_TOOLS[group[1]], terrainTag: 0 } : { terrainTag: group[1] }
       sw = group.instance_variable_get(:@enable_switch)
       map_id = group.instance_variable_get(:@map_id) || 0
       custom_conditions = []
-      custom_conditions << { enabledSwitch: sw, relationWithPreviousCondition: 'AND' } if sw
-      custom_conditions << { mapId: map_id, relationWithPreviousCondition: 'AND' } if map_id != 0
-      next {
+      custom_conditions << { type: :enabledSwitch, value: sw, relationWithPreviousCondition: 'AND' } if sw
+      custom_conditions << { type: :mapId, value: map_id, relationWithPreviousCondition: 'AND' } if map_id != 0
+      group_data = {
+        klass: 'Group',
+        id: @group_index,
+        dbSymbol: "group_#{@group_index}",
         systemTag: GROUP_ZONE_SYSTEM_TAG[group.first],
         doubleBattle: group[3] == 2,
         hordeBattle: false,
-        customCondition: custom_conditions,
+        customConditions: custom_conditions,
         encounters: create_wild_encounters(group[2], group[4..-1].each_slice(3).to_a),
         **group_terrain_tag
       }
-    end || []
+      group_db_symbols << "group_#{@group_index}"
+      File.write(File.join(ROOT, 'groups', "group_#{@group_index}.json"), group_data.to_json)
+      @group_index += 1
+    end
+    return group_db_symbols
   end
 
   # Function that create the wild encounter setup
@@ -287,15 +296,30 @@ module PSDKEditor
         pkmn = level
         level = level[:level]
         setup = {
-          specie: GameData::Pokemon[id].db_symbol, formIndex: pkmn[:form] || 0, shinySetup: { kind: 'automatic' },
-          levelSetup: { kind: 'minmax', minimumLevel: level + minus, maximumLevel: level + plus, randomEncounterChance: chance }
+          specie: GameData::Pokemon[id].db_symbol, form: pkmn[:form] || 0, shinySetup: shiny_setup(pkmn),
+          levelSetup: {
+            kind: 'minmax',
+            level: {
+              minimumLevel: (level + minus).clamp(1, PSDK_CONFIG.pokemon_max_level),
+              maximumLevel: (level + plus).clamp(1, PSDK_CONFIG.pokemon_max_level)
+            }
+          },
+          randomEncounterChance: chance,
+          expandPokemonSetup: expand_pokemon_setup(pkmn)
         }
-        expand_pokemon_setup(setup, pkmn)
         next setup
       else
         next {
-          specie: GameData::Pokemon[id].db_symbol, formIndex: 0, shinySetup: { kind: 'automatic' },
-          levelSetup: { kind: 'minmax', minimumLevel: level + minus, maximumLevel: level + plus, randomEncounterChance: chance }
+          specie: GameData::Pokemon[id].db_symbol, form: 0, shinySetup: { kind: 'automatic', rate: -1 },
+          levelSetup: {
+            kind: 'minmax',
+            level: {
+              minimumLevel: (level + minus).clamp(1, PSDK_CONFIG.pokemon_max_level),
+              maximumLevel: (level + plus).clamp(1, PSDK_CONFIG.pokemon_max_level)
+            }
+          },
+          randomEncounterChance: chance,
+          expandPokemonSetup: []
         }
       end
     end
@@ -307,33 +331,43 @@ module PSDKEditor
   def convert_trainer_party(party)
     return party.map do |pkmn|
       setup = {
-        specie: GameData::Pokemon[pkmn[:id]].db_symbol, formIndex: pkmn[:form] || 0, shinySetup: { kind: 'automatic' },
-        levelSetup: { kind: 'fixed', fixedLevel: pkmn[:level] }
+        specie: GameData::Pokemon[pkmn[:id]].db_symbol, form: pkmn[:form] || 0, shinySetup: shiny_setup(pkmn),
+        levelSetup: { kind: 'fixed', level: pkmn[:level] },
+        expandPokemonSetup: expand_pokemon_setup(pkmn)
       }
-      expand_pokemon_setup(setup, pkmn)
       next setup
     end
   end
 
-  # Function that expends the Pokemon setup with the extended data
-  # @param setup [Hash] current Pokemon setup
+  # Function that setup the shiny properties
   # @param pkmn [Hash] pokemon data to use to expand the setup
-  def expand_pokemon_setup(setup, pkmn)
-    setup[:shinySetup] = { kind: 'rate', rate: 1 } if pkmn[:shiny]
-    setup[:shinySetup] = { kind: 'rate', rate: 0 } if pkmn[:no_shiny]
-    setup[:givenName] = pkmn[:given_name] if pkmn[:given_name]
-    setup[:caughtWith] = GameData::Item[pkmn[:captured_with]].db_symbol if pkmn[:captured_with]
-    setup[:gender] = pkmn[:gender] if pkmn[:gender]
-    setup[:nature] = convert_natures(pkmn[:nature]) if pkmn[:nature]
-    setup[:ivs] = %i[hp atk dfe spd ats dfs].map.with_index { |stat, i| [stat, pkmn[:stats][i]] }.to_h if pkmn[:stats]
-    setup[:evs] = %i[hp atk dfe spd ats dfs].map.with_index { |stat, i| [stat, pkmn[:bonus][i]] }.to_h if pkmn[:bonus]
-    setup[:itemHeld] = GameData::Item[pkmn[:item]].db_symbol if pkmn[:item]
-    setup[:ability] = GameData::Abilities.db_symbol(pkmn[:ability]) if pkmn[:ability]
-    setup[:rareness] = pkmn[:rareness] if pkmn[:rareness]
-    setup[:loyalty] = pkmn[:loyalty] if pkmn[:loyalty]
-    setup[:moves] = pkmn[:moves].map { |id| GameData::Skill[id].db_symbol } if pkmn[:moves]
-    setup[:originalTrainerName] = pkmn[:trainer_name] if pkmn[:trainer_name]
-    setup[:originalTrainerId] = pkmn[:trainer_id] if pkmn[:trainer_id]
+  # @return [Hash]
+  def shiny_setup(pkmn)
+    shiny_setup = { kind: 'automatic', rate: -1 }
+    shiny_setup = { kind: 'rate', rate: 1 } if pkmn[:shiny]
+    shiny_setup = { kind: 'rate', rate: 0 } if pkmn[:no_shiny]
+    return shiny_setup
+  end
+
+  # Function that expands the Pokemon setup with the extended data
+  # @param pkmn [Hash] pokemon data to use to expand the setup
+  # @return [Array<Hash>]
+  def expand_pokemon_setup(pkmn)
+    pokemon_setup = []
+    pokemon_setup << { type: :givenName, value: pkmn[:given_name] } if pkmn[:given_name]
+    pokemon_setup << { type: :caughtWith, value: GameData::Item[pkmn[:captured_with]].db_symbol } if pkmn[:captured_with]
+    pokemon_setup << { type: :gender, value: pkmn[:gender] } if pkmn[:gender]
+    pokemon_setup << { type: :nature, value: convert_natures(pkmn[:nature]) } if pkmn[:nature]
+    pokemon_setup << { type: :ivs, value: %i[hp atk dfe spd ats dfs].map.with_index { |stat, i| [stat, pkmn[:stats][i]] }.to_h } if pkmn[:stats]
+    pokemon_setup << { type: :evs, value: %i[hp atk dfe spd ats dfs].map.with_index { |stat, i| [stat, pkmn[:bonus][i]] }.to_h } if pkmn[:bonus]
+    pokemon_setup << { type: :itemHeld, value: GameData::Item[pkmn[:item]].db_symbol } if pkmn[:item]
+    pokemon_setup << { type: :ability, value: GameData::Abilities.db_symbol(pkmn[:ability]) } if pkmn[:ability]
+    pokemon_setup << { type: :rareness, value: pkmn[:rareness] } if pkmn[:rareness]
+    pokemon_setup << { type: :loyalty, value: pkmn[:loyalty] } if pkmn[:loyalty]
+    pokemon_setup << { type: :moves, value: pkmn[:moves].map { |id| GameData::Skill[id].db_symbol } } if pkmn[:moves]
+    pokemon_setup << { type: :originalTrainerName, value: pkmn[:trainer_name] } if pkmn[:trainer_name]
+    pokemon_setup << { type: :originalTrainerId, value: pkmn[:trainer_id] } if pkmn[:trainer_id]
+    return pokemon_setup
   end
 
   # Function that converts the Pokemon natures from ID to String
@@ -467,7 +501,6 @@ module PSDKEditor
     convert_save_settings
     convert_scene_title_settings
     convert_credits_settings
-    convert_online_settings
   end
 
   # Function that convert PSDK config infos settings to PSDK Editor format
