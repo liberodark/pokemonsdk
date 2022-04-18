@@ -105,6 +105,7 @@ module PFM
       log_debug "==== Pension Infos ====\nRate : #{daycare[:rate]}%\nPokémon : #{text_get(0, daycare[:layable])}\n"
       pokemon = PFM::Pokemon.new(daycare[:layable], 1)
       inherit(pokemon, daycare[:pokemon])
+      pokemon.hp = pokemon.max_hp
       pokemon.egg_init
       pokemon.memo_text = [28, 31]
       return pokemon
@@ -124,6 +125,7 @@ module PFM
     # @return [Boolean]
     def full?(id)
       return false unless (pokemon_list = @daycares.dig(id, :pokemon))
+
       return pokemon_list.size > 1
     end
 
@@ -158,6 +160,7 @@ module PFM
       # If there's a change to breed, we try to find the right baby using the special lay check
       if rate != 0
         return if special_lay_check(daycare, female, male)
+
         male_data, female_data = get_pokemon_data(male, female)
         daycare[:layable] = female_data.baby
         daycare[:rate] = 0 if daycare[:layable] == 0
@@ -192,7 +195,7 @@ module PFM
       return false
     end
 
-    # Give 1 exp point to a pokemon 
+    # Give 1 exp point to a pokemon
     # @param pokemon [PFM::Pokemon] the pokemon to give one exp point
     def exp_pokemon(pokemon)
       return if pokemon.level >= PFM.game_state.level_max_limit
