@@ -37,6 +37,25 @@ module PSDKEditor
     end
   end
 
+  # Return the filename of a csv file
+  # @param csv_id [Integer]
+  # @return [String]
+  def csv_filename(csv_id)
+    format('Data/Text/Dialogs/%<file_id>d.csv', file_id: csv_id)
+  end
+
+  # Create a csv file if doesn't exist
+  # @param csv_id [Integer]
+  # @param data [Array<Array>]
+  def create_csv(csv_id, data)
+    return if File.exist?(csv_filename(csv_id))
+
+    data.unshift(%w[en fr it de es ko kana])
+    CSV.open(csv_filename(csv_id), 'w') do |csv|
+      data.each { |row| csv << row }
+    end
+  end
+
   # Function that convert Item data to PSDK Editor format
   def convert_items
     GameData::Item.all.each do |item|
@@ -58,7 +77,7 @@ module PSDKEditor
       type_data = {
         textId: type.text_id, klass: 'Type', id: type.id, dbSymbol: type.db_symbol,
         damageTo: GameData::Type.all.map do |def_type|
-          def_type.on_hit_tbl[index] != 1 ? { defensiveType: def_type.id, factor: def_type.on_hit_tbl[index] } : nil
+          def_type.on_hit_tbl[index] != 1 ? { defensiveType: def_type.db_symbol, factor: def_type.on_hit_tbl[index] } : nil
         end.compact
       }
       next if check_db_symbol(type)
@@ -102,6 +121,13 @@ module PSDKEditor
       }
       File.write(File.join(ROOT, 'zones', "zone_#{zone.id}.json"), zone_data.to_json)
     end
+    group_names = []
+    @group_index.times do |i|
+      group_name = Array.new(7, "Group #{i}")
+      group_name[1] = "Groupe #{i}"
+      group_names << group_name
+    end
+    create_csv(100_061, group_names)
   end
 
   # Function that convert the WorldMap data to PSDK Editor format
@@ -124,6 +150,7 @@ module PSDKEditor
 
   # Function that convert the trainers
   def convert_trainers
+    trainer_names = []
     GameData::Trainer.all.each do |trainer|
       trainer_data = {
         klass: 'TrainerBattleSetup', id: trainer.id, dbSymbol: "trainer_#{trainer.id}",
@@ -131,8 +158,11 @@ module PSDKEditor
         battlers: [trainer.battler], bags: [], battleId: 0, ai: 0,
         party: [convert_trainer_party(trainer.team)]
       }
+      trainer_name = trainer.internal_names.flatten.first
+      trainer_names << Array.new(7, trainer_name)
       File.write(File.join(ROOT, 'trainers', "trainer_#{trainer.id}.json"), trainer_data.to_json)
     end
+    create_csv(100_062, trainer_names)
   end
 
   # Function that convert Pokemon data to PSDK Editor format
@@ -333,6 +363,7 @@ module PSDKEditor
       setup = {
         specie: GameData::Pokemon[pkmn[:id]].db_symbol, form: pkmn[:form] || 0, shinySetup: shiny_setup(pkmn),
         levelSetup: { kind: 'fixed', level: pkmn[:level] },
+        randomEncounterChance: 1,
         expandPokemonSetup: expand_pokemon_setup(pkmn)
       }
       next setup
