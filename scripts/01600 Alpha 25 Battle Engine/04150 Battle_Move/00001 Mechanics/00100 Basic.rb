@@ -9,7 +9,7 @@ module Battle
         return true if status?
         raise 'Badly configured move, it should have positive power' if power < 0
 
-        actual_targets.each do |target|
+        successful_damages = actual_targets.map do |target|
           hp = damages(user, target)
           damage_handler = @logic.damage_handler
           damage_handler.damage_change_with_process(hp, target, user, self) do
@@ -17,9 +17,13 @@ module Battle
             efficent_message(effectiveness, target) if hp > 0
           end
           recoil(hp, user) if recoil? && damage_handler.instance_variable_get(:@reason).nil?
-          return false if damage_handler.instance_variable_get(:@reason)
+          next false if damage_handler.instance_variable_get(:@reason)
+
+          next true
         end
-        return true
+        new_targets = actual_targets.map.with_index { |target, index| successful_damages[index] && target }.select { |target| target }
+        actual_targets.clear.concat(new_targets)
+        return successful_damages.include?(true)
       end
 
       # Test if the effect is working
