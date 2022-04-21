@@ -155,31 +155,44 @@ module PFM
       return @form = 0
     end
 
+    # Determine the form of Shaymin
+    # @param reason [Symbol]
+    def shaymin_form(reason)
+      return 0 if frozen?
+      return 1 if @form == 1 && ($env.morning? || $env.day?)
+      return 1 if reason == :gracidea && ($env.morning? || $env.day?)
+
+      return 0
+    end
+
     # Determine the form of the Kyurem
     # @param [Symbol] reason The db_symbol of the Pokemon used for the fusion
     def kyurem_form(reason)
-      return @form = 1 if reason == :zekrom
-      return @form = 2 if reason == :reshiram
+      return @form unless %i[reshiram zekrom none].include?(reason)
+      return 1 if reason == :zekrom
+      return 2 if reason == :reshiram
 
-      return @form = 0
+      return 0
     end
 
     # Determine the form of the Necrozma
     # @param [Symbol] reason The db_symbol of the Pokemon used for the fusion
     def necrozma_form(reason)
-      return @form = 1 if reason == :solgaleo
-      return @form = 2 if reason == :lunala
+      return @form unless %i[solgaleo lunala none].include?(reason)
+      return 1 if reason == :solgaleo
+      return 2 if reason == :lunala
 
-      return @form = 0
+      return 0
     end
 
     # Determine the form of the Calyrex
     # @param [Symbol] reason The db_symbol of the Pokemon used for the fusion
     def calyrex_form(reason)
-      return @form = 1 if reason == :glastrier
-      return @form = 2 if reason == :spectrier
+      return @form unless %i[glastrier spectrier none].include?(reason)
+      return 1 if reason == :glastrier
+      return 2 if reason == :spectrier
 
-      return @form = 0
+      return 0
     end
 
     FORM_GENERATION[:unown] = proc { @form = @code % 28 }
@@ -211,7 +224,7 @@ module PFM
 
     FORM_CALIBRATE[:giratina] = proc { @form = item_db_symbol == :griseous_orb ? 1 : 0 }
     FORM_CALIBRATE[:arceus] = proc { @form = ArceusItem.index(item_db_symbol).to_i }
-    FORM_CALIBRATE[:shaymin] = proc { |reason| @form = reason == :gracidea && !frozen? && ($env.morning? || $env.day?) ? 1 : 0 }
+    FORM_CALIBRATE[:shaymin] = proc { |reason| @form = shaymin_form(reason) }
     FORM_CALIBRATE[:genesect] = proc { @form = GenesectModules.index(item_db_symbol).to_i }
     FORM_CALIBRATE[:silvally] = proc { @form = SilvallyROM.index(item_db_symbol).to_i }
     FORM_CALIBRATE[:deerling] = FORM_CALIBRATE[:sawsbuck] = proc { @form = current_deerling_form }
