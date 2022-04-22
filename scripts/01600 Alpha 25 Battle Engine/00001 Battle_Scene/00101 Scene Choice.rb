@@ -21,7 +21,7 @@ module Battle
       # If no enemy is alive force IA to switch
       return @next_update = :update_battle_phase if force_ia_switch?
       # If the battle does not allow player choice we skip
-      return @next_update = :trigger_all_AI if no_player_action?
+      return @next_update = :trigger_all_AI if no_player_action? && $game_switches[Yuki::Sw::BT_AI_CAN_WIN]
       # If the method was called and the player cannot make another choice it's a bug so we end the battle
       return @next_update = :battle_end unless can_player_make_another_action_choice?
 

@@ -80,6 +80,10 @@ module Battle
     def can_battle_continue?
       return false if @battle_result >= 0
 
+      if all_battlers.any?(&:from_party?) && all_battlers.select(&:from_party?).all?(&:dead?) && !$game_switches[Yuki::Sw::BT_AI_CAN_WIN]
+        @battle_result = 2
+        return false
+      end
       banks_that_can_fight = @battlers.map.with_index { |battlers, bank| battlers.any?(&:alive?) ? bank : nil }.compact
       # It's a victory if the player still have a Pokemon on its bank
       if banks_that_can_fight.size <= 1

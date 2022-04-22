@@ -8,6 +8,7 @@ module Battle
       def process
         @scene.message_window.blocking = true
         players_pokemon = @logic.all_battlers.select(&:from_party?)
+        players_pokemon.concat($actors) if players_pokemon.empty?
         $game_temp.battle_can_lose = false if PFM.game_state.nuzlocke.enabled? && !$game_switches[Yuki::Sw::BT_AUTHORIZE_DEFEAT_NUZLOCKE]
         exec_hooks(BattleEndHandler, :battle_end, binding)
         exec_hooks(BattleEndHandler, :battle_end_no_defeat, binding) if @logic.battle_result != 2
@@ -259,16 +260,17 @@ module Battle
       end
     end
 
-    BattleEndHandler.register('PSDK stop cycling') do |_, players_pokemon|
-      $game_player.leave_cycling_state if players_pokemon.all?(&:dead?) && !$game_temp.battle_can_lose
+    BattleEndHandler.register('PSDK stop cycling') do |handler, players_pokemon|
+      $game_player.leave_cycling_state if players_pokemon.all?(&:dead?) && !$game_temp.battle_can_lose && handler.logic.battle_result == 2
     end
 
-    BattleEndHandler.register('Reset Z position of the player') do |_, players_pokemon|
-      $game_player.z = 0 if players_pokemon.all?(&:dead?) && !$game_temp.battle_can_lose
+    BattleEndHandler.register('Reset Z position of the player') do |handler, players_pokemon|
+      $game_player.z = 0 if players_pokemon.all?(&:dead?) && !$game_temp.battle_can_lose && handler.logic.battle_result == 2
     end
 
     BattleEndHandler.register('PSDK send player back to Pokemon Center') do |handler, players_pokemon|
       next unless players_pokemon.all?(&:dead?)
+      next if handler.logic.battle_result != 2
 
       unless $game_temp.battle_can_lose
         handler.player_loose_sequence

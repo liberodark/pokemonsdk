@@ -98,6 +98,8 @@ module Yuki
     BT_AUTHORIZE_DEFEAT_NUZLOCKE = 46
     # Add the Reminder in the Party Menu
     BT_Party_Menu_Reminder = 47
+    # Make the AI able to win a battle
+    BT_AI_CAN_WIN = 48
     # If the Water Reflection is disabled
     WATER_REFLECTION_DISABLED = 51
     # If the player is running
