@@ -54,10 +54,9 @@ module Battle
       def on_damage_prevention(handler, hp, target, launcher, skill)
         return if target != @pokemon || !skill
         return if skill.authentic?
-        return if launcher&.has_ability?(:infiltrator)
+        return if launcher&.has_ability?(:infiltrator) && !%i[transform sky_drop].include?(skill.db_symbol)
 
-        result_hp = hp - @hp
-        handler.prevent_change do
+        return handler.prevent_change do
           @hp -= hp
           if @hp <= 0
             kill
@@ -68,9 +67,6 @@ module Battle
             handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 791, target))
           end
         end
-
-        # We modify the HP if the substitute broke
-        return result_hp <= 0 ? :prevent : result_hp
       end
 
       # Function called when a status_prevention is checked
