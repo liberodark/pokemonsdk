@@ -68,7 +68,7 @@ class PluginManager
     @plugins.each(&:evaluate_pre_compatibility)
     check_dependencies
     @plugins.each_with_index { |plugin, index| plugin.extract(index) }
-    ScriptLoader.load_vscode_scripts(PLUGIN_SCRIPTS_FOLDER)
+    ScriptLoader.load_vscode_scripts(File.expand_path(PLUGIN_SCRIPTS_FOLDER))
     @plugins.each(&:evaluate_post_compatibility)
     save_data(@plugins.map(&:config), PLUGIN_INFO_FILE)
   end

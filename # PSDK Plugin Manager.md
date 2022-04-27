@@ -54,7 +54,7 @@ Here's the description of each field of the `config.yml` file:
 - `psdk_compatibility_script`: Name of the script to execute to check if the plugin is compatible with PSDK. This field is optional, you can remove this line if you don't use it.
 - `retry_psdk_compatibility_after_plugin_load`: Boolean telling if the `psdk_compatibility_script` should also be executed after all the plugins were installed and loaded.
 - `additional_compatibility_script`: Name of the script to execute to check if the other plugins works fine with this plugin. This field is optional, you can remove this line if you don't use it.
-- `added_files`: List of the files the plugin adds, this is actually parameter sent to `Dir[]` but you can specify each files one by one. The files needs to exist at their definitive location when you build the plugin if you want them to be added in the plugin.
+- `added_files`: List of the files the plugin adds, this is actually parameter sent to `Dir[]` but you can specify each files one by one. The files needs to exist at their definitive location when you build the plugin if you want them to be added in the plugin. In the case you want to add files that are located at the root of your project, make sure to add `./` to the filepath. Example : `./my_file.extension`
 
 ### The `deps` in the `config.yml` file
 
@@ -98,6 +98,12 @@ deps:
   :version_min: 1.0.0.0
   :version_max: 25.0.0.0
 ```
+
+### Structuring your folder
+
+The PluginManager needs you to structure the folder of your plugin in a certain way to work correctly. Starting from your folder located in project_root/scripts, PSDK will search for the `config.yml` file we talked about earlier. It'll also seek the files informed for `psdk_compatibility_script` and `additional_compatibility_script`. Then, PSDK will seek a new scripts folder in which the custom script will be located (`project_root/scripts/your_folder/scripts`) Of course, your custom script still need to follow the naming norm (XXXXX NameOfScript.rb). 
+
+In the case you need any visual example, please check this repository as it shows how a plugin should be structured : https://gitlab.com/NuriYuri/psdk-plugins
 
 ### The command to run to build the plugin
 
