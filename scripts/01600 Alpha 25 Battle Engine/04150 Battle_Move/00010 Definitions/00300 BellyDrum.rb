@@ -11,9 +11,8 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        hp = (user.max_hp / 2).floor
         can_change_atk = logic.stat_change_handler.stat_increasable?(:atk, user)
-        if user.hp < hp || !can_change_atk
+        if user.hp_rate < 0.51 || !can_change_atk
           show_usage_failure(user)
           return false
         end
@@ -26,7 +25,7 @@ module Battle
       def deal_effect(user, actual_targets)
         hp = (user.max_hp / 2).floor
         scene.visual.show_hp_animations([user], [-hp])
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 1255, user))
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 613, user))
         logic.stat_change_handler.stat_change_with_process(:atk, 12, user)
       end
     end

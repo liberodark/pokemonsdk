@@ -35,6 +35,7 @@ module Battle
         effectiveness = @can_see_effectiveness && !move_heuristic.ignore_effectiveness? ? move_effectiveness(move, user, target) : 1.0
         heuristic *= move_power(move, user, target, effectiveness) if @can_see_power && !move_heuristic.ignore_power?
         heuristic *= move_heuristic.compute(move, user, target, self) if @can_see_move_kind || move_heuristic.overwrite_move_kind_flag?
+        heuristic *= move_status_modifier(move, user, target)
         return heuristic
       end
 
@@ -71,6 +72,21 @@ module Battle
         # Constrict: 10 + lowest effectiveness => 0.750885
         # Explosion: 250 + best effectiveness => 1.0
         return 0.75 + move.real_base_power(user, target) * effectiveness / 4000
+      end
+
+      # Process the move status modifier
+      # @param move [Battle::Move]
+      # @param user [PFM::PokemonBattler]
+      # @param target [PFM::PokemonBattler]
+      # @return [Float]
+      def move_status_modifier(move, user, target)
+        result = 1.0
+        return result if move.status_effect == 0
+
+        result = 0 if move.status_effect == target.status && move.status?
+        move_status = Battle::Logic::StatusChangeHandler::STATUS_ID_TO_SYMBOL[move.status_effect]
+        result = 0 if !@scene.logic.status_change_handler.status_appliable?(move_status, target, user, move) && @can_switch
+        return result
       end
 
       # Group the move actions when they're hitting several targets
