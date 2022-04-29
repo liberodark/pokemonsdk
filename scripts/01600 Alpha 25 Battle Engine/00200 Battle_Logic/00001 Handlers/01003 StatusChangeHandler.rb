@@ -200,8 +200,11 @@ module Battle
     end
 
     # Cannot be poisoned
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: can_be_poisoned') do |handler, status, target, _, skill|
-      next if status != :poison && status != :toxic || target.can_be_poisoned?
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: can_be_poisoned') do |handler, status, target, launcher, skill|
+      next unless %i[poison toxic].include?(status)
+      next if launcher&.has_ability?(:corrosion)
+      next if target.can_be_poisoned?
+
 
       next handler.prevent_change do
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 252, target)) if skill.nil? || skill.status?
