@@ -19,7 +19,7 @@
 #
 # Installation:
 #   * Create a new code session above Main and paste this script there;
-#   * Go to http://gts.hillstech.co and create a user account;
+#   * Go to http://gts.kawasemi.de/ and create a user account;
 #   * Go to the 'new game' tab on the site and create a new game;
 #   * Get the game ID that was generated on the site and paste it
 #     into the GAMEID variable in this script;
@@ -50,9 +50,9 @@
 module GTS
   module Settings
     # ID of the game, replace 0 by what you got on the pannel
-    GAMEID = 161
+    GAMEID = 67
     # URL of the GTS server
-    URL = 'https://gts.hillstech.co/api.php?i='
+    URL = 'http://gts.kawasemi.de/api.php?i='
     # Condition to see the Pokemon in the search result (All/Seen/Owned)
     SPECIES_SHOWN = 'All'
     # How the Pokemon are searched (Alphabetical/Regional)
