@@ -9,6 +9,28 @@ module GameData
 
     module_function
 
+    class Model
+      # ID of the ability
+      # @type [Integer]
+      attr_reader :id
+
+      def initialize(id)
+        @id = id
+      end
+
+      def name
+        return Abilities.name(@id)
+      end
+
+      def descr
+        return Abilities.descr(@id)
+      end
+
+      def db_symbol
+        return Abilities.db_symbol(@id)
+      end
+    end
+
     # Returns the name of an ability
     # @param id [Integer, Symbol] id of the ability in the database.
     # @return [String] the name of the ability or the name of the first ability.

@@ -21,7 +21,7 @@ module GamePlay
     def selected_item_db_symbol
       return :__undef__ if return_data == -1
 
-      return GameData::Item.db_symbol(return_data)
+      return data_item(return_data).db_symbol
     end
   end
 end

@@ -5,7 +5,7 @@ module UI
     # @param viewport [Viewport, nil] the viewport in which the sprite is stored
     # @param from_pokedex [Boolean] if the type is the Pokedex type (other source image)
     def initialize(viewport, from_pokedex = false)
-      super(viewport, 1, GameData::Type.all.size)
+      super(viewport, 1, each_data_type.to_a.size)
       filename = "types_#{$options.language}"
       if from_pokedex
         set_bitmap(RPG::Cache.pokedex_exist?(filename) ? filename : 'types', :pokedex)
@@ -125,7 +125,7 @@ module UI
       if pokemon
         item_id = ($game_temp.in_battle ? pokemon.battle_item : pokemon.item_holding) || 0
         self.visible = item_id != 0
-        set_bitmap(GameData::Item[item_id].icon, :icon) if visible
+        set_bitmap(data_item(item_id).icon, :icon) if visible
       else
         self.visible = false
       end
@@ -299,7 +299,7 @@ module UI
     # @param item_id [Integer, Symbol, GameData::Item]
     def data=(item_id)
       item_id = item_id.db_symbol if item_id.is_a?(GameData::Item)
-      set_bitmap(GameData::Item[item_id].icon, :icon)
+      set_bitmap(data_item(item_id).icon, :icon)
     end
   end
 
@@ -310,7 +310,7 @@ module UI
     # Create a new category sprite
     # @param viewport [Viewport] viewport in which the sprite is shown
     def initialize(viewport)
-      super(viewport, 1, GameData::Type.all.size)
+      super(viewport, 1, each_data_type.to_a.size)
       set_bitmap(IMAGE_NAME, :interface)
     end
 

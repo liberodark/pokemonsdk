@@ -176,7 +176,7 @@ module PFM
     # Return the db_symbol of the current ability of the Pokemon
     # @return [Symbol]
     def ability_db_symbol
-      return GameData::Abilities.db_symbol(ability || -1)
+      return data_ability(ability || -1).db_symbol
     end
 
     # Return the db_symbol of the current ability of the Pokemon for battle
@@ -197,7 +197,7 @@ module PFM
     # Return the db_symbol of the current item the Pokemon is holding
     # @return [Symbol]
     def item_db_symbol
-      GameData::Item.db_symbol(@battle_item || -1)
+      data_item(@battle_item || -1).db_symbol
     end
 
     # Get the item for battle
@@ -224,7 +224,7 @@ module PFM
     # @param db_symbol [Symbol] db_symbol of the item
     # @return [Boolean]
     def hold_berry?(db_symbol)
-      return false unless GameData::Item[db_symbol]&.socket == 4
+      return false unless data_item(db_symbol)&.socket == 4
 
       return hold_item?(db_symbol)
     end

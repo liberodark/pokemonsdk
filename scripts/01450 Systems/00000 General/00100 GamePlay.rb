@@ -138,7 +138,7 @@ module GamePlay
     # @yieldparam party_menu_scene [PartyMenuMixin]
     def open_party_menu_to_give_item_to_pokemon(item_db_symbol, party = PFM.game_state.actors, &block)
       # LEGACY: Deep internal logic still use id :(:(:(
-      item_id = GameData::Item[item_db_symbol].id
+      item_id = data_item(item_db_symbol).id
       current_scene.call_scene(party_menu_class, party, :hold, item_id, &block)
     end
 
@@ -165,7 +165,7 @@ module GamePlay
     def open_party_menu_to_select_a_party(party, amount, excluded_pokemon = nil, &block)
       PFM.game_state.game_variables[Yuki::Var::Max_Pokemon_Select] = amount
       # LEGACY: Deep internal logic still use id :(:(:(
-      excluded_pokemon_ids = excluded_pokemon&.map { |symbol| GameData::Pokemon[symbol, 0].id }
+      excluded_pokemon_ids = excluded_pokemon&.map { |symbol| data_creature(symbol).id }
       current_scene.call_scene(party_menu_class, party, :select, excluded_pokemon_ids, &block)
     end
 

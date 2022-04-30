@@ -151,10 +151,10 @@ module PFM
       if id.class == PFM::Pokemon
         @forced_wild_battle = [id, *others]
       else
-        id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
+        id = data_creature(id).id if id.is_a?(Symbol)
         @forced_wild_battle = [PFM::Pokemon.new(id, level)]
         0.step(others.size - 1, 2) do |i|
-          others[i] = GameData::Pokemon.get_id(others[i]) if others[i].is_a?(Symbol)
+          others[i] = data_creature(others[i]).id if others[i].is_a?(Symbol)
           @forced_wild_battle << PFM::Pokemon.new(others[i], others[i + 1])
         end
       end

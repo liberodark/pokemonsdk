@@ -77,8 +77,8 @@ module PFM
     # @param force_shiny [Boolean] if the Pokemon have 100% chance to be shiny
     # @param no_shiny [Boolean] if the Pokemon have 0% chance to be shiny (override force_shiny)
     def primary_data_initialize(id, level, force_shiny, no_shiny)
-      real_id = id.is_a?(Symbol) ? GameData::Pokemon.get_id(id) : id.to_i
-      log_error("Bad Pokémon ID (#{id}) - Ignore if you opened the Pokedex") unless GameData::Pokemon.id_valid?(real_id)
+      real_id = id.is_a?(Symbol) ? data_creature(id).id : id.to_i
+      log_error("Bad Pokémon ID (#{id}) - Ignore if you opened the Pokedex") if real_id == 0
 
       @id = real_id
       code_initialize
@@ -119,7 +119,7 @@ module PFM
     # Method that initialize the data related to caching
     # @param opts [Hash] Hash describing optional value you want to assign to the Pokemon
     def catch_data_initialize(opts)
-      @captured_with = GameData::Item[opts[:captured_with] || :poke_ball].id
+      @captured_with = data_item(opts[:captured_with] || :poke_ball).id
       @captured_at = (opts[:captured_at] || Time.now).to_i
       @captured_level = opts[:captured_level] || @level
       @egg_in = opts[:egg_in]
@@ -139,7 +139,7 @@ module PFM
     # @param form [Integer] Form index of the Pokemon (-1 = automatic generation)
     def form_data_initialize(form)
       form = form_generation(form)
-      form = 0 unless GameData::Pokemon.all[id][form]
+      form = 0 unless data_creature(id).forms.none? { |creature_form| creature_form.form == form }
       @form = form
       exp_initialize
     end
@@ -211,7 +211,7 @@ module PFM
       # Take the item according to the rng (% in item_percent_array should be higher than the rng val)
       rng = rand(100)
       @item_holding = item_id_array[item_percent_array.find_index { |value| value > rng } || 101]
-      @item_holding = GameData::Item[opts[:item] || @item_holding.to_i].id
+      @item_holding = data_item(opts[:item] || @item_holding.to_i).id
     end
 
     # Method that initialize the ability
@@ -224,7 +224,7 @@ module PFM
         ability_chance = rand(100)
         @ability = ability[@ability_index = ABILITY_CHANCES.find_index { |value| value > ability_chance }].to_i
       end
-      @ability = GameData::Abilities.find_using_symbol(@ability) unless @ability.is_a?(Integer)
+      @ability = data_ability(@ability).id unless @ability.is_a?(Integer)
       @ability_used = false
     end
   end

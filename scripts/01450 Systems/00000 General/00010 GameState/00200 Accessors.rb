@@ -328,7 +328,7 @@ module PFM
 
       @actors.each do |pokemon|
         value = pokemon.loyalty < 200 ? 2 : 1
-        value *= 2 if GameData::Item.db_symbol(pokemon.captured_with) == :luxury_ball
+        value *= 2 if data_item(pokemon.captured_with).db_symbol == :luxury_ball
         value *= 1.5 if pokemon.item_db_symbol == :soothe_bell
         pokemon.loyalty += value.floor
       end

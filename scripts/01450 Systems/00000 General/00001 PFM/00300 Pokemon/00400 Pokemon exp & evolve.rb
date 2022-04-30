@@ -36,7 +36,7 @@ module PFM
     # Return the base experience of the Pokemon
     # @return [Integer]
     def base_exp
-      return GameData::Pokemon[@sub_id || @id, @form].base_exp
+      return data_creature_form(@sub_id || @id, @form).base_exp
     end
 
     # Return the exp curve type ID
@@ -107,7 +107,7 @@ module PFM
       value = 3
       value = 4 if loyalty < 200
       value = 5 if loyalty < 100
-      value *= 2 if GameData::Item.db_symbol(captured_with) == :luxury_ball
+      value *= 2 if data_item(captured_with).db_symbol == :luxury_ball
       value *= 1.5 if item_db_symbol == :soothe_bell
       self.loyalty += value.floor
     end
@@ -289,11 +289,11 @@ module PFM
     # @param new_id [Integer] the new id of the Pokemon
     def id=(new_id)
       @character = nil
-      if new_id && GameData::Pokemon.id_valid?(new_id) && (forms = GameData::Pokemon.get_forms(new_id))
+      if new_id && data_creature(new_id).id != 0 && (forms = data_creature(new_id).forms)
         @id = new_id
-        @form = 0 unless forms[@form]
+        @form = 0 if forms.none? { |creature_form| creature_form.form == @form }
         @form = form_generation(-1) if @form == 0
-        @form = 0 unless forms[@form]
+        @form = 0 if forms.none? { |creature_form| creature_form.form == @form }
         update_ability
       end
     end

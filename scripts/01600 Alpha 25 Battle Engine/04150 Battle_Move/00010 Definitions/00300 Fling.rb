@@ -18,14 +18,14 @@ module Battle
       # @param name [Symbol]
       # @return [Boolean]
       def valid_held_item?(name)
-        (GameData::Item[name].fling_power || 0) > 0
+        (data_item(name).fling_power || 0) > 0
       end
 
       # Get the real power of the move depending on the item
       # @param name [Symbol]
       # @return [Integer]
       def get_power_by_item(name)
-        GameData::Item[name].fling_power || 0
+        data_item(name).fling_power || 0
       end
     end
     Move.register(:s_fling, Fling)

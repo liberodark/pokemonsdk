@@ -31,6 +31,10 @@ module GameData
       @special_group = 0
     end
 
+    def class_name
+      return text_get(29, id || 0)
+    end
+
     @first_index = 0
     class << self
       # Name of the file containing the data

@@ -143,21 +143,21 @@ module GTS
     if Settings::SORT_MODE == 'Alphabetical'
       letter = index.is_a?(String) ? index : (0x40 + index).chr # index >= 1, A = 0x41
       # Select the Pokemon that start with the right letter
-      species_list.select! { |i| GameData::Pokemon[i].name.start_with?(letter) }
+      species_list.select! { |i| data_creature(i).name.start_with?(letter) }
     elsif Settings::SORT_MODE == 'Regional'
       # /!\ PSDK has no multi-regional Dex
       real_index = index == 1 && $pokedex.national? ? -1 : 0
       if real_index != -1
         # Reject non-national Pokemon
-        species_list.reject! { |i| GameData::Pokemon[i].id_bis == 0 }
+        species_list.reject! { |i| data_creature(i).id_bis == 0 }
         # Sort Pokemon by their Regional ID
-        species_list.sort! { |a, b| GameData::Pokemon[a].id_bis <=> GameData::Pokemon[b].id_bis }
+        species_list.sort! { |a, b| data_creature(a).id_bis <=> data_creature(b).id_bis }
       end
     end
 
-    to_id = proc { |i| $pokedex.national? ? i : GameData::Pokemon[i].id_bis }
+    to_id = proc { |i| $pokedex.national? ? i : data_creature(i).id_bis }
 
-    commands.concat(species_list.collect { |i| format('%03d : %0s', to_id.call(i), GameData::Pokemon[i].name) })
+    commands.concat(species_list.collect { |i| format('%03d : %0s', to_id.call(i), data_creature(i).name) })
     if commands.size <= 1
       $scene.display_message(ext_text(8997, 0))
       return 0
@@ -172,10 +172,10 @@ module GTS
   def species_list_from_criteria
     show_seen = Settings::SPECIES_SHOWN == 'Seen'
     show_captured = Settings::SPECIES_SHOWN == 'Owned'
-    return (1..GameData::Pokemon::LAST_ID).select do |i|
+    return each_data_creature.map(&:id).select do |i|
       next(false) if show_seen && !$pokedex.has_seen?(i)
       next(false) if show_captured && !$pokedex.has_captured?(i)
-      next(false) if Settings::BLACK_LIST.include?(i) || Settings::BLACK_LIST.include?(GameData::Pokemon.db_symbol(i))
+      next(false) if Settings::BLACK_LIST.include?(i) || Settings::BLACK_LIST.include?(data_creature(i).db_symbol)
 
       next(true)
     end
@@ -456,7 +456,7 @@ module GTS
     end
 
     def draw_wanted_data
-      @texts[0].text = @wanted_data[0] > 0 ? GameData::Pokemon[@wanted_data[0]].name : '????'
+      @texts[0].text = @wanted_data[0] > 0 ? data_creature(@wanted_data[0]).name : '????'
       @texts[1].text = GTS.genders[@wanted_data[3]]
       @texts[2].text = format(ext_text(8997, 18), min: @wanted_data[1], max: @wanted_data[2])
     end
@@ -742,7 +742,7 @@ module GTS
       @win_text.add_text(2, 220, 238, 15, ext_text(8997, 43), color: 9)
 
       data = {
-        id: wanted_data[0], name: GameData::Pokemon[wanted_data[0]].name,
+        id: wanted_data[0], name: data_creature(wanted_data[0]).name,
         from: wanted_data[1], to: wanted_data[2],
         sexe: GTS.genders[wanted_data[3]]
       }

@@ -20,7 +20,7 @@ module GamePlay
     def use_item_in_battle
       item_id = @item_list[index = @index]
       return action_b if item_id == nil
-      return play_buzzer_se unless GameData::Item[item_id].battle_usable
+      return play_buzzer_se unless data_item(item_id).battle_usable
 
       play_decision_se
       util_item_useitem(item_id)
@@ -103,7 +103,7 @@ module GamePlay
       $game_temp.num_input_variable_id = Yuki::Var::EnteredNumber
       $game_temp.num_input_digits_max = $bag.item_quantity(item_id).to_s.size
       $game_temp.num_input_start = $bag.item_quantity(item_id)
-      PFM::Text.set_item_name(GameData::Item[item_id].exact_name)
+      PFM::Text.set_item_name(data_item(item_id).exact_name)
       display_message(parse_text(22, 38))
       value = $game_variables[Yuki::Var::EnteredNumber]
       if value > 0
@@ -161,7 +161,7 @@ module GamePlay
       @search_bar.visible = true
       sort_sprites
       @searching = ''
-      @item_ids ||= 1..GameData::Item::LAST_ID
+      @item_ids ||= each_data_item.map(&:id)
       @saved_keys = Input::Keys[:A].clone
       Input::Keys[:A].clear << Input::Keyboard::Enter
       @pocket_name.text = ext_text(9000, 160)
@@ -175,14 +175,13 @@ module GamePlay
     # @param char [String] added char
     def search_add(_full_text, char)
       # First attempt
-      gdi = GameData::Item
       searching = Regexp.new(@searching + char, true)
-      results = @item_ids.select { |id| gdi[id].exact_name =~ searching && $bag.contain_item?(id) }
+      results = @item_ids.select { |id| data_item(id).exact_name =~ searching && $bag.contain_item?(id) }
       if results.empty?
         # Try with other . instead
         char = '.'
         searching = Regexp.new(@searching + char, true)
-        results = @item_ids.select { |id| gdi[id].exact_name =~ searching && $bag.contain_item?(id) }
+        results = @item_ids.select { |id| data_item(id).exact_name =~ searching && $bag.contain_item?(id) }
       end
       @item_list = results
       @last_index = results.size
@@ -197,9 +196,8 @@ module GamePlay
     # @param _char [String] removed char
     def search_rem(_full_text, _char)
       @searching.chop!
-      gdi = GameData::Item
       searching = Regexp.new(@searching, true)
-      results = @item_ids.select { |id| gdi[id].exact_name =~ searching && $bag.contain_item?(id) }
+      results = @item_ids.select { |id| data_item(id).exact_name =~ searching && $bag.contain_item?(id) }
       @item_list = results
       @last_index = results.size
       update_search_info
@@ -219,8 +217,8 @@ module GamePlay
       play_decision_se
       item_id = @item_list[@index]
       return action_b if item_id == nil
-      price = GameData::Item[item_id].price / 2
-      PFM::Text.set_item_name(GameData::Item[item_id].exact_name)
+      price = data_item(item_id).price / 2
+      PFM::Text.set_item_name(data_item(item_id).exact_name)
       if price > 0
         $game_temp.num_input_variable_id = ::Yuki::Var::EnteredNumber
         $game_temp.num_input_digits_max = $bag.item_quantity(item_id).to_s.size

@@ -63,14 +63,16 @@ module PFM
       @last_map_id = map_id = @game_state.game_map.map_id
       last_zone = @zone
       # Searching for the current zone
-      GameData::Zone.all.each_with_index do |data, index|
+      each_data_zone do |data|
         next unless data
+
         if data.map_included?(map_id)
-          load_zone_information(data, index)
+          load_zone_information(data, data.id)
           break
         end
       end
       return false if last_zone == @zone
+
       return @zone
     end
 
@@ -116,7 +118,7 @@ module PFM
     # Return the zone data in which the player is
     # @return [GameData::Zone]
     def current_zone_data
-      GameData::Zone.get(@zone)
+      data_zone(@zone)
     end
     alias get_current_zone_data current_zone_data
 
@@ -124,7 +126,8 @@ module PFM
     # @return [String]
     def current_zone_name
       zone = @master_zone
-      return GameData::Zone.get(zone).map_name if zone
+      return data_zone(zone).map_name if zone
+
       UNKNOWN_ZONE
     end
 
@@ -142,7 +145,7 @@ module PFM
     # @return [GameData::Map, nil] nil = no zone there
     def get_zone(x, y, worldmap_id = @worldmap)
       zone_id = GameData::WorldMap.get(worldmap_id).data[x, y]
-      return zone_id && zone_id >= 0 ? GameData::Zone.get(zone_id) : nil
+      return zone_id && zone_id >= 0 ? data_zone(zone_id) : nil
     end
 
     # Return the zone coordinate in the worldmap
@@ -150,7 +153,7 @@ module PFM
     # @param worldmap_id [Integer] <default : @worldmap> the worldmap to refer at
     # @return [Array(Integer, Integer)] the x,y coordinates
     def get_zone_pos(zone_id, worldmap_id = @worldmap)
-      return 0, 0 unless (zone = GameData::Zone.get(zone_id))
+      return 0, 0 unless (zone = data_zone(zone_id))
       return zone.pos_x, zone.pos_y if zone.pos_x && zone.pos_y
       # Trying to find the current zone
       w = GameData::WorldMap.get(worldmap_id).data.xsize
@@ -168,8 +171,8 @@ module PFM
     # @return [Boolean]
     def visited_zone?(zone)
       if zone.is_a?(GameData::Map)
-        zone_index = GameData::Zone.all.index(zone)
-        zone_index ||= GameData::Zone.all.find_index do |data|
+        zone_index = each_data_zone.find_index(zone)
+        zone_index ||= each_data_zone.find_index do |data|
           data.map_id == zone.map_id
         end
         zone = zone_index || -1
@@ -186,7 +189,7 @@ module PFM
       elsif zone.is_a?(GameData::Zone)
         return zone.worldmap_id || 0
       else
-        return GameData::Zone.get(zone).worldmap_id || 0
+        return data_zone(zone).worldmap_id || 0
       end
     end
 

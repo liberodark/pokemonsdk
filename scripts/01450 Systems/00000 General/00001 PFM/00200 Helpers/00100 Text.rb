@@ -330,7 +330,7 @@ module PFM
     # @param value [String, Symbol, Integer]
     # @param index [Integer] index of the item variable
     def set_item_name(value, index = 0)
-      value = GameData::Item[value].name if value.is_a?(Integer) || value.is_a?(Symbol)
+      value = data_item(value).name if value.is_a?(Integer) || value.is_a?(Symbol)
       set_variable(ITEM2[index].to_s, value.to_s)
     end
 
@@ -338,7 +338,7 @@ module PFM
     # @param value [String, Symbol, Integer]
     # @param index [Integer] index of the move variable
     def set_move_name(value, index = 0)
-      value = GameData::Skill[value].name if value.is_a?(Integer) || value.is_a?(Symbol)
+      value = data_move(value).name if value.is_a?(Integer) || value.is_a?(Symbol)
       set_variable(MOVE[index].to_s, value.to_s)
     end
 
@@ -346,8 +346,7 @@ module PFM
     # @param value [String, Symbol, Integer, PFM::Pokemon]
     # @param index [Integer] index of the move variable
     def set_ability_name(value, index = 0)
-      value = GameData::Abilities.find_using_symbol(item_id) if value.is_a?(Symbol)
-      value = GameData::Abilities.name(value) if value.is_a?(Integer)
+      value = data_ability(value).name if value.is_a?(Symbol) || value.is_a?(Integer)
       value = value.ability_name if value.is_a?(PFM::Pokemon)
       set_variable(ABILITY[index].to_s, value.to_s)
     end

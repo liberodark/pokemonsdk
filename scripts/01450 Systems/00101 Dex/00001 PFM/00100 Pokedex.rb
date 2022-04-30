@@ -20,10 +20,11 @@ module PFM
     def initialize(game_state = PFM.game_state)
       @seen = 0
       @captured = 0
-      @has_seen_and_forms = Array.new(GameData::Pokemon.all.size, 0)
-      @has_captured = Array.new(GameData::Pokemon.all.size, false)
-      @nb_fought = Array.new(GameData::Pokemon.all.size, 0)
-      @nb_captured = Array.new(GameData::Pokemon.all.size, 0)
+      all_creature_count = each_data_creature.to_a.size + 1
+      @has_seen_and_forms = Array.new(all_creature_count, 0)
+      @has_captured = Array.new(all_creature_count, false)
+      @nb_fought = Array.new(all_creature_count, 0)
+      @nb_captured = Array.new(all_creature_count, 0)
       @game_state = game_state
     end
 
@@ -72,7 +73,7 @@ module PFM
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     # @return [Integer]
     def pokemon_captured_count(id)
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
+      id = data_creature(id).id if id.is_a?(Symbol)
       return @nb_captured[id].to_i
     end
 
@@ -80,8 +81,8 @@ module PFM
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     # @param number [Integer] the new number
     def pokemon_captured_set_count(id, number)
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-      return if id >= GameData::Pokemon.all.size
+      id = data_creature(id).id
+      return if id == 0
 
       @nb_captured[id] = number.to_i
     end
@@ -89,8 +90,8 @@ module PFM
     # Increase the number of pokemon captured by specie
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     def pokemon_captured_inc(id)
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-      return if id >= GameData::Pokemon.all.size
+      id = data_creature(id).id
+      return if id == 0
 
       @nb_captured[id] = @nb_captured[id].to_i.next
     end
@@ -99,7 +100,7 @@ module PFM
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     # @return [Integer]
     def pokemon_fought(id)
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
+      id = data_creature(id).id if id.is_a?(Symbol)
       return @nb_fought[id].to_i
     end
 
@@ -109,8 +110,8 @@ module PFM
     def pokemon_mark_fought(id, number)
       return unless enabled?
 
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-      return if id >= GameData::Pokemon.all.size
+      id = data_creature(id).id
+      return if id == 0
 
       @nb_fought[id] = number.to_i
     end
@@ -120,8 +121,8 @@ module PFM
     def pokemon_fought_inc(id)
       return unless enabled?
 
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-      return if id >= GameData::Pokemon.all.size
+      id = data_creature(id).id
+      return if id == 0
 
       @nb_fought[id] = @nb_fought[id].to_i.next
     end
@@ -134,8 +135,8 @@ module PFM
     def mark_seen(id, form = 0, forced: false)
       return unless enabled? || forced
 
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-      return if id >= GameData::Pokemon.all.size
+      id = data_creature(id).id
+      return if id == 0
 
       @seen += 1 if @has_seen_and_forms[id].to_i == 0
       @has_seen_and_forms[id] = @has_seen_and_forms[id].to_i | (1 << form)
@@ -146,8 +147,8 @@ module PFM
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     # @param form [Integer, false] if false, all form will be unseen, otherwise the specific form will be unseen
     def unmark_seen(id, form = false)
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-      return if id >= GameData::Pokemon.all.size
+      id = data_creature(id).id
+      return if id == 0
 
       if form
         @has_seen_and_forms[id] = @has_seen_and_forms[id].to_i & ~(1 << form)
@@ -161,8 +162,8 @@ module PFM
     # Mark a Pokemon as captured
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     def mark_captured(id)
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-      return if id >= GameData::Pokemon.all.size
+      id = data_creature(id).id
+      return if id == 0
 
       unless @has_captured[id]
         @has_captured[id] = true
@@ -174,8 +175,8 @@ module PFM
     # Unmark a Pokemon as captured
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     def unmark_captured(id)
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-      return if id >= GameData::Pokemon.all.size
+      id = data_creature(id).id
+      return if id == 0
 
       if @has_captured[id]
         @has_captured[id] = false
@@ -188,8 +189,8 @@ module PFM
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     # @return [Boolean]
     def pokemon_seen?(id)
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-      return false if id >= GameData::Pokemon.all.size
+      id = data_creature(id).id
+      return false if id == 0
 
       return @has_seen_and_forms[id].to_i != 0
     end
@@ -199,8 +200,8 @@ module PFM
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     # @return [Boolean]
     def pokemon_caught?(id)
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-      return false if id >= GameData::Pokemon.all.size
+      id = data_creature(id).id
+      return false if id == 0
 
       return @has_captured[id]
     end
@@ -210,8 +211,8 @@ module PFM
     # @param id [Integer, Symbol] the id of the Pokemon in the database
     # @return [Integer] An interger where int[form] == 1 mean the form has been seen
     def form_seen(id)
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-      return 0 if id >= GameData::Pokemon.all.size
+      id = data_creature(id).id
+      return 0 if id == 0
 
       return @has_seen_and_forms[id].to_i
     end
@@ -221,7 +222,7 @@ module PFM
     def calibrate
       @seen = 0
       @captured = 0
-      1.step(GameData::Pokemon.all.size - 1) do |id|
+      1.step(data_creature.to_a.size) do |id|
         @seen += 1 if @has_seen_and_forms[id].to_i != 0
         @captured += 1 if @has_captured[id]
       end

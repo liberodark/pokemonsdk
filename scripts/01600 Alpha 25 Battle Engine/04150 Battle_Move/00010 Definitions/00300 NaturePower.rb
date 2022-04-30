@@ -13,7 +13,7 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        skill = GameData::Skill[element_by_location]
+        skill = data_move(element_by_location)
         log_data("nature power # becomes #{skill.db_symbol}")
 
         move = Battle::Move[skill.be_method].new(skill.id, 1, 1, @scene)

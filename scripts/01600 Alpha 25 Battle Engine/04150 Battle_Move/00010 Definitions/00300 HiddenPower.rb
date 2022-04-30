@@ -31,7 +31,7 @@ module Battle
         iv_list.each_with_index { |iv, i| index += (user.send(iv) & 1) * 2 ** i }
         index = (index * (types_table.length - 1) / 63).floor
         type_id = types_table[index]
-        log_data("Hidden power : internal index=#{index} > GameData::Types::#{GameData::Type[type_id].name.upcase}")
+        log_data("Hidden power : internal index=#{index} > GameData::Types::#{data_type(type_id).name.upcase}")
         return [type_id]
       end
 

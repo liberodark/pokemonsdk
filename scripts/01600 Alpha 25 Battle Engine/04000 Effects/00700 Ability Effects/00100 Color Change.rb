@@ -16,7 +16,7 @@ module Battle
           handler.scene.visual.show_ability(target)
           target.type1 = skill.type
           text = parse_text_with_pokemon(19, 899, target, PFM::Text::PKNICK[0] => target.given_name,
-                                                          '[VAR TYPE(0001)]' => GameData::Type[skill.type].name)
+                                                          '[VAR TYPE(0001)]' => data_type(skill.type).name)
           handler.scene.display_message_and_wait(text)
         end
       end

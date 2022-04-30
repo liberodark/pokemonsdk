@@ -9,7 +9,7 @@ module PFM
       def initialize(quest_id)
         @quest_id = quest_id
         @data = {}
-        quest = GameData::Quest[quest_id]
+        quest = data_quest(quest_id)
         data_set(:goals_visibility, quest.objectives.map { |objective| !objective.hidden_by_default })
       end
 
@@ -38,7 +38,7 @@ module PFM
       # @param args [Array] double check to ensure the arguments match the test
       def objective?(objective_method_name, *args)
         # @type [GameData::Quest]
-        quest = GameData::Quest[quest_id]
+        quest = data_quest(quest_id)
         # @type [Array<Boolean>]
         objective_visibility = data_get(:goals_visibility, nil.to_a)
         quest.objectives.each_with_index do |objective, index|
@@ -53,7 +53,7 @@ module PFM
 
       # Distribute the earning of the quest
       def distribute_earnings
-        data = GameData::Quest[@quest_id]
+        data = data_quest(@quest_id)
         data.earnings.each do |earning|
           send(earning.give_method_name, *earning.give_args)
         end
@@ -63,7 +63,7 @@ module PFM
       # Tell if all the objective of the quest are finished
       # @return [Boolean]
       def finished?
-        data = GameData::Quest[@quest_id]
+        data = data_quest(@quest_id)
         return data.objectives.all? do |objective|
           send(objective.test_method_name, *objective.test_method_args)
         end
@@ -75,7 +75,7 @@ module PFM
       def objective_text_list
         # @type [Array<Boolean>]
         objective_visibility = data_get(:goals_visibility, nil.to_a)
-        data = GameData::Quest[@quest_id]
+        data = data_quest(@quest_id)
         visible_objectives = data.objectives.select.with_index { |_, index| objective_visibility[index] }
         return visible_objectives.map do |objective|
           [
@@ -140,7 +140,7 @@ module PFM
       # @return [String]
       def text_obtain_item(item_id, amount)
         found = data_get(:obtained_items, item_id, 0).clamp(0, amount)
-        name = GameData::Item[item_id].name
+        name = data_item(item_id).name
         return format(ext_text(9000, 52), amount: amount, item_name: name, found: found)
       end
 
@@ -155,7 +155,7 @@ module PFM
       # @param pokemon_id [Integer] ID of the pokemon to see
       # @return [String]
       def text_see_pokemon(pokemon_id)
-        return format(ext_text(9000, 54), name: GameData::Pokemon[pokemon_id].name)
+        return format(ext_text(9000, 54), name: data_creature(pokemon_id).name)
       end
 
       # Test if the beat pokemon objective is validated
@@ -171,7 +171,7 @@ module PFM
       # @param amount [Integer] number of pokemon to beat
       # @return [String]
       def text_beat_pokemon(pokemon_id, amount)
-        name = GameData::Pokemon[pokemon_id].name
+        name = data_creature(pokemon_id).name
         found = data_get(:pokemon_beaten, pokemon_id, 0).clamp(0, amount)
         return format(ext_text(9000, 55), amount: amount, name: name, found: found)
       end
@@ -198,10 +198,10 @@ module PFM
       # @param data [Integer, Hash]
       # @return [String]
       def text_catch_pokemon_name(data)
-        return GameData::Pokemon[data].name if data.is_a?(Integer)
+        return data_creature(data).name if data.is_a?(Integer)
 
-        str = data[:id] ? GameData::Pokemon[data[:id]].name.dup : 'Pokémon'
-        str << format(ext_text(9000, 63), GameData::Type.get(data[:type]).name) if data[:type]
+        str = data[:id] ? data_creature(data[:id]).name.dup : 'Pokémon'
+        str << format(ext_text(9000, 63), data_type(data[:type]).name) if data[:type]
         str << format(ext_text(9000, 64), text_get(8, data[:nature])) if data[:nature]
         if (id = data[:min_level])
           str << format(ext_text(9000, 66), id)
@@ -293,7 +293,7 @@ module PFM
       # @param item_id [Integer, Symbol] ID of the item to give
       # @param amount [Integer] number of item to give
       def earning_item(item_id, amount)
-        item_id = GameData::Item.db_symbol(item_id) unless item_id.is_a?(Symbol)
+        item_id = data_item(item_id).db_symbol unless item_id.is_a?(Symbol)
         return if data_get(:earnings, :items, item_id, false)
 
         $bag.add_item(item_id, amount)
@@ -304,7 +304,7 @@ module PFM
       # @param item_id [Integer, Symbol] ID of the item to give
       # @param amount [Integer] number of item to give
       def text_earn_item(item_id, amount)
-        return format('%<amount>d %<name>s', amount: amount, name: GameData::Item[item_id].name)
+        return format('%<amount>d %<name>s', amount: amount, name: data_item(item_id).name)
       end
 
       # Getting Pokemon from a quest
@@ -321,7 +321,7 @@ module PFM
       # @param data [Integer, Symbol, Hash] data of the Pokémon to give
       def text_earn_pokemon(data)
         pokemon_id = data.is_a?(Hash) ? data[:id] : data
-        return format('1 %<name>s', name: GameData::Pokemon[pokemon_id].name)
+        return format('1 %<name>s', name: data_creature(pokemon_id).name)
       end
     end
   end

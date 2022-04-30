@@ -10,6 +10,7 @@ class Interpreter
     return internal_add_pokemon_check_level_shiny(pokemon_or_id, level, shiny, :add_pokemon) if pokemon_or_id.is_a?(Integer)
     return internal_add_pokemon_check_symbol(pokemon_or_id, level, shiny, :add_pokemon) if pokemon_or_id.is_a?(Symbol)
     raise 'Argument Error : Pokémon ID cannot be string' if pokemon_or_id.is_a?(String)
+
     nil
   end
   alias ajouter_pokemon add_pokemon
@@ -26,6 +27,7 @@ class Interpreter
     return internal_add_pokemon_check_level_shiny(pokemon_or_id, level, shiny, :store_pokemon) if pokemon_or_id.is_a?(Integer)
     return internal_add_pokemon_check_symbol(pokemon_or_id, level, shiny, :store_pokemon) if pokemon_or_id.is_a?(Symbol)
     raise 'Argument Error : Pokémon ID cannot be string' if pokemon_or_id.is_a?(String)
+
     nil
   end
   alias stocker_pokemon store_pokemon
@@ -36,7 +38,8 @@ class Interpreter
   # @author Nuri Yuri
   def add_specific_pokemon(hash)
     pokemon_id = hash[:id].to_i
-    raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists." if pokemon_id < 1 || pokemon_id >= GameData::Pokemon.all.size
+    raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists." if each_data_creature.none? { |creature| creature.id == pokemon_id }
+
     return add_pokemon(PFM::Pokemon.generate_from_hash(hash))
   end
   alias ajouter_pokemon_param add_specific_pokemon
@@ -46,9 +49,10 @@ class Interpreter
   # @param counter [Integer] the number of Pokemon with this id to withdraw
   # @author Nuri Yuri
   def withdraw_pokemon(id, counter = 1)
-    id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
+    id = data_creature(id).id
     $actors.delete_if do |pokemon|
       next false unless pokemon.id == id && counter > 0
+
       next(counter -= 1) # Any number are treaten as true
     end
   end
@@ -68,14 +72,14 @@ class Interpreter
   # @author Nuri Yuri
   def skill_learn(pokemon, id_skill)
     pokemon = $actors[pokemon] if pokemon.is_a?(Integer)
-    id_skill = GameData::Skill.get_id(id_skill) if id_skill.is_a?(Symbol)
-    raise "Database Error : Skill ##{id_skill} doesn't exists." unless GameData::Skill.id_valid?(id_skill)
+    move = data_move(id_skill)
+    raise "Database Error : Skill ##{id_skill} doesn't exists." if move.db_symbol == :__undef__
     raise "Pokemon Error: #{pokemon} doesn't exists" unless pokemon.is_a?(PFM::Pokemon)
 
     @wait_count = 2
     result = nil
     # Show the skill learn interface
-    GamePlay.open_move_teaching(pokemon, GameData::Skill[id_skill].id) do |scene|
+    GamePlay.open_move_teaching(pokemon, move.db_symbol) do |scene|
       result = scene.learnt
     end
     return result
@@ -85,9 +89,10 @@ class Interpreter
   # Play the cry of a Pokemon
   # @param id [Integer, Symbol] the id of the Pokemon in the database
   def cry_pokemon(id)
-    id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-    raise "Database Error : The Pokémon ##{id} doesn't exists." unless GameData::Pokemon.id_valid?(id)
-    Audio.se_play(format('Audio/SE/Cries/%03dCry', id))
+    creature = data_creature(id)
+    raise "Database Error : The Pokémon ##{id} doesn't exists." if creature.db_symbol == :__undef__
+
+    Audio.se_play(format('Audio/SE/Cries/%03dCry', creature.id))
   end
 
   # Show the rename interface of a Pokemon
@@ -126,11 +131,10 @@ class Interpreter
   # @return [PFM::Pokemon, nil]
   # @author Nuri Yuri
   def add_egg(id)
-    id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
-    return nil if id == 0
-    pokemon_id = id.is_a?(Hash) ? id[:id].to_i : id
-    raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists." unless GameData::Pokemon.id_valid?(pokemon_id)
-    pokemon = id.class == Hash ? PFM::Pokemon.generate_from_hash(id) : PFM::Pokemon.new(id, 1)
+    creature = data_creature(id.is_a?(Hash) ? id[:id].to_i : id)
+    raise "Database Error : The Pokémon ##{id} doesn't exists." if creature.db_symbol == :__undef__
+
+    pokemon = id.is_a?(Hash) ? PFM::Pokemon.generate_from_hash(id) : PFM::Pokemon.new(id, 1)
     pokemon.egg_init
     return add_pokemon(pokemon)
   end
@@ -152,10 +156,10 @@ class Interpreter
   #   @param level [Integer] level of the first Pokemon
   #   @param args [Array<Integer, Integer>] array of id, level of the other Pokemon in the wild battle.
   def call_battle_wild(id, level, *args)
-    id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
+    id = data_creature(id).id if id.is_a?(Symbol)
     # /!\ the following condition can trigger some bugs...
-    if args[0].is_a?(Numeric) || args[0].is_a?(Symbol) || args[0].class == PFM::Pokemon or id.class == PFM::Pokemon
-      args[0] = GameData::Pokemon.get_id(args[0]) if args[0].is_a?(Symbol)
+    if args[0].is_a?(Numeric) || args[0].is_a?(Symbol) || args[0].class == PFM::Pokemon || id.class == PFM::Pokemon
+      args[0] = data_creature(args[0]).id if args[0].is_a?(Symbol)
       $wild_battle.start_battle(id, level, *args)
     else
       $wild_battle.start_battle(::PFM::Pokemon.new(id, level, args[0], args[1] == true))
@@ -238,7 +242,7 @@ class Interpreter
   # @overload show_pokemon(pokemon_id)
   #   @param pokemon_id [Integer, Symbol] ID of the Pokemon in the dex
   def show_pokemon(pokemon_id)
-    pokemon_id = GameData::Pokemon.get_id(pokemon_id) if pokemon_id.is_a?(Symbol)
+    pokemon_id = data_creature(pokemon_id).id if pokemon_id.is_a?(Symbol)
     if pokemon_id.is_a?(PFM::Pokemon)
       GamePlay.open_dex_to_show_pokemon(pokemon_id)
     else

@@ -21,8 +21,9 @@ module PFM
     # @param id [Integer, Symbol] ID of the skill in the database
     # @return [Boolean, nil] true = learnt, false = already learnt, nil = couldn't learn
     def learn_skill(id)
-      id = GameData::Skill.get_id(id) if id.is_a?(Symbol)
+      id = data_move(id).id if id.is_a?(Symbol)
       return false if skill_learnt?(id, true)
+
       if @skills_set.size < 4
         @skills_set << PFM::Skill.new(id)
         @skill_learnt << id unless @skill_learnt.include?(id)
@@ -43,7 +44,7 @@ module PFM
     # Forget a skill by its id
     # @param id [Integer, Symbol] ID of the skill in the database
     def forget_skill(id)
-      id = GameData::Skill.get_id(id) if id.is_a?(Symbol)
+      id = data_move(id).id if id.is_a?(Symbol)
       @skills_set.each_with_index do |skill, i|
         @skills_set[i] = nil if skill && skill.id == id
       end
@@ -57,8 +58,8 @@ module PFM
     # @return [Boolean, nil] false = id_new found in the skills, nil = id_old not found, true = skill replaced
     # @deprecated Never used.
     def convert_skill(id_old, id_new)
-      id_old = GameData::Skill.get_id(id_old) if id_old.is_a?(Symbol)
-      id_new = GameData::Skill.get_id(id_new) if id_new.is_a?(Symbol)
+      id_old = data_move(id_old).id if id_old.is_a?(Symbol)
+      id_new = data_move(id_new).id if id_new.is_a?(Symbol)
       @skills_set.each_with_index do |skill, i|
         if skill && skill.id == id_new
           return false
@@ -83,7 +84,7 @@ module PFM
     # @param index [Integer] index of the skill to replace by a new skill
     # @param id [Integer, Symbol] id of the new skill in the database
     def replace_skill_index(index, id)
-      id = GameData::Skill.get_id(id) if id.is_a?(Symbol)
+      id = data_move(id).id if id.is_a?(Symbol)
       return if index >= 4
       @skills_set[index] = PFM::Skill.new(id)
       @skill_learnt << id unless @skill_learnt.include?(id)
@@ -96,7 +97,7 @@ module PFM
     # @return [Boolean]
     def skill_learnt?(id, only_in_moveset = true)
       return false if egg?
-      id = GameData::Skill.get_id(id) if id.is_a?(Symbol)
+      id = data_move(id).id if id.is_a?(Symbol)
       @skills_set.each do |skill|
         return true if skill && skill.id == id
       end
@@ -122,7 +123,7 @@ module PFM
     # @return [PFM::Skill, false]
     def find_skill(id)
       return false if egg?
-      id = GameData::Skill.get_id(id) if id.is_a?(Symbol)
+      id = data_move(id).id if id.is_a?(Symbol)
       @skills_set.each do |skill|
         return skill if skill && skill.id == id
       end
@@ -161,7 +162,7 @@ module PFM
     def can_learn?(skill_id)
       return false if egg?
 
-      skill_id = GameData::Skill.get_id(skill_id) if skill_id.is_a?(Symbol)
+      skill_id = data_move(skill_id).id if skill_id.is_a?(Symbol)
       return nil if skill_learnt?(skill_id)
 
       move_set = data.move_set
@@ -214,7 +215,7 @@ module PFM
     def load_skill_from_array(skills)
       skills.each_with_index do |skill, j|
         next if skill == 0
-        skill = GameData::Skill.get_id(skill) if skill.is_a?(Symbol)
+        skill = data_move(skill).id if skill.is_a?(Symbol)
         if skill.is_a?(Integer)
           replace_skill_index(j, skill)
         elsif skill.class == String

@@ -49,7 +49,7 @@ module PFM
     # @param item_id [Integer] ID of the item in the database
     # @return [Wrapper] the Wrapper helping to use the item
     def actions(item_id)
-      item = GameData::Item[item_id]
+      item = data_item(item_id)
       # @type [Wrapper]
       wrapper = (EXTEND_DATAS.key?(item.db_symbol) ? EXTEND_DATAS[item.db_symbol] : EXTEND_DATAS[item.class]).dup
       wrapper.item = item

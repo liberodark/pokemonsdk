@@ -17,7 +17,7 @@ module UI
       @gender.ox = 88 - @name.real_width
       @gender.visible = false if NO_GENDER.include?(pokemon.db_symbol) || pokemon.egg?
       @item.visible = false if pokemon.egg?
-      @ball.set_bitmap(GameData::Item[pokemon.captured_with].icon, :icon)
+      @ball.set_bitmap(data_item(pokemon.captured_with).icon, :icon)
       @star.visible = pokemon.shiny && !pokemon.egg?
     end
 

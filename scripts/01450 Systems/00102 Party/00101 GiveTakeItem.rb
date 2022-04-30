@@ -17,7 +17,7 @@ module Util
       end
       return false if item == -1
 
-      item = GameData::Item[item].id
+      item = data_item(item).id
       item1 = pokemon.item_holding
       givetake_give_item_message(item1, item, pokemon)
       givetake_give_item_update_state(item1, item, pokemon)
@@ -36,16 +36,16 @@ module Util
     # @param pokemon [PFM::Pokemon] Pokemong getting the item
     def givetake_give_item_message(item1, item2, pokemon)
       if item1 != 0 && item1 != item2
-        display_message(parse_text(22, 91, PFM::Text::ITEM2[0] => pokemon.item_name, PFM::Text::ITEM2[1] => GameData::Item[item2].name))
+        display_message(parse_text(22, 91, PFM::Text::ITEM2[0] => pokemon.item_name, PFM::Text::ITEM2[1] => data_item(item2).name))
       elsif item1 != item2
-        display_message(parse_text(22, 90, PFM::Text::ITEM2[0] => GameData::Item[item2].name))
+        display_message(parse_text(22, 90, PFM::Text::ITEM2[0] => data_item(item2).name))
       end
     end
 
     # Display the give item message to an egg
     # @param item [Integer] given item
     def givetake_give_egg_message(item)
-      display_message(parse_text(22, 94, PFM::Text::ITEM2[0] => GameData::Item[item].name))
+      display_message(parse_text(22, 94, PFM::Text::ITEM2[0] => data_item(item).name))
     end
 
     # Update the bag and pokemon state when giving an item
@@ -66,7 +66,7 @@ module Util
       $bag.add_item(item, 1)
       pokemon.item_holding = 0
       yield(pokemon) if block_given?
-      display_message(parse_text(23, 78, ::PFM::Text::PKNICK[0] => pokemon.given_name, ::PFM::Text::ITEM2[1] => ::GameData::Item[item].name))
+      display_message(parse_text(23, 78, ::PFM::Text::PKNICK[0] => pokemon.given_name, ::PFM::Text::ITEM2[1] => data_item(item).name))
       return unless pokemon.form_calibrate # Form ajustment
 
       pokemon.hp = (pokemon.max_hp * pokemon.hp_rate).round

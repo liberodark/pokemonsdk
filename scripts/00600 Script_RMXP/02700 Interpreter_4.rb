@@ -213,7 +213,7 @@ class Interpreter_RMXP
     value = operate_value(@parameters[1], @parameters[2], @parameters[3])
     # アイテムの増減
     $bag.add_item(@parameters[0], value)
-    Audio.me_play(GameData::Item[@parameters[0]].me, 80) if value > 0
+    Audio.me_play(data_item(@parameters[0]).me, 80) if value > 0
     # 継続
     return true
   end

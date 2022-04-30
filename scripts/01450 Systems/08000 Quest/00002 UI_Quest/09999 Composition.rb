@@ -147,11 +147,11 @@ module UI
 
       def create_quest_list
         unless @quests.active_quests.empty?
-          list = @quests.active_quests.select { |_k, v| GameData::Quest[v.quest_id].primary }
+          list = @quests.active_quests.select { |_k, v| data_quest(v.quest_id).primary }
           @quest_list_primary = QuestList.new(@viewport, list, :primary) unless list.keys.empty?
         end
         unless @quests.active_quests.empty?
-          list = @quests.active_quests.reject { |_k, v| GameData::Quest[v.quest_id].primary }
+          list = @quests.active_quests.reject { |_k, v| data_quest(v.quest_id).primary }
           unless list.keys.empty?
             @quest_list_secondary = QuestList.new(@viewport, list, :secondary)
             @quest_list_secondary.opacity = 0
@@ -172,7 +172,7 @@ module UI
       end
 
       def update_quest_description
-        @description.multiline_text = GameData::Quest[current_list.buttons[0].quest.quest_id].descr
+        @description.multiline_text = data_quest(current_list.buttons[0].quest.quest_id).descr
       end
 
       def create_quest_current_objective

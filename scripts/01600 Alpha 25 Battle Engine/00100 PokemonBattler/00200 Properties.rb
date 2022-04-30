@@ -114,9 +114,9 @@ module PFM
     end
 
     # Set the battler's combat property
-    # @param value [Array<Integer>]
+    # @param value [Integer]
     def ability=(value)
-      return log_error("Wrong ability id : #{value}") unless GameData::Abilities.id_valid?(value)
+      return log_error("Wrong ability id : #{value}") if data_ability(value).id != value
 
       @battle_properties[:ability] = value
     end

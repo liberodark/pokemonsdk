@@ -63,7 +63,7 @@ module UI
       # Return the data for the current quest stocked
       # @return GameData::Quest
       def data_quest
-        return GameData::Quest[@quest.quest_id]
+        return super(@quest.quest_id)
       end
     end
 
@@ -135,7 +135,7 @@ module UI
         return {
           type: UI::ItemSprite,
           id: @reward.give_args[0],
-          name: GameData::Item[@reward.give_args[0]].name,
+          name: data_item(@reward.give_args[0]).name,
           quantity: @reward.give_args[1]
         }
       end
@@ -148,7 +148,7 @@ module UI
         return {
           type: UI::PokemonIconSprite,
           id: pokemon_id,
-          name: GameData::Pokemon[pokemon_id].name,
+          name: data_creature(pokemon_id).name,
           quantity: 1
         }
       end

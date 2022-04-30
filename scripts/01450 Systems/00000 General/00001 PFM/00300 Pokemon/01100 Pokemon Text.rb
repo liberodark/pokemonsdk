@@ -42,33 +42,33 @@ module PFM
     # Return the name of the zone where the Pokemon has been caught
     # @return [String]
     def captured_zone_name
-      zone_name = _utf8(GameData::Zone.get(zone_id).map_name.to_s)
+      zone_name = _utf8(data_zone(zone_id).map_name.to_s)
       return PFM::Text.parse_string_for_messages(zone_name)
     end
 
     # Return the name of the zone where the egg has been obtained
     # @return [String]
     def egg_zone_name
-      zone_name = _utf8(GameData::Zone.get(zone_id(@egg_in)).map_name.to_s)
+      zone_name = _utf8(data_zone(zone_id(@egg_in)).map_name.to_s)
       return PFM::Text.parse_string_for_messages(zone_name)
     end
 
     # Return the name of the item the Pokemon is holding
     # @return [String]
     def item_name
-      return GameData::Item[item_db_symbol].name
+      return data_item(item_db_symbol).name
     end
 
     # Return the name of the current ability of the Pokemon
     # @return [String]
     def ability_name
-      return GameData::Abilities.name(ability_db_symbol)
+      return data_ability(ability_db_symbol).name
     end
 
     # Reture the description of the current ability of the Pokemon
     # @return [String]
     def ability_descr
-      return GameData::Abilities.descr(ability_db_symbol)
+      return data_ability(ability_db_symbol).descr
     end
 
     # Return the normalized text trainer id of the Pokemon

@@ -36,7 +36,7 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        skill = GameData::Skill[target_move(actual_targets.first)]
+        skill = data_move(target_move(actual_targets.first))
         move = Battle::Move[skill.be_method].new(skill.id, 1, 1, @scene)
         def move.calc_mod2(user, target)
           super * 1.5

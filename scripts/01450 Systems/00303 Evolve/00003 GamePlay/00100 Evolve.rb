@@ -76,7 +76,6 @@ module GamePlay
       $game_system.cry_play(@pokemon.id)
       @message_window.auto_skip = true
       @message_window.stay_visible = true
-      p "=> #{caller}"
       display_message(parse_text(31, 0, ::PFM::Text::PKNICK[0] => @pokemon.given_name))
     end
 

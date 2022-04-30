@@ -189,12 +189,13 @@ module PFM
     # Get the primary data of the Pokemon
     # @return [GameData::Pokemon]
     def primary_data
-      GameData::Pokemon[id, 0]
+      data_creature(id).forms[0]
     end
 
     # Get the current data of the Pokemon
+    # @return [GameData::Pokemon]
     def data
-      GameData::Pokemon[id, form || 0]
+      data_creature(id).forms.find { |creature_form| creature_form == form } || primary_data
     end
     alias get_data data
 
@@ -234,7 +235,7 @@ module PFM
     # Return the db_symbol of the Pokemon in the database
     # @return [Symbol]
     def db_symbol
-      GameData::Pokemon.db_symbol(id)
+      data_creature(id).db_symbol
     end
 
     # Tell if the Pokemon is an egg or not
@@ -365,17 +366,17 @@ module PFM
     # Return the ball sprite name of the Pokemon
     # @return [String] Sprite to load in Graphics/ball/
     def ball_sprite
-      return 'ball_1' unless GameData::Item[@captured_with].is_a?(GameData::BallItem)
+      return 'ball_1' unless data_item(@captured_with).is_a?(GameData::BallItem)
 
-      return GameData::BallItem.from(GameData::Item[@captured_with]).img
+      return GameData::BallItem.from(data_item(@captured_with)).img
     end
 
     # Return the ball color of the Pokemon (flash)
     # @return [Color]
     def ball_color
-      return Color.new(0, 0, 0) unless GameData::Item[@captured_with].is_a?(GameData::BallItem)
+      return Color.new(0, 0, 0) unless data_item(@captured_with).is_a?(GameData::BallItem)
 
-      return GameData::BallItem.from(GameData::Item[@captured_with]).color
+      return GameData::BallItem.from(data_item(@captured_with)).color
     end
 
     # Return the normalized trainer id of the Pokemon
@@ -393,7 +394,7 @@ module PFM
     # Return the db_symbol of the Pokemon's item held
     # @return [Symbol]
     def item_db_symbol
-      return GameData::Item.db_symbol($game_temp.in_battle ? (@battle_item || @item_holding) : @item_holding)
+      return data_item($game_temp.in_battle ? (@battle_item || @item_holding) : @item_holding).db_symbol
     end
 
     # Alias for item_holding
@@ -411,7 +412,7 @@ module PFM
     # Return the db_symbol of the Pokemon's Ability
     # @return [Symbol]
     def ability_db_symbol
-      GameData::Abilities.db_symbol(ability)
+      data_ability(ability).db_symbol
     end
 
     # Add a ribbon to the Pokemon

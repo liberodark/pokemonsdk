@@ -9,7 +9,7 @@ module Battle
         def on_end_turn_event(logic, scene, battlers)
           return unless battlers.include?(@target)
           return if @target.dead?
-          return unless @target.item_consumed && GameData::Item[@target.consumed_item]&.socket == 4 && @target.item_db_symbol == :__undef__
+          return unless @target.item_consumed && data_item(@target.consumed_item)&.socket == 4 && @target.item_db_symbol == :__undef__
           return unless bchance?(0.5) || $env.sunny?
 
           # TODO: Add the harvest animation

@@ -33,7 +33,7 @@ module Battle
       def change_item(db_symbol, overwrite, target, launcher = nil, skill = nil)
         log_data("# change_item(#{db_symbol}, #{overwrite}, #{target}, #{launcher}, #{skill})")
         exec_hooks(ItemChangeHandler, :pre_item_change, binding)
-        target.battle_item = db_symbol == :none ? 0 : GameData::Item[db_symbol].id
+        target.battle_item = db_symbol == :none ? 0 : data_item(db_symbol).id
         target.item_holding = target.battle_item if overwrite
         exec_hooks(ItemChangeHandler, :post_item_change, binding)
         return true
@@ -125,7 +125,7 @@ module Battle
 
     # Retrieve the consumed item
     ItemChangeHandler.register_pre_item_change_hook('PSDK item change pre: Retrieve item') do |_, db_symbol, target|
-      next if db_symbol == :none || GameData::Item[db_symbol].db_symbol == :__undef__
+      next if db_symbol == :none || data_item(db_symbol).db_symbol == :__undef__
 
       target.item_consumed = false
       target.consumed_item = nil

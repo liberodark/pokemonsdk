@@ -522,7 +522,7 @@ module GamePlay
         0.upto(wm_data.ysize - 1) do |y|
           next if (zone_id = wm_data[x, y]) < 0 # No zone = no flight
 
-          zone = GameData::Zone.get(zone_id)
+          zone = data_zone(zone_id)
           fly_zones[x, y] = 1 if zone.warp_x && zone.warp_y && $env.visited_zone?(zone)
         end
       end
@@ -547,7 +547,7 @@ module GamePlay
           next if (zone_id = wm_data[x, y]) < 0 # No zone = no pokemon
 
           pokemons.each do |pokemon_info|
-            next unless [GameData::Zone.get(zone_id).map_id].flatten.include? pokemon_info.map_id
+            next unless [data_zone(zone_id).map_id].flatten.include? pokemon_info.map_id
 
             pkm_zones[x, y] = 1
             coords_by_pkm[pokemon_info] ||= []
@@ -653,7 +653,7 @@ module GamePlay
           next if (zone_id = wm_data[x, y]) < 0 # No zone = no pokemon
 
           # Check the roaming pokemon
-          zone = GameData::Zone.get(zone_id)
+          zone = data_zone(zone_id)
           $wild_battle.roaming_pokemons.each do |infos|
             next unless [zone.map_id].flatten.include? infos.map_id
             next unless infos.pokemon.id == @pokemon.id

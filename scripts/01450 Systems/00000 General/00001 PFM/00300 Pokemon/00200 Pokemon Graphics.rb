@@ -47,7 +47,7 @@ module PFM
       # @param egg [Boolean] egg state of the Pokemon
       # @return [String]
       def icon_filename(id, form, female, shiny, egg)
-        format_arg = { id: id, form: form, name: GameData::Pokemon[id].db_symbol }
+        format_arg = { id: id, form: form, name: data_creature(id).db_symbol }
         cache_exist = RPG::Cache.method(:b_icon_exist?)
         return correct_filename_from(EGG_FILENAMES, format_arg, cache_exist) || EGG_FILENAMES.last if egg
 
@@ -70,7 +70,7 @@ module PFM
       # @param egg [Boolean] egg state of the Pokemon
       # @return [String]
       def front_filename(id, form, female, shiny, egg)
-        format_arg = { id: id, form: form, name: GameData::Pokemon[id].db_symbol }
+        format_arg = { id: id, form: form, name: data_creature(id).db_symbol }
         return correct_filename_from(EGG_FILENAMES, format_arg, RPG::Cache.method(:poke_front_exist?)) || EGG_FILENAMES.last if egg
 
         hue = shiny ? 1 : 0
@@ -89,7 +89,7 @@ module PFM
       # @param egg [Boolean] egg state of the Pokemon
       # @return [String, nil]
       def front_gif_filename(id, form, female, shiny, egg)
-        format_arg = { id: id, form: form, name: GameData::Pokemon[id].db_symbol }
+        format_arg = { id: id, form: form, name: data_creature(id).db_symbol }
         hue = shiny ? 1 : 0
         cache_exist = proc { |filename| RPG::Cache.poke_front_exist?(filename, hue) }
         filename = correct_filename_from(GIF_FILENAMES[:female], format_arg, cache_exist) if female
@@ -104,7 +104,7 @@ module PFM
       # @param egg [Boolean] egg state of the Pokemon
       # @return [String]
       def back_filename(id, form, female, shiny, egg)
-        format_arg = { id: id, form: form, name: GameData::Pokemon[id].db_symbol }
+        format_arg = { id: id, form: form, name: data_creature(id).db_symbol }
         return correct_filename_from(EGG_FILENAMES, format_arg, RPG::Cache.method(:poke_back_exist?)) || EGG_FILENAMES.last if egg
 
         hue = shiny ? 1 : 0
@@ -123,7 +123,7 @@ module PFM
       # @param egg [Boolean] egg state of the Pokemon
       # @return [String, nil]
       def back_gif_filename(id, form, female, shiny, egg)
-        format_arg = { id: id, form: form, name: GameData::Pokemon[id].db_symbol }
+        format_arg = { id: id, form: form, name: data_creature(id).db_symbol }
         hue = shiny ? 1 : 0
         cache_exist = proc { |filename| RPG::Cache.poke_back_exist?(filename, hue) }
         filename = correct_filename_from(GIF_FILENAMES[:female], format_arg, cache_exist) if female

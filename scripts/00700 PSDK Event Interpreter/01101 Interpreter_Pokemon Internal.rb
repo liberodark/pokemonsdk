@@ -21,8 +21,9 @@ class Interpreter
   # @param method_name [Symbol] Method to use in order to add the Pokemon somewhere
   # @return [PFM::Pokemon]
   def internal_add_pokemon_check_symbol(pokemon_or_id, level, shiny, method_name)
-    id = GameData::Pokemon.get_id(pokemon_or_id)
+    id = data_creature(pokemon_or_id).id
     raise "Database Error : The Pokémon #{pokemon_or_id} doesn't exists." if id == 0
+
     send(method_name, id, level, shiny)
   end
 
@@ -35,9 +36,7 @@ class Interpreter
   def internal_add_pokemon_check_level_shiny(pokemon_id, level, shiny, method_name)
     do_not_add = false
     # Check parameters
-    unless GameData::Pokemon.id_valid?(pokemon_id)
-      do_not_add = "Database Error : The Pokémon ##{pokemon_id} doesn't exists."
-    end
+    do_not_add = "Database Error : The Pokémon ##{pokemon_id} doesn't exists." if data_creature(pokemon_id).db_symbol == :__undef__
     if level < 1 || level > PFM.game_state.level_max_limit
       do_not_add << 10 if do_not_add
       do_not_add = "#{do_not_add}Level Error : level #{level} is out of bound."

@@ -68,7 +68,7 @@ module Battle
     def skill_choice
       pokemon = logic.battler(0, @player_actions.size)
       if !pokemon.can_move?
-        move = Battle::Move[:s_struggle].new(GameData::Skill[:struggle].id, 1, 1, self)
+        move = Battle::Move[:s_struggle].new(data_move(:struggle).id, 1, 1, self)
         @player_actions << Actions::Attack.new(self, move, pokemon, 1, pokemon.position)
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       elsif @visual.show_skill_choice(@player_actions.size)

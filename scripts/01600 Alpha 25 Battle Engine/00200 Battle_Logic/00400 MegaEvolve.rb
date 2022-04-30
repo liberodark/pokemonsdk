@@ -37,7 +37,7 @@ module Battle
       def mega_tool_name(pokemon)
         bag = pokemon.bag
         symbol = MEGA_EVOLVE_TOOLS.find { |item_db_symbol| bag.contain_item?(item_db_symbol) }
-        return GameData::Item[symbol || 0].name
+        return data_item(symbol || 0).name
       end
 
       private

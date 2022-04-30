@@ -26,7 +26,7 @@ module PFM
     # Create a new Skill information
     # @param id [Integer] ID of the skill/move in the database
     def initialize(id)
-      data = GameData::Skill[id]
+      data = data_move(id)
       @id = data.id
       if @id == 0
         @ppmax = 0
@@ -49,7 +49,7 @@ module PFM
     # Return the actual data of the move
     # @return [GameData::Skill]
     def data
-      return GameData::Skill[@id || 0]
+      return data_move(@id || 0)
     end
 
     # Reset the skill/move information
@@ -72,7 +72,7 @@ module PFM
     def switch(id, pp = 10, sketch = false)
       return initialize(id) if sketch
 
-      data = GameData::Skill[id]
+      data = data_move(id)
       @id_bis = @id
       @pp_bis = @pp if pp
       @pp_max_bis = @ppmax

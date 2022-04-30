@@ -31,7 +31,7 @@ module PFM
     # @param quest_id [Integer] the ID of the quest in the database
     # @return [Boolean] if the quest started
     def start(quest_id)
-      return false unless GameData::Quest.id_valid?(quest_id)
+      return false unless data_quest(quest_id)
       return false if finished?(quest_id)
       return false if @active_quests.fetch(quest_id, nil)
 
@@ -159,7 +159,7 @@ module PFM
         next unless quest.objective?(:objective_catch_pokemon)
 
         # @type [GameData::Quest]
-        quest_data = GameData::Quest[quest.quest_id]
+        quest_data = data_quest(quest.quest_id)
         quest_data.objectives.each do |objective|
           next unless objective.test_method_name == :objective_catch_pokemon
 
@@ -212,11 +212,11 @@ module PFM
       return unless $scene.is_a?(Scene_Map)
 
       if @signal[:start].any?
-        start_names = @signal[:start].map { |quest_id| GameData::Quest[quest_id].name }
+        start_names = @signal[:start].map { |quest_id| data_quest(quest_id).name }
         show_quest_inform(start_names, true)
       end
       if @signal[:finish].any?
-        finish_names = @signal[:finish].collect { |quest_id| GameData::Quest[quest_id].name }
+        finish_names = @signal[:finish].collect { |quest_id| data_quest(quest_id).name }
         show_quest_inform(finish_names, false)
         # Switch the quests from stack to stack
         @signal[:finish].each do |quest_id|
@@ -293,7 +293,7 @@ module PFM
 
       mapper = ->(v, i) { [i, v] }
       new_quest = PFM::Quests::Quest.new(id)
-      objectives = GameData::Quest[id].objectives
+      objectives = data_quest(id).objectives
       new_quest.data_set(:goals_visibility, quest[:shown])
       new_quest.data_set(:earnings_distributed, quest[:earnings])
       new_quest.data_set(:npc_beaten, quest[:npc_beaten].map.with_index(&mapper).to_h) if quest[:npc_beaten]

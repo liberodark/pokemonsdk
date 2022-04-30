@@ -25,7 +25,7 @@ module Battle
       # Get the message text
       # @return [String]
       def message(target)
-        return parse_text_with_pokemon(19, 902, target, '[VAR TYPE(0001)]' => GameData::Type[new_type].name)
+        return parse_text_with_pokemon(19, 902, target, '[VAR TYPE(0001)]' => data_type(new_type).name)
       end
     end
     Move.register(:s_add_type, AddThirdType)

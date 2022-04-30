@@ -78,7 +78,7 @@ module Battle
 
       add_ball_rate_calculation(:heavy_ball) do |target, _pkm_ally|
         modifier = target.rareness
-        weight = GameData::Pokemon[target.id].weight
+        weight = data_creature(target.id).weight
         if weight.between?(0, 204.7)
           modifier -= 20
         elsif weight.between?(204.8, 307.1)
@@ -117,8 +117,8 @@ module Battle
       end
 
       add_ball_rate_calculation(:moon_ball) do |target, _pkm_ally|
-        data = GameData::Pokemon[target.id].special_evolution
-        next target.rareness * (data[:stone] == 81 ? 4 : 1)
+        data = data_creature(target.id).forms.first.special_evolution
+        next target.rareness * (data && data[:stone] == 81 ? 4 : 1)
       end
 
       add_ball_rate_calculation(:nest_ball) do |target, _pkm_ally|

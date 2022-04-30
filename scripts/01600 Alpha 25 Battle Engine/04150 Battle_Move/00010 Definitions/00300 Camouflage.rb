@@ -28,7 +28,7 @@ module Battle
       end
 
       def deal_message(user, target, type)
-        parse_text_with_pokemon(19, 899, target, { '[VAR TYPE(0001)]' => GameData::Type[type].name })
+        parse_text_with_pokemon(19, 899, target, { '[VAR TYPE(0001)]' => data_type(type).name })
       end
 
       # Element by location type.

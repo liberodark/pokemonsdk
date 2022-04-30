@@ -61,12 +61,12 @@ module Battle
     # Return the data of the skill
     # @return [GameData::Skill]
     def data
-      GameData::Skill[@id]
+      data_move(@id)
     end
 
     # Return the name of the skill
     def name
-      return GameData::Skill[@id].name
+      return data_move(@id).name
     end
 
     # Return the skill description

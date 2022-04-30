@@ -228,7 +228,7 @@ module PFM
         return nil unless arr
 
         data = GameData::MiningGame::DATA_ITEM
-        arr = arr.map { |sym| sym.is_a?(Symbol) ? sym : GameData::Item.db_symbol(sym) }
+        arr = arr.map { |sym| sym.is_a?(Symbol) ? sym : data_item(sym).db_symbol }
         arr.select! { |item| data.keys.include? item }
         arr = arr.map do |sym|
           next { **data[sym], symbol: sym }

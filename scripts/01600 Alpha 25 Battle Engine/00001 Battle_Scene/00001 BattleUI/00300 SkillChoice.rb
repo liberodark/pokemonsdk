@@ -128,7 +128,7 @@ module BattleUI
 
       def create_sprites
         # TODO: separate in methods
-        @background = add_sprite(0, 0, 'battle/types', 1, GameData::Type.all.size, type: SpriteSheet)
+        @background = add_sprite(0, 0, 'battle/types', 1, each_data_type.to_a.size, type: SpriteSheet)
         @text = add_text(28, 6, 0, 16, :name, color: 10, type: UI::SymText)
       end
     end

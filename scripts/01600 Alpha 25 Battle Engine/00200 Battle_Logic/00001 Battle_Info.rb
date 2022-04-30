@@ -101,8 +101,8 @@ module Battle
         # @param bank [Integer] bank of the trainer
         # @param id_trainer [Integer] ID of the trainer in the database
         def add_trainer(battle_info, bank, id_trainer)
-          trainer = GameData::Trainer[id_trainer]
-          klass = GameData::Trainer.class_name(id_trainer)
+          trainer = data_trainer(id_trainer)
+          klass = trainer.class_name
           battler = trainer.battler
           name = trainer.internal_names[battle_info.parties[1]&.size || 0]
           party = trainer.team.map { |hash| PFM::Pokemon.generate_from_hash(hash) }
@@ -133,7 +133,7 @@ module Battle
       def player_basic_info
         battler_name = $game_actors[1].battler_name
         battler_name = $game_player.charset_base if !battler_name || battler_name.empty?
-        return $actors, $trainer.name, GameData::Trainer.class_name(0), battler_name, $bag
+        return $actors, $trainer.name, data_trainer(0).class_name, battler_name, $bag
       end
 
       # Add a party to a bank

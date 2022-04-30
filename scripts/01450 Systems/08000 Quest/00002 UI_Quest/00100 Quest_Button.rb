@@ -83,7 +83,7 @@ module UI
       # Return the data for the current quest stocked
       # @return GameData::Quest
       def data_quest
-        return GameData::Quest[@quest.quest_id]
+        return super(@quest.quest_id)
       end
     end
   end

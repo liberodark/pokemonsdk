@@ -125,7 +125,7 @@ module GamePlay
       @pokemon_info.visible = @pokemon_descr.visible = state == 1
       if @pokemon_descr.visible
         if $pokedex.pokemon_caught?(@pokemon.id)
-          @pokemon_descr.multiline_text = ::GameData::Pokemon[@pokemon.id].descr
+          @pokemon_descr.multiline_text = data_creature(@pokemon.id).descr
         else
           @pokemon_descr.multiline_text = ''
         end
@@ -166,15 +166,15 @@ module GamePlay
     def generate_selected_pokemon_array(page_id)
       if $pokedex.national?
         @selected_pokemons = []
-        1.step(GameData::Pokemon.all.size - 1) do |i|
+        1.step(data_creature.to_a.size) do |i|
           @selected_pokemons << i if $pokedex.pokemon_seen?(i)
         end
       else
         selected_pokemons = []
-        1.step(GameData::Pokemon.all.size - 1) do |i|
-          selected_pokemons << i if $pokedex.pokemon_seen?(i) && GameData::Pokemon[i].id_bis > 0
+        1.step(data_creature.to_a.size) do |i|
+          selected_pokemons << i if $pokedex.pokemon_seen?(i) && data_creature(i).id_bis > 0
         end
-        selected_pokemons.sort! { |a, b| GameData::Pokemon[a].id_bis <=> GameData::Pokemon[b].id_bis }
+        selected_pokemons.sort! { |a, b| data_creature(a).id_bis <=> data_creature(b).id_bis }
         @selected_pokemons = selected_pokemons
       end
       @selected_pokemons.compact!
@@ -199,14 +199,14 @@ module GamePlay
         # Return the formated name for Pokedex
         # @return [String]
         def pokedex_name
-          id_value = $pokedex.national? ? id : GameData::Pokemon[id].id_bis
+          id_value = $pokedex.national? ? id : data_creature(id).id_bis
           format(GamePlay::Dex::NAME_FORMAT, id_value, name)
         end
 
         # Return the formated Specie for Pokedex
         # @return [String]
         def pokedex_species
-          GameData::Pokemon[id].species
+          data_creature(id).species
         end
 
         # Return the formated weight for Pokedex

@@ -88,7 +88,7 @@ module GamePlay
     # Method that end the game and exit the scene
     def end_of_game
       @arr_items_won.each do |item|
-        PFM::Text.set_variable('[NAME_ITEM]', GameData::Item[item.symbol].name)
+        PFM::Text.set_variable('[NAME_ITEM]', data_item(item.symbol).name)
         Audio.me_play('audio/me/ROSA_ItemObtained')
         display_message_and_wait(ext_text(*ITEM_WON_TEXT))
         PFM.game_state.bag.add_item(item.symbol)

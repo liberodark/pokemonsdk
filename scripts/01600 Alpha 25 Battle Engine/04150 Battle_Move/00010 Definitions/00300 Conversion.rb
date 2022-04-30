@@ -11,7 +11,7 @@ module Battle
         target = actual_targets.first
         target.type1 = user.moveset.first&.type || 0
         target.type2 = 0
-        @scene.display_message_and_wait(parse_text_with_pokemon(19, 899, target, '[VAR TYPE(0001)]' => GameData::Type[target.type1].name))
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, 899, target, '[VAR TYPE(0001)]' => data_type(target.type1).name))
       end
     end
 
@@ -43,7 +43,7 @@ module Battle
         last_move_user = actual_targets.find { |target| target.move_history.any? }
         user.type1 = last_move_user&.move_history&.last&.move&.type || 0
         user.type2 = 0
-        @scene.display_message_and_wait(parse_text_with_pokemon(19, 899, user, '[VAR TYPE(0001)]' => GameData::Type[user.type1].name))
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, 899, user, '[VAR TYPE(0001)]' => data_type(user.type1).name))
       end
     end
 

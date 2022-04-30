@@ -303,9 +303,9 @@ class Spriteset_Map
   # create the zone panel of the current zone
   # @param zone [Integer, nil] the id of the zone where the player is
   def create_panel(zone)
-    return unless zone && GameData::Zone.get(zone).panel_id > 0
+    return unless zone && data_zone(zone).panel_id > 0
 
-    @map_panel = UI::MapPanel.new(@viewport2, GameData::Zone.get(zone))
+    @map_panel = UI::MapPanel.new(@viewport2, data_zone(zone))
   end
   Hooks.register(self, :finish_init, 'Zone Panel') { |method_binding| create_panel(method_binding[:zone]) }
 

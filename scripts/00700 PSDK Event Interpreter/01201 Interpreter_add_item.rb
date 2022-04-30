@@ -10,7 +10,7 @@ class Interpreter
   # @param count [Integer] number of item to add
   # @param color [Integer] color to put on the item name
   def add_item(item_id, no_delete = false, text_id: 4, no_space_text_id: 7, color: 11, count: 1)
-    item_id = GameData::Item[item_id].id
+    item_id = data_item(item_id).id
 
     if (max = GameData::Bag::MaxItem) > 0 && ($bag.item_quantity(item_id) + count) >= max
       add_item_no_space(item_id, no_space_text_id, color)
@@ -45,7 +45,7 @@ class Interpreter
   # @param item_id [Integer, Symbol] id of the item in the database
   # @param count [Integer] number of item
   def give_item(item_id, count = 1)
-    text_id = GameData::Item[item_id].socket == 5 ? 1 : 0
+    text_id = data_item(item_id).socket == 5 ? 1 : 0
     add_item(item_id, true, text_id: text_id, count: count)
   end
 
@@ -56,7 +56,7 @@ class Interpreter
   # @param no_space_text_id [Integer] ID of the text when the player has not enough space in the bag
   # @param color [Integer] color to put on the item name
   def add_item_no_space(item_id, no_space_text_id, color)
-    item_text = "\\c[#{color}]#{GameData::Item[item_id].exact_name}\\c[10]"
+    item_text = "\\c[#{color}]#{data_item(item_id).exact_name}\\c[10]"
 
     MESSAGES[:bag_full_text] = proc { text_get(41, no_space_text_id) }
     show_message(
@@ -73,7 +73,7 @@ class Interpreter
   # @param end_color [Integer] color used after the item name
   # @return [Array<String, Integer>] the name of the item with the decoration and its socket
   def add_item_show_message_got(item_id, text_id, color, end_color = 10, count: 1)
-    item = GameData::Item[item_id]
+    item = data_item(item_id)
     item_text = "\\c[#{color}]#{count == 1 ? item.name : item.plural_name}\\c[#{end_color}]"
     socket = item.socket
 
@@ -81,7 +81,7 @@ class Interpreter
     if item.is_a?(GameData::TechItem)
       text_id = text_id <= 3 ? 3 : 6
       MESSAGES[:hm_got_text] = proc { text_get(41, text_id) }
-      move_name = GameData::Skill[GameData::TechItem.from(item).move_db_symbol].name
+      move_name = data_move(GameData::TechItem.from(item).move_db_symbol).name
       show_message(
         :hm_got_text,
         item_1: item_text, header: SYSTEM_MESSAGE_HEADER, PFM::Text::TRNAME[0] => $trainer.name,

@@ -31,7 +31,7 @@ module UI
     end
 
     def create_item_name
-      add_text(37, 8, 92, 18, GameData::Item[@data].exact_name, 1, color: 10)
+      add_text(37, 8, 92, 18, data_item(@data).exact_name, 1, color: 10)
     end
 
     def create_quantity

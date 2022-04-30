@@ -85,7 +85,7 @@ module PFM
     # @param by_id [Boolean] if the pokemon are removed by their id
     # @param all [Boolean] if every pokemon that has the id are removed
     def remove_pokemon(var, by_id = false, all = false)
-      var = GameData::Pokemon.get_id(var) if var.is_a?(Symbol)
+      var = data_creature(var).id if var.is_a?(Symbol)
       if by_id
         @actors.each_with_index do |pokemon, index|
           if pokemon.id == var
@@ -115,7 +115,7 @@ module PFM
     # @param index [Boolean] if you want an index when found
     # @return [Boolean, Integer] if the Pokemon has been found
     def contain_matching_pokemon?(id, level = nil, form = nil, shiny = nil, index: false)
-      id = GameData::Pokemon.get_id(id) if id.is_a?(Symbol)
+      id = data_creature(id).id if id.is_a?(Symbol)
       @actors.each_with_index do |pokemon, i|
         next unless pokemon.id == id
         bool = true
@@ -178,7 +178,7 @@ module PFM
     # @param index [Boolean] if the method return the index of the Pokemon that has the skill
     # @return [Boolean, Integer]
     def contain_pokemon_with_the_skill?(id, index = false)
-      id = GameData::Skill.get_id(id) if id.is_a?(Symbol)
+      id = data_move(id).id if id.is_a?(Symbol)
       @actors.each_with_index do |pokemon, i|
         next unless pokemon
         pokemon.skills_set.each do |skill|
@@ -203,7 +203,7 @@ module PFM
     # @param index [Boolean] if the method return the index of the Pokemon that has the ability
     # @return [Boolean, Integer]
     def contain_pokemon_with_the_ability?(id, index = false)
-      id = GameData::Abilities.find_using_symbol(id) if id.is_a?(Symbol)
+      id = data_ability(id).id if id.is_a?(Symbol)
       @actors.each_with_index do |pokemon, i|
         if pokemon&.ability == id
           return index ? i : true
@@ -230,7 +230,7 @@ module PFM
     #   @param index [true] indicating to return the index
     #   @return [Integer, false]
     def can_learn?(id, index = false)
-      id = GameData::Skill.get_id(id) if id.is_a?(Symbol)
+      id = data_move(id).id if id.is_a?(Symbol)
       @actors.each_with_index do |pokemon, i|
         if pokemon&.can_learn?(id)
           return index ? i : true
@@ -256,7 +256,7 @@ module PFM
     #   @param index [true] indicating to return the index
     #   @return [Integer, false]
     def can_learn_or_learnt?(id, index = false)
-      id = GameData::Skill.get_id(id) if id.is_a?(Symbol)
+      id = data_move(id).id if id.is_a?(Symbol)
       @actors.each_with_index do |pokemon, i|
         next unless pokemon
         if pokemon.can_learn?(id) != false

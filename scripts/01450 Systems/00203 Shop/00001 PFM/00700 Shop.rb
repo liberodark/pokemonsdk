@@ -35,7 +35,7 @@ module PFM
       end
       @shop_list[symbol_of_new_shop] = {}
       list_of_item_id.each_with_index do |id, index|
-        if GameData::Item[id].limited
+        if data_item(id).limited
           @shop_list[symbol_of_new_shop][id] = (list_of_item_quantity[index] != nil ? list_of_item_quantity[index] : 1)
         else
           @shop_list[symbol_of_new_shop][id] = 1
@@ -53,7 +53,7 @@ module PFM
       if @shop_list.key?(symbol_of_shop)
         list_item_id_to_refill.each_with_index do |id, index|
           @shop_list[symbol_of_shop][id] = 0 unless @shop_list[symbol_of_shop].key?(id)
-          if GameData::Item[id].limited
+          if data_item(id).limited
             @shop_list[symbol_of_shop][id] += (list_quantity_to_refill[index] != nil ? list_quantity_to_refill[index] : 1)
           else
             @shop_list[symbol_of_shop][id] = 1

@@ -7,7 +7,7 @@ module GamePlay
 
     # Launch the buy sequence
     def launch_buy_sequence
-      if GameData::Item[@list_item[@index]].limited == false
+      if data_item(@list_item[@index]).limited == false
         buy_unlimited_use_item
       else
         buy_limited_use_item
@@ -17,7 +17,7 @@ module GamePlay
     # Method describing the process of buying an unlimited use item
     def buy_unlimited_use_item
       price = @list_price[@index].to_s
-      item = GameData::Item[@list_item[@index]]
+      item = data_item(@list_item[@index])
       if item.socket == 3 && item.is_a?(GameData::TechItem)
         id_text = 35
         move_name = GameData::Skill[GameData::TechItem.from(item).move_db_symbol].name
@@ -51,7 +51,7 @@ module GamePlay
     # @return [Boolean] if the buy_item procedure should immediately exit
     def confirm_buy(price, item_id, quantity)
       if quantity > 0
-        item_str = quantity > 1 ? ext_text(9001, item_id) : ::GameData::Item[item_id].exact_name
+        item_str = quantity > 1 ? ext_text(9001, item_id) : data_item(item_id).exact_name
         message = parse_text(11, 25,
                              ITEM2[0] => item_str,
                              NUM2[1] => quantity.to_s,
@@ -92,7 +92,7 @@ module GamePlay
     def determine_article
       case $options.language
       when 'fr'
-        name = GameData::Item[@list_item[@index]].name
+        name = data_item(@list_item[@index]).name
         return name.start_with?(*VOWELS) ? "d'" : 'de '
       else
         return ''

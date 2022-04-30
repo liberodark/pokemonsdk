@@ -24,7 +24,7 @@ module UI
           @icon.visible = true
           return @stack.first.visible = true
         end
-        item = GameData::Item[id]
+        item = data_item(id)
         @icon.data = id
         @quantity.text = (id == 0 ? 0 : $bag.item_quantity(id)).to_s.to_pokemon_number
         @num_x.visible = @quantity.visible = item.limited

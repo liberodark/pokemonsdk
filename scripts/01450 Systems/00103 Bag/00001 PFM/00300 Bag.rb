@@ -29,7 +29,7 @@ module PFM
     # @param game_state [PFM::GameState] variable responsive of containing the whole game state for easier access
     def initialize(game_state = PFM.game_state)
       self.game_state = game_state
-      @items = Array.new(GameData::Item.all.size, 0)
+      @items = Array.new(each_data_item.to_a.size, 0)
       @orders = [[], [], [], [], [], [], []]
       @last_socket = 1
       @last_index = 0
@@ -59,7 +59,7 @@ module PFM
     def item_quantity(id)
       return 0 if @locked
 
-      return @items[GameData::Item[id].id] || 0
+      return @items[data_item(id).id] || 0
     end
 
     # Add items in the bag and trigger the right quest objective
@@ -69,7 +69,7 @@ module PFM
       return if @locked
       return remove_item(id, -nb) if nb < 0
 
-      id = GameData::Item[id].id
+      id = data_item(id).id
       @items[id] ||= 0
       @items[id] += nb
       add_item_to_order(id)
@@ -84,7 +84,7 @@ module PFM
       return if @locked
       return add_item(id, -nb) if nb < 0
 
-      id = GameData::Item[id].id
+      id = data_item(id).id
       @items[id] ||= 0 unless @items[id]
       @items[id] -= nb
       if @items[id] <= 0
@@ -110,13 +110,12 @@ module PFM
     # @return [Array] the new order
     def reset_order(socket)
       arr = get_order(socket)
-      gdi = GameData::Item
       unless socket == :favorites
         arr.clear
-        arr.concat(@items.each_index.select { |item_id| gdi[item_id].socket == socket && (@items[item_id] || 0) > 0 })
+        arr.concat(@items.each_index.select { |item_id| data_item(item_id).socket == socket && (@items[item_id] || 0) > 0 })
       end
-      unless gdi.all.select { |item| item.socket == socket }.all? { |item| item.position.zero? }
-        arr.sort! { |item_ida, item_idb| gdi[item_idb].position <=> gdi[item_ida].position }
+      unless each_data_item.select { |item| item.socket == socket }.all? { |item| item.position.zero? }
+        arr.sort! { |item_ida, item_idb| data_item(item_idb).position <=> data_item(item_ida).position }
       end
       @alpha_sorted = false
       return arr
@@ -127,12 +126,11 @@ module PFM
     # @param socket [Integer] ID of the socket
     # @param reverse [Boolean] if we want to sort reverse
     def sort_alpha(socket, reverse = false)
-      gdi = GameData::Item
       if reverse
-        reset_order(socket).sort! { |item_ida, item_idb| gdi[item_idb].name <=> gdi[item_ida].name }
+        reset_order(socket).sort! { |item_ida, item_idb| data_item(item_idb).name <=> data_item(item_ida).name }
         @alpha_sorted = false
       else
-        reset_order(socket).sort! { |item_ida, item_idb| gdi[item_ida].name <=> gdi[item_idb].name }
+        reset_order(socket).sort! { |item_ida, item_idb| data_item(item_ida).name <=> data_item(item_idb).name }
         @alpha_sorted = true
       end
     end
@@ -142,7 +140,7 @@ module PFM
     # @param id [Integer, Symbol] id of the item in the database
     def set_shortcut(index, id)
       @shortcut ||= Array.new(SHORTCUT_AMOUNT, 0)
-      @shortcut[index % SHORTCUT_AMOUNT] = GameData::Item[id].id
+      @shortcut[index % SHORTCUT_AMOUNT] = data_item(id).id
     end
 
     # Get the shortcuts
@@ -156,7 +154,7 @@ module PFM
     # Get the last battle item
     # @return [GameData::Item]
     def last_battle_item
-      GameData::Item[@last_battle_item_id || 0]
+      data_item(@last_battle_item_id || 0)
     end
 
     private
@@ -166,7 +164,7 @@ module PFM
     def add_item_to_order(id)
       return if @items[id] <= 0
 
-      socket = GameData::Item[id].socket
+      socket = data_item(id).socket
       get_order(socket) << id unless get_order(socket).include?(id)
     end
 
@@ -175,7 +173,7 @@ module PFM
     def remove_item_from_order(id)
       return unless @items[id] <= 0
 
-      get_order(GameData::Item[id].socket).delete(id)
+      get_order(data_item(id).socket).delete(id)
     end
   end
 

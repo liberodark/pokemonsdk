@@ -33,7 +33,7 @@ module Battle
             move.scene.visual.show_rmxp_animation(user, 469 + status_id)
             move.scene.display_message_and_wait(parse_text_with_pokemon(19, 309, user))
             # If it's a sleeping move we don't prevent user from using the move
-            return if GameData::Skill[move.db_symbol].sleeping_attack?
+            return if data_move(move.db_symbol).sleeping_attack?
 
             return :prevent
           else

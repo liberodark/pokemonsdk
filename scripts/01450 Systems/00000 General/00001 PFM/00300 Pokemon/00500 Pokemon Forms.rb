@@ -21,7 +21,7 @@ module PFM
     # @param value [Integer] the new form index
     def form=(value)
       value = value.to_i
-      if GameData::Pokemon.get_forms(@id)[value]
+      if data_creature(@id).forms.any? { |creature_form| creature_form.form == value }
         @form = value
         form_calibrate
         update_ability
@@ -121,12 +121,11 @@ module PFM
     # @return [Boolean] if the Pokemon's form has changed
     def form_calibrate(reason = :menu)
       @character = nil
-      data = GameData::Pokemon.get_forms(@id)
       last_form = @form
       block = FORM_CALIBRATE[db_symbol]
       instance_exec(reason, &block) if block
       # Set the form to 0 if the form does not exists in the Database
-      @form = 0 unless data[@form]
+      @form = 0 if data_creature(@id).forms.none? { |creature_form| creature_form.form == @form }
       # Update the ability
       update_ability
       return last_form != @form

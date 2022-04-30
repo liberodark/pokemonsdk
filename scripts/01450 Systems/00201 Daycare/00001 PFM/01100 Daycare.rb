@@ -179,19 +179,20 @@ module PFM
       male_sym = male.db_symbol
       # Ditto + (Phione / Manaphy)
       if male.db_symbol == :ditto && BREEDING_WITH_DITTO.include?(female_sym)
-        return daycare[:layable] = GameData::Pokemon.get_id(:phione)
+        return daycare[:layable] = data_creature(:phione).id
       elsif NOT_BREEDING.include?(female_sym) || NOT_BREEDING.include?(male_sym)
         daycare[:layable] = 0
         return daycare[:rate] = 0
       end
       # @type [Array<Symbol>] list of baby the Pokemon can breed
       if (variable_baby = BABY_VARIATION[female_sym])
-        return daycare[:layable] = GameData::Pokemon.get_id(variable_baby.sample)
+        return daycare[:layable] = data_creature(variable_baby.sample).id
       end
       # @type [IncenseInfo]
       if (insence_info = INCENSE_BABY[female_sym]) && (male.item_db_symbol == insence_info.incense || female.item_db_symbol == insence_info.incense)
-        return daycare[:layable] = GameData::Pokemon.get_id(insence_info.baby)
+        return daycare[:layable] = data_creature(insence_info.baby).id
       end
+
       return false
     end
 
@@ -225,7 +226,7 @@ module PFM
       male, female = assign_gender(parents)
 
       # Inherit sequence
-      unless NON_INHERITED_BALL.include?(GameData::Item.db_symbol(female.captured_with))
+      unless NON_INHERITED_BALL.include?(data_item(female.captured_with).db_symbol)
         pokemon.captured_with = female.captured_with
       end
 
@@ -358,7 +359,7 @@ module PFM
         learn_skill(pokemon, skill_id)
       end
       # Try to teach all the breed move known by the male
-      breed_moves = GameData::Pokemon[pokemon.id, pokemon.form].breed_moves.each do |skill_id|
+      breed_moves = data_creature_form(pokemon.id, pokemon.form).breed_moves.each do |skill_id|
         next unless male.skill_learnt?(skill_id)
         learn_skill(pokemon, skill_id)
       end

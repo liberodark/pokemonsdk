@@ -14,7 +14,7 @@ module Battle
             launcher.type1 = skill.type
             launcher.type2 = 0
             text = parse_text_with_pokemon(19, 899, launcher, PFM::Text::PKNICK[0] => launcher.given_name,
-                                                          '[VAR TYPE(0001)]' => GameData::Type[skill.type].name)
+                                                          '[VAR TYPE(0001)]' => data_type(skill.type).name)
             handler.scene.display_message_and_wait(text)
           end
         end
@@ -32,7 +32,7 @@ module Battle
             launcher.type1 = skill.type
             launcher.type2 = 0
             text = parse_text_with_pokemon(19, 899, launcher, PFM::Text::PKNICK[0] => launcher.given_name,
-                                                          '[VAR TYPE(0001)]' => GameData::Type[skill.type].name)
+                                                          '[VAR TYPE(0001)]' => data_type(skill.type).name)
             handler.scene.display_message_and_wait(text)
           end
         end
@@ -51,7 +51,7 @@ module Battle
             launcher.type1 = skill.type
             launcher.type2 = 0
             text = parse_text_with_pokemon(19, 899, launcher, PFM::Text::PKNICK[0] => launcher.given_name,
-                                                          '[VAR TYPE(0001)]' => GameData::Type[skill.type].name)
+                                                          '[VAR TYPE(0001)]' => data_type(skill.type).name)
             handler.scene.display_message_and_wait(text)
           end
         end

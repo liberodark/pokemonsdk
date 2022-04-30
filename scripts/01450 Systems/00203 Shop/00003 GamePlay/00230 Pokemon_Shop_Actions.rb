@@ -6,7 +6,7 @@ module GamePlay
     def buy_pokemon
       price = @list_item[@index][:price].to_s
       id_text = 94
-      pkm_name = GameData::Pokemon[@list_item[@index][:id]].name
+      pkm_name = data_creature(@list_item[@index][:id]).name
       hash = { ITEM2[0] => pkm_name, NUM7R => price }
       c = display_message(parse_text(11, id_text, hash), 1, text_get(11, 27), text_get(11, 28))
       money_checkout(1) if c == 0
@@ -18,8 +18,6 @@ module GamePlay
       display_message(parse_text(11, 29))
       PFM.game_state.lose_money(nb * @list_item[@index][:price])
       pokemon = PFM::Pokemon.generate_from_hash(@list_item[@index])
-      test = pokemon.shiny
-      puts test
       PFM.game_state.add_pokemon(pokemon)
       @what_was_buyed << @list_item[@index][:id] unless @what_was_buyed.include?(@list_item[@index][:id])
       @shop.remove_from_pokemon_shop(@symbol_or_list, [@list_item[@index][:id]],

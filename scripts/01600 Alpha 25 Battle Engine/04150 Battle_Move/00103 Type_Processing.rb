@@ -34,7 +34,7 @@ module Battle
       exec_hooks(Move, :move_type_change, binding)
       return [*type]
     ensure
-      log_data(format('types = %<types>s # ie: %<ie>s', types: type.to_s, ie: [*type].map { |t| GameData::Type[t].name }.join(', ')))
+      log_data(format('types = %<types>s # ie: %<ie>s', types: type.to_s, ie: [*type].map { |t| data_type(t).name }.join(', ')))
     end
 
     private
@@ -49,7 +49,7 @@ module Battle
       result = types.inject(1) { |product, type| product * calc_single_type_multiplier(target, target_type, type) }
       if @effectiveness >= 0
         @effectiveness *= result
-        log_data("multiplier of #{type_to_check} (#{GameData::Type[target_type].name}) = #{result} => new_eff = #{@effectiveness}")
+        log_data("multiplier of #{type_to_check} (#{data_type(target_type).name}) = #{result} => new_eff = #{@effectiveness}")
       end
       return result
     end
@@ -61,7 +61,7 @@ module Battle
     # @return [Float] definitive multiplier
     def calc_single_type_multiplier(target, target_type, type)
       exec_hooks(Move, :single_type_multiplier_overwrite, binding)
-      return GameData::Type[target_type].hit_by(type)
+      return data_type(target_type).hit_by(type)
     rescue Hooks::ForceReturn => e
       log_data("# calc_single_type_multiplier(#{target}, #{target_type}, #{type})")
       log_data("# FR: calc_single_type_multiplier #{e.data} from #{e.hook_name} (#{e.reason})")

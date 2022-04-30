@@ -2,6 +2,38 @@ module GameData
   # Pokemon Data Structure
   # @author Nuri Yuri
   class Pokemon < Base
+    class PokemonBase
+      # Get the name
+      # @return [String]
+      attr_reader :name
+
+      # Get the description
+      # @return [String]
+      attr_reader :descr
+
+      # Get the species
+      # @return [String]
+      attr_reader :species
+
+      # Get the db_symbol
+      # @return [Symbol]
+      attr_reader :db_symbol
+
+      # Get the id
+      # @return [Integer]
+      attr_reader :id
+
+      # Get the forms
+      # @return [Array<Pokemon>]
+      attr_reader :forms
+    end
+
+    # Get the forms
+    # @return [Array<Pokemon>]
+    def forms
+      GameData::Pokemon.all[@id].compact
+    end
+
     extend DataSource2D
     # Height of the Pokemon in metter
     # @return [Numeric]
@@ -113,6 +145,7 @@ module GameData
     # Front offset y of the Pokemon for Summary & Dex UI
     # @return [Integer]
     attr_writer :front_offset_y
+
     # Create a new GameData::Pokemon object
     def initialize
       super
