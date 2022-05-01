@@ -222,7 +222,7 @@ module PFM
     def calibrate
       @seen = 0
       @captured = 0
-      1.step(data_creature.to_a.size) do |id|
+      1.step(each_data_creature.to_a.size) do |id|
         @seen += 1 if @has_seen_and_forms[id].to_i != 0
         @captured += 1 if @has_captured[id]
       end

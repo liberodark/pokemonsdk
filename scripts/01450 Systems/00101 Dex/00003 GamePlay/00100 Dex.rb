@@ -166,12 +166,12 @@ module GamePlay
     def generate_selected_pokemon_array(page_id)
       if $pokedex.national?
         @selected_pokemons = []
-        1.step(data_creature.to_a.size) do |i|
+        1.step(each_data_creature.to_a.size) do |i|
           @selected_pokemons << i if $pokedex.pokemon_seen?(i)
         end
       else
         selected_pokemons = []
-        1.step(data_creature.to_a.size) do |i|
+        1.step(each_data_creature.to_a.size) do |i|
           selected_pokemons << i if $pokedex.pokemon_seen?(i) && data_creature(i).id_bis > 0
         end
         selected_pokemons.sort! { |a, b| data_creature(a).id_bis <=> data_creature(b).id_bis }
