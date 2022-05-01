@@ -139,7 +139,7 @@ module PFM
     # @param form [Integer] Form index of the Pokemon (-1 = automatic generation)
     def form_data_initialize(form)
       form = form_generation(form)
-      form = 0 unless data_creature(id).forms.none? { |creature_form| creature_form.form == form }
+      form = 0 if data_creature(id).forms.none? { |creature_form| creature_form.form == form }
       @form = form
       exp_initialize
     end
