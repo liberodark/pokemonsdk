@@ -195,7 +195,7 @@ module PFM
     # Get the current data of the Pokemon
     # @return [GameData::Pokemon]
     def data
-      data_creature(id).forms.find { |creature_form| creature_form == form } || primary_data
+      data_creature(id).forms.find { |creature_form| creature_form.form == form } || primary_data
     end
     alias get_data data
 
