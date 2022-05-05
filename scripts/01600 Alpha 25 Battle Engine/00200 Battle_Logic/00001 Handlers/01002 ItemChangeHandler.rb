@@ -48,7 +48,7 @@ module Battle
       # @return [Boolean]
       def can_lose_item?(target, launcher = nil)
         return false unless target.hold_item?(target.item_db_symbol)
-        return false if target.battle_item_db_symbol == :__undef__ || PROTECTED_ITEMS.include?(target.item_db_symbol)
+        return false if %i[none __undef__].include?(target.battle_item_db_symbol) || PROTECTED_ITEMS.include?(target.item_db_symbol)
         return false if target.dead?
         return false if launcher&.can_be_lowered_or_canceled?(target.has_ability?(:sticky_hold))
         return false if PROTECTED_POKEMON_ITEMS[target.db_symbol]&.include?(target.battle_item_db_symbol)
@@ -116,7 +116,7 @@ module Battle
 
     # Register the consumed item (Harvest & Recycle)
     ItemChangeHandler.register_pre_item_change_hook('PSDK item change pre: Consumed item') do |_, db_symbol, target|
-      next if target.item_consumed || target.item_stolen
+      next if target.item_consumed || target.effects.has?(:item_stolen)
       next unless db_symbol == :none
 
       target.item_consumed = true

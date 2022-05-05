@@ -101,14 +101,6 @@ module PFM
     # @return [Array<Battle::Move, Integer>]
     attr_accessor :mimic_move
 
-    # Tell if the Pokemon has lost its item
-    # @return [Boolean]
-    attr_accessor :item_stolen
-
-    # Tell if the Pokemon has its item burnt
-    # @return [Boolean]
-    attr_accessor :item_burnt
-
     # Tell if the Pokemon has its item consumed
     # @return [Boolean]
     attr_accessor :item_consumed
@@ -149,8 +141,6 @@ module PFM
       @encounter_list = []
       @mega_evolved = false
       @exp_distributed = false
-      @item_burnt = false
-      @item_stolen = false
       @item_consumed = false
       @consumed_item = :__undef__
       self.hp = (max_hp * hp_rate).to_i
@@ -214,7 +204,7 @@ module PFM
     # @return [Boolean]
     def hold_item?(db_symbol)
       return false if @scene.logic.terrain_effects.has?(&:on_held_item_use_prevention)
-      return false if @item_stolen || @item_burnt
+      return false if effects.has?(:item_stolen) || effects.has?(:item_burnt)
       return false if db_symbol == :__undef__
 
       return battle_item_db_symbol == db_symbol

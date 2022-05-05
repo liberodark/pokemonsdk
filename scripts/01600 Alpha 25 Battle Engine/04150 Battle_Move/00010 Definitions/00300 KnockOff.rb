@@ -10,29 +10,26 @@ module Battle
         return @logic.item_change_handler.can_lose_item?(target, user) ? super * 1.5 : super
       end
 
-      private
-
-      # Function that deals the effect to the pokemon
+      # Method calculating the damages done by the actual move
+      # @note : I used the 4th Gen formula : https://www.smogon.com/dp/articles/damage_formula
       # @param user [PFM::PokemonBattler] user of the move
-      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
-      def deal_effect(user, actual_targets)
-        return if user.dead?
-        return unless @logic.battle_info.trainer_battle? || user.from_party?
-
-        actual_targets.each do |target|
-          next unless @logic.item_change_handler.can_lose_item?(target, user)
-
+      # @param target [PFM::PokemonBattler] target of the move
+      # @return [Integer]
+      def damages(user, target)
+        dmg = super
+        if dmg > 0 && @logic.item_change_handler.can_lose_item?(target, user)
           additionnal_variables = {
             PFM::Text::ITEM2[2] => target.item_name,
             PFM::Text::PKNICK[1] => target.given_name
           }
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 1056, user, additionnal_variables))
-          if target.from_party?
-            target.item_stolen = true
+          if target.from_party? && !target.effects.has?(:item_stolen)
+            target.effects.add(Effects::ItemStolen.new(@logic, target))
           else
-            @logic.item_change_handler.change_item(:none, true, target)
+            @logic.item_change_handler.change_item(:none, true, target, user, self)
           end
         end
+        return dmg
       end
     end
 
