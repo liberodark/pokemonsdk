@@ -59,7 +59,7 @@ module Battle
         # Give the amount of HP healed
         # @return [Integer]
         def hp_healed
-          return 10
+          return @target.has_ability?(:ripen) ? 20 : 10
         end
 
         # Tell if the berry effect should confuse
@@ -75,6 +75,8 @@ module Battle
         # Give the amount of HP healed
         # @return [Integer]
         def hp_healed
+          return (@target.max_hp * 2 / 4).clamp(1, Float::INFINITY) if @target.has_ability?(:ripen)
+
           return (@target.max_hp / 4).clamp(1, Float::INFINITY)
         end
       end
@@ -89,6 +91,8 @@ module Battle
         # Give the amount of HP healed
         # @return [Integer]
         def hp_healed
+          return (@target.max_hp * 2 / 3).clamp(1, Float::INFINITY) if @target.has_ability?(:ripen)
+
           return (@target.max_hp / 3).clamp(1, Float::INFINITY)
         end
 

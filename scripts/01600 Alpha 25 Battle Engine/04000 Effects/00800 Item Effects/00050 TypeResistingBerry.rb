@@ -14,6 +14,8 @@ module Battle
           return 1 if target != @target || !CONDITIONS[db_symbol].call(user, target, move)
 
           consume_berry(target, user, move)
+          return 0.25 if target.has_ability?(:ripen)
+
           return 0.5
         end
 

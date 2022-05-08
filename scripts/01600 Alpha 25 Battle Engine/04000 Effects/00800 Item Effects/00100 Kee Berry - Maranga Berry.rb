@@ -33,7 +33,11 @@ module Battle
           return if cannot_be_consumed?
 
           consume_berry(target, launcher, skill)
-          @logic.stat_change_handler.stat_change_with_process(stat_increased, 1, target, launcher, skill)
+          if target.has_ability?(:ripen)
+            @logic.stat_change_handler.stat_change_with_process(stat_increased, 2, target, launcher, skill)
+          else
+            @logic.stat_change_handler.stat_change_with_process(stat_increased, 1, target, launcher, skill)
+          end
         end
 
         # Stat increased on hit

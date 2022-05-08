@@ -49,6 +49,8 @@ module Battle
         # Give the amount of HP healed
         # @return [Integer]
         def hp_healed
+          return (@target.max_hp * 2 / 4).clamp(1, Float::INFINITY) if @target.has_ability?(:ripen)
+
           return (@target.max_hp / 4).clamp(1, Float::INFINITY)
         end
       end

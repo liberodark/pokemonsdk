@@ -43,7 +43,11 @@ module Battle
           return if cannot_be_consumed? || target.hp_rate > hp_rate_trigger
 
           consume_berry(target, launcher, skill, should_confuse: should_confuse)
-          @logic.stat_change_handler.stat_change_with_process(stat_improved, 1, target, launcher, skill)
+          if target.has_ability?(:ripen)
+            @logic.stat_change_handler.stat_change_with_process(stat_improved, 2, target, launcher, skill)
+          else
+            @logic.stat_change_handler.stat_change_with_process(stat_improved, 1, target, launcher, skill)
+          end
         end
 
         # Give the hp rate that triggers the berry
