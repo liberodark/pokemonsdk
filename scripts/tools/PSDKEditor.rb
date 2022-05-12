@@ -536,7 +536,7 @@ module PSDKEditor
 
   # Function that convert PSDK config infos settings to PSDK Editor format
   def convert_infos_settings
-    data_infos = { klass: 'InfosConfig' }
+    data_infos = { klass: 'Configs::Project::Infos' }
     data_infos[:gameTitle] = PSDK_CONFIG.game_title
     data_infos[:gameVersion] = PSDK_CONFIG.game_version
     File.write(File.join(ROOT_CONFIGS, 'infos_config.json'), data_infos.to_json)
@@ -544,7 +544,7 @@ module PSDKEditor
 
   # Function that convert PSDK config language settings to PSDK Editor format
   def convert_language_settings
-    data_language = { klass: 'LanguageConfig' }
+    data_language = { klass: 'Configs::Project::Language' }
     data_language[:defaultLanguage] = PSDK_CONFIG.default_language_code
     data_language[:choosableLanguageCode] = PSDK_CONFIG.choosable_language_code
     data_language[:choosableLanguageTexts] = PSDK_CONFIG.choosable_language_texts
@@ -553,7 +553,7 @@ module PSDKEditor
 
   # Function that convert PSDK config settings to PSDK Editor format
   def convert_settings
-    data_settings = { klass: 'SettingsConfig' }
+    data_settings = { klass: 'Configs::Project::Settings' }
     data_settings[:pokemonMaxLevel] = PSDK_CONFIG.pokemon_max_level
     data_settings[:isAlwaysUseForm0ForEvolution] = PSDK_CONFIG.always_use_form0_for_evolution
     data_settings[:isUseForm0WhenNoEvolutionData] = PSDK_CONFIG.use_form0_when_no_evolution_data
@@ -562,7 +562,7 @@ module PSDKEditor
 
   # Function that convert PSDK config texts settings to PSDK Editor format
   def convert_texts_settings
-    data_texts = { klass: 'TextsConfig' }
+    data_texts = { klass: 'Configs::Project::Texts' }
     data_texts[:fonts] = build_fonts
     data_texts[:messages] = build_messages
     data_texts[:choices] = build_choices
@@ -631,7 +631,7 @@ module PSDKEditor
 
   # Function that convert PSDK config game options settings to PSDK Editor format
   def convert_game_options_settings
-    data_game_options = { klass: 'GameOptionsConfig' }
+    data_game_options = { klass: 'Configs::Project::GameOptions' }
     data_game_options[:order] = PSDK_CONFIG.options.order
     data_game_options[:options] = PSDK_CONFIG.options.options
     File.write(File.join(ROOT_CONFIGS, 'game_options_config.json'), data_game_options.to_json)
@@ -639,7 +639,7 @@ module PSDKEditor
 
   # Function that convert PSDK config devices settings to PSDK Editor format
   def convert_devices_settings
-    data_devices = { klass: 'DevicesConfig' }
+    data_devices = { klass: 'Configs::Project::Devices' }
     data_devices[:isMouseDisabled] = PSDK_CONFIG.mouse_disabled
     data_devices[:mouseSkin] = PSDK_CONFIG.mouse_skin
     File.write(File.join(ROOT_CONFIGS, 'devices_config.json'), data_devices.to_json)
@@ -647,7 +647,7 @@ module PSDKEditor
 
   # Function that convert PSDK config display settings to PSDK Editor format
   def convert_display_settings
-    data_display = { klass: 'DisplayConfig' }
+    data_display = { klass: 'Configs::Project::Display' }
     game_resolution = PSDK_CONFIG.native_resolution.split('x').collect(&:to_i)
     data_display[:gameResolution] = { x: game_resolution.first, y: game_resolution.last }
     data_display[:windowScale] = PSDK_CONFIG.window_scale
@@ -673,7 +673,7 @@ module PSDKEditor
 
   # Function that convert PSDK config graphic settings to PSDK Editor format
   def convert_graphic_settings
-    data_graphic = { klass: 'GraphicConfig' }
+    data_graphic = { klass: 'Configs::Project::Graphic' }
     data_graphic[:isSmoothTexture] = PSDK_CONFIG.smooth_texture
     data_graphic[:isVsyncEnabled] = PSDK_CONFIG.vsync_enabled
     File.write(File.join(ROOT_CONFIGS, 'graphic_config.json'), data_graphic.to_json)
@@ -681,7 +681,7 @@ module PSDKEditor
 
   # Function that convert PSDK config save settings to PSDK Editor format
   def convert_save_settings
-    data_save = { klass: 'SaveConfig' }
+    data_save = { klass: 'Configs::Project::Save' }
     data_save[:maximumSave] = Configs.save_config.maximum_save_count
     data_save[:saveKey] = Configs.save_config.save_key
     data_save[:saveHeader] = Configs.save_config.save_header
@@ -692,7 +692,7 @@ module PSDKEditor
 
   # Function that convert PSDK config scene title settings to PSDK Editor format
   def convert_scene_title_settings
-    data_scene_title = { klass: 'SceneTitleConfig' }
+    data_scene_title = { klass: 'Configs::Project::SceneTitle' }
     data_scene_title[:introMovieMapId] = Configs.scene_title_config.intro_movie_map_id
     data_scene_title[:bgmName] = Configs.scene_title_config.bgm_name
     data_scene_title[:bgmDuration] = Configs.scene_title_config.bgm_duration
@@ -704,7 +704,7 @@ module PSDKEditor
 
   # Function that convert PSDK config credits settings to PSDK Editor format
   def convert_credits_settings
-    data_credits = { klass: 'CreditsConfig' }
+    data_credits = { klass: 'Configs::Project::Credits' }
     data_credits[:projectSplash] = Configs.credits_config.project_splash
     data_credits[:bgm] = Configs.credits_config.bgm
     data_credits[:lineHeight] = Configs.credits_config.line_height
@@ -719,7 +719,7 @@ module PSDKEditor
 
   # Function that convert PSDK config online settings to PSDK Editor format
   def convert_online_settings
-    data_online = { klass: 'OnlineConfig' }
+    data_online = { klass: 'Configs::Project::Online' }
     data_online[:isEnabled] = Configs.online_configs.enabled
     data_online[:serverIp] = Configs.online_configs.server_ip
     data_online[:serverPort] = Configs.online_configs.server_port
