@@ -283,7 +283,7 @@ module PSDKEditor
   end
 
   GROUP_TOOLS = { 8 => 'OldRod', 9 => 'GoodRod', 10 => 'SuperRod', 11 => 'RockSmash', 12 => 'HeadButt' }
-  GROUP_ZONE_SYSTEM_TAG = %w[RegularGround Grass TallGrass Cave Mountain Sand Pond UnderWater Snow Ice]
+  GROUP_ZONE_SYSTEM_TAG = %w[RegularGround Grass TallGrass Cave Mountain Sand Pond Ocean UnderWater Snow Ice]
   @group_index = 0
   # Function that creates the wild groups of a Zone
   # @param zone
