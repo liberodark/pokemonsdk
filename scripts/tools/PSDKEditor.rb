@@ -156,7 +156,7 @@ module PSDKEditor
         klass: 'TrainerBattleSetup', id: trainer.id, dbSymbol: "trainer_#{trainer.id}",
         vsType: trainer.vs_type, isCouple: false, baseMoney: trainer.base_money,
         battlers: [trainer.battler], bagEntries: [], battleId: 0, ai: 0,
-        party: [convert_trainer_party(trainer.team)]
+        party: convert_trainer_party(trainer.team)
       }
       trainer_name = trainer.internal_names.flatten.first
       trainer_names << Array.new(7, trainer_name)
