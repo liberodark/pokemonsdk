@@ -7,8 +7,10 @@ PSDK_RUNNING_UNDER_MAC = RUBY_PLATFORM.include? "darwin"
 PSDK_RUNNING_UNDER_ANDROID = RUBY_PLATFORM.include? "android"
 
 # Constant telling where is the PSDK master installation
-PSDK_PATH = (Dir.exist?('pokemonsdk') && File.expand_path('pokemonsdk')) ||
-            ((ENV['APPDATA'] || ENV['HOME']).dup.force_encoding('UTF-8') + '/.pokemonsdk')
+PSDK_PATH =
+  (Dir.exist?('pokemonsdk') && File.expand_path('pokemonsdk')) ||
+  (ENV['PSDK_BINARY_PATH'] && File.join(ENV['PSDK_BINARY_PATH'].tr('\\', '/'), 'pokemonsdk')) ||
+  ((ENV['APPDATA'] || ENV['HOME']).dup.force_encoding('UTF-8') + '/.pokemonsdk')
 
 # Fix $LOAD_PATH
 # paths = $LOAD_PATH[0, 10]

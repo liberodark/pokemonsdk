@@ -3,8 +3,11 @@ def load_extension_multiplatform(extension)
     # Android cannot require locally the extension because of restrictions of the filesystem which is usually not executable
     require extension
   else
-    game_deps = ENV['GAMEDEPS'] || '.'
-    require PSDK_RUNNING_UNDER_WINDOWS ? "#{game_deps}/lib/#{extension}.so" : "#{game_deps}/#{extension}"
+    game_deps = (ENV['GAMEDEPS'] || ENV['PSDK_BINARY_PATH'] || '.').tr('\\', '/')
+    filename = PSDK_RUNNING_UNDER_WINDOWS ?
+      File.join(game_deps, 'lib', "#{extension}.so") :
+      File.join(game_deps, extension)
+    require filename
   end
 end
 

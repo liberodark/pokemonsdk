@@ -106,7 +106,7 @@ module ScriptLoader
   # Load the PSDK scripts from the index
   def load_script_from_index
     lines = File.readlines(index_filename)
-    path = ENV['ALTERNATIVE_PATH'] || '.'
+    path = ENV['ALTERNATIVE_PATH'] || ENV['PSDK_BINARY_PATH']&.tr('\\', '/') || '.'
     lines.each do |filename|
       require(File.join(path, filename.chomp))
       pack_script(File.join(path, filename.chomp)) if @should_build_script
