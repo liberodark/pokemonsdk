@@ -7,6 +7,8 @@ module ScriptLoader
   SCRIPT_INDEX_PATH = File.join(VSCODE_SCRIPT_PATH, 'script_index.txt')
   # Path to the deflate scripts
   DEFLATE_SCRIPT_PATH = File.join(VSCODE_SCRIPT_PATH, 'mega_script.deflate')
+  # Path to the packed script file
+  PACKED_SCRIPTS_PATH = File.join(VSCODE_SCRIPT_PATH, 'scripts.dat')
   # Regular expression for script folder
   SCRIPT_FOLDER_REG = %r{/[0-9]+[ _][^/]+/$}i
 
@@ -14,6 +16,10 @@ module ScriptLoader
 
   # Start the script loading sequence
   def start
+    @should_build_script = ARGV.include?('pack_scripts') && !ARGV.include?('studio')
+    File.delete(PACKED_SCRIPTS_PATH) if File.exist?(DEFLATE_SCRIPT_PATH)
+    return load_packed_scripts if !@should_build_script && File.exist?(PACKED_SCRIPTS_PATH) && PARGV[:util].to_a.none? { |util| util.start_with?('project_compilation') }
+
     unpack_scripts if File.exist?(DEFLATE_SCRIPT_PATH)
     # Load PSDK Scripts
     if File.exist?(index_filename)
@@ -33,6 +39,32 @@ module ScriptLoader
     load_plugins
     # Load Project Scripts
     load_vscode_scripts(PROJECT_SCRIPT_PATH) if index_filename == SCRIPT_INDEX_PATH
+    save_packed_scripts if @should_build_script
+  end
+
+  # Load the script from the packed archive
+  def load_packed_scripts
+    data = Marshal.load(Zlib::Inflate.inflate(File.binread(PACKED_SCRIPTS_PATH)))
+    iseq = RubyVM::InstructionSequence
+    data.each { |script| iseq.load_from_binary(script).eval }
+  end
+
+  # Save the packed scripts
+  def save_packed_scripts
+    return unless @scripts_iseqs
+
+    data = Zlib::Deflate.deflate(Marshal.dump(@scripts_iseqs))
+    return if File.exist?(PACKED_SCRIPTS_PATH) && data == File.binread(PACKED_SCRIPTS_PATH)
+
+    File.binwrite(PACKED_SCRIPTS_PATH, data)
+  end
+
+  # Pack a script
+  # @param filename [String]
+  def pack_script(filename)
+    @scripts_iseqs ||= []
+    script_filename = filename.sub(VSCODE_SCRIPT_PATH, 'PSDK').sub(File.expand_path('.'), 'USER')
+    @scripts_iseqs << RubyVM::InstructionSequence.compile(File.read(filename), script_filename, '.').to_binary
   end
 
   # Load all VSCODE like script from a path and its first level sub paths
@@ -53,6 +85,7 @@ module ScriptLoader
       next unless File.basename(filename) =~ /^[0-9]{5}[ _].*/
 
       require(filename)
+      pack_script(filename) if @should_build_script
       file&.puts(filename.sub(File.expand_path('.') + '/', ''))
     rescue Exception
       if PARGV.game_launched_by_studio?
@@ -76,6 +109,7 @@ module ScriptLoader
     path = ENV['ALTERNATIVE_PATH'] || '.'
     lines.each do |filename|
       require(File.join(path, filename.chomp))
+      pack_script(File.join(path, filename.chomp)) if @should_build_script
     end
   rescue Exception
     if PARGV.game_launched_by_studio?
@@ -128,15 +162,19 @@ module ScriptLoader
 
   # Load the RMXP scripts
   def load_rmxp_scripts
+    @scripts_iseqs ||= []
     ban1 = 'config'
     ban2 = 'boot'
     ban3 = '_'
+    iseq = RubyVM::InstructionSequence
     load_data('Data/Scripts.rxdata').each do |script|
       # @type [String]
       name = script[1].force_encoding(Encoding::UTF_8)
       next if name.downcase.start_with?(ban1, ban2, ban3)
 
-      eval(Zlib::Inflate.inflate(script[2]).force_encoding(Encoding::UTF_8), TOPLEVEL_BINDING, name)
+      ruby_script = Zlib::Inflate.inflate(script[2]).force_encoding(Encoding::UTF_8)
+      eval(ruby_script, TOPLEVEL_BINDING, name)
+      @scripts_iseqs << iseq.compile(ruby_script, "RMXP/#{name}", '.').to_binary
       GC.start
     end
   end

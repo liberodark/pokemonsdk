@@ -45,3 +45,5 @@ LiteRGSS.rb.yard.rb
 
 # useless mac files
 .DS_Store
+
+scripts.dat
