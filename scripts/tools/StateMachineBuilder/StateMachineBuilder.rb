@@ -7,7 +7,7 @@
 #   StateMachineBuilder.run(filename)
 #
 # Structure of the .yml file:
-#   class_name: Name of the class where the state machine built (You can use path from Object like this GameData::MyScene)
+#   class_name: Name of the class where the state machine built (You can use path from Object like this GamePlay::MyScene)
 #   class_doc: Comments added on top of the class definition (No need to add the '# ' they'll be added)
 #   parent_class: Name of the parent class (optional)
 #   includes: List of modules to include in the class so the logic can be brought to life (state machin erase the class script)

@@ -97,8 +97,6 @@ module PFM
     # Set the battler's combat property
     # @param value [Integer]
     def nature_id=(value)
-      return log_error("Wrong nature id : #{value}") unless GameData::Natures.id_valid?(value)
-
       @battle_properties[:nature_id] = value
     end
 

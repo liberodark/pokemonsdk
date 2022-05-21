@@ -161,12 +161,6 @@
       "textDecoration": "line-through",
     },
     {
-      "text": "GameData::",
-      "backgroundColor": "#DA0000",
-      "color": "#FFFFFF",
-      "borderRadius": "4px"
-    },
-    {
       "text": "db_symbol",
       "backgroundColor": "#00000000",
       "color": "#569CD6",
