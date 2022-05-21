@@ -18,116 +18,117 @@ module PFM
 
     private
 
-    # Configure the Pokemon array for later selection
-    # @param pokemon [Array<PFM::Pokemon>]
-    # @return [Array<Array(PFM::Pokemon, Float)>] all pokemon with their rate to get selected
-    def configure_pokemon(pokemon)
-      main_pokemon = $actors[0]
-      ability = pokemon_ability
+    # Configure the creature array for later selection
+    # @param creatures [Array<PFM::Pokemon>]
+    # @return [Array<Array(PFM::Pokemon, Float)>] all creatures with their rate to get selected
+    def configure_creature(creatures)
+      main_creature = $actors[0]
+      ability = creature_ability
       repel_active = PFM.game_state.repel_count > 0
-      return pokemon.map do |pkmn|
+      return creatures.map do |creature|
         rate = 1
-        rate = send(CHANGE_POKEMON_CHANCE[ability], pkmn, main_pokemon) if respond_to?(CHANGE_POKEMON_CHANCE[ability] || :__undef__, true)
+        rate = send(CHANGE_POKEMON_CHANCE[ability], creature, main_creature) if respond_to?(CHANGE_POKEMON_CHANCE[ability] || :__undef__, true)
         # Cleanse tag & repel
-        if pkmn.level < main_pokemon.level
-          rate *= 0.33 if main_pokemon.item_db_symbol == :cleanse_tag
+        if creature.level < main_creature.level
+          rate *= 0.33 if main_creature.item_db_symbol == :cleanse_tag
           rate = 0 if repel_active
         end
-        next [pkmn, rate]
+        next [creature, rate]
       end
     end
 
     # Get rate for Intimidate/Keen Eye cases
-    # @param pkmn [PFM::Pokemon] pokemon to select
-    # @param main_pokemon [PFM::Pokemon] pokemon that caused the rate verification
+    # @param creature [PFM::Pokemon] creature to select
+    # @param main_creature [PFM::Pokemon] pokemon that caused the rate verification
     # @return [Float] new rate or 1
-    def rate_intimidate_keen_eye(pkmn, main_pokemon)
-      return (pkmn.level + 5) < main_pokemon.level ? 0.5 : 1
+    def rate_intimidate_keen_eye(creature, main_creature)
+      return (creature.level + 5) < main_creature.level ? 0.5 : 1
     end
 
     # Get rate for Cute Charm case
-    # @param pkmn [PFM::Pokemon] pokemon to select
-    # @param main_pokemon [PFM::Pokemon] pokemon that caused the rate verification
+    # @param creature [PFM::Pokemon] creature to select
+    # @param main_creature [PFM::Pokemon] pokemon that caused the rate verification
     # @return [Float] new rate or 1
-    def rate_cute_charm(pkmn, main_pokemon)
-      return (pkmn.gender * main_pokemon.gender) == 2 ? 1.5 : 1
+    def rate_cute_charm(creature, main_creature)
+      return (creature.gender * main_creature.gender) == 2 ? 1.5 : 1
     end
 
     # Get rate for Magnet Pull case
-    # @param pkmn [PFM::Pokemon] pokemon to select
-    # @param main_pokemon [PFM::Pokemon] pokemon that caused the rate verification
+    # @param creature [PFM::Pokemon] creature to select
+    # @param main_creature [PFM::Pokemon] pokemon that caused the rate verification
     # @return [Float] new rate or 1
-    def rate_magnet_pull(pkmn, main_pokemon)
-      return pkmn.type_steel? ? 1.5 : 1
+    def rate_magnet_pull(creature, main_creature)
+      return creature.type_steel? ? 1.5 : 1
     end
 
     # Get rate for Compound Eyes case
-    # @param pkmn [PFM::Pokemon] pokemon to select
-    # @param main_pokemon [PFM::Pokemon] pokemon that caused the rate verification
+    # @param creature [PFM::Pokemon] creature to select
+    # @param main_creature [PFM::Pokemon] pokemon that caused the rate verification
     # @return [Float] new rate or 1
-    def rate_compound_eyes(pkmn, main_pokemon)
-      return pkmn.item_db_symbol != :__undef__ ? 1.5 : 1
+    def rate_compound_eyes(creature, main_creature)
+      return creature.item_db_symbol != :__undef__ ? 1.5 : 1
     end
 
     # Get rate for Statik case
-    # @param pkmn [PFM::Pokemon] pokemon to select
-    # @param main_pokemon [PFM::Pokemon] pokemon that caused the rate verification
+    # @param creature [PFM::Pokemon] creature to select
+    # @param main_creature [PFM::Pokemon] pokemon that caused the rate verification
     # @return [Float] new rate or 1
-    def rate_static(pkmn, main_pokemon)
-      return pkmn.type_electric? ? 1.5 : 1
+    def rate_static(creature, main_creature)
+      return creature.type_electric? ? 1.5 : 1
     end
 
     # Get rate for Storm Drain case
-    # @param pkmn [PFM::Pokemon] pokemon to select
-    # @param main_pokemon [PFM::Pokemon] pokemon that caused the rate verification
+    # @param creature [PFM::Pokemon] creature to select
+    # @param main_creature [PFM::Pokemon] pokemon that caused the rate verification
     # @return [Float] new rate or 1
-    def rate_storm_drain(pkmn, main_pokemon)
-      return pkmn.type_water? ? 1.5 : 1
+    def rate_storm_drain(creature, main_creature)
+      return creature.type_water? ? 1.5 : 1
     end
 
     # Get rate for Flash Fire case
-    # @param pkmn [PFM::Pokemon] pokemon to select
-    # @param main_pokemon [PFM::Pokemon] pokemon that caused the rate verification
+    # @param creature [PFM::Pokemon] creature to select
+    # @param main_creature [PFM::Pokemon] pokemon that caused the rate verification
     # @return [Float] new rate or 1
-    def rate_flash_fire(pkmn, main_pokemon)
-      return pkmn.type_fire? ? 1.5 : 1
+    def rate_flash_fire(creature, main_creature)
+      return creature.type_fire? ? 1.5 : 1
     end
 
     # Get rate for Harvest case
-    # @param pkmn [PFM::Pokemon] pokemon to select
-    # @param main_pokemon [PFM::Pokemon] pokemon that caused the rate verification
+    # @param creature [PFM::Pokemon] creature to select
+    # @param main_creature [PFM::Pokemon] pokemon that caused the rate verification
     # @return [Float] new rate or 1
-    def rate_harvest(pkmn, main_pokemon)
-      return pkmn.type_grass? ? 1.5 : 1
+    def rate_harvest(creature, main_creature)
+      return creature.type_grass? ? 1.5 : 1
     end
 
     # Get rate for Synchronize case
-    # @param pkmn [PFM::Pokemon] pokemon to select
-    # @param main_pokemon [PFM::Pokemon] pokemon that caused the rate verification
+    # @param creature [PFM::Pokemon] creature to select
+    # @param main_creature [PFM::Pokemon] pokemon that caused the rate verification
     # @return [Float] new rate or 1
-    def rate_synchronize(pkmn, main_pokemon)
-      return pkmn.nature_id == main_pokemon.nature_id ? 1.5 : 1
+    def rate_synchronize(creature, main_creature)
+      return creature.nature_id == main_creature.nature_id ? 1.5 : 1
     end
 
-    # Select the Pokemon that will be in the battle
-    # @param wi [PFM::Wild_Info] the descriptor of the Wild group
-    # @param pokemon_to_select [Array<Array(PFM::Pokemon, Float)>] list of Pokemon to select with their rates
+    # Select the creatures that will be in the battle
+    # @param group [Studio::Group] the descriptor of the Wild group
+    # @param creature_to_select [Array<Array(PFM::Pokemon, Float)>] list of Pokemon to select with their rates
     # @return [Array<PFM::Pokemon>]
-    def select_pokemon(wi, pokemon_to_select)
+    def select_creature(group, creature_to_select)
+      encounters = group.encounters
       # @note i % wi.ids.size is there to prevent bugs due to double battle that basically double the pokemons to ensure we can get twice the same
-      #       pokemon
+      #       creature
       # @type [Array<Array(PFM::Pokemon, Float)>]
-      real_rareness = pokemon_to_select.map.with_index { |arr, i| [arr.first, arr.last * wi.chances[(i % wi.ids.size) + 1]] }
+      real_rareness = creature_to_select.map.with_index { |arr, i| [arr.first, arr.last * encounters[i % encounters.size].encounter_rate] }
       # @type [Array<Float>]
       reduced_rareness = real_rareness.reduce([]) { |acc, curr| acc << (curr.last + (acc.last || 0)) }
       max_rand = reduced_rareness.last
-      # This reducer prevents to select the exact same Pokemon twice
-      return wi.vs_type.times.reduce([]) do |acc, _|
+      # This reducer prevents to select the exact same Creature twice
+      return (group.is_double_battle ? 2 : 1).times.reduce([]) do |acc, _|
         nb = Random::WILD_BATTLE.rand(max_rand.to_i)
         index = reduced_rareness.find_index { |i| i > nb } || real_rareness.size - 1
-        pokemon = real_rareness[index].first
-        redo if acc.include?(pokemon)
-        acc << pokemon
+        creature = real_rareness[index].first
+        redo if acc.include?(creature)
+        acc << creature
       end
     end
 

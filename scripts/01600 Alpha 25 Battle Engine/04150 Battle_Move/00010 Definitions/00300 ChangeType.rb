@@ -3,7 +3,7 @@ module Battle
     # Move that give a third type to an enemy
     class ChangeType < Move
       TYPES = {
-        soak: GameData::Types::WATER
+        soak: :water
       }
       ABILITY_EXCEPTION = %i[multitype rks_system]
       # Test if the effect is working
@@ -40,7 +40,7 @@ module Battle
       # Get the type given by the move
       # @return [Integer] the ID of the Type given by the move
       def new_type
-        return TYPES[db_symbol] || 0
+        return data_type(TYPES[db_symbol] || 0).id
       end
 
       # Get the message text

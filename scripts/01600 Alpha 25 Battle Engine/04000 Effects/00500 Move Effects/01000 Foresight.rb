@@ -10,10 +10,10 @@ module Battle
       # @param move [Battle::Move]
       # @return [Float, nil] overwriten type multiplier
       def on_single_type_multiplier_overwrite(target, target_type, type, move)
-        return if target != @pokemon || target_type != GameData::Types::GHOST
+        return if target != @pokemon || target_type != data_type(:ghost).id
 
-        return 1 if type == GameData::Types::NORMAL
-        return 1 if type == GameData::Types::FIGHTING
+        return 1 if type == data_type(:normal).id
+        return 1 if type == data_type(:fighting).id
 
         return nil
       end

@@ -5,7 +5,7 @@ module Battle
         # Initial condition to give the power increase
         POWER_INCREASE_CONDITION = Hash.new(proc { true })
         # Type condition to give the power increase
-        TYPE_CONDITION = Hash.new(GameData::Types::NORMAL)
+        TYPE_CONDITION = Hash.new(:normal)
         # Power increase if all condition are met
         POWER_INCREASE = Hash.new(1.5)
 
@@ -17,7 +17,7 @@ module Battle
         def base_power_multiplier(user, target, move)
           return 1 if user != self.target
           return 1 unless POWER_INCREASE_CONDITION[@db_symbol].call(user, target, move)
-          return 1 if move.type != TYPE_CONDITION[@db_symbol]
+          return 1 if move.type != data_type(TYPE_CONDITION[@db_symbol]).id
 
           return POWER_INCREASE[@db_symbol]
         end
@@ -25,7 +25,7 @@ module Battle
         class << self
           # Register a BoostingMoveType ability
           # @param db_symbol [Symbol] db_symbol of the ability
-          # @param type [Integer] move type getting power increase
+          # @param type [Symbol] move type getting power increase
           # @param multiplier [Float] multiplier if all condition are meet
           # @param block [Proc] additional condition
           # @yieldparam user [PFM::PokemonBattler]
@@ -40,13 +40,13 @@ module Battle
           end
         end
 
-        register(:blaze, GameData::Types::FIRE) { |user| user.hp_rate <= 0.333 }
-        register(:overgrow, GameData::Types::GRASS) { |user| user.hp_rate <= 0.333 }
-        register(:torrent, GameData::Types::WATER) { |user| user.hp_rate <= 0.333 }
-        register(:swarm, GameData::Types::BUG) { |user| user.hp_rate <= 0.333 }
-        register(:"dragon's maw", GameData::Types::DRAGON)
-        register(:steelworker, GameData::Types::STEEL)
-        register(:transitor, GameData::Types::ELECTRIC)
+        register(:blaze, :fire) { |user| user.hp_rate <= 0.333 }
+        register(:overgrow, :grass) { |user| user.hp_rate <= 0.333 }
+        register(:torrent, :water) { |user| user.hp_rate <= 0.333 }
+        register(:swarm, :bug) { |user| user.hp_rate <= 0.333 }
+        register(:"dragon's maw", :dragon)
+        register(:steelworker, :steel)
+        register(:transitor, :electric)
       end
     end
   end

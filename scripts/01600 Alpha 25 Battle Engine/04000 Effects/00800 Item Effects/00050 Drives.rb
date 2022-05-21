@@ -20,7 +20,7 @@ module Battle
         # Give the new move type if the drive works
         # @return [Integer]
         def new_move_type
-          return GameData::Types::WATER
+          return data_type(:water).id
         end
       end
 
@@ -30,7 +30,7 @@ module Battle
         # Give the new move type if the drive works
         # @return [Integer]
         def new_move_type
-          return GameData::Types::ELECTRIC
+          return data_type(:electric).id
         end
       end
 
@@ -40,7 +40,7 @@ module Battle
         # Give the new move type if the drive works
         # @return [Integer]
         def new_move_type
-          return GameData::Types::FIRE
+          return data_type(:fire).id
         end
       end
 
@@ -50,7 +50,7 @@ module Battle
         # Give the new move type if the drive works
         # @return [Integer]
         def new_move_type
-          return GameData::Types::ICE
+          return data_type(:ice).id
         end
       end
 

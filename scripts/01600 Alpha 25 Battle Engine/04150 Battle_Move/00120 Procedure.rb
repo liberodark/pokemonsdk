@@ -136,7 +136,7 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     def usage_message(user)
       @scene.visual.hide_team_info
-      message = parse_text_with_pokemon(8999 - GameData::Text::CSV_BASE, 12, user, PFM::Text::PKNAME[0] => user.given_name, PFM::Text::MOVE[0] => name)
+      message = parse_text_with_pokemon(8999 - Studio::Text::CSV_BASE, 12, user, PFM::Text::PKNAME[0] => user.given_name, PFM::Text::MOVE[0] => name)
       scene.display_message_and_wait(message)
       PFM::Text.reset_variables
     end
@@ -285,27 +285,36 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
     def deal_status(user, actual_targets)
-      return true if status_effect.to_i <= 0
+      return true if status_effects.empty?
 
-      status = STATUS_EFFECT_MAPPING[status_effect]
+      dice = @logic.generic_rng.rand(0...100)
+      status = status_effects.find do |status_effect|
+        next true if status_effect.luck_rate > dice
+
+        dice -= status_effect.luck_rate
+        next false
+      end || status_effects[0]
+
       actual_targets.each do |target|
-        @logic.status_change_handler.status_change_with_process(status, target, user, self)
+        @logic.status_change_handler.status_change_with_process(status.status, target, user, self)
       end
+      return true
     end
 
     # Function that deals the stat to the pokemon
     # @param user [PFM::PokemonBattler] user of the move
     # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
     def deal_stats(user, actual_targets)
-      return true if battle_stage_mod.all?(&:zero?)
+      return true if battle_stage_mod.empty?
 
       actual_targets.each do |target|
-        Logic::StatChangeHandler::STAT_INDEX.each do |stat, index|
-          next if (power = battle_stage_mod[index]) == 0
+        battle_stage_mod.each do |stage|
+          next if stage.count == 0
 
-          @logic.stat_change_handler.stat_change_with_process(stat, power, target, user, self)
+          @logic.stat_change_handler.stat_change_with_process(stage.stat, stage.count, target, user, self)
         end
       end
+      return true
     end
 
     # Function that deals the effect to the pokemon

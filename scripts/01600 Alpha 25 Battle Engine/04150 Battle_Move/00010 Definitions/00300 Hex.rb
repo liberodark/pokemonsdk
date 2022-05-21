@@ -9,7 +9,7 @@ module Battle
       # @return [Integer]
       def damages(user, target)
         hp_dealt = super
-        hp_dealt *= 2 if states.include? target.status
+        hp_dealt *= 2 if states.include?(Configs.states.symbol(target.status))
         hp_dealt *= 2 if target.has_ability?(:comatose)
         return hp_dealt
       end
@@ -17,17 +17,10 @@ module Battle
       private
 
       # Return the States that triggers the x2 damages
-      STATES = [
-        GameData::States::BURN,
-        GameData::States::PARALYZED,
-        GameData::States::ASLEEP,
-        GameData::States::FROZEN,
-        GameData::States::POISONED,
-        GameData::States::TOXIC
-      ]
+      STATES = %i[burn paralysis sleep freeze poison toxic]
 
       # Return the STATES constant
-      # @return [Array<Integer>]
+      # @return [Array<Symbol>]
       def states
         STATES
       end

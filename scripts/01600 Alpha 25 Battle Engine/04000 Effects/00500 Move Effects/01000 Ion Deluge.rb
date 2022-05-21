@@ -16,7 +16,7 @@ module Battle
       # @param type [Integer] current type of the move (potentially after effects)
       # @return [Integer, nil] new type of the move
       def on_move_type_change(user, target, move, type)
-        return GameData::Types::ELECTRIC if type == GameData::Types::NORMAL
+        return data_type(:electric).id if type == data_type(:normal).id
 
         return nil
       end

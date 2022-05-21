@@ -1,6 +1,5 @@
 module PFM
   class PokemonBattler
-    include GameData::Stages
     # Minimal value of the stat modifier level (stage)
     MIN_STAGE = -6
     # Maximal value of the stat modifier level (stage)
@@ -72,43 +71,43 @@ module PFM
     # Return the atk stage
     # @return [Integer]
     def atk_stage
-      return @battle_stage[ATK_STAGE]
+      return @battle_stage[Configs.stats.atk_stage_index]
     end
 
     # Return the dfe stage
     # @return [Integer]
     def dfe_stage
-      return @battle_stage[DFE_STAGE]
+      return @battle_stage[Configs.stats.dfe_stage_index]
     end
 
     # Return the spd stage
     # @return [Integer]
     def spd_stage
-      return @battle_stage[SPD_STAGE]
+      return @battle_stage[Configs.stats.spd_stage_index]
     end
 
     # Return the ats stage
     # @return [Integer]
     def ats_stage
-      return @battle_stage[ATS_STAGE]
+      return @battle_stage[Configs.stats.ats_stage_index]
     end
 
     # Return the dfs stage
     # @return [Integer]
     def dfs_stage
-      return @battle_stage[DFS_STAGE]
+      return @battle_stage[Configs.stats.dfs_stage_index]
     end
 
     # Return the evasion stage
     # @return [Integer]
     def eva_stage
-      return @battle_stage[EVA_STAGE]
+      return @battle_stage[Configs.stats.eva_stage_index]
     end
 
     # Return the accuracy stage
     # @return [Integer]
     def acc_stage
-      return @battle_stage[ACC_STAGE]
+      return @battle_stage[Configs.stats.acc_stage_index]
     end
 
     # Return the regular stat multiplier
@@ -147,49 +146,49 @@ module PFM
     # @param amount [Integer] the amount to change on the stat stage
     # @return [Integer] the difference between the current and the last stage value
     def change_atk(amount)
-      return change_stat(ATK_STAGE, amount)
+      return change_stat(Configs.stats.atk_stage_index, amount)
     end
 
     # Change the dfe stage
     # @param amount [Integer] the amount to change on the stat stage
     # @return [Integer] the difference between the current and the last stage value
     def change_dfe(amount)
-      return change_stat(DFE_STAGE, amount)
+      return change_stat(Configs.stats.dfe_stage_index, amount)
     end
 
     # Change the spd stage
     # @param amount [Integer] the amount to change on the stat stage
     # @return [Integer] the difference between the current and the last stage value
     def change_spd(amount)
-      return change_stat(SPD_STAGE, amount)
+      return change_stat(Configs.stats.spd_stage_index, amount)
     end
 
     # Change the ats stage
     # @param amount [Integer] the amount to change on the stat stage
     # @return [Integer] the difference between the current and the last stage value
     def change_ats(amount)
-      return change_stat(ATS_STAGE, amount)
+      return change_stat(Configs.stats.ats_stage_index, amount)
     end
 
     # Change the dfs stage
     # @param amount [Integer] the amount to change on the stat stage
     # @return [Integer] the difference between the current and the last stage value
     def change_dfs(amount)
-      return change_stat(DFS_STAGE, amount)
+      return change_stat(Configs.stats.dfs_stage_index, amount)
     end
 
     # Change the eva stage
     # @param amount [Integer] the amount to change on the stat stage
     # @return [Integer] the difference between the current and the last stage value
     def change_eva(amount)
-      return change_stat(EVA_STAGE, amount)
+      return change_stat(Configs.stats.eva_stage_index, amount)
     end
 
     # Change the acc stage
     # @param amount [Integer] the amount to change on the stat stage
     # @return [Integer] the difference between the current and the last stage value
     def change_acc(amount)
-      return change_stat(ACC_STAGE, amount)
+      return change_stat(Configs.stats.acc_stage_index, amount)
     end
 
     # Set a stat stage
@@ -204,49 +203,49 @@ module PFM
     # @param value [Integer] the new value of the stat stage
     # @return [Integer] the new stat stage value
     def acc_stage=(value)
-      return set_stat_stage(ACC_STAGE, value)
+      return set_stat_stage(Configs.stats.acc_stage_index, value)
     end
 
     # Set the spd stage
     # @param value [Integer] the new value of the stat stage
     # @return [Integer] the new stat stage value
     def spd_stage=(value)
-      return set_stat_stage(SPD_STAGE, value)
+      return set_stat_stage(Configs.stats.spd_stage_index, value)
     end
 
     # Set the atk stage
     # @param value [Integer] the new value of the stat stage
     # @return [Integer] the new stat stage value
     def atk_stage=(value)
-      return set_stat_stage(ATK_STAGE, value)
+      return set_stat_stage(Configs.stats.atk_stage_index, value)
     end
 
     # Set the ats stage
     # @param value [Integer] the new value of the stat stage
     # @return [Integer] the new stat stage value
     def ats_stage=(value)
-      return set_stat_stage(ATS_STAGE, value)
+      return set_stat_stage(Configs.stats.ats_stage_index, value)
     end
 
     # Set the dfe stage
     # @param value [Integer] the new value of the stat stage
     # @return [Integer] the new stat stage value
     def dfe_stage=(value)
-      return set_stat_stage(DFE_STAGE, value)
+      return set_stat_stage(Configs.stats.dfe_stage_index, value)
     end
 
     # Set the dfs stage
     # @param value [Integer] the new value of the stat stage
     # @return [Integer] the new stat stage value
     def dfs_stage=(value)
-      return set_stat_stage(DFS_STAGE, value)
+      return set_stat_stage(Configs.stats.dfs_stage_index, value)
     end
 
     # Set the eva stage
     # @param value [Integer] the new value of the stat stage
     # @return [Integer] the new stat stage value
     def eva_stage=(value)
-      return set_stat_stage(EVA_STAGE, value)
+      return set_stat_stage(Configs.stats.eva_stage_index, value)
     end
   end
 end

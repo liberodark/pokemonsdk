@@ -2,6 +2,8 @@ module GamePlay
   class Options < BaseCleanUpdate::FrameBalanced
     # List of valid option type
     VALID_OPTION_TYPE = %i[choice slider]
+    MESSAGE_FRAME = 'GameData::Windows::MESSAGE_FRAME'
+    MESSAGE_FRAME_NAMES = 'GameData::Windows::MESSAGE_FRAME_NAMES'
 
     private
 
@@ -31,7 +33,11 @@ module GamePlay
     # @param str [String]
     def parse_string(str)
       return str if str.include?('%')
+
       constants, *attributes = str.split('#')
+      return Configs.window.message_frame_filenames if constants == MESSAGE_FRAME
+      return Configs.window.message_frame_names if constants == MESSAGE_FRAME_NAMES
+
       value = Object.const_get(constants)
       while (attribute = attributes.shift)
         value = value.send(attribute) unless attribute.empty?

@@ -252,7 +252,7 @@ module GamePlay
     def on_item_use_choice
       # @type [PFM::Pokemon]
       pokemon = @party[@index]
-      if @extend_data.on_pokemon_choice(pokemon, self)
+      if @extend_data.on_creature_choice(pokemon, self)
         if @extend_data.open_skill
           launch_summary(:skill, @extend_data)
           if @extend_data.skill
@@ -265,7 +265,7 @@ module GamePlay
             @running = false
           end
         else
-          @extend_data.on_pokemon_use(pokemon, self)
+          @extend_data.on_creature_use(pokemon, self)
           @extend_data.bind(find_parent(Battle::Scene), pokemon)
           @return_data = @index
           @running = false

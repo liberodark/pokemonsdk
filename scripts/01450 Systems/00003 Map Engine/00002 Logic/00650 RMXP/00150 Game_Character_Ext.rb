@@ -64,7 +64,21 @@ class Game_Character
   def front_system_tag
     xf = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
     yf = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
-    return $game_map.system_tag(xf,yf)
+    return $game_map.system_tag(xf, yf)
+  end
+
+  # Terrain tag in front of the character
+  # @return [Integer, nil]
+  def front_terrain_tag
+    xf = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+    yf = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+    return $game_map.terrain_tag(xf, yf)
+  end
+
+  # Return the db_symbol of the front system tag
+  # @return [Symbol]
+  def front_system_tag_db_symbol
+    GameData::SystemTags.system_tag_db_symbol(front_system_tag)
   end
 
   # Look directly to a specific event

@@ -107,5 +107,35 @@ module GameData
     RocketRU = gen 6, 6
     # Defines a tile that force the character to move Right until he hits a wall. (With Rotation)
     RocketRR = gen 7, 6
+
+    # Gives the db_symbol of the system tag
+    # @param system_tag [Integer]
+    # @return [Symbol]
+    def system_tag_db_symbol(system_tag)
+      case system_tag
+      when TGrass
+        return :grass
+      when TTallGrass
+        return :tall_grass
+      when TCave
+        return :cave
+      when TMount
+        return :mountain
+      when TSand
+        return :sand
+      when TPond
+        return :pond
+      when TSea
+        return :sea
+      when TUnderWater
+        return :under_water
+      when TSnow
+        return :snow
+      when TIce
+        return :ice
+      else
+        return :__undef__
+      end
+    end
   end
 end

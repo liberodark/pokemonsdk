@@ -5,7 +5,7 @@ module UI
     MOVE_PROGRESSION_CELL = [17, 16, 15, 16, 17, 18, 19, 18, 17]
     # Create a new ThrowingBallSprite
     # @param viewport [Viewport]
-    # @param pokemon_or_item [PFM::Pokemon, GameData::BallItem]
+    # @param pokemon_or_item [PFM::Pokemon, Studio::BallItem]
     def initialize(viewport, pokemon_or_item)
       super(viewport, 1, 32)
       resolve_image(pokemon_or_item)
@@ -73,12 +73,12 @@ module UI
     private
 
     # Resolve the sprite image
-    # @param pokemon_or_item [PFM::Pokemon, GameData::BallItem]
+    # @param pokemon_or_item [PFM::Pokemon, Studio::BallItem]
     def resolve_image(pokemon_or_item)
-      # @type [GameData::BallItem]
+      # @type [Studio::BallItem]
       item = pokemon_or_item.is_a?(PFM::Pokemon) ? data_item(pokemon_or_item.captured_with) : pokemon_or_item
-      unless item.is_a?(GameData::BallItem)
-        log_error("The parameter #{pokemon_or_item} did not endup into GameData::BallItem object...")
+      unless item.is_a?(Studio::BallItem)
+        log_error("The parameter #{pokemon_or_item} did not endup into Studio::BallItem object...")
         return
       end
 

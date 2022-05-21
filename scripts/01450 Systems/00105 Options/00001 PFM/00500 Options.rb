@@ -22,7 +22,7 @@ module PFM
     # If the battle ask to rename Pokémon at capture
     # @return [Boolean]
     attr_accessor :catch_rename
-    # The lang id of the GameData::Text loads
+    # The lang id of the Studio::Text loads
     # @return [String]
     attr_reader :language
     # The message frame
@@ -48,7 +48,7 @@ module PFM
       @language = starting_language
       @screen_scale = Graphics.window.settings[3]
       @game_state = game_state
-      self.message_frame = GameData::Windows::MESSAGE_FRAME.first
+      self.message_frame = Configs.window.message_frame_filenames.first
     end
 
     # Change the master volume
@@ -79,10 +79,10 @@ module PFM
     # Change the in game lang (reload the texts)
     # @param value [String] the new lang id
     def language=(value)
-      return unless GameData::Text::Available_Langs.include?(value)
+      return unless Studio::Text::Available_Langs.include?(value)
 
       @language = value
-      GameData::Text.load
+      Studio::Text.load
     end
     alias set_language language=
 
@@ -95,7 +95,7 @@ module PFM
     # Change the message frame
     # @param value [String] the new message frame
     def message_frame=(value)
-      return unless GameData::Windows::MESSAGE_FRAME.include?(value)
+      return unless Configs.window.message_frame_filenames.include?(value)
 
       @message_frame = value
       $game_system&.windowskin_name = @message_frame

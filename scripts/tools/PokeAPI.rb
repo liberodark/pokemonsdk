@@ -386,29 +386,29 @@ module PokeAPI
 
     # @return [Integer]
     def psdk_id
-      PSDK_TYPES[@identifier] || @id
+      data_type(PSDK_TYPES[@identifier] || @id).id
     end
 
     PSDK_TYPES = {
-      'normal' => GameData::Types::NORMAL,
-      'fighting' => GameData::Types::FIGHTING,
-      'flying' => GameData::Types::FLYING,
-      'poison' => GameData::Types::POISON,
-      'ground' => GameData::Types::GROUND,
-      'rock' => GameData::Types::ROCK,
-      'bug' => GameData::Types::BUG,
-      'ghost' => GameData::Types::GHOST,
-      'steel' => GameData::Types::STEEL,
-      'fire' => GameData::Types::FIRE,
-      'water' => GameData::Types::WATER,
-      'grass' => GameData::Types::GRASS,
-      'electric' => GameData::Types::ELECTRIC,
-      'psychic' => GameData::Types::PSYCHIC,
-      'ice' => GameData::Types::ICE,
-      'dragon' => GameData::Types::DRAGON,
-      'dark' => GameData::Types::DARK,
-      'fairy' => GameData::Types::FAIRY,
-      'unknown' => GameData::Types::T？？？
+      'normal' => :normal,
+      'fighting' => :fighting,
+      'flying' => :flying,
+      'poison' => :poison,
+      'ground' => :ground,
+      'rock' => :rock,
+      'bug' => :bug,
+      'ghost' => :ghost,
+      'steel' => :steel,
+      'fire' => :fire,
+      'water' => :water,
+      'grass' => :grass,
+      'electric' => :electric,
+      'psychic' => :psychic,
+      'ice' => :ice,
+      'dragon' => :dragon,
+      'dark' => :dark,
+      'fairy' => :fairy,
+      'unknown' => :__undef__
     }
 
     class << self

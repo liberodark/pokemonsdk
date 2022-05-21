@@ -13,9 +13,9 @@ module EventText2CSV
   # Start the convertion
   def run
     @offset = (ENV['TEXT_EVENT_OFFSET'] || 1000).to_i
-    print("Enter the langs you want to use [#{GameData::Text::Available_Langs.join(',')}]: ")
+    print("Enter the langs you want to use [#{Studio::Text::Available_Langs.join(',')}]: ")
     langs = STDIN.gets.chomp.split(',').collect(&:strip)
-    @langs = langs.empty? ? GameData::Text::Available_Langs : langs
+    @langs = langs.empty? ? Studio::Text::Available_Langs : langs
     Dir['Data/Map*.rxdata'].each do |filename|
       map_id = filename.gsub(%r{^Data/Map}i, '').to_i
       next if map_id == 0

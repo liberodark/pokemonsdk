@@ -57,8 +57,6 @@ module Studio
       when 'exit'
         Process.exit!(0)
       when 'importProjectToStudio'
-        GameData.load
-        @out.puts({ progress: 'dataLoaded', message: 'Data loaded!' }.to_json)
         ScriptLoader.load_tool('PSDKEditor')
         @out.puts({ progress: 'converterLoaded', message: 'Studio converter loaded!' }.to_json)
         PSDKEditor.convert

@@ -134,7 +134,7 @@ module Battle
 
     # Show the catching animation
     # @param target_pokemon [PFM::PokemonBattler] pokemon being caught
-    # @param ball [GameData::Ball] ball used
+    # @param ball [Studio::BallItem] ball used
     # @param nb_bounce [Integer] number of time the ball move
     # @param caught [Integer] if the pokemon got caught
     def show_catch_animation(target_pokemon, ball, nb_bounce, caught)

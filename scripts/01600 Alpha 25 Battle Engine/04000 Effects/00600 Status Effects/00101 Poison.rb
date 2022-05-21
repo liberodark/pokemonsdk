@@ -53,7 +53,7 @@ module Battle
         end
       end
 
-      register(GameData::States::POISONED, Poison)
+      register(:poison, Poison)
     end
   end
 end

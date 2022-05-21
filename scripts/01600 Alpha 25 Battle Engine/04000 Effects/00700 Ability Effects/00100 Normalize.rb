@@ -12,7 +12,7 @@ module Battle
           return if user != @target
           return if move.be_method == :s_weather_ball
 
-          return GameData::Types::NORMAL
+          return data_type(:normal).id
         end
       end
       register(:normalize, Normalize)

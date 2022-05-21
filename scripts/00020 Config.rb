@@ -72,11 +72,13 @@ module Configs
       elsif File.exist?(real_filename)
         log_info("Loading config file #{real_filename}")
         file_content = File.read(real_filename)
-        data = info[:type] == :yml ? YAML.unsafe_load(file_content) : JSON.load(file_content)
+        data = info[:type] == :yml ? YAML.unsafe_load(file_content) : JSON.parse(file_content, symbolize_names: true)
         if data.is_a?(Hash)
           pre_data = data
           data = info[:klass].new
           pre_data.each do |key, value|
+            next if key == :klass
+
             data.send("#{key}=", value)
           end
         elsif !data.is_a?(info[:klass])

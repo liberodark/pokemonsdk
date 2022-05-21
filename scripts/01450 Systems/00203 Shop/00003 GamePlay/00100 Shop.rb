@@ -79,7 +79,7 @@ module GamePlay
       @list_item.each_with_index do |item, index|
         price = @price_overwrite.key?(item) ? @price_overwrite[item] : data_item(item).price
         next if price <= 0
-        next if !data_item(item).limited && $bag.contain_item?(item)
+        next if !data_item(item).is_limited && $bag.contain_item?(item)
 
         arr << price
         temp_list_item << @list_item[index]

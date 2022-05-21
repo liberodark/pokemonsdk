@@ -7,7 +7,7 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Array<Integer>] list of types of the move
       def definitive_types(user, target)
-        super << GameData::Types::FLYING
+        super << data_type(:flying).id
       end
     end
 

@@ -7,7 +7,7 @@ module PFM
     # Unkonw location text
     UNKNOWN_ZONE = 'Zone ???'
     include GameData::SystemTags
-    # The master zone (zone that show the pannel like city, unlike house of city)
+    # The master zone (zone that show the panel like city, unlike house of city)
     # @note Master zone are used inside Pokemon data
     # @return [Integer]
     attr_reader :master_zone
@@ -60,13 +60,14 @@ module PFM
     # @return [Integer, false] false = player was in the zone
     def update_zone
       return false if @last_map_id == @game_state.game_map.map_id
+
       @last_map_id = map_id = @game_state.game_map.map_id
       last_zone = @zone
       # Searching for the current zone
       each_data_zone do |data|
         next unless data
 
-        if data.map_included?(map_id)
+        if data.maps.include?(map_id)
           load_zone_information(data, data.id)
           break
         end
@@ -77,24 +78,27 @@ module PFM
     end
 
     # Load the zone information
-    # @param data [GameData::Map] the current zone data
+    # @param data [Studio::Zone] the current zone data
     # @param index [Integer] the index of the zone in the stack
     def load_zone_information(data, index)
       @zone = index
       # We store this zone as the zone where to warp if it's possible
-      @warp_zone = index if data.warp_x && data.warp_y
-      # We store this zone as the master zone if there's a pannel
+      @warp_zone = index if data.warp.x && data.warp.y
+      # We store this zone as the master zone if there's a panel
       @master_zone = index if data.panel_id&.>(0)
       # We memorize the fact we visited this zone
       @visited_zone << index unless @visited_zone.include?(index)
-      # We memorize the fact we visited this worldmap
-      @visited_worldmap << data.worldmap_id unless @visited_worldmap.include?(data.worldmap_id)
-      # We store the zone worldmap
-      @worldmap = data.worldmap_id
+      if data.worldmaps.any?
+        # We memorize the fact we visited this worldmap
+        @visited_worldmap << data.worldmaps.first unless @visited_worldmap.include?(data.worldmaps.first)
+        # We store the zone worldmap
+        @worldmap = data.worldmaps.first
+      end
       # We store the new switch info
-      @game_state.game_switches[Yuki::Sw::Env_CanFly] = (!data.warp_disallowed && data.fly_allowed)
-      @game_state.game_switches[Yuki::Sw::Env_CanDig] = (!data.warp_disallowed && !data.fly_allowed)
+      @game_state.game_switches[Yuki::Sw::Env_CanFly] = (!data.is_warp_disallowed && data.is_fly_allowed)
+      @game_state.game_switches[Yuki::Sw::Env_CanDig] = (!data.is_warp_disallowed && !data.is_fly_allowed)
       return unless data.forced_weather
+
       if data.forced_weather == 0
         @game_state.game_screen.weather(0, 0, @game_state.game_switches[Yuki::Sw::Env_CanFly] ? 40 : 0)
       else
@@ -116,7 +120,7 @@ module PFM
     alias get_current_zone current_zone
 
     # Return the zone data in which the player is
-    # @return [GameData::Zone]
+    # @return [Studio::Zone]
     def current_zone_data
       data_zone(@zone)
     end
@@ -126,7 +130,7 @@ module PFM
     # @return [String]
     def current_zone_name
       zone = @master_zone
-      return data_zone(zone).map_name if zone
+      return data_zone(zone).name if zone
 
       UNKNOWN_ZONE
     end
@@ -142,9 +146,9 @@ module PFM
     # @param x [Integer] the x position of the zone in the World Map
     # @param y [Integer] the y position of the zone in the World Map
     # @param worldmap_id [Integer] <default : @worldmap> the worldmap to refer at
-    # @return [GameData::Map, nil] nil = no zone there
+    # @return [Studio::Zone, nil] nil = no zone there
     def get_zone(x, y, worldmap_id = @worldmap)
-      zone_id = GameData::WorldMap.get(worldmap_id).data[x, y]
+      zone_id = data_world_map(worldmap_id).grid.dig(y, x)
       return zone_id && zone_id >= 0 ? data_zone(zone_id) : nil
     end
 
@@ -154,29 +158,22 @@ module PFM
     # @return [Array(Integer, Integer)] the x,y coordinates
     def get_zone_pos(zone_id, worldmap_id = @worldmap)
       return 0, 0 unless (zone = data_zone(zone_id))
-      return zone.pos_x, zone.pos_y if zone.pos_x && zone.pos_y
+      return zone.position.x, zone.position.y if zone.position.x && zone.position.y
+
       # Trying to find the current zone
-      w = GameData::WorldMap.get(worldmap_id).data.xsize
-      h = GameData::WorldMap.get(worldmap_id).data.ysize
-      0.upto(w - 1) do |x|
-        0.upto(h - 1) do |y|
-          return x, y if GameData::WorldMap.get(worldmap_id).data[x, y] == zone_id
-        end
-      end
-      return 0, 0
+      world_map = data_world_map(worldmap_id)
+      y = world_map.grid.find_index { |row| row.include?(zone_id) }
+      return 0, 0 unless y
+
+      x = world_map.grid[y].find_index { |cell| cell == zone_id } || 0
+      return x, y
     end
 
     # Check if a zone has been visited
-    # @param zone [Integer, GameData::Map] the zone id in the database or the zone
+    # @param zone [Integer, Studio::Zone] the zone id in the database or the zone
     # @return [Boolean]
     def visited_zone?(zone)
-      if zone.is_a?(GameData::Map)
-        zone_index = each_data_zone.find_index(zone)
-        zone_index ||= each_data_zone.find_index do |data|
-          data.map_id == zone.map_id
-        end
-        zone = zone_index || -1
-      end
+      zone = zone.id if zone.is_a?(Studio::Zone)
       return @visited_zone.include?(zone)
     end
 
@@ -186,19 +183,18 @@ module PFM
     def get_worldmap(zone = @zone)
       if @modified_worldmap_position && @modified_worldmap_position[2]
         return @modified_worldmap_position[2] || 0
-      elsif zone.is_a?(GameData::Zone)
-        return zone.worldmap_id || 0
+      elsif zone.is_a?(Studio::Zone)
+        return Studio::Zone.from(zone).worldmaps.first || 0
       else
-        return data_zone(zone).worldmap_id || 0
+        return data_zone(zone).worldmaps.first || 0
       end
     end
 
     # Test if the given world map has been visited
-    # @param worldmap [Integer, GameData::WorldMap]
+    # @param worldmap [Integer]
     # @return [Boolean]
     def visited_worldmap?(worldmap)
-      return @visited_worldmap.include?(GameData::WorldMap.all.index(worldmap)) if worldmap.is_a?(GameData::WorldMap)
-      return @visited_worldmap.include? worldmap
+      return @visited_worldmap.include?(worldmap)
     end
 
     # Is the player standing in grass ?

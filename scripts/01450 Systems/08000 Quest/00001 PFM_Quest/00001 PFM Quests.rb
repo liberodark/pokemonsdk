@@ -31,7 +31,7 @@ module PFM
     # @param quest_id [Integer] the ID of the quest in the database
     # @return [Boolean] if the quest started
     def start(quest_id)
-      return false unless data_quest(quest_id)
+      return false if data_quest(quest_id).db_symbol == :__undef__
       return false if finished?(quest_id)
       return false if @active_quests.fetch(quest_id, nil)
 
@@ -158,7 +158,6 @@ module PFM
       active_quests.each_value do |quest|
         next unless quest.objective?(:objective_catch_pokemon)
 
-        # @type [GameData::Quest]
         quest_data = data_quest(quest.quest_id)
         quest_data.objectives.each do |objective|
           next unless objective.test_method_name == :objective_catch_pokemon
@@ -309,7 +308,7 @@ module PFM
     end
 
     # Import data from ID like objective
-    # @param objectives [Array<GameData::Quest::Objective>]
+    # @param objectives [Array<Studio::Quest::Objective>]
     # @param quest [Hash] old quest
     # @param new_quest [PFM::Quests::Quest] new quest
     # @param test_method_name [Symbol] test method name of the objective
@@ -318,9 +317,9 @@ module PFM
     def import_data_id_like_objective(objectives, quest, new_quest, test_method_name, new_key, old_key)
       return unless quest[old_key]
 
-      objectives = objectives.select { |objective| objective.test_method_name == test_method_name }
+      objectives = objectives.select { |objective| objective.objective_method_name == test_method_name }
       objectives.each_with_index do |objective, i|
-        new_quest.data_set(new_key, objective.test_method_args.first, quest[old_key][i])
+        new_quest.data_set(new_key, objective.objective_method_args.first, quest[old_key][i])
       end
     end
 

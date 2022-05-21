@@ -25,7 +25,7 @@ module Battle
       # @param pokemon [PFM::PokemonBattler]
       # @return [Symbol]
       def right_status_symbol(pokemon)
-        Logic::StatusChangeHandler::STATUS_ID_TO_SYMBOL[pokemon.status]
+        Configs.states.symbol(pokemon.status)
       end
     end
     Move.register(:s_psycho_shift, PsychoShift)

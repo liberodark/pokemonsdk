@@ -44,7 +44,7 @@ module Battle
         # @return [Boolean] if the target is evading the move
         def on_move_prevention_target(user, target, move)
           return false unless target.affected_by_terrain? && move.status?
-          return false unless move.status_effect > 0 || move.db_symbol == :yawn
+          return false unless move.status_effects.any? || move.db_symbol == :yawn
 
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 845, target))
           return true

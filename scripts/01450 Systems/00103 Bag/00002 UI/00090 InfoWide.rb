@@ -27,10 +27,10 @@ module UI
         item = data_item(id)
         @icon.data = id
         @quantity.text = (id == 0 ? 0 : $bag.item_quantity(id)).to_s.to_pokemon_number
-        @num_x.visible = @quantity.visible = item.limited
+        @num_x.visible = @quantity.visible = item.is_limited
         @name.text = item.exact_name
         @descr.multiline_text = item.descr
-        @fav_icon.visible = $bag.shortcuts.include?(id)
+        @fav_icon.visible = $bag.shortcuts.include?(item.db_symbol)
       end
 
       private

@@ -3,13 +3,13 @@ module PFM
     # Return the Pokemon name in the Pokedex
     # @return [String]
     def name
-      return GameData::Text.get(0,@step_remaining==0 ? @id : 0)
+      return Studio::Text.get(0,@step_remaining==0 ? @id : 0)
     end
 
     # Return the Pokemon name upcase in the Pokedex
     # @return [String]
     def name_upper
-      return GameData::Text.get(0,@step_remaining==0 ? @id : 0).upcase
+      return Studio::Text.get(0,@step_remaining==0 ? @id : 0).upcase
     end
 
     # Return the given name of the Pokemon (Pokedex name if no given name)
@@ -42,14 +42,14 @@ module PFM
     # Return the name of the zone where the Pokemon has been caught
     # @return [String]
     def captured_zone_name
-      zone_name = _utf8(data_zone(zone_id).map_name.to_s)
+      zone_name = _utf8(data_zone(zone_id).name)
       return PFM::Text.parse_string_for_messages(zone_name)
     end
 
     # Return the name of the zone where the egg has been obtained
     # @return [String]
     def egg_zone_name
-      zone_name = _utf8(data_zone(zone_id(@egg_in)).map_name.to_s)
+      zone_name = _utf8(data_zone(zone_id(@egg_in)).name)
       return PFM::Text.parse_string_for_messages(zone_name)
     end
 
@@ -109,19 +109,19 @@ module PFM
     # Return the text of the Pokemon ID
     # @return [String]
     def id_text
-      sprintf("%03d", $pokedex.national? ? @id : primary_data.id_bis)
+      sprintf("%03d", @id) # TODO: Studio Regional Dex $pokedex.national? ? @id : primary_data.id_bis)
     end
 
     # Return the text of the Pokemon ID with N°
     # @return [String]
     def id_text2
-      sprintf("N°%03d", $pokedex.national? ? @id : primary_data.id_bis)
+      sprintf("N°%03d", @id) # , $pokedex.national? ? @id : primary_data.id_bis)
     end
 
     # Return the text of the Pokemon ID to pokemon number
     # @return [String]
     def id_text3
-      sprintf("%03d", $pokedex.national? ? @id : primary_data.id_bis).to_pokemon_number
+      sprintf("%03d", @id).to_pokemon_number # , $pokedex.national? ? @id : primary_data.id_bis).to_pokemon_number
     end
   end
 end

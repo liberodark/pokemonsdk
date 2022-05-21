@@ -27,7 +27,7 @@ module PFM
     # Is the Pokemon poisoned?
     # @return [Boolean]
     def poisoned?
-      return @status == GameData::States::POISONED
+      return @status == Configs.states.ids[:poison]
     end
 
     # Empoison the Pokemon
@@ -35,7 +35,7 @@ module PFM
     # @return [Boolean] if the pokemon has been empoisoned
     def status_poison(forcing = false)
       if (@status == 0 || forcing) && !dead?
-        @status = GameData::States::POISONED
+        @status = Configs.states.ids[:poison]
         return true
       end
       return false
@@ -53,7 +53,7 @@ module PFM
     # Is the Pokemon paralyzed?
     # @return [Boolean]
     def paralyzed?
-      return @status == GameData::States::PARALYZED
+      return @status == Configs.states.ids[:paralysis]
     end
 
     # Paralyze the Pokemon
@@ -61,7 +61,7 @@ module PFM
     # @return [Boolean] if the pokemon has been paralyzed
     def status_paralyze(forcing = false)
       if (@status == 0 || forcing) && !dead?
-        @status = GameData::States::PARALYZED
+        @status = Configs.states.ids[:paralysis]
         return true
       end
       return false
@@ -71,7 +71,7 @@ module PFM
     # @return [Boolean]
     def can_be_paralyzed?
       return false if @status != 0
-      return false if !::GameData::Flag_4G && type_electric?
+      return false if type_electric?
 
       return true
     end
@@ -79,7 +79,7 @@ module PFM
     # Is the Pokemon burnt?
     # @return [Boolean]
     def burn?
-      return @status == GameData::States::BURN
+      return @status == Configs.states.ids[:burn]
     end
     alias burnt? burn?
 
@@ -88,7 +88,7 @@ module PFM
     # @return [Boolean] if the pokemon has been burnt
     def status_burn(forcing = false)
       if (@status == 0 || forcing) && !dead?
-        @status = GameData::States::BURN
+        @status = Configs.states.ids[:burn]
         return true
       end
       return false
@@ -103,7 +103,7 @@ module PFM
     # Is the Pokemon asleep?
     # @return [Boolean]
     def asleep?
-      return @status == GameData::States::ASLEEP
+      return @status == Configs.states.ids[:sleep]
     end
 
     # Put the Pokemon to sleep
@@ -112,7 +112,7 @@ module PFM
     # @return [Boolean] if the pokemon has been put to sleep
     def status_sleep(forcing = false, nb_turn = nil)
       if (@status == 0 || forcing) && !dead?
-        @status = GameData::States::ASLEEP
+        @status = Configs.states.ids[:sleep]
         if nb_turn
           @status_count = nb_turn
         else
@@ -145,7 +145,7 @@ module PFM
     # Is the Pokemon frozen?
     # @return [Boolean]
     def frozen?
-      return @status == GameData::States::FROZEN
+      return @status == Configs.states.ids[:freeze]
     end
 
     # Freeze the Pokemon
@@ -153,7 +153,7 @@ module PFM
     # @return [Boolean] if the pokemon has been frozen
     def status_frozen(forcing = false)
       if (@status == 0 || forcing) && !dead?
-        @status = GameData::States::FROZEN
+        @status = Configs.states.ids[:freeze]
         return true
       end
       return false
@@ -170,7 +170,7 @@ module PFM
     # Is the Pokemon in toxic state ?
     # @return [Boolean]
     def toxic?
-      return @status == GameData::States::TOXIC
+      return @status == Configs.states.ids[:toxic]
     end
 
     # Intoxicate the Pokemon
@@ -178,7 +178,7 @@ module PFM
     # @return [Boolean] if the pokemon has been intoxicated
     def status_toxic(forcing = true)
       if (@status == 0 || forcing) && !dead?
-        @status = GameData::States::TOXIC
+        @status = Configs.states.ids[:toxic]
         @status_count = 0
         return true
       end

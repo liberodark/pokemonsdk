@@ -24,7 +24,7 @@ module Battle
       # Get the neutralized types
       # @return [Array<Integer>]
       def neutralyzed_types
-        return [GameData::Types::FLYING]
+        return [data_type(:flying).id]
       end
     end
   end

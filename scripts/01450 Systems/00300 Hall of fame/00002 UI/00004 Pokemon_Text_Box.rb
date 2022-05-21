@@ -46,7 +46,7 @@ module UI
       # Check how many types the game has
       # @return [Integer] the number of types
       def number_of_types
-        return each_data_type.to_a.size
+        return each_data_type.size
       end
 
       # The SpriteStack initial coordinates

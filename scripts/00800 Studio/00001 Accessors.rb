@@ -3,143 +3,199 @@ class Object
 
   # Get an ability
   # @param db_symbol [Symbol] db_symbol of the ability
-  # @return [GameData::Abilities::Model]
+  # @return [Studio::Ability]
   def data_ability(db_symbol)
-    return GameData::Abilities::Model.new(db_symbol) if db_symbol.is_a?(Integer)
+    return __game_data_by_id(:abilities__id, :abilities, db_symbol) if db_symbol.is_a?(Integer)
 
-    return GameData::Abilities::Model.new(GameData::Abilities.find_using_symbol(db_symbol) || 0)
+    return __game_data.dig(:abilities, db_symbol) || __game_data.dig(:abilities, :__undef__)
   end
 
   # Iterate through all abilities
-  # @yieldparam ability [GameData::Abilities::Model]
-  # @return [Enumerator<GameData::Abilities::Model>]
-  def each_data_ability
-    return to_enum(__method__) unless block_given?
-
-    GameData::Abilities.psdk_id_to_gf_id.size.times do |i|
-      yield(GameData::Abilities::Model.new(i))
-    end
+  # @yieldparam ability [Studio::Ability]
+  # @return [Enumerator<Studio::Ability>]
+  def each_data_ability(&block)
+    __game_data[:abilities__id].each(&block)
   end
 
   # Get an item
   # @param db_symbol [Symbol] db_symbol of the item
-  # @return [GameData::Item]
+  # @return [Studio::Item]
   def data_item(db_symbol)
-    return GameData::Item[db_symbol]
+    return __game_data_by_id(:items__id, :items, db_symbol) if db_symbol.is_a?(Integer)
+
+    return __game_data.dig(:items, db_symbol) || __game_data.dig(:items, :__undef__)
   end
 
   # Iterate through all items
-  # @yieldparam item [GameData::Item]
-  # @return [Enumerator<GameData::Item>]
+  # @yieldparam item [Studio::Item]
+  # @return [Enumerator<Studio::Item>]
   def each_data_item(&block)
-    return to_enum(__method__) unless block_given?
-
-    GameData::Item.all[1..].each(&block)
+    __game_data[:items__id].each(&block)
   end
 
   # Get a move
   # @param db_symbol [Symbol] db_symbol of the move
-  # @return [GameData::Skill]
+  # @return [Studio::Move]
   def data_move(db_symbol)
-    return GameData::Skill[db_symbol]
+    return __game_data_by_id(:moves__id, :moves, db_symbol) if db_symbol.is_a?(Integer)
+
+    return __game_data.dig(:moves, db_symbol) || __game_data.dig(:moves, :__undef__)
   end
 
   # Iterate through all the moves
-  # @yieldparam move [GameData::Skill]
-  # @return [Enumerator<GameData::SKill>]
+  # @yieldparam move [Studio::Move]
+  # @return [Enumerator<Studio::Move>]
   def each_data_move(&block)
-    return to_enum(__method__) unless block_given?
-
-    GameData::Skill.all[1..].each(&block)
+    __game_data[:moves__id].each(&block)
   end
 
   # Get a creature
   # @param db_symbol [Symbol] db_symbol of the creature
-  # @return [GameData::Pokemon::PokemonBase]
+  # @return [Studio::Creature]
   def data_creature(db_symbol)
-    return GameData::Pokemon[db_symbol]
+    return __game_data_by_id(:creatures__id, :creatures, db_symbol) if db_symbol.is_a?(Integer)
+
+    return __game_data.dig(:creatures, db_symbol) || __game_data.dig(:creatures, :__undef__)
   end
   alias data_pokemon data_creature
 
   # Get a creature form
   # @param db_symbol [Symbol] db_symbol of the creature
   # @param form [Integer] form of the creature
-  # @return [GameData::Pokemon]
+  # @return [Studio::CreatureForm]
   def data_creature_form(db_symbol, form)
-    creature = GameData::Pokemon[db_symbol]
+    creature = data_creature(db_symbol)
     return creature.forms.find { |creature_form| creature_form.form == form } || creature.forms[0]
   end
 
   # Iterate through all the creatures
-  # @yieldparam move [GameData::Pokemon::PokemonBase]
-  # @return [Enumerator<GameData::Pokemon::PokemonBase>]
-  def each_data_creature
-    return to_enum(__method__) unless block_given?
-
-    GameData::Pokemon.all[1..].each { |creature| yield(creature[0]) }
+  # @yieldparam move [Studio::Creature]
+  # @return [Enumerator<Studio::Creature>]
+  def each_data_creature(&block)
+    __game_data[:creatures__id].each(&block)
   end
 
   # Get a quest
-  # @param id [Integer] ID of the quest
-  # @return [GameData::Quest, nil]
-  def data_quest(id)
-    return GameData::Quest[id]
+  # @param db_symbol [Symbol] db_symbol of the quest
+  # @return [Studio::Quest]
+  def data_quest(db_symbol)
+    return __game_data_by_id(:quests__id, :quests, db_symbol) if db_symbol.is_a?(Integer)
+
+    return __game_data.dig(:quests, db_symbol) || __game_data.dig(:quests, :__undef__)
   end
 
-  # Iterate throug all the quests
-  # @yieldparam quest [GameData::Quest]
-  # @return [Enumerator<GameData::Quest>]
+  # Iterate through all the quests
+  # @yieldparam quest [Studio::Quest]
+  # @return [Enumerator<Studio::Quest>]
   def each_data_quest(&block)
-    return to_enum(__method__) unless block_given?
-
-    GameData::Quest.all.each(&block)
+    __game_data[:quests__id].each(&block)
   end
 
   # Get a trainer
-  # @param id [Integer] ID of the trainer
-  # @return [GameData::Trainer, nil]
-  def data_trainer(id)
-    return GameData::Trainer[id]
+  # @param db_symbol [Symbol] db_symbol of the trainer
+  # @return [Studio::Trainer]
+  def data_trainer(db_symbol)
+    return __game_data_by_id(:trainers__id, :trainers, db_symbol) if db_symbol.is_a?(Integer)
+
+    return __game_data.dig(:trainers, db_symbol) || __game_data.dig(:trainers, :__undef__)
   end
 
-  # Iterate throug all the trainers
-  # @yieldparam trainer [GameData::Trainer]
-  # @return [Enumerator<GameData::Trainer>]
+  # Iterate through all the trainers
+  # @yieldparam trainer [Studio::Trainer]
+  # @return [Enumerator<Studio::Trainer>]
   def each_data_trainer(&block)
-    return to_enum(__method__) unless block_given?
-
-    GameData::Trainer.all.each(&block)
+    __game_data[:trainers__id].each(&block)
   end
 
   # Get a type
   # @param db_symbol [Symbol] db_symbol of the type
-  # @return [GameData::Type]
+  # @return [Studio::Type]
   def data_type(db_symbol)
-    return GameData::Type[db_symbol]
+    return __game_data_by_id(:types__id, :types, db_symbol) if db_symbol.is_a?(Integer)
+
+    return __game_data.dig(:types, db_symbol) || __game_data.dig(:types, :__undef__)
   end
 
-  # Iterate throug all the types
-  # @yieldparam type [GameData::Type]
-  # @return [Enumerator<GameData::Type>]
+  # Iterate through all the types
+  # @yieldparam type [Studio::Type]
+  # @return [Enumerator<Studio::Type>]
   def each_data_type(&block)
-    return to_enum(__method__) unless block_given?
-
-    GameData::Type.all.each(&block)
+    __game_data[:types__id].each(&block)
   end
 
   # Get a zone
-  # @param id [Symbol] id of the zone
-  # @return [GameData::Zone, nil]
-  def data_zone(id)
-    return GameData::Zone[id]
+  # @param db_symbol [Symbol] db_symbol of the zone
+  # @return [Studio::Zone]
+  def data_zone(db_symbol)
+    return __game_data_by_id(:zones__id, :zones, db_symbol) if db_symbol.is_a?(Integer)
+
+    return __game_data.dig(:zones, db_symbol) || __game_data.dig(:zones, :__undef__)
   end
 
-  # Iterate throug all the zones
-  # @yieldparam zone [GameData::Zone]
-  # @return [Enumerator<GameData::Zone>]
+  # Iterate through all the zones
+  # @yieldparam zone [Studio::Zone]
+  # @return [Enumerator<Studio::Zone>]
   def each_data_zone(&block)
-    return to_enum(__method__) unless block_given?
+    __game_data[:zones__id].each(&block)
+  end
 
-    GameData::Zone.all.each(&block)
+  # Get a group
+  # @param db_symbol [Symbol] db_symbol of the group
+  # @return [Studio::Group]
+  def data_group(db_symbol)
+    return __game_data_by_id(:groups__id, :groups, db_symbol) if db_symbol.is_a?(Integer)
+
+    return __game_data.dig(:groups, db_symbol) || __game_data.dig(:groups, :__undef__)
+  end
+
+  # Iterate through all the groups
+  # @yieldparam zone [Studio::Group]
+  # @return [Enumerator<Studio::Group>]
+  def each_data_group(&block)
+    __game_data[:groups__id].each(&block)
+  end
+
+  # Get a world map
+  # @param db_symbol [Symbol] db_symbol of the world map
+  # @return [Studio::WorldMap]
+  def data_world_map(db_symbol)
+    return __game_data_by_id(:worldmaps__id, :worldmaps, db_symbol) if db_symbol.is_a?(Integer)
+
+    return __game_data.dig(:worldmaps, db_symbol) || __game_data.dig(:worldmaps, :__undef__)
+  end
+
+  # Iterate through all the groups
+  # @yieldparam zone [Studio::WorldMap]
+  # @return [Enumerator<Studio::WorldMap>]
+  def each_data_world_map(&block)
+    __game_data[:worldmaps__id].each(&block)
+  end
+
+  # Get the game data
+  # @return [Hash<Symbol => Hash>]
+  def __game_data
+    @__t = Time.new
+    unless PSDK_CONFIG.release? || File.exist?('Data/Studio/psdk.dat')
+      ScriptLoader.load_tool('Studio2PSDK')
+      Studio2PSDK.try_convert
+      Studio2PSDK.cleanup
+    end
+    data = load_data('Data/Studio/psdk.dat')
+    log_info("Loaded PSDK data in #{(Time.new - @__t).round(4)}s")
+    remove_instance_variable(:@__t)
+    private Object.define_method(:__game_data) { data }
+    $game_data_maplinks = load_data('Data/PSDK/Maplinks.rxdata')
+    $data_system_tags = load_data('Data/PSDK/SystemTags.rxdata')
+    return __game_data
+  end
+
+  # Get the game data by id
+  # @param id_storage [Symbol]
+  # @param storage [Symbol]
+  # @param id [Integer]
+  def __game_data_by_id(id_storage, storage, id)
+    return __game_data[id_storage].find { |a| a.id == id } || __game_data.dig(storage, :__undef__)
   end
 end
+
+Graphics.on_start { __game_data }

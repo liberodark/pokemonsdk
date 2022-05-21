@@ -3,11 +3,11 @@ module PFM
   #
   # The main Pokedex object is stored in $pokedex or PFM.game_state.pokedex
   #
-  # All Pokemon are usually marked as seen or captured in the correct scripts using $pokedex.mark_seen(id)
+  # All Creature are usually marked as seen or captured in the correct scripts using $pokedex.mark_seen(id)
   # or $pokedex.mark_captured(id).
   #
-  # When the Pokedex is disabled, no Pokemon can be marked as seen (unless they're added to the party).
-  # All caught Pokemon are marked as captured so if for scenaristic reason you need the trainer to catch Pokemon
+  # When the Pokedex is disabled, no Creature can be marked as seen (unless they're added to the party).
+  # All caught Creature are marked as captured so if for scenaristic reason you need the trainer to catch Creature
   # before having the Pokedex. Don't forget to call $pokedex.unmark_captured(id) (as well $pokedex.unmark_seen(id))
   # @author Nuri Yuri
   class Pokedex
@@ -20,12 +20,36 @@ module PFM
     def initialize(game_state = PFM.game_state)
       @seen = 0
       @captured = 0
-      all_creature_count = each_data_creature.to_a.size + 1
-      @has_seen_and_forms = Array.new(all_creature_count, 0)
-      @has_captured = Array.new(all_creature_count, false)
-      @nb_fought = Array.new(all_creature_count, 0)
-      @nb_captured = Array.new(all_creature_count, 0)
+      @has_seen_and_forms = Hash.new(0)
+      @has_captured = []
+      @nb_fought = Hash.new(0)
+      @nb_captured = Hash.new(0)
       @game_state = game_state
+    end
+
+    # Convert the dex to .26 format
+    def convert_to_dot26
+      return if @has_seen_and_forms.is_a?(Hash)
+
+      all_db_symbols = [
+        @has_seen_and_forms.size,
+        @has_captured.size,
+        @nb_fought.size,
+        @nb_captured.size
+      ].max.times.map { |i| data_creature(i).db_symbol }
+
+      has_seen_and_forms = @has_seen_and_forms.map.with_index { |v, i| v == 0 ? nil : [all_db_symbols[i], v] }.compact.to_h
+      has_captured = @has_captured.map.with_index { |v, i| v ? all_db_symbols[i] : nil }.compact
+      nb_fought = @nb_fought.map.with_index { |v, i| v == 0 ? nil : [all_db_symbols[i], v] }.compact.to_h
+      nb_captured = @nb_captured.map.with_index { |v, i| v == 0 ? nil : [all_db_symbols[i], v] }.compact.to_h
+
+      @has_seen_and_forms = Hash.new(0)
+      @has_seen_and_forms.merge!(has_seen_and_forms)
+      @has_captured = has_captured
+      @nb_fought = Hash.new(0)
+      @nb_fought.merge!(nb_fought)
+      @nb_captured = Hash.new(0)
+      @nb_captured.merge!(nb_captured)
     end
 
     # Enable the Pokedex
@@ -51,201 +75,221 @@ module PFM
     end
     alias set_national national=
 
-    # Is the Pokedex showing national Pokemon
+    # Is the Pokedex showing national Creature
     # @return [Boolean]
     def national?
       return @game_state.game_switches[Yuki::Sw::Pokedex_Nat]
     end
 
-    # Return the number of Pokemon seen
+    # Return the number of Creature seen
     # @return [Integer]
-    def pokemon_seen
+    def creature_seen
       return @seen
     end
+    alias pokemon_seen creature_seen
 
-    # Return the number of captured Pokemon
+    # Return the number of caught Creature
     # @return [Integer]
-    def pokemon_captured
+    def creature_caught
       return @captured
     end
+    alias pokemon_captured creature_caught
 
-    # Return the number of Pokemon captured by specie
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
+    # Return the number of Creature captured by specie
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
     # @return [Integer]
-    def pokemon_captured_count(id)
-      id = data_creature(id).id if id.is_a?(Symbol)
-      return @nb_captured[id].to_i
+    def creature_caught_count(db_symbol)
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return @nb_captured[db_symbol]
     end
 
-    # Change the number of Pokemon captured by specie
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
+    # Change the number of Creature captured by specie
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
     # @param number [Integer] the new number
-    def pokemon_captured_set_count(id, number)
-      id = data_creature(id).id
-      return if id == 0
+    def set_creature_caught_count(db_symbol, number)
+      return unless enabled?
 
-      @nb_captured[id] = number.to_i
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return if db_symbol == :__undef__
+
+      @nb_captured[db_symbol] = number.to_i
     end
 
-    # Increase the number of pokemon captured by specie
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
-    def pokemon_captured_inc(id)
-      id = data_creature(id).id
-      return if id == 0
+    # Increase the number of Creature captured by specie
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
+    def increase_creature_caught_count(db_symbol)
+      return unless enabled?
 
-      @nb_captured[id] = @nb_captured[id].to_i.next
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return if db_symbol == :__undef__
+
+      @nb_captured[db_symbol] += 1
     end
+    alias pokemon_captured_inc increase_creature_caught_count
 
-    # Return the number of Pokemon fought by specie
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
+    # Return the number of Creature fought by specie
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
     # @return [Integer]
-    def pokemon_fought(id)
-      id = data_creature(id).id if id.is_a?(Symbol)
-      return @nb_fought[id].to_i
+    def creature_fought(db_symbol)
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return @nb_fought[db_symbol]
     end
 
-    # Change the number of Pokemon fought by specie
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
-    # @param number [Integer] the number of Pokemon fought in the specified specie
-    def pokemon_mark_fought(id, number)
+    # Change the number of Creature fought by specie
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
+    # @param number [Integer] the number of Creature fought in the specified specie
+    def set_creature_fought(db_symbol, number)
       return unless enabled?
 
-      id = data_creature(id).id
-      return if id == 0
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return if db_symbol == :__undef__
 
-      @nb_fought[id] = number.to_i
+      @nb_fought[db_symbol] = number.to_i
     end
 
-    # Increase the number of Pokemon fought by specie
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
-    def pokemon_fought_inc(id)
+    # Increase the number of Creature fought by specie
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
+    def increase_creature_fought(db_symbol)
       return unless enabled?
 
-      id = data_creature(id).id
-      return if id == 0
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return if db_symbol == :__undef__
 
-      @nb_fought[id] = @nb_fought[id].to_i.next
+      @nb_fought[db_symbol] += 1
     end
+    alias pokemon_fought_inc increase_creature_fought
 
-    # Mark a pokemon as seen
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
-    # @param form [Integer] the specific form of the Pokemon
-    # @param forced [Boolean] if the Pokemon is marked seen even if the Pokedex is disabled
-    #                         (Giving Pokemon before givin the Pokedex).
-    def mark_seen(id, form = 0, forced: false)
+    # Mark a creature as seen
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
+    # @param form [Integer] the specific form of the Creature
+    # @param forced [Boolean] if the Creature is marked seen even if the Pokedex is disabled
+    #                         (Giving Creature before givin the Pokedex).
+    def mark_seen(db_symbol, form = 0, forced: false)
       return unless enabled? || forced
 
-      id = data_creature(id).id
-      return if id == 0
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return if db_symbol == :__undef__
 
-      @seen += 1 if @has_seen_and_forms[id].to_i == 0
-      @has_seen_and_forms[id] = @has_seen_and_forms[id].to_i | (1 << form)
+      @seen += 1 if @has_seen_and_forms[db_symbol] == 0
+      @has_seen_and_forms[db_symbol] |= (1 << form)
       @game_state.game_variables[Yuki::Var::Pokedex_Seen] = @seen
     end
 
-    # Unmark a pokemon as seen
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
+    # Unmark a creature as seen
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
     # @param form [Integer, false] if false, all form will be unseen, otherwise the specific form will be unseen
-    def unmark_seen(id, form = false)
-      id = data_creature(id).id
-      return if id == 0
+    def unmark_seen(db_symbol, form: false)
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return if db_symbol == :__undef__
 
       if form
-        @has_seen_and_forms[id] = @has_seen_and_forms[id].to_i & ~(1 << form)
+        @has_seen_and_forms[db_symbol] &= ~(1 << form)
       else
-        @has_seen_and_forms[id] = 0
+        @has_seen_and_forms.delete(db_symbol)
       end
-      @seen -= 1 if @has_seen_and_forms[id] == 0
+      @seen -= 1 if !form || @has_seen_and_forms[db_symbol] == 0
       @game_state.game_variables[Yuki::Var::Pokedex_Seen] = @seen
     end
 
-    # Mark a Pokemon as captured
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
-    def mark_captured(id)
-      id = data_creature(id).id
-      return if id == 0
+    # Mark a Creature as captured
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
+    def mark_captured(db_symbol)
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return if db_symbol == :__undef__
 
-      unless @has_captured[id]
-        @has_captured[id] = true
+      unless @has_captured.include?(db_symbol)
+        @has_captured << db_symbol
         @captured += 1
       end
       @game_state.game_variables[Yuki::Var::Pokedex_Catch] = @captured
     end
 
-    # Unmark a Pokemon as captured
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
-    def unmark_captured(id)
-      id = data_creature(id).id
-      return if id == 0
+    # Unmark a Creature as captured
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
+    def unmark_captured(db_symbol)
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return if db_symbol == :__undef__
 
-      if @has_captured[id]
-        @has_captured[id] = false
+      if @has_captured.include?(db_symbol)
+        @has_captured.delete(db_symbol)
         @captured -= 1
       end
       @game_state.game_variables[Yuki::Var::Pokedex_Catch] = @captured
     end
 
-    # Has the player seen a Pokemon
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
+    # Has the player seen a Creature
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
     # @return [Boolean]
-    def pokemon_seen?(id)
-      id = data_creature(id).id
-      return false if id == 0
+    def creature_seen?(db_symbol)
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return false if db_symbol == :__undef__
 
-      return @has_seen_and_forms[id].to_i != 0
+      return @has_seen_and_forms[db_symbol] != 0
     end
-    alias has_seen? pokemon_seen?
+    alias pokemon_seen? creature_seen?
+    alias has_seen? creature_seen?
 
-    # Has the player caught this Pokemon
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
+    # Has the player caught this Creature
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
     # @return [Boolean]
-    def pokemon_caught?(id)
-      id = data_creature(id).id
-      return false if id == 0
+    def creature_caught?(db_symbol)
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return false if db_symbol == :__undef__
 
-      return @has_captured[id]
+      return @has_captured.include?(db_symbol)
     end
-    alias has_captured? pokemon_caught?
+    alias pokemon_caught? creature_caught?
+    alias has_captured? creature_caught?
 
-    # Get the seen forms informations of a Pokemon
-    # @param id [Integer, Symbol] the id of the Pokemon in the database
+    # Get the seen forms informations of a Creature
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
     # @return [Integer] An interger where int[form] == 1 mean the form has been seen
-    def form_seen(id)
-      id = data_creature(id).id
-      return 0 if id == 0
+    def form_seen(db_symbol)
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return 0 if db_symbol == :__undef__
 
-      return @has_seen_and_forms[id].to_i
+      return @has_seen_and_forms[db_symbol]
     end
     alias get_forms form_seen
 
     # Calibrate the Pokedex information (seen/captured)
     def calibrate
-      @seen = 0
-      @captured = 0
-      1.step(each_data_creature.to_a.size) do |id|
-        @seen += 1 if @has_seen_and_forms[id].to_i != 0
-        @captured += 1 if @has_captured[id]
-      end
+      @has_seen_and_forms.delete_if { |_, v| v == 0 }
+      @seen = @has_seen_and_forms.size
+      @captured = @has_captured.size
       @game_state.game_variables[Yuki::Var::Pokedex_Catch] = @captured
       @game_state.game_variables[Yuki::Var::Pokedex_Seen] = @seen
     end
 
-    # Detect the best worldmap to display for the pokemon
-    # @param pokemon_id [Integer] the pokemon we want the worldmap to display
+    # Detect the best worldmap to display for the creature
+    # @param db_symbol [Symbol] db_symbol of the creature we want the worldmap to display
     # @return [Integer]
-    def best_worldmap_pokemon(pokemon_id)
-      current = result = @game_state.env.get_worldmap
-      GameData::WorldMap.each_id do |worldmap_id|
-        next unless @game_state.env.visited_worldmap?(worldmap_id)
+    def best_worldmap_for_creature(db_symbol)
+      default = @game_state.env.get_worldmap
+      return default if each_data_world_map.size == 0
 
-        wm_zones = GameData::WorldMap.zone_list(worldmap_id)
-        pkm_zones = GameData::Pokemon.spawn_zones(pokemon_id)
-        next unless (wm_zones - pkm_zones).length != wm_zones.length
+      zone_db_symbols = spawn_zones(db_symbol)
+      return default if zone_db_symbols.empty?
 
-        result = worldmap_id
-        break if worldmap_id == result && result == current
+      world_maps = zone_db_symbols.map { |zone_db_symbol| data_zone(zone_db_symbol).worldmaps }.flatten.compact
+      return default if world_maps.empty?
+
+      best_id = world_maps.group_by { |id| id }.map { |k, v| [k, v.size] }.max_by(&:last).first
+      return best_id || default
+    end
+    alias best_worldmap_pokemon best_worldmap_for_creature
+
+    # Return the list of the zone id where the creature spawns
+    # @param db_symbol [Symbol] db_symbol of the creature we want to know where it spawns
+    # @return [Array<Symbol>]
+    def spawn_zones(db_symbol)
+      # @type [Array<Studio::Zone>]
+      zones = each_data_zone.select do |zone|
+        # @type [Array<Studio::Group>]
+        groups = zone.wild_groups.map { |group_db_symbol| data_group(group_db_symbol) }
+        next groups.any? { |group| group.encounters.any? { |encounter| encounter.specie == db_symbol } }
       end
-      return result
+      return zones.map(&:db_symbol)
     end
   end
 
@@ -259,6 +303,7 @@ module PFM
       # Variable containing the Pokedex Information
       $pokedex = @pokedex
       @pokedex.game_state = self
+      @pokedex.convert_to_dot26 if trainer.current_version < 6656
     end
   end
 end

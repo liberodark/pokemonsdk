@@ -49,7 +49,7 @@ module Battle
         interest_factor = boost_item_interest_factor_for(pokemon)
         BOOSTING_ITEMS.select { |item| pokemon.bag.contain_item?(item) }.map do |item|
           wrapper = PFM::ItemDescriptor.actions(item)
-          if wrapper.on_pokemon_choice(pokemon, @scene) # WARNING: Check if there's message shown
+          if wrapper.on_creature_choice(pokemon, @scene) # WARNING: Check if there's message shown
             wrapper.bind(@scene, pokemon)
             next [interest_factor, Actions::Item.new(@scene, wrapper, pokemon.bag, pokemon)]
           else
@@ -73,7 +73,7 @@ module Battle
         HEALING_ITEMS.select { |item| pokemon.bag.contain_item?(item) }.map do |item|
           wrapper = PFM::ItemDescriptor.actions(item)
           wrapper.bind(@scene, pokemon)
-          factor = (wrapper.item.is_a?(GameData::ConstantHealItem) ? wrapper.item.hp_count.to_f / pokemon.max_hp : wrapper.item.hp_rate) * 2.0
+          factor = (wrapper.item.is_a?(Studio::ConstantHealItem) ? wrapper.item.hp_count.to_f / pokemon.max_hp : wrapper.item.hp_rate) * 2.0
           next [factor, Actions::Item.new(@scene, wrapper, pokemon.bag, pokemon)]
         end.compact
       end

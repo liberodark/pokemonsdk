@@ -10,7 +10,7 @@ module Battle
         def base_power_multiplier(user, target, move)
           return 1 if target != self.target
 
-          return move.type == GameData::Types::FIRE ? 1.25 : 1
+          return move.type == data_type(:fire).id ? 1.25 : 1
         end
 
         # Function called when a damage_prevention is checked

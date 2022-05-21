@@ -43,13 +43,13 @@ module GamePlay
     end
 
     def use(index)
-      item_id = @items[index]
-      if item_id == 0 || !$bag.contain_item?(item_id)
+      item_db_symbol = @items[index]
+      if item_db_symbol == :__undef__ || !$bag.contain_item?(item_db_symbol)
         play_buzzer_se
         return
       end
       play_decision_se
-      @running = false if util_item_useitem(item_id)
+      @running = false if util_item_useitem(item_db_symbol)
       close_message_window
     end
 

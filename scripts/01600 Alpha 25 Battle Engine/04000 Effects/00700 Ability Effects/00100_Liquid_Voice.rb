@@ -9,7 +9,7 @@ module Battle
         # @param type [Integer] current type of the move (potentially after effects)
         # @return [Integer, nil] new type of the move
         def on_move_type_change(user, target, move, type)
-          return GameData::Types::WATER if move.sound_attack?
+          return data_type(:water).id if move.sound_attack?
 
           return nil
         end

@@ -1,5 +1,5 @@
 module PFM
-  # The text parser of PSDK (retrieve text from GameData::Text)
+  # The text parser of PSDK (retrieve text from Studio::Text)
   # @author Nuri Yuri
   module Text
     @variables = {}
@@ -96,7 +96,7 @@ module PFM
       # Text id adjustment
       text_id += ($game_temp.trainer_battle ? 2 : 1) if enemy_pokemon?(pokemon)
       # Get text
-      text = GameData::Text.get(file_id, text_id).clone
+      text = Studio::Text.get(file_id, text_id).clone
       # Parse all the variables
       additionnal_var&.each { |expr, value| text.gsub!(expr, value || '<nil>') }
       @variables.each { |expr, value| text.gsub!(expr, value) }
@@ -132,7 +132,7 @@ module PFM
         text_id += ($game_temp.trainer_battle ? 2 : 1)
       end
       # Get text
-      text = GameData::Text.get(file_id, text_id).clone
+      text = Studio::Text.get(file_id, text_id).clone
       # Parse all the variables
       additionnal_var&.each { |expr, value| text.gsub!(expr, value || '<nil>') }
       @variables.each { |expr, value| text.gsub!(expr, value) }
@@ -160,7 +160,7 @@ module PFM
         text_id += ($game_temp.trainer_battle ? 2 : 1)
       end
       # Get text
-      text = ::GameData::Text.get(file_id, text_id).clone
+      text = ::Studio::Text.get(file_id, text_id).clone
       # Parse all the variables
       additionnal_var&.each { |expr, value| text.gsub!(expr, value || '<nil>') }
       @variables.each { |expr, value| text.gsub!(expr, value) }
@@ -283,7 +283,7 @@ module PFM
     # @param text [String]
     def detect_dialog(text)
       if (match = text.match(/^([0-9]+),( |)([0-9]+)/))
-        text = GameData::Text.get_dialog_message(match[1].to_i, match[3].to_i)
+        text = Studio::Text.get_dialog_message(match[1].to_i, match[3].to_i)
       end
       return text
     end

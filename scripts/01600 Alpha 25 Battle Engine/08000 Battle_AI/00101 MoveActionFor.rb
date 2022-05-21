@@ -81,10 +81,10 @@ module Battle
       # @return [Float]
       def move_status_modifier(move, user, target)
         result = 1.0
-        return result if move.status_effect == 0
+        return result if move.status_effects.empty?
 
-        result = 0 if move.status_effect == target.status && move.status?
-        move_status = Battle::Logic::StatusChangeHandler::STATUS_ID_TO_SYMBOL[move.status_effect]
+        result = 0 if move.status? && move.status_effects.any? { |status| Configs.states.ids[status.status] == target.status }
+        move_status = move.status_effects.first.status
         result = 0 if !@scene.logic.status_change_handler.status_appliable?(move_status, target, user, move) && @can_switch
         return result
       end

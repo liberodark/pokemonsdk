@@ -5,6 +5,7 @@
 #
 # To execute this script write :
 #   PSDKEditor.convert
+require_relative '../../keep/GameData'
 module PSDKEditor
   # Root folder of the PSDK Editor data
   ROOT = 'Data/Studio'
@@ -15,6 +16,7 @@ module PSDKEditor
 
   # Convert the project to a PSDK Editor Project
   def convert
+    GameData.load
     create_paths
     convert_pokemon
     convert_items
@@ -104,7 +106,11 @@ module PSDKEditor
           value != 0 ? { battleStage: GameData::Stages::PSDK_EDITOR_VALUES[index], modificator: value } : nil
         end.compact
       }
-      move_data.merge!(moveStatus: [{ status: GameData::States::PSDK_EDITOR_VALUES[move.status], luckRate: move.effect_chance }]) if move.status
+      if move.status && move.status > 0
+        move_data.merge!(moveStatus: [{ status: GameData::States::PSDK_EDITOR_VALUES[move.status], luckRate: move.effect_chance }])
+      else
+        move_data.merge!(moveStatus: [])
+      end
       next if check_db_symbol(move)
 
       File.write(File.join(ROOT, 'moves', "#{move.db_symbol}.json"), move_data.to_json)
@@ -115,8 +121,8 @@ module PSDKEditor
   def convert_zones
     GameData::Zone.all.each do |zone|
       zone_data = {
-        id: zone.id, dbSymbol: "zone_#{zone.id}", klass: 'Zone', maps: [zone.map_id].compact.flatten, worldmaps: [zone.worldmap_id].flatten,
-        pannelId: zone.panel_id, warp: { x: zone.warp_x, y: zone.warp_y }, position: { x: zone.pos_x, y: zone.pos_y }, isFlyAllowed: zone.fly_allowed,
+        id: zone.id, dbSymbol: "zone_#{zone.id}", klass: 'Zone', maps: [zone.map_id].compact.flatten, worldmaps: [zone.worldmap_id].compact.flatten,
+        panelId: zone.panel_id, warp: { x: zone.warp_x, y: zone.warp_y }, position: { x: zone.pos_x, y: zone.pos_y }, isFlyAllowed: zone.fly_allowed,
         isWarpDisallowed: zone.warp_disallowed, forcedWeather: zone.forced_weather, wildGroups: create_wild_groups(zone)
       }
       File.write(File.join(ROOT, 'zones', "zone_#{zone.id}.json"), zone_data.to_json)
@@ -140,8 +146,8 @@ module PSDKEditor
         region_name = { csvFileId: worldmap.name_file_id || 9, csvTextIndex: worldmap.name_id || 0 }
       end
       worldmap_data = {
-        id: worldmap.id, dbSymbol: worldmap.db_symbol, klass: 'WorldMap',
-        image: worldmap.image, grid: grid,
+        id: worldmap.id, dbSymbol: worldmap.db_symbol || :"worldmap_#{worldmap.id}", klass: 'WorldMap',
+        image: GameData::WorldMap.worldmap_image_filename(worldmap.image), grid: grid,
         regionName: region_name
       }
       File.write(File.join(ROOT, 'worldmaps', "#{worldmap.id}.json"), worldmap_data.to_json)
@@ -557,6 +563,7 @@ module PSDKEditor
     data_settings[:pokemonMaxLevel] = PSDK_CONFIG.pokemon_max_level
     data_settings[:isAlwaysUseForm0ForEvolution] = PSDK_CONFIG.always_use_form0_for_evolution
     data_settings[:isUseForm0WhenNoEvolutionData] = PSDK_CONFIG.use_form0_when_no_evolution_data
+    data_settings[:maxBagItemCount] = PSDK_CONFIG.max_bag_item_count
     File.write(File.join(ROOT_CONFIGS, 'settings_config.json'), data_settings.to_json)
   end
 
@@ -859,23 +866,40 @@ module GameData
   module States
     # Hash helping to convert state ID to their PSDK Editor counter part
     PSDK_EDITOR_VALUES = {
-      POISONED => 'POISONED', PARALYZED => 'PARALYZED', BURN => 'BURN', ASLEEP => 'ASLEEP', FROZEN => 'FROZEN', CONFUSED => 'CONFUSED',
-      TOXIC => 'TOXIC', DEATH => 'DEATH', FLINCH => 'FLINCH'
+      Configs.states.ids[:poison] => 'POISONED',
+      Configs.states.ids[:paralysis] => 'PARALYZED',
+      Configs.states.ids[:burn] => 'BURN',
+      Configs.states.ids[:sleep] => 'ASLEEP',
+      Configs.states.ids[:freeze] => 'FROZEN',
+      Configs.states.ids[:confusion] => 'CONFUSED',
+      Configs.states.ids[:toxic] => 'TOXIC',
+      Configs.states.ids[:death] => 'DEATH',
+      Configs.states.ids[:flinch] => 'FLINCH'
     }
   end
 
   module Stages
     # Hash helping to convert stage ID to its PSDK Editor counter part
     PSDK_EDITOR_VALUES = {
-      ATK_STAGE => 'ATK_STAGE', ATS_STAGE => 'ATS_STAGE', DFE_STAGE => 'DFE_STAGE', DFS_STAGE => 'DFS_STAGE',
-      SPD_STAGE => 'SPD_STAGE', EVA_STAGE => 'EVA_STAGE', ACC_STAGE => 'ACC_STAGE'
+      Configs.stats.atk_stage_index => 'ATK_STAGE',
+      Configs.stats.ats_stage_index => 'ATS_STAGE',
+      Configs.stats.dfe_stage_index => 'DFE_STAGE',
+      Configs.stats.dfs_stage_index => 'DFS_STAGE',
+      Configs.stats.spd_stage_index => 'SPD_STAGE',
+      Configs.stats.eva_stage_index => 'EVA_STAGE',
+      Configs.stats.acc_stage_index => 'ACC_STAGE'
     }
   end
 
   module EV
     # Hash helping to convert EV stat ID to its PSDK Editor counter part
     PSDK_EDITOR_VALUES = {
-      ATK => 'ATK', ATS => 'ATS', DFE => 'DFE', DFS => 'DFS', SPD => 'SPD', HP => 'HP'
+      Configs.stats.atk_index => 'ATK',
+      Configs.stats.ats_index => 'ATS',
+      Configs.stats.dfe_index => 'DFE',
+      Configs.stats.dfs_index => 'DFS',
+      Configs.stats.spd_index => 'SPD',
+      Configs.stats.hp_index => 'HP'
     }
   end
 end

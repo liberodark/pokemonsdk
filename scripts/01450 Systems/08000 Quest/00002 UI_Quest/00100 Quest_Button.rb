@@ -37,7 +37,7 @@ module UI
         return if quest.nil?
 
         @quest = quest
-        @title.text = data_quest.name
+        @title.text = quest_data.name
       end
 
       private
@@ -81,9 +81,9 @@ module UI
       end
 
       # Return the data for the current quest stocked
-      # @return GameData::Quest
-      def data_quest
-        return super(@quest.quest_id)
+      # @return [Studio::Quest]
+      def quest_data
+        return data_quest(@quest.quest_id)
       end
     end
   end

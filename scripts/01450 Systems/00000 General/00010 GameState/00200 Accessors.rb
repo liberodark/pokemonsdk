@@ -199,8 +199,8 @@ module PFM
     # Maximum level an allied Pokemon can reach
     # @return [Integer]
     attr_accessor :level_max_limit
-    on_player_initialize(:level_max_limit) { @level_max_limit = GameData::MAX_LEVEL }
-    on_expand_global_variables(:level_max_limit) { @level_max_limit ||= GameData::MAX_LEVEL }
+    on_player_initialize(:level_max_limit) { @level_max_limit = PSDK_CONFIG.pokemon_max_level }
+    on_expand_global_variables(:level_max_limit) { @level_max_limit ||= PSDK_CONFIG.pokemon_max_level }
 
     # The in game berry data
     # @return [Hash]
@@ -389,7 +389,7 @@ module PFM
     def load_parameters
       Audio.music_volume = @options.music_volume
       Audio.sfx_volume = @options.sfx_volume
-      GameData::Text.load
+      Studio::Text.load
     end
   end
 

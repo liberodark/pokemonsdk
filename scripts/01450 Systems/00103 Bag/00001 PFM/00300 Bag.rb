@@ -14,8 +14,8 @@ module PFM
     # @return [Boolean]
     attr_accessor :locked
     # Set the last battle item
-    # @return [Integer]
-    attr_accessor :last_battle_item_id
+    # @return [Symbol]
+    attr_accessor :last_battle_item_db_symbol
     # Tell if the bag is alpha sorted
     # @return [Boolean]
     attr_accessor :alpha_sorted
@@ -29,67 +29,84 @@ module PFM
     # @param game_state [PFM::GameState] variable responsive of containing the whole game state for easier access
     def initialize(game_state = PFM.game_state)
       self.game_state = game_state
-      @items = Array.new(each_data_item.to_a.size, 0)
+      # @type [Hash<Symbol => Integer>]
+      @items = Hash.new(0)
       @orders = [[], [], [], [], [], [], []]
       @last_socket = 1
       @last_index = 0
-      @shortcut = Array.new(SHORTCUT_AMOUNT, 0)
+      @shortcut = Array.new(SHORTCUT_AMOUNT, :__undef__)
       @locked = false
-      @last_battle_item_id = 0
+      @last_battle_item_db_symbol = :__undef__
       @alpha_sorted = false
     end
 
+    # Convert bag to .26 format
+    def convert_to_dot26
+      return if @items.is_a?(Hash)
+
+      items = Hash.new(0)
+      items.merge!(
+        @items.map.with_index { |quantity, id| [data_item(id).db_symbol, quantity] }.reject { |v| v.last == 0 }.to_h
+      )
+      items.delete(:__undef__)
+      @items = items
+      @orders.map! { |order| order.map { |id| data_item(id).db_symbol }.reject { |db_symbol| db_symbol == :__undef__ } }
+    end
+
     # If the bag contain a specific item
-    # @param id [Integer, Symbol] id of the item in the database
+    # @param db_symbol [Symbol] db_symbol of the item
     # @return [Boolean]
-    def contain_item?(id)
-      return item_quantity(id) > 0
+    def contain_item?(db_symbol)
+      return item_quantity(db_symbol) > 0
     end
     alias has_item? contain_item?
 
     # Tell if the bag is empty
     # @return [Boolean]
     def empty?
-      return @items.all?(&:zero?)
+      return @items.empty?
     end
 
     # The quantity of an item in the bag
-    # @param id [Integer, Symbol] id of the item in the database
+    # @param db_symbol [Symbol] db_symbol of the item
     # @return [Integer]
-    def item_quantity(id)
+    def item_quantity(db_symbol)
       return 0 if @locked
 
-      return @items[data_item(id).id] || 0
+      db_symbol = data_item(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return @items[db_symbol]
     end
 
     # Add items in the bag and trigger the right quest objective
-    # @param id [Integer, Symbol] id of the item in the database
+    # @param db_symbol [Symbol] db_symbol of the item
     # @param nb [Integer] number of item to add
-    def add_item(id, nb = 1)
+    def add_item(db_symbol, nb = 1)
       return if @locked
-      return remove_item(id, -nb) if nb < 0
+      return remove_item(db_symbol, -nb) if nb < 0
 
-      id = data_item(id).id
-      @items[id] ||= 0
-      @items[id] += nb
-      add_item_to_order(id)
-      game_state.quests.add_item(id)
+      db_symbol = data_item(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return if db_symbol == :__undef__
+
+      @items[db_symbol] += nb
+      add_item_to_order(db_symbol)
+      game_state.quests.add_item(data_item(db_symbol).id)
     end
     alias store_item add_item
 
     # Remove items from the bag
-    # @param id [Integer, Symbol] id of the item in the database
+    # @param db_symbol [Symbol] db_symbol of the item
     # @param nb [Integer] number of item to remove
-    def remove_item(id, nb = 999)
+    def remove_item(db_symbol, nb = 999)
       return if @locked
-      return add_item(id, -nb) if nb < 0
+      return add_item(db_symbol, -nb) if nb < 0
 
-      id = data_item(id).id
-      @items[id] ||= 0 unless @items[id]
-      @items[id] -= nb
-      if @items[id] <= 0
-        @items[id] = 0
-        remove_item_from_order(id)
+      db_symbol = data_item(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return if db_symbol == :__undef__
+
+      @items[db_symbol] -= nb
+      if @items[db_symbol] <= 0
+        @items.delete(db_symbol)
+        remove_item_from_order(db_symbol)
       end
     end
     alias drop_item remove_item
@@ -110,12 +127,9 @@ module PFM
     # @return [Array] the new order
     def reset_order(socket)
       arr = get_order(socket)
-      unless socket == :favorites
-        arr.clear
-        arr.concat(@items.each_index.select { |item_id| data_item(item_id).socket == socket && (@items[item_id] || 0) > 0 })
-      end
+      arr.select! { |db_symbol| data_item(db_symbol).socket == socket && @items[db_symbol] > 0 } unless socket == :favorites
       unless each_data_item.select { |item| item.socket == socket }.all? { |item| item.position.zero? }
-        arr.sort! { |item_ida, item_idb| data_item(item_idb).position <=> data_item(item_ida).position }
+        arr.sort! { |a, b| data_item(a).position <=> data_item(b).position }
       end
       @alpha_sorted = false
       return arr
@@ -127,53 +141,45 @@ module PFM
     # @param reverse [Boolean] if we want to sort reverse
     def sort_alpha(socket, reverse = false)
       if reverse
-        reset_order(socket).sort! { |item_ida, item_idb| data_item(item_idb).name <=> data_item(item_ida).name }
+        reset_order(socket).sort! { |a, b| data_item(b).name <=> data_item(a).name }
         @alpha_sorted = false
       else
-        reset_order(socket).sort! { |item_ida, item_idb| data_item(item_ida).name <=> data_item(item_idb).name }
+        reset_order(socket).sort! { |a, b| data_item(a).name <=> data_item(b).name }
         @alpha_sorted = true
       end
     end
 
-    # Define a shortcut
-    # @param index [Integer] index of the item in the shortcut
-    # @param id [Integer, Symbol] id of the item in the database
-    def set_shortcut(index, id)
-      @shortcut ||= Array.new(SHORTCUT_AMOUNT, 0)
-      @shortcut[index % SHORTCUT_AMOUNT] = data_item(id).id
-    end
-
     # Get the shortcuts
-    # @return [Array<Integer>]
+    # @return [Array<Symbol>]
     def shortcuts
-      @shortcut ||= Array.new(SHORTCUT_AMOUNT, 0)
+      @shortcut ||= Array.new(SHORTCUT_AMOUNT, :__undef__)
       return @shortcut
     end
     alias get_shortcuts shortcuts
 
     # Get the last battle item
-    # @return [GameData::Item]
+    # @return [Studio::Item]
     def last_battle_item
-      data_item(@last_battle_item_id || 0)
+      data_item(@last_battle_item_db_symbol)
     end
 
     private
 
     # Make sure the item is in the order, if not add it
-    # @param id [Integer] ID of the item
-    def add_item_to_order(id)
-      return if @items[id] <= 0
+    # @param db_symbol [Symbol] db_symbol of the item
+    def add_item_to_order(db_symbol)
+      return if @items[db_symbol] <= 0
 
-      socket = data_item(id).socket
-      get_order(socket) << id unless get_order(socket).include?(id)
+      socket = data_item(db_symbol).socket
+      get_order(socket) << db_symbol unless get_order(socket).include?(db_symbol)
     end
 
     # Make sure the item is not in the order anymore
-    # @param id [Integer] ID of the item
-    def remove_item_from_order(id)
-      return unless @items[id] <= 0
+    # @param db_symbol [Symbol] db_symbol of the item
+    def remove_item_from_order(db_symbol)
+      return unless @items[db_symbol] <= 0
 
-      get_order(data_item(id).socket).delete(id)
+      get_order(data_item(db_symbol).socket).delete(db_symbol)
     end
   end
 
@@ -187,6 +193,7 @@ module PFM
       # Variable containing the player's bag information
       $bag = @bag
       $bag.game_state = self
+      $bag.convert_to_dot26 if trainer.current_version < 6656
     end
   end
 end

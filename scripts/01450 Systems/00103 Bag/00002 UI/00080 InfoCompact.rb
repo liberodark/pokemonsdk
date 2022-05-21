@@ -27,7 +27,7 @@ module UI
         item = data_item(id)
         @icon.data = id
         @quantity.text = (id == 0 ? 0 : $bag.item_quantity(id)).to_s.to_pokemon_number
-        @num_x.visible = @quantity.visible = item.limited
+        @num_x.visible = @quantity.visible = item.is_limited
         @name.text = item.exact_name
         @price_text&.text = parse_text(11, 9, /\[VAR NUM7[^\]]*\]/ => (item.price / 2).to_s)
       end

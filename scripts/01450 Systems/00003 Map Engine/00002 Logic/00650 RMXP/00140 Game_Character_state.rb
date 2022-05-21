@@ -85,4 +85,10 @@ class Game_Character
   def system_tag
     return $game_map.system_tag(@x,@y)
   end
+
+  # Return the db_symbol of the system tag
+  # @return [Symbol]
+  def system_tag_db_symbol
+    GameData::SystemTags.system_tag_db_symbol(system_tag)
+  end
 end

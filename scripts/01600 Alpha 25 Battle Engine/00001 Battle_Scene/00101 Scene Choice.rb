@@ -68,7 +68,7 @@ module Battle
     def skill_choice
       pokemon = logic.battler(0, @player_actions.size)
       if !pokemon.can_move?
-        move = Battle::Move[:s_struggle].new(data_move(:struggle).id, 1, 1, self)
+        move = Battle::Move[:s_struggle].new(:struggle, 1, 1, self)
         @player_actions << Actions::Attack.new(self, move, pokemon, 1, pokemon.position)
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       elsif @visual.show_skill_choice(@player_actions.size)
@@ -147,22 +147,22 @@ module Battle
     # @return [Boolean] if the battle should not continue normally
     def special_item_choice_action(item_wrapper)
       case item_wrapper.item
-      when GameData::FleeingItem
+      when Studio::FleeingItem
         @logic.battle_result = 1
         @next_update = :battle_end
-      when GameData::BallItem
+      when Studio::BallItem
         caught(item_wrapper) unless catch_prevented(item_wrapper)
       else
         return false # None of the specific case
       end
       # Store the last item id if a specific case was executed
-      $bag.last_battle_item_id = item_wrapper.item.id
+      $bag.last_battle_item_db_symbol = item_wrapper.item.db_symbol
       return true
     end
 
     # Begin the Pokemon giving procedure
     # @param battler [PFM::PokemonBattler] pokemon that was just caught
-    # @param ball [GameData::BallItem]
+    # @param ball [Studio::BallItem]
     def give_pokemon_procedure(battler, ball)
       pkmn = battler.original
       Audio.bgm_play(*@battle_info.victory_bgm)
@@ -192,14 +192,14 @@ module Battle
     # Pokemon related Pokedex update
     # @param pkmn [PFM::Pokemon] pokemon that was just caught
     def update_pokedex_related_infos(pkmn)
-      unless $pokedex.pokemon_caught?(pkmn.id)
+      unless $pokedex.creature_caught?(pkmn.id)
         $pokedex.mark_captured(pkmn.id)
         if $pokedex.enabled?
           display_message_and_wait(parse_text(18, 68, PKNAME[0] => pkmn.name))
           GamePlay.open_dex_to_show_pokemon(pkmn)
         end
       end
-      $pokedex.pokemon_captured_inc(pkmn.id)
+      $pokedex.increase_creature_caught_count(pkmn.id)
     end
 
     # Rename question and scene

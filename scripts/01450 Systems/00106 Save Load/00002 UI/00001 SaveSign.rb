@@ -123,7 +123,7 @@ module UI
       @location_text.text = PFM::Text.parse_string_for_messages(value.env.current_zone_name)
       @player_name.text = value.trainer.name
       @badge_value&.text = value.trainer.badge_counter.to_s
-      @pokedex_value&.text = value.pokedex.pokemon_seen.to_s
+      @pokedex_value&.text = value.pokedex.creature_seen.to_s
       @time_value&.text = value.trainer.play_time_text
       @pokemon_sprites.each_with_index do |sprite, index|
         sprite.data = value.actors[index]

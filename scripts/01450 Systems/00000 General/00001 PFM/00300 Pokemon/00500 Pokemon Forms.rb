@@ -21,7 +21,7 @@ module PFM
     # @param value [Integer] the new form index
     def form=(value)
       value = value.to_i
-      if data_creature(@id).forms.any? { |creature_form| creature_form.form == value }
+      if data_creature(db_symbol).forms.any? { |creature_form| creature_form.form == value }
         @form = value
         form_calibrate
         update_ability
@@ -34,21 +34,10 @@ module PFM
       return false if mega_evolved?
       return 30 if db_symbol == :rayquaza && skills_set.any? { |skill| skill.db_symbol == :dragon_ascent }
 
-      data = GameData::Pokemon.get_forms(@id)
-      item_id = @item_holding
-      if data.size > 30
-        30.step(data.size - 1) do |i|
-          d = data[i]
-          next unless d.special_evolution
+      item = item_db_symbol
+      mega_evolution = data.evolutions.find { |evolution| evolution.condition_data(:gemme) == item }
 
-          d.special_evolution.each do |j|
-            next if j[:form] && j[:form] != @form
-            return i if item_id == j[:gemme]
-            return i if j[:mega_skill] && skill_learnt?(j[:mega_skill])
-          end
-        end
-      end
-      return false
+      return mega_evolution ? mega_evolution.form : false
     end
 
     # Mega evolve the Pokemon (if possible)
@@ -58,7 +47,7 @@ module PFM
 
       @mega_evolved = @form
       @form = mega_evolution
-      self.ability = data.abilities[rand(3)] # Pokemon will always be a PFM::PokemonBattler
+      self.ability = data_ability(data.abilities[rand(3)]).id # Pokemon will always be a PFM::PokemonBattler
     end
 
     # Reset the Pokemon to its normal form after mega evolution
@@ -125,7 +114,7 @@ module PFM
       block = FORM_CALIBRATE[db_symbol]
       instance_exec(reason, &block) if block
       # Set the form to 0 if the form does not exists in the Database
-      @form = 0 if data_creature(@id).forms.none? { |creature_form| creature_form.form == @form }
+      @form = 0 if data_creature(db_symbol).forms.none? { |creature_form| creature_form.form == @form }
       # Update the ability
       update_ability
       return last_form != @form

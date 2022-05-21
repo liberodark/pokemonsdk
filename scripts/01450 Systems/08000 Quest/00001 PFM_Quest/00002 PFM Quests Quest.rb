@@ -5,7 +5,9 @@ module PFM
       # Get the quest id
       # @return [Integer]
       attr_reader :quest_id
+
       # Create a new quest
+      # @param quest_id [Integer] ID of the quest
       def initialize(quest_id)
         @quest_id = quest_id
         @data = {}
@@ -36,15 +38,15 @@ module PFM
       # Test if the quest has a specific kind of objective
       # @param objective_method_name [Symbol] name of the method to call to validate the objective
       # @param args [Array] double check to ensure the arguments match the test
+      # @return [Boolean]
       def objective?(objective_method_name, *args)
-        # @type [GameData::Quest]
         quest = data_quest(quest_id)
         # @type [Array<Boolean>]
         objective_visibility = data_get(:goals_visibility, nil.to_a)
         quest.objectives.each_with_index do |objective, index|
           next if objective.hidden_by_default && !objective_visibility[index]
-          next unless objective.test_method_name == objective_method_name
-          next unless args.each_with_index.all? { |arg, i| objective.test_method_args[i] == arg }
+          next unless objective.objective_method_name == objective_method_name
+          next unless args.each_with_index.all? { |arg, i| objective.objective_method_args[i] == arg }
 
           return true
         end
@@ -55,7 +57,7 @@ module PFM
       def distribute_earnings
         data = data_quest(@quest_id)
         data.earnings.each do |earning|
-          send(earning.give_method_name, *earning.give_args)
+          send(earning.earning_method_name, *earning.earning_args)
         end
         data_set(:earnings_distributed, true)
       end
@@ -65,7 +67,7 @@ module PFM
       def finished?
         data = data_quest(@quest_id)
         return data.objectives.all? do |objective|
-          send(objective.test_method_name, *objective.test_method_args)
+          send(objective.objective_method_name, *objective.objective_method_args)
         end
       end
 
@@ -79,8 +81,8 @@ module PFM
         visible_objectives = data.objectives.select.with_index { |_, index| objective_visibility[index] }
         return visible_objectives.map do |objective|
           [
-            send(objective.text_format_method_name, *objective.test_method_args),
-            send(objective.test_method_name, *objective.test_method_args)
+            send(objective.text_format_method_name, *objective.objective_method_args),
+            send(objective.objective_method_name, *objective.objective_method_args)
           ]
         end
       end

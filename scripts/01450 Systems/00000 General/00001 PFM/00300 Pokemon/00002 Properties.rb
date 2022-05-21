@@ -187,15 +187,15 @@ module PFM
     attr_accessor :battle_item_data
 
     # Get the primary data of the Pokemon
-    # @return [GameData::Pokemon]
+    # @return [Studio::CreatureForm]
     def primary_data
-      data_creature(id).forms[0]
+      data_creature(db_symbol).forms[0]
     end
 
     # Get the current data of the Pokemon
-    # @return [GameData::Pokemon]
+    # @return [Studio::CreatureForm]
     def data
-      data_creature(id).forms.find { |creature_form| creature_form.form == form } || primary_data
+      data_creature(db_symbol).forms.find { |creature_form| creature_form.form == form } || primary_data
     end
     alias get_data data
 
@@ -235,7 +235,7 @@ module PFM
     # Return the db_symbol of the Pokemon in the database
     # @return [Symbol]
     def db_symbol
-      data_creature(id).db_symbol
+      return @db_symbol ||= data_creature(id).db_symbol
     end
 
     # Tell if the Pokemon is an egg or not
@@ -318,7 +318,7 @@ module PFM
     # Return the nature data of the Pokemon
     # @return [Array<Integer>] [text_id, atk%, dfe%, spd%, ats%, dfs%]
     def nature
-      return GameData::Natures[@nature]
+      return Configs.natures[nature_id]
     end
 
     # Return the nature id of the Pokemon
@@ -330,25 +330,13 @@ module PFM
     # Return the Pokemon rareness
     # @return [Integer]
     def rareness
-      return @rareness || data.rareness
+      return @rareness || data.catch_rate
     end
 
     # Change the Pokemon rareness
     # @param v [Integer, nil] the new rareness of the Pokemon
     def rareness=(v)
       @rareness = v&.clamp(0, 255)
-    end
-
-    # Return the breed groups of the Pokemon
-    # @return [Array(Integer, Integer)]
-    def breed_group
-      return data.breed_groupes
-    end
-
-    # Return the breed moves of the Pokemon (list of skill ID)
-    # @return [Array<Integer>]
-    def breed_move
-      return data.breed_moves
     end
 
     # Return the height of the Pokemon
@@ -366,17 +354,19 @@ module PFM
     # Return the ball sprite name of the Pokemon
     # @return [String] Sprite to load in Graphics/ball/
     def ball_sprite
-      return 'ball_1' unless data_item(@captured_with).is_a?(GameData::BallItem)
+      item = data_item(@captured_with)
+      return 'ball_1' unless item.is_a?(Studio::BallItem)
 
-      return GameData::BallItem.from(data_item(@captured_with)).img
+      return Studio::BallItem.from(item).img
     end
 
     # Return the ball color of the Pokemon (flash)
     # @return [Color]
     def ball_color
-      return Color.new(0, 0, 0) unless data_item(@captured_with).is_a?(GameData::BallItem)
+      item = data_item(@captured_with)
+      return Color.new(0, 0, 0) unless item.is_a?(Studio::BallItem)
 
-      return GameData::BallItem.from(data_item(@captured_with)).color
+      return Studio::BallItem.from(item).color
     end
 
     # Return the normalized trainer id of the Pokemon

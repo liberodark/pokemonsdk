@@ -27,15 +27,17 @@ module GamePlay
       item_id = @item_list[@index]
       return action_b if item_id.nil?
       return play_buzzer_se if item_id == 0
+
+      item = data_item(item_id)
       play_decision_se
       show_shadow_frame
       # Prepare the choice info
       # Use option
-      map_usable = proc { !data_item(item_id).map_usable }
+      map_usable = proc { !item.is_map_usable }
       # Give option
-      giv_check = proc { PFM.game_state.pokemon_alive <= 0 || !data_item(item_id).holdable }
+      giv_check = proc { PFM.game_state.pokemon_alive <= 0 || !item.is_holdable }
       # Unregister / register
-      if $bag.shortcuts.include?(item_id)
+      if $bag.shortcuts.include?(item.db_symbol)
         reg_id = 14
         reg_meth = method(:unregister_item)
       else
@@ -44,7 +46,7 @@ module GamePlay
         reg_check = map_usable
       end
       # Throw option
-      thr_check = proc { !data_item(item_id).limited }
+      thr_check = proc { !item.is_limited }
       # Create the choice
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
       choices.register_choice(text_get(22, 0), on_validate: method(:use_item), disable_detect: map_usable)
@@ -53,7 +55,7 @@ module GamePlay
              .register_choice(text_get(22, 1), on_validate: method(:throw_item), disable_detect: thr_check)
              .register_choice(text_get(22, 7))
       # Show selection : item_name
-      @base_ui.show_win_text(parse_text(22, 35, PFM::Text::ITEM2[0] => data_item(item_id).exact_name))
+      @base_ui.show_win_text(parse_text(22, 35, PFM::Text::ITEM2[0] => item.exact_name))
       # Process the actual choice
       y = 200 - 16 * choices.size
       choices.display_choice(@viewport, 306, y, nil, on_update: method(:update_graphics), align_right: true)
@@ -91,7 +93,7 @@ module GamePlay
     def choice_a_hold
       item_id = @item_list[@index]
       return action_b if item_id.nil?
-      return play_buzzer_se if item_id == 0 || !data_item(item_id).holdable
+      return play_buzzer_se if item_id == 0 || !data_item(item_id).is_holdable
 
       play_decision_se
       @running = false

@@ -383,15 +383,15 @@ module PFM
     end
 
     # Neutralize a type on the Pokemon
-    # @param types [Array<GameData::Types>]
-    # @param default [GameData::Types] (default: GameData::Types::Normal) type applied when no other types are definied
-    def ignore_types(*types, default: GameData::Types::NORMAL)
+    # @param types [Array<Integer>]
+    # @param default [Integer] (default: id of :normal) type applied when no other types are defined
+    def ignore_types(*types, default: data_type(:normal).id)
       self.type1, self.type2, self.type3 = [type1, type2, type3].reject { |t| types.include?(t) }
       self.type1 = default unless type1
     end
 
     # Change the type of the pokemons
-    # @param types [Array<GameData::Types>]
+    # @param types [Array<Integer>]
     def change_types(*types)
       self.type1, self.type2, self.type3 = types
     end
@@ -458,9 +458,9 @@ module PFM
     # Copy the moveset of the original Pokemon
     def copy_moveset
       @skills_set = @moveset = @original.skills_set.map do |skill|
-        next Battle::Move[skill.symbol].new(skill.id, skill.pp, skill.ppmax, @scene)
+        next Battle::Move[skill.symbol].new(skill.db_symbol, skill.pp, skill.ppmax, @scene)
       end
-      @moveset << Battle::Move.new(0, 0, 9001, @scene) if @moveset.empty?
+      @moveset << Battle::Move.new(:__undef__, 0, 9001, @scene) if @moveset.empty?
     end
 
     # Copy the moveset of the pokemon it transforms

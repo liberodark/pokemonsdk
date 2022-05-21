@@ -1,4 +1,3 @@
-
 module Yuki
   # Module that helps the user to edit his worldmap
   module WorldMapEditor
@@ -6,6 +5,8 @@ module Yuki
 
     # Main function
     def main
+      ScriptLoader.load_tool('PSDKEditor')
+      GameData.load
       ($tester = Tester.allocate).data_load
       PFM::GameState.new.expand_global_var
       select_worldmap(0)
@@ -115,17 +116,19 @@ module Yuki
         # Correct zones id
         0.upto(worldmap.data.xsize - 1) do |x|
           0.upto(worldmap.data.ysize - 1) do |y|
-            worldmap.data[x, y] = -1 if worldmap.data[x, y] >= each_data_zone.to_a.size
+            worldmap.data[x, y] = -1 if data_zone(worldmap.data[x, y] || -1).db_symbol == :__undef__
           end
         end
         # Set the zones
         worldmap.zone_list_from_data.each do |zone_id|
-          data_zone(zone_id).worldmap_id = id
+          zone = data_zone(zone_id)
+          zone.worldmaps << id unless zone.worldmaps.include?(id)
         end
       end
       # Save the data
-      save_data([$game_data_map, each_data_zone.to_a], 'Data/PSDK/MapData.rxdata')
       save_data(GameData::WorldMap.all, 'Data/PSDK/WorldMaps.rxdata')
+      # Update Studio data
+      PSDKEditor.convert_worldmaps
       $game_system.se_play($data_system.decision_se)
     end
 
@@ -133,7 +136,7 @@ module Yuki
     def list_zone(name = '')
       name = name.downcase
       each_data_zone do |zone|
-        puts "#{zone.id} : #{zone.map_name}" if zone && zone.map_name.downcase.include?(name)
+        puts "#{zone.id} : #{zone.name}" if zone && zone.name.downcase.include?(name)
       end
       show_help
     end
@@ -141,7 +144,7 @@ module Yuki
     # Select a zone
     def select_zone(id)
       @current_zone = id
-      puts data_zone(id).map_name
+      puts data_zone(id).name
     end
 
     # Select a world map
@@ -261,15 +264,16 @@ module Yuki
     def update_infobox
       # zone = $env.get_zone(@x,@y)
       zone_id = GameData::WorldMap.get(@current_worldmap).data[@x, @y]
+      # @type [Studio::Zone]
       zone = zone_id && (zone_id >= 0) ? data_zone(zone_id) : nil
       if zone
         @infobox.visible = true
-        if zone.warp_x && zone.warp_y
+        if zone.warp.x && zone.warp.y
           color = 2
         else
           color = 0
         end
-        @infobox.text = zone.map_name
+        @infobox.text = zone.name
         @infobox.load_color(color)
       else
         @infobox.visible = false

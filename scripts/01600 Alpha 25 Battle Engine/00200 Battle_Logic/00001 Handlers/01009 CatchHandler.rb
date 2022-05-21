@@ -4,17 +4,15 @@ module Battle
     class CatchHandler < ChangeHandlerBase
       include Hooks
       # Modifier applied to the formula depending of the Status
-      # @return [Hash{ Integer => Integer }]
-      STATUS_MODIFIER = safe_const(:STATUS_MODIFIER) do
-        {
-          GameData::States::POISONED => 1.5,
-          GameData::States::PARALYZED => 1.5,
-          GameData::States::BURN => 1.5,
-          GameData::States::ASLEEP => 2.5,
-          GameData::States::FROZEN => 2.5,
-          GameData::States::TOXIC => 1.5
-        }
-      end
+      # @return [Hash{ Symbol => Integer }]
+      STATUS_MODIFIER = {
+        poison: 1.5,
+        paralysis: 1.5,
+        burn: 1.5,
+        sleep: 2.5,
+        freeze: 2.5,
+        toxic: 1.5
+      }
       BALL_RATE_CALCULATION = {}
 
       # ID of the catching text in the text database
@@ -26,7 +24,7 @@ module Battle
       # Function that try to catch the targeted Pokemon
       # @param target [PFM::PokemonBattler]
       # @param pkm_ally [PFM::PokemonBattler]
-      # @param ball [GameData::BallItem] db_symbol of the used ball
+      # @param ball [Studio::BallItem] db_symbol of the used ball
       def try_to_catch_pokemon(target, pkm_ally, ball)
         log_data("# FR: try_to_catch_pokemon(#{target}, #{pkm_ally}, #{ball})")
         @bounces = -1
@@ -78,7 +76,7 @@ module Battle
 
       add_ball_rate_calculation(:heavy_ball) do |target, _pkm_ally|
         modifier = target.rareness
-        weight = data_creature(target.id).weight
+        weight = data_creature(target.db_symbol).weight
         if weight.between?(0, 204.7)
           modifier -= 20
         elsif weight.between?(204.8, 307.1)
@@ -117,8 +115,8 @@ module Battle
       end
 
       add_ball_rate_calculation(:moon_ball) do |target, _pkm_ally|
-        data = data_creature(target.id).forms.first.special_evolution
-        next target.rareness * (data && data[:stone] == 81 ? 4 : 1)
+        ok = data_creature(target.db_symbol).forms.first.evolutions.any? { |evolution| evolution.condition_data(:stone) == :moon_stone }
+        next target.rareness * (ok ? 4 : 1)
       end
 
       add_ball_rate_calculation(:nest_ball) do |target, _pkm_ally|
@@ -161,7 +159,7 @@ module Battle
       # Function that calculate the modified rate for the capture
       # @param target [PFM::PokemonBattler]
       # @param pkm_ally [PFM::PokemonBattler]
-      # @param ball [GameData::BallItem] db_symbol of the used ball
+      # @param ball [Studio::BallItem] db_symbol of the used ball
       def catching_procedure(target, pkm_ally, ball)
         a = final_rate(target, pkm_ally, ball)
         return if check_critical_capture(a)
@@ -179,7 +177,7 @@ module Battle
       # Get the right catch rate of the target depending on the ball used
       # @param target [PFM::PokemonBattler]
       # @param pkm_ally [PFM::PokemonBattler]
-      # @param ball [GameData::BallItem] db_symbol of the used ball
+      # @param ball [Studio::BallItem] db_symbol of the used ball
       def catch_rate(target, pkm_ally, ball)
         return (target.rareness * 0.1) if ULTRA_BEAST.include?(target.db_symbol) && ball != :beast_ball
         return (target.rareness * 5) if ULTRA_BEAST.include?(target.db_symbol) && ball == :beast_ball
@@ -191,13 +189,13 @@ module Battle
       # Calculate the final_rate 'a'() (6G formula from here : https://bulbapedia.bulbagarden.net/wiki/Catch_rate#Capture_method_.28Generation_VI.29)
       # @param target [PFM::PokemonBattler]
       # @param pkm_ally [PFM::PokemonBattler]
-      # @param ball [GameData::BallItem] db_symbol of the used ball
+      # @param ball [Studio::BallItem] db_symbol of the used ball
       def final_rate(target, pkm_ally, ball)
         rate = catch_rate(target, pkm_ally, ball)
         log_debug("Catch rate = #{rate}")
         bonus_ball = ball.catch_rate
         log_debug("Bonus ball = #{bonus_ball}")
-        bonus_status = STATUS_MODIFIER[target.status] || 1
+        bonus_status = STATUS_MODIFIER[Configs.states.symbol(target.status)] || 1
         log_debug("Status modifier = #{bonus_status}")
         a = (((3 * target.max_hp) - (2 * target.hp)) * rate * bonus_ball / (3 * target.max_hp).to_f * bonus_status).floor
         log_debug("Final rate = #{a}")
@@ -208,7 +206,7 @@ module Battle
       # Check if a Critical capture ensue
       # @return [Boolean]
       def check_critical_capture(a)
-        count = $pokedex.pokemon_captured
+        count = $pokedex.creature_caught
         if count > 600
           a *= 2.5
         elsif count >= 451

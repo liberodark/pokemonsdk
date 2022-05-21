@@ -28,38 +28,21 @@ module Battle
       # @return [Array<Integer>] list of types of the move
       def definitive_types(user, target)
         index = 0
-        iv_list.each_with_index { |iv, i| index += (user.send(iv) & 1) * 2 ** i }
+        iv_list.each_with_index { |iv, i| index += (user.send(iv) & 1) * 2**i }
         index = (index * (types_table.length - 1) / 63).floor
         type_id = types_table[index]
-        log_data("Hidden power : internal index=#{index} > GameData::Types::#{data_type(type_id).name.upcase}")
-        return [type_id]
+        log_data("Hidden power : internal index=#{index} > #{type_id}")
+        return [data_type(type_id).id]
       end
 
       private
 
       # Hidden power move types
-      # @return [Array<Integer>] array of types
-      TYPES_TABLE = [
-        GameData::Types::FIGHTING,
-        GameData::Types::FLYING,
-        GameData::Types::POISON,
-        GameData::Types::GROUND,
-        GameData::Types::ROCK,
-        GameData::Types::BUG,
-        GameData::Types::GHOST,
-        GameData::Types::STEEL,
-        GameData::Types::FIRE,
-        GameData::Types::WATER,
-        GameData::Types::GRASS,
-        GameData::Types::ELECTRIC,
-        GameData::Types::PSYCHIC,
-        GameData::Types::ICE,
-        GameData::Types::DRAGON,
-        GameData::Types::DARK
-      ]
+      # @return [Array<Symbol>] array of types
+      TYPES_TABLE = %i[fighting flying poison ground rock bug ghost steel fire water grass electric psychic ice dragon dark]
 
       # Hidden power move types
-      # @return [Array<Integer>] array of types
+      # @return [Array<Symbol>] array of types
       def types_table
         return TYPES_TABLE
       end

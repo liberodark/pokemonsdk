@@ -5,7 +5,7 @@ module UI
     DELTA_Y = 32
     # Create a new MapPanel
     # @param viewport [Viewport]
-    # @param zone [GameData::Zone]
+    # @param zone [Studio::Zone]
     def initialize(viewport, zone)
       super(viewport, *initial_coordinates, default_cache: :windowskin)
       @zone = zone
@@ -50,7 +50,7 @@ module UI
     end
 
     def create_text
-      map_name = @zone.map_name
+      map_name = @zone.name
       color = 10
       map_name.gsub!(/\\c\[([0-9]+)\]/) do
         color = $1.to_i

@@ -80,68 +80,55 @@ pokemonsdk/scripts/00700 PSDK Event Interpreter/01201 Interpreter_add_item.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01205 Interpreter_Fiber.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01300 Interpreter_Sequences.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01301 Interpreter_Shop.rb
-pokemonsdk/scripts/00800 GameData/02400 GameData__Loader.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00000 Base.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00001 DataSource.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00101 BallData.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00102 ItemHeal.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00103 ItemMisc.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00105 Item.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00200 Pokemon.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00300 Skill.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00300 Type.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00400 Trainer.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00900 Zone.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00950 WorldMap.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00000 FixData.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00001 EventItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00001 FleeingItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00001 RepelItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00001 StoneItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00001 TechItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00002 BallItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00003 HealingItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00300 ConstantHealItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00300 LevelIncreaseItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00300 PPHealItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00300 PPIncreaseItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00300 RateHealItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00300 StatBoostItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00300 StatusHealItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00301 AllPPHealItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00301 EVBoostItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00301 StatusConstantHealItem.rb
-pokemonsdk/scripts/00800 GameData/00100 Serializable/00002 Item/00301 StatusRateHealItem.rb
-pokemonsdk/scripts/00800 GameData/00200 Helpers/00200 Abilities.rb
-pokemonsdk/scripts/00800 GameData/00200 Helpers/00300 Natures.rb
-pokemonsdk/scripts/00800 GameData/00200 Helpers/00400 Text.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/00100 EXP_TABLE___MAX_LEVEL.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/00200 GameData__Bag.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/01600 Tutos (deprecated).rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/01700 States.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/01800 EV.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/01801 Stages.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/01802 Types.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/01803 Natures.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/01804 Flavors.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/01805 Weather.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/02000 Windows (Builder).rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/02100 Colors.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/02200 Pickup data.rb
-pokemonsdk/scripts/00800 GameData/00900 Constants/02300 Daycare.rb
 pokemonsdk/scripts/00800 Studio/00001 Accessors.rb
+pokemonsdk/scripts/00800 Studio/00400 Text.rb
+pokemonsdk/scripts/00800 Studio/00000 Configs/00001 Natures.rb
+pokemonsdk/scripts/00800 Studio/00000 Configs/00002 Flavors.rb
+pokemonsdk/scripts/00800 Studio/00000 Configs/00003 States.rb
+pokemonsdk/scripts/00800 Studio/00000 Configs/00004 Stats.rb
+pokemonsdk/scripts/00800 Studio/00000 Configs/00005 Window.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00001 Ability.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00011 Group.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00021 Item.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00031 Move.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00041 Creature.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00042 CreatureForm.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00051 Quest.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00061 Trainer.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00071 Type.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00081 WorldMap.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00091 Zone.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00000 ItemDescriptor.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00001 EventItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00001 FleeingItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00001 RepelItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00001 StoneItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00001 TechItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00002 BallItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00003 HealingItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00300 ConstantHealItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00300 LevelIncreaseItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00300 PPHealItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00300 PPIncreaseItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00300 RateHealItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00300 StatBoostItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00300 StatusHealItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00301 AllPPHealItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00301 EVBoostItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00301 StatusConstantHealItem.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00301 StatusRateHealItem.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00100 GamePlay.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00200 PFM.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00300 Random.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00200 Helpers/00100 Text.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00200 Helpers/00200 Choice_Helper.rb
-pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00200 Helpers/03000 ItemDescriptor.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00200 Helpers/03100 SkillProcess.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00300 Pokemon/00001 Initialize.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00300 Pokemon/00002 Properties.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00300 Pokemon/00200 Pokemon Graphics.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00300 Pokemon/00300 Pokemon EV.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00300 Pokemon/00400 Pokemon exp & evolve.rb
+pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00300 Pokemon/00401 ExpList.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00300 Pokemon/00500 Pokemon Forms.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00300 Pokemon/00600 Pokemon Skills.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00001 PFM/00300 Pokemon/00700 Pokemon Stats.rb
@@ -405,7 +392,6 @@ pokemonsdk/scripts/01450 Systems/00400 RSE Clock/00001 RSEClockLogic.rb
 pokemonsdk/scripts/01450 Systems/00400 RSE Clock/00002 RSEClockUI.rb
 pokemonsdk/scripts/01450 Systems/00400 RSE Clock/00003 RSEClockQuestions.rb
 pokemonsdk/scripts/01450 Systems/00400 RSE Clock/00004 RSEClock.rb
-pokemonsdk/scripts/01450 Systems/08000 Quest/00000 GameData_Quest/00001 GameData Quest.rb
 pokemonsdk/scripts/01450 Systems/08000 Quest/00001 PFM_Quest/00001 PFM Quests.rb
 pokemonsdk/scripts/01450 Systems/08000 Quest/00001 PFM_Quest/00002 PFM Quests Quest.rb
 pokemonsdk/scripts/01450 Systems/08000 Quest/00002 UI_Quest/00060 ScrollBar.rb
@@ -453,7 +439,6 @@ pokemonsdk/scripts/01450 Systems/10000 Movie/00099 Movie.rb
 pokemonsdk/scripts/01450 Systems/99990 Global Systems/01500 HoneyTree.rb
 pokemonsdk/scripts/01450 Systems/99991 Wild/00100 Wild Battle (manager).rb
 pokemonsdk/scripts/01450 Systems/99991 Wild/00101 Wild Battle (configuration).rb
-pokemonsdk/scripts/01450 Systems/99991 Wild/00200 Wild_Info.rb
 pokemonsdk/scripts/01450 Systems/99991 Wild/00300 Wild_RoamingInfo.rb
 pokemonsdk/scripts/01450 Systems/99992 Online/00001 Configs.rb
 pokemonsdk/scripts/01450 Systems/99992 Online/00002 BootLoader.rb
@@ -546,6 +531,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00001 Handler
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00001 Handlers/01009 CatchHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00001 Handlers/01010 AbilityChangeHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00001 Handlers/01011 BattleEndHandler.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00001 Handlers/01011 BattleEndHandlerConstants.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00001 Handlers/01012 FTerrainChangeHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00001 Handlers/01013 TransformHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00001 Handlers/02000 ExpHandler.rb
@@ -822,6 +808,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effe
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100_Liquid_Voice.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100_Pastel_Veil.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100_Perish_Body.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100_Ripen.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100_Screen_Cleaner.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00101_As_One.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00001 ItemBase.rb

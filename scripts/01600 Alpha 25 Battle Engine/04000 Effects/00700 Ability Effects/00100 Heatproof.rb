@@ -11,7 +11,7 @@ module Battle
           return 1 if target != self.target
           return 1 unless user.can_be_lowered_or_canceled?
 
-          return move.type == GameData::Types::FIRE ? 0.5 : 1
+          return move.type == data_type(:fire).id ? 0.5 : 1
         end
       end
       register(:heatproof, Heatproof)

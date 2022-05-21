@@ -17,17 +17,15 @@ module Battle
       ANIMATION = { atk: 478, dfe: 480, spd: 482, dfs: 486, ats: 484, eva: 488, acc: 490 }
       # Index of the stages depending on the stat to change
       # @return [Hash{ Symbol => Integer }]
-      STAT_INDEX = safe_const(:STAT_INDEX) do
-        {
-          atk: GameData::Stages::ATK_STAGE,
-          dfe: GameData::Stages::DFE_STAGE,
-          ats: GameData::Stages::ATS_STAGE,
-          dfs: GameData::Stages::DFS_STAGE,
-          spd: GameData::Stages::SPD_STAGE,
-          acc: GameData::Stages::ACC_STAGE,
-          eva: GameData::Stages::EVA_STAGE
-        }
-      end
+      STAT_INDEX = {
+        atk: Configs.stats.atk_stage_index,
+        dfe: Configs.stats.dfe_stage_index,
+        ats: Configs.stats.ats_stage_index,
+        dfs: Configs.stats.dfs_stage_index,
+        spd: Configs.stats.spd_stage_index,
+        acc: Configs.stats.acc_stage_index,
+        eva: Configs.stats.eva_stage_index
+      }
       # Array containing all the possible stats
       ALL_STATS = %i[atk dfe spd dfs ats eva acc]
       # Array containing all the attack kind stat

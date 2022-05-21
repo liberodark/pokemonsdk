@@ -10,7 +10,7 @@ module Battle
         def base_power_multiplier(user, target, move)
           return 1 if target != self.target
           return 0.5 if move.direct? && user.can_be_lowered_or_canceled?
-          return 2 if move.type == GameData::Types::FIRE
+          return 2 if move.type == data_type(:fire).id
 
           return 1
         end

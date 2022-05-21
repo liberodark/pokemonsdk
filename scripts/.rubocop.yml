@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: "2.7"
+  TargetRubyVersion: '2.7'
 
 # Make sure we don't get issues with git
 Layout/EndOfLine:
@@ -127,6 +127,10 @@ Metrics/CyclomaticComplexity:
 
 Metrics/PerceivedComplexity:
   Max: 15
+
+# It's often not needed to filter the exact exceptions (ruby does not provide the list of exceptions like java so it's a pain)
+Lint/RescueException:
+  Enabled: false
 
 Gemspec/DateAssignment:
   Enabled: false

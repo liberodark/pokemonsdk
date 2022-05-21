@@ -6,6 +6,9 @@ class Scene_Map < GamePlay::Base
   # @return [Spriteset_Map]
   attr_reader :spriteset
 
+  # Poison flash color
+  PSN_COLOR = Color.new(123, 55, 123, 128)
+
   # Create a new Scene_Map
   def initialize
     super
@@ -76,7 +79,7 @@ class Scene_Map < GamePlay::Base
   # Display the poisoning animation sequence
   def display_poison_animation
     Audio.se_play('Audio/SE/psn')
-    $game_screen.start_flash(GameData::Colors::PSN, 20)
+    $game_screen.start_flash(PSN_COLOR, 20)
     $game_screen.start_shake(1, 20, 2)
   end
 

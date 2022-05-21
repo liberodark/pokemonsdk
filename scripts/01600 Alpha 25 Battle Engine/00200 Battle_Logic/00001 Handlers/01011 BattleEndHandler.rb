@@ -24,14 +24,14 @@ module Battle
       # @param pokemon [PFM::Pokemon]
       # @return [Integer]
       def pickup_item(pokemon)
-        off = (((pokemon.level - 1.0) / GameData::MAX_LEVEL) * 10).to_i # Offset should always depends on the final max level
+        off = (((pokemon.level - 1.0) / PSDK_CONFIG.pokemon_max_level) * 10).to_i # Offset should always depends on the final max level
         ind = pickup_index(@logic.generic_rng.rand(100))
         env = $env
-        return GameData::GrassItem[off][ind] if env.tall_grass? || env.grass?
-        return GameData::CaveItem[off][ind] if env.cave? || env.mount?
-        return GameData::WaterItem[off][ind] if env.sea? || env.pond?
+        return GrassItem[off][ind] if env.tall_grass? || env.grass?
+        return CaveItem[off][ind] if env.cave? || env.mount?
+        return WaterItem[off][ind] if env.sea? || env.pond?
 
-        return GameData::CommonItem[off][ind]
+        return CommonItem[off][ind]
       end
 
       # Process the loose sequence when the battle doesn't allow defeat
@@ -167,7 +167,7 @@ module Battle
         next unless pokemon.original.ability_db_symbol == :honey_gather && pokemon.item_holding == 0 && handler.logic.generic_rng.rand(100) < (pokemon.level / 2)
         next if pokemon.original.egg?
 
-        pokemon.item_holding = GameData::Item[:honey].id
+        pokemon.item_holding = data_item(:honey).id
       end
     end
 
@@ -291,7 +291,7 @@ module Battle
         next if battler.from_party? || battler.last_sent_turn == -1
 
         $pokedex.mark_seen(battler.id, battler.form, forced: true)
-        $pokedex.pokemon_fought_inc(battler.id) unless battler.alive?
+        $pokedex.increase_creature_fought(battler.id) unless battler.alive?
       end
     end
 

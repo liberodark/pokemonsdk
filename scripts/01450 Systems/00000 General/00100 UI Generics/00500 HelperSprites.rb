@@ -5,7 +5,7 @@ module UI
     # @param viewport [Viewport, nil] the viewport in which the sprite is stored
     # @param from_pokedex [Boolean] if the type is the Pokedex type (other source image)
     def initialize(viewport, from_pokedex = false)
-      super(viewport, 1, each_data_type.to_a.size)
+      super(viewport, 1, each_data_type.size)
       filename = "types_#{$options.language}"
       if from_pokedex
         set_bitmap(RPG::Cache.pokedex_exist?(filename) ? filename : 'types', :pokedex)
@@ -296,9 +296,9 @@ module UI
   # Class that show the item icon
   class ItemSprite < Sprite
     # Set the item that should be shown
-    # @param item_id [Integer, Symbol, GameData::Item]
+    # @param item_id [Integer, Symbol, Studio::Item]
     def data=(item_id)
-      item_id = item_id.db_symbol if item_id.is_a?(GameData::Item)
+      item_id = item_id.db_symbol if item_id.is_a?(Studio::Item)
       set_bitmap(data_item(item_id).icon, :icon)
     end
   end
@@ -310,7 +310,7 @@ module UI
     # Create a new category sprite
     # @param viewport [Viewport] viewport in which the sprite is shown
     def initialize(viewport)
-      super(viewport, 1, each_data_type.to_a.size)
+      super(viewport, 1, each_data_type.size)
       set_bitmap(IMAGE_NAME, :interface)
     end
 

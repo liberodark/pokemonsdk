@@ -14,11 +14,11 @@ module GamePlay
   # the party paramter is an array of Pokemon upto 6 Pokemon
   class Party_Menu < BaseCleanUpdate::FrameBalanced
     include PartyMenuMixin
-    # Color mapping for the result of on_pokemon_choice
+    # Color mapping for the result of on_creature_choice
     ON_POKEMON_CHOICE_COLOR_MAPPING = {
       true => 1, false => 2, nil => 3
     }
-    # Message mapping for the result of on_pokemon_choice in apt detect
+    # Message mapping for the result of on_creature_choice in apt detect
     ON_POKEMON_CHOICE_MESSAGE_MAPPING = {
       true => 143, false => 144, nil => 142
     }
@@ -173,7 +173,7 @@ module GamePlay
       apt_detect = @extend_data.open_skill_learn || @extend_data.stone_evolve
       @team_buttons.each do |btn|
         btn.show_item_name
-        v = @extend_data.on_pokemon_choice(btn.data, self)
+        v = @extend_data.on_creature_choice(btn.data, self)
         c = ON_POKEMON_CHOICE_COLOR_MAPPING[v]
         if apt_detect
           message_id = ON_POKEMON_CHOICE_MESSAGE_MAPPING[v]

@@ -15,6 +15,9 @@ module ScriptLoader
     attr_reader :choosable_language_texts
     # @return [Integer] number of saves the player can have
     attr_reader :maximum_saves
+    # Maximum number of item store per slot in bag
+    # @return [Integer]
+    attr_reader :max_bag_item_count
     # @return [Integer] the window scale
     attr_reader :window_scale
     # @return [Boolean] if the game runs in fullscreen
@@ -138,6 +141,7 @@ module ScriptLoader
       @default_language_code = guess_language_code
       @maximum_saves = (@maximum_saves || 4).to_i
       @mouse_skin = nil unless @mouse_skin.is_a?(String)
+      @max_bag_item_count ||= 99
       fix_resolution
       fix_scale
       fix_full_screen

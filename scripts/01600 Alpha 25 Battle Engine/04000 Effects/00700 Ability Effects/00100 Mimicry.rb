@@ -10,13 +10,13 @@ module Battle
           return if with != @target || @logic.field_terrain == :none
 
           if @logic.field_terrain_effect.psychic?
-            @target.change_types(GameData::Types::PSYCHIC)
+            @target.change_types(data_type(:psychic).id)
           elsif @logic.field_terrain_effect.misty?
-            @target.change_types(GameData::Types::FAIRY)
+            @target.change_types(data_type(:fairy).id)
           elsif @logic.field_terrain_effect.grassy?
-            @target.change_types(GameData::Types::GRASS)
+            @target.change_types(data_type(:grass).id)
           elsif @logic.field_terrain_effect.electric?
-            @target.change_types(GameData::Types::ELECTRIC)
+            @target.change_types(data_type(:electric).id)
           end
           handler.scene.visual.show_ability(@target)
         end
@@ -30,13 +30,13 @@ module Battle
           when :none
             @target.restore_types
           when :psychic_terrain
-            @target.change_types(GameData::Types::PSYCHIC)
+            @target.change_types(data_type(:psychic).id)
           when :misty_terrain
-            @target.change_types(GameData::Types::FAIRY)
+            @target.change_types(data_type(:fairy).id)
           when :grassy_terrain
-            @target.change_types(GameData::Types::GRASS)
+            @target.change_types(data_type(:grass).id)
           when :electric_terrain
-            @target.change_types(GameData::Types::ELECTRIC)
+            @target.change_types(data_type(:electric).id)
           else
             return
           end

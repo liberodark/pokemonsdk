@@ -162,10 +162,7 @@ module GamePlay
 
     # Create the map sprite
     def create_map
-      @map_worldmap = Sprite.new(@viewport_map).set_bitmap(
-        GameData::WorldMap.worldmap_image_filename(GameData::WorldMap.get(@worldmap_id).image),
-        :interface
-      )
+      @map_worldmap = Sprite.new(@viewport_map).set_bitmap(data_world_map(@worldmap_id).image, :interface)
     end
 
     # Create the cursor
@@ -260,9 +257,10 @@ module GamePlay
         @zone_animation_backroll = @zone_animation_counter >= 100
       end
       # Update the color filter considering the mode
-      if @mode == :pokedex || @mode == :view
+      case @mode
+      when :pokedex, :view
         color = PROC_ZONE_COLOR.call @zone_animation_counter
-      elsif @mode == :fly
+      when :fly
         color = PROC_FLY_ZONE_COLOR.call @zone_animation_counter
       else
         color = [0, 0, 0, 1] # No color (white)
@@ -288,10 +286,12 @@ module GamePlay
     def update_button_input
       # Quit map if B triggered
       return @running = false if Input.trigger?(:B)
+
       # Toggle zoom if allowed
       on_toggle_zoom if ZoomEnabled && Input.trigger?(:X)
       # No more input if wall view
       return if @mode == :view_wall
+
       # Load the next worldmap
       on_next_worldmap if Input.trigger?(:Y)
       return on_fly_attempt if @mode == :fly && Input.trigger?(:A)
@@ -359,7 +359,7 @@ module GamePlay
     def update_infobox
       zone = $env.get_zone(@x, @y, @worldmap_id)
       if zone
-        @ui_infobox.set_location zone.map_name
+        @ui_infobox.set_location(zone.name)
       else
         @ui_infobox.set_location '...'
       end
@@ -368,8 +368,7 @@ module GamePlay
     # Change the zoom to 0.5 or 1
     def on_toggle_zoom
       # Set the zoom value
-      @viewport_map.zoom = @viewport_map_cursor.zoom = @viewport_map_zones.zoom = 
-        @viewport_map_markers.zoom = @zoom = (@zoom == 0.5 ? 1 : 0.5)
+      @viewport_map.zoom = @viewport_map_cursor.zoom = @viewport_map_zones.zoom = @viewport_map_markers.zoom = @zoom = (@zoom == 0.5 ? 1 : 0.5)
       # Correct map display
       @viewport_map.ox *= @zoom
       @viewport_map.oy *= @zoom
@@ -384,12 +383,11 @@ module GamePlay
     # We try to fly to the selected zone
     def on_fly_attempt
       zone = $env.get_zone(@x, @y, @worldmap_id)
-      if zone&.warp_x && zone&.warp_y && $env.visited_zone?(zone)
-        map_id = zone.map_id
-        map_id = map_id.first unless map_id.is_a?(Numeric)
+      if zone&.warp&.x && zone&.warp&.y && $env.visited_zone?(zone)
+        map_id = zone.maps.first
         $game_variables[::Yuki::Var::TMP1] = map_id
-        $game_variables[::Yuki::Var::TMP2] = zone.warp_x
-        $game_variables[::Yuki::Var::TMP3] = zone.warp_y
+        $game_variables[::Yuki::Var::TMP2] = zone.warp.x
+        $game_variables[::Yuki::Var::TMP3] = zone.warp.y
         $game_temp.common_event_id = 15
         return_to_scene(Scene_Map)
       end
@@ -397,9 +395,10 @@ module GamePlay
 
     # Load the next worldmap
     def on_next_worldmap
+      worldmap_count = each_data_world_map.size
       old_worldmap_id = @worldmap_id
-      @worldmap_id = (@worldmap_id + 1) % GameData::WorldMap.all.length
-      @worldmap_id = (@worldmap_id + 1) % GameData::WorldMap.all.length until $env.visited_worldmap?(@worldmap_id)
+      @worldmap_id = (@worldmap_id + 1) % worldmap_count
+      @worldmap_id = (@worldmap_id + 1) % worldmap_count until $env.visited_worldmap?(@worldmap_id) || @worldmap_id == old_worldmap_id
       unless old_worldmap_id == @worldmap_id
         if @mode == :pokedex
           set_pokemon(@pokemon, @worldmap_id)
@@ -420,12 +419,9 @@ module GamePlay
     def set_worldmap(id)
       # Update the worldmap
       @worldmap_id = id
-      @map_worldmap.set_bitmap(
-        GameData::WorldMap.worldmap_image_filename(GameData::WorldMap.get(@worldmap_id).image),
-        :interface
-      )
+      @map_worldmap.set_bitmap(data_world_map(@worldmap_id).image, :interface)
       recenter_map
-      @ui_infobox.set_region GameData::WorldMap.get(@worldmap_id).name
+      @ui_infobox.set_region(data_world_map(@worldmap_id).name)
       # Update player
       set_bounds
       init_cursor_and_player
@@ -461,7 +457,7 @@ module GamePlay
 
       # Update the worldmap display
       wm_id = forced_worldmap_id
-      wm_id ||= $pokedex.best_worldmap_pokemon(pkm.id)
+      wm_id ||= $pokedex.best_worldmap_for_creature(pkm.db_symbol)
       set_worldmap(wm_id)
       # Display the unkown zone alert
       @ui_unknown_zone.visible = @marker_zones.empty?
@@ -515,15 +511,15 @@ module GamePlay
       return unless @mode == :fly
 
       # Initialize
-      wm_data = GameData::WorldMap.get(@worldmap_id).data
-      fly_zones = Table.new(wm_data.xsize, wm_data.ysize)
+      grid = data_world_map(@worldmap_id).grid
+      fly_zones = Table.new(grid.first.size, grid.size)
       # Test each world map case
-      0.upto(wm_data.xsize - 1) do |x|
-        0.upto(wm_data.ysize - 1) do |y|
-          next if (zone_id = wm_data[x, y]) < 0 # No zone = no flight
+      0.upto(fly_zones.xsize - 1) do |x|
+        0.upto(fly_zones.ysize - 1) do |y|
+          next if (zone_id = grid[y][x] || -1) < 0 # No zone = no flight
 
           zone = data_zone(zone_id)
-          fly_zones[x, y] = 1 if zone.warp_x && zone.warp_y && $env.visited_zone?(zone)
+          fly_zones[x, y] = 1 if zone.warp.x && zone.warp.y && $env.visited_zone?(zone)
         end
       end
       # Display each zone
@@ -535,31 +531,32 @@ module GamePlay
       return unless @mode == :view
 
       # Initialize
-      wm_data = GameData::WorldMap.get(@worldmap_id).data
-      pkm_zones = Table.new(wm_data.xsize, wm_data.ysize)
-      pokemons = $wild_battle.roaming_pokemons
-      coords_by_pkm = {}
-      return if pokemons.empty?
+      grid = data_world_map(@worldmap_id).grid
+      creature_zones = Table.new(grid.first.size, grid.size)
+      creatures = $wild_battle.roaming_pokemons
+      coords_by_creatures = {}
+      return if creatures.empty?
 
       # Check each tile
-      0.upto(wm_data.xsize - 1) do |x|
-        0.upto(wm_data.ysize - 1) do |y|
-          next if (zone_id = wm_data[x, y]) < 0 # No zone = no pokemon
+      0.upto(creature_zones.xsize - 1) do |x|
+        0.upto(creature_zones.ysize - 1) do |y|
+          next if (zone_id = grid[y][x] || -1) < 0 # No zone = no pokemon
 
-          pokemons.each do |pokemon_info|
-            next unless [data_zone(zone_id).map_id].flatten.include? pokemon_info.map_id
+          zone = data_zone(zone_id)
+          creatures.each do |creature_info|
+            next unless zone.maps.include?(creature_info.map_id)
 
-            pkm_zones[x, y] = 1
-            coords_by_pkm[pokemon_info] ||= []
-            coords_by_pkm[pokemon_info].push [x, y]
+            creature_zones[x, y] = 1
+            coords_by_creatures[creature_info] ||= []
+            coords_by_creatures[creature_info].push [x, y]
           end
         end
       end
       # Display zones
-      display_zones(pkm_zones)
-      # Display pokemons
+      display_zones(creature_zones)
+      # Display creatures
       # No more than one pokemon by case
-      coords_by_pkm.keys.each do |infos|
+      coords_by_creatures.keys.each do |infos|
         # Look for the image, next if no icon matching
         pkm_icon = 'worldmap/pokemons_icons/' + infos.pokemon.character_name
         next unless RPG::Cache.interface_exist?(pkm_icon)
@@ -569,7 +566,7 @@ module GamePlay
         sprite.set_bitmap(pkm_icon, :interface)
         sprite.ox = sprite.src_rect.width / 2 - TileSize / 2
         sprite.oy = sprite.src_rect.height / 2 - TileSize / 2
-        coords = coords_by_pkm[infos].sample
+        coords = coords_by_creatures[infos].sample
         # Set the sprite
         sx = BitmapOffset + @map_worldmap.x + TileSize * coords[0]
         sy = BitmapOffset + @map_worldmap.y + TileSize * coords[1]
@@ -643,40 +640,36 @@ module GamePlay
     # @return [Table] the table where the pokemon spawn
     def search_pokemon_zone
       # Initialize
-      wm_data = GameData::WorldMap.get(@worldmap_id).data
-      pkm_zones = Table.new(wm_data.xsize, wm_data.ysize)
-      return pkm_zones unless @pokemon
+      grid = data_world_map(@worldmap_id).grid
+      creature_zones = Table.new(grid.first.size, grid.size)
+      return creature_zones unless @pokemon
 
       # Test each world map case
-      0.upto(wm_data.xsize - 1) do |x|
-        0.upto(wm_data.ysize - 1) do |y|
-          next if (zone_id = wm_data[x, y]) < 0 # No zone = no pokemon
+      0.upto(creature_zones.xsize - 1) do |x|
+        0.upto(creature_zones.ysize - 1) do |y|
+          next if (zone_id = grid[y][x] || -1) < 0 # No zone = no pokemon
 
           # Check the roaming pokemon
           zone = data_zone(zone_id)
           $wild_battle.roaming_pokemons.each do |infos|
-            next unless [zone.map_id].flatten.include? infos.map_id
+            next unless zone.maps.include?(infos.map_id)
             next unless infos.pokemon.id == @pokemon.id
 
-            pkm_zones[x, y] = 1
+            creature_zones[x, y] = 1
             infos.spotted = true
             break
           end
-          next if pkm_zones[x, y] > 0
+          next if creature_zones[x, y] > 0
 
           # Check the group
-          zone.groups&.each do |group|
-            group.each do |pkm|
-              next unless pkm.is_a?(Hash) # No hash = not a pokemon
-              next unless pkm[:id] == @pokemon.id # Not the pokemon we are looking for
-
-              pkm_zones[x, y] = 1 # Set the zone ok
-            end
-          end
+          db_symbol = @pokemon.db_symbol
+          # @type [Array<Studio::Group>]
+          groups = zone.wild_groups.map { |group_db_symbol| data_group(group_db_symbol) }
+          creature_zones[x, y] = 1 if groups.any? { |group| group.encounters.any? { |encounter| encounter.specie == db_symbol } }
         end
       end
       # Return the table to display
-      return pkm_zones
+      return creature_zones
     end
   end
 end

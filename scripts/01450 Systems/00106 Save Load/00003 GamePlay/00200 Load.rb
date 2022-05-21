@@ -4,7 +4,7 @@ module GamePlay
     # Create a new GamePlay::Load scene
     def initialize
       super()
-      GameData::Text.load
+      Studio::Text.load
       @running = true
       @index = 0
       @all_saves = load_all_saves

@@ -34,12 +34,12 @@ module UI
       seen_text = add_text(2, 0, 79, 26, ext_text(9000, 20), color: 10)
       seen_text.bold = true
       # Show the number of Pokemon Seen
-      add_text(seen_text.real_width + 4, 0, 79, 26, :pokemon_seen, 0, type: SymText, color: 10)
+      add_text(seen_text.real_width + 4, 0, 79, 26, :creature_seen, 0, type: SymText, color: 10)
       # Show the "Got: " text
       got_text = add_text(2, 28, 79, 26, ext_text(9000, 21), color: 10)
       got_text.bold = true
       # Show the number of Pokemon Got
-      add_text(got_text.real_width + 4, 28, 79, 26, :pokemon_captured, 0, type: SymText, color: 10)
+      add_text(got_text.real_width + 4, 28, 79, 26, :creature_caught, 0, type: SymText, color: 10)
 
       # Define the Pokedex as text source
       self.data = $pokedex
@@ -79,7 +79,7 @@ module UI
     def data=(pokemon)
       super(pokemon)
       # Show / hide the sprites according to the captured state of the Pokemon
-      is_captured = pokemon && $pokedex.pokemon_caught?(pokemon.id)
+      is_captured = pokemon && $pokedex.creature_caught?(pokemon.id)
       VISIBLE_SPRITES.each do |i|
         @stack[i].visible = is_captured
       end
@@ -117,7 +117,7 @@ module UI
     def data=(pokemon)
       super(pokemon)
       # Change the catch visibility to the captured state of the Pokemon
-      @catch_icon.visible = $pokedex.pokemon_caught?(pokemon.id)
+      @catch_icon.visible = $pokedex.creature_caught?(pokemon.id)
     end
 
     # Tell the button if it's selected or not : change the obfuscator visibility & x position

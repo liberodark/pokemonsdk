@@ -1,10 +1,12 @@
 module PFM
   class Environment
+    # List of weather symbols
+    WEATHER_NAMES = %i[none rain sunny sandstorm hail fog hardsun hardrain wind]
     # Apply a new weather to the current environment
     # @param id [Integer, Symbol] ID of the weather : 0 = None, 1 = Rain, 2 = Sun/Zenith, 3 = Darud Sandstorm, 4 = Hail, 5 = Foggy
     # @param duration [Integer, nil] the total duration of the weather (battle), nil = never stops
     def apply_weather(id, duration = nil)
-      id = GameData::Weather::NAMES.index(id) || 0 if id.is_a?(Symbol)
+      id = WEATHER_NAMES.index(id) || 0 if id.is_a?(Symbol)
       @battle_weather = id
       @weather = id unless @game_state.game_temp.in_battle && !@game_state.game_switches[::Yuki::Sw::MixWeather]
       @duration = (duration || Float::INFINITY)
@@ -38,7 +40,7 @@ module PFM
     # Return the db_symbol of the current weather
     # @return [Symbol]
     def current_weather_db_symbol
-      GameData::Weather::NAMES[current_weather] || :__undef__
+      WEATHER_NAMES[current_weather] || :__undef__
     end
 
     # Is it rainning?

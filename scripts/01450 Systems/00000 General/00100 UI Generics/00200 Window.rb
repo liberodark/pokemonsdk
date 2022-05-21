@@ -48,9 +48,9 @@ module UI
       # @param skin [String] windowskin used to show the window
       # @return [Array<Integer>] the window builder
       def window_builder(skin)
-        return GameData::Windows::MessageHGSS if skin[0, 2].casecmp?('m_') # SkinHGSS
+        return Configs.window.builders[:message_box] if skin[0, 2].casecmp?('m_') # SkinHGSS
 
-        return GameData::Windows::MessageWindow # Skin PSDK
+        return Configs.window.builders[:generic]
       end
     end
 

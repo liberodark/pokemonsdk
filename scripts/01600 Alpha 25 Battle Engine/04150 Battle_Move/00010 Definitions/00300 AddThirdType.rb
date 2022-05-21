@@ -3,8 +3,8 @@ module Battle
     # Move that give a third type to an enemy
     class AddThirdType < Move
       TYPES = {
-        trick_or_treat: GameData::Types::GHOST,
-        forest_s_curse: GameData::Types::GRASS
+        trick_or_treat: :ghost,
+        forest_s_curse: :grass
       }
       # Function that deals the effect to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
@@ -19,7 +19,7 @@ module Battle
       # Get the type given by the move
       # @return [Integer] the ID of the Type given by the move
       def new_type
-        return TYPES[db_symbol] || 0
+        return data_type(TYPES[db_symbol] || 0).id
       end
 
       # Get the message text

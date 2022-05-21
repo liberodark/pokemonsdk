@@ -15,17 +15,6 @@ module Battle
         cure: :cure,
         flinch: :apply_flinch
       }
-      # List of correspondance between Status ID and Symbol
-      STATUS_ID_TO_SYMBOL = { 
-        GameData::States::POISONED => :poison,
-        GameData::States::PARALYZED => :paralysis,
-        GameData::States::BURN => :burn,
-        GameData::States::ASLEEP => :sleep,
-        GameData::States::FROZEN => :freeze, 
-        GameData::States::CONFUSED => :confusion,
-        GameData::States::TOXIC => :toxic,
-        GameData::States::FLINCH => :flinch 
-      }
       # List of message ID when applying a status
       STATUS_APPLY_MESSAGE = { poison: 234, toxic: 237, confusion: 345, sleep: 306, freeze: 288, paralysis: 273, burn: 255 }
       # List of animation ID when applying a status

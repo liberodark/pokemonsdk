@@ -2,6 +2,9 @@ module Battle
   module Effects
     class Status
       class Asleep < Status
+        # List of moves that works when the user is asleep
+        SLEEPING_MOVES = %i[snore sleep_talk]
+
         # Prevent sleep from being applied twice
         # @param handler [Battle::Logic::StatusChangeHandler]
         # @param status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :flinch, :cure
@@ -33,7 +36,7 @@ module Battle
             move.scene.visual.show_rmxp_animation(user, 469 + status_id)
             move.scene.display_message_and_wait(parse_text_with_pokemon(19, 309, user))
             # If it's a sleeping move we don't prevent user from using the move
-            return if data_move(move.db_symbol).sleeping_attack?
+            return if SLEEPING_MOVES.include?(move.db_symbol)
 
             return :prevent
           else
@@ -44,7 +47,7 @@ module Battle
         end
       end
 
-      register(GameData::States::ASLEEP, Asleep)
+      register(:sleep, Asleep)
     end
   end
 end

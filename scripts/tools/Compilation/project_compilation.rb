@@ -48,11 +48,21 @@ module ProjectCompilation
     GC.start
   end
 
+  EXCLUDED_SCRIPTS = [
+    'pokemonsdk/scripts/01500 Yuki/01200 Yuki__WorldMapEditor.rb',
+    'pokemonsdk/scripts/01500 Yuki/02400 Yuki_Debug.rb',
+    'pokemonsdk/scripts/01500 Yuki/02401 Yuki__Debug MainUI.rb',
+    'pokemonsdk/scripts/01500 Yuki/02402 Debug_SystemTags.rb',
+    'pokemonsdk/scripts/01500 Yuki/02403 Debug_Groups.rb',
+    'pokemonsdk/scripts/00700 Ajout_PSDK/00200 Tester.rb',
+    'pokemonsdk/scripts/00700 Ajout_PSDK/01700 Debugger.rb'
+  ]
+
   def compile_psdk_scripts
     puts 'Compiling PSDK scripts...'
-    lines = File.readlines(ScriptLoader::SCRIPT_INDEX_PATH)
+    lines = File.readlines(ScriptLoader::SCRIPT_INDEX_PATH).map(&:chomp)
+    EXCLUDED_SCRIPTS.each { |filename| lines.delete(filename) }
     lines.each do |filename|
-      filename = filename.chomp
       puts "Compiling #{filename}"
       script = File.read(filename)
       if filename.end_with?(VD_SCRIPT)
@@ -248,7 +258,7 @@ module ProjectCompilation
   add_data_files(0) { get_data_files.last }
   add_data_files(1) { get_data_files.first }
   add_data_files(2) { Dir['Data/Text/Dialogs/*.dat'] }
-  add_data_files(3) { Dir['Data/PSDK/*.rxdata'] }
+  add_data_files(3) { ['Data/Studio/psdk.dat', 'Data/PSDK/Maplinks.rxdata', 'Data/PSDK/SystemTags.rxdata'] }
   add_data_files(4) { Dir['Data/Animations/*.dat'] }
   add_data_files(5) { Dir['Data/Events/Battle/*.yarbc'] }
 

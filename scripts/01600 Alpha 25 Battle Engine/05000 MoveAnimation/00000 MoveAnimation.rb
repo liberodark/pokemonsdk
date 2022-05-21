@@ -43,7 +43,7 @@ module Battle
       found_reason = animation_reason.find { |reason| @specific_move_animations.dig(db_symbol, reason) }
       return Marshal.load(@specific_move_animations.dig(db_symbol, found_reason)) if found_reason
 
-      generic = @generic_move_animations.dig(move.data.atk_class, move.type)
+      generic = @generic_move_animations.dig(move.atk_class, move.type)
       return Marshal.load(generic) if generic
 
       return nil

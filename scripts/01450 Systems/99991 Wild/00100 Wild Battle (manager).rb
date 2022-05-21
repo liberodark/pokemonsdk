@@ -3,72 +3,62 @@ module PFM
   #
   # The main object is stored in $wild_battle and PFM.game_state.wild_battle
   class Wild_Battle
-    # The number of zone type that can be stored
-    MAX_ZONE_COUNT = 10
     # List of ability that force strong Pokemon to battle (Intimidation / Regard vif)
     WEAK_POKEMON_ABILITY = %i[intimidate keen_eye]
     # List of special wild battle that are actually fishing
     FISHING_BATTLES = %i[normal super mega]
+    # List of ability giving the max level of the pokemon we can encounter
+    MAX_POKEMON_LEVEL_ABILITY = %i[hustle pressure vital_spirit]
+    # Mapping allowing to get the correct tool based on the input
+    TOOL_MAPPING = {
+      normal: :OldRod,
+      super: :GoodRod,
+      mega: :SuperRod,
+      rock: :RockSmash,
+      headbutt: :HeadButt
+    }
     # List of Roaming Pokemon
     # @return [Array<PFM::Wild_RoamingInfo>]
     attr_reader :roaming_pokemons
-    # List of Remaining Pokemon groups
-    #
-    # [ (grass)[(tag 0)Wild_info, (tag1)Wild_info,...], (tall_grass)[...], ...]
-    # @return [Array<Array<PFM::Wild_Info>>]
-    attr_reader :remaining_pokemons
-    # The fish group information
-    # @return [Hash]
-    attr_reader :fishing
-    # The actual code to determine if the group should be realoaded (Time change)
-    # @return [Integer]
-    attr_reader :code
+    # List of Remaining creature groups
+    # @return [Array<Studio::Group>]
+    attr_reader :groups
+    # Get the game state responsive of the whole game state
+    # @return [PFM::GameState]
+    attr_accessor :game_state
+
     # Create a new Wild_Battle manager
-    def initialize
+    # @param game_state [PFM::GameState] variable responsive of containing the whole game state for easier access
+    def initialize(game_state)
       @roaming_pokemons = []
-      @remaining_pokemons = Array.new(MAX_ZONE_COUNT) { [] }
       @forced_wild_battle = false
-      @fishing = {}
-      @code = 0
+      @groups = []
+      @game_state = game_state
     end
 
     # Reset the wild battle
     def reset
-      @remaining_pokemons.each(&:clear)
+      @groups&.clear
       @roaming_pokemons.each(&:update)
       @roaming_pokemons.delete_if(&:pokemon_dead?)
       PFM::Wild_RoamingInfo.lock
       # @forced_wild_battle=false
-      @fishing.clear
-      @fishing[:normal] = []
-      @fishing[:super] = []
-      @fishing[:mega] = []
-      @fishing[:rock] = []
-      @fishing[:headbutt] = []
       @fished = false
       @fish_battle = nil
     end
 
     # Load the groups of Wild Pokemon (map change/ time change)
     def load_groups
-      groups = $env.get_current_zone_data.groups
-      @code = groups.size
-      sw = nil
-      groups&.each do |group|
-        map_id = group.instance_variable_get(:@map_id) || 0
-        if map_id == 0 || $game_map.map_id == map_id
-          sw = group.instance_variable_get(:@enable_switch)
-          set(*group) if !sw or $game_switches[sw]
-          @code = (@code * 2 + sw) if sw && $game_switches[sw]
-        end
-      end
+      # @type [Array<Studio::Group>]
+      groups = $env.get_current_zone_data.wild_groups.map { |group_name| data_group(group_name) }
+      @groups = groups.select { |group| group.custom_conditions.reduce(true) { |prev, curr| curr.reduce_evaluate(prev) } }
     end
 
     # Is a wild battle available ?
     # @return [Boolean]
     def available?
       return false if $scene.is_a?(Battle::Scene)
-      return false unless $actors[0]
+      return false if game_state.pokemon_alive == 0
       return true if @fish_battle
       return true if roaming_battle_available?
 
@@ -81,23 +71,25 @@ module PFM
     # @param start [Boolean] if the battle should be started
     # @return [Boolean, nil] if there's a battle available
     def any_fish?(rod = :normal, start = false)
-      st = $game_player.front_system_tag
-      zone_type = (st == 399 ? 6 : (st == 405 ? 7 : 0))
-      if $env.can_fish? && @fishing[rod] && @fishing[rod][zone_type]
-        if start
-          @fish_battle = @fishing[rod][zone_type]
-          if FISHING_BATTLES.include?(rod)
-            @fished = true
-          else
-            @fished = false
-          end
+      return false unless game_state.env.can_fish?
+
+      system_tag = game_state.game_player.front_system_tag_db_symbol
+      terrain_tag = game_state.game_player.front_terrain_tag
+      tool = TOOL_MAPPING[rod] || :__undef__
+      current_group = @groups.find { |group| group.tool == tool && group.system_tag == system_tag && group.terrain_tag == terrain_tag }
+      return false unless current_group
+
+      if start
+        @fish_battle = current_group
+        if FISHING_BATTLES.include?(rod)
+          @fished = true
         else
-          return true
+          @fished = false
         end
+        return nil
       else
-        return false
+        return true
       end
-      return nil
     end
 
     # Test if there's any hidden battle available and start it if asked.
@@ -105,18 +97,19 @@ module PFM
     # @param start [Boolean] if the battle should be started
     # @return [Boolean, nil] if there's a battle available
     def any_hidden_pokemon?(rod = :rock, start = false)
-      zone_type = $env.convert_zone_type($game_player.front_system_tag)
-      if @fishing[rod] && @fishing[rod][zone_type]
-        if start
-          @fish_battle = @fishing[rod][zone_type]
-          @fished = false
-        else
-          return true
-        end
+      system_tag = game_state.game_player.front_system_tag_db_symbol
+      terrain_tag = game_state.game_player.front_terrain_tag
+      tool = TOOL_MAPPING[rod] || :__undef__
+      current_group = @groups.find { |group| group.tool == tool && group.system_tag == system_tag && group.terrain_tag == terrain_tag }
+      return false unless current_group
+
+      if start
+        @fish_battle = current_group
+        @fished = false
+        return nil
       else
-        return false
+        return true
       end
-      return nil
     end
 
     # Start a wild battle
@@ -168,12 +161,15 @@ module PFM
       return configure_battle(@forced_wild_battle, battle_id) if @forced_wild_battle
       # Security for when a Repel is used at the same time an encounter is happening
       return nil if PFM.game_state.repel_count > 0
-      # @type [Wild_Info]
-      return nil unless (wi = @fish_battle || @remaining_pokemons[$env.get_zone_type][$game_player.terrain_tag])
+      return nil unless (group = current_selected_group)
 
-      pokemon_to_select = configure_pokemon(wi.pokemon)
-      selected_pokemon = select_pokemon(wi, pokemon_to_select)
-      return configure_battle(selected_pokemon, battle_id)
+      maxed = MAX_POKEMON_LEVEL_ABILITY.include?(creature_ability) && rand(100) < 50
+      all_creatures = (group.encounters * (group.is_double_battle ? 2 : 1)).map do |encounter|
+        encounter.to_creature(maxed ? encounter.level_setup.range.end : nil)
+      end
+      creature_to_select = configure_creature(all_creatures)
+      selected_creature = select_creature(group, creature_to_select)
+      return configure_battle(selected_creature, battle_id)
     ensure
       @forced_wild_battle = false
       @fish_battle = nil
@@ -186,29 +182,7 @@ module PFM
     # @param vs_type [Integer] the vs_type the Wild Battle are
     # @param data [Array<Integer, Integer, Integer>, Array<Integer, Hash, Integer>] Array of id, level/informations, chance to see (Pokemon informations)
     def set(zone_type, tag, delta_level, vs_type, *data)
-      return if MAX_ZONE_COUNT <= zone_type
-      wi = Wild_Info.new
-      ids = wi.ids
-      levels = wi.levels
-      chances = wi.chances
-      wi.vs_type = vs_type
-      if (data.size / 3 * 3) != data.size
-        raise ArgumentError, "Wild Pokémon aren't correctly configured"
-      end
-      0.step(data.size - 1, 3) do |i|
-        j = i / 3
-        ids[j] = data[i]
-        levels[j] = data[i + 1]
-        chances[j + 1] = data[i + 2]
-      end
-      if tag < 8
-        @remaining_pokemons[zone_type][tag] = wi
-      elsif tag < 11
-        @fishing[tag == 8 ? :normal : tag == 9 ? :super : :mega][zone_type] = wi
-      else
-        @fishing[tag == 11 ? :rock : :headbutt][zone_type] = wi
-      end
-      wi.delta_level = delta_level
+      raise 'This method is no longer supported'
     end
 
     # Test if a Pokemon is a roaming Pokemon (Usefull in battle)
@@ -228,7 +202,6 @@ module PFM
       PFM::Wild_RoamingInfo.unlock
       @roaming_pokemons << Wild_RoamingInfo.new(pokemon, chance, proc_id)
       PFM::Wild_RoamingInfo.lock
-      @code += 1
       return pokemon
     end
 
@@ -253,7 +226,7 @@ module PFM
       else
         rate = 30
       end
-      rate *= 1.5 if FishIncRate.include?(pokemon_ability)
+      rate *= 1.5 if FishIncRate.include?(creature_ability)
       return rate < rand(100)
     end
 
@@ -288,36 +261,54 @@ module PFM
     # Test if a remaining battle is available
     # @return [Boolean]
     def remaining_battle_available?
-      # @type [PFM::Wild_Info]
-      return false unless (group = remaining_pokemons.dig($env.get_zone_type, $game_player.terrain_tag))
-      return false unless group.is_a?(Wild_Info)
+      system_tag = game_state.game_player.system_tag_db_symbol
+      terrain_tag = game_state.game_player.terrain_tag
+      current_group = @groups.find { |group| group.tool.nil? && group.system_tag == system_tag && group.terrain_tag == terrain_tag }
+      return false unless current_group
 
       actor_level = $actors[0].level
-      levels = group.levels.map { |level| level.is_a?(Integer) ? level : level[:level] }
-      return false if PFM.game_state.repel_count > 0 && levels.none? { |level| level >= actor_level }
-      return levels.any? { |level| level + 5 >= actor_level } || rand(100) < 50 if WEAK_POKEMON_ABILITY.include?(pokemon_ability)
+      if PFM.game_state.repel_count > 0 && current_group.encounters.all? { |encounter| encounter.level_setup.repel_rejected(actor_level) }
+        return false
+      end
+
+      if WEAK_POKEMON_ABILITY.include?(creature_ability)
+        return current_group.encounters.any? { |encounter| encounter.level_setup.strong_selected(actor_level) } || rand(100) < 50
+      end
 
       return true
     end
 
-    # Function that returns the Pokemon ability of the Pokemon triggering all the stuff related to ability
+    # Function that returns the Creature ability of the Creature triggering all the stuff related to ability
     # @return [Symbol] db_symbol of the ability
-    def pokemon_ability
-      return :__undef__ unless $actors[0]
+    def creature_ability
+      return :__undef__ unless game_state.actors[0]
 
-      return $actors[0].ability_db_symbol
+      return game_state.actors[0].ability_db_symbol
+    end
+
+    # Get the current selected group
+    # @return [Studio::Group, nil]
+    def current_selected_group
+      return @fish_battle if @fish_battle
+
+      system_tag = game_state.game_player.system_tag_db_symbol
+      terrain_tag = game_state.game_player.terrain_tag
+      return @groups.find { |group| group.tool.nil? && group.system_tag == system_tag && group.terrain_tag == terrain_tag }
     end
   end
 
+  # Retro compatibility with saves
+  Wild_Info = Object
+
   class GameState
-    # The informations about the Wild Pokemon Battle
+    # The information about the Wild Battle
     # @return [PFM::Wild_Battle]
     attr_accessor :wild_battle
-    on_player_initialize(:wild_battle) { @wild_battle = PFM::Wild_Battle.new }
+
+    on_player_initialize(:wild_battle) { @wild_battle = PFM::Wild_Battle.new(self) }
     on_expand_global_variables(:wild_battle) do
-      # Variable containing the Wild Pokemon (Remaining & Romaing) information.
-      # It's also able to start battle against Wild Pokemon
       $wild_battle = @wild_battle
+      @wild_battle.game_state = self
     end
   end
 end

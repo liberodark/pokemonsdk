@@ -104,12 +104,12 @@ module Battle
           trainer = data_trainer(id_trainer)
           klass = trainer.class_name
           battler = trainer.battler
-          name = trainer.internal_names[battle_info.parties[1]&.size || 0]
-          party = trainer.team.map { |hash| PFM::Pokemon.generate_from_hash(hash) }
-          battle_info.add_party(bank, party, name, klass, battler, nil, nil, ai_level(trainer.base_money || 0))
+          name = trainer.name
+          party = trainer.party.map(&:to_creature)
+          battle_info.add_party(bank, party, name, klass, battler, nil, nil, trainer.ai)
           battle_info.base_moneys[bank] << trainer.base_money if bank == 1
           battle_info.trainer_is_couple = battle_info.parties[1].size == 1 if bank == 1 && trainer.vs_type == 2
-          battle_info.battle_id = trainer.special_group if trainer.special_group != 0
+          battle_info.battle_id = trainer.battle_id if trainer.battle_id != 0
         end
 
         # Guess the AI level based on the base money (or a variable)

@@ -55,7 +55,7 @@ module PFM
     def egg_init
       @egg_in = $env.master_zone
       @egg_at = Time.new.to_i
-      @step_remaining = data.hatch_step
+      @step_remaining = data.hatch_steps
       @item_holding = 0
       $quests.get_egg
     end
@@ -81,6 +81,7 @@ module PFM
       log_error("Bad Pokémon ID (#{id}) - Ignore if you opened the Pokedex") if real_id == 0
 
       @id = real_id
+      @db_symbol = data_creature(real_id).db_symbol
       code_initialize
       self.shiny = force_shiny if force_shiny
       self.shiny = !no_shiny if no_shiny
@@ -139,7 +140,7 @@ module PFM
     # @param form [Integer] Form index of the Pokemon (-1 = automatic generation)
     def form_data_initialize(form)
       form = form_generation(form)
-      form = 0 if data_creature(id).forms.none? { |creature_form| creature_form.form == form }
+      form = 0 if data_creature(db_symbol).forms.none? { |creature_form| creature_form.form == form }
       @form = form
       exp_initialize
     end
@@ -156,19 +157,20 @@ module PFM
       self.rareness = opts[:rareness]
       ev_data_initialize(opts)
       iv_data_initialize(opts)
-      @nature = (opts[:nature] || (@code >> 16)) % GameData::Natures.size
+      @nature = (opts[:nature] || (@code >> 16)) % Configs.natures.data.size
       self.hp = max_hp
     end
 
     # Method that initialize the EV data
     # @param opts [Hash] Hash describing optional value you want to assign to the Pokemon
     def ev_data_initialize(opts)
-      @ev_hp = opts.dig(:bonus, GameData::EV::HP) || 0
-      @ev_atk = opts.dig(:bonus, GameData::EV::ATK) || 0
-      @ev_dfe = opts.dig(:bonus, GameData::EV::DFE) || 0
-      @ev_spd = opts.dig(:bonus, GameData::EV::SPD) || 0
-      @ev_ats = opts.dig(:bonus, GameData::EV::ATS) || 0
-      @ev_dfs = opts.dig(:bonus, GameData::EV::DFS) || 0
+      stats = Configs.stats
+      @ev_hp = opts.dig(:bonus, stats.hp_index) || 0
+      @ev_atk = opts.dig(:bonus, stats.atk_index) || 0
+      @ev_dfe = opts.dig(:bonus, stats.dfe_index) || 0
+      @ev_spd = opts.dig(:bonus, stats.spd_index) || 0
+      @ev_ats = opts.dig(:bonus, stats.ats_index) || 0
+      @ev_dfs = opts.dig(:bonus, stats.dfs_index) || 0
     end
 
     # Method that initialize the IV data
@@ -176,23 +178,24 @@ module PFM
     def iv_data_initialize(opts)
       iv_base = (Shiny_IV && shiny? ? 16 : 0)
       iv_rand = (Shiny_IV && shiny? ? 16 : 32)
-      @iv_hp = (opts.dig(:stats, GameData::EV::HP) || (Random::IV_HP.rand(iv_rand) + iv_base)).clamp(0, 31)
-      @iv_atk = (opts.dig(:stats, GameData::EV::ATK) || (Random::IV_ATK.rand(iv_rand) + iv_base)).clamp(0, 31)
-      @iv_dfe = (opts.dig(:stats, GameData::EV::DFE) || (Random::IV_DFE.rand(iv_rand) + iv_base)).clamp(0, 31)
-      @iv_spd = (opts.dig(:stats, GameData::EV::SPD) || (Random::IV_SPD.rand(iv_rand) + iv_base)).clamp(0, 31)
-      @iv_ats = (opts.dig(:stats, GameData::EV::ATS) || (Random::IV_ATS.rand(iv_rand) + iv_base)).clamp(0, 31)
-      @iv_dfs = (opts.dig(:stats, GameData::EV::DFS) || (Random::IV_DFS.rand(iv_rand) + iv_base)).clamp(0, 31)
+      stats = Configs.stats
+      @iv_hp = (opts.dig(:stats, stats.hp_index) || (Random::IV_HP.rand(iv_rand) + iv_base)).clamp(0, 31)
+      @iv_atk = (opts.dig(:stats, stats.atk_index) || (Random::IV_ATK.rand(iv_rand) + iv_base)).clamp(0, 31)
+      @iv_dfe = (opts.dig(:stats, stats.dfe_index) || (Random::IV_DFE.rand(iv_rand) + iv_base)).clamp(0, 31)
+      @iv_spd = (opts.dig(:stats, stats.spd_index) || (Random::IV_SPD.rand(iv_rand) + iv_base)).clamp(0, 31)
+      @iv_ats = (opts.dig(:stats, stats.ats_index) || (Random::IV_ATS.rand(iv_rand) + iv_base)).clamp(0, 31)
+      @iv_dfs = (opts.dig(:stats, stats.dfs_index) || (Random::IV_DFS.rand(iv_rand) + iv_base)).clamp(0, 31)
     end
 
-    # Method that initialize the moveset
+    # Method that initialize the move set
     # @param opts [Hash] Hash describing optional value you want to assign to the Pokemon
     def moves_initialize(opts)
-      moveset = data.move_set
-      (moveset.size - 2).step(0, -2) do |i|
-        if moveset[i].between?(0, level)
-          learn_skill(moveset[i + 1]) unless skill_learnt?(moveset[i + 1])
-          break if skills_set.size >= 4
-        end
+      # @type [Array<Studio::LevelLearnableMove>]
+      move_set = data.move_set.select(&:level_learnable?).sort_by(&:level).reverse
+      move_set.each do |move|
+        next unless move.level.between?(0, level)
+
+        learn_skill(move.move)
       end
       skills_set.reverse!
       # Load moves from options
@@ -202,16 +205,17 @@ module PFM
     # Method that initialize the held item
     # @param opts [Hash] Hash describing optional value you want to assign to the Pokemon
     def item_holding_initialize(opts)
-      # Get item_id list & comparable % list
-      items = data.items
-      item_id_array = items.select.with_index { |_, index| index.even? }
-      item_percent_array = items.select.with_index { |_, index| index.odd? }.reduce([]) do |memo, value|
-        memo << memo[-1].to_i + value
-      end
-      # Take the item according to the rng (% in item_percent_array should be higher than the rng val)
+      return @item_holding = data_item(opts[:item]).id if opts[:item]
+
+      items = data.item_held
       rng = rand(100)
-      @item_holding = item_id_array[item_percent_array.find_index { |value| value > rng } || 101]
-      @item_holding = data_item(opts[:item] || @item_holding.to_i).id
+      item_holding = items.find do |item|
+        next true if rng < item.chance
+
+        rng -= item.chance
+        next false
+      end
+      @item_holding = item_holding ? data_item(item_holding.db_symbol).id : 0
     end
 
     # Method that initialize the ability
@@ -222,7 +226,7 @@ module PFM
         @ability = opts[:ability]
       else
         ability_chance = rand(100)
-        @ability = ability[@ability_index = ABILITY_CHANCES.find_index { |value| value > ability_chance }].to_i
+        @ability = ability[@ability_index = ABILITY_CHANCES.find_index { |value| value > ability_chance }]
       end
       @ability = data_ability(@ability).id unless @ability.is_a?(Integer)
       @ability_used = false

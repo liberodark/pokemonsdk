@@ -20,7 +20,7 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        type = element_by_location
+        type = data_type(element_by_location).id
         actual_targets.each do |target|
           target.change_types(type)
           scene.display_message_and_wait(deal_message(user, target, type))
@@ -44,30 +44,30 @@ module Battle
 
         def register(loc, type)
           TYPE_BY_LOCATION[loc] ||= []
-          TYPE_BY_LOCATION[loc] << GameData::Types.const_get(type)
+          TYPE_BY_LOCATION[loc] << type
           TYPE_BY_LOCATION[loc].uniq!
         end
       end
 
       reset
-      register(:__undef__, :NORMAL)
-      register(:building, :NORMAL)
-      register(:grass, :GRASS)
-      register(:desert, :GROUND)
-      register(:cave, :ROCK)
-      register(:water, :WATER)
-      register(:shallow_water, :GROUND)
-      register(:snow, :ICE)
-      register(:icy_cave, :ICE)
-      register(:volcanic, :FIRE)
-      register(:burial, :GHOST)
-      register(:soaring, :FLYING)
-      register(:misty_terrain, :FAIRY)
-      register(:grassy_terrain, :GRASS)
-      register(:electric_terrain, :ELECTRIC)
-      register(:psychic_terrain, :PSYCHIC)
-      register(:space, :DRAGON)
-      register(:ultra_space, :DRAGON)
+      register(:__undef__, :normal)
+      register(:building, :normal)
+      register(:grass, :grass)
+      register(:desert, :ground)
+      register(:cave, :rock)
+      register(:water, :water)
+      register(:shallow_water, :ground)
+      register(:snow, :ice)
+      register(:icy_cave, :ice)
+      register(:volcanic, :fire)
+      register(:burial, :ghost)
+      register(:soaring, :flying)
+      register(:misty_terrain, :fairy)
+      register(:grassy_terrain, :grass)
+      register(:electric_terrain, :electric)
+      register(:psychic_terrain, :psychic)
+      register(:space, :dragon)
+      register(:ultra_space, :dragon)
     end
     register(:s_camouflage, Camouflage)
   end

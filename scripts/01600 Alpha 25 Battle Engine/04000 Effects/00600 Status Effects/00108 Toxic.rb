@@ -64,7 +64,7 @@ module Battle
         end
       end
 
-      register(GameData::States::TOXIC, Toxic)
+      register(:toxic, Toxic)
     end
   end
 end

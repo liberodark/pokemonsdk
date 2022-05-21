@@ -28,7 +28,7 @@ class Scene_Map
     Scheduler.start(:on_warp_process)
     # Special transition
     wrp_anime = $game_switches[Yuki::Sw::WRP_Transition]
-    $game_switches[Yuki::Sw::WRP_Transition] = false if !$env.get_current_zone_data.warp_disallowed || $game_temp.transition_processing
+    $game_switches[Yuki::Sw::WRP_Transition] = false if !$env.get_current_zone_data.is_warp_disallowed || $game_temp.transition_processing
     transition_sprite = @spriteset.dispose(true)
     Graphics.sort_z
     # We restore the flag of the special transition

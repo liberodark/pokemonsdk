@@ -10,23 +10,25 @@ class Interpreter
   # @param count [Integer] number of item to add
   # @param color [Integer] color to put on the item name
   def add_item(item_id, no_delete = false, text_id: 4, no_space_text_id: 7, color: 11, count: 1)
-    item_id = data_item(item_id).id
+    db_symbol = item_id.is_a?(Symbol) ? item_id : data_item(item_id).db_symbol
 
-    if (max = GameData::Bag::MaxItem) > 0 && ($bag.item_quantity(item_id) + count) >= max
-      add_item_no_space(item_id, no_space_text_id, color)
+    if (max = PSDK_CONFIG.max_bag_item_count) > 0 && ($bag.item_quantity(db_symbol) + count) >= max
+      add_item_no_space(db_symbol, no_space_text_id, color)
     else
-      item_text, socket = add_item_show_message_got(item_id, text_id, color, count: count)
+      item_text, socket = add_item_show_message_got(db_symbol, text_id, color, count: count)
       # Pokemon Sword/Shield does not show this type of message
       # If you want your game to show it, change MODE_SWOOSH to false
       if count == 1 && !MODE_SWOOSH
+        pocket_name = GamePlay::Bag::POCKET_NAMES[socket]
+        pocket_name = send(*pocket_name) if pocket_name.is_a?(Array)
         show_message(
           :bag_store_item_in_pocket,
           item_1: item_text, header: SYSTEM_MESSAGE_HEADER,
           PFM::Text::TRNAME[0] => $trainer.name,
-          '[VAR 0112(0002)]' => GameData::Bag.get_socket_name(socket)
+          '[VAR 0112(0002)]' => pocket_name
         )
       end
-      $bag.add_item(item_id, count)
+      $bag.add_item(db_symbol, count)
       delete_this_event_forever unless no_delete
     end
 
@@ -78,10 +80,10 @@ class Interpreter
     socket = item.socket
 
     Audio.me_play(item.me, 80)
-    if item.is_a?(GameData::TechItem)
+    if item.is_a?(Studio::TechItem)
       text_id = text_id <= 3 ? 3 : 6
       MESSAGES[:hm_got_text] = proc { text_get(41, text_id) }
-      move_name = data_move(GameData::TechItem.from(item).move_db_symbol).name
+      move_name = data_move(Studio::TechItem.from(item).move_db_symbol).name
       show_message(
         :hm_got_text,
         item_1: item_text, header: SYSTEM_MESSAGE_HEADER, PFM::Text::TRNAME[0] => $trainer.name,

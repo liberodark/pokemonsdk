@@ -7,7 +7,7 @@ module GamePlay
 
     # Launch the buy sequence
     def launch_buy_sequence
-      if data_item(@list_item[@index]).limited == false
+      if data_item(@list_item[@index]).is_limited == false
         buy_unlimited_use_item
       else
         buy_limited_use_item
@@ -18,9 +18,9 @@ module GamePlay
     def buy_unlimited_use_item
       price = @list_price[@index].to_s
       item = data_item(@list_item[@index])
-      if item.socket == 3 && item.is_a?(GameData::TechItem)
+      if item.socket == 3 && item.is_a?(Studio::TechItem)
         id_text = 35
-        move_name = GameData::Skill[GameData::TechItem.from(item).move_db_symbol].name
+        move_name = data_move(Studio::TechItem.from(item).move_db_symbol).name
         ct_num = item.name.gsub(/[^0-9]/, '')
         hash = { NUM3[0] => ct_num, MOVE[1] => move_name, NUM7R => price }
       else
@@ -69,7 +69,7 @@ module GamePlay
     # @return [Boolean] if the buy_item procedure should immediately exit
     def amount_selection(price, item_id)
       max_amount = PFM.game_state.money / price
-      if (max = GameData::Bag::MaxItem) > 0
+      if (max = PSDK_CONFIG.max_bag_item_count) > 0
         max -= $bag.item_quantity(item_id)
         return display_message(parse_text(11, 31)) && true if max <= 0 # Not enough space
 

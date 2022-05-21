@@ -50,7 +50,7 @@ module Battle
         end
       end
 
-      register(GameData::States::PARALYZED, Paralysis)
+      register(:paralysis, Paralysis)
     end
   end
 end

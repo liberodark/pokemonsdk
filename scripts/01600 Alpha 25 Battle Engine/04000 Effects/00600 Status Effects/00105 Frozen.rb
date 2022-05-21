@@ -57,7 +57,7 @@ module Battle
         end
       end
 
-      register(GameData::States::FROZEN, Frozen)
+      register(:freeze, Frozen)
     end
   end
 end

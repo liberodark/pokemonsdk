@@ -48,7 +48,7 @@ module UI
     # Update the skills shown in the UI
     # @param pokemon [PFM::Pokemon]
     def update_skills(pokemon = @data)
-      @learnable_skills = pokemon.remindable_skills(@mode).collect { |id| PFM::Skill.new(id) }
+      @learnable_skills = pokemon.remindable_skills(@mode).collect { |db_symbol| PFM::Skill.new(db_symbol) }
       @move_info.data = @learnable_skills[@index]
       update_skill_list
     end

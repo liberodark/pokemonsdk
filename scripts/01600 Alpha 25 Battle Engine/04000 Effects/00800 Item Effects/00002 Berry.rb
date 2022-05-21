@@ -23,7 +23,7 @@ module Battle
           @logic.item_change_handler.change_item(:none, true, holder, launcher, move) if holder.hold_item?(db_symbol)
           if should_confuse && (data = Yuki::Berries::BERRY_DATA[db_symbol])
             taste = FLAVORS.max_by { |flavor| data.send(flavor) } || FLAVORS.first
-            return unless GameData::Flavors::DISLIKED_FLAVORS[taste].include?(holder.nature_id)
+            return unless holder.flavor_disliked?(taste)
             return unless @logic.status_change_handler.status_appliable?(:confuse)
 
             @logic.status_change_handler.status_change(:confusion, holder)

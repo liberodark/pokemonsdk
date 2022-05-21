@@ -55,8 +55,7 @@ module Battle
           end
         end
         register(:eviolite) do |_, target|
-          data = target.data
-          next (data.special_evolution && !data.special_evolution.empty?) || data.evolution_id.to_i != 0
+          next target.data.evolutions.any?(&:db_symbol)
         end
         register(:deep_sea_scale, 2) { |_, target, move| move.special? && target.db_symbol == :clamperl }
         register(:assault_vest, nil, AssaultVest) { |_, _, move| move.special? }

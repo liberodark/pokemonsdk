@@ -62,7 +62,7 @@ module UI
         @wait_animation = nil
       end
 
-      # Test if the player is reading a pannel and skips by moving
+      # Test if the player is reading a panel and skips by moving
       def panel_skip?
         properties.can_skip_message && Input.dir4 != 0 && Input.dir4 != $game_player.direction
       end

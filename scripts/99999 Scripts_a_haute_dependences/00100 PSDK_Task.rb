@@ -20,7 +20,7 @@ module Scheduler
   end
 
   add_proc(:on_warp_process, ::Scene_Map, 'Descendre du vélo s\'il faut & reset force', 100) do
-    if $env.get_current_zone_data.warp_disallowed
+    if $env.get_current_zone_data.is_warp_disallowed
       if $game_switches[::Yuki::Sw::EV_Bicycle]
         $game_system.map_interpreter.launch_common_event(11)
         $game_system.map_interpreter.update
@@ -104,7 +104,7 @@ module Scheduler
   add_proc(:on_update, :any, 'KeyBinding addition', 0) do
     if $scene.class != GamePlay::KeyBinding
       if Input::Keyboard.press?(Input::Keyboard::F1) && !$game_temp&.message_window_showing
-        GameData::Text.load unless $options
+        Studio::Text.load unless $options
         GamePlay::KeyBinding.new.main
         Graphics.transition
       end

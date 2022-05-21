@@ -37,7 +37,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         skill = data_move(target_move(actual_targets.first))
-        move = Battle::Move[skill.be_method].new(skill.id, 1, 1, @scene)
+        move = Battle::Move[skill.be_method].new(skill.db_symbol, 1, 1, @scene)
         def move.calc_mod2(user, target)
           super * 1.5
         end

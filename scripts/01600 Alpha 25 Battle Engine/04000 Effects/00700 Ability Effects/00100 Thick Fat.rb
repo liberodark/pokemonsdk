@@ -3,7 +3,7 @@ module Battle
     class Ability
       class ThickFat < Ability
         # List of types affected by thick fat
-        THICK_FAT_TYPES = [GameData::Types::FIRE, GameData::Types::ICE]
+        THICK_FAT_TYPES = %i[fire ice]
         # Get the base power multiplier of this move
         # @param user [PFM::PokemonBattler]
         # @param target [PFM::PokemonBattler]
@@ -13,7 +13,7 @@ module Battle
           return 1 if target != self.target
           return 1 unless user.can_be_lowered_or_canceled?
 
-          return THICK_FAT_TYPES.include?(move.type) ? 0.5 : 1
+          return THICK_FAT_TYPES.include?(data_type(move.type).db_symbol) ? 0.5 : 1
         end
       end
       register(:thick_fat, ThickFat)

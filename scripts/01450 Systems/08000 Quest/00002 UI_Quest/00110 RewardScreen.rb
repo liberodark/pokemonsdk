@@ -21,11 +21,11 @@ module UI
       # Scroll the rewards if there's more than 4 rewards
       # @param direction [Symbol] :left of :right
       def scroll_rewards(direction)
-        return if data_quest.earnings.size < 5
+        return if quest_data.earnings.size < 5
 
         @index_display += (direction == :left ? -1 : 1)
-        @index_display = 0 if @index_display > data_quest.earnings.size / 4
-        @index_display = data_quest.earnings.size / 4 if @index_display < 0
+        @index_display = 0 if @index_display > quest_data.earnings.size / 4
+        @index_display = quest_data.earnings.size / 4 if @index_display < 0
         regenerate_rewards(true)
       end
 
@@ -47,7 +47,7 @@ module UI
         coord = REWARD_COORDINATE
         @rewards = []
         4.times do |i|
-          @rewards << push_sprite(RewardButton.new(viewport, x + coord[i][0], y + coord[i][1], data_quest.earnings[i + (@index_display * 4)]))
+          @rewards << push_sprite(RewardButton.new(viewport, x + coord[i][0], y + coord[i][1], quest_data.earnings[i + (@index_display * 4)]))
         end
       end
 
@@ -61,9 +61,9 @@ module UI
       end
 
       # Return the data for the current quest stocked
-      # @return GameData::Quest
-      def data_quest
-        return super(@quest.quest_id)
+      # @return [Studio::Quest]
+      def quest_data
+        return data_quest(@quest.quest_id)
       end
     end
 
@@ -72,7 +72,7 @@ module UI
       # @param viewport [Viewport]
       # @param x [Integer]
       # @param y [Integer]
-      # @param reward [GameData::Quest::Earning, nil]
+      # @param reward [Studio::Quest::Earning, nil]
       def initialize(viewport, x, y, reward)
         super(viewport, x, y)
         @viewport = viewport
@@ -94,7 +94,7 @@ module UI
 
       # Determine the reward and set the right text and icons
       def determine_reward
-        hash = send(@reward.give_method_name)
+        hash = send(@reward.earning_method_name)
         @icon_type = hash[:type]
         @reward_id = hash[:id]
         @reward_name = hash[:name]
@@ -125,7 +125,7 @@ module UI
           type: UI::ItemSprite,
           id: 223,
           name: 'Money',
-          quantity: @reward.give_args[0]
+          quantity: @reward.earning_args[0]
         }
       end
 
@@ -134,16 +134,16 @@ module UI
       def earning_item
         return {
           type: UI::ItemSprite,
-          id: @reward.give_args[0],
-          name: data_item(@reward.give_args[0]).name,
-          quantity: @reward.give_args[1]
+          id: @reward.earning_args[0],
+          name: data_item(@reward.earning_args[0]).name,
+          quantity: @reward.earning_args[1]
         }
       end
 
       # Hash defining how the reward should be created if it's a Pokemon
       # @return [Hash]
       def earning_pokemon
-        data = @reward.give_args[0]
+        data = @reward.earning_args[0]
         pokemon_id = data.is_a?(Hash) ? data[:id] : data
         return {
           type: UI::PokemonIconSprite,

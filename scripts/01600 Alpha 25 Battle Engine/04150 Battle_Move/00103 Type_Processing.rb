@@ -61,7 +61,7 @@ module Battle
     # @return [Float] definitive multiplier
     def calc_single_type_multiplier(target, target_type, type)
       exec_hooks(Move, :single_type_multiplier_overwrite, binding)
-      return data_type(target_type).hit_by(type)
+      return data_type(type).hit(data_type(target_type).db_symbol)
     rescue Hooks::ForceReturn => e
       log_data("# calc_single_type_multiplier(#{target}, #{target_type}, #{type})")
       log_data("# FR: calc_single_type_multiplier #{e.data} from #{e.hook_name} (#{e.reason})")
@@ -121,13 +121,13 @@ module Battle
     end
 
     Move.register_single_type_multiplier_overwrite_hook('PSDK Freeze-Dry') do |_, target_type, _, move|
-      next 2 if move.db_symbol == :freeze_dry && target_type == GameData::Types::WATER
+      next 2 if move.db_symbol == :freeze_dry && target_type == data_type(:water).id
 
       next nil
     end
 
     Move.register_single_type_multiplier_overwrite_hook('PSDK Grounded: Levitate & Air Balloon') do |target, _, type|
-      next 0 if type == GameData::Types::GROUND && !target.grounded?
+      next 0 if type == data_type(:ground).id && !target.grounded?
 
       next nil
     end

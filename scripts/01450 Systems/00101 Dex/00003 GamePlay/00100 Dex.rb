@@ -124,8 +124,8 @@ module GamePlay
       end
       @pokemon_info.visible = @pokemon_descr.visible = state == 1
       if @pokemon_descr.visible
-        if $pokedex.pokemon_caught?(@pokemon.id)
-          @pokemon_descr.multiline_text = data_creature(@pokemon.id).descr
+        if $pokedex.creature_caught?(@pokemon.id)
+          @pokemon_descr.multiline_text = data_creature(@pokemon.db_symbol).descr
         else
           @pokemon_descr.multiline_text = ''
         end
@@ -164,20 +164,15 @@ module GamePlay
     # Generate the selected_pokemon array
     # @param page_id [Integer, false] see initialize
     def generate_selected_pokemon_array(page_id)
-      if $pokedex.national?
-        @selected_pokemons = []
-        1.step(each_data_creature.to_a.size) do |i|
-          @selected_pokemons << i if $pokedex.pokemon_seen?(i)
-        end
+      dex = $pokedex
+      if dex.national?
+        @selected_pokemons = each_data_creature.select { |creature| dex.creature_seen?(creature.db_symbol) }
+        @selected_pokemons.map!(&:id)
       else
-        selected_pokemons = []
-        1.step(each_data_creature.to_a.size) do |i|
-          selected_pokemons << i if $pokedex.pokemon_seen?(i) && data_creature(i).id_bis > 0
-        end
-        selected_pokemons.sort! { |a, b| data_creature(a).id_bis <=> data_creature(b).id_bis }
-        @selected_pokemons = selected_pokemons
+        # TODO: Studio version with regional dex
+        @selected_pokemons = each_data_creature.select { |creature| dex.creature_seen?(creature.db_symbol) }
+        @selected_pokemons.map!(&:id)
       end
-      @selected_pokemons.compact!
       @selected_pokemons << 0 if @selected_pokemons.empty?
       # Index ajustment
       if page_id
@@ -199,14 +194,14 @@ module GamePlay
         # Return the formated name for Pokedex
         # @return [String]
         def pokedex_name
-          id_value = $pokedex.national? ? id : data_creature(id).id_bis
+          id_value = id # TODO: Studio Regional dex $pokedex.national? ? id : data_creature(id).id_bis
           format(GamePlay::Dex::NAME_FORMAT, id_value, name)
         end
 
         # Return the formated Specie for Pokedex
         # @return [String]
         def pokedex_species
-          data_creature(id).species
+          data_creature(db_symbol).species
         end
 
         # Return the formated weight for Pokedex

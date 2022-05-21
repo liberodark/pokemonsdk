@@ -31,15 +31,15 @@ module BattleUI
     end
 
     # Force the action to use an item
-    # @param item [GameData::Item]
+    # @param item [Studio::Item]
     def use_item(item)
       item_wrapper = PFM::ItemDescriptor.actions(item.id)
-      return use_item_on_pokemon_choice(item_wrapper) if item_wrapper.on_pokemon_choice?
+      return use_item_on_creature_choice(item_wrapper) if item_wrapper.on_creature_choice?
 
       @result = :action
       user = scene.logic.battler(0, scene.player_actions.size)
       item_wrapper.bind(scene, user)
-      $bag.remove_item(item_wrapper.item.id, 1) if item_wrapper.item.limited && item_wrapper.item.is_a?(GameData::BallItem)
+      $bag.remove_item(item_wrapper.item.db_symbol, 1) if item_wrapper.item.is_limited && item_wrapper.item.is_a?(Studio::BallItem)
       @action = Battle::Actions::Item.new(scene, item_wrapper, $bag, user)
     end
 
@@ -47,14 +47,14 @@ module BattleUI
 
     # Use an item that needs to pick a Pokemon
     # @param item_wrapper [PFM::ItemDescriptor::Wrapper]
-    def use_item_on_pokemon_choice(item_wrapper)
+    def use_item_on_creature_choice(item_wrapper)
       party = scene.logic.all_battlers.select(&:from_party?)
       GamePlay.open_party_menu_to_use_item(item_wrapper, party) do |result|
         next unless result.pokemon_selected?
         next if result.call_skill_process
 
         item_wrapper.bind(scene, user = party[result.return_data])
-        $bag.remove_item(item_wrapper.item.id, 1) if item_wrapper.item.limited && item_wrapper.item.is_a?(GameData::BallItem)
+        $bag.remove_item(item_wrapper.item.id, 1) if item_wrapper.item.is_limited && item_wrapper.item.is_a?(Studio::BallItem)
         @action = Battle::Actions::Item.new(scene, item_wrapper, $bag, user)
         @result = :action
       end

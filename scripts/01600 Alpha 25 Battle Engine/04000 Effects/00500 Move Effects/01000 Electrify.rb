@@ -9,7 +9,7 @@ module Battle
       # @param logic [Battle::Logic]
       # @param target [PFM::PokemonBattler]
       # @param type [Integer]
-      def initialize(logic, target, type = GameData::Types::ELECTRIC)
+      def initialize(logic, target, type = data_type(:electric).id)
         super(logic, target)
         @type = type
         self.counter = 1

@@ -62,7 +62,7 @@ module Battle
         end
       end
 
-      register(GameData::States::BURN, Burn)
+      register(:burn, Burn)
     end
   end
 end

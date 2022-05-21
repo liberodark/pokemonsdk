@@ -36,25 +36,25 @@ module PFM
     # Return the base experience of the Pokemon
     # @return [Integer]
     def base_exp
-      return data_creature_form(@sub_id || @id, @form).base_exp
+      return data.base_experience
     end
 
     # Return the exp curve type ID
     # @return [Integer]
     def exp_type
-      return data.exp_type
+      return data.experience_type
     end
 
     # Return the exp curve
-    # @return [Array<Integer>]
+    # @return [ExpList]
     def exp_list
-      return GameData::EXP_TABLE[exp_type]
+      return ExpList.new(exp_type)
     end
 
     # Return the required total exp (so including old levels) to increase the Pokemon's level
     # @return [Integer]
     def exp_lvl
-      data = GameData::EXP_TABLE[exp_type]
+      data = exp_list
       v = data[@level + 1]
       return data[@level] if !v || PFM.game_state&.level_max_limit.to_i <= @level
 
@@ -81,7 +81,7 @@ module PFM
       @exp = v.to_i
       exp_lvl = self.exp_lvl
       if exp_lvl >= @exp
-        exp_last = GameData::EXP_TABLE[exp_type][@level]
+        exp_last = exp_list[@level]
         delta = exp_lvl - exp_last
         current = exp - exp_last
         @exp_rate = (delta == 0 ? 1 : current / delta.to_f)
@@ -95,7 +95,7 @@ module PFM
     def level_up
       return false if @level >= PFM.game_state.level_max_limit
 
-      exp_last = GameData::EXP_TABLE[exp_type][@level]
+      exp_last = exp_list[@level]
       delta = exp_lvl - exp_last
       self.exp += (delta - (exp - exp_last))
       update_loyalty if $game_temp.in_battle
@@ -164,55 +164,49 @@ module PFM
       return false if item_db_symbol == :everstone
 
       data = EVOLVE_ON_FORM0 ? primary_data : self.data
-      if reason == :level_up
-        return data.evolution_id if data.evolution_id != 0 && data.evolution_level.to_i.between?(1, @level)
 
-        if PSDK_CONFIG.use_form0_when_no_evolution_data
-          if data.evolution_id == 0 && primary_data.evolution_id != 0 && primary_data.evolution_level.to_i.between?(1, @level)
-            return data.evolution_id
-          end
-        end
-      end
-
-      unless data.special_evolution
+      if data.evolutions.empty?
         data = primary_data if PSDK_CONFIG.use_form0_when_no_evolution_data
-        return false unless data.special_evolution
+        return false if data.evolutions.empty?
       end
 
-      required_criterias = Pokemon.evolution_reason_required_criteria[reason] || []
+      required_criterion = Pokemon.evolution_reason_required_criteria[reason] || []
       criteria = Pokemon.evolution_criteria
-      expected_evolution = data.special_evolution.find do |evolution|
-        next unless evolution.is_a?(Hash)
-        next unless (required_criterias - evolution.keys).empty?
 
-        next evolution.all? { |key, value| criteria[key] && instance_exec(value, extend_data, reason, &criteria[key]) }
+      expected_evolution = data.evolutions.find do |evolution|
+        next false unless required_criterion.all? { |key| evolution.condition_data(key) }
+
+        next evolution.conditions.all? do |condition|
+          next false unless (block = criteria[condition[:type]])
+
+          next instance_exec(condition[:value], extend_data, reason, &block)
+        end
       end
 
       return false unless expected_evolution
 
-      id = expected_evolution[SPECIAL_EVOLUTION_ID.find { |key| expected_evolution[key] }]
-      return id, expected_evolution[:form]
+      return data_creature(expected_evolution.db_symbol).id, expected_evolution.form
     end
     # Exchanged with another pokemon
-    add_evolution_criteria(:trade_with, [:trade_with]) { |value, extend_data| extend_data == value }
+    add_evolution_criteria(:tradeWith) { |value, extend_data| extend_data.db_symbol == value }
     # Minimum level
-    add_evolution_criteria(:min_level) { |value| @level >= value.to_i }
+    add_evolution_criteria(:minLevel) { |value| @level >= value.to_i }
     # Maximum level
-    add_evolution_criteria(:max_level) { |value| @level <= value.to_i }
+    add_evolution_criteria(:maxLevel) { |value| @level <= value.to_i }
     # Holding an item
-    add_evolution_criteria(:item_hold) { |value| value == @item_holding || value == item_db_symbol }
+    add_evolution_criteria(:itemHold) { |value| value == item_db_symbol }
     # Minimum loyalty
-    add_evolution_criteria(:min_loyalty) { |value| @loyalty >= value.to_i }
+    add_evolution_criteria(:minLoyalty) { |value| @loyalty >= value.to_i }
     # Maximum loyalty
-    add_evolution_criteria(:max_loyalty) { |value| @loyalty <= value.to_i }
+    add_evolution_criteria(:maxLoyalty) { |value| @loyalty <= value.to_i }
     # Move 1
-    add_evolution_criteria(:skill_1) { |value| skill_learnt?(value) }
+    add_evolution_criteria(:skill1) { |value| skill_learnt?(value) }
     # Move 2
-    add_evolution_criteria(:skill_2) { |value| skill_learnt?(value) }
+    add_evolution_criteria(:skill2) { |value| skill_learnt?(value) }
     # Move 3
-    add_evolution_criteria(:skill_3) { |value| skill_learnt?(value) }
+    add_evolution_criteria(:skill3) { |value| skill_learnt?(value) }
     # Move 4
-    add_evolution_criteria(:skill_4) { |value| skill_learnt?(value) }
+    add_evolution_criteria(:skill4) { |value| skill_learnt?(value) }
     # On specific weather
     add_evolution_criteria(:weather) { |value| $env.current_weather_db_symbol == value }
     # Being on a specfic tag
@@ -222,7 +216,7 @@ module PFM
     # Evolving from stone
     add_evolution_criteria(:stone, [:stone]) { |value, extend_data, reason| reason == :stone && value == extend_data }
     # Evolving on a specific day/night cycle
-    add_evolution_criteria(:day_night) { |value| value == $game_variables[Yuki::Var::TJN_Tone] }
+    add_evolution_criteria(:dayNight) { |value| value == $game_variables[Yuki::Var::TJN_Tone] }
     # On a function call
     add_evolution_criteria(:func) { |value| send(value) }
     # Being on a specific map
@@ -237,12 +231,14 @@ module PFM
     add_evolution_criteria(:switch) { |value| $game_switches[value] }
     # Having a specific nature
     add_evolution_criteria(:nature) { |value| nature_id == value }
+    # Holding a gem to mega evolve
+    add_evolution_criteria(:gemme) { false }
 
     # Method that actually make a Pokemon evolve
     # @param id [Integer] ID of the Pokemon that evolve
     # @param form [Integer, nil] form of the Pokemon that evolve
     def evolve(id, form)
-      old_evolution_id = self.id
+      old_evolution_db_symbol = db_symbol
       old_evolution_form = self.form
       hp_diff = self.max_hp - self.hp
       self.id = id
@@ -254,9 +250,9 @@ module PFM
       return unless $actors.include?(self) # Don't do te rest if the pokemon isn't in the current party
 
       # evolution_items = (data.special_evolution || []).map { |hash| hash[:item_hold] || 0 }
-      previous_pokemon_evolution_method = GameData::Pokemon[old_evolution_id, old_evolution_form].special_evolution
-      evolution_items = (previous_pokemon_evolution_method || []).map { |hash| hash[:item_hold] || 0 }
-      self.item_holding = 0 if evolution_items.include?(item_holding) || evolution_items.include?(item_db_symbol)
+      previous_pokemon_evolution_method = data_creature_form(old_evolution_db_symbol, old_evolution_form).evolutions
+      evolution_items = previous_pokemon_evolution_method.map { |evolution| evolution.condition_data(:itemHold) }.compact
+      self.item_holding = 0 if evolution_items.include?(item_db_symbol)
       # Normal skill learn
       check_skill_and_learn
       # Evolution skill learn
@@ -264,7 +260,7 @@ module PFM
       # Pokedex register (self is used to be sure we get the right information)
       $pokedex.mark_seen(self.id, self.form, forced: true)
       $pokedex.mark_captured(self.id)
-      $pokedex.pokemon_captured_inc(self.id)
+      $pokedex.increase_creature_caught_count(self.id)
       # Refresh hp
       self.hp = (self.max_hp - hp_diff) if self.hp > 0
       exec_hooks(PFM::Pokemon, :evolution, binding)
@@ -289,8 +285,9 @@ module PFM
     # @param new_id [Integer] the new id of the Pokemon
     def id=(new_id)
       @character = nil
-      if new_id && data_creature(new_id).id != 0 && (forms = data_creature(new_id).forms)
+      if new_id && (req = data_creature(new_id)).id != 0 && (forms = req.forms)
         @id = new_id
+        @db_symbol = forms.first.db_symbol
         @form = 0 if forms.none? { |creature_form| creature_form.form == @form }
         @form = form_generation(-1) if @form == 0
         @form = 0 if forms.none? { |creature_form| creature_form.form == @form }

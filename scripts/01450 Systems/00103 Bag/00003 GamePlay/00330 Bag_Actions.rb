@@ -20,7 +20,7 @@ module GamePlay
     def use_item_in_battle
       item_id = @item_list[index = @index]
       return action_b if item_id == nil
-      return play_buzzer_se unless data_item(item_id).battle_usable
+      return play_buzzer_se unless data_item(item_id).is_battle_usable
 
       play_decision_se
       util_item_useitem(item_id)
@@ -53,18 +53,19 @@ module GamePlay
     # When the player wants to register an item
     def register_item
       item_id = @item_list[@index]
+      item = data_item(item_id)
       validate_meth = method(:set_shortcut)
       last_proc = proc do
-        if (index = $bag.shortcuts.index(item_id)) && index < 4
-          $bag.shortcuts[index] = 0
+        if (index = $bag.shortcuts.index(item.db_symbol)) && index < 4
+          $bag.shortcuts[index] = :__undef__
         end
-        $bag.shortcuts << item_id
+        $bag.shortcuts << item.db_symbol
       end
       choices = PFM::Choice_Helper.new(Yuki::ChoiceWindow::But, true, 999)
-      choices.register_choice('↑', item_id, 0, on_validate: validate_meth)
-             .register_choice('←', item_id, 1, on_validate: validate_meth)
-             .register_choice('↓', item_id, 2, on_validate: validate_meth)
-             .register_choice('→', item_id, 3, on_validate: validate_meth)
+      choices.register_choice('↑', item.db_symbol, 0, on_validate: validate_meth)
+             .register_choice('←', item.db_symbol, 1, on_validate: validate_meth)
+             .register_choice('↓', item.db_symbol, 2, on_validate: validate_meth)
+             .register_choice('→', item.db_symbol, 3, on_validate: validate_meth)
              .register_choice(ext_text(9000, 151), on_validate: last_proc)
       y = 200 - 16 * choices.size
       choices.display_choice(@viewport, 306, y, nil, on_update: method(:update_graphics), align_right: true)
@@ -72,24 +73,25 @@ module GamePlay
     end
 
     # Process method that set the new shortcut
-    # @param item_id [Integer] ID of the item to register
+    # @param db_symbol [Symbol] db_symbol of the item to register
     # @param index [Integer] index of the shortcut to change
-    def set_shortcut(item_id, index)
-      if (sh_index = $bag.shortcuts.index(item_id)) && sh_index > 3
+    def set_shortcut(db_symbol, index)
+      if (sh_index = $bag.shortcuts.index(db_symbol)) && sh_index > 3
         $bag.shortcuts[sh_index] = nil
       end
-      $bag.shortcuts[index] = item_id
+      $bag.shortcuts[index] = db_symbol
       $bag.shortcuts.compact!
     end
 
     # When the player wants to unregister an item
     def unregister_item
       item_id = @item_list[@index]
-      sh_index = $bag.shortcuts.index(item_id)
+      item = data_item(item_id)
+      sh_index = $bag.shortcuts.index(item.db_symbol)
       if sh_index > 3
         $bag.shortcuts[sh_index] = nil
       else
-        $bag.shortcuts[sh_index] = 0
+        $bag.shortcuts[sh_index] = :__undef__
       end
       $bag.shortcuts.compact!
       update_bag_ui_after_action(@index)
@@ -98,17 +100,18 @@ module GamePlay
     # When the player wants to throw an item
     def throw_item
       item_id = @item_list[index = @index]
-      return play_buzzer_se unless $bag.contain_item?(item_id)
+      item = data_item(item_id)
+      return play_buzzer_se unless $bag.contain_item?(item.db_symbol)
 
       $game_temp.num_input_variable_id = Yuki::Var::EnteredNumber
-      $game_temp.num_input_digits_max = $bag.item_quantity(item_id).to_s.size
-      $game_temp.num_input_start = $bag.item_quantity(item_id)
-      PFM::Text.set_item_name(data_item(item_id).exact_name)
+      $game_temp.num_input_digits_max = $bag.item_quantity(item.db_symbol).to_s.size
+      $game_temp.num_input_start = $bag.item_quantity(item.db_symbol)
+      PFM::Text.set_item_name(item.exact_name)
       display_message(parse_text(22, 38))
       value = $game_variables[Yuki::Var::EnteredNumber]
       if value > 0
         display_message(parse_text(22, 39, PFM::Text::NUM3[1] => value.to_s))
-        $bag.remove_item(item_id, value)
+        $bag.remove_item(item.db_symbol, value)
         update_bag_ui_after_action(index)
       end
       PFM::Text.reset_variables

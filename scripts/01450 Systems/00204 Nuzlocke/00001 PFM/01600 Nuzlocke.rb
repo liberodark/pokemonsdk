@@ -41,7 +41,7 @@ module PFM
     # @param pokemon_id [Integer] ID of the Pokemon that was seen before locking
     def lock_catch_in_current_zone(pokemon_id)
       return if catching_locked_here? || @game_state.game_temp.trainer_battle
-      return if no_lock_on_duplicate && @game_state.pokedex.pokemon_caught?(pokemon_id) && !@game_state.game_switches[Yuki::Sw::BT_Catch]
+      return if no_lock_on_duplicate && @game_state.pokedex.creature_caught?(pokemon_id) && !@game_state.game_switches[Yuki::Sw::BT_Catch]
 
       @catch_locked_zones.push(@game_state.env.master_zone)
     end

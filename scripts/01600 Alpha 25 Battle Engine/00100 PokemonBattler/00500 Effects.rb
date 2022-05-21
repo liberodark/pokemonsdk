@@ -27,7 +27,9 @@ module PFM
     # Get the status effect
     # @return [Battle::Effects::Status]
     def status_effect
-      @status_effect = Battle::Effects::Status.new(@scene.logic, self, @status) if !@status_effect || @status_effect.status_id != @status
+      if !@status_effect || @status_effect.status_id != @status
+        @status_effect = Battle::Effects::Status.new(@scene.logic, self, Configs.states.symbol(@status))
+      end
       return @status_effect
     end
 

@@ -34,14 +34,14 @@ class Object
   # @param text_id [Integer] ID of the text in the file
   # @return [String] the text
   def text_get(file_id, text_id)
-    GameData::Text.get(file_id, text_id)
+    Studio::Text.get(file_id, text_id)
   end
 
   # Get a list of text from the text database
   # @param file_id [Integer] ID of the text file
   # @return [Array<String>] the list of text contained in the file.
   def text_file_get(file_id)
-    GameData::Text.get_file(file_id)
+    Studio::Text.get_file(file_id)
   end
 
   # Clean an array containing object responding to #name (force utf-8)
@@ -58,7 +58,7 @@ class Object
   # @param text_id [Integer] ID of the text in the file
   # @return [String] the text
   def ext_text(file_id, text_id)
-    GameData::Text.get_external(file_id, text_id)
+    Studio::Text.get_external(file_id, text_id)
   end
 
   # Play decision SE

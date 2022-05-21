@@ -19,7 +19,7 @@ module SwooshTextImport
     'monsname' => 0, 'zkn_type' => 1, 'zukan_comment_B' => 2, 'typename' => 3,
     'tokusei' => 4, 'tokuseiinfo' => 5, 'wazaname' => 6, 'wazainfo' => 7,
     'place_name_spe' => 9,
-    'itemname' => 12, 'itemname_plural' => 9001 - GameData::Text::CSV_BASE, 'iteminfo' => 13,
+    'itemname' => 12, 'itemname_plural' => 9001 - Studio::Text::CSV_BASE, 'iteminfo' => 13,
     'bag_pocket' => 15, 'boxname' => 16,
     'trainermemo' => 28, # /!\ don't forget to shift the resulting array!
     'shinka_demo' => 31,
@@ -60,11 +60,11 @@ module SwooshTextImport
     write_csv_without_comparison(texts)
   end
 
-  # Load all the text and sort them by file_id by language in GameData::Text::Available_Langs order
+  # Load all the text and sort them by file_id by language in Studio::Text::Available_Langs order
   # @param path [String] path containing the common folder with all texts
   # @return [Hash{ Integer => Array<Array<String>> }]
   def load_texts(path)
-    files_per_lang = GameData::Text::Available_Langs.map do |lang|
+    files_per_lang = Studio::Text::Available_Langs.map do |lang|
       filename = File.join(path, COMMON_PATH, LANGUAGE_MAPPING[lang])
       next load_and_clean_file(filename)
     end
@@ -99,12 +99,12 @@ module SwooshTextImport
   # @param texts [Hash{ Integer => Array<Array<String>> }]
   def write_csv_without_comparison(texts)
     texts.each do |file_id, lang_array|
-      filename = "Data/Text/Dialogs/#{file_id + GameData::Text::CSV_BASE}.csv"
+      filename = "Data/Text/Dialogs/#{file_id + Studio::Text::CSV_BASE}.csv"
       log_info("Writing: #{filename}")
       lang_array = lang_array.transpose
       fix_pokedex_description(filename, lang_array) if file_id == 2
       CSV.open(filename, 'w') do |csv|
-        csv << GameData::Text::Available_Langs
+        csv << Studio::Text::Available_Langs
         lang_array.each { |row| csv << row }
       end
     end

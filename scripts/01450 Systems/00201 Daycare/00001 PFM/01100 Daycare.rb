@@ -11,7 +11,71 @@ module PFM
   #   rate: Integer # Chance the egg can be layed
   #   egg: Boolean # If an egg has been layed
   class Daycare
-    include GameData::Daycare
+    # Only use the FIRST FORM for breed groups
+    USE_FIRST_FORM_BREED_GROUPS = false
+    # Specific form handler (system that can force a for according to a code)
+    SPECIFIC_FORM_HANDLER = {
+      myfakepokemon: proc { |_mother, _father| next(rand(10)) } # Returns a random form between 0 and 9
+    }
+    # List of Pokemon that cannot breed (event if the conditions are valid)
+    NOT_BREEDING = %i[phione manaphy]
+    # List of Pokemon that only breed with Ditto
+    BREEDING_WITH_DITTO = %i[phione manaphy]
+    # ID of the Ditto group
+    DITTO_GROUP = 13
+    # ID of the breed group that forbid breeding
+    NOT_BREEDING_GROUP = 15
+    # List of price rate for all daycare
+    # @return [Hash{Integer => Integer}]
+    PRICE_RATE = Hash.new(100)
+    # Egg rate according to the common group, common OT, oval_charm (dig(common_group?, common_OT?, oval_charm?))
+    EGG_RATE = [
+      [ # No Common Group
+        [50, 80], # No Common OT. [no_oval_charm, oval_charm]
+        [20, 40]  # Common OT. [no_oval_charm, oval_charm]
+      ],
+      [ # Common Group
+        [70, 88], # No Common OT. [no_oval_charm, oval_charm]
+        [50, 80]  # Common OT. [no_oval_charm, oval_charm]
+      ]
+    ]
+    # "Female" breeder that can have different baby (non-incense condition)
+    # @return [Hash{Symbol => Array}]
+    BABY_VARIATION = {
+      nidoranf: nidoran = %i[nidoranf nidoranm],
+      nidoranm: nidoran,
+      volbeat: volbeat = %i[volbeat illumise],
+      illumise: volbeat,
+      tauros: tauros = %i[tauros miltank],
+      miltank: tauros
+    }
+    # Structure holding the information about the insence the male should hold
+    # and the baby that will be generated
+    IncenseInfo = Struct.new(:incense, :baby)
+    # "Female" that can have different baby if the male hold an incense
+    INCENSE_BABY = {
+      marill: azurill = IncenseInfo.new(:sea_incense, :azurill),
+      azumarill: azurill,
+      wobbuffet: IncenseInfo.new(:lax_incense, :wynaut),
+      roselia: budew = IncenseInfo.new(:rose_incense, :budew),
+      roserade: budew,
+      chimecho: IncenseInfo.new(:pure_incense, :chingling),
+      sudowoodo: IncenseInfo.new(:rock_incense, :bonsly),
+      mr_mime: IncenseInfo.new(:odd_incense, :mime_jr),
+      chansey: happiny = IncenseInfo.new(:luck_incense, :happiny),
+      blissey: happiny,
+      snorlax: IncenseInfo.new(:full_incense, :munchlax),
+      mantine: IncenseInfo.new(:wave_incense, :mantyke)
+    }
+    # Non inherite balls
+    NON_INHERITED_BALL = %i[master_ball cherish_ball]
+    # IV setter list
+    IV_SET = %i[iv_hp= iv_dfe= iv_atk= iv_spd= iv_ats= iv_dfs=]
+    # IV getter list
+    IV_GET = %i[iv_hp iv_dfe iv_atk iv_spd iv_ats iv_dfs]
+    # List of power item that transmit IV in the same order than IV_GET/IV_SET
+    IV_POWER_ITEM = %i[power_weight power_belt power_bracer power_anklet power_lens power_band]
+
     # Get the game state responsive of the whole game state
     # @return [PFM::GameState]
     attr_accessor :game_state
@@ -161,8 +225,9 @@ module PFM
       if rate != 0
         return if special_lay_check(daycare, female, male)
 
-        male_data, female_data = get_pokemon_data(male, female)
-        daycare[:layable] = female_data.baby
+        # @type [Studio::CreatureForm]
+        *, female_data = get_pokemon_data(male, female)
+        daycare[:layable] = data_creature(female_data.baby_db_symbol).id
         daycare[:rate] = 0 if daycare[:layable] == 0
       else
         daycare[:layable] = 0
@@ -260,7 +325,7 @@ module PFM
     # Return the data of each breedable Pokemon
     # @param male [PFM::Pokemon]
     # @param female [PFM::Pokemon]
-    # @return [Array<GameData::Pokemon>]
+    # @return [Array<Studio::CreatureForm>]
     def get_pokemon_data(male, female)
       return male.data, female.data unless USE_FIRST_FORM_BREED_GROUPS
 
@@ -275,12 +340,11 @@ module PFM
       return 0 if male.gender != 0 && male.gender == female.gender
       return 0 if male.db_symbol == :ditto && female.db_symbol == :ditto
 
-      # @type [GameData::Pokemon]
+      # @type [Studio::CreatureForm]
       male_data, female_data = get_pokemon_data(male, female)
-      if male_data.breed_groupes.include?(NOT_BREEDING_GROUP) || female_data.breed_groupes.include?(NOT_BREEDING_GROUP)
-        return 0
-      end
-      common_in_group = (female_data.breed_groupes - (female_data.breed_groupes - male_data.breed_groupes)).uniq
+      return 0 if male_data.breed_groups.include?(NOT_BREEDING_GROUP) || female_data.breed_groups.include?(NOT_BREEDING_GROUP)
+
+      common_in_group = (female_data.breed_groups - (female_data.breed_groups - male_data.breed_groups)).uniq
       return 0 unless check_group_compatibility(common_in_group, male_data, female_data)
 
       common_ot = male.trainer_id == female.trainer_id
@@ -290,11 +354,11 @@ module PFM
 
     # Return if the parents breed groupes are compatible
     # @param common_in_group [Array]
-    # @param male_data [GameData::Pokemon]
-    # @param female_data [GameData::Pokemon]
+    # @param male_data [Studio::CreatureForm]
+    # @param female_data [Studio::CreatureForm]
     # @return [Boolean]
     def check_group_compatibility(common_in_group, male_data, female_data)
-      return true if male_data.breed_groupes.include?(DITTO_GROUP) || female_data.breed_groupes.include?(DITTO_GROUP)
+      return true if male_data.breed_groups.include?(DITTO_GROUP) || female_data.breed_groups.include?(DITTO_GROUP)
       return false if common_in_group.empty?
 
       return true
@@ -305,7 +369,7 @@ module PFM
     # @param female [PFM::Pokemon]
     # @param male [PFM::Pokemon]
     def inherit_form(pokemon, female, male)
-      if (handler = GameData::Daycare::SPECIFIC_FORM_HANDLER[pokemon.db_symbol])
+      if (handler = SPECIFIC_FORM_HANDLER[pokemon.db_symbol])
         pokemon.form = handler.call(female, male) || female.form
         return
       end
@@ -330,13 +394,13 @@ module PFM
     # @param pokemon [PFM::Pokemon]
     # @param female [PFM::Pokemon]
     def inherit_ability(pokemon, female)
-      ability = female.ability
-      chances = female.get_data.abilities.index(ability) == 2 ? 60 : 80
+      ability = female.ability_db_symbol
+      chances = female.data.abilities.index(ability) == 2 ? 60 : 80
       if rand(100) < chances
-        index = pokemon.get_data.abilities.index(ability)
+        index = pokemon.data.abilities.index(ability)
         return unless index # ability does not exist in the baby
 
-        pokemon.ability = pokemon.get_data.abilities[index]
+        pokemon.ability = data_ability(pokemon.data.abilities[index]).id
         pokemon.ability_index = nil
         pokemon.update_ability
       end
@@ -347,26 +411,24 @@ module PFM
     # @param male [PFM::Pokemon]
     # @param female [PFM::Pokemon]
     def inherit_moves(pokemon, male, female)
-      female_moveset = female.get_data.move_set.select.with_index { |_, index| index.odd? }
-      male_moveset = male.get_data.move_set.select.with_index { |_, index| index.odd? }
-      pokemon_moveset = pokemon.get_data.move_set.select.with_index { |_, index| index.odd? }
+      female_moveset = female.data.move_set.select(&:level_learnable?).map(&:move)
+      male_moveset = male.data.move_set.select(&:level_learnable?).map(&:move)
+      pokemon_moveset = pokemon.data.move_set.select(&:level_learnable?).map(&:move)
       # Take moves known by male, female & pokemon
       common_skill = female_moveset - (female_moveset - male_moveset)
       common_skill = pokemon_moveset - (pokemon_moveset - common_skill)
       # Try to teach all the skill both parents know and have in common with baby
-      common_skill.each do |skill_id|
-        next unless female.skill_learnt?(skill_id) && male.skill_learnt?(skill_id)
-        learn_skill(pokemon, skill_id)
+      common_skill.each do |move|
+        next unless female.skill_learnt?(move) && male.skill_learnt?(move)
+
+        learn_skill(pokemon, move)
       end
-      # Try to teach all the breed move known by the male
-      breed_moves = data_creature_form(pokemon.id, pokemon.form).breed_moves.each do |skill_id|
-        next unless male.skill_learnt?(skill_id)
-        learn_skill(pokemon, skill_id)
-      end
-      # Try to teach all the breed move known by the female
-      breed_moves.each do |skill_id|
-        next unless female.skill_learnt?(skill_id)
-        learn_skill(pokemon, skill_id)
+      breed_moves = pokemon.data.move_set.select(&:breed_learnable?).map(&:move)
+      # Try to teach all the breed move known by the male or female
+      breed_moves.each do |move|
+        next unless male.skill_learnt?(move) || female.skill_learnt?(move)
+
+        learn_skill(pokemon, move)
       end
       # Try to teach Volt Tackle
       learn_volt_tackle(pokemon, male, female)

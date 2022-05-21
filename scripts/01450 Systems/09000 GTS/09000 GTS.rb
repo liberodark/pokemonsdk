@@ -49,7 +49,7 @@
 
 module GTS
   module Settings
-    # ID of the game, replace 0 by what you got on the pannel
+    # ID of the game, replace 0 by what you got on the panel
     GAMEID = 67
     # URL of the GTS server
     URL = 'http://gts.kawasemi.de/api.php?i='
@@ -146,7 +146,7 @@ module GTS
       species_list.select! { |i| data_creature(i).name.start_with?(letter) }
     elsif Settings::SORT_MODE == 'Regional'
       # /!\ PSDK has no multi-regional Dex
-      real_index = index == 1 && $pokedex.national? ? -1 : 0
+      real_index = index == 1 && -1 # TODO: Regional Dex in Studio $pokedex.national? ? -1 : 0
       if real_index != -1
         # Reject non-national Pokemon
         species_list.reject! { |i| data_creature(i).id_bis == 0 }
@@ -155,7 +155,7 @@ module GTS
       end
     end
 
-    to_id = proc { |i| $pokedex.national? ? i : data_creature(i).id_bis }
+    to_id = proc { |i| i } # TODO: Regional Dex in Studio $pokedex.national? ? i : data_creature(i).id_bis }
 
     commands.concat(species_list.collect { |i| format('%03d : %0s', to_id.call(i), data_creature(i).name) })
     if commands.size <= 1
@@ -532,12 +532,12 @@ module GTS
 
     # Ask the level requirements
     def do_command2
-      $game_temp.num_input_start = GameData::MAX_LEVEL
+      $game_temp.num_input_start = PSDK_CONFIG.pokemon_max_level
       $game_temp.num_input_variable_id = Yuki::Var::TMP1
       $game_temp.num_input_digits_max = 3
       display_message(ext_text(8997, 27))
       @wanted_data[1] = $game_variables[Yuki::Var::TMP1] if $game_variables[Yuki::Var::TMP1] > 0
-      $game_temp.num_input_start = GameData::MAX_LEVEL
+      $game_temp.num_input_start = PSDK_CONFIG.pokemon_max_level
       $game_temp.num_input_variable_id = Yuki::Var::TMP1
       $game_temp.num_input_digits_max = 3
       display_message(ext_text(8997, 28))

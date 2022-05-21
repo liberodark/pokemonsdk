@@ -13,15 +13,15 @@ module PFM
     def add_bonus(list)
       return nil if egg?
 
-      ev = GameData::EV
+      stats = Configs.stats
       # Bracelet Macho
       n = item_db_symbol == :macho_brace ? 2 : 1
-      r = add_ev_hp(list[ev::HP] * n, total_ev)
-      r &= add_ev_atk(list[ev::ATK] * n, total_ev)
-      r &= add_ev_dfe(list[ev::DFE] * n, total_ev)
-      r &= add_ev_spd(list[ev::SPD] * n, total_ev)
-      r &= add_ev_ats(list[ev::ATS] * n, total_ev)
-      r &= add_ev_dfs(list[ev::DFS] * n, total_ev)
+      r = add_ev_hp(list[stats.hp_index] * n, total_ev)
+      r &= add_ev_atk(list[stats.atk_index] * n, total_ev)
+      r &= add_ev_dfe(list[stats.dfe_index] * n, total_ev)
+      r &= add_ev_spd(list[stats.spd_index] * n, total_ev)
+      r &= add_ev_ats(list[stats.ats_index] * n, total_ev)
+      r &= add_ev_dfs(list[stats.dfs_index] * n, total_ev)
       return r
     end
 
@@ -31,13 +31,13 @@ module PFM
     def edit_bonus(list)
       return nil if egg?
 
-      ev = GameData::EV
-      r = add_ev_hp(list[ev::HP], total_ev)
-      r &= add_ev_atk(list[ev::ATK], total_ev)
-      r &= add_ev_dfe(list[ev::DFE], total_ev)
-      r &= add_ev_spd(list[ev::SPD], total_ev)
-      r &= add_ev_ats(list[ev::ATS], total_ev)
-      r &= add_ev_dfs(list[ev::DFS], total_ev)
+      stats = Configs.stats
+      r = add_ev_hp(list[stats.hp_index], total_ev)
+      r &= add_ev_atk(list[stats.atk_index], total_ev)
+      r &= add_ev_dfe(list[stats.dfe_index], total_ev)
+      r &= add_ev_spd(list[stats.spd_index], total_ev)
+      r &= add_ev_ats(list[stats.ats_index], total_ev)
+      r &= add_ev_dfs(list[stats.dfs_index], total_ev)
       return r
     end
 
@@ -54,11 +54,11 @@ module PFM
     # @return [Integer, false] if not false, the value of the current EV depending on the index
     def ev_check(index, apply = false, count = 1)
       evs = total_ev
-      return false if evs >= GameData::EV::MAX_TOTAL_EV
+      return false if evs >= Configs.stats.max_total_ev
 
       if index >= 10
         index = index % 10
-        return (ev_var(index, evs, apply ? count : 0) < GameData::EV::MAX_STAT_EV)
+        return (ev_var(index, evs, apply ? count : 0) < Configs.stats.max_stat_ev)
       else
         return (ev_var(index, evs, apply ? 10 : 0) < 100)
       end
@@ -70,24 +70,24 @@ module PFM
     # @param value [Integer] the quantity of EV to add (if 0 no add)
     # @return [Integer]
     def ev_var(index, evs, value = 0)
-      ev = GameData::EV
+      stats = Configs.stats
       case index
-      when ev::HP
+      when stats.hp_index
         add_ev_hp(value, evs) if value > 0
         return @ev_hp
-      when ev::ATK
+      when stats.atk_index
         add_ev_atk(value, evs) if value > 0
         return @ev_atk
-      when ev::DFE
+      when stats.dfe_index
         add_ev_dfe(value, evs) if value > 0
         return @ev_dfe
-      when ev::SPD
+      when stats.spd_index
         add_ev_spd(value, evs) if value > 0
         return @ev_spd
-      when ev::ATS
+      when stats.ats_index
         add_ev_ats(value, evs) if value > 0
         return @ev_ats
-      when ev::DFS
+      when stats.dfs_index
         add_ev_dfs(value, evs) if value > 0
         return @ev_dfs
       else
@@ -102,11 +102,11 @@ module PFM
     def add_ev_hp(n, evs)
       return true if n == 0
 
-      n -= 1 while (evs + n) > GameData::EV::MAX_TOTAL_EV
-      return false if @ev_hp > GameData::EV::MAX_STAT_EV - 1
+      n -= 1 while (evs + n) > Configs.stats.max_total_ev
+      return false if @ev_hp > Configs.stats.max_stat_ev - 1
 
       @ev_hp += n
-      @ev_hp.clamp(0, GameData::EV::MAX_STAT_EV)
+      @ev_hp.clamp(0, Configs.stats.max_stat_ev)
       @hp = (@hp_rate * max_hp).round
       @hp_rate = @hp.to_f / max_hp
       return true
@@ -119,11 +119,11 @@ module PFM
     def add_ev_atk(n, evs)
       return true if n == 0
 
-      n -= 1 while (evs + n) > GameData::EV::MAX_TOTAL_EV
-      return false if @ev_atk > GameData::EV::MAX_STAT_EV - 1
+      n -= 1 while (evs + n) > Configs.stats.max_total_ev
+      return false if @ev_atk > Configs.stats.max_stat_ev - 1
 
       @ev_atk += n
-      @ev_atk.clamp(0, GameData::EV::MAX_STAT_EV)
+      @ev_atk.clamp(0, Configs.stats.max_stat_ev)
       return true
     end
 
@@ -134,11 +134,11 @@ module PFM
     def add_ev_dfe(n, evs)
       return true if n == 0
 
-      n -= 1 while (evs + n) > GameData::EV::MAX_TOTAL_EV
-      return false if @ev_dfe > GameData::EV::MAX_STAT_EV - 1
+      n -= 1 while (evs + n) > Configs.stats.max_total_ev
+      return false if @ev_dfe > Configs.stats.max_stat_ev - 1
 
       @ev_dfe += n
-      @ev_dfe.clamp(0, GameData::EV::MAX_STAT_EV)
+      @ev_dfe.clamp(0, Configs.stats.max_stat_ev)
       return true
     end
 
@@ -149,11 +149,11 @@ module PFM
     def add_ev_spd(n, evs)
       return true if n == 0
 
-      n -= 1 while (evs + n) > GameData::EV::MAX_TOTAL_EV
-      return false if @ev_spd > GameData::EV::MAX_STAT_EV - 1
+      n -= 1 while (evs + n) > Configs.stats.max_total_ev
+      return false if @ev_spd > Configs.stats.max_stat_ev - 1
 
       @ev_spd += n
-      @ev_spd.clamp(0, GameData::EV::MAX_STAT_EV)
+      @ev_spd.clamp(0, Configs.stats.max_stat_ev)
       return true
     end
 
@@ -164,11 +164,11 @@ module PFM
     def add_ev_ats(n, evs)
       return true if n == 0
 
-      n -= 1 while (evs + n) > GameData::EV::MAX_TOTAL_EV
-      return false if @ev_ats > GameData::EV::MAX_STAT_EV - 1
+      n -= 1 while (evs + n) > Configs.stats.max_total_ev
+      return false if @ev_ats > Configs.stats.max_stat_ev - 1
 
       @ev_ats += n
-      @ev_ats.clamp(0, GameData::EV::MAX_STAT_EV)
+      @ev_ats.clamp(0, Configs.stats.max_stat_ev)
       return true
     end
 
@@ -179,11 +179,11 @@ module PFM
     def add_ev_dfs(n, evs)
       return true if n == 0
 
-      n -= 1 while (evs + n) > GameData::EV::MAX_TOTAL_EV
-      return false if @ev_dfs > GameData::EV::MAX_STAT_EV - 1
+      n -= 1 while (evs + n) > Configs.stats.max_total_ev
+      return false if @ev_dfs > Configs.stats.max_stat_ev - 1
 
       @ev_dfs += n
-      @ev_dfs.clamp(0, GameData::EV::MAX_STAT_EV)
+      @ev_dfs.clamp(0, Configs.stats.max_stat_ev)
       return true
     end
   end

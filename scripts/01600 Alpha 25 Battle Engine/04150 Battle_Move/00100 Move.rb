@@ -31,12 +31,14 @@ module Battle
     attr_accessor :damage_dealt
 
     # Create a new move
-    # @param id [Integer] ID of the move in the database
+    # @param db_symbol [Symbol] db_symbol of the move in the database
     # @param pp [Integer] number of pp the move currently has
     # @param ppmax [Integer] maximum number of pp the move currently has
     # @param scene [Battle::Scene] current battle scene
-    def initialize(id, pp, ppmax, scene)
-      @id = id
+    def initialize(db_symbol, pp, ppmax, scene)
+      data = data_move(db_symbol)
+      @id = data.id
+      @db_symbol = data.db_symbol
       @pp = pp
       @ppmax = ppmax
       @used = false
@@ -56,23 +58,24 @@ module Battle
     def clone
       clone = super
       clone.original ||= self
+      raise 'This function looks badly implement, just want to know where it is called'
     end
 
     # Return the data of the skill
-    # @return [GameData::Skill]
+    # @return [Studio::Move]
     def data
-      data_move(@id)
+      return data_move(@db_symbol || @id)
     end
 
     # Return the name of the skill
     def name
-      return data_move(@id).name
+      return data.name
     end
 
     # Return the skill description
     # @return [String]
     def description
-      text_get(7, @id)
+      return data.description
     end
 
     # Return the battle engine method of the move
@@ -107,7 +110,7 @@ module Battle
     # Return the current type of the move
     # @return [Integer]
     def type
-      data.type
+      data_type(data.type).id
     end
 
     # Return the current accuracy of the move
@@ -129,7 +132,7 @@ module Battle
     # @param user [PFM::PokemonBattler] user for the priority check
     # @return [Integer]
     def priority(user = nil)
-      priority = data.priority
+      priority = data.priority - Logic::MOVE_PRIORITY_OFFSET # TODO: Check the whole engine to go to -7~+7
       return priority unless user
 
       logic.each_effects(user) do |e|
@@ -148,19 +151,19 @@ module Battle
     # Return the chance of effect of the skill
     # @return [Integer]
     def effect_chance
-      return data.effect_chance
+      return data.is_effect_chance ? 100 : data.move_status.reduce(0) { |prev, curr| prev + curr.luck_rate }
     end
 
-    # Return the status effect the skill can inflict
-    # @return [Integer, nil]
-    def status_effect
-      return data.status
+    # Get all the status effect of a move
+    # @return [Array<Studio::Move::MoveStatus>]
+    def status_effects
+      return data.move_status
     end
 
     # Return the target symbol the skill can aim
     # @return [Symbol]
     def target
-      return data.target
+      return data.battle_engine_aimed_target
     end
 
     # Return the critical rate index of the skill
@@ -172,11 +175,11 @@ module Battle
     # Is the skill affected by gravity
     # @return [Boolean]
     def gravity_affected?
-      return data.gravity
+      return data.is_gravity
     end
 
     # Return the stat tage modifier the skill can apply
-    # @return [Array<Integer>]
+    # @return [Array<Studio::Move::BattleStageMod>]
     def battle_stage_mod
       return data.battle_stage_mod
     end
@@ -184,20 +187,19 @@ module Battle
     # Is the skill direct ?
     # @return [Boolean]
     def direct?
-      return data.direct
+      return data.is_direct
     end
 
     # Is the skill affected by Mirror Move
     # @return [Boolean]
     def mirror_move_affected?
-      return data.mirror_move
+      return data.is_mirror_move
     end
-    alias mirror_move? mirror_move_affected? # BE24
 
     # Is the skill blocable by Protect and skill like that ?
     # @return [Boolean]
     def blocable?
-      return data.blocable
+      return data.is_blocable
     end
 
     # Does the skill has recoil ?
@@ -215,70 +217,70 @@ module Battle
     # Is the skill a punching move ?
     # @return [Boolean]
     def punching?
-      return data.punch
+      return data.is_punch
     end
 
     # Is the skill a sound attack ?
     # @return [Boolean]
     def sound_attack?
-      return data.sound_attack
+      return data.is_sound_attack
     end
 
     # Does the skill unfreeze
     # @return [Boolean]
     def unfreeze?
-      return data.unfreeze
+      return data.is_unfreeze
     end
 
     # Does the skill trigger the king rock
     # @return [Boolean]
     def trigger_king_rock?
-      return data.status != 7
+      return data.is_king_rock_utility
     end
-    alias king_rock_utility trigger_king_rock? # BE24
 
     # Is the skill snatchable ?
     # @return [Boolean]
     def snatchable?
-      return data.snatchable
+      return data.is_snatchable
     end
-    alias snatchable snatchable? # BE24
 
     # Is the skill affected by magic coat ?
     # @return [Boolean]
     def magic_coat_affected?
-      return data.magic_coat_affected
+      return data.is_magic_coat_affected
     end
-    alias magic_coat_affected magic_coat_affected?
 
     # Is the skill physical ?
     # @return [Boolean]
     def physical?
-      return data.atk_class == 1
+      return data.category == :physical
     end
 
     # Is the skill special ?
     # @return [Boolean]
     def special?
-      return data.atk_class == 2
+      return data.category == :special
     end
 
     # Is the skill status ?
     # @return [Boolean]
     def status?
-      return data.atk_class == 3
+      return data.category == :status
     end
 
     # Return the class of the skill (used by the UI)
     # @return [Integer] 1, 2, 3
     def atk_class
-      return data.atk_class
+      return 2 if special?
+      return 3 if status?
+
+      return 1 if physical?
     end
 
     # Return the symbol of the move in the database
     # @return [Symbol]
     def db_symbol
-      return data.db_symbol
+      return @db_symbol
     end
 
     # Change the PP
@@ -308,31 +310,31 @@ module Battle
     # Tell if the move is a ballistic move
     # @return [Boolean]
     def ballistics?
-      return data.ballistics
+      return data.is_ballistics
     end
 
     # Tell if the move is biting move
     # @return [Boolean]
     def bite?
-      return data.bite
+      return data.is_bite
     end
 
     # Tell if the move is a dance move
     # @return [Boolean]
     def dance?
-      return data.dance
+      return data.is_dance
     end
 
     # Tell if the move is a pulse move
     # @return [Boolean]
     def pulse?
-      return data.pulse
+      return data.is_pulse
     end
 
     # Tell if the move is a heal move
     # @return [Boolean]
     def heal?
-      return data.heal
+      return data.is_heal
     end
 
     # Tell if the move is an OHKO move
@@ -362,13 +364,13 @@ module Battle
     # Tell if the move is a powder move
     # @return [Boolean]
     def powder?
-      return data.powder
+      return data.is_powder
     end
 
     # Tell if the move is a move that can bypass Substitute
     # @return [Boolean]
     def authentic?
-      return data.authentic
+      return data.is_authentic
     end
 
     # Get the effectiveness

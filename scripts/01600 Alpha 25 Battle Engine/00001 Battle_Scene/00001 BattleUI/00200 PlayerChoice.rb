@@ -143,10 +143,10 @@ module BattleUI
       end
 
       # Set the data shown by the UI
-      # @param item [GameData::Item]
+      # @param item [Studio::Item]
       def data=(item)
         super
-        @remaining.text = $bag.item_quantity(item.id).to_s
+        @remaining.text = $bag.item_quantity(item.db_symbol).to_s
       end
 
       # Update the sprite

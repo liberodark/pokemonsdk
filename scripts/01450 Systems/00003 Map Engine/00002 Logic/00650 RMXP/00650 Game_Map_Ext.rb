@@ -122,9 +122,9 @@ class Game_Map
   # @return [Symbol]
   def location_type(x, y)
     zone = $env.current_zone_data
-    location = zone.global_location_type if zone.respond_to?(:global_location_type) # @todo add global_location_type to GameData::Zone
+    location = zone.global_location_type if zone.respond_to?(:global_location_type) # @todo add global_location_type to Studio::Zone
     location ||= TERRAIN_TAGS_TABLE.select { |tag, _location| system_tag_here?(x, y, tag) }.values[0]
-    location ||= zone.default_location_type if zone.respond_to?(:default_location_type) # @todo add default_location_type to GameData::Zone
+    location ||= zone.default_location_type if zone.respond_to?(:default_location_type) # @todo add default_location_type to Studio::Zone
     location ||= :__undef__
     return location
   end
