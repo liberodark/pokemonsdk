@@ -12,6 +12,7 @@ class Interpreter_RMXP
     @parameters = @list[@index].parameters
     method_name = COMMAND_TRANSLATION[@list[@index].code]
     return true unless method_name
+
     return send(method_name)
   end
 

@@ -21,6 +21,7 @@ class Interpreter_RMXP
     # 終了
     return false
   end
+
   # 勝った場合
   def command_601
     # バトル結果が勝ちの場合
@@ -33,6 +34,7 @@ class Interpreter_RMXP
     # 条件に該当しない場合 : コマンドスキップ
     return command_skip
   end
+
   # 逃げた場合
   def command_602
     # バトル結果が逃げの場合
@@ -45,6 +47,7 @@ class Interpreter_RMXP
     # 条件に該当しない場合 : コマンドスキップ
     return command_skip
   end
+
   # 負けた場合
   def command_603
     # バトル結果が負けの場合
@@ -57,6 +60,7 @@ class Interpreter_RMXP
     # 条件に該当しない場合 : コマンドスキップ
     return command_skip
   end
+
   # Call a shop command
   def command_302
     # バトル中断フラグをセット
@@ -80,6 +84,7 @@ class Interpreter_RMXP
       end
     end
   end
+
   # Name calling command
   def command_303
     # 無効なアクターでなければ
@@ -96,170 +101,71 @@ class Interpreter_RMXP
     # 終了
     return false
   end
+
   # Add or remove HP command
   def command_311
-    # 操作する値を取得
-    value = operate_value(@parameters[1], @parameters[2], @parameters[3])
-    # イテレータで処理
-    iterate_actor(@parameters[0]) do |actor|
-      # HP が 0 でない場合
-      if actor.hp > 0
-        # HP を変更 (戦闘不能が許可されていなければ 1 にする)
-        if @parameters[4] == false and actor.hp + value <= 0
-          actor.hp = 1
-        else
-          actor.hp += value
-        end
-      end
-    end
-    # ゲームオーバー判定
-    $game_temp.gameover = $game_party.all_dead?
-    # 継続
     return true
   end
+
   # Add or remove SP command
   def command_312
-    # 操作する値を取得
-    value = operate_value(@parameters[1], @parameters[2], @parameters[3])
-    # イテレータで処理
-    iterate_actor(@parameters[0]) do |actor|
-      # アクターの SP を変更
-      actor.sp += value
-    end
-    # 継続
     return true
   end
+
   # Add or remove state command
   def command_313
-    # イテレータで処理
-    iterate_actor(@parameters[0]) do |actor|
-      # ステートを変更
-      if @parameters[1] == 0
-        actor.add_state(@parameters[2])
-      else
-        actor.remove_state(@parameters[2])
-      end
-    end
-    # 継続
     return true
   end
+
   # Heal command
   def command_314
-    # イテレータで処理
-    iterate_actor(@parameters[0]) do |actor|
-      # アクターを全回復
-      actor.recover_all
-    end
-    # 継続
     return true
   end
+
   # Add exp command
   def command_315
-    # 操作する値を取得
-    value = operate_value(@parameters[1], @parameters[2], @parameters[3])
-    # イテレータで処理
-    iterate_actor(@parameters[0]) do |actor|
-      # アクターの EXP を変更
-      actor.exp += value
-    end
-    # 継続
     return true
   end
+
   # Add level command
   def command_316
-    # 操作する値を取得
-    value = operate_value(@parameters[1], @parameters[2], @parameters[3])
-    # イテレータで処理
-    iterate_actor(@parameters[0]) do |actor|
-      # アクターのレベルを変更
-      actor.level += value
-    end
-    # 継続
     return true
   end
+
   # Change stat command
   def command_317
-    # 操作する値を取得
-    value = operate_value(@parameters[2], @parameters[3], @parameters[4])
-    # アクターを取得
-    actor = $game_actors[@parameters[0]]
-    # パラメータを変更
-    if actor != nil
-      case @parameters[1]
-      when 0  # MaxHP
-        actor.maxhp += value
-      when 1  # MaxSP
-        actor.maxsp += value
-      when 2  # 腕力
-        actor.str += value
-      when 3  # 器用さ
-        actor.dex += value
-      when 4  # 素早さ
-        actor.agi += value
-      when 5  # 魔力
-        actor.int += value
-      end
-    end
-    # 継続
     return true
   end
+
   # Skill learn/forget command
   def command_318
-    # アクターを取得
-    actor = $game_actors[@parameters[0]]
-    # スキルを増減
-    if actor != nil
-      if @parameters[1] == 0
-        actor.learn_skill(@parameters[2])
-      else
-        actor.forget_skill(@parameters[2])
-      end
-    end
-    # 継続
     return true
   end
+
   # Equip command
   def command_319
-    # アクターを取得
-    actor = $game_actors[@parameters[0]]
-    # 装備を変更
-    if actor != nil
-      actor.equip(@parameters[1], @parameters[2])
-    end
-    # 継続
     return true
   end
+
   # Name change command
   def command_320
     # アクターを取得
     actor = $game_actors[@parameters[0]]
-    # 名前を変更
-    if actor != nil
-      actor.name = @parameters[1]
-    end
+    actor.name = @parameters[1] if actor
     # 継続
     return true
   end
+
   # Class change command
   def command_321
-    # アクターを取得
-    actor = $game_actors[@parameters[0]]
-    # クラスを変更
-    if actor != nil
-      actor.class_id = @parameters[1]
-    end
-    # 継続
     return true
   end
+
   # Actor graphic change command
   def command_322
     # アクターを取得
     actor = $game_actors[@parameters[0]]
-    # グラフィックを変更
-    if actor != nil
-      actor.set_graphic(@parameters[1], @parameters[2],
-        @parameters[3], @parameters[4])
-    end
+    actor&.set_graphic(@parameters[1], @parameters[2], @parameters[3], @parameters[4])
     # プレイヤーをリフレッシュ
     $game_player.refresh
     # 継続

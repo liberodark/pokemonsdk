@@ -74,7 +74,7 @@ class Scene_Title < GamePlay::BaseCleanUpdate
       # @type [Array<RPG::Actor>]
       thread_load('Data/Actors.rxdata') { |d| $data_actors = d }
       # @type [Array<RPG::Class>]
-      thread_load('Data/Classes.rxdata') { |d| $data_classes = d }
+      thread_load('Data/Classes.rxdata', clean: false) { |d| $data_classes = d }
       # @type [Array<RPG::Enemy>]
       thread_load('Data/Enemies.rxdata') { |d| $data_enemies = d }
       # @type [Array<RPG::Troop>]

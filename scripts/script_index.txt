@@ -4,51 +4,31 @@ pokemonsdk/scripts/00003 SafeExec.rb
 pokemonsdk/scripts/00010 Hooks.rb
 pokemonsdk/scripts/00020 Config.rb
 pokemonsdk/scripts/00100 Yuki__EXC.rb
+pokemonsdk/scripts/00000 Dependencies/00201 Object.rb
+pokemonsdk/scripts/00000 Dependencies/00202 PatchRuby.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00000 DataClasses.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00001 Graphics.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00001 Input.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00001 Mouse.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00002 Viewport.rb
-pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00003 Sprite.rb
-pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00004 Plane.rb
-pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00005 Text.rb
-pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00006 Window.rb
-pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00007 Shape.rb
-pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00008 SpriteMap.rb
+pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00003 Drawable.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00009 Fonts.rb
-pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00010 BlendMode.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00011 Shader.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/99999 RMXP_DATA.rb
 pokemonsdk/scripts/00000 Dependencies/00200 GameData(dep)/00100 GameData__SystemTags.rb
 pokemonsdk/scripts/00000 Dependencies/00200 GameData(dep)/00900 Yuki__VD.rb
-pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00201 Object_validate_param.rb
-pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00202 Object_Module_void.rb
-pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00300 String.rb
-pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00301 Binding.rb
-pokemonsdk/scripts/00000 Dependencies/00300 Patch_Ruby/00302 from.rb
 pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/00600 Audio.rb
 pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/00700 Audio___Fmod.rb
 pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/00800 Audio___Cache.rb
-pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/00900 Audio___Cache_Table.rb
 pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/01500 Converter.rb
 pokemonsdk/scripts/00000 Dependencies/00500 Patch_RPG/00100 RPG__Cache.rb
-pokemonsdk/scripts/00000 Dependencies/00500 Patch_RPG/00200 RPG__Event.rb
 pokemonsdk/scripts/00000 Dependencies/00500 Patch_RPG/00300 RPG__Weather.rb
-pokemonsdk/scripts/00600 Script_RMXP/00100 Game_Switches.rb
-pokemonsdk/scripts/00600 Script_RMXP/00200 Game_Variables.rb
-pokemonsdk/scripts/00600 Script_RMXP/00300 Game_SelfSwitches.rb
-pokemonsdk/scripts/00600 Script_RMXP/00400 Game_Actors.rb
-pokemonsdk/scripts/00600 Script_RMXP/00500 Game_BattleAction.rb
-pokemonsdk/scripts/00600 Script_RMXP/00600 Game_Battler_1.rb
-pokemonsdk/scripts/00600 Script_RMXP/00700 Game_Battler_2.rb
-pokemonsdk/scripts/00600 Script_RMXP/00800 Game_Battler_3.rb
-pokemonsdk/scripts/00600 Script_RMXP/00900 Game_Actor.rb
+pokemonsdk/scripts/00600 Script_RMXP/00100 Event_Living_Data.rb
+pokemonsdk/scripts/00600 Script_RMXP/00600 Game_Battler.rb
 pokemonsdk/scripts/00600 Script_RMXP/01300 Game_CommonEvent.rb
-pokemonsdk/scripts/00600 Script_RMXP/01400 Game_Enemy.rb
 pokemonsdk/scripts/00600 Script_RMXP/01700 Game_Party.rb
 pokemonsdk/scripts/00600 Script_RMXP/02100 Game_System.rb
 pokemonsdk/scripts/00600 Script_RMXP/02200 Game_Temp.rb
-pokemonsdk/scripts/00600 Script_RMXP/02300 Game_Troop.rb
 pokemonsdk/scripts/00600 Script_RMXP/02400 Interpreter_1.rb
 pokemonsdk/scripts/00600 Script_RMXP/02500 Interpreter_2.rb
 pokemonsdk/scripts/00600 Script_RMXP/02600 Interpreter_3.rb

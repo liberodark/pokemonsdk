@@ -67,24 +67,6 @@ class Object
         - Debugger.warp(map_id, x, y)\e[36m
       Test a trainer battle :\e[37m
         - Debugger.battle_trainer(trainer_id)\e[36m
-      List the switches that match a specific name (with their value) :\e[37m
-        - Debugger.find_switch(/name/i)\e[36m
-      Change a switch value :\e[37m
-        - $game_switches[id] = value\e[36m
-      List the variables that match a specific name (with their value) :\e[37m
-        - Debugger.find_var(/name/i)\e[36m
-      Change a variable value :\e[37m
-        - $game_variables[id] = value\e[36m
-      List all the Pokemon ID that match a specific name :\e[37m
-        - Debugger.find_pokemon(/name/i)\e[36m
-      List all the Nature ID that match a specific name :\e[37m
-        - Debugger.find_nature(/name/i)\e[36m
-      List all the Ability ID that match a specific name :\e[37m
-        - Debugger.find_ability(/name/i)\e[36m
-      List all the Move ID that match a specific name :\e[37m
-        - Debugger.find_skill(/name/i)\e[36m
-      List all the Item ID that match a specific name :\e[37m
-        - Debugger.find_item(/name/i)\e[36m
       Add a Pokemon to the party :\e[37m
         - S.MI.add_pokemon(id, level)\e[36m
       Add a Pokemon defined by a Hash to the party :\e[37m

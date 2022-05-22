@@ -44,3 +44,7 @@ end
 class Image < LiteRGSS::Image
   # Do nothing
 end
+
+# BlendMode applicable to a Sprite/Viewport
+class BlendMode < LiteRGSS::BlendMode
+end

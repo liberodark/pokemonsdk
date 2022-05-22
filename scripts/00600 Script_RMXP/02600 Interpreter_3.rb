@@ -151,11 +151,6 @@ class Interpreter_RMXP
           result = (actor.item_holding == @parameters[3]) # (actor.weapon_id == @parameters[3])
         when 4 # Armor => Ability
           result = (actor.current_ability == @parameters[3])
-=begin
-          (actor.armor1_id == @parameters[3] or
-                    actor.armor2_id == @parameters[3] or
-                    actor.armor3_id == @parameters[3])
-=end
         when 5 # Status
           result = (actor.status == @parameters[3]) # (actor.state?(@parameters[3]))
         end

@@ -14,8 +14,7 @@ module ProjectToYAML
   # Convert a project to YAML
   def convert
     files = Dir['Data/*.rxdata'] +
-            Dir['Data/Animations/*.dat'] +
-            Dir['Data/PSDK/*.rxdata'] -
+            Dir['Data/Animations/*.dat'] -
             ['Data/project_identity.rxdata', 'Data/Viewport.rxdata']
     files.each do |filename|
       print "\r#{filename}".ljust(60)
@@ -28,8 +27,7 @@ module ProjectToYAML
   # Restore a project from YAML
   def restore
     files = Dir['Data/*.rxdata.yml'] +
-            Dir['Data/Animations/*.dat.yml'] +
-            Dir['Data/PSDK/*.rxdata.yml']
+            Dir['Data/Animations/*.dat.yml']
     files.each do |filename|
       print "\r#{filename}".ljust(60)
       save_data(YAML.unsafe_load(File.read(filename)), filename.sub(/\.yml$/, ''))

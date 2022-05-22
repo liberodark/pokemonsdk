@@ -1,7 +1,7 @@
 module UI
   class NameInputBaseUI < GenericBase
-    private void_method :create_button_background
-    public void_method :update_background_animation
+    alias create_button_background void
+    alias update_background_animation void
 
     private
 

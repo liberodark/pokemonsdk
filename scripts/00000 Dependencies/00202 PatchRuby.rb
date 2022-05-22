@@ -10,3 +10,18 @@ class String
     return self
   end
 end
+
+class Binding
+  alias [] local_variable_get
+  alias []= local_variable_set
+end
+
+module Kernel
+  # Infer the object as the specified class (lint)
+  # @return [self]
+  def from(other)
+    raise "Object of class #{other.class} cannot be casted as #{self}" unless other.is_a?(self)
+
+    return other
+  end
+end

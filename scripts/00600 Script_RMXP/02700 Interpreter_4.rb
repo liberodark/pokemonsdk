@@ -28,7 +28,7 @@ class Interpreter_RMXP
     when 3  # アイテム
       value = $bag.item_quantity(@parameters[4]) #$game_party.item_number(@parameters[4])
     when 4  # アクター
-      actor = PFM::BattleInterface.get_actor(@parameters[4]) #$game_actors[@parameters[4]]
+      actor = $actors[@parameters[4]] #$game_actors[@parameters[4]]
       if actor != nil
         case @parameters[5]
         when 0  # レベル
@@ -62,7 +62,7 @@ class Interpreter_RMXP
         end
       end
     when 5  # エネミー
-      enemy = PFM::BattleInterface.get_enemy(@parameters[4])#$game_troop.enemies[@parameters[4]]
+      enemy = $actors[@parameters[4]] #$game_troop.enemies[@parameters[4]]
       if enemy != nil
         case @parameters[5]
         when 0  # HP
@@ -217,22 +217,14 @@ class Interpreter_RMXP
     # 継続
     return true
   end
+
   # Gain weapon command
   def command_127
-    # 操作する値を取得
-    value = operate_value(@parameters[1], @parameters[2], @parameters[3])
-    # 武器の増減
-    $game_party.gain_weapon(@parameters[0], value)
-    # 継続
     return true
   end
+
   # Gain armor command
   def command_128
-    # 操作する値を取得
-    value = operate_value(@parameters[1], @parameters[2], @parameters[3])
-    # 防具の増減
-    $game_party.gain_armor(@parameters[0], value)
-    # 継続
     return true
   end
   # Add or remove actor command
