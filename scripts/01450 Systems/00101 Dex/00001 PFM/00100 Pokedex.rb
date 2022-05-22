@@ -29,7 +29,12 @@ module PFM
 
     # Convert the dex to .26 format
     def convert_to_dot26
-      return if @has_seen_and_forms.is_a?(Hash)
+      if @has_seen_and_forms.is_a?(Hash)
+        @has_seen_and_forms.delete_if { |_, v| v.nil? } if @has_seen_and_forms.value?(nil)
+        @nb_fought.delete_if { |_, v| v.nil? } if @nb_fought.value?(nil)
+        @nb_captured.delete_if { |_, v| v.nil? } if @nb_captured.value?(nil)
+        return
+      end
 
       all_db_symbols = [
         @has_seen_and_forms.size,
@@ -38,10 +43,10 @@ module PFM
         @nb_captured.size
       ].max.times.map { |i| data_creature(i).db_symbol }
 
-      has_seen_and_forms = @has_seen_and_forms.map.with_index { |v, i| v == 0 ? nil : [all_db_symbols[i], v] }.compact.to_h
+      has_seen_and_forms = @has_seen_and_forms.map.with_index { |v, i| !v || v == 0 ? nil : [all_db_symbols[i], v] }.compact.to_h
       has_captured = @has_captured.map.with_index { |v, i| v ? all_db_symbols[i] : nil }.compact
-      nb_fought = @nb_fought.map.with_index { |v, i| v == 0 ? nil : [all_db_symbols[i], v] }.compact.to_h
-      nb_captured = @nb_captured.map.with_index { |v, i| v == 0 ? nil : [all_db_symbols[i], v] }.compact.to_h
+      nb_fought = @nb_fought.map.with_index { |v, i| !v || v == 0 ? nil : [all_db_symbols[i], v] }.compact.to_h
+      nb_captured = @nb_captured.map.with_index { |v, i| !v || v == 0 ? nil : [all_db_symbols[i], v] }.compact.to_h
 
       @has_seen_and_forms = Hash.new(0)
       @has_seen_and_forms.merge!(has_seen_and_forms)
