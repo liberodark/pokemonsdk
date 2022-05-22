@@ -723,15 +723,6 @@ module PSDKEditor
     data_credits[:gameCredits] = Configs.credits_config.game_credits
     File.write(File.join(ROOT_CONFIGS, 'credits_config.json'), data_credits.to_json)
   end
-
-  # Function that convert PSDK config online settings to PSDK Editor format
-  def convert_online_settings
-    data_online = { klass: 'Configs::Project::Online' }
-    data_online[:isEnabled] = Configs.online_configs.enabled
-    data_online[:serverIp] = Configs.online_configs.server_ip
-    data_online[:serverPort] = Configs.online_configs.server_port
-    File.write(File.join(ROOT_CONFIGS, 'online_config.json'), data_online.to_json)
-  end
 end
 
 module GameData
