@@ -16,9 +16,10 @@ module UI
     # @param bx [Integer] the x position of the bar inside the sprite
     # @param by [Integer] the y position of the bar inside the sprite
     # @param nb_states [Integer] the number of state the bar has
-    def initialize(viewport, x, y, bmp, bw, bh, bx, by, nb_states)
+    # @param background_width [Integer] the bar width (background part). Useful if the bar has a different width than its real image
+    def initialize(viewport, x, y, bmp, bw, bh, bx, by, nb_states, background_width = nil)
       @background = Sprite.new(viewport).set_bitmap(bmp)
-      @background.src_rect.set(0, 0, nil, bmp.height - nb_states * bh)
+      @background.src_rect.set(0, 0, background_width, bmp.height - nb_states * bh)
       @bar = Sprite.new(viewport).set_bitmap(bmp)
       @bar.src_rect.set(0, @background.src_rect.height, 0, @bh = bh)
       @nb_states = nb_states
