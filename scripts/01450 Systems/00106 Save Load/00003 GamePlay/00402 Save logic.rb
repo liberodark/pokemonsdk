@@ -47,6 +47,7 @@ module GamePlay
         PFM.game_state.load_parameters unless no_load_parameter
         return PFM.game_state
       rescue LoadError, StandardError
+        log_error("Corrupted save error: #{$!.class} => #{$!.message}")
         return nil
       end
 
