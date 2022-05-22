@@ -440,8 +440,6 @@ pokemonsdk/scripts/01450 Systems/99990 Global Systems/01500 HoneyTree.rb
 pokemonsdk/scripts/01450 Systems/99991 Wild/00100 Wild Battle (manager).rb
 pokemonsdk/scripts/01450 Systems/99991 Wild/00101 Wild Battle (configuration).rb
 pokemonsdk/scripts/01450 Systems/99991 Wild/00300 Wild_RoamingInfo.rb
-pokemonsdk/scripts/01450 Systems/99992 Online/00001 Configs.rb
-pokemonsdk/scripts/01450 Systems/99992 Online/00002 BootLoader.rb
 pokemonsdk/scripts/01500 Yuki/00100 Yuki__Sprite.rb
 pokemonsdk/scripts/01500 Yuki/00600 Yuki__TJN.rb
 pokemonsdk/scripts/01500 Yuki/00700 Yuki__Berries.rb
