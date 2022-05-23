@@ -164,11 +164,27 @@ class Object
     return __game_data.dig(:worldmaps, db_symbol) || __game_data.dig(:worldmaps, :__undef__)
   end
 
-  # Iterate through all the groups
-  # @yieldparam zone [Studio::WorldMap]
+  # Iterate through all the world map
+  # @yieldparam world_map [Studio::WorldMap]
   # @return [Enumerator<Studio::WorldMap>]
   def each_data_world_map(&block)
     __game_data[:worldmaps__id].each(&block)
+  end
+
+  # Get a dex
+  # @param db_symbol [Symbol] db_symbol of the dex
+  # @return [Studio::Dex]
+  def data_dex(db_symbol)
+    return __game_data_by_id(:dex__id, :dex, db_symbol) if db_symbol.is_a?(Integer)
+
+    return __game_data.dig(:dex, db_symbol) || __game_data.dig(:dex, :__undef__)
+  end
+
+  # Iterate through all the dex
+  # @yieldparam dex [Studio::Dex]
+  # @return [Enumerator<Studio::Dex>]
+  def each_data_dex(&block)
+    __game_data[:dex__id].each(&block)
   end
 
   # Get the game data

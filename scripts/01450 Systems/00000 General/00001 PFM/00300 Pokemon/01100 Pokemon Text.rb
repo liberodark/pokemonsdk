@@ -109,19 +109,30 @@ module PFM
     # Return the text of the Pokemon ID
     # @return [String]
     def id_text
-      sprintf("%03d", @id) # TODO: Studio Regional Dex $pokedex.national? ? @id : primary_data.id_bis)
+      format('%03d', dex_id)
     end
 
     # Return the text of the Pokemon ID with N°
     # @return [String]
     def id_text2
-      sprintf("N°%03d", @id) # , $pokedex.national? ? @id : primary_data.id_bis)
+      format('N°%03d', dex_id)
     end
 
     # Return the text of the Pokemon ID to pokemon number
     # @return [String]
     def id_text3
-      sprintf("%03d", @id).to_pokemon_number # , $pokedex.national? ? @id : primary_data.id_bis).to_pokemon_number
+      format('%03d', dex_id).to_pokemon_number
+    end
+
+    private
+
+    # Get the dex id of the Pokemon
+    # @return [Integer]
+    def dex_id
+      # Always show national ID once national dex is unlocked
+      dex_data = data_dex($pokedex.national? ? :national : $pokedex.variant)
+      index = dex_data.creatures.find_index { |creature| creature.db_symbol == db_symbol }
+      return index ? index + dex_data.start_id : 0
     end
   end
 end

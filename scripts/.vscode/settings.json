@@ -67,6 +67,12 @@
       "fontWeight": "bold"
     },
     {
+      "text": "data_dex",
+      "backgroundColor": "#00000000",
+      "color": "#4EC9B0",
+      "fontWeight": "bold"
+    },
+    {
       "text": "each_data_ability",
       "backgroundColor": "#00000000",
       "color": "#4FC1FF",
@@ -122,6 +128,12 @@
     },
     {
       "text": "each_data_world_map",
+      "backgroundColor": "#00000000",
+      "color": "#4FC1FF",
+      "fontWeight": "bold"
+    },
+    {
+      "text": "each_data_dex",
       "backgroundColor": "#00000000",
       "color": "#4FC1FF",
       "fontWeight": "bold"

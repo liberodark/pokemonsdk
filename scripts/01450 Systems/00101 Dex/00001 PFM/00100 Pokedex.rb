@@ -15,6 +15,10 @@ module PFM
     # @return [PFM::GameState]
     attr_accessor :game_state
 
+    # Get the current dex variant
+    # @return [Symbol]
+    attr_accessor :variant
+
     # Create a new Pokedex object
     # @param game_state [PFM::GameState] game state storing this instance
     def initialize(game_state = PFM.game_state)
@@ -29,6 +33,7 @@ module PFM
 
     # Convert the dex to .26 format
     def convert_to_dot26
+      @variant ||= :regional
       if @has_seen_and_forms.is_a?(Hash)
         @has_seen_and_forms.delete_if { |_, v| v.nil? } if @has_seen_and_forms.value?(nil)
         @nb_fought.delete_if { |_, v| v.nil? } if @nb_fought.value?(nil)
@@ -77,6 +82,7 @@ module PFM
     # @param mode [Boolean] the flag
     def national=(mode)
       @game_state.game_switches[Yuki::Sw::Pokedex_Nat] = (mode == true)
+      @variant = :national if mode
     end
     alias set_national national=
 
@@ -174,6 +180,7 @@ module PFM
 
       db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
       return if db_symbol == :__undef__
+      return unless creature_unlocked?(db_symbol) || forced
 
       @seen += 1 if @has_seen_and_forms[db_symbol] == 0
       @has_seen_and_forms[db_symbol] |= (1 << form)
@@ -201,6 +208,7 @@ module PFM
     def mark_captured(db_symbol)
       db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
       return if db_symbol == :__undef__
+      return unless creature_unlocked?(db_symbol)
 
       unless @has_captured.include?(db_symbol)
         @has_captured << db_symbol
@@ -256,6 +264,15 @@ module PFM
       return @has_seen_and_forms[db_symbol]
     end
     alias get_forms form_seen
+
+    # Tell if the creature is unlocked in the current dex state
+    # @param db_symbol [Symbol]
+    # @return [Boolean]
+    def creature_unlocked?(db_symbol)
+      return true if national?
+
+      return data_dex(@variant).creatures.any? { |creature| creature.db_symbol == db_symbol }
+    end
 
     # Calibrate the Pokedex information (seen/captured)
     def calibrate

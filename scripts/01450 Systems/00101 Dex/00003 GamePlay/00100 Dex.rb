@@ -165,14 +165,10 @@ module GamePlay
     # @param page_id [Integer, false] see initialize
     def generate_selected_pokemon_array(page_id)
       dex = $pokedex
-      if dex.national?
-        @selected_pokemons = each_data_creature.select { |creature| dex.creature_seen?(creature.db_symbol) }
-        @selected_pokemons.map!(&:id)
-      else
-        # TODO: Studio version with regional dex
-        @selected_pokemons = each_data_creature.select { |creature| dex.creature_seen?(creature.db_symbol) }
-        @selected_pokemons.map!(&:id)
-      end
+      dex_data = data_dex(dex.variant)
+      creatures = dex_data.creatures
+      @selected_pokemons = creatures.select { |creature| dex.creature_seen?(creature.db_symbol) }
+      @selected_pokemons.map! { |creature| data_creature(creature.db_symbol).id }
       @selected_pokemons << 0 if @selected_pokemons.empty?
       # Index ajustment
       if page_id
@@ -194,7 +190,10 @@ module GamePlay
         # Return the formated name for Pokedex
         # @return [String]
         def pokedex_name
-          id_value = id # TODO: Studio Regional dex $pokedex.national? ? id : data_creature(id).id_bis
+          # Always show variant ID when exploring the dex
+          dex_data = data_dex($pokedex.variant)
+          dex_id = dex_data.creatures.find_index { |creature| creature.db_symbol == db_symbol }
+          id_value = dex_id ? dex_id + dex_data.start_id : 0
           format(GamePlay::Dex::NAME_FORMAT, id_value, name)
         end
 

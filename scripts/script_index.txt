@@ -93,6 +93,7 @@ pokemonsdk/scripts/00800 Studio/00001 Data/00021 Item.rb
 pokemonsdk/scripts/00800 Studio/00001 Data/00031 Move.rb
 pokemonsdk/scripts/00800 Studio/00001 Data/00041 Creature.rb
 pokemonsdk/scripts/00800 Studio/00001 Data/00042 CreatureForm.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00043 Dex.rb
 pokemonsdk/scripts/00800 Studio/00001 Data/00051 Quest.rb
 pokemonsdk/scripts/00800 Studio/00001 Data/00061 Trainer.rb
 pokemonsdk/scripts/00800 Studio/00001 Data/00071 Type.rb

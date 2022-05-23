@@ -18,6 +18,7 @@ module PSDKEditor
   def convert
     GameData.load
     create_paths
+    convert_pokedex
     convert_pokemon
     convert_items
     convert_types
@@ -33,7 +34,7 @@ module PSDKEditor
   # Function that creates all the necessary path
   def create_paths
     Dir.mkdir(ROOT) unless Dir.exist?(ROOT)
-    all_paths = %w[pokemon items types moves zones worldmaps trainers quests abilities groups].map { |dirname| File.join(ROOT, dirname) }
+    all_paths = %w[pokemon items types moves zones worldmaps trainers quests abilities groups dex].map { |dirname| File.join(ROOT, dirname) }
     all_paths.each do |path|
       Dir.mkdir(path) unless Dir.exist?(path)
     end
@@ -169,6 +170,30 @@ module PSDKEditor
       File.write(File.join(ROOT, 'trainers', "trainer_#{trainer.id}.json"), trainer_data.to_json)
     end
     create_csv(100_062, trainer_names)
+  end
+
+  # Function that convert the dex
+  def convert_pokedex
+    create_csv(100_063, [['Pokédex National'] * 7, ['Pokédex Regional'] * 7])
+    regional_dex = {
+      klass: 'Dex', dbSymbol: 'regional', id: 1, name: { csvFileId: 63, csvTextIndex: 1 }, startId: 1,
+      creatures: regional_creatures = []
+    }
+    national_dex = {
+      klass: 'Dex', dbSymbol: 'national', id: 0, name: { csvFileId: 63, csvTextIndex: 0 }, startId: 1,
+      creatures: national_creatures = []
+    }
+    GameData::Pokemon.all[1..].each do |entry|
+      id = entry.first.id
+      national_creatures[id - 1] = { dbSymbol: entry.first.db_symbol, form: 0 }
+      next unless (creature_bis = entry.compact.find { |creature| creature.id_bis > 0 })
+
+      regional_creatures[creature_bis.id_bis - 1] = { dbSymbol: creature_bis.db_symbol, form: creature_bis.form }
+    end
+    national_creatures.compact!
+    regional_creatures.compact!
+    File.write(File.join(ROOT, 'dex', 'national.json'), national_dex.to_json)
+    File.write(File.join(ROOT, 'dex', 'regional.json'), regional_dex.to_json)
   end
 
   # Function that convert Pokemon data to PSDK Editor format

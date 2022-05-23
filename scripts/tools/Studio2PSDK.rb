@@ -144,6 +144,9 @@ module Studio2PSDK
       undef_entity.instance_variable_set(:@is_limited, true)
       undef_entity.instance_variable_set(:@is_holdable, false)
       undef_entity.instance_variable_set(:@fling_power, 0)
+    when :dex
+      undef_entity.instance_variable_set(:@creatures, [])
+      undef_entity.instance_variable_set(:@id, -1)
     end
 
     return undef_entity
@@ -202,7 +205,8 @@ module Studio2PSDK
           Studio::Quest::Earning.try_create(hash) ||
           Studio::Type::DamageTo.try_create(hash) ||
           Studio::Zone::MapCoordinate.try_create(hash) ||
-          Studio::CSVAccess.try_create(hash)
+          Studio::CSVAccess.try_create(hash) ||
+          Studio::Dex::CreatureInfo.try_create(hash)
 
     return obj if obj
 
@@ -555,6 +559,25 @@ module Studio
         obj.instance_variable_set(:@file_id, file_id)
         obj.instance_variable_set(:@text_index, text_index)
         return obj
+      end
+    end
+  end
+
+  class Dex
+    class CreatureInfo
+      class << self
+        # Attempt to create a new move status
+        # @param hash [Hash]
+        def try_create(hash)
+          return if hash.size != 2
+          return unless (db_symbol = hash['dbSymbol']).is_a?(String)
+          return unless (form = hash['form']).is_a?(Integer)
+
+          obj = allocate
+          obj.instance_variable_set(:@db_symbol, db_symbol.to_sym)
+          obj.instance_variable_set(:@form, form)
+          return obj
+        end
       end
     end
   end
