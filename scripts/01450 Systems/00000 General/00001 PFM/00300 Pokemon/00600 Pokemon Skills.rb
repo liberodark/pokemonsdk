@@ -60,6 +60,19 @@ module PFM
     end
     alias has_skill? skill_learnt?
 
+    # Find a skill in the moveset of the Pokemon
+    # @param db_symbol [Symbol] db_symbol of the skill in the database
+    # @return [PFM::Skill, false]
+    def find_skill(db_symbol)
+      return false if egg?
+
+      move = data_move(db_symbol)
+      @skills_set.each do |skill|
+        return skill if skill && skill.db_symbol == move.db_symbol
+      end
+      return false
+    end
+
     # Check if the Pokemon can learn a new skill and make it learn the skill
     # @param silent [Boolean] if the skill is automatically learnt or not (false = show skill learn interface & messages)
     # @param level [Integer] The level to check in order to learn the moves (<= 0 = evolution)
