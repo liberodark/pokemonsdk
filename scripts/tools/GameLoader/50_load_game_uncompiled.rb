@@ -16,6 +16,19 @@ begin
   PARGV[:util].to_a.each do |filename|
     if filename.start_with?('project_compilation')
       ScriptLoader.load_tool('Compilation/project_compilation')
+    elsif filename.start_with?('eventtext2csv')
+      ScriptLoader.load_tool('EventText2CSV')
+      EventText2CSV.run
+    elsif filename.start_with?('convert')
+      ScriptLoader.load_tool('ProjectToYAML')
+      ProjectToYAML.convert
+    elsif filename.start_with?('restore')
+      ScriptLoader.load_tool('ProjectToYAML')
+      ProjectToYAML.restore
+    elsif filename.start_with?('build_state_machine')
+      ScriptLoader.load_tool('StateMachineBuilder/StateMachineBuilder')
+      argv = ARGV.reject { |arg| arg.start_with?('-') }
+      argv.each { |machine_filename| StateMachineBuilder.run(machine_filename) } if argv[0]
     else
       require filename
     end
