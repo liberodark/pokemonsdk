@@ -14,7 +14,7 @@ module GamePlay
       super()
 
       # Pokemon used to generate the list sprites (icon & name)
-      @pokemonlist = PFM::Pokemon.new(0, 1)
+      @pokemonlist = PFM::Pokemon.new(data_dex($pokedex.variant).creatures.first&.db_symbol || 1, 1)
       # Information telling in which direction (in x) the arrow goes
       @arrow_direction = 1
       # Current state
@@ -186,45 +186,51 @@ module GamePlay
     # Generate the Pokemon Object
     def generate_pokemon_object
       @pokemon = @pkmn ||= PFM::Pokemon.generate_from_hash(id: @selected_pokemons[@index].to_i, level: 1, no_shiny: true)
-      @pokemon.instance_eval do
-        # Return the formated name for Pokedex
-        # @return [String]
-        def pokedex_name
-          # Always show variant ID when exploring the dex
-          dex_data = data_dex($pokedex.variant)
-          dex_id = dex_data.creatures.find_index { |creature| creature.db_symbol == db_symbol }
-          id_value = dex_id ? dex_id + dex_data.start_id : 0
-          format(GamePlay::Dex::NAME_FORMAT, id_value, name)
-        end
+      [@pokemonlist, @pokemon].each do |creature| 
+        creature.instance_eval do
+          # Return the formated name for Pokedex
+          # @return [String]
+          def pokedex_name
+            format(GamePlay::Dex::NAME_FORMAT, dex_id, name)
+          end
 
-        # Return the formated Specie for Pokedex
-        # @return [String]
-        def pokedex_species
-          data_creature(db_symbol).species
-        end
+          # Get the dex id
+          # @return [Integer]
+          def dex_id
+            dex_data = data_dex($pokedex.variant)
+            id = dex_data.creatures.find_index { |creature| creature.db_symbol == db_symbol }
+            return id ? id + dex_data.start_id : 0
+          end
 
-        # Return the formated weight for Pokedex
-        # @return [String]
-        def pokedex_weight
-          # @type [String]
-          text = ext_text(9000, 70)
-          using_retard_unit = !text.downcase.end_with?('kg')
-          format(text, using_retard_unit ? (weight * 2.20462).ceil(2) : weight)
-        end
+          # Return the formated Specie for Pokedex
+          # @return [String]
+          def pokedex_species
+            data_creature(db_symbol).species
+          end
 
-        # Return the formated height for Pokedex
-        # @return [String]
-        def pokedex_height
-          # @type [String]
-          text = ext_text(9000, 71)
-          using_retard_unit = !text.downcase.end_with?('m')
-          if using_retard_unit
-            inches = (height * 39.3701).to_i
-            feet = inches / 12
-            inches -= feet * 12
-            format(text, feet, inches)
-          else
-            return format(text, height)
+          # Return the formated weight for Pokedex
+          # @return [String]
+          def pokedex_weight
+            # @type [String]
+            text = ext_text(9000, 70)
+            using_retard_unit = !text.downcase.end_with?('kg')
+            format(text, using_retard_unit ? (weight * 2.20462).ceil(2) : weight)
+          end
+
+          # Return the formated height for Pokedex
+          # @return [String]
+          def pokedex_height
+            # @type [String]
+            text = ext_text(9000, 71)
+            using_retard_unit = !text.downcase.end_with?('m')
+            if using_retard_unit
+              inches = (height * 39.3701).to_i
+              feet = inches / 12
+              inches -= feet * 12
+              format(text, feet, inches)
+            else
+              return format(text, height)
+            end
           end
         end
       end

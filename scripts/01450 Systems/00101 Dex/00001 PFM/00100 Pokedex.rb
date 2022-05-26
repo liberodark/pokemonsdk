@@ -17,7 +17,11 @@ module PFM
 
     # Get the current dex variant
     # @return [Symbol]
-    attr_accessor :variant
+    attr_reader :variant
+
+    # Get the list of seen variants
+    # @return [Array<Symbol>]
+    attr_reader :seen_variants
 
     # Create a new Pokedex object
     # @param game_state [PFM::GameState] game state storing this instance
@@ -29,11 +33,14 @@ module PFM
       @nb_fought = Hash.new(0)
       @nb_captured = Hash.new(0)
       @game_state = game_state
+      @variant = :regional
+      @seen_variants = [@variant]
     end
 
     # Convert the dex to .26 format
     def convert_to_dot26
       @variant ||= :regional
+      @seen_variants ||= [@variant]
       if @has_seen_and_forms.is_a?(Hash)
         @has_seen_and_forms.delete_if { |_, v| v.nil? } if @has_seen_and_forms.value?(nil)
         @nb_fought.delete_if { |_, v| v.nil? } if @nb_fought.value?(nil)
@@ -82,9 +89,23 @@ module PFM
     # @param mode [Boolean] the flag
     def national=(mode)
       @game_state.game_switches[Yuki::Sw::Pokedex_Nat] = (mode == true)
-      @variant = :national if mode
+      if mode
+        self.variant = :national
+      else
+        @seen_variants.delete(:national)
+        self.variant = @seen_variants.first || :regional
+      end
     end
     alias set_national national=
+
+    # Set the variant the Dex is currently showing
+    # @param variant [Symbol]
+    def variant=(variant)
+      return unless each_data_dex.any? { |dex| dex.db_symbol == variant }
+
+      @variant = variant
+      @seen_variants << variant unless @seen_variants.include?(variant)
+    end
 
     # Is the Pokedex showing national Creature
     # @return [Boolean]
