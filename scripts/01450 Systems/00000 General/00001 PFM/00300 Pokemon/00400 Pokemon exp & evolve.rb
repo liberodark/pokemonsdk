@@ -1,8 +1,6 @@
 module PFM
   class Pokemon
     include Hooks
-    # Tell if PSDK test evolve on form 0 or the current form
-    EVOLVE_ON_FORM0 = PSDK_CONFIG.always_use_form0_for_evolution
     # List of key in evolution Hash that corresponds to the expected ID when evolution is valid
     # @return [Array<Symbol>]
     SPECIAL_EVOLUTION_ID = %i[trade id]
@@ -163,10 +161,10 @@ module PFM
     def evolve_check(reason = :level_up, extend_data = nil)
       return false if item_db_symbol == :everstone
 
-      data = EVOLVE_ON_FORM0 ? primary_data : self.data
+      data = Configs.settings.always_use_form0_for_evolution ? primary_data : self.data
 
       if data.evolutions.empty?
-        data = primary_data if PSDK_CONFIG.use_form0_when_no_evolution_data
+        data = primary_data if Configs.settings.use_form0_when_no_evolution_data
         return false if data.evolutions.empty?
       end
 

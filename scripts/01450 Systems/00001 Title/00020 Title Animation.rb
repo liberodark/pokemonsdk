@@ -35,7 +35,7 @@ class Scene_Title
   end
 
   def checkup_language
-    return if PSDK_CONFIG.choosable_language_code.empty? || !Configs.scene_title_config.language_selection_enabled
+    return if Configs.language.choosable_language_code.empty? || !Configs.scene_title_config.language_selection_enabled
 
     base_filename = GamePlay::Save.save_filename
     call_scene(GamePlay::Language_Choice) if Dir["#{base_filename}*"].reject { |i| i.end_with?('.bak') }.empty?

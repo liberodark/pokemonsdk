@@ -1,9 +1,9 @@
 # Class that describe a Character Sprite on the Map
 class Sprite_Character < RPG::Sprite
   # Zoom of a tile and factor used to fix coordinate
-  TILE_ZOOM = PSDK_CONFIG.tilemap.character_tile_zoom
+  TILE_ZOOM = Configs.display.tilemap_settings.character_tile_zoom
   # Zoom of a Sprite
-  SPRITE_ZOOM = PSDK_CONFIG.tilemap.character_sprite_zoom
+  SPRITE_ZOOM = Configs.display.tilemap_settings.character_sprite_zoom
   # Tag that disable shadow
   SHADOW_TAG = '§'
   # Name of the shadow file

@@ -3,11 +3,11 @@ module Yuki
   # @author Nuri Yuri
   module MapLinker
     # The offset in X until we see black borders
-    OFFSET_X = PSDK_CONFIG.tilemap.maplinker_offset_x
+    OFFSET_X = Configs.display.tilemap_settings.map_linker_offset.x
     # The offset in Y until we seen black borders
-    OFFSET_Y = PSDK_CONFIG.tilemap.maplinker_offset_y
+    OFFSET_Y = Configs.display.tilemap_settings.map_linker_offset.y
     # The number of tiles the Maker has to let in common between each maps
-    DELTA_MAKER = PSDK_CONFIG.tilemap.old_maplinker ? 3 : 0
+    DELTA_MAKER = Configs.display.tilemap_settings.uses_old_map_linker ? 3 : 0
     # The default Map (black borders)
     DEFAULT_MAP = RPG::Map.new(20, 15)
     # The map filename format
@@ -109,7 +109,7 @@ module Yuki
         @map_datas.first.tileset_name
       end
 
-      if PSDK_CONFIG.tilemap.old_maplinker
+      if Configs.display.tilemap_settings.uses_old_map_linker
         # Test if the player can warp between maps and warp him
         def test_warp
           x = $game_player.x

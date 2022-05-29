@@ -5,6 +5,16 @@ module GamePlay
     MESSAGE_FRAME = 'GameData::Windows::MESSAGE_FRAME'
     MESSAGE_FRAME_NAMES = 'GameData::Windows::MESSAGE_FRAME_NAMES'
 
+    PREDEFINED_OPTIONS = {
+      message_speed: [:message_speed, :choice, [1, 2, 3], [[:text_get, 42, 4], [:text_get, 42, 5], [:text_get, 42, 6]], [:text_get, 42, 3], [:text_get, 42, 7], :message_speed],
+      message_frame: [:message_frame, :choice, MESSAGE_FRAME, MESSAGE_FRAME_NAMES, [:ext_text, 9000, 165], [:ext_text, 9000, 166], :message_frame],
+      volume: [:volume, :slider, { min: 0, max: 100, increment: 1 }, "%d%%", [:ext_text, 9000, 29], [:ext_text, 9000, 30], :master_volume],
+      battle_animation: [:battle_animation, :choice, [true, false], [[:text_get, 42, 9], [:text_get, 42, 10]], [:text_get, 42, 8],[:text_get, 42, 11], :show_animation],
+      battle_style: [:battle_style, :choice, [true, false], [[:text_get, 42, 13], [:text_get, 42, 14]], [:text_get, 42, 12], [:text_get, 42, 15], :battle_mode],
+      screen_scale: [:screen_scale, :choice, [1, 2, 3, 4], [[:ext_text, 9008, 2], [:ext_text, 9008, 3], [:ext_text, 9008, 4], [:ext_text, 9008, 5]], [:ext_text, 9008, 1], [:ext_text, 9008, 0], :screen_scale],
+      language: [:language, :choice, 'Configs#language#choosable_language_code', 'Configs#language#choosable_language_texts', [:ext_text, 9000, 167], [:ext_text, 9000, 168], :language]
+    }
+
     private
 
     # Add an option to the option stack
@@ -15,9 +25,10 @@ module GamePlay
     # @param option_name [Array, String] GamePlay::Base#get_text argument for the option name
     # @param option_descr [Array, String] GamePlay::Base#get_text argument for the option description
     # @param attribute [Symbol] attribute used inside $options
-    # @note If the parameter name is not inside PSDK_CONFIG#options#order this option will not be shown
+    # @note If the parameter name is not inside Configs.game_options.order this option will not be shown
     def add_option(name, type, options_info, options_text, option_name, option_descr, attribute)
       raise 'Invalid option type' unless VALID_OPTION_TYPE.include?(type)
+
       options_info = parse_string(options_info) if options_info.is_a?(String)
       options_text = parse_string(options_text) if options_text.is_a?(String)
       options_text.map! { |option_text| get_text(option_text) } unless options_text.is_a?(String)
@@ -26,6 +37,7 @@ module GamePlay
       getter = attribute
       setter = "#{getter}="
       return if options_info.is_a?(Array) && options_info.size <= 1
+
       @options[name] = Helper.new(type, options_info, options_text, option_name, option_descr, getter, setter)
     end
 

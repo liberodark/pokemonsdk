@@ -33,9 +33,9 @@ module UI
       end
 
       # Retrieve the current layout configuration based on the scene
-      # @return [ScriptLoader::PSDKConfig::LayoutConfig::Message]
+      # @return [Configs::Project::Texts::MessageConfig]
       def current_layout
-        config = PSDK_CONFIG.layout.messages
+        config = Configs.texts.messages
         return config[$scene.class.to_s] || config[:any]
       end
 
@@ -119,13 +119,13 @@ module UI
       # Retrieve the current windowskin
       # @return [String]
       def current_windowskin
-        windowskin_overwrite || properties&.windowskin_overwrite || current_layout.windowskin || $game_system.windowskin_name
+        windowskin_overwrite || properties&.windowskin_overwrite || current_layout.window_skin || $game_system.windowskin_name
       end
 
       # Retrieve the current windowskin of the name window
       # @return [String]
       def current_name_windowskin
-        nameskin_overwrite || current_layout.name_windowskin || NAME_SKIN
+        nameskin_overwrite || current_layout.name_window_skin || NAME_SKIN
       end
 
       # Return the window width

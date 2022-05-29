@@ -27,29 +27,13 @@ module Configs
     # Get the spacing between a leader text and the center of the screen
     # @return [Integer]
     attr_accessor :leader_spacing
+  end
 
-    # Create a new config
-    def initialize
-      @project_splash = 'title'
-      @chief_project_title = 'Main Supporter'
-      @chief_project_name = 'Pokémon Workshop'
-      @leaders = [
-        { title: 'Creator of PSDK', name: 'Nuri Yuri' }, # 1
-        { title: 'Developper of LiteRGSS2', name: 'Scorbutics' }, # 1
-        { title: 'Developpers of PSDK', name: 'Aerun, Rey, Palbolsky, Leikt' }, # 2
-        { title: 'Lead Graphic Designer of PSDK', name: 'SirMalo' }, # 2
-        { title: 'Occasional Contributors of .25', name: 'SoloReprise, buttjuice & Mud' }, # 3
-        { title: 'MacOS Supporter', name: 'Lynn Isip' } # 3
-      ]
-      @game_credits = "# Title\n## Sub Title\n### SubSubTitle\nOne Name\nTwo Column || Names\n\n# Title after empty line"
-      @bgm = 'ending'
-      @line_height = 12
-      @speed = 60.0
-      @leader_spacing = 48
-    end
+  module Project
+    Credits = CreditsConfig
   end
 
   # @!method self.credits_config
   #   @return [CreditsConfig]
-  register(:credits_config, 'credits_config', :yml, false, CreditsConfig)
+  register(:credits_config, 'credits_config', :json, false, CreditsConfig)
 end

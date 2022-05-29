@@ -57,7 +57,7 @@ module GamePlay
 
       def save_filename
         root = save_root_path.tr('\\', '/').encode(Encoding::UTF_8)
-        game_name = root.start_with?('.') ? '' : ".#{PSDK_CONFIG.game_title}/"
+        game_name = root.start_with?('.') ? '' : ".#{Configs.infos.game_title}/"
         base_filename = Configs.save_config.base_filename
         filename = (@save_index > 0 ? format(MULTI_SAVE_FORMAT, base_filename, @save_index) : base_filename)
         return format('%<root>s/%<game_name>s%<filename>s', root: root, game_name: game_name, filename: filename)
@@ -90,7 +90,7 @@ module GamePlay
         $game_system.save_count += 1
         $trainer.update_play_time
         $trainer.current_version = PSDK_Version
-        $trainer.game_version = PSDK_CONFIG.game_version
+        $trainer.game_version = Configs.infos.game_version
       end
 
       # Function that actually save the file

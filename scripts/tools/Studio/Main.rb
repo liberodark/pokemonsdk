@@ -2,6 +2,7 @@
 
 # Script helping Pokemon Studio & PSDK to communicate
 # This script is automatically launched if psdk was launched with studio argument
+require_relative '../../../keep/legacy_psdk_config'
 module Studio
   module_function
 
@@ -11,6 +12,7 @@ module Studio
 
     ScriptLoader.start
     ScriptLoader.load_tool('Studio/Handler')
+    PSDK_CONFIG.send(:initialize)
     @handler = Handler.new
     @handler.start
   end
@@ -19,24 +21,29 @@ end
 require 'json'
 
 module Kernel
+  $original_stdout = STDOUT.dup
+  $original_stderr = STDERR.dup
+  STDOUT.reopen(IO::NULL)
+  STDERR.reopen(IO::NULL)
+
   def puts(*args)
-    STDOUT.puts({
-      type: :kernel_puts,
-      message: args.join("\n").gsub(/\033\[[0-9]+m/, '')
-    }.to_json)
+    message = args.join("\n").gsub(/\033\[[0-9]+m/, '').strip
+    return if message.empty?
+
+    $original_stdout.puts({ type: :kernel_puts, message: message }.to_json)
   end
 
   def p(*args)
-    STDOUT.puts({
-      type: :kernel_p,
-      message: args.map(&:inspect).join("\n").gsub(/\033\[[0-9]+m/, '')
-    }.to_json)
+    message = args.map(&:inspect).join("\n").gsub(/\033\[[0-9]+m/, '').strip
+    return if message.empty?
+
+    $original_stdout.puts({ type: :kernel_p, message: message }.to_json)
   end
 
   def print(*args)
-    STDOUT.puts({
-      type: :kernel_print,
-      message: args.join.gsub(/\033\[[0-9]+m/, '')
-    }.to_json)
+    message = args.join("\n").gsub(/\033\[[0-9]+m/, '').strip
+    return if message.empty?
+
+    $original_stdout.puts({ type: :kernel_print, message: message }.to_json)
   end
 end

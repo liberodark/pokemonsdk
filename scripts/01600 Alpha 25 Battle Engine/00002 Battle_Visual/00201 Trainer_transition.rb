@@ -2,7 +2,7 @@ module Battle
   class Visual
     # Method that show the pre_transition of the battle
     def show_pre_transition
-      return if debug? && PSDK_CONFIG.skip_battle_transition_in_debug
+      # return if debug? && ARGV.includes?('skip_battle_transition')
       # @type [Battle::Visual::RBJ_WildTransition]
       @transition = battle_transition.new(@scene, @screenshot)
       @animations << @transition
@@ -12,7 +12,7 @@ module Battle
 
     # Method that show the trainer transition of the battle
     def show_transition
-      return show_debug_transition if debug? && PSDK_CONFIG.skip_battle_transition_in_debug
+      # return show_debug_transition if debug? && ARGV.includes?('skip_battle_transition')
       # Load transtion (x/y, dpp, frlg)
       # store the transition loop
       # Show the message "issuing a battle"

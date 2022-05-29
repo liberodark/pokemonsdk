@@ -1,9 +1,9 @@
 # Management of the player displacement on the Map
 class Game_Player < Game_Character
   # 4 time the x position of the Game_Player sprite
-  CENTER_X = PSDK_CONFIG.tilemap.center_x
+  CENTER_X = Configs.display.tilemap_settings.center.x
   # 4 time the y position of the Game_Player sprite
-  CENTER_Y = PSDK_CONFIG.tilemap.center_y
+  CENTER_Y = Configs.display.tilemap_settings.center.y
   # Name of the bump sound when the player hit a wall
   BUMP_FILE = 'audio/se/bump'
   # true if the player is on the back wheel of its Acro bike

@@ -18,7 +18,7 @@ class Game_Map
   # If the Path Finding system is enabled
   PATH_FINDING_ENABLED = true
   # If the player is always on the center of the screen
-  CenterPlayer = PSDK_CONFIG.player_always_centered
+  CenterPlayer = Configs.display.is_player_always_centered
   # Number of tiles the player can see in x
   NUM_TILE_VIEW_Y = 15
   # Number of tiles the player can see in y

@@ -532,12 +532,12 @@ module GTS
 
     # Ask the level requirements
     def do_command2
-      $game_temp.num_input_start = PSDK_CONFIG.pokemon_max_level
+      $game_temp.num_input_start = Configs.settings.max_level
       $game_temp.num_input_variable_id = Yuki::Var::TMP1
       $game_temp.num_input_digits_max = 3
       display_message(ext_text(8997, 27))
       @wanted_data[1] = $game_variables[Yuki::Var::TMP1] if $game_variables[Yuki::Var::TMP1] > 0
-      $game_temp.num_input_start = PSDK_CONFIG.pokemon_max_level
+      $game_temp.num_input_start = Configs.settings.max_level
       $game_temp.num_input_variable_id = Yuki::Var::TMP1
       $game_temp.num_input_digits_max = 3
       display_message(ext_text(8997, 28))

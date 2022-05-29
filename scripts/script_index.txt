@@ -3,6 +3,7 @@ pokemonsdk/scripts/00002 state.rb
 pokemonsdk/scripts/00003 SafeExec.rb
 pokemonsdk/scripts/00010 Hooks.rb
 pokemonsdk/scripts/00020 Config.rb
+pokemonsdk/scripts/00021 ProjectConfig.rb
 pokemonsdk/scripts/00100 Yuki__EXC.rb
 pokemonsdk/scripts/00000 Dependencies/00201 Object.rb
 pokemonsdk/scripts/00000 Dependencies/00202 PatchRuby.rb

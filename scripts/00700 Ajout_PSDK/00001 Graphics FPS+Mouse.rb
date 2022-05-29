@@ -81,10 +81,10 @@ module Graphics
     Hooks.register(Graphics, :post_update_internal, 'PSDK Graphics fps_gpu_update') { fps_gpu_update }
 
     def mouse_create_graphics
-      return if (@no_mouse = (PSDK_CONFIG.mouse_disabled && !PARGV[:tags]))
+      return if (@no_mouse = (Configs.devices.is_mouse_disabled && !PARGV[:tags]))
 
       @mouse = Sprite.new(@mouse_fps_viewport)
-      if (mouse_skin = PSDK_CONFIG.mouse_skin) && RPG::Cache.windowskin_exist?(mouse_skin)
+      if (mouse_skin = Configs.devices.mouse_skin) && RPG::Cache.windowskin_exist?(mouse_skin)
         @mouse.bitmap = RPG::Cache.windowskin(mouse_skin)
       end
     end

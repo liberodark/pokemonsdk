@@ -98,7 +98,7 @@ module Mouse
     # Register event related to the mouse
     # @param window [LiteRGSS::DisplayWindow]
     def register_events(window)
-      return if PSDK_CONFIG.mouse_disabled
+      return if Configs.devices.is_mouse_disabled
 
       window.on_touch_began = proc { |finger_id, x, y|
         on_mouse_entered

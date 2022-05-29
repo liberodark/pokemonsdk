@@ -56,7 +56,7 @@ module Yuki
       str << format("Script : %<script>s\r\n", script: source_name)
       str << format("Ligne : %<line>d\r\n", line: source_line)
       str << format("Date : %<date>s\r\n", date: Time.new.strftime('%d/%m/%Y %H:%M:%S'))
-      str << format("Game Version : %<game_version>s\r\n", game_version: PSDK_CONFIG.game_version)
+      str << format("Game Version : %<game_version>s\r\n", game_version: Configs.infos.game_version)
       str << format("Logiciel : %<software>s %<version>s\r\n", software: Software, version: PSDK_Version.to_str_version)
       str << format("Script used by eval command : \r\n%<script>s\r\n\r\n", script: @eval_script) if @eval_script
       str << 'Backtraces'.center(80, '=')
@@ -107,7 +107,7 @@ module Yuki
       str << format("Message :\r\n%<message>s\r\n", message: e.message.to_s.gsub(/[\r\n]+/, "\r\n"))
       str << format("Type : %<type>s\r\n", type: e.class)
       str << format("Date : %<date>s\r\n", date: Time.new.strftime('%d/%m/%Y %H:%M:%S'))
-      str << format("Game Version : %<game_version>s\r\n", game_version: PSDK_CONFIG.game_version)
+      str << format("Game Version : %<game_version>s\r\n", game_version: Configs.infos.game_version)
       str << format("Logiciel : %<software>s %<version>s\r\n", software: Software, version: PSDK_Version.to_str_version)
       str << format("Script used by eval command : \r\n%<script>s\r\n", script: @eval_script) if @eval_script
       str << (e.backtrace || ['Unkown Sources...']).join("\r\n")

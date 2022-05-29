@@ -37,8 +37,8 @@ module GamePlay
 
     # Creaye a new Pokemon Party object and ask the language if possible
     def create_new_party
-      PFM.game_state = PFM::GameState.new(false, PSDK_CONFIG.default_language_code)
-      PARGV.update_game_opts("--lang=#{PSDK_CONFIG.default_language_code}") if @all_saves.empty?
+      PFM.game_state = PFM::GameState.new(false, Configs.language.default_language_code)
+      PARGV.update_game_opts("--lang=#{Configs.language.default_language_code}") if @all_saves.empty?
     end
   end
 end

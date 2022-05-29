@@ -41,9 +41,9 @@ module Yuki
     end
 
     # Retrieve the current layout configuration
-    # @return [ScriptLoader::PSDKConfig::LayoutConfig::Choice]
+    # @return [Configs::Project::Texts::ChoiceConfig]
     def current_layout
-      config = PSDK_CONFIG.layout.choices
+      config = Configs.texts.choices
       return config[$scene.class.to_s] || config[:any]
     end
 
@@ -211,7 +211,7 @@ module Yuki
     # Retrieve the current windowskin
     # @return [String]
     def current_windowskin
-      current_layout.windowskin || $game_system.windowskin_name
+      current_layout.window_skin || $game_system.windowskin_name
     end
 
     # Retrieve the current window_builder

@@ -16,15 +16,6 @@ module Configs
     # @return [Boolean]
     attr_accessor :can_save_on_any_save
 
-    # Create a new config
-    def initialize
-      @maximum_save_count = 0
-      @save_header = 'PKPRT'
-      @save_key = 0x0000_0000
-      @base_filename = 'Saves/Pokemon_Party'
-      @can_save_on_any_save = true
-    end
-
     # Tell if the player can have unlimited saves
     # @return [Boolean]
     def unlimited_saves?
@@ -36,9 +27,13 @@ module Configs
     def single_save?
       @maximum_save_count == 1
     end
+
+    module Project
+      Save = SaveConfig
+    end
   end
 
   # @!method self.save_config
   #   @return [SaveConfig]
-  register(:save_config, 'save_config', :yml, true, SaveConfig)
+  register(:save_config, 'save_config', :json, true, SaveConfig)
 end

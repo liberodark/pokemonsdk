@@ -59,8 +59,8 @@ class Viewport < LiteRGSS::Viewport
       if x.is_a?(Hash)
         z = x[:z] || z
         y = x[:y] || 0
-        width = x[:width] || PSDK_CONFIG.native_resolution.to_i
-        height = x[:height] || PSDK_CONFIG.native_resolution.split('x')[1].to_i
+        width = x[:width] || Configs.display.game_resolution.x
+        height = x[:height] || Configs.display.game_resolution.y
         x = x[:x] || 0
       elsif x.is_a?(Symbol)
         return create(CONFIGS[x], 0, 1, 1, y)

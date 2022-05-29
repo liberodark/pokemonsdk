@@ -6,6 +6,7 @@
 # To execute this script write :
 #   PSDKEditor.convert
 require_relative '../../keep/GameData'
+require_relative '../../keep/legacy_psdk_config'
 module PSDKEditor
   # Root folder of the PSDK Editor data
   ROOT = 'Data/Studio'
@@ -16,6 +17,7 @@ module PSDKEditor
 
   # Convert the project to a PSDK Editor Project
   def convert
+    PSDK_CONFIG.send(:initialize)
     GameData.load
     create_paths
     convert_pokedex
@@ -665,7 +667,6 @@ module PSDKEditor
   def convert_game_options_settings
     data_game_options = { klass: 'Configs::Project::GameOptions' }
     data_game_options[:order] = PSDK_CONFIG.options.order
-    data_game_options[:options] = PSDK_CONFIG.options.options
     File.write(File.join(ROOT_CONFIGS, 'game_options_config.json'), data_game_options.to_json)
   end
 

@@ -4,7 +4,7 @@ class String
   # @return [self]
   # @author Nuri Yuri
   def to_pokemon_number
-    return self if Fonts::NO_POKEMON_FONT
+    return self unless Configs.texts.fonts.supports_pokemon_number
 
     tr!('0123456789n/', '│┤╡╢╖╕╣║╗╝‰▓')
     return self

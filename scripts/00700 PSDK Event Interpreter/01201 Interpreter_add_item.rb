@@ -12,7 +12,7 @@ class Interpreter
   def add_item(item_id, no_delete = false, text_id: 4, no_space_text_id: 7, color: 11, count: 1)
     db_symbol = item_id.is_a?(Symbol) ? item_id : data_item(item_id).db_symbol
 
-    if (max = PSDK_CONFIG.max_bag_item_count) > 0 && ($bag.item_quantity(db_symbol) + count) >= max
+    if (max = Configs.settings.max_bag_item_count) > 0 && ($bag.item_quantity(db_symbol) + count) >= max
       add_item_no_space(db_symbol, no_space_text_id, color)
     else
       item_text, socket = add_item_show_message_got(db_symbol, text_id, color, count: count)

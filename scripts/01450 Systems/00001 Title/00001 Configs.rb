@@ -18,19 +18,13 @@ module Configs
     # Get the duration the controls has to wait before showing
     # @return [Float]
     attr_accessor :control_wait
+  end
 
-    # Create a new config
-    def initialize
-      @intro_movie_map_id = 14
-      @bgm_duration = 4_418_000
-      @bgm_name = 'audio/bgm/rosa_title'
-      @language_selection_enabled = true
-      @additional_splashes = %w[pokemon_workshop]
-      @control_wait = 0.5
-    end
+  module Project
+    SceneTitle = SceneTitleConfig
   end
 
   # @!method self.scene_title_config
   #   @return [SceneTitleConfig]
-  register(:scene_title_config, 'scene_title_config', :yml, true, SceneTitleConfig)
+  register(:scene_title_config, 'scene_title_config', :json, true, SceneTitleConfig)
 end

@@ -6,9 +6,9 @@ module Studio
     def initialize
       @in = STDIN
       @select_in = [@in]
-      @out = STDOUT
+      @out = $original_stdout
       @out.sync = true
-      @err = STDERR
+      @err = $original_stderr
       @err.sync = true
     end
 

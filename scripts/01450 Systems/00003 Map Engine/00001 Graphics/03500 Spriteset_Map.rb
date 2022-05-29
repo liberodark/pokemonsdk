@@ -81,7 +81,7 @@ class Spriteset_Map
   # Return the prefered tilemap class
   # @return [Class]
   def tilemap_class
-    tilemap_class = PSDK_CONFIG.tilemap.tilemap_class
+    tilemap_class = Configs.display.tilemap_settings.tilemap_class
     return Object.const_get(tilemap_class) if Object.const_defined?(tilemap_class)
     return Yuki::Tilemap16px if tilemap_class.match?(/16|Yuri_Tilemap/)
 

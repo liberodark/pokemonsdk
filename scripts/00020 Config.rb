@@ -14,6 +14,47 @@
 module Configs
   # List of all registered configs
   @all_registered_configs = {}
+  # List of keys from file to ruby world
+  KEY_TRANSLATIONS = {
+    isMouseDisabled: :is_mouse_disabled,
+    mouseSkin: :mouse_skin,
+    gameResolution: :game_resolution,
+    windowScale: :window_scale,
+    isFullscreen: :is_fullscreen,
+    isPlayerAlwaysCentered: :is_player_always_centered,
+    tilemapSettings: :tilemap_settings,
+    introMovieMapId: :intro_movie_map_id,
+    bgmName: :bgm_name,
+    bgmDuration: :bgm_duration,
+    isLanguageSelectionEnabled: :language_selection_enabled,
+    additionalSplashes: :additional_splashes,
+    controlWaitTime: :control_wait,
+    maximumSave: :maximum_save_count,
+    saveKey: :save_key,
+    saveHeader: :save_header,
+    baseFilename: :base_filename,
+    isCanSaveOnAnySave: :can_save_on_any_save,
+    projectSplash: :project_splash,
+    lineHeight: :line_height,
+    scrollSpeed: :speed,
+    leaderSpacing: :leader_spacing,
+    chiefProjectTitle: :chief_project_title,
+    chiefProjectName: :chief_project_name,
+    gameCredits: :game_credits,
+    pokemonMaxLevel: :max_level,
+    isAlwaysUseForm0ForEvolution: :always_use_form0_for_evolution,
+    isUseForm0WhenNoEvolutionData: :use_form0_when_no_evolution_data,
+    maxBagItemCount: :max_bag_item_count,
+    isSmoothTexture: :smooth_texture,
+    isVsyncEnabled: :vsync_enabled,
+    gameTitle: :game_title,
+    gameVersion: :game_version,
+    defaultLanguage: :default_language_code,
+    choosableLanguageCode: :choosable_language_code,
+    choosableLanguageTexts: :choosable_language_texts
+  }
+  # Name of the file that must exist if we want to successfully load scripts
+  SCRIPTS_REQUIRED_CONFIG = 'Data/configs/display_config.json'
 
   class << self
     # Register a new config
@@ -79,14 +120,21 @@ module Configs
           pre_data.each do |key, value|
             next if key == :klass
 
-            data.send("#{key}=", value)
+            data.send("#{KEY_TRANSLATIONS[key] || key}=", value)
           end
         elsif !data.is_a?(info[:klass])
           raise "Invalid klass #{data.class} for file #{real_filename}, expected #{info[:klass]}"
         end
+      elsif real_filename == SCRIPTS_REQUIRED_CONFIG
+        ScriptLoader.load_tool('PSDKEditor')
+        PSDK_CONFIG.send(:initialize)
+        PSDKEditor.convert_display_settings
+        PSDKEditor.convert_texts_settings
+        PSDKEditor.convert_infos_settings
+        return load_config_data(info, rxdata_filename, real_filename)
       else
         log_info("Creating config file #{real_filename}")
-        data = info[:klass].new
+        data = File.exist?(rxdata_filename) ? load_data(rxdata_filename) : info[:klass].new
         File.write(real_filename, info[:type] == :yml ? YAML.dump(data) : JSON.dump(data))
       end
 

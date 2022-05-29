@@ -21,11 +21,11 @@ module PFM
       def each
         return to_enum(__method__) unless block_given?
 
-        1.upto(PSDK_CONFIG.pokemon_max_level) { |i| yield(self[i]) }
+        1.upto(size) { |i| yield(self[i]) }
       end
 
       def size
-        PSDK_CONFIG.pokemon_max_level
+        Configs.settings.max_level
       end
 
       private

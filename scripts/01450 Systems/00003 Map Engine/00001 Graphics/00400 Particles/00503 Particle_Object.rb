@@ -3,7 +3,7 @@ module Yuki
   # @author Nuri Yuri
   class Particle_Object
     # Zoom of a tile to adjust coordinate
-    TILE_ZOOM = PSDK_CONFIG.tilemap.character_tile_zoom
+    TILE_ZOOM = Configs.display.tilemap_settings.character_tile_zoom
     # if the particle is disposed
     # @return [Boolean]
     attr_reader :disposed

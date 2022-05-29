@@ -11,9 +11,9 @@ module GamePlay
       super
       # @type [Hash{Symbol => Helper}]
       @options = {}
-      @order = PSDK_CONFIG.options.order
-      @order.delete(:language) unless PSDK_CONFIG.choosable_language_code&.any?
-      @order.delete_if { |sym| PSDK_CONFIG.options.options.none? { |opt_arr| opt_arr[0] == sym } }
+      @order = Configs.game_options.order
+      @order.delete(:language) if Configs.language.choosable_language_code.none?
+      @order.delete_if { |sym| !PREDEFINED_OPTIONS[sym] }
       load_options
       @modified_options = []
       @index = 0
@@ -52,9 +52,7 @@ module GamePlay
     private
 
     def load_options
-      PSDK_CONFIG.options.options.each do |option|
-        add_option(*option)
-      end
+      @order.each { |sym| add_option(*PREDEFINED_OPTIONS[sym]) }
     end
 
     def create_graphics

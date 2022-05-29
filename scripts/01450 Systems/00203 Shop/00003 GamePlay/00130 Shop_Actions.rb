@@ -69,7 +69,7 @@ module GamePlay
     # @return [Boolean] if the buy_item procedure should immediately exit
     def amount_selection(price, item_id)
       max_amount = PFM.game_state.money / price
-      if (max = PSDK_CONFIG.max_bag_item_count) > 0
+      if (max = Configs.settings.max_bag_item_count) > 0
         max -= $bag.item_quantity(item_id)
         return display_message(parse_text(11, 31)) && true if max <= 0 # Not enough space
 

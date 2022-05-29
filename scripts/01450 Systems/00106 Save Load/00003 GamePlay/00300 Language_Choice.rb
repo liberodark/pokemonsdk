@@ -10,8 +10,8 @@ module GamePlay
     def initialize
       super()
       @running = true
-      @lang_list = PSDK_CONFIG.choosable_language_code
-      @index = @lang_list.find_index(PSDK_CONFIG.default_language_code)
+      @lang_list = Configs.language.choosable_language_code
+      @index = @lang_list.find_index(Configs.language.default_language_code)
       @counter = 0
     end
 
@@ -66,7 +66,7 @@ module GamePlay
 
       if Input.trigger?(:A)
         @running = false
-        PSDK_CONFIG.default_language_code = @lang_list[@index]
+        Configs.language.default_language_code = @lang_list[@index]
       end
     end
 

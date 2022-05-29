@@ -2,8 +2,6 @@ raise 'You did not loaded LiteRGSS2' unless defined?(LiteRGSS::DisplayWindow)
 
 module LiteRGSS
   module Fonts
-    # Tell if the game supports specific pokemon glyph
-    NO_POKEMON_FONT = !PSDK_CONFIG.layout.general.supports_pokemon_number
     @line_heights = []
     class << self
       # Load a line height for a specific font
@@ -26,13 +24,13 @@ end
 Fonts = LiteRGSS::Fonts
 
 Graphics.on_start do
-  PSDK_CONFIG.layout.general.ttf_files.each do |ttf_file|
+  Configs.texts.fonts.ttf_files.each do |ttf_file|
     id = ttf_file[:id]
     LiteRGSS::Fonts.load_font(id, "Fonts/#{ttf_file[:name]}.ttf")
     LiteRGSS::Fonts.set_default_size(id, ttf_file[:size])
     LiteRGSS::Fonts.load_line_height(id, ttf_file[:line_height])
   end
-  PSDK_CONFIG.layout.general.alt_sizes.each do |size|
+  Configs.texts.fonts.alt_sizes.each do |size|
     id = size[:id]
     LiteRGSS::Fonts.set_default_size(id, size[:size])
     LiteRGSS::Fonts.load_line_height(id, size[:line_height])

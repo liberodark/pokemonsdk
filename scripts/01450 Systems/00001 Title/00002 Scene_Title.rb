@@ -11,7 +11,7 @@ class Scene_Title < GamePlay::BaseCleanUpdate
     data_load
     super(true)
     @current_state = :psdk_splash_initialize
-    @current_state = :action_play_game if debug? && (ARGV.include?('skip_title') || PSDK_CONFIG.skip_title_in_debug)
+    @current_state = :action_play_game if debug? && ARGV.include?('skip_title')
     @splash_counter = 0
     @bgm_duration = Configs.scene_title_config.bgm_duration
     @movie_map_id = Configs.scene_title_config.intro_movie_map_id || 0

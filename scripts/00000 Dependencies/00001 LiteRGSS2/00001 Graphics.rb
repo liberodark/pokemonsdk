@@ -144,8 +144,8 @@ module Graphics
       return if @window
 
       @window = LiteRGSS::DisplayWindow.new(
-        PSDK_CONFIG.game_title, *PSDK_CONFIG.choose_best_resolution, PSDK_CONFIG.window_scale,
-        32, 0, PSDK_CONFIG.vsync_enabled, PSDK_CONFIG.running_in_full_screen, !PSDK_CONFIG.mouse_skin
+        Configs.infos.game_title, *PSDK_CONFIG.choose_best_resolution, PSDK_CONFIG.window_scale,
+        32, 0, PSDK_CONFIG.vsync_enabled, PSDK_CONFIG.running_in_full_screen, !Configs.devices.mouse_skin
       )
       @on_start.each(&:call)
       @on_start.clear

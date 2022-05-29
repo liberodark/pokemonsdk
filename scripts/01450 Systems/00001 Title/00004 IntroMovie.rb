@@ -10,7 +10,7 @@ class Scene_Title
     $tester = true # No new GameMap hack
     $tester = nil
     Yuki::MapLinker.reset
-    PFM::GameState.new(false, PFM.game_state&.options&.language || PSDK_CONFIG.default_language_code).expand_global_var
+    PFM::GameState.new(false, PFM.game_state&.options&.language || Configs.language.default_language_code).expand_global_var
     $game_party.setup_starting_members
     $game_map.setup(map_id)
     $game_player.moveto(Yuki::MapLinker.get_OffsetX, Yuki::MapLinker.get_OffsetY)

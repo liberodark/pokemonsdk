@@ -36,7 +36,7 @@ module Studio
     # Return the default game lang
     # @return [String]
     def default_lang
-      PSDK_CONFIG.default_language_code
+      Configs.language.default_language_code
     end
 
     # Get a text front the text database
@@ -164,7 +164,7 @@ module Studio
       langs = Dir["Data/Text/Dialogs/#{CSV_BASE}.*.dat"].collect { |i| i.match(/[0-9]+\.([a-z]+)\.dat$/).captures[0] }
       if langs.empty? ||
          File.mtime("Data/Text/Dialogs/#{CSV_BASE}.#{langs.first}.dat") < File.mtime("Data/Text/#{langs.first}.dat")
-        langs << PSDK_CONFIG.default_language_code if langs.empty?
+        langs << Configs.language.default_language_code if langs.empty?
         log_debug('Updating Text files')
         filename = './plugins/text2csv' # Just to avoid the warning
         require filename

@@ -22,7 +22,7 @@ module Yuki
       @map_datas = []
       @ox = 0
       @oy = 0
-      @autotile_idle_count = PSDK_CONFIG.tilemap.autotile_idle_frame_count
+      @autotile_idle_count = Configs.display.tilemap_settings.autotile_idle_frame_count
       reset
     end
 
@@ -127,7 +127,7 @@ module Yuki
     # Get the tilemap configuration for its size
     # @return [Array<Integer>]
     def nx_ny_configs
-      return PSDK_CONFIG.tilemap.tilemap_size_x, PSDK_CONFIG.tilemap.tilemap_size_y
+      return Configs.display.tilemap_settings.tilemap_size.x, Configs.display.tilemap_settings.tilemap_size.y
     end
 
     # Update the position of each tile according to the ox / oy, also adjusts z
