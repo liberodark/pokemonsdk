@@ -28,11 +28,11 @@ Graphics.on_start do
     id = ttf_file[:id]
     LiteRGSS::Fonts.load_font(id, "Fonts/#{ttf_file[:name]}.ttf")
     LiteRGSS::Fonts.set_default_size(id, ttf_file[:size])
-    LiteRGSS::Fonts.load_line_height(id, ttf_file[:line_height])
+    LiteRGSS::Fonts.load_line_height(id, ttf_file[:lineHeight])
   end
   Configs.texts.fonts.alt_sizes.each do |size|
     id = size[:id]
     LiteRGSS::Fonts.set_default_size(id, size[:size])
-    LiteRGSS::Fonts.load_line_height(id, size[:line_height])
+    LiteRGSS::Fonts.load_line_height(id, size[:lineHeight])
   end
 end
