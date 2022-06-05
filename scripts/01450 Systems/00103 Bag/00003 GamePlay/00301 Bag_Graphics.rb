@@ -54,6 +54,7 @@ module GamePlay
       create_shadow
       create_search
       create_frame # Should always be last
+      Graphics.sort_z
     end
 
     # Create the base ui
