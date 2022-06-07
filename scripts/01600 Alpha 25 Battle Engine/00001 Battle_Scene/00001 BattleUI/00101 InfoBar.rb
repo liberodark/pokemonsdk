@@ -69,6 +69,11 @@ module BattleUI
       end
     end
 
+    def data=(pokemon)
+      super
+      @star.visible = pokemon.shiny && !pokemon.egg?
+    end
+
     private
 
     # Get the base position of the Pokemon in 1v1
@@ -104,6 +109,7 @@ module BattleUI
       create_gender_sprite
       create_level
       create_status
+      @star = create_star
     end
 
     def create_background
@@ -155,6 +161,11 @@ module BattleUI
 
     def create_status
       add_sprite(8, 19, NO_INITIAL_IMAGE, type: StatusSprite)
+    end
+
+    def create_star
+      return push(12, 21, 'shiny') if enemy?
+      return push(12, 21, 'shiny')
     end
 
     # Creates the go_in animation
