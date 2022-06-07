@@ -322,4 +322,11 @@ class Interpreter
       message(ext_text(9005, message_id + 1))
     end
   end
+
+    # Mirror a RMXP Picture
+    # @param id [Integer] the picture id
+    # @param bool [Boolean] the mirroring state
+    def mirror_picture(id)
+      $game_screen.pictures[id].mirror = true
+    end
 end

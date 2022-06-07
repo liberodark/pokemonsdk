@@ -72,6 +72,8 @@ class Sprite_Picture < ShaderedSprite
       shader.set_float_uniform('tone', tone)
       @current_tone = tone.clone
     end
+    self.mirror = @picture.mirror
+    self.mirror = @picture.mirror = false
   end
 
   # Update the gif animation

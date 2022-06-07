@@ -13,6 +13,7 @@ class Game_Picture
   attr_reader   :blend_type               # ブレンド方法
   attr_reader   :tone                     # 色調
   attr_reader   :angle                    # 回転角度
+  attr_reader   :mirror
   # Initialize the Game_Picture with default value
   # @param number [Integer] the "id" of the picture
   def initialize(number)
@@ -36,6 +37,7 @@ class Game_Picture
     @tone_duration = 0
     @angle = 0
     @rotate_speed = 0
+    @mirror = false
   end
   # Show a picture
   # @param name [String] The name of the image in Graphics/Pictures
@@ -104,6 +106,11 @@ class Game_Picture
   # Remove the picture from the screen
   def erase
     @name = nil.to_s
+  end
+  # Set the mirror state of a Game_Picture
+  # @param bool [Boolean] the mirror state
+  def mirror=(bool)
+    @mirror = bool
   end
   # Update the picture state change
   def update
