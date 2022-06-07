@@ -103,6 +103,11 @@ class Game_Character
     end
   end
 
+  # Look directly to the current event
+  def look_this_event
+    look_to($game_system.map_interpreter.event_id)
+  end
+
   # Array of SystemTag that define stairs
   StairsTag = [StairsL, StairsD, StairsU, StairsR]
 
