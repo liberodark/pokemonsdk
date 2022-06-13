@@ -50,6 +50,8 @@ module Battle
     def proceed_internal(user, targets)
       return unless (actual_targets = proceed_internal_precheck(user, targets))
 
+      post_accuracy_check_effects(user, targets)
+
       play_animation(user, targets)
 
       deal_damage(user, actual_targets) &&
@@ -204,6 +206,16 @@ module Battle
       return true if powder? && target.type_grass?
 
       return false
+    end
+
+    # Calls the post_accuracy_check method for each effects
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param targets [Array<PFM::PokemonBattler>] expected targets
+    def post_accuracy_check_effects(user, targets)
+      creatures = [user] + targets
+      logic.each_effects(*creatures) do |e|
+        e.on_post_accuracy_check(logic, scene, targets, user, self)
+      end
     end
 
     # Decrease the PP of the move
