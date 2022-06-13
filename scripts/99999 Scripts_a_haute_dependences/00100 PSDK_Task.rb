@@ -19,6 +19,10 @@ module Scheduler
     end
   end
 
+  add_proc(:on_warp_start, ::Scene_Map, 'Reset Battleback name', 999) do
+    $game_temp.battleback_name = nil.to_s unless $game_switches[Yuki::Sw::DISABLE_BATTLEBACK_RESET]
+  end
+
   add_proc(:on_warp_process, ::Scene_Map, 'Descendre du vélo s\'il faut & reset force', 100) do
     if $env.get_current_zone_data.is_warp_disallowed
       if $game_switches[::Yuki::Sw::EV_Bicycle]

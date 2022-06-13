@@ -100,6 +100,8 @@ module Yuki
     BT_Party_Menu_Reminder = 47
     # Make the AI able to win a battle
     BT_AI_CAN_WIN = 48
+    # Disable the Battleback Name reset when you go on a new map
+    DISABLE_BATTLEBACK_RESET = 49
     # If the Water Reflection is disabled
     WATER_REFLECTION_DISABLED = 51
     # If the player is running

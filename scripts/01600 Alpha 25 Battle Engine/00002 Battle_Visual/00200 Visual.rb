@@ -155,8 +155,10 @@ module Battle
     # Return the background name according to the current state of the player
     # @return [String]
     def background_name
-      return timed_background_name($game_temp.battleback_name) unless $game_temp.battleback_name.to_s.empty?
-
+      unless $game_temp.battleback_name.to_s.empty?
+        timed_background = timed_background_name($game_temp.battleback_name)
+        return timed_background if RPG::Cache.battleback_exist?(timed_background)
+      end
       zone_type = $env.get_zone_type
       zone_type += 1 if zone_type > 0 || $env.grass?
       log_debug("Background : ZoneType = #{zone_type} / BGName = #{BACKGROUND_NAMES[zone_type]}")
