@@ -31,7 +31,7 @@ module GamePlay
 
       options_info = parse_string(options_info) if options_info.is_a?(String)
       options_text = parse_string(options_text) if options_text.is_a?(String)
-      options_text.map! { |option_text| get_text(option_text) } unless options_text.is_a?(String)
+      options_text = options_text.map { |option_text| get_text(option_text) } unless options_text.is_a?(String)
       option_name = get_text(option_name)
       option_descr = get_text(option_descr)
       getter = attribute
@@ -66,13 +66,13 @@ module GamePlay
       attr_reader :values
       # Option value text(s)
       # @return [Array<String>, String]
-      attr_reader :values_text
+      attr_accessor :values_text
       # Option name
       # @return [String]
-      attr_reader :name
+      attr_accessor :name
       # Option description
       # @return [String]
-      attr_reader :description
+      attr_accessor :description
       # Option getter (on $options)
       # @return [Symbol]
       attr_reader :getter

@@ -125,10 +125,27 @@ module GamePlay
         play_cursor_se
         @buttons[@index].value = new_value
         current_option.update_value(new_value)
+        reload_texts if @options.key(@buttons[@index].option) == :language
       else
         play_buzzer_se
       end
       return false
+    end
+
+    # Reload the texts of the UI dynamically when the language is changed
+    def reload_texts
+      @buttons.each do |button|
+        sym = @options.key(button.option)
+        options_text = PREDEFINED_OPTIONS[sym][3]
+        if options_text.is_a?(String)
+          button.option.values_text = parse_string(options_text)
+        else
+          button.option.values_text = options_text.map { |option_text| get_text(option_text) }
+        end
+        button.option.name = get_text(PREDEFINED_OPTIONS[sym][4])
+        button.option.description = get_text(PREDEFINED_OPTIONS[sym][5])
+      end
+      @buttons.each(&:reload_texts)
     end
 
     # Method that save the options and quit the scene

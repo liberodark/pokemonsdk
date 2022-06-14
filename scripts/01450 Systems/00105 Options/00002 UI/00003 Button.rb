@@ -43,6 +43,12 @@ module UI
         return format(@option.values_text, @value) if @option.type == :slider
         @option.values_text[value_index]
       end
+
+      # Reload the name of the button for when the language is changed in the options
+      def reload_texts
+        @option_name.text = @option.name
+        @option_value.text = value_text
+      end
     end
   end
 end
