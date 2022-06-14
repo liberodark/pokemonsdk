@@ -329,4 +329,71 @@ class Interpreter
     def mirror_picture(id)
       $game_screen.pictures[id].mirror = true
     end
+
+  # Give a certain amount of exp to one Pokemon
+  # @param index [Integer] the Pokemon index
+  # @param amount [Integer] the amount of exp to give
+  def give_exp(index, amount)
+    index = index.clamp(0, $actors.size - 1)
+    return if $actors[index].level >= $pokemon_party.level_max_limit || $actors[index].egg?
+
+    @amount = amount
+    pokemon = $actors[index]
+    exp_to_next_lvl = pokemon.exp_lvl - pokemon.exp
+
+    while @amount >= exp_to_next_lvl
+      break if pokemon.level >= $pokemon_party.level_max_limit
+
+      pokemon.exp += exp_to_next_lvl
+      @amount -= exp_to_next_lvl
+      exp_to_next_lvl = pokemon.exp_lvl - pokemon.exp
+      if pokemon.exp >= pokemon.exp_lvl
+        pokemon.level_up_stat_refresh
+        Audio.me_play(PFM::ItemDescriptor::LVL_SOUND)
+        PFM::Text.set_num3(pokemon.level.to_s, 1)
+        $scene.display_message_and_wait(parse_text(18, 62, '[VAR 010C(0000)]' => pokemon.given_name))
+        PFM::Text.reset_variables
+        pokemon.check_skill_and_learn
+        id, form = pokemon.evolve_check
+        GamePlay.make_pokemon_evolve(pokemon, id, form, true) if id
+      end
+    
+    end
+
+    pokemon.exp += @amount unless pokemon.level >= $pokemon_party.level_max_limit
+
+  end
+
+  # Give a certain amount of exp to every Pokemon in party
+  # @param amount [Integer] the amount of exp to give
+  def give_exp_all(amount)
+    $actors.size.times { |i| give_exp(i, amount) }
+  end
+
+  # Give a certain amount of level to one Pokemon
+  # @param index [Integer] the Pokemon index
+  # @param amount [Integer] the amount of level to give
+  def give_level(index, amount)
+    return if $actors[index].level >= $pokemon_party.level_max_limit || $actors[index].egg?
+
+    amount.times do |i|
+      break if $actors[index].level >= $pokemon_party.level_max_limit
+
+      $actors[index].level_up_stat_refresh
+      Audio.me_play(PFM::ItemDescriptor::LVL_SOUND)
+      PFM::Text.set_num3($actors[index].level.to_s, 1)
+      $scene.display_message_and_wait(parse_text(18, 62, '[VAR 010C(0000)]' => $actors[index].given_name))
+      PFM::Text.reset_variables
+      $actors[index].check_skill_and_learn
+      id, form = $actors[index].evolve_check
+      GamePlay.make_pokemon_evolve($actors[index], id, form, true) if id
+    end
+  end
+
+  # Give a certain amount of level to every Pokemon in party
+  # @param amount [Integer] the amount of level to give
+  def give_level_all(amount)
+    $actors.size.times { |i| give_level(i, amount) }
+  end
+
 end
