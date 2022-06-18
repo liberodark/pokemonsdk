@@ -1085,5 +1085,6 @@ pokemonsdk/scripts/02000 Nuri Yuri/00001 DynamicLight/00001 DynamicLight.rb
 pokemonsdk/scripts/02000 Nuri Yuri/00001 DynamicLight/00002 DynamicLightSprite.rb
 pokemonsdk/scripts/02000 Nuri Yuri/00001 DynamicLight/00003 DL PokemonParty.rb
 pokemonsdk/scripts/02000 Nuri Yuri/00001 DynamicLight/00004 ScalableDynamicLight.rb
+pokemonsdk/scripts/99999 Scripts_a_haute_dependences/00000 Rustine.rb
 pokemonsdk/scripts/99999 Scripts_a_haute_dependences/00100 PSDK_Task.rb
 pokemonsdk/scripts/99999 Scripts_a_haute_dependences/00200 Yuki__SoftReset.rb

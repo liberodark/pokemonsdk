@@ -7,7 +7,7 @@ module GamePlay
   #     GamePlay.current_scene.is_a?(GamePlay.bag_mixin)
   module BagMixin
     # ID of the item selected
-    # @return [Integer]
+    # @return [Symbol, Integer]
     attr_accessor :return_data
     # Wrapper of the choosen item in battle
     # @return [PFM::ItemDescriptor::Wrapper, nil]

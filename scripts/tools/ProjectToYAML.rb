@@ -15,7 +15,18 @@ module ProjectToYAML
   def convert
     files = Dir['Data/*.rxdata'] +
             Dir['Data/Animations/*.dat'] -
-            ['Data/project_identity.rxdata', 'Data/Viewport.rxdata']
+            ['Data/project_identity.rxdata',
+             'Data/Viewport.rxdata',
+             'Data/Armors.rxdata',
+             'Data/Classes.rxdata',
+             'Data/Enemies.rxdata',
+             'Data/Exptable.rxdata',
+             'Data/Items.rxdata',
+             'Data/Scripts.rxdata',
+             'Data/Skills.rxdata',
+             'Data/States.rxdata',
+             'Data/Troops.rxdata',
+             'Data/Weapons.rxdata']
     files.each do |filename|
       print "\r#{filename}".ljust(60)
       File.write(filename + '.yml', YAML.dump(load_data(filename)))
@@ -27,7 +38,19 @@ module ProjectToYAML
   # Restore a project from YAML
   def restore
     files = Dir['Data/*.rxdata.yml'] +
-            Dir['Data/Animations/*.dat.yml']
+            Dir['Data/Animations/*.dat.yml'] -
+            ['Data/project_identity.rxdata.yml',
+             'Data/Viewport.rxdata.yml',
+             'Data/Armors.rxdata.yml',
+             'Data/Classes.rxdata.yml',
+             'Data/Enemies.rxdata.yml',
+             'Data/Exptable.rxdata.yml',
+             'Data/Items.rxdata.yml',
+             'Data/Scripts.rxdata.yml',
+             'Data/Skills.rxdata.yml',
+             'Data/States.rxdata.yml',
+             'Data/Troops.rxdata.yml',
+             'Data/Weapons.rxdata.yml']
     files.each do |filename|
       print "\r#{filename}".ljust(60)
       save_data(YAML.unsafe_load(File.read(filename)), filename.sub(/\.yml$/, ''))

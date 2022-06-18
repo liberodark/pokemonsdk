@@ -85,7 +85,7 @@ module GamePlay
     def choice_a_berry
       play_decision_se
       @running = false
-      @return_data = @item_list[@index] || -1
+      @return_data = @item_list[@index] ? data_item(@item_list[@index]).id : -1
     end
     alias choice_a_map choice_a_berry
 

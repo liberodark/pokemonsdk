@@ -207,6 +207,7 @@ module PFM
       # @type [PFM::Pokemon]
       pokemon = @daycares.dig(game_state.game_variables[var_id], :pokemon, index)
       (text = PFM::Text).set_num3(pokemon.level_text)
+      text.set_num3(pokemon.level_text, 1)
       text.set_pkname(pokemon.name)
       parse_text(36, 33 + (pokemon.gender == 0 ? 3 : pokemon.gender))
     end
