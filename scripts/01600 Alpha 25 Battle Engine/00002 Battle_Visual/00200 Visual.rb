@@ -64,6 +64,7 @@ module Battle
       @animations.each(&:update)
       @animations.delete_if(&:done?)
       @parallel_animations.each_value(&:update)
+      @gif_container&.update(@background.bitmap)
       update_battlers
       update_info_bars
       update_team_info
@@ -149,7 +150,16 @@ module Battle
 
     # Create the default background
     def create_background
-      @background = ShaderedSprite.new(@viewport).set_bitmap(background_name, :battleback)
+      bg_name = background_name
+      if Yuki::GifReader.exist?("#{bg_name}.gif", :battleback)
+        @background = Sprite.new(viewport)
+        @gif_container = Yuki::GifReader.create("#{bg_name}.gif", :battleback)
+        @background.bitmap = Bitmap.new(@gif_container.width, @gif_container.height)
+        @background.x = @background.y = 0
+        @to_dispose << @background.bitmap
+      else
+        @background = ShaderedSprite.new(@viewport).set_bitmap(bg_name, :battleback)
+      end
     end
 
     # Return the background name according to the current state of the player
@@ -157,7 +167,7 @@ module Battle
     def background_name
       unless $game_temp.battleback_name.to_s.empty?
         timed_background = timed_background_name($game_temp.battleback_name)
-        return timed_background if RPG::Cache.battleback_exist?(timed_background)
+        return timed_background if RPG::Cache.battleback_exist?(timed_background) || Yuki::GifReader.exist?("#{timed_background}.gif", :battleback)
       end
       zone_type = $env.get_zone_type
       zone_type += 1 if zone_type > 0 || $env.grass?
@@ -190,7 +200,7 @@ module Battle
       TIMED_BACKGROUND_SUFFIXES[index].each do |suffix|
         temp_bg_name = "#{background_name}_#{suffix}"
         log_debug("Try to find background #{temp_bg_name}")
-        return temp_bg_name if RPG::Cache.battleback_exist?(temp_bg_name)
+        return temp_bg_name if RPG::Cache.battleback_exist?(temp_bg_name) || Yuki::GifReader.exist?("#{temp_bg_name}.gif", :battleback)
       end
 
       log_debug("Fallback on #{background_name}")
