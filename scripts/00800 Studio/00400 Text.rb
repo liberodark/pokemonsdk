@@ -166,12 +166,23 @@ module Studio
          File.mtime("Data/Text/Dialogs/#{CSV_BASE}.#{langs.first}.dat") < File.mtime("Data/Text/#{langs.first}.dat")
         langs << Configs.language.default_language_code if langs.empty?
         log_debug('Updating Text files')
-        filename = './plugins/text2csv' # Just to avoid the warning
-        require filename
+        ScriptLoader.load_tool('Text2CSV')
         Available_Langs.clear
         Available_Langs.concat(langs)
         log_debug('Compiling Text files')
         compile
+      else
+        denom = "#{langs.first}.dat"
+        must_update = Dir["Data/Text/Dialogs/*.#{denom}"].any? do |dat_filename|
+          csv_filename = dat_filename.sub(denom, 'csv')
+          next false unless File.exist?(csv_filename)
+
+          next File.mtime(dat_filename) < File.mtime(csv_filename)
+        end
+        if must_update
+          log_debug('Recompiling texts from CSV')
+          compile
+        end
       end
     end
   end
