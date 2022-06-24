@@ -72,8 +72,8 @@ module Battle
       def distribute_global_exp_for(enemy, expable)
         base_exp = exp_base(enemy)
         return expable.map do |receiver|
-          exp = (base_exp * exp_multipliers(receiver)).floor
-          exp /= (receiver.last_battle_turn != $game_temp.battle_turn ? 14 : 7)
+          exp = (base_exp * level_multiplier(enemy.level, receiver.level) * exp_multipliers(receiver)).floor
+          exp /= (receiver.last_battle_turn != $game_temp.battle_turn ? 2 : 1) * ($game_switches[Yuki::Sw::BT_ScaledExp] ? 5 : 7)
           next [receiver, exp]
         end
       end
@@ -89,7 +89,7 @@ module Battle
         multi_exp_factor = exp_multi_exp_factor(multi_exp_count)
         fought_exp_factor = exp_fought_factor(multi_exp_count, fought_count_during_this_turn)
         return expable.map do |receiver|
-          exp = (base_exp * exp_multipliers(receiver)).floor
+          exp = (base_exp * level_multiplier(enemy.level, receiver.level) * exp_multipliers(receiver)).floor
           if receiver.last_battle_turn != $game_temp.battle_turn # Did not fight this turn
             next [receiver, (exp / multi_exp_factor).to_i]
           else
@@ -103,6 +103,14 @@ module Battle
       # @return [Float]
       def exp_base(enemy)
         return enemy.base_exp * enemy.level * (logic.battle_info.trainer_battle? ? 1.5 : 1)
+      end
+
+      # Multiplier depending on levels of enemy and receiver
+      # @param enemy_level [Integer]
+      # @param receiver_level [Integer]
+      # @return [Float]
+      def level_multiplier(enemy_level, receiver_level)
+        return $game_switches[Yuki::Sw::BT_ScaledExp] ? ((2.0 * enemy_level + 10) / (enemy_level + receiver_level + 10)) ** 2.5 : 1
       end
 
       # Exp multipliers
@@ -134,14 +142,14 @@ module Battle
       # @param multi_exp_count [Integer] number of Pokemon with multi_exp
       # @return [Integer]
       def exp_multi_exp_factor(multi_exp_count)
-        return 14 * (multi_exp_count + 1)
+        return ($game_switches[Yuki::Sw::BT_ScaledExp] ? 10 : 14) * (multi_exp_count + 1)
       end
 
       # Get the fought factor
       # @param multi_exp_count [Integer] number of Pokemon with multi_exp
       # @param fought [Integer] number of Pokemon that fought
       def exp_fought_factor(multi_exp_count, fought)
-        return (multi_exp_count > 0 ? 14.0 : 7.0) * fought
+        return ($game_switches[Yuki::Sw::BT_ScaledExp] ? 5 : 7) * (multi_exp_count > 0 ? 2.0 : 1.0) * fought
       end
 
       # Get the list of Pokemon that should receive the EV

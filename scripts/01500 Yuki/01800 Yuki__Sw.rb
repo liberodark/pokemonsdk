@@ -102,6 +102,8 @@ module Yuki
     BT_AI_CAN_WIN = 48
     # Disable the Battleback Name reset when you go on a new map
     DISABLE_BATTLEBACK_RESET = 49
+    # If exp gain is scaled by player Pokémon level
+    BT_ScaledExp = 50
     # If the Water Reflection is disabled
     WATER_REFLECTION_DISABLED = 51
     # If the player is running
