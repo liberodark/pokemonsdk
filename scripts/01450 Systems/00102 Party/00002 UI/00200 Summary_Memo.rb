@@ -76,11 +76,13 @@ module UI
         '[VAR NUM2(0006)]' => time_egg.strftime('%m'),
         '[VAR NUM2(0005)]' => time_egg.strftime('%y'),
         '[VAR LOCATION(0008)]' => pokemon.egg_zone_name,
+        '[VAR 0105(0008)]' => pokemon.egg_zone_name,
         '[VAR NUM3(0003)]' => pokemon.captured_level.to_s,
         '[VAR NUM2(0002)]' => time.strftime('%d'),
         '[VAR NUM2(0001)]' => time.strftime('%m'),
         '[VAR NUM2(0000)]' => time.strftime('%y'),
-        '[VAR LOCATION(0004)]' => pokemon.captured_zone_name
+        '[VAR LOCATION(0004)]' => pokemon.captured_zone_name,
+        '[VAR 0105(0004)]' => pokemon.captured_zone_name
       }
       mem = pokemon.memo_text || []
       text = parse_text(mem[0] || 28, mem[1] || 25, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i, "\\1 \n\\2:")
@@ -98,8 +100,10 @@ module UI
         '[VAR NUM2(0006)]' => time_egg.strftime('%m'),
         '[VAR NUM2(0005)]' => time_egg.strftime('%y'),
         '[VAR LOCATION(0008)]' => pokemon.egg_zone_name,
+        '[VAR 0105(0008)]' => pokemon.egg_zone_name,
         '[VAR NUM3(0003)]' => pokemon.captured_level.to_s,
-        '[VAR LOCATION(0004)]' => pokemon.captured_zone_name
+        '[VAR LOCATION(0004)]' => pokemon.captured_zone_name,
+        '[VAR 0105(0004)]' => pokemon.captured_zone_name
       }
       if pokemon.step_remaining > 10_240
         text = parse_text(28, 89, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
