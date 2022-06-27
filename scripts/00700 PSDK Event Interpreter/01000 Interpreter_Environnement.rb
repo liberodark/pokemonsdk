@@ -34,6 +34,40 @@ class Interpreter < Interpreter_RMXP
   end
   alias trainer_spotted player_spotted?
 
+  # Detect if the event can spot the player in a certain rect in frond of itself
+  # @param nb_pas [Integer] number of step the event should do to spot the player
+  # @param dist [Integer] distance in both side of the detection
+  # @return [Boolean] if the event spot the player or not
+  def player_spotted_rect?(nb_pas, dist)
+    return r = false if player_detection_disabled?
+
+    c = $game_map.events[@event_id]
+    # Detect if the player is too far away from the event
+    return r = false if (c.x - $game_player.x).abs > nb_pas || (c.y - $game_player.y).abs > nb_pas
+    return r = false if c.z != $game_player.z # Prevent detection when event & player arent both on a bridge
+    return r = true if Input.trigger?(:A) && $game_player.front_tile_event == c # Ensure the player can force the event to detect from other sides
+
+    it = c.each_front_tiles_rect(nb_pas, dist)
+    # Find first tile where the event & the player overlaps
+    px, py, * = it.find { |x, y| $game_player.x == x && $game_player.y == y }
+    return false unless px && py
+
+    # Find last tile where the event can move
+    lx, ly, * = it.find { |x, y, d| !c.passable?(x, y, d) }
+    return false unless lx && ly || c.through
+
+    lx = $game_player.x
+    ly = $game_player.y
+    return r = ((lx - px).abs <= 1 && (ly - py).abs <= 1)
+  ensure
+    # Stop the player from Running
+    if r
+      $game_switches[::Yuki::Sw::EV_Run] = false
+      $game_temp.common_event_id = Game_CommonEvent::APPEARANCE
+    end
+  end
+  alias trainer_spotted_rect player_spotted_rect?
+
   # Detect if the event can spot the player and move to the player with direction relative detection
   # @param up [Integer] number of step to the up direction
   # @param down [Integer] number of step to the down direction

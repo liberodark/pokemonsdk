@@ -42,6 +42,33 @@ class Game_Character
     end
   end
 
+  # Iterate through each front tiles including current tile
+  # @param nb_steps [Integer] number of step in front of the event to iterate
+  # @param dist [Integer] distance in both side of the detection
+  # @yieldparam x [Integer] x coordinate
+  # @yieldparam y [Integer] y coordinate
+  # @yieldparam d [Integer] direction
+  def each_front_tiles_rect(nb_steps, dist)
+    x = @x
+    y = @y
+    d = @direction
+    dx = d[2] * (2 * d[1] - 1)
+    dy = (1 - d[2]) * (2 * d[1] - 1)
+    if block_given?
+      0.upto(nb_steps) do
+        (dist*2+1).times { |line| yield(x + (line - dist) * dy, y + (line - dist) * dx, d) }
+        x += dx
+        y += dy
+      end
+    else
+      return Enumerator.new do |yielder|
+        (dist*2+1).times do |line|
+          0.upto(nb_steps) { |i| yielder << [x + (line - dist) * dy + i * dx, y + (line - dist) * dx + i * dy, d] }
+        end
+      end
+    end
+  end
+
   # Check a the #front_event has a specific name
   # @return [Boolean]
   # @author Nuri Yuri
