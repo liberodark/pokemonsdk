@@ -5,6 +5,17 @@
 #
 # To execute this script write :
 #   PSDKEditor.convert
+
+# We are redefining the Item class to prevent crashes
+module GameData
+  GameData.send(:remove_const, :Item)
+  class Item < Base
+    def [](id)
+      data_item(id)
+    end
+  end
+end
+
 require_relative '../../keep/GameData'
 require_relative '../../keep/legacy_psdk_config'
 module PSDKEditor
