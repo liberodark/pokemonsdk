@@ -1,9 +1,12 @@
 module GameData
-  module Item
-    module_function
+  class Base
+  end
 
-    def [](id)
-      data_item(id)
+  class Item < Base
+    class << self
+      def [](id)
+        data_item(id)
+      end
     end
   end
   Text = Studio::Text
