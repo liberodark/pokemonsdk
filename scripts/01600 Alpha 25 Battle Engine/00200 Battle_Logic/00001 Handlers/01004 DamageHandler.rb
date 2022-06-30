@@ -200,6 +200,18 @@ module Battle
       end
     end
 
+    # Mummy's activation before other effects
+    DamageHandler.register_post_damage_hook('PSDK post damage: Mummy') do |handler, hp, target, launcher, skill|
+      next unless target.ability_effect.is_a?(Effects::Ability::Mummy)
+
+      target.ability_effect.on_post_damage(handler, hp, target, launcher, skill)
+    end
+    DamageHandler.register_post_damage_death_hook('PSDK post damage death: Mummy') do |handler, hp, target, launcher, skill|
+      next unless target.ability_effect.is_a?(Effects::Ability::Mummy)
+
+      target.ability_effect.on_post_damage_death(handler, hp, target, launcher, skill)
+    end
+
     # Effects
     DamageHandler.register_damage_prevention_hook('PSDK damage prev: Effects') do |handler, hp, target, launcher, skill|
       next handler.logic.each_effects(launcher, target) do |e|
