@@ -76,11 +76,32 @@ module PSDKEditor
     end
   end
 
+  # Hash returning a hex code depending on the type
+  TYPE_TO_HEX = {
+    bug: '#9bc337',
+    dark: '#a7acbe',
+    dragon: '#7c88f3',
+    electric: '#f5ab3d',
+    fairy: '#e981a4',
+    fighting: '#ea8383',
+    fire: '#ee9474',
+    flying: '#83aff1',
+    ghost: '#9b96ed',
+    grass: '#28bc75',
+    ground: '#c99457',
+    ice: '#51c4c8',
+    normal: '#c3b5b2',
+    poison: '#b292f7',
+    psychic: '#dd7db4',
+    rock: '#cb8b3e',
+    steel: '#c2c6d1',
+    water: '#4596ed'
+  }
   # Function that convert Type data to PSDK Editor format
   def convert_types
     GameData::Type.all.each_with_index do |type, index|
       type_data = {
-        textId: type.text_id, klass: 'Type', id: type.id, dbSymbol: type.db_symbol,
+        textId: type.text_id, klass: 'Type', id: type.id, dbSymbol: type.db_symbol, color: TYPE_TO_HEX[type.db_symbol] || '#C3B5B2',
         damageTo: GameData::Type.all.map do |def_type|
           def_type.on_hit_tbl[index] != 1 ? { defensiveType: def_type.db_symbol, factor: def_type.on_hit_tbl[index] } : nil
         end.compact
