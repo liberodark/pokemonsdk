@@ -85,5 +85,5 @@ module Configs
   end
   # @!method self.natures
   #   @return [Natures]
-  register(:natures, 'natures', :json, false, Natures)
+  register(:natures, 'natures', :json, true, Natures)
 end

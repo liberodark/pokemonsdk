@@ -8,10 +8,9 @@
 
 # We are redefining the Item class to prevent crashes
 module GameData
-  GameData.send(:remove_const, :Item)
-  class Item < Base
-    def [](id)
-      data_item(id)
+  if const_defined?(:Item)
+    GameData.send(:remove_const, :Item)
+    class Item < Base
     end
   end
 end
