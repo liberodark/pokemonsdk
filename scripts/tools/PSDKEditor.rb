@@ -169,7 +169,7 @@ module PSDKEditor
     end
     create_csv(100_061, group_names)
     # Description of zones
-    zones_descr = GameData::Zone.all.each { |zone| next Array.new(7, "[~#{zone.id}]") }
+    zones_descr = GameData::Zone.all.map { |zone| next Array.new(7, "[~#{zone.id}]") }
     create_csv(100_064, zones_descr)
   end
 
