@@ -212,11 +212,11 @@ module PSDKEditor
   def convert_pokedex
     create_csv(100_063, [['Pokédex National'] * 7, ['Pokédex Regional'] * 7])
     regional_dex = {
-      klass: 'Dex', dbSymbol: 'regional', id: 1, name: { csvFileId: 63, csvTextIndex: 1 }, startId: 1,
+      klass: 'Dex', dbSymbol: 'regional', id: 1, csv: { csvFileId: 63, csvTextIndex: 1 }, startId: 1,
       creatures: regional_creatures = []
     }
     national_dex = {
-      klass: 'Dex', dbSymbol: 'national', id: 0, name: { csvFileId: 63, csvTextIndex: 0 }, startId: 1,
+      klass: 'Dex', dbSymbol: 'national', id: 0, csv: { csvFileId: 63, csvTextIndex: 0 }, startId: 1,
       creatures: national_creatures = []
     }
     GameData::Pokemon.all[1..].each do |entry|
