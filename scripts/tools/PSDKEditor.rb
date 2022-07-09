@@ -71,11 +71,22 @@ module PSDKEditor
     end
   end
 
+  # Generate a db_symbol if doesn't exist
+  # @param data_type [String]
+  # @param db_symbol [Symbol]
+  # @param id [Integer]
+  # @return [Symbol]
+  def generate_db_symbol(data_type, db_symbol, id)
+    return db_symbol if db_symbol && db_symbol.is_a?(Symbol)
+
+    return "#{data_type}_#{id}".to_sym
+  end
+
   # Function that convert Item data to PSDK Editor format
   def convert_items
     GameData::Item.all.each do |item|
       item_data = {
-        klass: item.class.to_s.split(':').last, id: item.id, dbSymbol: item.db_symbol,
+        klass: item.class.to_s.split(':').last, id: item.id, dbSymbol: generate_db_symbol('item', item.db_symbol, item.id),
         icon: item.icon, price: item.price, socket: item.socket, position: item.position, isBattleUsable: item.battle_usable,
         isMapUsable: item.map_usable, isLimited: item.limited, isHoldable: item.holdable, flingPower: item.fling_power,
         **item.extra_psdk_editor_data
@@ -111,8 +122,8 @@ module PSDKEditor
   def convert_types
     GameData::Type.all.each_with_index do |type, index|
       type_data = {
-        textId: type.text_id, klass: 'Type', id: type.id, dbSymbol: type.db_symbol, color: TYPE_TO_HEX[type.db_symbol] || '#C3B5B2',
-        damageTo: GameData::Type.all.map do |def_type|
+        textId: type.text_id, klass: 'Type', id: type.id, dbSymbol: generate_db_symbol('type', type.db_symbol, type.id),
+        color: TYPE_TO_HEX[type.db_symbol] || '#C3B5B2', damageTo: GameData::Type.all.map do |def_type|
           def_type.on_hit_tbl[index] != 1 ? { defensiveType: def_type.db_symbol, factor: def_type.on_hit_tbl[index] } : nil
         end.compact
       }
@@ -127,9 +138,9 @@ module PSDKEditor
     attack_category = %w[physical physical special status]
     GameData::Skill.all.each do |move|
       move_data = {
-        id: move.id, dbSymbol: move.db_symbol, klass: 'Move', mapUse: move.map_use, battleEngineMethod: move.be_method,
+        id: move.id, dbSymbol: generate_db_symbol('move', move.db_symbol, move.id), klass: 'Move', mapUse: move.map_use,
         type: GameData::Type[move.type].db_symbol, power: move.power, accuracy: move.accuracy, pp: move.pp_max,
-        category: attack_category[move.atk_class], movecriticalRate: move.critical_rate,
+        category: attack_category[move.atk_class], movecriticalRate: move.critical_rate, battleEngineMethod: move.be_method,
         priority: move.priority + Battle::Logic::MOVE_PRIORITY_OFFSET, isDirect: move.direct, isCharge: move.charge, isRecharge: move.recharge,
         isBlocable: move.blocable, isSnatchable: move.snatchable, isMirrorMove: move.mirror_move, isPunch: move.punch, isGravity: move.gravity,
         isMagicCoatAffected: move.magic_coat_affected, isUnfreeze: move.unfreeze, isSoundAttack: move.sound_attack, isDistance: move.distance,
@@ -182,12 +193,13 @@ module PSDKEditor
       else
         region_name = { csvFileId: worldmap.name_file_id || 9, csvTextIndex: worldmap.name_id || 0 }
       end
+      db_symbol = generate_db_symbol('worldmap', worldmap.db_symbol, worldmap.id)
       worldmap_data = {
-        id: worldmap.id, dbSymbol: worldmap.db_symbol || :"worldmap_#{worldmap.id}", klass: 'WorldMap',
+        id: worldmap.id, dbSymbol: db_symbol, klass: 'WorldMap',
         image: GameData::WorldMap.worldmap_image_filename(worldmap.image), grid: grid,
         regionName: region_name
       }
-      File.write(File.join(ROOT, 'worldmaps', "#{worldmap.id}.json"), worldmap_data.to_json)
+      File.write(File.join(ROOT, 'worldmaps', "#{db_symbol}.json"), worldmap_data.to_json)
     end
   end
 
@@ -238,7 +250,7 @@ module PSDKEditor
       pokemon_array = Array.from(entry)
       # @type [Integer]
       id = pokemon_array.first.id
-      db_symbol = pokemon_array.first.db_symbol
+      db_symbol = generate_db_symbol('pokemon', pokemon_array.first.db_symbol, id)
       move_mega_evolution(pokemon_array.compact)
       specie_data = map_pokemon_array_to_forms(pokemon_array.compact)
       next if check_db_symbol(pokemon_array.first)
