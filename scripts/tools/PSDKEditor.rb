@@ -172,6 +172,7 @@ module PSDKEditor
       }
       File.write(File.join(ROOT, 'zones', "zone_#{zone.id}.json"), zone_data.to_json)
     end
+    create_base_group if Dir.empty?(File.join(ROOT, 'groups'))
     group_names = []
     @group_index.times do |i|
       group_name = Array.new(7, "Group #{i}")
@@ -391,6 +392,24 @@ module PSDKEditor
       @group_index += 1
     end
     return group_db_symbols
+  end
+
+  # Function that creates a group in the case no groups were created during the conversion of the zones
+  def create_base_group
+    group_terrain_tag = { terrainTag: 0 }
+    group_data = {
+      klass: 'Group',
+      id: @group_index,
+      dbSymbol: "group_#{@group_index}",
+      systemTag: "Cave",
+      doubleBattle: false,
+      hordeBattle: false,
+      customConditions: [],
+      encounters: [],
+      **group_terrain_tag
+    }
+    File.write(File.join(ROOT, 'groups', "group_#{@group_index}.json"), group_data.to_json)
+    @group_index += 1
   end
 
   # Function that create the wild encounter setup
