@@ -106,7 +106,10 @@ module Battle
           battler = trainer.battler
           name = trainer.name
           party = trainer.party.map(&:to_creature)
-          battle_info.add_party(bank, party, name, klass, battler, nil, nil, trainer.ai)
+          bag = PFM::Bag.new
+          trainer.bag_entries.each { |bag_entry| bag_entry.each { |key, value| bag.add_item(key, value )} }
+          battle_info.add_party(bank, party, name, klass, battler, nil, bag, trainer.ai)
+          # We add the base money only for the enemy side (prevents the ally to have a base money)
           battle_info.base_moneys[bank] << trainer.base_money if bank == 1
           battle_info.trainer_is_couple = battle_info.parties[1].size == 1 if bank == 1 && trainer.vs_type == 2
           battle_info.battle_id = trainer.battle_id if trainer.battle_id != 0
