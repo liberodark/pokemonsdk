@@ -129,8 +129,12 @@ module Battle
         handler.logic.battle_phase_exp
         Audio.bgm_play(*handler.scene.battle_info.victory_bgm)
         # Defeat message
-        ids.each do |id|
-          handler.scene.display_message_and_wait(text_get(48, id))
+        handler.scene.battle_info.defeat_texts.each_with_index do |text, i|
+          if text
+            handler.scene.display_message_and_wait(text)
+          elsif ids[i]
+            handler.scene.display_message_and_wait(text_get(48, ids[i]))
+          end
         end
         # Add money
         if (v = handler.scene.battle_info.total_money(handler.logic)) > 0
@@ -139,8 +143,12 @@ module Battle
         end
       else
         # Victory message
-        ids.each do |id|
-          handler.scene.display_message_and_wait(text_get(47, id))
+        handler.scene.battle_info.victory_texts.each_with_index do |text, i|
+          if text
+            handler.scene.display_message_and_wait(text)
+          elsif ids[i]
+            handler.scene.display_message_and_wait(text_get(47, ids[i]))
+          end
         end
       end
     end

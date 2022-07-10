@@ -48,6 +48,12 @@ module Battle
       # Get the additionnal money
       # @return [Integer]
       attr_accessor :additional_money
+      # Get the victory text
+      # @return [Array<String>]
+      attr_accessor :victory_texts
+      # Get the defeat text
+      # @return [Array<String>]
+      attr_accessor :defeat_texts
 
       # Create a new Battle Info
       # @param hash [Hash] basic info about the battle
@@ -68,6 +74,8 @@ module Battle
         @victory_bgm = hash[:victory_bgm] || guess_victory_bgm
         @battle_bgm = hash[:battle_bgm] || guess_battle_bgm
         @additional_money = 0
+        @victory_texts = hash[:victory_texts] || []
+        @defeat_texts = hash [:defeat_texts] || []
       end
 
       # Tell if the battle allow exp
@@ -148,7 +156,7 @@ module Battle
       # @param bag [String, nil] bag used by the party
       # @param base_money [Integer]
       # @param ai_level [Integer]
-      def add_party(bank, party, name = nil, klass = nil, battler = nil, bag = nil, base_money = nil, ai_level = nil)
+      def add_party(bank, party, name = nil, klass = nil, battler = nil, bag = nil, base_money = nil, ai_level = nil, victory_text = nil, defeat_text = nil)
         @parties[bank] ||= []
         @parties[bank] << party
         @names[bank] ||= []
@@ -163,6 +171,10 @@ module Battle
         @base_moneys[bank] << base_money if base_money
         @ai_levels[bank] ||= []
         @ai_levels[bank] << ai_level
+        if bank == 1
+          @victory_texts << victory_text
+          @defeat_texts << defeat_text
+        end
       end
 
       # Get the trainer name of a battler
