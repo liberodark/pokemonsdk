@@ -162,11 +162,14 @@ module Studio
     # Reload texts from Ruby Host
     def reload_rh_texts
       langs = Dir["Data/Text/Dialogs/#{CSV_BASE}.*.dat"].collect { |i| i.match(/[0-9]+\.([a-z]+)\.dat$/).captures[0] }
-      if langs.empty? ||
-         File.mtime("Data/Text/Dialogs/#{CSV_BASE}.#{langs.first}.dat") < File.mtime("Data/Text/#{langs.first}.dat")
+      if langs.empty? || (!File.exist?('project.studio') &&
+        File.mtime("Data/Text/Dialogs/#{CSV_BASE}.#{langs.first}.dat") < File.mtime("Data/Text/#{langs.first}.dat"))
+        langs.concat(Configs.language.choosable_language_code) if langs.empty? # Must add all project supported languages
         langs << Configs.language.default_language_code if langs.empty?
-        log_debug('Updating Text files')
-        ScriptLoader.load_tool('Text2CSV')
+        unless File.exist?('project.studio') # No RH back compilation for studio project!
+          log_debug('Updating Text files')
+          ScriptLoader.load_tool('Text2CSV')
+        end
         Available_Langs.clear
         Available_Langs.concat(langs)
         log_debug('Compiling Text files')
