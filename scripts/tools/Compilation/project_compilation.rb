@@ -64,7 +64,7 @@ module ProjectCompilation
     EXCLUDED_SCRIPTS.each { |filename| lines.delete(filename) }
     lines.each do |filename|
       puts "Compiling #{filename}"
-      script = File.read(filename)
+      script = File.read("#{ENV['PSDK_BINARY_PATH']&.tr('\\', '/')}#{filename}")
       if filename.end_with?(VD_SCRIPT)
         @scripts.insert(@yuki_vd, Utils.compile(filename, script))
         @yuki_vd += 1
@@ -118,7 +118,7 @@ module ProjectCompilation
       GameLoader/41_load_data_compiled.rb
       GameLoader/Z_main.rb
       GameLoader/51_load_game_compiled.rb
-    ].collect { |filename| File.read("pokemonsdk/scripts/tools/#{filename}") }.join("\r\n\r\n")
+    ].collect { |filename| File.read("#{ScriptLoader::VSCODE_SCRIPT_PATH}/tools/#{filename}") }.join("\r\n\r\n")
     File.binwrite(File.join(RELEASE_PATH, 'Game.yarb'), Utils.compile('Game/Boot.rb', game_script))
     # Write Game.rb
     File.write(File.join(RELEASE_PATH, 'Game.rb'), <<~'SCRIPT' )
@@ -159,7 +159,7 @@ module ProjectCompilation
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'particles'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'graphics', 'shaders'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'pokemonsdk', 'master'))
-    File.copy_stream('pokemonsdk/version.txt', File.join(RELEASE_PATH, 'pokemonsdk/version.txt'))
+    File.copy_stream("#{ScriptLoader::VSCODE_SCRIPT_PATH.split('/')[0..-2].join('/')}/version.txt", File.join(RELEASE_PATH, 'pokemonsdk/version.txt'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'Fonts'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'Saves'))
     # Dir.mkdir!(File.join(RELEASE_PATH, 'plugins'))
@@ -173,7 +173,8 @@ module ProjectCompilation
   def copy_lib
     puts 'Copying Ruby Library (add skip_lib to arguments to skip this part)'
     Utils.lib_files_to_copy.each do |filename|
-      IO.copy_stream(filename, File.join(RELEASE_PATH, filename))
+      real_filename = "#{ENV['PSDK_BINARY_PATH']}#{filename}".tr('\\', '/')
+      IO.copy_stream(real_filename, File.join(RELEASE_PATH, filename))
     end
   end
 
@@ -187,21 +188,24 @@ module ProjectCompilation
 
   def copy_binaries
     puts 'Copying binaries'
-    Dir['ruby_builtin_dlls/**'].each do |filename|
+    Dir["#{ENV['PSDK_BINARY_PATH']&.tr('\\', '/')}ruby_builtin_dlls/**"].each do |filename|
       next if File.directory?(filename)
-      IO.copy_stream(filename, File.join(RELEASE_PATH, filename))
+
+      target_filename = ENV['PSDK_BINARY_PATH'] ? filename.sub(ENV['PSDK_BINARY_PATH'].tr('\\', '/'), '') : filename
+      IO.copy_stream(filename, File.join(RELEASE_PATH, target_filename))
     end
     # Copy EXE
     IO.copy_stream('Gamew.exe', File.join(RELEASE_PATH, 'Game.exe'))
-    IO.copy_stream('Game.exe', File.join(RELEASE_PATH, 'Game-debug.exe'))
     %w[
       ruby.exe
       rubyw.exe
       msvcrt-ruby300.dll
-    ].each { |filename| IO.copy_stream(filename, File.join(RELEASE_PATH, filename)) }
+    ].each { |filename| IO.copy_stream("#{ENV['PSDK_BINARY_PATH']&.tr('\\', '/')}#{filename}", File.join(RELEASE_PATH, filename)) }
   end
 
   def copy_plugins
+    return # No longer needed
+
     puts 'Copying plugins'
     %w[
       plugins/LiteIGD.rb

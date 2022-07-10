@@ -7,10 +7,34 @@ module ProjectCompilation
         puts 'Building battle events'
         compile_battle_event
       end
+      ensure_config_is_built
+      ensure_text_is_built
       puts 'Building Data'
       DATA_FILES.each do |id, getter|
         make_vd(File.join(release_path, "Data/#{id}.dat"), instance_exec(&getter))
       end
+    end
+
+    def ensure_config_is_built
+      Configs.natures
+      Configs.flavors
+      Configs.states
+      Configs.stats
+      Configs.window
+      Configs.scene_title_config
+      Configs.credits_config
+      Configs.save_config
+      Configs.devices
+      Configs.graphic
+      Configs.infos
+      Configs.display
+      Configs.language
+      Configs.settings
+      Configs.texts
+    end
+
+    def ensure_text_is_built
+      Studio::Text.compile
     end
 
     def make_vd(vd_filename, files)

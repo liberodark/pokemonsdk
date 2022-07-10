@@ -35,19 +35,19 @@ module Configs
 
     # Set the nature with no preferences
     def nature_with_no_preferences=(arr)
-      @nature_with_no_preferences = arr.map { Configs.natures.db_symbol_to_id[arr.to_sym] }
+      @nature_with_no_preferences = arr.map { |value| Configs.natures.db_symbol_to_id[value.to_sym] }
     end
 
     # Set the nature liking flavor
     def nature_liking_flavor=(hash)
       @nature_liking_flavor = hash
-      hash.each_value { |v| v.map! { Configs.natures.db_symbol_to_id[arr.to_sym] } }
+      hash.each_value { |v| v.map! { |value| Configs.natures.db_symbol_to_id[value.to_sym] } }
     end
 
     # Set the nature liking flavor
     def nature_disliking_flavor=(hash)
       @nature_disliking_flavor = hash
-      hash.each_value { |v| v.map! { Configs.natures.db_symbol_to_id[arr.to_sym] } }
+      hash.each_value { |v| v.map! { |value| Configs.natures.db_symbol_to_id[value.to_sym] } }
     end
 
     def initialize
