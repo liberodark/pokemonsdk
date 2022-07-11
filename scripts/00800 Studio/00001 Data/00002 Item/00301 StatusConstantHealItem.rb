@@ -13,14 +13,14 @@ module Studio
   end
 end
 
-PFM::ItemDescriptor.define_on_creature_usability(Studio::StatusConstantHealItem) do |_, creature|
+PFM::ItemDescriptor.define_on_creature_usability(Studio::StatusConstantHealItem) do |item, creature|
   next false if creature.egg?
 
   heal_item = Studio::StatusConstantHealItem.from(item)
   states = heal_item.status_list
-  include_death = states.include?(:DEATH)
+  include_death = states.include?(:death)
   next false if creature.dead? && !include_death
-  next false if creature.alive? && include_death && states.size == 1
+  next false if creature.alive? && include_death
   next false if $game_temp.in_battle && creature.dead? && include_death && PFM.game_state.nuzlocke.enabled?
 
   confuse_check = $game_temp.in_battle && creature.confused? && states.include?(:confusion)

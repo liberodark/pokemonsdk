@@ -363,7 +363,9 @@ module Studio
         'FROZEN' => :freeze,
         'CONFUSED' => :confusion,
         'TOXIC' => :toxic,
-        'FLINCH' => :flinch
+        'FLINCH' => :flinch,
+        'DEATH' => :death,
+        'KO' => :ko
       }
 
       class << self
