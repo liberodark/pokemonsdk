@@ -50,7 +50,9 @@ module Battle
     def proceed_internal(user, targets)
       return unless (actual_targets = proceed_internal_precheck(user, targets))
 
-      post_accuracy_check_effects(user, targets)
+      post_accuracy_check_effects(user, actual_targets)
+
+      post_accuracy_check_move(user, actual_targets)
 
       play_animation(user, targets)
 
@@ -211,10 +213,10 @@ module Battle
     # Calls the post_accuracy_check method for each effects
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
-    def post_accuracy_check_effects(user, targets)
-      creatures = [user] + targets
+    def post_accuracy_check_effects(user, actual_targets)
+      creatures = [user] + actual_targets
       logic.each_effects(*creatures) do |e|
-        e.on_post_accuracy_check(logic, scene, targets, user, self)
+        e.on_post_accuracy_check(logic, scene, actual_targets, user, self)
       end
     end
 
@@ -226,6 +228,11 @@ module Battle
 
       self.pp -= 1
       self.pp -= 1 if @logic.foes_of(user).any? { |foe| foe.alive? && foe.has_ability?(:pressure) }
+    end
+
+    # Function which permit things to happen before the move's animation
+    def post_accuracy_check_move(user, actual_targets)
+      return true
     end
 
     # Play the move animation

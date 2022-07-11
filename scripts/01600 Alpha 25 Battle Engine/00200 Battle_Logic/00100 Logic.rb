@@ -7,6 +7,8 @@ module Battle
     attr_reader :messages
     # @return [Array<Actions::Base>] list of the current actions to proccess during the scene
     attr_reader :actions
+    # @return [Array<Actions::Base>] list of all actions that occurs within the current turn
+    attr_accessor :turn_actions
     # 0 : Victory, 1 : Flee, 2 : Defeat, -1 : undef
     # @return [Integer]
     attr_accessor :battle_result
@@ -48,6 +50,8 @@ module Battle
       @messages = []
       # @type [Array<Actions::Base>]
       @actions = []
+      # @type [Array<Actions::Base>]
+      @turn_actions = []
       @bags = @battle_info.bags
       # @type [Array<Array<PFM::PokemonBattler>>]
       @battlers = []

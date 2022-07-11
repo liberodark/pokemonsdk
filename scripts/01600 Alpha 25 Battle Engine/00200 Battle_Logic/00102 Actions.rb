@@ -45,6 +45,8 @@ module Battle
       sorted_actions = sort_action_and_add_effects
       @actions.clear
       @actions.concat(sorted_actions.reverse)
+      @turn_actions.clear
+      @turn_actions.concat(sorted_actions.reverse)
       define_pokemon_action_properties
     end
 

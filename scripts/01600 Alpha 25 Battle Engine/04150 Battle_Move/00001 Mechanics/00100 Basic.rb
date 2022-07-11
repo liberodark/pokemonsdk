@@ -37,7 +37,9 @@ module Battle
         end
 
         n = 1
-        n *= 2 if user.has_ability?(:serene_grace)
+        scene.logic.each_effects(user).each do |e|
+          n *= e.effect_chance_modifier(self)
+        end
 
         return bchance?((effect_chance * n) / 100.0) && super # super ensure that the magic_bounce & magic_coat effect works
       end
