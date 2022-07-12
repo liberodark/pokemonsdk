@@ -1,13 +1,15 @@
-module GameData
-  class Base
-  end
+unless ARGV.include?('studio')
+  module GameData
+    class Base
+    end
 
-  class Item < Base
-    class << self
-      def [](id)
-        data_item(id)
+    class Item < Base
+      class << self
+        def [](id)
+          data_item(id)
+        end
       end
     end
+    Text = Studio::Text
   end
-  Text = Studio::Text
 end
