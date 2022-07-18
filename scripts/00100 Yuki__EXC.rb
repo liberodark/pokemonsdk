@@ -77,7 +77,7 @@ module Yuki
     # @param source_name [String] the source name path
     # @return [String] the fixed source name
     def fix_source_path(source_name)
-      source = source_name.sub(File.expand_path('.'), nil.to_s)
+      source = source_name.sub(File.expand_path('.'), nil.to_s).sub(File.expand_path(File.join(__FILE__, '../../..')), nil.to_s)
       unless source.sub!(%r{/pokemonsdk/scripts/(.*)}, '\1 (PSDK)') || source.sub!(%r{/scripts/(.*)}, '\1 (user)')
         source << (source.include?('/lib/') ? ' (ruby)' : ' (RMXP)')
       end

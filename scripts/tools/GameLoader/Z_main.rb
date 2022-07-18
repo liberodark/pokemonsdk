@@ -18,12 +18,10 @@ rgss_main do
   Graphics.transition(20)
   Graphics.stop
 rescue Exception
-  if $!.class != LiteRGSS::DisplayWindow::ClosedWindowError && $!.class.to_s != 'Reset'
-    display_game_exception('Error')
-    Graphics.stop
-  end
+  Graphics.stop if $!.class != LiteRGSS::DisplayWindow::ClosedWindowError && $!.class.to_s != 'Reset'
   if Object.const_defined?(:Yuki) && Yuki.const_defined?(:EXC)
     Yuki::EXC.run($!)
+    display_game_exception('Error') if $!.class != LiteRGSS::DisplayWindow::ClosedWindowError && $!.class.to_s != 'Reset'
   else
     raise
   end
