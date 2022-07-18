@@ -131,7 +131,14 @@ module PFM
     # Inform the manager that an item has been added to the bag of the Player
     # @param item_id [Integer] ID of the item in the database
     def add_item(item_id)
+      item_db_symbol = data_item(item_id).db_symbol
       active_quests.each_value do |quest|
+        if quest.objective?(:objective_obtain_item, item_db_symbol)
+          old_count = quest.data_get(:obtained_items, item_db_symbol, 0)
+          quest.data_set(:obtained_items, item_db_symbol, old_count + 1)
+          check_quest(quest.quest_id)
+          next
+        end
         next unless quest.objective?(:objective_obtain_item, item_id)
 
         old_count = quest.data_get(:obtained_items, item_id, 0)
