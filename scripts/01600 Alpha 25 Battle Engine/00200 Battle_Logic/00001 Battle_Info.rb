@@ -115,7 +115,7 @@ module Battle
           name = trainer.name
           party = trainer.party.map(&:to_creature)
           bag = PFM::Bag.new
-          trainer.bag_entries.each { |bag_entry| bag_entry.each { |key, value| bag.add_item(key, value)} }
+          trainer.bag_entries.each { |bag_entry| bag.add_item(bag_entry[:dbSymbol], bag_entry[:amount]) }
           battle_info.add_party(bank, party, name, klass, battler, bag, nil, trainer.ai)
           # We add the base money only for the enemy side (prevents the ally to have a base money)
           battle_info.base_moneys[bank] << trainer.base_money if bank == 1
