@@ -11,10 +11,30 @@
 module ProjectToYAML
   module_function
 
+  # sort index recursively in a dictionnary
+  def deeply_sort_hash(object)
+    return object unless object.is_a?(Hash)
+    hash = Hash.new
+    object.each { |k, v| hash[k] = deeply_sort_hash(v) }
+    sorted = hash.sort { |a, b| a[0].to_s <=> b[0].to_s }
+    hash.class[sorted]
+  end
+  
+  # When having a Map, sort the events to keep the order consistent
+  def reorder_map_events_data(data)
+    if data.is_a?(RPG::Map) 
+      data.events = deeply_sort_hash(data.events)
+    end
+    return data
+  end
+  
+
   # Convert a project to YAML
   def convert
     files = Dir['Data/*.rxdata'] +
-            Dir['Data/Animations/*.dat'] -
+            Dir['Data/Animations/*.dat'] +
+            ['Data/PSDK/SystemTags.rxdata',
+            'Data/PSDK/Maplinks.rxdata'] -
             ['Data/project_identity.rxdata',
              'Data/Viewport.rxdata',
              'Data/Armors.rxdata',
@@ -29,7 +49,8 @@ module ProjectToYAML
              'Data/Weapons.rxdata']
     files.each do |filename|
       print "\r#{filename}".ljust(60)
-      File.write(filename + '.yml', YAML.dump(load_data(filename)))
+      data = reorder_map_events_data(load_data(filename))
+      File.write(filename + '.yml', YAML.dump(data))
     end
     puts "\rSuccess!".ljust(61)
     nil
@@ -38,7 +59,9 @@ module ProjectToYAML
   # Restore a project from YAML
   def restore
     files = Dir['Data/*.rxdata.yml'] +
-            Dir['Data/Animations/*.dat.yml'] -
+            Dir['Data/Animations/*.dat.yml'] +
+            ['Data/PSDK/SystemTags.rxdata.yml',
+            'Data/PSDK/Maplinks.rxdata.yml'] -
             ['Data/project_identity.rxdata.yml',
              'Data/Viewport.rxdata.yml',
              'Data/Armors.rxdata.yml',
