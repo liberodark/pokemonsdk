@@ -135,6 +135,7 @@ module PFM
     # @param skills [Array] the skills array (containing IDs or Symbols)
     def load_skill_from_array(skills)
       skills.each_with_index do |skill, j|
+        next skills_set[j] = nil if skill == :__remove__
         next if skill == 0 || skill == :__undef__ || skill.is_a?(String)
 
         replace_skill_index(j, skill)
