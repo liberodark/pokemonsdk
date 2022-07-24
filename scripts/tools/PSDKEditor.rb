@@ -31,14 +31,13 @@ module PSDKEditor
     convert_trainers
     convert_quests
     convert_abilities
-    convert_maplinks
     convert_configs
   end
 
   # Function that creates all the necessary path
   def create_paths
     Dir.mkdir(ROOT) unless Dir.exist?(ROOT)
-    all_paths = %w[pokemon items types moves zones worldmaps trainers quests abilities groups dex maplinks].map { |dirname| File.join(ROOT, dirname) }
+    all_paths = %w[pokemon items types moves zones worldmaps trainers quests abilities groups dex].map { |dirname| File.join(ROOT, dirname) }
     all_paths.each do |path|
       Dir.mkdir(path) unless Dir.exist?(path)
     end
@@ -597,27 +596,6 @@ module PSDKEditor
       next if %i[none __undef__ egg].include?(ability_db_symbol)
 
       File.write(File.join(ROOT, 'abilities', "#{ability_db_symbol}.json"), ability_data.to_json)
-    end
-  end
-
-  # Function that convert Maplinks data to PSDK Editor format
-  def convert_maplinks
-    if $game_data_maplinks.empty?
-      maplink_data = {
-        klass: 'MapLink', id: 0, dbSymbol: 'maplink_0', mapId: 0, northMaps: [], eastMaps: [], southMaps: [], westMaps: []
-      }
-      File.write(File.join(ROOT, 'maplinks', 'maplink_0.json'), maplink_data.to_json)
-    else
-      $game_data_maplinks.each_with_index do |(key, maplink), index|
-        maplink_data = {
-          klass: 'MapLink', id: index, dbSymbol: "maplink_#{index}", mapId: key,
-          northMaps: maplink[0] == 0 ? [] : [{ mapId: maplink[0], offset: maplink[1] }],
-          eastMaps: maplink[2] == 0 ? [] : [{ mapId: maplink[2], offset: maplink[3] }],
-          southMaps: maplink[4] == 0 ? [] : [{ mapId: maplink[4], offset: maplink[5] }],
-          westMaps: maplink[6] == 0 ? [] : [{ mapId: maplink[6], offset: maplink[7] }]
-        }
-        File.write(File.join(ROOT, 'maplinks', "maplink_#{index}.json"), maplink_data.to_json)
-      end
     end
   end
 
