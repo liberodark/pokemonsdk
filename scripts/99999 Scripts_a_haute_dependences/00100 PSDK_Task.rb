@@ -123,6 +123,14 @@ module Scheduler
     PFM.game_state.quests.import_from_dot24
   end
 
+  add_proc(:on_scene_switch, GamePlay::Load, 'Update quests saves', 1000) do
+    next unless $scene.is_a?(Scene_Map)
+    next if PFM.game_state.trainer.current_version < 6656
+
+    log_info('Fixing quest data by replacing ID by db_symbol')
+    PFM.game_state.quests.update_quest_data_for_studio
+  end
+
 =begin
   # Exemple de chargement de tileset automatique
   add_proc(:on_getting_tileset_name, :any, 'Changement de tileset map 9', 1000,

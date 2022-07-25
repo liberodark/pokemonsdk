@@ -186,7 +186,7 @@ module Battle
     # @param pkmn [PFM::Pokemon] pokemon that was just caught
     def update_pokemon_related_quests(pkmn)
       $quests.catch_pokemon(pkmn)
-      $quests.beat_pokemon(pkmn.id)
+      $quests.beat_pokemon(pkmn.db_symbol)
     end
 
     # Pokemon related Pokedex update

@@ -486,10 +486,37 @@ module Studio
 
           obj = allocate
           obj.instance_variable_set(:@objective_method_name, objective_method_name.to_sym)
-          obj.instance_variable_set(:@objective_method_args, Studio2PSDK.json_to_psdk_studio_object(objective_method_args))
+          if objective_method_name.to_sym == :objective_catch_pokemon
+            obj.instance_variable_set(:@objective_method_args, generate_pokemon_conditions_hash(objective_method_args))
+          else
+            obj.instance_variable_set(:@objective_method_args, Studio2PSDK.json_to_psdk_studio_object(objective_method_args))
+          end
           obj.instance_variable_set(:@text_format_method_name, text_format_method_name.to_sym)
           obj.instance_variable_set(:@hidden_by_default, hidden_by_default)
           return obj
+        end
+
+        # Method that generates the pokemon hash
+        # @param conditions [Array<Hash>] Hash containing all the Studio conditions
+        # @return [Hash]
+        def generate_pokemon_conditions_hash(conditions)
+          cond = conditions.first
+          return unless cond.is_a?(Array)
+
+          h = {}
+          cond.each do |c|
+            type = c['type']
+            value = c['value']
+            h.store(:id, value.to_sym) if type == 'pokemon'
+            if type == 'type'
+              h.key?(:type) ? h.store(:type2, value.to_sym) : h.store(:type, value.to_sym)
+            end
+            h.store(:nature, value.to_sym) if type == 'nature'
+            h.store(:min_level, value) if type == 'minLevel'
+            h.store(:max_level, value) if type == 'maxLevel'
+            h.store(:level, value) if type == 'level'
+          end
+          return [h, conditions.last]
         end
       end
     end

@@ -261,7 +261,7 @@ module Battle
         GamePlay.make_pokemon_evolve(original, id, form)
         $pokedex.mark_seen(original.id, original.form, forced: true)
         $pokedex.mark_captured(original.id)
-        $quests.see_pokemon(original.id)
+        $quests.see_pokemon(original.db_symbol)
         $quests.catch_pokemon(original)
         pokemon.id = original.id
         pokemon.form = original.form
@@ -307,8 +307,8 @@ module Battle
       handler.logic.all_battlers do |battler|
         next if battler.from_party?
 
-        $quests.see_pokemon(battler.id) unless battler.last_sent_turn == -1
-        $quests.beat_pokemon(battler.id) unless battler.alive?
+        $quests.see_pokemon(battler.db_symbol) unless battler.last_sent_turn == -1
+        $quests.beat_pokemon(battler.db_symbol) unless battler.alive?
       end
     end
 

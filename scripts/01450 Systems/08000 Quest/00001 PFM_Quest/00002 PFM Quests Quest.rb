@@ -103,6 +103,7 @@ module PFM
         return false if pkm[:id] && !(pokemon.id == pkm[:id] || pokemon.db_symbol == pkm[:id])
         return false if pkm[:nature] && pokemon.nature_id != pkm[:nature]
         return false if pkm[:type] && pokemon.type1 != pkm[:type] && pokemon.type2 != pkm[:type]
+        return false if pkm[:type2] && pokemon.type1 != pkm[:type2] && pokemon.type2 != pkm[:type2]
         return false if pkm[:min_level] && pokemon.level <= pkm[:min_level]
         return false if pkm[:max_level] && pokemon.level >= pkm[:max_level]
         return false if pkm[:level] && pokemon.level != pkm[:level]
@@ -129,70 +130,72 @@ module PFM
       end
 
       # Test if the objective obtain item is validated
-      # @param item_id [Integer] ID of the item in the database
+      # @param item_symbol [Integer] db_symbol of the item in the database
       # @param amount [Integer] number of item to obtain
       # @return [Boolean]
-      def objective_obtain_item(item_id, amount)
-        return data_get(:obtained_items, item_id, 0) >= amount
+      def objective_obtain_item(item_symbol, amount)
+        return data_get(:obtained_items, item_symbol, 0) >= amount
       end
 
       # Text of the obtain item objective
-      # @param item_id [Integer] ID of the item in the database
+      # @param item_symbol [Integer] db_symbol of the item in the database
       # @param amount [Integer] number of item to obtain
       # @return [String]
-      def text_obtain_item(item_id, amount)
-        found = data_get(:obtained_items, item_id, 0).clamp(0, amount)
-        name = data_item(item_id).name
+      def text_obtain_item(item_symbol, amount)
+        found = data_get(:obtained_items, item_symbol, 0).clamp(0, amount)
+        name = data_item(item_symbol).name
         return format(ext_text(9000, 52), amount: amount, item_name: name, found: found)
       end
 
       # Test if the objective see pokemon is validated
-      # @param pokemon_id [Integer] ID of the pokemon to see
+      # @param pokemon_symbol [Symbol] db_symbol of the pokemon to see
+      # @param amount [Integer] number of pokemon to see
       # @return [Boolean]
-      def objective_see_pokemon(pokemon_id)
-        return data_get(:pokemon_seen, pokemon_id, false)
+      def objective_see_pokemon(pokemon_symbol, amount = 1)
+        return data_get(:pokemon_seen, pokemon_symbol, false)
       end
 
       # Text of the see pokemon objective
-      # @param pokemon_id [Integer] ID of the pokemon to see
+      # @param pokemon_symbol [Symbol] db_symbol of the pokemon to see
+      # @param amount [Integer] number of pokemon to see
       # @return [String]
-      def text_see_pokemon(pokemon_id)
-        return format(ext_text(9000, 54), name: data_creature(pokemon_id).name)
+      def text_see_pokemon(pokemon_symbol, amount = 1)
+        return format(ext_text(9000, 54), name: data_creature(pokemon_symbol).name)
       end
 
       # Test if the beat pokemon objective is validated
-      # @param pokemon_id [Integer] ID of the pokemon to beat
+      # @param pokemon_symbol [Symbol] db_symbol of the pokemon to beat
       # @param amount [Integer] number of pokemon to beat
       # @return [Boolean]
-      def objective_beat_pokemon(pokemon_id, amount)
-        return data_get(:pokemon_beaten, pokemon_id, 0) >= amount
+      def objective_beat_pokemon(pokemon_symbol, amount)
+        return data_get(:pokemon_beaten, pokemon_symbol, 0) >= amount
       end
 
       # Text of the beat pokemon objective
-      # @param pokemon_id [Integer] ID of the pokemon to beat
+      # @param pokemon_symbol [Symbol] db_symbol of the pokemon to beat
       # @param amount [Integer] number of pokemon to beat
       # @return [String]
-      def text_beat_pokemon(pokemon_id, amount)
-        name = data_creature(pokemon_id).name
-        found = data_get(:pokemon_beaten, pokemon_id, 0).clamp(0, amount)
+      def text_beat_pokemon(pokemon_symbol, amount)
+        name = data_creature(pokemon_symbol).name
+        found = data_get(:pokemon_beaten, pokemon_symbol, 0).clamp(0, amount)
         return format(ext_text(9000, 55), amount: amount, name: name, found: found)
       end
 
       # Test if the catch pokemon objective is validated
-      # @param pokemon_id [Integer] ID of the pokemon to beat
+      # @param pokemon_data [Hash] data of the pokemon to catch
       # @param amount [Integer] number of pokemon to beat
       # @return [Boolean]
-      def objective_catch_pokemon(pokemon_id, amount)
-        return data_get(:pokemon_caught, pokemon_id, 0) >= amount
+      def objective_catch_pokemon(pokemon_data, amount)
+        return data_get(:pokemon_caught, pokemon_data[:id], 0) >= amount
       end
 
       # Text of the catch pokemon objective
-      # @param pokemon_id [Integer] ID of the pokemon to beat
+      # @param pokemon_data [Integer] data of the pokemon to beat
       # @param amount [Integer] number of pokemon to beat
       # @return [String]
-      def text_catch_pokemon(pokemon_id, amount)
-        name = text_catch_pokemon_name(pokemon_id)
-        found = data_get(:pokemon_caught, pokemon_id, 0).clamp(0, amount)
+      def text_catch_pokemon(pokemon_data, amount)
+        name = text_catch_pokemon_name(pokemon_data)
+        found = data_get(:pokemon_caught, pokemon_data[:id], 0).clamp(0, amount)
         format(ext_text(9000, 56), amount: amount, name: name, found: found)
       end
 

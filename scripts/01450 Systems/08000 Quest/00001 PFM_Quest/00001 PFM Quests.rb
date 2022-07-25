@@ -148,13 +148,13 @@ module PFM
     end
 
     # Inform the manager that a Pokemon has been beaten
-    # @param pokemon_id [Integer] ID of the Pokemon in the database
-    def beat_pokemon(pokemon_id)
+    # @param pokemon_symbol [Symbol] db_symbol of the Pokemon in the database
+    def beat_pokemon(pokemon_symbol)
       active_quests.each_value do |quest|
-        next unless quest.objective?(:objective_beat_pokemon, pokemon_id)
+        next unless quest.objective?(:objective_beat_pokemon, pokemon_symbol)
 
-        old_count = quest.data_get(:pokemon_beaten, pokemon_id, 0)
-        quest.data_set(:pokemon_beaten, pokemon_id, old_count + 1)
+        old_count = quest.data_get(:pokemon_beaten, pokemon_symbol, 0)
+        quest.data_set(:pokemon_beaten, pokemon_symbol, old_count + 1)
         check_quest(quest.quest_id)
       end
     end
@@ -167,11 +167,12 @@ module PFM
 
         quest_data = data_quest(quest.quest_id)
         quest_data.objectives.each do |objective|
-          next unless objective.test_method_name == :objective_catch_pokemon
+          next unless objective.objective_method_name == :objective_catch_pokemon
 
-          pokemon_id = objective.test_method_args.first
+          pokemon_id = objective.objective_method_args.first
           next unless quest.objective_catch_pokemon_test(pokemon_id, pokemon)
 
+          pokemon_id = pokemon_id[:id] if pokemon_id.is_a?(Hash)
           old_count = quest.data_get(:pokemon_caught, pokemon_id, 0)
           quest.data_set(:pokemon_caught, pokemon_id, old_count + 1)
           check_quest(quest.quest_id)
@@ -180,12 +181,12 @@ module PFM
     end
 
     # Inform the manager that a Pokemon has been seen
-    # @param pokemon_id [Integer] ID of the Pokemon in the database
-    def see_pokemon(pokemon_id)
+    # @param pokemon_symbol [Symbol] db_symbol of the Pokemon in the database
+    def see_pokemon(pokemon_symbol)
       active_quests.each_value do |quest|
-        next unless quest.objective?(:objective_see_pokemon, pokemon_id)
+        next unless quest.objective?(:objective_see_pokemon, pokemon_symbol)
 
-        quest.data_set(:pokemon_seen, pokemon_id, true)
+        quest.data_set(:pokemon_seen, pokemon_symbol, true)
         check_quest(quest.quest_id)
       end
     end
@@ -288,6 +289,13 @@ module PFM
       @failed_quests = @failed_quests.map(&mapper).to_h
     end
 
+    def update_quest_data_for_studio
+      mapper = ->((id, quest)) { [id, convert_quest_for_studio(id, quest)] }
+      @active_quests = @active_quests.map(&mapper).to_h
+      @finished_quests = @finished_quests.map(&mapper).to_h
+      @failed_quests = @failed_quests.map(&mapper).to_h
+    end
+
     private
 
     # Convert a quest from .24 to .25
@@ -312,6 +320,30 @@ module PFM
       new_quest.data_set(:hatched_eggs, nil, quest[:egg_hatched]) if quest[:egg_hatched]
 
       return new_quest
+    end
+
+    # Convert a quest for Studio
+    # @param id [Integer] ID of the quest
+    # @param quest [PFM::Quests::Quest]
+    def convert_quest_for_studio(id, quest)
+      return false unless quest.is_a?(PFM::Quests::Quest)
+
+      new_quest = quest.clone
+      quest_data = new_quest.instance_variable_get(:@data)
+      transform_keys_in_hash(quest_data[:obtained_items], :item) if quest_data.key?(:obtained_items)
+      transform_keys_in_hash(quest_data[:pokemon_beaten]) if quest_data.key?(:pokemon_beaten)
+      transform_keys_in_hash(quest_data[:pokemon_caught]) if quest_data.key?(:pokemon_caught)
+      transform_keys_in_hash(quest_data[:pokemon_seen]) if quest_data.key?(:pokemon_seen)
+      return new_quest
+    end
+
+    # Transform keys in quest data hash
+    # @param data [Hash] the data hash to update
+    # @param type [Symbol] the objective type (:pokemon, :item)
+    def transform_keys_in_hash(data, type = :pokemon)
+      a = data.select { |k, _| k.is_a?(Integer) }.transform_keys { |k| type == :pokemon ? data_creature(k).db_symbol : data_item(k).db_symbol }
+      data.select! { |k, _| k.is_a?(Symbol) }
+      data.merge!(a) { |_, old_v, new_v| old_v + new_v }
     end
 
     # Import data from ID like objective
