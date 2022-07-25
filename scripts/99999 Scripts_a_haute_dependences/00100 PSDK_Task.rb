@@ -125,7 +125,7 @@ module Scheduler
 
   add_proc(:on_scene_switch, GamePlay::Load, 'Update quests saves', 1000) do
     next unless $scene.is_a?(Scene_Map)
-    next if PFM.game_state.trainer.current_version < 6656
+    next if PFM.game_state.trainer.current_version > 6660
 
     log_info('Fixing quest data by replacing ID by db_symbol')
     PFM.game_state.quests.update_quest_data_for_studio
