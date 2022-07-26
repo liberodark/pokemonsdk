@@ -137,7 +137,7 @@ module PSDKEditor
         isMagicCoatAffected: move.magic_coat_affected, isUnfreeze: move.unfreeze, isSoundAttack: move.sound_attack, isDistance: move.distance,
         isHeal: move.heal, isAuthentic: move.authentic, isBite: move.bite, isPulse: move.pulse, isBallistics: move.ballistics,
         isMental: move.mental, isNonSkyBattle: move.non_sky_battle, isDance: move.dance, isKingRockUtility: move.king_rock_utility,
-        isPowder: move.powder, isEffectChance: move.effect_chance == 100, battleEngineAimedTarget: move.target,
+        isPowder: move.powder, effectChance: move.effect_chance, battleEngineAimedTarget: move.target,
         battleStageMod: move.battle_stage_mod.map.with_index do |value, index|
           value != 0 ? { battleStage: GameData::Stages::PSDK_EDITOR_VALUES[index], modificator: value } : nil
         end.compact

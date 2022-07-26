@@ -151,7 +151,7 @@ module Battle
     # Return the chance of effect of the skill
     # @return [Integer]
     def effect_chance
-      return data.is_effect_chance ? 100 : data.move_status.reduce(0) { |prev, curr| prev + curr.luck_rate }
+      return data.effect_chance == 0 ? 100 : data.effect_chance
     end
 
     # Get all the status effect of a move
@@ -178,7 +178,7 @@ module Battle
       return data.is_gravity
     end
 
-    # Return the stat tage modifier the skill can apply
+    # Return the stat stage modifier the skill can apply
     # @return [Array<Studio::Move::BattleStageMod>]
     def battle_stage_mod
       return data.battle_stage_mod

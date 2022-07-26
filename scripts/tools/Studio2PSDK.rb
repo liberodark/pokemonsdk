@@ -24,6 +24,13 @@ module Studio2PSDK
     DFS: :dfs,
     EVA: :eva,
     ACC: :acc,
+    ATK_STAGE: :atk,
+    DFE_STAGE: :dfe,
+    SPD_STAGE: :spd,
+    ATS_STAGE: :ats,
+    DFS_STAGE: :dfs,
+    EVA_STAGE: :eva,
+    ACC_STAGE: :acc,
     RegularGround: :regular_ground,
     Grass: :grass,
     TallGrass: :tall_grass,
@@ -189,6 +196,9 @@ module Studio2PSDK
     end
     if obj.is_a?(Studio::StatusHealItem) || obj.is_a?(Studio::StatusConstantHealItem) || obj.is_a?(Studio::StatusRateHealItem)
       obj.status_list.map! { |status| Studio::Move::MoveStatus::STATUS_TRANSLATION[status.to_s] }
+    end
+    if obj.is_a?(Studio::Move)
+      obj.instance_variable_set(:@effect_chance, 100) unless obj.effect_chance
     end
     return obj
   end

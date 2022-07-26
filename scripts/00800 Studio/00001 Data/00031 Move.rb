@@ -148,9 +148,9 @@ module Studio
     # @return [Boolean]
     attr_reader :is_powder
 
-    # If the move effect can be triggered without checking chance of status effect
-    # @return [Boolean]
-    attr_reader :is_effect_chance
+    # Chance to trigger the secondary effect (0~100)
+    # @return [Integer]
+    attr_reader :effect_chance
 
     # Target type the move can aim
     # @return [Symbol]

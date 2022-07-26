@@ -14,10 +14,10 @@ module Battle
       # @param move [Battle::Move::Basic] the move the chance modifier will be applied to
       # @return [Float, Integer] multiplier
       def effect_chance_modifier(move)
-        return move.status_effects.any? { |move_status| move_status.status == :flinch} ? 1 : 2
+        return move.status_effects.any? { |move_status| move_status.status == :flinch } ? 1 : 2
       end
 
-      # Display the message associated with the effect's creation  
+      # Display the message associated with the effect's creation
       def effect_creation_text
         @logic.scene.display_message_and_wait(parse_text(18, 170 + bank.clamp(0, 1)))
       end
