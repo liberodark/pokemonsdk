@@ -51,10 +51,10 @@ module Yuki
               y += 32
               x = 0
             end
-            y += 32
-            x = 0
             break if y >= @height
           end
+          y += 32
+          x = 0
         end
         return y
       end
