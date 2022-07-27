@@ -93,7 +93,7 @@ class Tester
   def data_load
     unless $data_actors
       $data_actors        = _clean_name_utf8(load_data("Data/Actors.rxdata"))
-      $data_classes       = _clean_name_utf8(load_data("Data/Classes.rxdata"))
+      $data_classes       = load_data("Data/Classes.rxdata")
       $data_enemies       = _clean_name_utf8(load_data("Data/Enemies.rxdata"))
       $data_troops        = _clean_name_utf8(load_data("Data/Troops.rxdata"))
       $data_tilesets      = _clean_name_utf8(load_data("Data/Tilesets.rxdata"))

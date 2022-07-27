@@ -6,7 +6,7 @@ module Yuki
     # Main function
     def main
       ScriptLoader.load_tool('PSDKEditor')
-      GameData.load
+      GameData::WorldMap.load
       ($tester = Tester.allocate).data_load
       PFM::GameState.new.expand_global_var
       select_worldmap(0)
