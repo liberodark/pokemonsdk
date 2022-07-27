@@ -16,6 +16,13 @@ module Yuki
       dispose if @followers
       @viewport = viewport
       @followers = []
+      fix_follower_event
+    end
+
+    def fix_follower_event
+      last_follower = $game_player
+      last_follower = last_follower.follower while last_follower.follower && last_follower.class != Game_Event
+      $game_player.set_follower(last_follower, true) if last_follower.is_a?(Game_Event)
     end
 
     # Update of the Follower Management. Their graphics are updated here.
@@ -48,12 +55,11 @@ module Yuki
     # @param last_follower [Game_Character]
     # @param follower_event [Game_Event]
     def update_follower_event(last_follower, follower_event)
-      last_follower_event = follower_event
-      while last_follower_event&.follower
-        last_follower_event.set_follower(nil) unless last_follower_event.follower.is_a?(Game_Event)
-        last_follower_event = last_follower_event.follower
+      if $game_player.follower != follower_event
+        $game_player.set_follower(follower_event, true)
+        $game_player.follower_tail.set_follower(@followers.first.character) if @followers.first
+        @followers.last&.character&.set_follower(nil)
       end
-      last_follower.set_follower(follower_event) if last_follower.follower != follower_event
     end
 
     # Get the follower entities (those giving information about character_name)
