@@ -43,6 +43,8 @@ module PFM
       end
 
       def exp_parabolic(level)
+        return 1 if level <= 1
+
         return Integer((6 * (level**3) / 5 - 15 * (level**2) + 100 * level - 140))
       end
 
