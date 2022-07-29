@@ -144,6 +144,7 @@ module Battle
       def player_basic_info
         battler_name = $game_actors[1].battler_name
         battler_name = $game_player.charset_base if !battler_name || battler_name.empty?
+        battler_name = 'dp_back_03' if !battler_name || battler_name.empty?
         return $actors, $trainer.name, data_trainer(0).class_name, battler_name, $bag
       end
 
