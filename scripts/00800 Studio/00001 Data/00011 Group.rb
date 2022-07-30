@@ -17,7 +17,7 @@ module Studio
     # @return [Integer]
     attr_reader :terrain_tag
 
-    # Tool used to trigger that group (:OldRod, :GoodRod, :SuperRod, :RockSmash, :HeadButt)
+    # Tool used to trigger that group (:old_rod, :good_rod, :super_rod, :rock_smash, :head_butt)
     # @return [Symbol, nil]
     attr_reader :tool
 

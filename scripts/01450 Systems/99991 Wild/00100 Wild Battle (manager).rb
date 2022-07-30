@@ -11,11 +11,11 @@ module PFM
     MAX_POKEMON_LEVEL_ABILITY = %i[hustle pressure vital_spirit]
     # Mapping allowing to get the correct tool based on the input
     TOOL_MAPPING = {
-      normal: :OldRod,
-      super: :GoodRod,
-      mega: :SuperRod,
-      rock: :RockSmash,
-      headbutt: :HeadButt
+      normal: :old_rod,
+      super: :good_rod,
+      mega: :super_rod,
+      rock: :rock_smash,
+      headbutt: :head_butt
     }
     # List of Roaming Pokemon
     # @return [Array<PFM::Wild_RoamingInfo>]
