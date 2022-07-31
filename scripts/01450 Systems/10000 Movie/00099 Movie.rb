@@ -1,6 +1,6 @@
 module GamePlay
   # Scene responsive of playing a movie (video file)
-  class Movie < BaseCleanUpdate::FrameBalanced
+  class Movie < BaseCleanUpdate
     # Constant telling if the BGM should automatically be stopped
     AUTO_STOP_BGM = true
     # Constant telling if the map scene should automatically be hidden
@@ -17,6 +17,7 @@ module GamePlay
       @skip_delay = skip_delay
       @aliased = aliased
       @mutex = Mutex.new
+      @delta_acc = 0
     end
 
     def update_inputs
@@ -34,8 +35,12 @@ module GamePlay
     def update_graphics
       return start_video unless @start_time
       return @running = false unless @video.playing?
-      @mutex.synchronize { @video.update_bitmap(@sprite.bitmap) }
-      @video_thread.wakeup if @video_thread.status
+      @delta_acc += Graphics.delta
+      if @delta_acc >= @frame_time
+        @delta_acc -= @frame_time
+        @mutex.synchronize { @video.update_bitmap(@sprite.bitmap) }
+        @video_thread.wakeup if @video_thread.status
+      end
     end
 
     private
@@ -79,6 +84,7 @@ module GamePlay
       @video.play
       @video.update
       @video.update_bitmap(@sprite.bitmap)
+      @frame_time = 1.0 / @video.get_frame_rate
       @video_thread = Thread.new do
         while @video.playing?
           @mutex.synchronize { @video.update }
