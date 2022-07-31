@@ -25,11 +25,7 @@ module UI
     # Create a new KeyBindingViewer
     def initialize(viewport)
       super(viewport, 3, 48)
-      push(0, 0, 'key_binding/cadre')
-      @main_selector = push(FT_X - 1, FKT_Y + 1, 'key_binding/selecteur_blue')
-      @sub_selector = push(LT_X + 1, FKT_Y + 1, 'key_binding/selecteur_red')
-      create_top_line
-      create_keys
+      create_sprites
       @counter = 0
       self.main_index = 0
       self.key_index = -1
@@ -109,6 +105,14 @@ module UI
     end
 
     private
+
+    def create_sprites
+      push(0, 0, 'key_binding/cadre')
+      @main_selector = push(FT_X - 1, FKT_Y + 1, 'key_binding/selecteur_blue')
+      @sub_selector = push(LT_X + 1, FKT_Y + 1, 'key_binding/selecteur_red')
+      create_top_line
+      create_keys
+    end
 
     # Create the top line
     def create_top_line

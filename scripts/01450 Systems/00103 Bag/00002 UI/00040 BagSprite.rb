@@ -12,7 +12,7 @@ module UI
       # @param viewport [Viewport]
       # @param pocket_indexes [Array<Integer>] each shown pocket by the UI
       def initialize(viewport, pocket_indexes)
-        super(viewport, 1, 8)
+        super(viewport, 1, POCKET_TRANSLATION.size - 1)
         @index = 0
         @pocket_indexes = pocket_indexes
         init_sprite
@@ -20,13 +20,13 @@ module UI
 
       # Set the current socket index
       def index=(value)
-        @index = value.clamp(0, 7)
-        self.sy = POCKET_TRANSLATION[@pocket_indexes[@index]]
+        @index = value.clamp(0, @pocket_indexes.size - 1)
+        self.sy = POCKET_TRANSLATION[@pocket_indexes[@index]] || 0
       end
 
       # Start the animation between socket
       def animate(target_index)
-        @target_index = target_index.clamp(0, 7)
+        @target_index = target_index.clamp(0, @pocket_indexes.size - 1)
         @counter = 0
       end
 

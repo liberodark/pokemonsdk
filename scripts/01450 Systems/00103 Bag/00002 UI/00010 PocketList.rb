@@ -22,9 +22,7 @@ module UI
       # @param pocket_indexes [Array<Integer>] each shown pocket by the UI
       def initialize(viewport, pocket_indexes)
         super(viewport, *INACTIVE_BASE_COORDINATES)
-        pocket_indexes.each do |pocket_id|
-          add_pocket_sprite(pocket_id)
-        end
+        create_sprites(pocket_indexes)
         @last_sprite = @stack[0]
         @index = 0
         self.z = 1
@@ -41,6 +39,13 @@ module UI
       end
 
       private
+
+      # @param pocket_indexes [Array<Integer>] each shown pocket by the UI
+      def create_sprites(pocket_indexes)
+        pocket_indexes.each do |pocket_id|
+          add_pocket_sprite(pocket_id)
+        end
+      end
 
       # Add a pocket sprite
       # @param pocket_id [Integer] real ID of the pocket

@@ -6,12 +6,7 @@ module UI
     # @param from_pokedex [Boolean] if the type is the Pokedex type (other source image)
     def initialize(viewport, from_pokedex = false)
       super(viewport, 1, each_data_type.size)
-      filename = "types_#{$options.language}"
-      if from_pokedex
-        set_bitmap(RPG::Cache.pokedex_exist?(filename) ? filename : 'types', :pokedex)
-      else
-        set_bitmap(RPG::Cache.interface_exist?(filename) ? filename : 'types', :interface)
-      end
+      load_texture(from_pokedex)
     end
 
     # Set the Pokemon used to show the type
@@ -21,6 +16,17 @@ module UI
     end
 
     private
+
+    # Load the graphic resource
+    # @param from_pokedex [Boolean] if the type is the Pokedex type (other source image)
+    def load_texture(from_pokedex)
+      filename = "types_#{$options.language}"
+      if from_pokedex
+        set_bitmap(RPG::Cache.pokedex_exist?(filename) ? filename : 'types', :pokedex)
+      else
+        set_bitmap(RPG::Cache.interface_exist?(filename) ? filename : 'types', :interface)
+      end
+    end
 
     # Retrieve the data source of the type sprite
     # @return [Symbol]
@@ -58,7 +64,7 @@ module UI
     # Create a new Gender Sprite
     # @param viewport [Viewport, nil] the viewport in which the sprite is stored
     def initialize(viewport)
-      super(viewport, 3, 1)
+      super(viewport, gender_count, 1)
       set_bitmap(IMAGE_NAME, :interface)
     end
 
@@ -66,6 +72,13 @@ module UI
     # @param pokemon [PFM::Pokemon, nil]
     def data=(pokemon)
       self.sx = pokemon.gender if (self.visible = (pokemon ? true : false))
+    end
+
+    private
+
+    # Define the number of gender supported by the resource
+    def gender_count
+      return 3
     end
   end
 
@@ -139,7 +152,7 @@ module UI
     # Create a new category sprite
     # @param viewport [Viewport] viewport in which the sprite is shown
     def initialize(viewport)
-      super(viewport, 1, 3)
+      super(viewport, 1, category_count)
       set_bitmap(IMAGE_NAME, :interface)
     end
 
@@ -147,6 +160,12 @@ module UI
     # @param object [#atk_class, nil]
     def data=(object)
       self.sy = object.atk_class - 1 if (self.visible = (object ? true : false))
+    end
+
+    private
+
+    def category_count
+      return 3
     end
   end
 

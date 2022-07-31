@@ -22,8 +22,7 @@ module UI
       if (self.visible = !pokemon.nil?)
         super
         @invisible_if_egg.each { |sprite| sprite.visible = false } if pokemon.egg?
-        @level_text.x = @level_value.x + @level_value.width - @level_value.real_width -
-                        @level_text.real_width - 2
+        fix_level_text_position
         load_text_info(pokemon)
       end
     end
@@ -119,6 +118,10 @@ module UI
     end
 
     private
+
+    def fix_level_text_position
+      @level_text.x = @level_value.x + @level_value.width - @level_value.real_width - @level_text.real_width - 2
+    end
 
     def init_sprite
       create_background

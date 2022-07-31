@@ -182,14 +182,7 @@ module UI
         def initialize(viewport, index)
           @index = index
           super(viewport, BASE_X + (active? ? ACTIVE_OFFSET : 0), BASE_Y + BUTTON_OFFSET * index)
-          add_background('shop/button_list').set_z(1)
-          @item_name = add_text(37, 8, 92, 18, nil.to_s, 1, color: 10)
-          @item_name.z = 2
-          @item_price = add_text(133, 8, 37, 17, nil.to_s, 2, color: 0)
-          @item_price.draw_shadow = false
-          @item_price.z = 2
-          @item_icon = add_sprite(2, 0, false, NO_INITIAL_IMAGE, type: PokemonIconSprite)
-          @item_icon.z = 3
+          create_sprites
         end
 
         # Is the button active
@@ -224,6 +217,19 @@ module UI
         # Reset the button coordinate
         def reset
           set_position(BASE_X + (active? ? ACTIVE_OFFSET : 0), BASE_Y + BUTTON_OFFSET * index)
+        end
+
+        private
+
+        def create_sprites
+          add_background('shop/button_list').set_z(1)
+          @item_name = add_text(37, 8, 92, 18, nil.to_s, 1, color: 10)
+          @item_name.z = 2
+          @item_price = add_text(133, 8, 37, 17, nil.to_s, 2, color: 0)
+          @item_price.draw_shadow = false
+          @item_price.z = 2
+          @item_icon = add_sprite(2, 0, false, NO_INITIAL_IMAGE, type: PokemonIconSprite)
+          @item_icon.z = 3
         end
       end
     end

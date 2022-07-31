@@ -23,15 +23,8 @@ module UI
     # @param pokemon [PFM::Pokemon]
     def data=(pokemon)
       super
-      @gender.ox = 88 - @name.real_width
-      @nature_text.text = PFM::Text.parse(28, pokemon.nature_id)
-      # Load the stat color according to the nature
-      nature = pokemon.nature.partition.with_index { |nat, i| i != 3}.flatten(1)
-      1.upto(5) do |i|
-        color = nature[i] < 100 ? 23 : 22
-        color = 0 if nature[i] == 100
-        @stat_name_texts[i - 1].load_color(color)
-      end
+      fix_gender_position
+      fix_nature_texts(pokemon)
     end
 
     # Set the index of the shown move
@@ -59,6 +52,22 @@ module UI
     end
 
     private
+
+    def fix_gender_position
+      @gender.ox = 88 - @name.real_width
+    end
+
+    # @param creature [PFM::Pokemon]
+    def fix_nature_texts(creature)
+      @nature_text.text = PFM::Text.parse(28, creature.nature_id)
+      # Load the stat color according to the nature
+      nature = creature.nature.partition.with_index { |_, i| i != 3 }.flatten(1)
+      1.upto(5) do |i|
+        color = nature[i] < 100 ? 23 : 22
+        color = 0 if nature[i] == 100
+        @stat_name_texts[i - 1].load_color(color)
+      end
+    end
 
     def init_sprite
       super

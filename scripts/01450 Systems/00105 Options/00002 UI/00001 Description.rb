@@ -6,6 +6,12 @@ module UI
       # @param viewport [Viewport]
       def initialize(viewport)
         super(viewport, 0, 45)
+        create_sprites
+      end
+
+      private
+
+      def create_sprites
         add_background('options/description')
         @name = add_text(3, 19, 0, 13, :name, type: SymText, color: 25)
         @descr = add_text(3, 37, 151, 16, :description, type: SymMultilineText)

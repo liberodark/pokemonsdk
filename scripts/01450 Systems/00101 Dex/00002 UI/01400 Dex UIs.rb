@@ -6,6 +6,17 @@ module UI
       # Create the sprite stack at coordinate 3, 11 using the RPG::Cache.pokedex as image source
       super(viewport, 3, 11, default_cache: :pokedex)
 
+      create_sprites
+    end
+
+    # Update the graphics
+    def update_graphics
+      @sprite.update
+    end
+
+    private
+
+    def create_sprites
       # Show the background of the DexWinSprite
       add_background('WinSprite')
       # Show the Battler face of the Pokemon (Warning: PokemonFaceSprite use the bottom center as sprite origin)
@@ -13,11 +24,6 @@ module UI
       # Show the name of the Pokemon in bold upper-case
       pokemon_name = add_text(3, 6, 116, 19, :name_upper, 1, type: SymText, color: 10)
       pokemon_name.bold = true
-    end
-
-    # Update the graphics
-    def update_graphics
-      @sprite.update
     end
   end
 
@@ -28,6 +34,15 @@ module UI
       # Create the sprite stack at coordinate 0, 152 using the RPG::Cache.pokedex as image source
       super(viewport, 0, 152, default_cache: :pokedex)
 
+      create_sprites
+
+      # Define the Pokedex as text source
+      self.data = $pokedex
+    end
+
+    private
+
+    def create_sprites
       # Show the background image
       add_background('WinNum')
       # Show the "Seen: " text
@@ -40,9 +55,6 @@ module UI
       got_text.bold = true
       # Show the number of Pokemon Got
       add_text(got_text.real_width + 4, 28, 79, 26, :creature_caught, 0, type: SymText, color: 10)
-
-      # Define the Pokedex as text source
-      self.data = $pokedex
     end
   end
 
@@ -56,6 +68,27 @@ module UI
       # Create the sprite stack at coordinate 131, 37 using the RPG::Cache.pokedex as image source
       super(viewport, 131, 37, default_cache: :pokedex)
 
+      create_sprites
+    end
+
+    # Define the Pokemon shown by the UI
+    # @param pokemon [PFM::Pokemon]
+    def data=(pokemon)
+      super(pokemon)
+      update_capture_visibility(pokemon)
+    end
+
+    private
+
+    # Show / hide the sprites according to the captured state of the Pokemon
+    def update_capture_visibility(creature)
+      is_captured = creature && $pokedex.creature_caught?(creature.id)
+      VISIBLE_SPRITES.each do |i|
+        @stack[i].visible = is_captured
+      end
+    end
+
+    def create_sprites
       # Show the background of the WinInfos
       add_background('WinInfos')
       # Show the "caught" indicator
@@ -73,17 +106,6 @@ module UI
       # Show the 2nd type of the Pokemon
       add_sprite(112, 47, NO_INITIAL_IMAGE, true, type: Type2Sprite)
     end
-
-    # Define the Pokemon shown by the UI
-    # @param pokemon [PFM::Pokemon]
-    def data=(pokemon)
-      super(pokemon)
-      # Show / hide the sprites according to the captured state of the Pokemon
-      is_captured = pokemon && $pokedex.creature_caught?(pokemon.id)
-      VISIBLE_SPRITES.each do |i|
-        @stack[i].visible = is_captured
-      end
-    end
   end
 
   # Dex sprite that show the Pokemon infos
@@ -95,6 +117,27 @@ module UI
       # Create the sprite stack at coordinate 147, 62 using the RPG::Cache.pokedex as image source
       super(viewport, 147, 62, default_cache: :pokedex)
 
+      create_sprites
+      fix_position(index)
+    end
+
+    # Change the data
+    # @param pokemon [PFM::Pokemon] the Pokemon shown by the button
+    def data=(pokemon)
+      super(pokemon)
+      update_catch_icon_visibility
+    end
+
+    # Tell the button if it's selected or not : change the obfuscator visibility & x position
+    # @param value [Boolean] the selected state
+    def selected=(value)
+      @obfuscator.visible = !value
+      set_position(value ? 147 : 163, y)
+    end
+
+    private
+
+    def create_sprites
       # Show the background image
       add_background('But_List')
       # Show the caught indicator
@@ -107,24 +150,17 @@ module UI
       add_text(35, 16, 116, 16, :name, type: SymText, color: 10)
       # Show the obfuscator in forground when the Pokemon button is not
       @obfuscator = add_foreground('But_ListShadow')
+    end
 
-      # Adjust the position according to the index
+    # Adjust the position according to the index
+    # @param index [Integer] index of the sprite in the viewport
+    def fix_position(index)
       set_position(index == 0 ? 147 : 163, y - 40 + index * 40)
     end
 
-    # Change the data
-    # @param pokemon [PFM::Pokemon] the Pokemon shown by the button
-    def data=(pokemon)
-      super(pokemon)
-      # Change the catch visibility to the captured state of the Pokemon
-      @catch_icon.visible = $pokedex.creature_caught?(pokemon.id)
-    end
-
-    # Tell the button if it's selected or not : change the obfuscator visibility & x position
-    # @param value [Boolean] the selected state
-    def selected=(value)
-      @obfuscator.visible = !value
-      set_position(value ? 147 : 163, y)
+    # Change the catch visibility to the captured state of the Pokemon
+    def update_catch_icon_visibility
+      @catch_icon.visible = $pokedex.creature_caught?(data&.id || 0)
     end
   end
 
@@ -138,19 +174,7 @@ module UI
       # Create the sprite stack at coordinate 0, 0 using the RPG::Cache.pokedex as image source
       super(viewport, 0, 0, default_cache: :pokedex)
 
-      @pkm_icon  = add_sprite(28, 123, NO_INITIAL_IMAGE, type: PokemonIconSprite)
-      @item_icon = add_sprite(13, 106, NO_INITIAL_IMAGE)
-      @location  = add_text(10, 18, 132, 16, ext_text(9000, 19), 1, color: 10)
-      @region    = add_text(150, 0, 150, 24, 'REGION', 2, color: 10)
-      if display_controls
-        add_sprite(40, 221, NO_INITIAL_IMAGE, :Y, type: KeyShortcut)
-        add_text(60, 221, 140, 16, ext_text(9000, 32), color: 10) # Next worldmap
-        add_sprite(190, 221, NO_INITIAL_IMAGE, :X, type: KeyShortcut)
-        add_text(210, 221, 140, 16, ext_text(9000, 33), color: 10) # Zoom
-      end
-
-      # Set region text in bold
-      @region.bold = true
+      create_sprites(display_controls)
     end
 
     # Change the data and the state
@@ -181,6 +205,25 @@ module UI
     def set_region(place, color = 10)
       @region.multiline_text = place.upcase
       @location.load_color color
+    end
+
+    private
+
+    def create_sprites(display_controls)
+      @pkm_icon  = add_sprite(28, 123, NO_INITIAL_IMAGE, type: PokemonIconSprite)
+      @item_icon = add_sprite(13, 106, NO_INITIAL_IMAGE)
+      @location  = add_text(10, 18, 132, 16, ext_text(9000, 19), 1, color: 10)
+      @region    = add_text(150, 0, 150, 24, 'REGION', 2, color: 10)
+      # Set region text in bold
+      @region.bold = true
+      create_controls if display_controls
+    end
+
+    def create_controls
+      add_sprite(40, 221, NO_INITIAL_IMAGE, :Y, type: KeyShortcut)
+      add_text(60, 221, 140, 16, ext_text(9000, 32), color: 10) # Next worldmap
+      add_sprite(190, 221, NO_INITIAL_IMAGE, :X, type: KeyShortcut)
+      add_text(210, 221, 140, 16, ext_text(9000, 33), color: 10) # Zoom
     end
   end
 end

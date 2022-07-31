@@ -149,13 +149,8 @@ module UI
     # @param index [Integer] index of the skill in the UI
     def initialize(viewport, index)
       super(viewport, *FINAL_COORDINATES[index % FINAL_COORDINATES.size])
-      # @type [Sprite::WithColor]
-      @selector = push(-8, 0, selector_name, type: Sprite::WithColor)
-      push(0, 2, nil, type: TypeSprite)
-      add_text(34, 0, 110, 16, :name, type: SymText)
-      @pp_text = add_text(34, 16, 110, 16, text_get(27, 32)) # PP
-      add_text(34, 16, 100, 16, pp_method, 1, type: SymText, color: 1)
       @selected = false
+      create_sprites
       self.moving = false
     end
 
@@ -202,6 +197,15 @@ module UI
     end
 
     private
+
+    def create_sprites
+      # @type [Sprite::WithColor]
+      @selector = push(-8, 0, selector_name, type: Sprite::WithColor)
+      push(0, 2, nil, type: TypeSprite)
+      add_text(34, 0, 110, 16, :name, type: SymText)
+      @pp_text = add_text(34, 16, 110, 16, text_get(27, 32)) # PP
+      add_text(34, 16, 100, 16, pp_method, 1, type: SymText, color: 1)
+    end
 
     # Return the name of the selector file
     # @return [String]

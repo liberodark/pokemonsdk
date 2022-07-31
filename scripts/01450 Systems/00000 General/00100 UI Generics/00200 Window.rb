@@ -12,12 +12,20 @@ module UI
     def initialize(viewport, x = 2, y = 2, width = 316, height = 48, skin: DEFAULT_SKIN)
       super(viewport)
       lock
+      initialize_window_internal(x, y, width, height, skin)
+      unlock
+    end
+
+    private
+
+    def initialize_window_internal(x, y, width, height, skin)
       set_position(x, y)
       set_size(width, height)
       self.windowskin = RPG::Cache.windowskin(skin)
       self.window_builder = current_window_builder(skin)
-      unlock
     end
+
+    public
 
     class << self
       # Create a new window from given metrics

@@ -36,6 +36,29 @@ class SpriteSheet < ShaderedSprite
     return ret
   end
 
+  # Change the number of cells the sheet supports on the x axis
+  # @param nb_x [Integer] number of cell on the x axis
+  def nb_x=(nb_x)
+    @nb_x = nb_x.clamp(1, Float::INFINITY)
+    self.bitmap = bitmap
+  end
+
+  # Change the number of cells the sheet supports on the y axis
+  # @param nb_y [Integer] number of cell on the y axis
+  def nb_y=(nb_y)
+    @nb_y = nb_y.clamp(1, Float::INFINITY)
+    self.bitmap = bitmap
+  end
+
+  # Redefine the number of cells the sheet supports on both axis
+  # @param nb_x [Integer] number of cell on the x axis
+  # @param nb_y [Integer] number of cell on the y axis
+  def resize(nb_x, nb_y)
+    @nb_x = nb_x.clamp(1, Float::INFINITY)
+    @nb_y = nb_y.clamp(1, Float::INFINITY)
+    self.bitmap = bitmap
+  end
+
   # Change the x sprite index of the sheet
   # @param value [Integer] the x sprite index of the sheet
   def sx=(value)

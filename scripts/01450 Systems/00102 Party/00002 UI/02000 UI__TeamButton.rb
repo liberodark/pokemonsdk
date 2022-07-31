@@ -20,47 +20,18 @@ module UI
     # @param index [Integer] Index of the button in the team
     def initialize(viewport, index)
       @index = index
-      super(viewport, CoordinatesX[index % 2], CoordinatesY[index % 6])
+      super(viewport, *initial_coordinates)
 
-      # Show the background
-      @background = add_sprite(15, 7, background_name)
-      @background.src_rect.height = TextureBackgroundHeight
-      # Show the Pokemon icon sprite
-      @icon = add_sprite(32, 24, NO_INITIAL_IMAGE, type: PokemonIconSprite)
-      # Show the Pokemon nickname
-      add_text(50, 17, 79, 16, :given_name, type: SymText, color: 9)
-      # Show the Pokemon gender
-      add_sprite(132, 20, NO_INITIAL_IMAGE, type: GenderSprite)
-      # Show the Pokemon item hold
-      add_sprite(123, 31, 'team/Item', type: HoldSprite)
-      # Show the level of the Pokemon
-      add_text(38, 38, 61, 16, :level_pokemon_number, type: SymText, color: 9)
-      # Show the status of the Pokemon
-      add_sprite(119, 46, NO_INITIAL_IMAGE, type: StatusSprite)
-      # Show the HP Bar
-      @hp = add_custom_sprite(create_hp_bar)
-      # add_text(62, 34, 56, 16, :hp_pokemon_number, 2, type: SymText, color: 9)
-      # Show the HP text with Power Small Green font
-      with_font(20) do
-        add_text(62, 34 + 5, 56, 13, :hp_text, 1, type: SymText, color: 9)
-      end
-      # Show the item button
-      @item_sprite = add_sprite(24, 39, 'team/But_Object', 1, 2, type: SpriteSheet)
-      # Show the Pokemon item name
-      @item_text = add_text(27, 40, 113, 16, :item_name, type: SymText)
-      # Hide item by default
-      hide_item_name
+      create_sprites
       @selected = false
-      # Position adjustment
-      @x += 15
-      @y += 7
+      fix_initial_position_cause_dev_is_lazy
     end
 
     # Set the data of the SpriteStack
     # @param data [PFM::Pokemon]
     def data=(data)
       super(data)
-      @item_text.visible = @item_sprite.visible
+      update_item_text_visibility
       update_background
     end
 
@@ -103,6 +74,51 @@ module UI
     end
 
     private
+
+    def update_item_text_visibility
+      @item_text.visible = @item_sprite.visible
+    end
+
+    def initial_coordinates
+      return CoordinatesX[@index % 2], CoordinatesY[@index % 6]
+    end
+
+    def create_sprites
+      # Show the background
+      @background = add_sprite(15, 7, background_name)
+      @background.src_rect.height = TextureBackgroundHeight
+      # Show the Pokemon icon sprite
+      @icon = add_sprite(32, 24, NO_INITIAL_IMAGE, type: PokemonIconSprite)
+      # Show the Pokemon nickname
+      add_text(50, 17, 79, 16, :given_name, type: SymText, color: 9)
+      # Show the Pokemon gender
+      add_sprite(132, 20, NO_INITIAL_IMAGE, type: GenderSprite)
+      # Show the Pokemon item hold
+      add_sprite(123, 31, 'team/Item', type: HoldSprite)
+      # Show the level of the Pokemon
+      add_text(38, 38, 61, 16, :level_pokemon_number, type: SymText, color: 9)
+      # Show the status of the Pokemon
+      add_sprite(119, 46, NO_INITIAL_IMAGE, type: StatusSprite)
+      # Show the HP Bar
+      @hp = add_custom_sprite(create_hp_bar)
+      # add_text(62, 34, 56, 16, :hp_pokemon_number, 2, type: SymText, color: 9)
+      # Show the HP text with Power Small Green font
+      with_font(20) do
+        add_text(62, 34 + 5, 56, 13, :hp_text, 1, type: SymText, color: 9)
+      end
+      # Show the item button
+      @item_sprite = add_sprite(24, 39, 'team/But_Object', 1, 2, type: SpriteSheet)
+      # Show the Pokemon item name
+      @item_text = add_text(27, 40, 113, 16, :item_name, type: SymText)
+      # Hide item by default
+      hide_item_name
+    end
+
+    # Position adjustment
+    def fix_initial_position_cause_dev_is_lazy
+      @x += 15
+      @y += 7
+    end
 
     # Return the background name
     # @return [String] name of the background
