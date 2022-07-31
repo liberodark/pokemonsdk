@@ -388,5 +388,14 @@ module GamePlay
     def open_shortcut
       current_scene.call_scene(shortcut_class)
     end
+
+    # Get the Quest scene
+    # @return [Class<QuestUI>]
+    attr_accessor :quest_ui_class
+
+    # Open the QuestUI scene
+    def open_quest_ui(quests = PFM.game_state.quests)
+      current_scene.call_scene(quest_ui_class, quests)
+    end
   end
 end

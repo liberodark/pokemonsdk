@@ -78,3 +78,5 @@ module GamePlay
     end
   end
 end
+
+GamePlay.quest_ui_class = GamePlay::QuestUI
