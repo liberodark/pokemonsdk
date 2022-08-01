@@ -140,8 +140,14 @@ module Studio2PSDK
     when :types
       undef_entity.instance_variable_set(:@text_id, 0)
       undef_entity.instance_variable_set(:@damage_to, [])
-    when :quests, :worldmaps, :abilities, :groups, :trainers, :zones
+    when :quests, :worldmaps, :abilities, :groups, :trainers
       undef_entity.instance_variable_set(:@id, -1)
+    when :zones
+      undef_entity.instance_variable_set(:@id, -1)
+      undef_entity.instance_variable_set(:@maps, [])
+      undef_entity.instance_variable_set(:@worldmaps, [])
+      undef_entity.instance_variable_set(:@wild_groups, [])
+      undef_entity.instance_variable_set(:@panel_id, 0)
     when :items
       undef_entity.instance_variable_set(:@icon, 'return')
       undef_entity.instance_variable_set(:@price, 0)
