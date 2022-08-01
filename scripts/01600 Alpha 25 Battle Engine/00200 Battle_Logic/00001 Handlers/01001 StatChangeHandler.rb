@@ -125,6 +125,18 @@ module Battle
 
       private
 
+      # Compute the right animation offset based on target and power
+      # @param target [PFM::PokemonBattler]
+      # @param power [Integer]
+      # @return [Integer]
+      def animation_offset(target, power)
+        if power < 0
+          return target.bank == 0 ? 1 : 0
+        else
+          return target.bank == 0 ? 0 : 1
+        end
+      end
+
       # Play the animation & display the text depending on the stat
       # @param stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva
       # @param power [Integer] expected power of the stat increase
@@ -133,7 +145,7 @@ module Battle
       # @param no_message [Boolean] if the message about stat increase should be shown
       def show_stat_change_text_and_animation(stat, power, amount, target, no_message)
         text_index = stat_text_index(amount, power)
-        @scene.visual.show_rmxp_animation(target, ANIMATION[stat] + (power < 0 ? 1 : 0)) if amount != 0
+        @scene.visual.show_rmxp_animation(target, ANIMATION[stat] + animation_offset(target, power)) if amount != 0
         @scene.display_message_and_wait(parse_text_with_pokemon(19, TEXT_POS[stat][text_index], target)) unless no_message
       end
 
