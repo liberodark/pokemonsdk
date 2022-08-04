@@ -19,9 +19,7 @@ module Battle
         # @type [Effects::ForceNextMoveDisturbable]
         effect = user.effects.get(:force_next_move_disturbable)
         if effect
-          if !effect.disturbed? && logic.status_change_handler.status_appliable?(:confusion, user, nil, self)
-            logic.status_change_handler.status_change(:confusion, user)
-          end
+          logic.status_change_handler.status_change_with_process(:confusion, user, nil, self) if !effect.disturbed?
         else
           effect = Effects::ForceNextMoveDisturbable.new(logic, user, self, actual_targets, logic.generic_rng.rand(2..3))
           user.effects.replace(effect, &:force_next_move?)
