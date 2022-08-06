@@ -160,6 +160,13 @@ module Studio2PSDK
     when :dex
       undef_entity.instance_variable_set(:@creatures, [])
       undef_entity.instance_variable_set(:@id, -1)
+    when :maplinks
+      undef_entity.instance_variable_set(:@id, -1)
+      undef_entity.instance_variable_set(:@map_id, -1)
+      undef_entity.instance_variable_set(:@north_maps, [])
+      undef_entity.instance_variable_set(:@east_maps, [])
+      undef_entity.instance_variable_set(:@south_maps, [])
+      undef_entity.instance_variable_set(:@west_maps, [])
     end
 
     return undef_entity
@@ -222,6 +229,7 @@ module Studio2PSDK
           Studio::Type::DamageTo.try_create(hash) ||
           Studio::Zone::MapCoordinate.try_create(hash) ||
           Studio::CSVAccess.try_create(hash) ||
+          Studio::MapLink::Link.try_create(hash) ||
           Studio::Dex::CreatureInfo.try_create(hash)
 
     return obj if obj
@@ -621,6 +629,24 @@ module Studio
           obj = allocate
           obj.instance_variable_set(:@db_symbol, db_symbol.to_sym)
           obj.instance_variable_set(:@form, form)
+          return obj
+        end
+      end
+    end
+  end
+
+  class MapLink
+    class Link
+      class << self
+        # Attempt to create a new link
+        # @param hash [Hash]
+        def try_create(hash)
+          return unless (map_id = hash['mapId']).is_a?(Integer)
+          return unless (offset = hash['offset']).is_a?(Integer)
+
+          obj = allocate
+          obj.instance_variable_set(:@map_id, map_id)
+          obj.instance_variable_set(:@offset, offset)
           return obj
         end
       end

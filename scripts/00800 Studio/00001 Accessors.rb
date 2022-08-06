@@ -187,6 +187,22 @@ class Object
     __game_data[:dex__id].each(&block)
   end
 
+  # Get a map link
+  # @param db_symbol [Symbol] db_symbol of the map link
+  # @return [Studio::MapLink]
+  def data_map_link(db_symbol)
+    return __game_data_by_id(:maplinks__id, :maplinks, db_symbol) if db_symbol.is_a?(Integer)
+
+    return __game_data.dig(:maplinks, db_symbol) || __game_data.dig(:dex, :__undef__)
+  end
+
+  # Iterate through all the map links
+  # @yieldparam map_link [Studio::MapLink]
+  # @return [Enumerator<Studio::MapLink>]
+  def each_data_map_link(&block)
+    __game_data[:maplinks__id].each(&block)
+  end
+
   # Get the game data
   # @return [Hash<Symbol => Hash>]
   def __game_data
@@ -200,7 +216,6 @@ class Object
     log_info("Loaded PSDK data in #{(Time.new - @__t).round(4)}s")
     remove_instance_variable(:@__t)
     private Object.define_method(:__game_data) { data }
-    $game_data_maplinks = load_data('Data/PSDK/Maplinks.rxdata')
     $data_system_tags = load_data('Data/PSDK/SystemTags.rxdata')
     return __game_data
   end

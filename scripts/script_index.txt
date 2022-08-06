@@ -80,6 +80,7 @@ pokemonsdk/scripts/00800 Studio/00001 Data/00061 Trainer.rb
 pokemonsdk/scripts/00800 Studio/00001 Data/00071 Type.rb
 pokemonsdk/scripts/00800 Studio/00001 Data/00081 WorldMap.rb
 pokemonsdk/scripts/00800 Studio/00001 Data/00091 Zone.rb
+pokemonsdk/scripts/00800 Studio/00001 Data/00092 MapLink.rb
 pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00000 ItemDescriptor.rb
 pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00001 EventItem.rb
 pokemonsdk/scripts/00800 Studio/00001 Data/00002 Item/00001 FleeingItem.rb

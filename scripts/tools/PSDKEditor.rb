@@ -31,13 +31,15 @@ module PSDKEditor
     convert_trainers
     convert_quests
     convert_abilities
+    convert_maplinks
+    convert_mapinfos
     convert_configs
   end
 
   # Function that creates all the necessary path
   def create_paths
     Dir.mkdir(ROOT) unless Dir.exist?(ROOT)
-    all_paths = %w[pokemon items types moves zones worldmaps trainers quests abilities groups dex].map { |dirname| File.join(ROOT, dirname) }
+    all_paths = %w[pokemon items types moves zones worldmaps trainers quests abilities groups dex maplinks].map { |dirname| File.join(ROOT, dirname) }
     all_paths.each do |path|
       Dir.mkdir(path) unless Dir.exist?(path)
     end
@@ -75,6 +77,8 @@ module PSDKEditor
 
   # Function that convert Item data to PSDK Editor format
   def convert_items
+    return if Dir[File.join(ROOT, 'items', '*.json')].any?
+
     GameData::Item.all.each do |item|
       item_data = {
         klass: item.class.to_s.split(':').last, id: item.id, dbSymbol: generate_db_symbol('item', item.db_symbol, item.id),
@@ -84,7 +88,7 @@ module PSDKEditor
       }
       next if check_db_symbol(item)
 
-      File.write(File.join(ROOT, 'items', "#{item.db_symbol}.json"), item_data.to_json)
+      File.write(File.join(ROOT, 'items', "#{item.db_symbol}.json"), JSON.pretty_generate(item_data))
     end
   end
 
@@ -111,6 +115,8 @@ module PSDKEditor
   }
   # Function that convert Type data to PSDK Editor format
   def convert_types
+    return if Dir[File.join(ROOT, 'types', '*.json')].any?
+
     GameData::Type.all.each_with_index do |type, index|
       type_data = {
         textId: type.text_id, klass: 'Type', id: type.id, dbSymbol: generate_db_symbol('type', type.db_symbol, type.id),
@@ -120,12 +126,14 @@ module PSDKEditor
       }
       next if check_db_symbol(type)
 
-      File.write(File.join(ROOT, 'types', "#{type.db_symbol}.json"), type_data.to_json)
+      File.write(File.join(ROOT, 'types', "#{type.db_symbol}.json"), JSON.pretty_generate(type_data))
     end
   end
 
   # Function that convert Move data to PSDK Editor format
   def convert_moves
+    return if Dir[File.join(ROOT, 'moves', '*.json')].any?
+
     attack_category = %w[physical physical special status]
     GameData::Skill.all.each do |move|
       move_data = {
@@ -149,19 +157,21 @@ module PSDKEditor
       end
       next if check_db_symbol(move)
 
-      File.write(File.join(ROOT, 'moves', "#{move.db_symbol}.json"), move_data.to_json)
+      File.write(File.join(ROOT, 'moves', "#{move.db_symbol}.json"), JSON.pretty_generate(move_data))
     end
   end
 
   # Function that convert the Zone data to PSDK Editor format
   def convert_zones
+    return if Dir[File.join(ROOT, 'zones', '*.json')].any?
+
     GameData::Zone.all.each do |zone|
       zone_data = {
         id: zone.id, dbSymbol: "zone_#{zone.id}", klass: 'Zone', maps: [zone.map_id].compact.flatten, worldmaps: [zone.worldmap_id].compact.flatten,
         panelId: zone.panel_id, warp: { x: zone.warp_x, y: zone.warp_y }, position: { x: zone.pos_x, y: zone.pos_y }, isFlyAllowed: zone.fly_allowed,
         isWarpDisallowed: zone.warp_disallowed, forcedWeather: zone.forced_weather, wildGroups: create_wild_groups(zone)
       }
-      File.write(File.join(ROOT, 'zones', "zone_#{zone.id}.json"), zone_data.to_json)
+      File.write(File.join(ROOT, 'zones', "zone_#{zone.id}.json"), JSON.pretty_generate(zone_data))
     end
     create_base_group if Dir.empty?(File.join(ROOT, 'groups'))
     group_names = []
@@ -178,6 +188,8 @@ module PSDKEditor
 
   # Function that convert the WorldMap data to PSDK Editor format
   def convert_worldmaps
+    return if Dir[File.join(ROOT, 'worldmaps', '*.json')].any?
+
     GameData::WorldMap.all.each do |worldmap|
       grid = worldmap.data.ysize.times.map { |y| worldmap.data.xsize.times.map { |x| worldmap.data[x, y] } }
       if worldmap.name_file_id.is_a?(String)
@@ -191,12 +203,14 @@ module PSDKEditor
         image: GameData::WorldMap.worldmap_image_filename(worldmap.image), grid: grid,
         regionName: region_name
       }
-      File.write(File.join(ROOT, 'worldmaps', "#{db_symbol}.json"), worldmap_data.to_json)
+      File.write(File.join(ROOT, 'worldmaps', "#{db_symbol}.json"), JSON.pretty_generate(worldmap_data))
     end
   end
 
   # Function that convert the trainers
   def convert_trainers
+    return if Dir[File.join(ROOT, 'trainers', '*.json')].any?
+
     trainer_names = []
     GameData::Trainer.all.each do |trainer|
       trainer_data = {
@@ -207,13 +221,15 @@ module PSDKEditor
       }
       trainer_name = trainer.internal_names.flatten.first
       trainer_names << Array.new(7, trainer_name)
-      File.write(File.join(ROOT, 'trainers', "trainer_#{trainer.id}.json"), trainer_data.to_json)
+      File.write(File.join(ROOT, 'trainers', "trainer_#{trainer.id}.json"), JSON.pretty_generate(trainer_data))
     end
     create_csv(100_062, trainer_names)
   end
 
   # Function that convert the dex
   def convert_pokedex
+    return if Dir[File.join(ROOT, 'dex', '*.json')].any?
+
     create_csv(100_063, [['Pokédex National'] * 7, ['Pokédex Regional'] * 7])
     regional_dex = {
       klass: 'Dex', dbSymbol: 'regional', id: 1, csv: { csvFileId: 63, csvTextIndex: 1 }, startId: 1,
@@ -232,12 +248,14 @@ module PSDKEditor
     end
     national_creatures.compact!
     regional_creatures.compact!
-    File.write(File.join(ROOT, 'dex', 'national.json'), national_dex.to_json)
-    File.write(File.join(ROOT, 'dex', 'regional.json'), regional_dex.to_json)
+    File.write(File.join(ROOT, 'dex', 'national.json'), JSON.pretty_generate(national_dex))
+    File.write(File.join(ROOT, 'dex', 'regional.json'), JSON.pretty_generate(regional_dex))
   end
 
   # Function that convert Pokemon data to PSDK Editor format
   def convert_pokemon
+    return if Dir[File.join(ROOT, 'pokemon', '*.json')].any?
+
     GameData::Pokemon.all.each do |entry|
       pokemon_array = Array.from(entry)
       # @type [Integer]
@@ -248,7 +266,7 @@ module PSDKEditor
       next if check_db_symbol(pokemon_array.first)
 
       filename = File.join(ROOT, 'pokemon', "#{db_symbol}.json")
-      File.write(filename, { id: id, dbSymbol: db_symbol, forms: specie_data, klass: 'Specie' }.to_json)
+      File.write(filename, JSON.pretty_generate({ id: id, dbSymbol: db_symbol, forms: specie_data, klass: 'Specie' }))
     end
   end
 
@@ -379,7 +397,7 @@ module PSDKEditor
         **group_terrain_tag
       }
       group_db_symbols << "group_#{@group_index}"
-      File.write(File.join(ROOT, 'groups', "group_#{@group_index}.json"), group_data.to_json)
+      File.write(File.join(ROOT, 'groups', "group_#{@group_index}.json"), JSON.pretty_generate(group_data))
       @group_index += 1
     end
     return group_db_symbols
@@ -399,7 +417,7 @@ module PSDKEditor
       encounters: [],
       **group_terrain_tag
     }
-    File.write(File.join(ROOT, 'groups', "group_#{@group_index}.json"), group_data.to_json)
+    File.write(File.join(ROOT, 'groups', "group_#{@group_index}.json"), JSON.pretty_generate(group_data))
     @group_index += 1
   end
 
@@ -501,13 +519,15 @@ module PSDKEditor
 
   # Function that converts the quests
   def convert_quests
+    return if Dir[File.join(ROOT, 'quests', '*.json')].any?
+
     GameData::Quest.all.each do |quest|
       quest_data = {
         klass: 'Quest', id: quest.id, dbSymbol: "quest_#{quest.id}", isPrimary: quest.primary, resolution: 'default',
         objectives: build_objectives(quest.objectives),
         earnings: build_earnings(quest.earnings)
       }
-      File.write(File.join(ROOT, 'quests', "quest_#{quest.id}.json"), quest_data.to_json)
+      File.write(File.join(ROOT, 'quests', "quest_#{quest.id}.json"), JSON.pretty_generate(quest_data))
     end
   end
 
@@ -588,6 +608,8 @@ module PSDKEditor
 
   # Function that convert Abilities data to PSDK Editor format
   def convert_abilities
+    return if Dir[File.join(ROOT, 'abilities', '*.json')].any?
+
     GameData::Abilities.db_symbols.each do |ability_db_symbol|
       id = GameData::Abilities.find_using_symbol(ability_db_symbol)
       ability_data = {
@@ -595,8 +617,37 @@ module PSDKEditor
       }
       next if %i[none __undef__ egg].include?(ability_db_symbol)
 
-      File.write(File.join(ROOT, 'abilities', "#{ability_db_symbol}.json"), ability_data.to_json)
+      File.write(File.join(ROOT, 'abilities', "#{ability_db_symbol}.json"), JSON.pretty_generate(ability_data))
     end
+  end
+
+  # Function that convert Maplinks data to PSDK Editor format
+  def convert_maplinks
+    return if Dir[File.join(ROOT, 'maplinks', '*.json')].any?
+
+    $game_data_maplinks = load_data('Data/PSDK/Maplinks.rxdata')
+    if $game_data_maplinks.empty?
+      maplink_data = {
+        klass: 'MapLink', id: 0, dbSymbol: 'maplink_0', mapId: 0, northMaps: [], eastMaps: [], southMaps: [], westMaps: []
+      }
+      File.write(File.join(ROOT, 'maplinks', 'maplink_0.json'), JSON.pretty_generate(maplink_data))
+    else
+      $game_data_maplinks.each_with_index do |(key, maplink), index|
+        maplink_data = {
+          klass: 'MapLink', id: index, dbSymbol: "maplink_#{index}", mapId: key,
+          northMaps: !maplink[0] || maplink[0] == 0 ? [] : [{ mapId: maplink[0], offset: maplink[1].to_i }],
+          eastMaps: !maplink[2] || maplink[2] == 0 ? [] : [{ mapId: maplink[2], offset: maplink[3].to_i }],
+          southMaps: !maplink[4] || maplink[4] == 0 ? [] : [{ mapId: maplink[4], offset: maplink[5].to_i }],
+          westMaps: !maplink[6] || maplink[6] == 0 ? [] : [{ mapId: maplink[6], offset: maplink[7].to_i }]
+        }
+        File.write(File.join(ROOT, 'maplinks', "maplink_#{index}.json"), JSON.pretty_generate(maplink_data))
+      end
+    end
+  end
+
+  def convert_mapinfos
+    map_infos = load_data_utf8('Data/MapInfos.rxdata')
+    File.write(File.join(ROOT, 'rmxp_maps.json'), JSON.pretty_generate(map_infos.sort_by { |_, v| v.order }.map { |(id, v)| { id: id, name: v.name } }))
   end
 
   # Function that check the db_symbol
@@ -625,38 +676,46 @@ module PSDKEditor
 
   # Function that convert PSDK config infos settings to PSDK Editor format
   def convert_infos_settings
+    return if File.exist?(File.join(ROOT_CONFIGS, 'infos_config.json'))
+
     data_infos = { klass: 'Configs::Project::Infos' }
     data_infos[:gameTitle] = PSDK_CONFIG.game_title
     data_infos[:gameVersion] = PSDK_CONFIG.game_version
-    File.write(File.join(ROOT_CONFIGS, 'infos_config.json'), data_infos.to_json)
+    File.write(File.join(ROOT_CONFIGS, 'infos_config.json'), JSON.pretty_generate(data_infos))
   end
 
   # Function that convert PSDK config language settings to PSDK Editor format
   def convert_language_settings
+    return if File.exist?(File.join(ROOT_CONFIGS, 'language_config.json'))
+
     data_language = { klass: 'Configs::Project::Language' }
     data_language[:defaultLanguage] = PSDK_CONFIG.default_language_code
     data_language[:choosableLanguageCode] = PSDK_CONFIG.choosable_language_code
     data_language[:choosableLanguageTexts] = PSDK_CONFIG.choosable_language_texts
-    File.write(File.join(ROOT_CONFIGS, 'language_config.json'), data_language.to_json)
+    File.write(File.join(ROOT_CONFIGS, 'language_config.json'), JSON.pretty_generate(data_language))
   end
 
   # Function that convert PSDK config settings to PSDK Editor format
   def convert_settings
+    return if File.exist?(File.join(ROOT_CONFIGS, 'settings_config.json'))
+
     data_settings = { klass: 'Configs::Project::Settings' }
     data_settings[:pokemonMaxLevel] = PSDK_CONFIG.pokemon_max_level
     data_settings[:isAlwaysUseForm0ForEvolution] = PSDK_CONFIG.always_use_form0_for_evolution
     data_settings[:isUseForm0WhenNoEvolutionData] = PSDK_CONFIG.use_form0_when_no_evolution_data
     data_settings[:maxBagItemCount] = PSDK_CONFIG.max_bag_item_count
-    File.write(File.join(ROOT_CONFIGS, 'settings_config.json'), data_settings.to_json)
+    File.write(File.join(ROOT_CONFIGS, 'settings_config.json'), JSON.pretty_generate(data_settings))
   end
 
   # Function that convert PSDK config texts settings to PSDK Editor format
   def convert_texts_settings
+    return if File.exist?(File.join(ROOT_CONFIGS, 'texts_config.json'))
+
     data_texts = { klass: 'Configs::Project::Texts' }
     data_texts[:fonts] = build_fonts
     data_texts[:messages] = build_messages
     data_texts[:choices] = build_choices
-    File.write(File.join(ROOT_CONFIGS, 'texts_config.json'), data_texts.to_json)
+    File.write(File.join(ROOT_CONFIGS, 'texts_config.json'), JSON.pretty_generate(data_texts))
   end
 
   # Function build fonts for PSDK config texts
@@ -721,21 +780,27 @@ module PSDKEditor
 
   # Function that convert PSDK config game options settings to PSDK Editor format
   def convert_game_options_settings
+    return if File.exist?(File.join(ROOT_CONFIGS, 'game_options_config.json'))
+
     data_game_options = { klass: 'Configs::Project::GameOptions' }
     data_game_options[:order] = PSDK_CONFIG.options.order
-    File.write(File.join(ROOT_CONFIGS, 'game_options_config.json'), data_game_options.to_json)
+    File.write(File.join(ROOT_CONFIGS, 'game_options_config.json'), JSON.pretty_generate(data_game_options))
   end
 
   # Function that convert PSDK config devices settings to PSDK Editor format
   def convert_devices_settings
+    return if File.exist?(File.join(ROOT_CONFIGS, 'devices_config.json'))
+
     data_devices = { klass: 'Configs::Project::Devices' }
     data_devices[:isMouseDisabled] = PSDK_CONFIG.mouse_disabled
     data_devices[:mouseSkin] = PSDK_CONFIG.mouse_skin
-    File.write(File.join(ROOT_CONFIGS, 'devices_config.json'), data_devices.to_json)
+    File.write(File.join(ROOT_CONFIGS, 'devices_config.json'), JSON.pretty_generate(data_devices))
   end
 
   # Function that convert PSDK config display settings to PSDK Editor format
   def convert_display_settings
+    return if File.exist?(File.join(ROOT_CONFIGS, 'display_config.json'))
+
     data_display = { klass: 'Configs::Project::Display' }
     game_resolution = PSDK_CONFIG.native_resolution.split('x').collect(&:to_i)
     data_display[:gameResolution] = { x: game_resolution.first, y: game_resolution.last }
@@ -743,7 +808,7 @@ module PSDKEditor
     data_display[:isFullscreen] = PSDK_CONFIG.running_in_full_screen
     data_display[:isPlayerAlwaysCentered] = PSDK_CONFIG.player_always_centered
     data_display[:tilemapSettings] = build_tilemap_settings
-    File.write(File.join(ROOT_CONFIGS, 'display_config.json'), data_display.to_json)
+    File.write(File.join(ROOT_CONFIGS, 'display_config.json'), JSON.pretty_generate(data_display))
   end
 
   # Function build tilemap settings for PSDK config display
@@ -762,25 +827,31 @@ module PSDKEditor
 
   # Function that convert PSDK config graphic settings to PSDK Editor format
   def convert_graphic_settings
+    return if File.exist?(File.join(ROOT_CONFIGS, 'graphic_config.json'))
+
     data_graphic = { klass: 'Configs::Project::Graphic' }
     data_graphic[:isSmoothTexture] = PSDK_CONFIG.smooth_texture
     data_graphic[:isVsyncEnabled] = PSDK_CONFIG.vsync_enabled
-    File.write(File.join(ROOT_CONFIGS, 'graphic_config.json'), data_graphic.to_json)
+    File.write(File.join(ROOT_CONFIGS, 'graphic_config.json'), JSON.pretty_generate(data_graphic))
   end
 
   # Function that convert PSDK config save settings to PSDK Editor format
   def convert_save_settings
+    return if File.exist?(File.join(ROOT_CONFIGS, 'save_config.json'))
+
     data_save = { klass: 'Configs::Project::Save' }
     data_save[:maximumSave] = Configs.save_config.maximum_save_count
     data_save[:saveKey] = Configs.save_config.save_key
     data_save[:saveHeader] = Configs.save_config.save_header
     data_save[:baseFilename] = Configs.save_config.base_filename
     data_save[:isCanSaveOnAnySave] = Configs.save_config.can_save_on_any_save
-    File.write(File.join(ROOT_CONFIGS, 'save_config.json'), data_save.to_json)
+    File.write(File.join(ROOT_CONFIGS, 'save_config.json'), JSON.pretty_generate(data_save))
   end
 
   # Function that convert PSDK config scene title settings to PSDK Editor format
   def convert_scene_title_settings
+    return if File.exist?(File.join(ROOT_CONFIGS, 'scene_title_config.json'))
+
     data_scene_title = { klass: 'Configs::Project::SceneTitle' }
     data_scene_title[:introMovieMapId] = Configs.scene_title_config.intro_movie_map_id
     data_scene_title[:bgmName] = Configs.scene_title_config.bgm_name
@@ -788,11 +859,13 @@ module PSDKEditor
     data_scene_title[:isLanguageSelectionEnabled] = Configs.scene_title_config.language_selection_enabled
     data_scene_title[:additionalSplashes] = Configs.scene_title_config.additional_splashes
     data_scene_title[:controlWaitTime] = Configs.scene_title_config.control_wait
-    File.write(File.join(ROOT_CONFIGS, 'scene_title_config.json'), data_scene_title.to_json)
+    File.write(File.join(ROOT_CONFIGS, 'scene_title_config.json'), JSON.pretty_generate(data_scene_title))
   end
 
   # Function that convert PSDK config credits settings to PSDK Editor format
   def convert_credits_settings
+    return if File.exist?(File.join(ROOT_CONFIGS, 'credits_config.json'))
+
     data_credits = { klass: 'Configs::Project::Credits' }
     data_credits[:projectSplash] = Configs.credits_config.project_splash
     data_credits[:bgm] = Configs.credits_config.bgm
@@ -803,7 +876,7 @@ module PSDKEditor
     data_credits[:chiefProjectName] = Configs.credits_config.chief_project_name
     data_credits[:leaders] = Configs.credits_config.leaders
     data_credits[:gameCredits] = Configs.credits_config.game_credits
-    File.write(File.join(ROOT_CONFIGS, 'credits_config.json'), data_credits.to_json)
+    File.write(File.join(ROOT_CONFIGS, 'credits_config.json'), JSON.pretty_generate(data_credits))
   end
 end
 

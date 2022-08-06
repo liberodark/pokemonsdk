@@ -65,23 +65,13 @@ module Yuki
       # @return [RPG::Map] the map adjusted
       def load_map(map_id)
         Yuki::ElapsedTime.start(:maplinker)
-        map_datas.first&.map&.events = @last_events if @last_events
-        # @type [Array<Yuki::Tilemap::MapData>]
-        map_datas = [@map_datas.find { |map| map.map_id == map_id } || Tilemap::MapData.new(load_map_data(map_id), map_id)]
+        map_datas = load_current_map_datas(map_id)
         current_map = map_datas.first.map
-        map_datas.first.load_position(current_map, :self, 0)
 
-        if $game_switches[Sw::MapLinkerDisabled]
+        if (link_data = $game_switches[Sw::MapLinkerDisabled] ? nil : each_data_map_link.find { |map_link| map_link.map_id == map_id })
+          load_map_data_from_link_data(link_data, map_datas, current_map)
+        else
           reset
-        elsif (link_data = $game_data_maplinks[map_id])
-          (link_data.size / 2).times do |i|
-            sub_map_id = link_data[i * 2]
-            next if sub_map_id == 0
-
-            map_data = @map_datas.find { |map| map.map_id == sub_map_id } || Tilemap::MapData.new(load_map_data(sub_map_id), sub_map_id)
-            map_data.load_position(current_map, LINK_TYPES[i % 4], link_data[i * 2 + 1])
-            map_datas << map_data
-          end
         end
 
         @map_datas = map_datas
@@ -90,6 +80,41 @@ module Yuki
 
         Yuki::ElapsedTime.show(:maplinker, 'Loading the tileset & priority took')
         return current_map
+      end
+
+      # Function that loads the current map data
+      # @param map_id [Integer]
+      # @return [Array<Yuki::Tilemap::MapData>]
+      def load_current_map_datas(map_id)
+        # Reset event of first map which was last current map
+        map_datas.first&.map&.events = @last_events if @last_events
+        # @type [Array<Yuki::Tilemap::MapData>]
+        map_datas = [@map_datas.find { |map| map.map_id == map_id } || Tilemap::MapData.new(load_map_data(map_id), map_id)]
+        map_datas.first.load_position(map_datas.first.map, :self, 0)
+        return map_datas
+      end
+
+      # Load the map_datas array from the link_data
+      # @param link_data [Studio::MapLink]
+      # @param map_datas [Array<Yuki::Tilemap::MapData>]
+      # @param current_map [RPG::Map] map currently being loaded
+      def load_map_data_from_link_data(link_data, map_datas, current_map)
+        link_data.north_maps.each { |link| map_datas << load_map_data_from_link(link, :north, current_map) }
+        link_data.east_maps.each { |link| map_datas << load_map_data_from_link(link, :east, current_map) }
+        link_data.south_maps.each { |link| map_datas << load_map_data_from_link(link, :south, current_map) }
+        link_data.west_maps.each { |link| map_datas << load_map_data_from_link(link, :west, current_map) }
+      end
+
+      # Load a map data from a link
+      # @param link [Studio::MapLink::Link]
+      # @param cardinal [:north, :south, :east, :west]
+      # @param current_map [RPG::Map] map currently being loaded
+      # @return [Tilemap::MapData]
+      def load_map_data_from_link(link, cardinal, current_map)
+        sub_map_id = link.map_id
+        map_data = @map_datas.find { |map| map.map_id == sub_map_id } || Tilemap::MapData.new(load_map_data(sub_map_id), sub_map_id)
+        map_data.load_position(current_map, cardinal, link.offset)
+        return map_data
       end
 
       # Load the data of a map (with some optimizations)

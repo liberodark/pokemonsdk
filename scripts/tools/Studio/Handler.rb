@@ -61,6 +61,13 @@ module Studio
         @out.puts({ progress: 'converterLoaded', message: 'Studio converter loaded!' }.to_json)
         PSDKEditor.convert
         @out.puts({ done: true, message: 'Conversion to Studio done!' }.to_json)
+      when 'importMapInfosToStudio'
+        ScriptLoader.load_tool('PSDKEditor')
+        @out.puts({ progress: 'converterLoaded', message: 'Studio converter loaded!' }.to_json)
+        PSDKEditor.create_paths
+        PSDKEditor.convert_mapinfos
+        PSDKEditor.convert_maplinks
+        @out.puts({ done: true, message: 'Conversion to Studio done!' }.to_json)
       when 'psdkConfig'
         @out.puts({ done: true, psdkConfig: { gameTitle: PSDK_CONFIG.game_title } }.to_json)
       end
