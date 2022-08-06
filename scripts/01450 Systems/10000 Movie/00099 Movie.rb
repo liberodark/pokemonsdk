@@ -74,7 +74,7 @@ module GamePlay
     end
 
     def auto_require_movie_player
-      filename = PSDK_RUNNING_UNDER_WINDOWS ? "#{ENV['GAMEDEPS'] || '.'}/lib/SFEMovie" : 'SFEMovie'
+      filename = PSDK_RUNNING_UNDER_WINDOWS ? "#{ENV['GAMEDEPS'] || ENV['PSDK_BINARY_PATH'] || '.'}/lib/SFEMovie" : 'SFEMovie'
       filename += PSDK_RUNNING_UNDER_MAC ? '.bundle' : '.so'
       require filename
     end
