@@ -88,7 +88,9 @@ module PFM
       @level = level.clamp(1, Float::INFINITY)
       @step_remaining = 0
       @ribbons = []
+      # @type [Array<PFM::Skill>]
       @skill_learnt = []
+      # @type [Array<PFM::Skill>]
       @skills_set = []
       @sub_id = nil
       @sub_code = nil

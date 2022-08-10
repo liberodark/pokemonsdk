@@ -352,7 +352,7 @@ module PFM
     # Check evolve condition to evolve in Sylveon (Nymphali)
     # @return [Boolean] if the condition is valid
     def elv_nymphali
-      return @skills_set.any? { |skill| skill&.type_fairy? }
+      return @skills_set.any? { |skill| skill&.type?(data_type(:fairy).id) }
     end
   end
 end
