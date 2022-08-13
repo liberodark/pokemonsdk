@@ -13,9 +13,10 @@ module Battle
         @logic.bank_effects[bank].each do |effect|
           next unless WALLS.include?(effect.name)
 
-          if effect.name == :reflect
+          case effect.name
+          when :reflect
             @scene.display_message_and_wait(parse_text(18, bank == 0 ? 132 : 133))
-          elsif effect.name == :light_screen
+          when :light_screen
             @scene.display_message_and_wait(parse_text(18, bank == 0 ? 136 : 137))
           else
             @scene.display_message_and_wait(parse_text(18, bank == 0 ? 140 : 141))
