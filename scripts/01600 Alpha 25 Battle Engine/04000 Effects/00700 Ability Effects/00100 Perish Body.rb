@@ -10,7 +10,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target
-          return unless skill&.direct?
+          return unless skill&.direct? && !launcher.has_ability?(:long_reach)
           return if target.effects.has?(:perish_song) || launcher.effects.has?(:perish_song)
 
           target.effects.add(effect(target))

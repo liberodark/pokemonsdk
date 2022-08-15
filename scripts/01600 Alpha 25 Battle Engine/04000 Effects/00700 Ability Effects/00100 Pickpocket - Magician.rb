@@ -10,7 +10,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target || !%i[none __undef__].include?(target.item_db_symbol)
-          return unless skill&.direct? && launcher && launcher.hp > 0
+          return unless skill&.direct? && launcher && launcher.hp > 0 && !launcher.has_ability?(:long_reach)
           return unless handler.logic.item_change_handler.can_lose_item?(launcher, target)
 
           handler.scene.visual.show_ability(target)
@@ -36,7 +36,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if launcher != @target || launcher == target || !%i[none __undef__].include?(launcher.item_db_symbol)
-          return unless skill&.direct? && launcher && launcher.hp > 0
+          return unless skill&.direct? && launcher && launcher.hp > 0 && !launcher.has_ability?(:long_reach)
           return unless handler.logic.item_change_handler.can_lose_item?(target, launcher)
 
           handler.scene.visual.show_ability(launcher)

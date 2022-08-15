@@ -76,7 +76,7 @@ module Battle
         def play_protect_effect(user, target, move)
           hp = user.hp / 8
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          move.scene.visual.show_hp_animations([user], [-hp]) if move.direct?
+          move.scene.visual.show_hp_animations([user], [-hp]) if move.direct? && !user.has_ability?(:long_reach)
         end
       end
       Protect.register(:spiky_shield, SpikyShield)
@@ -91,7 +91,7 @@ module Battle
         # @param move [Battle::Move]
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          move.scene.logic.stat_change_handler.stat_change_with_process(:atk, -1, user) if move.direct?
+          move.scene.logic.stat_change_handler.stat_change_with_process(:atk, -1, user) if move.direct? && !user.has_ability?(:long_reach)
         end
       end
       Protect.register(:king_s_shield, KingsShield)
@@ -107,7 +107,7 @@ module Battle
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
           handler = @logic.status_change_handler
-          handler.status_change(:poison, user, message_overwrite: 234) if move.direct? && handler.status_appliable?(:poison, user)
+          handler.status_change(:poison, user, message_overwrite: 234) if move.direct? && !user.has_ability?(:long_reach) && handler.status_appliable?(:poison, user)
         end
       end
       Protect.register(:baneful_bunker, BanefulBunker)

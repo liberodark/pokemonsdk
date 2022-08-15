@@ -11,7 +11,7 @@ module Battle
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target
           return if launcher&.dead?
-          return unless skill&.direct? && launcher != target
+          return unless skill&.direct? && launcher != target && !launcher.has_ability?(:long_reach)
 
           handler.scene.visual.show_item(target)
           handler.logic.damage_handler.damage_change((launcher.max_hp / 6).clamp(1, Float::INFINITY), launcher)

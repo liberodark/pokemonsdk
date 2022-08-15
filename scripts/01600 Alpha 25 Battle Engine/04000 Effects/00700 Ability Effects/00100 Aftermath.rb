@@ -10,7 +10,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage_death(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target
-          return unless skill&.direct? && launcher && launcher.hp > 0
+          return unless skill&.direct? && launcher && launcher.hp > 0 && !launcher.has_ability?(:long_reach)
           return if launcher.has_ability?(:damp)
 
           damages = (launcher.max_hp / 4).clamp(1, Float::INFINITY)
