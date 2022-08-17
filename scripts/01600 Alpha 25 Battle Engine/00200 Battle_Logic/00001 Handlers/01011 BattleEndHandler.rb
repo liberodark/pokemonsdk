@@ -38,6 +38,7 @@ module Battle
       def player_loose_sequence
         lost_money = calculate_lost_money
         variables = { PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => lost_money.to_s }
+        PFM.game_state.lose_money(lost_money)
         @scene.message_window.stay_visible = true
         @scene.visual.lock do
           @scene.display_message(parse_text(18, 56, variables))
