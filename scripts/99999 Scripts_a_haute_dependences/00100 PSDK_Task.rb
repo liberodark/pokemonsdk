@@ -115,7 +115,7 @@ module Scheduler
     end
   end
 
-  add_proc(:on_scene_switch, GamePlay::Load, 'Fix quests', 1000) do
+  add_proc(:on_scene_switch, GamePlay::Load, 'Fix quests', 1001) do
     next unless $scene.is_a?(Scene_Map)
     next if PFM.game_state.trainer.current_version > 6407
 
