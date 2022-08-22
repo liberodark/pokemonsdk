@@ -21,9 +21,12 @@ module Battle
 
       # Execute the action
       def execute
+        return unless @scene.logic.instance_variable_get(:@result_item)
+
         item_name = @holder.item_name
-        @holder.send(:consume_berry, @holder) if @holder.item_effect.is_a?(Effects::Item::Berry)
+        @holder.item_effect.send(:consume_berry, @holder) if @holder.item_effect.is_a?(Effects::Item::Berry)
         @scene.display_message_and_wait(parse_text_with_pokemon(19, 1031, @holder, PFM::Text::ITEM2[1] => item_name))
+        @scene.logic.instance_variable_set(:@result_item, nil)
       end
     end
   end

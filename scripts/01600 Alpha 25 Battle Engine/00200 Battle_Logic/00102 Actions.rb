@@ -13,6 +13,10 @@ module Battle
       quick_claw: :check_priority_trigger_quick_claw,
       custap_berry: :check_priority_trigger_custap_berry
     }
+    # List of move first handler by ability
+    ABILITY_PRIORITY_BOOST_IN_PRIORITY = {
+      quick_draw: :check_priority_trigger_quick_draw
+    }
     # Value that contains 0.25
     VAL_0_25 = 0.25
     # Add actions to process in the next step
@@ -129,11 +133,21 @@ module Battle
 
       # @type [Actions::Attack]
       triggered_action = actions[1..-1].find do |action|
-        message = ITEM_PRIORITY_BOOST_IN_PRIORITY[action.launcher.battle_item_db_symbol]
-        log_debug("#{action.launcher.battle_item_db_symbol} held by #{action.launcher}") if message
-        result = (message ? send(message, action.launcher) : false)
-        log_debug("#{message} returned #{result}") if message
-        next(result)
+        message1 = ABILITY_PRIORITY_BOOST_IN_PRIORITY[action.launcher.ability_db_symbol]
+        log_debug("#{action.launcher.ability_db_symbol} activate ?") if message1
+        result1 = (message1 ? send(message1, action) : false)
+        log_debug("#{message1} returned #{result1}") if message1
+        if result1
+          @scene.visual.show_ability(action.launcher)
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 1257, action.launcher))
+          next(result1)
+        end
+
+        message2 = ITEM_PRIORITY_BOOST_IN_PRIORITY[action.launcher.battle_item_db_symbol]
+        log_debug("#{action.launcher.battle_item_db_symbol} held by #{action.launcher}") if message2
+        @result_item = (message2 ? send(message2, action.launcher) : false)
+        log_debug("#{message2} returned #{@result_item}") if message2
+        next(@result_item)
       end
       return unless triggered_action
 
@@ -175,6 +189,13 @@ module Battle
     # @return [Boolean] if the item triggered
     def check_priority_trigger_custap_berry(pokemon)
       return pokemon.has_ability?(:gluttony) ? pokemon.hp_rate < 0.5 : pokemon.hp_rate < 0.25
+    end
+
+    # Test the quick draw trigger
+    # @param action [Battle::Actions::Base]
+    # @return [Boolean] if the ability triggered
+    def check_priority_trigger_quick_draw(action)
+      return bchance?(0.3, self) if action.is_a?(Actions::Attack) && !action.move.status?
     end
   end
 end
