@@ -137,10 +137,8 @@ class Interpreter
     end
     $game_player.turn_toward_character(character)
     # We do the speech
-    @message_waiting = true
-    message = PFM::Text.parse_string_for_messages(phrase)
-    $scene.display_message(message)
-    @message_waiting = false
+    text = PFM::Text.parse_string_for_messages(phrase)
+    message(text)
     @wait_count = 2
   end
 
@@ -153,7 +151,7 @@ class Interpreter
     actor = $actors[index]
     $actors[index] = pokemon
     # TODO: Trade animation taking actor, pokemon (including messages)
-    $scene.display_message("#{actor.given_name} is being traded with #{pokemon.name}")
+    message("#{actor.given_name} is being traded with #{pokemon.name}")
     id, form = pokemon.evolve_check(:trade, pokemon)
     GamePlay.make_pokemon_evolve(pokemon, id, form, true) if id
   end

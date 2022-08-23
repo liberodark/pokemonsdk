@@ -351,7 +351,7 @@ class Interpreter
         pokemon.level_up_stat_refresh
         Audio.me_play(PFM::ItemDescriptor::LVL_SOUND)
         PFM::Text.set_num3(pokemon.level.to_s, 1)
-        $scene.display_message_and_wait(parse_text(18, 62, '[VAR 010C(0000)]' => pokemon.given_name))
+        message(parse_text(18, 62, '[VAR 010C(0000)]' => pokemon.given_name))
         PFM::Text.reset_variables
         pokemon.check_skill_and_learn
         id, form = pokemon.evolve_check
@@ -382,7 +382,7 @@ class Interpreter
       $actors[index].level_up_stat_refresh
       Audio.me_play(PFM::ItemDescriptor::LVL_SOUND)
       PFM::Text.set_num3($actors[index].level.to_s, 1)
-      $scene.display_message_and_wait(parse_text(18, 62, '[VAR 010C(0000)]' => $actors[index].given_name))
+      message(parse_text(18, 62, '[VAR 010C(0000)]' => $actors[index].given_name))
       PFM::Text.reset_variables
       $actors[index].check_skill_and_learn
       id, form = $actors[index].evolve_check
