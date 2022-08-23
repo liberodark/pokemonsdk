@@ -26,7 +26,7 @@ module Battle
         # @param skill [Battle::Move, nil] potential skill used to switch
         # @return [Boolean]
         def effect_prevented?(pokemon, skill)
-          return pokemon.bank == @target.bank || pokemon.type_ghost?
+          return pokemon.bank == @target.bank || pokemon.type_ghost? || pokemon.has_ability?(:shadow_tag)
         end
       end
       register(:shadow_tag, ShadowTag)
