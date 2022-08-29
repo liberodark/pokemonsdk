@@ -135,7 +135,7 @@ module UI
         super(viewport, *COORDINATES[coords_index], default_cache: :pokedex)
         @background = add_background('buttons')
         # @type [KeyShortcut]
-        @key_button = add_sprite(0, 1, NO_INITIAL_IMAGE, key, coords_index == 3, type: KeyShortcut)
+        @key_button = add_sprite(0, 1, NO_INITIAL_IMAGE, key, type: KeyShortcut)
         with_font(text_font) { @text = add_text(17, 3, 51, 13, nil.to_s, color: text_color(coords_index)) }
         @coords_index = coords_index
         self.pressed = false
