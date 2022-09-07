@@ -3,7 +3,7 @@ module ProjectCompilation
     def initialize(origin_vd, target_vd, path, no_recursive)
       puts "Loading #{path}"
       @files = {}
-      load_all_original_files(origin_vd)
+      # load_all_original_files(origin_vd)
       load_files_from_path(path, no_recursive)
       puts "Saving #{path}"
       save(target_vd)

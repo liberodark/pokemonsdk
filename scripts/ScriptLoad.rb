@@ -32,6 +32,7 @@ module ScriptLoader
         load_vscode_scripts(VSCODE_SCRIPT_PATH, file)
       end
     end
+    load_vscode_scripts(PROJECT_SCRIPT_PATH) if PARGV[:util].include?('project_compilation') && index_filename == SCRIPT_INDEX_PATH
     return if PARGV[:util].any?
     return if PARGV.game_launched_by_studio?
 
