@@ -222,8 +222,19 @@ module Battle
         pokemon = $game_temp.vs_type.times.map { |i| logic.battler(1, i) }.compact
         money = additional_money + pokemon.reduce(0) { |acc, curr| curr.level * base_money(curr) + acc }
         money *= 2 if logic.terrain_effects.has?(:happy_hour)
-        money *= 2 if $game_temp.vs_type.times.any? { |i| MONEY_ITEMS.include?(logic.battler(0, i)&.item_db_symbol) }
+        money *= 2 if money_item_multiplier?(logic)
         return money
+      end
+
+      # Tell if the money item multiplier is active
+      # @param logic [Battle::Logic]
+      # @return [Boolean]
+      def money_item_multiplier?(logic)
+        # @type [Array<PFM::PokemonBattler>]
+        battler_list = logic.all_battlers.select { |b| b&.bank == 0 && MONEY_ITEMS.include?(b&.item_db_symbol) }
+        return false if battler_list.empty?
+
+        return battler_list.any? { |battler| logic.all_battlers.any? { |p| p != battler && p.encountered?(battler) } }
       end
 
       private
