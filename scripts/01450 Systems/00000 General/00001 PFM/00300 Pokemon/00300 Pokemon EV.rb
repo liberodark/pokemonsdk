@@ -106,7 +106,7 @@ module PFM
       return false if @ev_hp > Configs.stats.max_stat_ev - 1
 
       @ev_hp += n
-      @ev_hp.clamp(0, Configs.stats.max_stat_ev)
+      @ev_hp = @ev_hp.clamp(0, Configs.stats.max_stat_ev)
       @hp = (@hp_rate * max_hp).round
       @hp_rate = @hp.to_f / max_hp
       return true
@@ -123,7 +123,7 @@ module PFM
       return false if @ev_atk > Configs.stats.max_stat_ev - 1
 
       @ev_atk += n
-      @ev_atk.clamp(0, Configs.stats.max_stat_ev)
+      @ev_atk = @ev_atk.clamp(0, Configs.stats.max_stat_ev)
       return true
     end
 
@@ -138,7 +138,7 @@ module PFM
       return false if @ev_dfe > Configs.stats.max_stat_ev - 1
 
       @ev_dfe += n
-      @ev_dfe.clamp(0, Configs.stats.max_stat_ev)
+      @ev_dfe = @ev_dfe.clamp(0, Configs.stats.max_stat_ev)
       return true
     end
 
@@ -153,7 +153,7 @@ module PFM
       return false if @ev_spd > Configs.stats.max_stat_ev - 1
 
       @ev_spd += n
-      @ev_spd.clamp(0, Configs.stats.max_stat_ev)
+      @ev_spd = @ev_spd.clamp(0, Configs.stats.max_stat_ev)
       return true
     end
 
@@ -168,7 +168,7 @@ module PFM
       return false if @ev_ats > Configs.stats.max_stat_ev - 1
 
       @ev_ats += n
-      @ev_ats.clamp(0, Configs.stats.max_stat_ev)
+      @ev_ats = @ev_ats.clamp(0, Configs.stats.max_stat_ev)
       return true
     end
 
@@ -183,7 +183,7 @@ module PFM
       return false if @ev_dfs > Configs.stats.max_stat_ev - 1
 
       @ev_dfs += n
-      @ev_dfs.clamp(0, Configs.stats.max_stat_ev)
+      @ev_dfs = @ev_dfs.clamp(0, Configs.stats.max_stat_ev)
       return true
     end
   end
