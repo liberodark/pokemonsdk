@@ -31,7 +31,9 @@ module Battle
 
           # If target of the effect has poison heal, we attempt to heal
           if target.has_ability?(:poison_heal)
+            scene.visual.show_ability(target, true)
             logic.damage_handler.heal(target, poison_effect)
+            scene.visual.hide_ability(target)
             return
           end
 

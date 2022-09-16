@@ -43,6 +43,16 @@ module Battle
           return if target.dead?
           return if target.has_ability?(:magic_guard)
 
+          # If target of the effect has poison heal, we attempt to heal
+          if target.has_ability?(:poison_heal)
+            # Triggering Poison Heal still increment the counter
+            @toxic_counter += 1
+            scene.visual.show_ability(target, true)
+            logic.damage_handler.heal(target, poison_effect)
+            scene.visual.hide_ability(target)
+            return
+          end
+
           # Show the effect and apply it
           scene.display_message_and_wait(parse_text_with_pokemon(19, 243, target))
           scene.visual.show_rmxp_animation(target, 469 + status_id)
@@ -56,6 +66,12 @@ module Battle
         end
 
         private
+
+        # Return the Poison effect on HP of the Pokemon (used solely by the Poison Heal ability)
+        # @return [Integer] number of HP loosen
+        def poison_effect
+          return (target.max_hp / 8).clamp(1, Float::INFINITY)
+        end
 
         # Return the Poison effect on HP of the Pokemon
         # @return [Integer] number of HP loosen
