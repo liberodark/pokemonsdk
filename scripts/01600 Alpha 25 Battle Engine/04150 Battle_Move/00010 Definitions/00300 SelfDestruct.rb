@@ -4,6 +4,22 @@ module Battle
     class SelfDestruct < BasicWithSuccessfulEffect
       private
 
+      # Function that tests if the user is able to use the move
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param targets [Array<PFM::PokemonBattler>] expected targets
+      # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
+      # @return [Boolean] if the procedure can continue
+      def move_usable_by_user(user, targets)
+        return false unless super
+
+        if scene.logic.all_alive_battlers.any? { |battler| battler.has_ability?(:damp) }
+          show_usage_failure(user)
+          decrease_pp(user, targets)
+          return false
+        end
+        return true
+      end
+
       # Event called if the move failed
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
