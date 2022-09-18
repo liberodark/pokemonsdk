@@ -19,6 +19,10 @@ module PFM
       @ev_hp @ev_atk @ev_dfe @ev_spd @ev_ats @ev_dfs
       @gender
     ]
+    # List of properties to copy with Illusion
+    ILLUSION_COPIED_PROPERTIES = %i[
+      @id @form @gender @given_name @code @captured_in
+    ]
     # List of properties to copy back to original
     BACK_PROPERTIES = %i[
       @id @form
@@ -112,6 +116,10 @@ module PFM
     # @return [PFM::Pokemon]
     attr_reader :transform
 
+    # Get the Illusion pokemon
+    # @return [PFM::Pokemon]
+    attr_reader :illusion
+
     # Create a new PokemonBattler from a Pokemon
     # @param original [PFM::Pokemon] original Pokemon (protected during the battle)
     # @param scene [Battle::Scene] current battle scene
@@ -119,7 +127,7 @@ module PFM
     def initialize(original, scene, max_level = Float::INFINITY)
       @original = original
       # @type [PFM::Pokemon]
-      @transform = nil
+      @transform = @illusion = nil
       @scene = scene
       scene.logic.transform_handler.initialize_transform_attempt(self)
       copy_properties
@@ -311,6 +319,7 @@ module PFM
 
       @battle_properties.clear
       self.transform = nil
+      self.illusion = nil
       original = @original
       BACK_PROPERTIES.each do |ivar_name|
         original.instance_variable_set(ivar_name, instance_variable_get(ivar_name))
@@ -374,6 +383,12 @@ module PFM
 
       copy_transform_properties
       copy_transform_moveset
+    end
+
+    # Setup the Illusion of the Pokémon
+    def illusion=(pokemon)
+      @illusion = pokemon
+      copy_illusion_properties
     end
 
     # Is the pokemon affected by the terrain ?
@@ -440,6 +455,7 @@ module PFM
         instance_variable_set(ivar_name, original.instance_variable_get(ivar_name))
       end
       copy_transform_properties if @transform
+      copy_illusion_properties if @illusion
     end
 
     # Copy the properties of a transformed pokemon
@@ -452,6 +468,19 @@ module PFM
       elsif @properties_before_transform
         TRANSFORM_COPIED_PROPERTIES.map.with_index { |ivar_name, index| instance_variable_set(ivar_name, @properties_before_transform[index]) }
         @properties_before_transform = nil
+      end
+    end
+
+    # Copy the properties of a pokemon under Illusion
+    def copy_illusion_properties
+      if @illusion
+        @properties_before_illusion = ILLUSION_COPIED_PROPERTIES.map { |ivar_name| instance_variable_get(ivar_name) }
+        ILLUSION_COPIED_PROPERTIES.each do |ivar_name|
+          instance_variable_set(ivar_name, @illusion.instance_variable_get(ivar_name))
+        end
+      elsif @properties_before_illusion
+        ILLUSION_COPIED_PROPERTIES.map.with_index { |ivar_name, index| instance_variable_set(ivar_name, @properties_before_illusion[index]) }
+        @properties_before_illusion = nil
       end
     end
 

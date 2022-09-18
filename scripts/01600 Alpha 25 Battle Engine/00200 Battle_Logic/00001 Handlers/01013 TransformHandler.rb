@@ -16,6 +16,13 @@ module Battle
         return !target.transform
       end
 
+      # Function that tells if the Pokemon can get under Illusion or not
+      # @param target [PFM::PokemonBattler]
+      # @return [Boolean]
+      def can_illusion?(target)
+        return !target.illusion
+      end
+
       # Function that tells if the pokemon can copy another pokemon
       # @param copied [PFM::PokemonBattler]
       # @return [Boolean]
@@ -45,13 +52,13 @@ module Battle
 
     TransformHandler.register_on_initialize_transform('PSDK: Illusion') do |handler, target|
       next if target.original.ability_db_symbol != :illusion
-      next unless handler.can_transform?(target)
+      next unless handler.can_illusion?(target)
 
       party = handler.logic.battle_info.party(target)
       party = party&.reject(&:dead?)
       next if party.empty? || party.index(target) == (party.size - 1)
 
-      target.transform = party.last
+      target.illusion = party.last
     end
 
     TransformHandler.register_on_initialize_transform('PSDK transform : Effects') do |handler, target|

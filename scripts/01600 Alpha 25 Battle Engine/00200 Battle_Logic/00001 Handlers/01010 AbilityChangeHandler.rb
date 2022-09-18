@@ -39,6 +39,7 @@ module Battle
         return unless can_change_ability?(target, ability_symbol, launcher, skill)
 
         target.ability = (ability_symbol == :none ? 0 : data_ability(ability_symbol).id) || 0
+        exec_hooks(AbilityChangeHandler, :post_ability_change, binding)
       end
 
       # Function that tell if this is possible to change the ability of a Pokemon
@@ -76,6 +77,26 @@ module Battle
             force_return(false) if result == :prevent
           end
         end
+
+        # Function that registers a post_ability_change hook
+        # @param reason [String] reason of the ability_change_prevention registration
+        # @yieldparam handler [AbilityChangeHandler]
+        # @yieldparam target [PFM::PokemonBattler]
+        # @yieldparam ability_symbol [Symbol] Symbol of the Ability which will be set
+        # @yieldparam launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @yieldparam skill [Battle::Move, nil] Potential move used
+        # @yieldreturn [:prevent, nil] :prevent if the ability cannot be changed
+        def register_post_ability_change_hook(reason)
+          Hooks.register(AbilityChangeHandler, :post_ability_change, reason) do |hook_binding|
+            result = yield(
+              self,
+              hook_binding.local_variable_get(:target),
+              hook_binding.local_variable_get(:ability_symbol),
+              hook_binding.local_variable_get(:launcher),
+              hook_binding.local_variable_get(:skill)
+            )
+          end
+        end
       end
     end
 
@@ -105,6 +126,15 @@ module Battle
       next unless skill && launcher == target && AbilityChangeHandler::SKILL_BLOCKING_ABILITIES[skill.db_symbol]&.include?(launcher.ability_db_symbol)
 
       next handler.prevent_change # silent
+    end
+
+    AbilityChangeHandler.register_post_ability_change_hook('PSDK Post Ability Change: Illusion reset') do |handler, target, _, launcher, skill|
+      next unless target.original.ability_db_symbol == :illusion && target.illusion
+
+      target.illusion = nil
+      handler.scene.visual.show_ability(target)
+      handler.scene.visual.show_switch_form_animation(target)
+      handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 478, target))
     end
   end
 end

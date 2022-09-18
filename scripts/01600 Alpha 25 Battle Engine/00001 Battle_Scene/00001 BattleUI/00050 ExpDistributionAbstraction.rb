@@ -25,7 +25,7 @@ module BattleUI
       @__original_forms = pokemon.map { |battler| battler.original.form }
       @__original_pokemon = pokemon.map do |battler|
         original = battler.original
-        original.instance_variable_set(:@form, battler.form) unless battler.transform
+        original.instance_variable_set(:@form, battler.form) unless battler.transform || battler.illusion
 
         next original
       end

@@ -247,18 +247,18 @@ module Battle
     # Illusion
     DamageHandler.register_post_damage_hook('PSDK Post damage: Illusion') do |handler, _, target, launcher, skill|
       next unless skill && launcher != target
-      next unless target.original.ability_db_symbol == :illusion && target.transform
+      next unless target.original.ability_db_symbol == :illusion && target.illusion
 
-      target.transform = nil
+      target.illusion = nil
       handler.scene.visual.show_ability(target)
       handler.scene.visual.show_switch_form_animation(target)
       handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 478, target))
     end
     DamageHandler.register_post_damage_death_hook('PSDK Post damage: Illusion') do |_, _, target, launcher, skill|
       next unless skill && launcher != target
-      next unless target.original.ability_db_symbol == :illusion && target.transform
+      next unless target.original.ability_db_symbol == :illusion && target.illusion
 
-      target.transform = nil
+      target.illusion = nil
     end
   end
 end
