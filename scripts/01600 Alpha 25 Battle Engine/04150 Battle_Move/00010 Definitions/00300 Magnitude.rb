@@ -40,16 +40,21 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
+        find_magnitude
+        return true
+      end
+
+      def find_magnitude
         # Pick a random magnitude data
         dice = logic.generic_rng.rand(100).floor
         @magnitude_found = magnitude_table.find { |row| row[0] > dice } || magnitude_table[0]
-        return true
       end
 
       # Show the move usage message
       # @param user [PFM::PokemonBattler] user of the move
       def usage_message(user)
         super
+        find_magnitude if @magnitude_found.nil? # To ensure no crashes due to Copycat or Mirror Move
         @scene.display_message_and_wait(parse_text(18, @magnitude_found[2]))
       end
 
