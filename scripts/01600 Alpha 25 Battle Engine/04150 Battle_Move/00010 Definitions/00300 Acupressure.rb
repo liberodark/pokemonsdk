@@ -15,8 +15,7 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        select_stage = ->(target) { (Logic::StatChangeHandler::ALL_STATS.select { |s| @logic.stat_change_handler.stat_increasable?(s, target, user, self) }).sample(random: @logic.generic_rng) }
-        @stages_ids = targets.map { |target| [target, select_stage.call(target)] }.to_h.compact
+        map_stages_id(user, targets)
         return show_usage_failure(user) && false if @stages_ids.empty?
 
         return true
@@ -28,10 +27,21 @@ module Battle
         Logic::StatChangeHandler::ALL_STATS
       end
 
+      # Map the stages ids of each target
+      def map_stages_id(user, targets)
+        select_stage = ->(target) { (Logic::StatChangeHandler::ALL_STATS.select { |s| @logic.stat_change_handler.stat_increasable?(s, target, user, self) }).sample(random: @logic.generic_rng) }
+        @stages_ids = targets.map { |target| [target, select_stage.call(target)] }.to_h.compact
+      end
+
       # Function that deals the stat to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_stats(user, actual_targets)
+        if @stages_ids.nil?
+          map_stages_id(user, actual_targets)
+          return show_usage_failure(user) if @stages_ids.nil? || @stages_ids&.empty?
+        end
+
         actual_targets.each do |target|
           next unless @stages_ids[target]
 
