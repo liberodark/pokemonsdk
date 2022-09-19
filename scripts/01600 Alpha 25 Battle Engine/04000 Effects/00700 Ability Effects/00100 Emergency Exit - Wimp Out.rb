@@ -11,6 +11,7 @@ module Battle
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target
           return if target.hp_rate > 0.5
+          return unless (target.hp + hp) > target.max_hp / 2
           return unless skill && launcher != target && handler.logic.can_battler_be_replaced?(target)
           return if handler.logic.switch_request.any? { |request| request[:who] == target }
 
