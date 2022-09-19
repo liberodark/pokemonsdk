@@ -219,8 +219,10 @@ module Battle
     end
 
     # Ground types not affected by Thunder-wave
-    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Ground type immune to thunder-wave') do |handler, status, target, _, skill|
-      next if status != :paralysis || skill&.db_symbol != :thunder_wave || !target.type_ground?
+    StatusChangeHandler.register_status_prevention_hook('PSDK status prev: Ground type immune to thunder-wave') do |handler, status, target, launcher, skill|
+      next unless status == :paralysis
+      next unless skill&.db_symbol == :thunder_wave && !launcher&.has_ability?(:normalize)
+      next unless target.type_ground?
 
       next handler.prevent_change do
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 285, target)) if skill.nil? || skill.status?
