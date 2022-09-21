@@ -19,7 +19,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage_death(handler, hp, target, launcher, skill)
           return if launcher == target
-          return unless skill && !skill&.be_method == :s_fell_stinger
+          return unless skill && skill&.be_method != :s_fell_stinger
           return unless launcher == @target
           return unless @target.hp > 0
 
