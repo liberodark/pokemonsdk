@@ -51,6 +51,8 @@ module PFM
       items.delete(:__undef__)
       @items = items
       @orders.map! { |order| order.map { |id| data_item(id).db_symbol }.reject { |db_symbol| db_symbol == :__undef__ } }
+    ensure
+      @items.transform_values! { |v| v || 0 }
     end
 
     # If the bag contain a specific item
@@ -193,7 +195,7 @@ module PFM
       # Variable containing the player's bag information
       $bag = @bag
       $bag.game_state = self
-      $bag.convert_to_dot26 if trainer.current_version < 6656
+      $bag.convert_to_dot26 if trainer.current_version < 6659
     end
   end
 end
