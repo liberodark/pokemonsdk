@@ -1,9 +1,9 @@
 module Battle
   module Effects
     class Ability
-      class BoostingMoveTypeWeatherBall < BoostingMoveType
-        # List of type overwrite if Weather ball is called with this effect
-        WEATHER_BALL_TYPES_OVERWRITES = Hash.new(:normal)
+      class ChangingMoveType < BoostingMoveType
+        # List of type overwrite
+        TYPES_OVERWRITES = Hash.new(:normal)
 
         # Function called when we try to get the definitive type of a move
         # @param user [PFM::PokemonBattler]
@@ -12,13 +12,13 @@ module Battle
         # @param type [Integer] current type of the move (potentially after effects)
         # @return [Integer, nil] new type of the move
         def on_move_type_change(user, target, move, type)
-          return nil if self.target != user || move.be_method != :s_weather_ball
+          return nil if self.target != user || move.be_method == :s_weather_ball || type != data_type(:normal).id
 
-          return data_type(WEATHER_BALL_TYPES_OVERWRITES[db_symbol]).id
+          return data_type(TYPES_OVERWRITES[db_symbol]).id
         end
 
         class << self
-          # Register a BoostingMoveType ability
+          # Register a ChangingMoveType ability
           # @param db_symbol [Symbol] db_symbol of the ability
           # @param type_overwrite [Symbol] move type overwrite for weather_ball
           # @param multiplier [Float] multiplier if all condition are meet
@@ -30,9 +30,9 @@ module Battle
           def register(db_symbol, type_overwrite, multiplier = 1.3, &block)
             POWER_INCREASE_CONDITION[db_symbol] = block if block
             BoostingMoveType::TYPE_CONDITION[db_symbol] = :normal
-            WEATHER_BALL_TYPES_OVERWRITES[db_symbol] = type_overwrite
+            TYPES_OVERWRITES[db_symbol] = type_overwrite
             BoostingMoveType::POWER_INCREASE[db_symbol] = multiplier if multiplier
-            Ability.register(db_symbol, BoostingMoveTypeWeatherBall)
+            Ability.register(db_symbol, ChangingMoveType)
           end
         end
 
