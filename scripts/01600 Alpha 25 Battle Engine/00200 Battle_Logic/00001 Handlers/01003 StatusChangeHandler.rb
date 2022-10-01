@@ -237,5 +237,12 @@ module Battle
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 216, target)) if skill.nil? || skill.status?
       end
     end
+
+    StatusChangeHandler.register_status_prevention_hook("PSDK status prev: Pokemon that doesn't attack can't be flinched") do |handler, status, target, launcher, skill|
+      next unless status == :flinch
+      next unless handler.scene.logic.battler_attacks_after?(launcher, target)
+
+      next handler.prevent_change
+    end
   end
 end
