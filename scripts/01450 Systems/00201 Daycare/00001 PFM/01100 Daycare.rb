@@ -370,11 +370,12 @@ module PFM
     # @param female [PFM::Pokemon]
     # @param male [PFM::Pokemon]
     def inherit_form(pokemon, female, male)
+      baby_form = data_creature_form(female, female.form).baby_form
       if (handler = SPECIFIC_FORM_HANDLER[pokemon.db_symbol])
-        pokemon.form = handler.call(female, male) || female.form
+        pokemon.form = handler.call(female, male) || baby_form
         return
       end
-      pokemon.form = female.form
+      pokemon.form = baby_form
     end
 
     # Make the pokemon inherit its nature
