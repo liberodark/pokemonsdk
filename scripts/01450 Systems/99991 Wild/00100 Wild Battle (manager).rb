@@ -15,7 +15,7 @@ module PFM
       super: :good_rod,
       mega: :super_rod,
       rock: :rock_smash,
-      headbutt: :head_butt
+      headbutt: :headbutt
     }
     # List of Roaming Pokemon
     # @return [Array<PFM::Wild_RoamingInfo>]

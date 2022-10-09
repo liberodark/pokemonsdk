@@ -46,7 +46,7 @@ module Studio2PSDK
     GoodRod: :good_rod,
     SuperRod: :super_rod,
     RockSmash: :rock_smash,
-    HeadButt: :head_butt
+    HeadButt: :headbutt
   }
 
   module_function
@@ -212,6 +212,9 @@ module Studio2PSDK
     end
     if obj.is_a?(Studio::Move)
       obj.instance_variable_set(:@effect_chance, 100) unless obj.effect_chance
+    end
+    if obj.is_a?(Studio::Group)
+      obj.instance_variable_set(:@tool, obj.system_tag) if obj.system_tag == :headbutt
     end
     return obj
   end
