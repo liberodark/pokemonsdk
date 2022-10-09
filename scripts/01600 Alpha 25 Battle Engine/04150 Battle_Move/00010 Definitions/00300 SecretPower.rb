@@ -94,6 +94,7 @@ module Battle
 
       reset
       register(:__undef__, :body_slam, :sp_status, :paralysis)
+      register(:regular_ground, :body_slam, :sp_status, :paralysis)
       register(:building, :body_slam, :sp_status, :paralysis)
       register(:grass, :vine_whip, :sp_status, :sleep)
       register(:desert, :mud_slap, :sp_stat, :acc, -1)

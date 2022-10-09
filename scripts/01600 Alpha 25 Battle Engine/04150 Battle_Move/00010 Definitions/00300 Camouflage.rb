@@ -51,6 +51,7 @@ module Battle
 
       reset
       register(:__undef__, :normal)
+      register(:regular_ground, :normal)
       register(:building, :normal)
       register(:grass, :grass)
       register(:desert, :ground)

@@ -133,8 +133,10 @@ module GameData
         return :snow
       when TIce
         return :ice
+      when HeadButt
+        return :headbutt
       else
-        return :__undef__
+        return :regular_ground
       end
     end
   end

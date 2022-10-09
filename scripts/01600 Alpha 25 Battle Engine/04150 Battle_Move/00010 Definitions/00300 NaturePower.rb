@@ -49,6 +49,7 @@ module Battle
 
       reset
       register(:__undef__, :tri_attack)
+      register(:regular_ground, :tri_attack)
       register(:building, :tri_attack)
       register(:grass, :energy_ball)
       register(:desert, :earth_power)
