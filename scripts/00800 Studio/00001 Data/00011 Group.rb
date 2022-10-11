@@ -105,7 +105,16 @@ module Studio
       # @return [PFM::Pokemon]
       def to_creature(level = nil)
         level ||= rand(level_setup.range)
-        return PFM::Pokemon.new(specie, level, shiny_setup.shiny, shiny_setup.not_shiny, form, extra)
+        return PFM::Pokemon.new(specie, level, shiny_setup.shiny, shiny_setup.not_shiny, generic_form_generation, extra)
+      end
+
+      # Generate generic form generation between 0 and 29 if form == -1 and the Pokemon has not a FORM_GENERATION
+      def generic_form_generation
+        return form if form != -1 || PFM::Pokemon::FORM_GENERATION[specie]
+
+        forms = data_creature(specie).forms
+        forms.reject! { |creature_form| creature_form.form >= 30 }
+        return forms.sample&.form || form
       end
 
       # Data class helping to know the shiny setup of a creature
