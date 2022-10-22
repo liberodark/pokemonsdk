@@ -187,8 +187,9 @@ module PSDKEditor
   end
 
   # Function that convert the WorldMap data to PSDK Editor format
-  def convert_worldmaps
-    return if Dir[File.join(ROOT, 'worldmaps', '*.json')].any?
+  # @param forced [Boolean] Set to true to force the conversion
+  def convert_worldmaps(forced: false)
+    return if Dir[File.join(ROOT, 'worldmaps', '*.json')].any? && !forced
 
     GameData::WorldMap.all.each do |worldmap|
       grid = worldmap.data.ysize.times.map { |y| worldmap.data.xsize.times.map { |x| worldmap.data[x, y] } }

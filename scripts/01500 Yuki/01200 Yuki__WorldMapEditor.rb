@@ -128,7 +128,9 @@ module Yuki
       # Save the data
       save_data(GameData::WorldMap.all, 'Data/PSDK/WorldMaps.rxdata')
       # Update Studio data
-      PSDKEditor.convert_worldmaps
+      PSDKEditor.convert_worldmaps(forced: true)
+      # Delete psdk.dat file to regenerate the file in next launch
+      File.delete('Data/Studio/psdk.dat') if File.exist?('Data/Studio/psdk.dat')
       $game_system.se_play($data_system.decision_se)
     end
 
