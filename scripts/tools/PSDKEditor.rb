@@ -391,8 +391,8 @@ module PSDKEditor
         id: @group_index,
         dbSymbol: "group_#{@group_index}",
         systemTag: GROUP_ZONE_SYSTEM_TAG[group.first],
-        doubleBattle: group[3] == 2,
-        hordeBattle: false,
+        isDoubleBattle: group[3] == 2,
+        isHordeBattle: false,
         customConditions: custom_conditions,
         encounters: create_wild_encounters(group[2], group[4..-1].each_slice(3).to_a),
         **group_terrain_tag
@@ -411,9 +411,9 @@ module PSDKEditor
       klass: 'Group',
       id: @group_index,
       dbSymbol: "group_#{@group_index}",
-      systemTag: "Cave",
-      doubleBattle: false,
-      hordeBattle: false,
+      systemTag: 'Cave',
+      isDoubleBattle: false,
+      isHordeBattle: false,
       customConditions: [],
       encounters: [],
       **group_terrain_tag
