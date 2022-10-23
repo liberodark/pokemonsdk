@@ -164,8 +164,8 @@ module BattleUI
     end
 
     def create_star
-      return push(12, 21, 'shiny') if enemy?
-      return push(12, 21, 'shiny')
+      return push(119, -4, 'shiny') if enemy?
+      return push(6, 10, 'shiny')
     end
 
     # Creates the go_in animation

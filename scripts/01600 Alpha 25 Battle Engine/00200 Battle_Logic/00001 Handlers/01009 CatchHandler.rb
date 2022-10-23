@@ -76,7 +76,7 @@ module Battle
 
       add_ball_rate_calculation(:heavy_ball) do |target, _pkm_ally|
         modifier = target.rareness
-        weight = data_creature(target.db_symbol).weight
+        weight = target.weight
         if weight.between?(0, 204.7)
           modifier -= 20
         elsif weight.between?(204.8, 307.1)
