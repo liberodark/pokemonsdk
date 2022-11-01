@@ -65,13 +65,11 @@ module Studio2PSDK
   # Function that converts the studio data to SDK data
   def convert
     @data ||= {}
-    @mtimes ||= compute_mtimes
 
-    convert_all_entities(@mtimes.keys)
+    convert_all_entities(directories.map { |dirname| dirname.split('/').last })
 
     puts 'saving'
     File.binwrite(File.join(ROOT, 'psdk.dat'), Marshal.dump(@data))
-    File.binwrite(File.join(ROOT, 'mtimes.dat'), Marshal.dump(@mtimes))
     puts 'done'
   end
 
@@ -85,26 +83,7 @@ module Studio2PSDK
   # Function that checks if that's not needed to convert
   def no_need_to_convert?
     binary_filename = File.join(ROOT, 'psdk.dat')
-    mtime_filename = File.join(ROOT, 'mtimes.dat')
-    return false unless File.exist?(binary_filename) && File.exist?(mtime_filename)
-
-    @data = Marshal.load(File.binread(binary_filename))
-    @previous_mtimes = Marshal.load(File.binread(mtime_filename))
-    return false if directories.size != @previous_mtimes.size
-
-    compute_mtimes
-    return @mtimes == @previous_mtimes
-  rescue Exception
-    return false
-  end
-
-  # Function that computes the mtimes based on the Studio directories
-  def compute_mtimes
-    @mtimes = directories.map do |dirname|
-      file_mtimes = Dir[File.join(dirname, '*.json')].sort.map { |filename| File.mtime(filename).utc }
-
-      next [dirname.split('/').last, file_mtimes]
-    end.to_h
+    return File.exist?(binary_filename)
   end
 
   # Function that gives all the directories from studio
