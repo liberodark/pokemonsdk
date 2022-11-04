@@ -10,10 +10,10 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if launcher != @target || launcher.hold_item?(:king_s_rock) || launcher.hold_item?(:razor_fang)
-          return unless skill&.direct? && launcher.hp > 0 && bchance?(0.1, @logic)
+          return unless skill && launcher.hp > 0 && bchance?(0.1, @logic)
 
           handler.scene.visual.show_ability(launcher)
-          handler.logic.status_change_handler.status_change_with_process(:flinch, target)
+          handler.logic.status_change_handler.status_change_with_process(:flinch, target, launcher, skill)
         end
       end
       register(:stench, Stench)

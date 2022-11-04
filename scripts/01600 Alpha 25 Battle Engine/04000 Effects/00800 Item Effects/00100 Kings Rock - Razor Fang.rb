@@ -13,7 +13,7 @@ module Battle
           return unless skill&.trigger_king_rock? && launcher != target && bchance?(launcher.has_ability?(:serene_grace) ? 0.2 : 0.1, @logic)
 
           handler.scene.visual.show_item(launcher)
-          handler.logic.status_change_handler.status_change_with_process(:flinch, target)
+          handler.logic.status_change_handler.status_change_with_process(:flinch, target, launcher, skill)
         end
       end
       register(:king_s_rock, KingsRock)
