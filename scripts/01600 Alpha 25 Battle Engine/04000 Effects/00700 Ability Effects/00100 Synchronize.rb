@@ -14,7 +14,8 @@ module Battle
           return if target != @target || launcher == target || !launcher || launcher.status == target.status
           return unless SYNCHRONIZED_STATUS.include?(status)
 
-          launcher.send(Logic::StatusChangeHandler::STATUS_APPLY_METHODS[status], true)
+          handler.status_change_with_process(status, launcher, target)
+          handler.scene.visual.show_ability(target)
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1159, launcher))
         end
       end
