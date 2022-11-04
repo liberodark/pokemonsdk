@@ -9,7 +9,8 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        return Flail_Pow[Flail_HP.find_index { |i| i < user.hp_rate }].to_i
+        index = Flail_HP.find_index { |i| i >= user.hp_rate }
+        return Flail_Pow[index.to_i]
       end
     end
     Move.register(:s_flail, Flail)
