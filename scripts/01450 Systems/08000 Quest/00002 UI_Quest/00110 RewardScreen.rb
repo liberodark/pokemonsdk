@@ -102,12 +102,13 @@ module UI
       end
 
       def create_icon
-        if @icon_type.is_a?(UI::PokemonIconSprite)
+        if @icon_type == UI::PokemonIconSprite
           @icon = add_sprite(1, 1, NO_INITIAL_IMAGE, false, type: @icon_type)
+          @icon.data = PFM::Pokemon.new(@reward_id, 1)
         else
           @icon = add_sprite(1, 1, NO_INITIAL_IMAGE, type: @icon_type)
+          @icon.data = @reward_id
         end
-        @icon.data = @reward_id
       end
 
       def create_reward_name
