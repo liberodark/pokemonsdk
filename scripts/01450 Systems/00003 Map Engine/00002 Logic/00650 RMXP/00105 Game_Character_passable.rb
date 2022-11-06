@@ -3,7 +3,7 @@ class Game_Character
   SurfTag = [TPond, TSea]
   # SystemTags that does not trigger leaving water
   SurfLTag = SurfTag + [BridgeUD, BridgeRL, RapidsL, RapidsR, RapidsU, RapidsD, AcroBikeRL, AcroBikeUD, WaterFall,
-                        JumpD, JumpL, JumpR, JumpU]
+                        JumpD, JumpL, JumpR, JumpU, TUnderWater]
   # Is the tile in front of the character passable ?
   # @param x [Integer] x position on the Map
   # @param y [Integer] y position on the Map
