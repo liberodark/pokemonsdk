@@ -126,7 +126,7 @@ module PFM
 
       moves = move_set.select { |move| move.level_learnable? && level >= move.level }.map(&:move)
       moves.concat(@skill_learnt.map { |move| move.is_a?(Integer) ? data_move(move).db_symbol : move })
-      moves.concat(move_set.select { |move| move.breed_learnable? || move.evolution_learnable? }.map(&:move))
+      moves.concat(move_set.select { |move| move.breed_learnable? || move.evolution_learnable? }.map(&:move)) if mode == 1 || mode == 2
 
       return (moves - skills_set.map(&:db_symbol)).uniq
     end
