@@ -96,6 +96,7 @@ module Battle
           @battlers.dig(bank, i)&.position = i
         end
       end
+      all_battlers { |battler| transform_handler.initialize_transform_attempt(battler) }
     end
 
     # Add a switch request
@@ -160,6 +161,7 @@ module Battle
       @battlers[who.bank][who_position] = with
       @battlers[with.bank][with_position] = who
       with.position, who.position = who.position, with.position
+      with.place_in_party, who.place_in_party = who.place_in_party, with.place_in_party
       # Ensure the newly comming pokemon gets the right battle turn
       with.last_battle_turn = $game_temp.battle_turn
     end

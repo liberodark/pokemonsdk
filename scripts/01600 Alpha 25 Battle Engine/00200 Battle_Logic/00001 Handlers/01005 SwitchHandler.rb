@@ -159,6 +159,19 @@ module Battle
       end
     end
 
+    SwitchHandler.register_pre_switch_event_hook('Update Pokemon appearance with Illusion Ability : entering battle') do |handler, who, with|
+      next unless with.ability_db_symbol == :illusion
+
+      handler.logic.transform_handler.initialize_transform_attempt(with)
+    end
+
+    SwitchHandler.register_switch_event_hook('Update Pokemon appearance with Illusion Ability : leaving battle') do |handler, who, with|
+      next unless who.original.ability_db_symbol == :illusion && who.illusion
+      next if who == with # Ensure it does not trigger when launching the first mon
+
+      who.illusion = nil
+    end
+
     # Meloetta form
     SwitchHandler.register_switch_event_hook('Meloetta form') do |_, who, _|
       who.form_calibrate(:none) if who.db_symbol == :meloetta

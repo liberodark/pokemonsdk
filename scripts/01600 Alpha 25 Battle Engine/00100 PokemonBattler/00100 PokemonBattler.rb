@@ -62,6 +62,9 @@ module PFM
     # @return [Integer] Position of the Pokemon in the bank
     attr_accessor :position
 
+    # @return [Integer] Place in the team of the Pokemon
+    attr_accessor :place_in_party
+
     # Get the original Pokemon
     # @return [PFM::Pokemon]
     attr_reader :original
@@ -127,19 +130,19 @@ module PFM
     def initialize(original, scene, max_level = Float::INFINITY)
       @original = original
       # @type [PFM::Pokemon]
+      @battle_properties = {}
       @transform = @illusion = nil
       @scene = scene
-      scene.logic.transform_handler.initialize_transform_attempt(self)
       copy_properties
       copy_moveset
       @battle_stage = Array.new(7, 0)
-      @battle_properties = {}
       reset_states
       @battle_max_level = max_level
       @level = original.level < max_level ? original.level : max_level
       @type3 = 0
       @bank = 0
       @position = -1
+      @place_in_party = scene.logic.battle_info.party(self).index(self.original)
       @battle_item_data = []
       @battle_item = @item_holding
       @last_battle_turn = -1
@@ -474,6 +477,7 @@ module PFM
     # Copy the properties of a pokemon under Illusion
     def copy_illusion_properties
       if @illusion
+        change_types(type1, type2, type3)
         @properties_before_illusion = ILLUSION_COPIED_PROPERTIES.map { |ivar_name| instance_variable_get(ivar_name) }
         ILLUSION_COPIED_PROPERTIES.each do |ivar_name|
           instance_variable_set(ivar_name, @illusion.instance_variable_get(ivar_name))

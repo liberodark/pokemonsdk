@@ -45,6 +45,7 @@ module Battle
         end
         # Logically switching the Pokemon
         @scene.logic.switch_battlers(@who, @with)
+        @scene.logic.switch_handler.execute_pre_switch_events(@who, @with)
         # Switching the sprite
         sprite.pokemon = @with
         sprite.visible = false # Ensure there's no glitch with animation (the animation sets visible :))
