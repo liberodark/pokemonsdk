@@ -53,6 +53,12 @@ module Battle
           nil
         end
 
+        # Function giving the name of the effect
+        # @return [Symbol]
+        def name
+          :burn
+        end
+
         private
 
         # Return the Burn effect on HP of the Pokemon

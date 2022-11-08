@@ -41,6 +41,12 @@ module Battle
           return 0.25
         end
 
+        # Function giving the name of the effect
+        # @return [Symbol]
+        def name
+          :paralysis
+        end
+
         private
 
         # Check if the pokemon cannot move due to paralysis

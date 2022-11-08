@@ -65,6 +65,12 @@ module Battle
           nil
         end
 
+        # Function giving the name of the effect
+        # @return [Symbol]
+        def name
+          :toxic
+        end
+
         private
 
         # Return the Poison effect on HP of the Pokemon (used solely by the Poison Heal ability)

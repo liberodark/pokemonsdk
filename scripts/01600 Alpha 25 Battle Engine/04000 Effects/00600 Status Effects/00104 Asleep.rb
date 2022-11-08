@@ -45,6 +45,12 @@ module Battle
             move.scene.display_message_and_wait(parse_text_with_pokemon(19, 312, user))
           end
         end
+
+        # Function giving the name of the effect
+        # @return [Symbol]
+        def name
+          :sleep
+        end
       end
 
       register(:sleep, Asleep)

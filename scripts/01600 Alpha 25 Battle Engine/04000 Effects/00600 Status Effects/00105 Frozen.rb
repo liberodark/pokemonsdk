@@ -48,6 +48,12 @@ module Battle
           move.scene.visual.refresh_info_bar(user)
         end
 
+        # Function giving the name of the effect
+        # @return [Symbol]
+        def name
+          :freeze
+        end
+
         private
 
         # Check if the Pokemon is still frozen
