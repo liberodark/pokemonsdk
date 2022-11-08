@@ -96,9 +96,9 @@ module Battle
     # @param ph_move [Boolean] true: physical, false: special
     # @return [Integer]
     def calc_atk_stat_modifier(user, target, ph_move)
-      return 1 if critical_hit?
-
-      return ph_move ? user.atk_modifier : user.ats_modifier
+      modifier = ph_move ? user.atk_modifier : user.ats_modifier
+      modifier = modifier > 1 ? modifier : 1 if critical_hit?
+      return modifier
     end
 
     EXPLOSION_SELF_DESTRUCT_MOVE = %i[explosion self_destruct]
@@ -137,9 +137,10 @@ module Battle
     # @param ph_move [Boolean] true: physical, false: special
     # @return [Integer]
     def calc_def_stat_modifier(user, target, ph_move)
-      return 1 if critical_hit?
+      modifier = ph_move ? target.dfe_modifier : target.dfs_modifier
+      modifier = modifier > 1 ? 1 : modifier if critical_hit?
 
-      return ph_move ? target.dfe_modifier : target.dfs_modifier
+      return modifier
     end
 
     # CH calculation
