@@ -204,6 +204,7 @@ module GamePlay
           if @last_level > @level
             display_message(ext_text(9000, 139) % @level) # "Le jeu est descendu au niveau #{@level}.")
           end
+          @coin_gain = 0
           @state = 1
         end
         return false
