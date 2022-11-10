@@ -256,7 +256,3 @@ module Yuki
     end
   end
 end
-
-filename = PSDK_RUNNING_UNDER_WINDOWS ? "#{ENV['GAMEDEPS'] || '.'}/lib/YukiTilemapMapDataBlaster" : './YukiTilemapMapDataBlaster'
-filename += PSDK_RUNNING_UNDER_MAC ? '.bundle' : '.so'
-require filename if File.exist?(filename)
