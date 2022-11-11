@@ -3,6 +3,7 @@ module Battle
     # Class describing a move hiting multiple time
     class MultiHit < Basic
       MULTI_HIT_CHANCES = [2, 2, 2, 3, 3, 5, 4, 3]
+      TRIPLE_HIT_MOVES = %i[triple_kick surging_strikes]
       # Function that deals the damage to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
@@ -51,7 +52,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       # @return [Integer]
       def hit_amount(user, actual_targets)
-        return 3 if db_symbol == :triple_kick
+        return 3 if TRIPLE_HIT_MOVES.include?(db_symbol)
         return 5 if user.has_ability?(:skill_link)
 
         return MULTI_HIT_CHANCES.sample(random: @logic.generic_rng)
