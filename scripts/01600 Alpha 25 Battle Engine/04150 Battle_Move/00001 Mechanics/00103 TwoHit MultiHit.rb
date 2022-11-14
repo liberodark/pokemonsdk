@@ -33,6 +33,8 @@ module Battle
         end
         @scene.display_message_and_wait(parse_text(18, 33, PFM::Text::NUMB[1] => @nb_hit.to_s))
         return false if user.dead?
+        
+        return true
       end
 
       # Check if this the last hit of the move
