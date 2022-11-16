@@ -65,7 +65,7 @@ module UI
 
     # @return [Sprite]
     def create_star
-      push(11, 107, 'shiny')
+      push(11, 27, 'shiny')
     end
 
     def create_status
