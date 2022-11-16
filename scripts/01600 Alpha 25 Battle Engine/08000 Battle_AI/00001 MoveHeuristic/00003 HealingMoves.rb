@@ -37,6 +37,7 @@ module Battle
 
       register(:s_heal, HealingMoves, 1)
       register(:s_heal_weather, HealingMoves, 1)
+      register(:s_roost, HealingMoves, 1)
       register(:s_healing_wish, HealingMoves, 1)
       register(:s_lunar_dance, HealingMoves, 1)
     end
