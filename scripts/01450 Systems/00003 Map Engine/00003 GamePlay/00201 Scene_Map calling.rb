@@ -79,11 +79,12 @@ class Scene_Map
   add_call_scene(:call_menu) { $game_temp.menu_calling }
   add_call_scene(:call_save) { $game_temp.save_calling }
   add_call_scene(:call_debug) { $game_temp.debug_calling }
-  add_call_scene(:call_shortcut) { Input.trigger?(:Y) }
+  add_call_scene(:call_shortcut) { Input.trigger?(:Y) unless $game_map.map_id == Configs.scene_title_config.intro_movie_map_id }
 
   # Detect if the player clicked on the Player sprite to open the menu
   # @return [Boolean]
   def player_menu_trigger
+    return false if $game_map.map_id == Configs.scene_title_config.intro_movie_map_id
     return Input.trigger?(:X) || (Mouse.trigger?(:left) && @spriteset.game_player_sprite&.mouse_in?)
   end
 
