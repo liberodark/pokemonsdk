@@ -1011,6 +1011,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Rest.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Retaliate.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Return.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 RevelationDance.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Revenge.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Rollout.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Roost.rb
