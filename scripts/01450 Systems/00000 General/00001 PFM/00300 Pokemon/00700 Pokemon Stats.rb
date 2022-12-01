@@ -289,7 +289,7 @@ module PFM
         @hp_rate = 1
       else
         @hp=v
-        @hp_rate = v / max_hp.to_f
+        @hp_rate = (v / max_hp.to_f).floor(2)
       end
     end
 
