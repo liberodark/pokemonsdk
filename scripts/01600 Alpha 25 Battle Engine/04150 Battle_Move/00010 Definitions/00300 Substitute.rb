@@ -24,7 +24,7 @@ module Battle
       def deal_effect(user, actual_targets)
         if user.effects.has?(:substitute)
           scene.display_message_and_wait(parse_text_with_pokemon(19, 788, user))
-        else
+        elsif user.hp_rate > 0.25
           hp = (user.max_hp / 4).floor
           scene.visual.show_hp_animations([user], [-hp])
           user.effects.add(Effects::Substitute.new(logic, user))
