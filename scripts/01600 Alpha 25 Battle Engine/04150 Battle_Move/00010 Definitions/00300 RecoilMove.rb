@@ -6,6 +6,7 @@ module Battle
       RECOIL_FACTORS = {
         brave_bird: 3,
         double_edge: 3,
+        chloroblast: 2,
         flare_blitz: 3,
         head_charge: 4,
         head_smash: 2,
@@ -16,6 +17,7 @@ module Battle
         submission: 4,
         take_down: 4,
         volt_tackle: 3,
+        wave_crash: 3,
         wild_charge: 4,
         wood_hammer: 3
       }
