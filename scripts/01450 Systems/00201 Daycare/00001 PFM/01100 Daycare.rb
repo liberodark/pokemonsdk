@@ -370,7 +370,7 @@ module PFM
     # @param female [PFM::Pokemon]
     # @param male [PFM::Pokemon]
     def inherit_form(pokemon, female, male)
-      baby_form = data_creature_form(female, female.form).baby_form
+      baby_form = data_creature_form(female.db_symbol, female.form).baby_form
       if (handler = SPECIFIC_FORM_HANDLER[pokemon.db_symbol])
         pokemon.form = handler.call(female, male) || baby_form
         return
@@ -402,8 +402,7 @@ module PFM
         index = pokemon.data.abilities.index(ability)
         return unless index # ability does not exist in the baby
 
-        pokemon.ability = data_ability(pokemon.data.abilities[index]).id
-        pokemon.ability_index = nil
+        pokemon.ability_index = index
         pokemon.update_ability
       end
     end
