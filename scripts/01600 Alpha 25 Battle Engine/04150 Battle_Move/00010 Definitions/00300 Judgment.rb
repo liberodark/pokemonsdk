@@ -18,14 +18,18 @@ module Battle
       # @param name [Symbol]
       # @return [Boolean]
       def valid_held_item?(name)
-        JUDGMENT_TABLE.keys.include?(name)
+        return true
       end
 
-      # Get the real types of the move depending on the item
+      # Get the real types of the move depending on the item, type of the corresponding item if a plate, normal otherwise
       # @param name [Symbol]
       # @return [Array<Integer>]
       def get_types_by_item(name)
-        [data_type(JUDGMENT_TABLE[name]).id]
+        if JUDGMENT_TABLE.keys.include?(name)
+          [data_type(JUDGMENT_TABLE[name]).id]
+        else
+          [data_type(:normal).id]
+        end
       end
 
       # Table of move type depending on item
