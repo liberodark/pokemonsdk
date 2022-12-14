@@ -16,6 +16,7 @@ module Battle
     def calc_critical_hit(user, target, initial_critical_count)
       return false if bank_effects[target.bank].has?(:lucky_chant)
       return true if user.has_ability?(:merciless) && (target.poisoned? || target.toxic?)
+      return true if user.effects.has?(:laser_focus)
 
       # 100_000 = 100%
       current_value = @move_critical_rng.rand(100_000)
