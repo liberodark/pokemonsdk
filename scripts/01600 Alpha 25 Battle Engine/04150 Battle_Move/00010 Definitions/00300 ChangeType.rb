@@ -3,7 +3,8 @@ module Battle
     # Move that give a third type to an enemy
     class ChangeType < Move
       TYPES = {
-        soak: :water
+        soak: :water,
+        magic_powder: :psychic
       }
       ABILITY_EXCEPTION = %i[multitype rks_system]
       # Test if the effect is working
