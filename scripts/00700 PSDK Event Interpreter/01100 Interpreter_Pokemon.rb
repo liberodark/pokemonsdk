@@ -136,6 +136,7 @@ class Interpreter
 
     pokemon = id.is_a?(Hash) ? PFM::Pokemon.generate_from_hash(id) : PFM::Pokemon.new(id, 1)
     pokemon.egg_init
+    pokemon.memo_text = [28, 31]
     return add_pokemon(pokemon)
   end
   alias ajouter_oeuf add_egg
