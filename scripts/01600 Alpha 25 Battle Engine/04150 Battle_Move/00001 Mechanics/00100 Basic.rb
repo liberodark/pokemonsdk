@@ -32,7 +32,7 @@ module Battle
       # @return [Boolean]
       def effect_working?(user, actual_targets)
         if !status? && user.can_be_lowered_or_canceled?(target = actual_targets.find { |t| t.has_ability?(:shield_dust) })
-          @scene.visual.show_ability(target) if effect_chance == 100
+          @scene.visual.show_ability(target) if data.effect_chance > 0 && target.alive?
           return false
         end
 
