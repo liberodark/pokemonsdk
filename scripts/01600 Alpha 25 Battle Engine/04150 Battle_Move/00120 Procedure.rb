@@ -187,8 +187,10 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Boolean]
     def target_immune?(user, target)
-      return false if status?
+      return true if prankster_immunity?(user, target)
+      return true if powder? && target.type_grass? && user != target
       return true if user != target && ability_immunity?(user, target)
+      return false if status?
 
       types = definitive_types(user, target)
       @effectiveness = -1
@@ -205,9 +207,18 @@ module Battle
       logic.each_effects(target) do |e|
         return true if e.on_move_ability_immunity(user, target, self)
       end
-      return true if powder? && target.type_grass?
 
       return false
+    end
+
+    # Test if the target has an immunity to the Prankster ability due to its type
+    # @param user [PFM::PokemonBattler]
+    # @param target [PFM::PokemonBattler]
+    # @return [Boolean]
+    def prankster_immunity?(user, target)
+      return false unless target.type_dark?
+      return false unless user.ability_effect.db_symbol == :prankster
+      return user.ability_effect.on_move_priority_change(user, 1, self) == 2
     end
 
     # Calls the post_accuracy_check method for each effects
