@@ -1,7 +1,7 @@
 module Battle
   module Effects
     class Ability
-      class Compoundeyes < Ability
+      class CompoundEyes < Ability
         # Return the chance of hit multiplier
         # @param user [PFM::PokemonBattler] user of the move
         # @param target [PFM::PokemonBattler] target of the move
@@ -13,7 +13,7 @@ module Battle
           return 1.3
         end
       end
-      register(:compoundeyes, Compoundeyes)
+      register(:compound_eyes, CompoundEyes)
     end
   end
 end
