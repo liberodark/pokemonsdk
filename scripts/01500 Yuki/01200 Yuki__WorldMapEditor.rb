@@ -9,6 +9,7 @@ module Yuki
       GameData::WorldMap.load
       ($tester = Tester.allocate).data_load
       PFM::GameState.new.expand_global_var
+      Studio::Text.instance_variable_set(:@lang, Configs.language.default_language_code || en)
       select_worldmap(0)
       select_zone(0)
       init
