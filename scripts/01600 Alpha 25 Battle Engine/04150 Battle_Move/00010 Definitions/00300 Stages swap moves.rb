@@ -58,5 +58,18 @@ module Battle
       end
     end
     Move.register(:s_guard_swap, GuardSwap)
+    class SpeedSwap < StatAndStageEditBypassAccuracy
+      private
+      
+      # Apply the stats or/and stage edition
+      # @param user [PFM::PokemonBattler]
+      # @param target [PFM::PokemonBattler]
+      def edit_stages(user, target)
+        user_old_spd, target_old_spd = user.spd_basis, target.spd_basis # Save old speed stats for log
+        user.spd_basis, target.spd_basis = target.spd_basis, user.spd_basis # Swap speed stats between user and target
+        log_data("speed swap of ##{target.name} exchanged the speeds stats (user speed:#{user_old_spd} > #{user.spd_basis}) (target speed:#{target_old_spd} > #{target.spd_basis})")
+      end
+    end
+    Move.register(:s_speed_swap, SpeedSwap)
   end
 end
