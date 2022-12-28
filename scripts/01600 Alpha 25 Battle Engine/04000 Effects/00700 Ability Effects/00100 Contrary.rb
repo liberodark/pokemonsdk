@@ -19,6 +19,12 @@ module Battle
           end
           return nil
         end
+
+        # Name of the effect
+        # @return [Symbol]
+        def name
+          return :contrary
+        end
       end
       register(:contrary, Contrary)
     end
