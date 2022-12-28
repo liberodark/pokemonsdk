@@ -75,8 +75,6 @@ module Battle
       register(:power_construct, PowerConstruct)
 
       class ShieldsDown < ZenMode
-        private
-
         # Function called when a status_prevention is checked
         # @param handler [Battle::Logic::StatusChangeHandler]
         # @param status [Symbol] :poison, :toxic, :confusion, :sleep, :freeze, :paralysis, :burn, :flinch, :cure
