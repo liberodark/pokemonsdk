@@ -1,13 +1,13 @@
 module GamePlay
   class Save
+    # @return [Hash] all the before save hooks
+    BEFORE_SAVE_HOOKS = { game_map: proc { $game_map.begin_save } }
+    # @return [Hash] all the after save hooks
+    AFTER_SAVE_HOOKS = { game_map: proc { $game_map.end_save } }
+
     class << self
       # @return [Integer] index of the save file (to allow multi-save)
       attr_accessor :save_index
-
-      # @return [Hash] all the before save hooks
-      BEFORE_SAVE_HOOKS = { game_map: proc { $game_map.begin_save } }
-      # @return [Hash] all the after save hooks
-      AFTER_SAVE_HOOKS = { game_map: proc { $game_map.end_save } }
 
       # Save a game
       # @param filename [String, nil] name of the save file (nil = auto name the save file)
