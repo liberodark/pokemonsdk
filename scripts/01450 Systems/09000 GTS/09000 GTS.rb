@@ -253,6 +253,7 @@ module GTS
       create_spriteset_and_background
       create_action_sprites(@viewport.rect.width / 2)
       create_selection
+      Graphics.sort_z
     end
 
     # Create the Spriteset and the Background with the right scene_name
