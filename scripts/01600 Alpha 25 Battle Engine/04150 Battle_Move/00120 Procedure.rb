@@ -216,8 +216,10 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @return [Boolean]
     def prankster_immunity?(user, target)
+      return false if user == target
       return false unless target.type_dark?
       return false unless user.ability_effect.db_symbol == :prankster
+
       return user.ability_effect.on_move_priority_change(user, 1, self) == 2
     end
 
