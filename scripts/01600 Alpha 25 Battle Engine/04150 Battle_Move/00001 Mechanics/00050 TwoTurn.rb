@@ -16,8 +16,8 @@ module Battle
 
           # Turn 1
           if @turn == 1
-            return unless proceed_internal_precheck(user, targets)
-
+            usage_message(user)
+            decrease_pp(user, targets)
             play_animation_turn1(user, targets)
             proceed_message_turn1(user, targets)
             deal_effects_turn1(user, targets)
