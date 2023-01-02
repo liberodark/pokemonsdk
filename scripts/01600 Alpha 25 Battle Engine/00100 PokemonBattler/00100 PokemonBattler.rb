@@ -154,7 +154,7 @@ module PFM
       @exp_distributed = false
       @item_consumed = false
       @consumed_item = :__undef__
-      self.hp = (max_hp * hp_rate).to_i
+      self.hp = hp_rate > 0 ? (max_hp * hp_rate).to_i.clamp(1, max_hp) : 0
       initialize_set_is_follower
     end
 
