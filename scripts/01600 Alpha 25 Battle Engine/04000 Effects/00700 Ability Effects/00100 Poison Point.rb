@@ -13,7 +13,7 @@ module Battle
           return unless skill&.direct? && launcher && launcher.hp > 0 && launcher.can_be_poisoned? && bchance?(0.3, @logic) && !launcher.has_ability?(:long_reach)
 
           handler.scene.visual.show_ability(target)
-          handler.logic.status_change_handler.status_change_with_process(:poison, launcher)
+          handler.logic.status_change_handler.status_change_with_process(:poison, launcher, target)
         end
       end
       register(:poison_point, PoisonPoint)

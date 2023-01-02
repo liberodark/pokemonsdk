@@ -15,10 +15,8 @@ module Battle
           return if (n = handler.logic.generic_rng.rand(10)) > 2 # ~30%
 
           status = %i[poison sleep paralysis][n]
-          if handler.logic.status_change_handler.status_appliable?(status, launcher)
-            handler.scene.visual.show_ability(target)
-            handler.logic.status_change_handler.status_change(status, launcher)
-          end
+          handler.scene.visual.show_ability(target)
+          handler.logic.status_change_handler.status_change_with_process(status, launcher, target)
         end
       end
       register(:effect_spore, EffectSpore)
