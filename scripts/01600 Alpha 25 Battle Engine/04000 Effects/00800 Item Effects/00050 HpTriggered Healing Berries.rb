@@ -81,6 +81,12 @@ module Battle
         end
       end
 
+      class BerryJuice < OranBerry
+        def hp_healed
+          return @target.has_ability?(:ripen) ? 40 : 20
+        end
+      end
+
       class ConfusingBerries < OranBerry
         # Give the hp rate that triggers the berry
         # @return [Float]
@@ -104,6 +110,7 @@ module Battle
       end
       register(:oran_berry, OranBerry)
       register(:sitrus_berry, SitrusBerry)
+      register(:berry_juice, BerryJuice)
       register(:figy_berry, ConfusingBerries)
       register(:wiki_berry, ConfusingBerries)
       register(:mago_berry, ConfusingBerries)
