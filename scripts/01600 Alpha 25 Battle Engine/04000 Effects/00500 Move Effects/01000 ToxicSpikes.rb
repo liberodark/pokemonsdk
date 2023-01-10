@@ -42,6 +42,7 @@ module Battle
         return kill if with.grounded? && with.type_poison?
         return if with.grounded? && with.type_steel?
         return unless with.grounded?
+        return if with.hold_item?(:heavy_duty_boots)
 
         status = @power == 1 ? :poison : :toxic
         handler.logic.status_change_handler.status_change_with_process(status, with)

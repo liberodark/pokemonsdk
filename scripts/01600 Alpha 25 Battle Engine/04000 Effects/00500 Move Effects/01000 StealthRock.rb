@@ -40,6 +40,7 @@ module Battle
       # @param with [PFM::PokemonBattler] Pokemon that is switched in
       def on_switch_event(handler, who, with)
         return if with.has_ability?(:magic_guard)
+        return if with.hold_item?(:heavy_duty_boots)
 
         calc_factor = @move.calc_factor(with) >= 1 ? @move.calc_factor(with).floor : @move.calc_factor(with)
         log_data("DMG_FACTOR: #{DMG_FACTOR[calc_factor]}")

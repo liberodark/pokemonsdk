@@ -47,6 +47,7 @@ module Battle
       def on_switch_event(handler, who, with)
         return unless with.grounded?
         return if with.has_ability?(:magic_guard)
+        return if with.hold_item?(:heavy_duty_boots)
 
         factor = 10 - power * 2 # 8 -> 6 -> 4
         hp = (with.max_hp / factor).clamp(1, Float::INFINITY)
