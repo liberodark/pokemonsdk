@@ -11,7 +11,7 @@ module Battle
         al = @scene.logic.all_alive_battlers.any? { |battler| battler.has_ability?(:cloud_nine) || battler.has_ability?(:air_lock) }
         return super if al
         return 50 if $env.sunny?
-        return 0 if $env.rain?
+        return 0 if $env.rain? || $env.hardrain?
 
         return super
       end
