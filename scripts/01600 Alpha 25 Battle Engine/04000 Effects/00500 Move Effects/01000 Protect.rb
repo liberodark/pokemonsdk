@@ -96,6 +96,50 @@ module Battle
       end
       Protect.register(:king_s_shield, KingsShield)
 
+      # Implement the Silk Trap effect
+      class SilkTrap < Protect
+        # Function called when we try to check if the target evades the move
+        # @param user [PFM::PokemonBattler]
+        # @param target [PFM::PokemonBattler] expected target
+        # @param move [Battle::Move]
+        # @return [Boolean] if the target is evading the move
+        def on_move_prevention_target(user, target, move)
+          return false if target != @pokemon
+          return false unless move.blocked_by?(target, @move.db_symbol) && !move.status?
+          return false if user.has_ability?(:unseen_fist) && move.direct?
+
+          play_protect_effect(user, target, move)
+          return true
+        end
+
+        private
+
+        # Function responsive of playing the protect effect if protect got triggered (inc. message)
+        # @param user [PFM::PokemonBattler]
+        # @param target [PFM::PokemonBattler] expected target
+        # @param move [Battle::Move]
+        def play_protect_effect(user, target, move)
+          move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
+          move.scene.logic.stat_change_handler.stat_change_with_process(:spd, -1, user) if move.direct?
+        end
+      end
+      Protect.register(:silk_trap, SilkTrap)
+
+      # Implement the Obstruct effect
+      class Obstruct < SilkTrap
+        private
+
+        # Function responsive of playing the protect effect if protect got triggered (inc. message)
+        # @param user [PFM::PokemonBattler]
+        # @param target [PFM::PokemonBattler] expected target
+        # @param move [Battle::Move]
+        def play_protect_effect(user, target, move)
+          move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
+          move.scene.logic.stat_change_handler.stat_change_with_process(:dfe, -2, user) if move.direct? && move.db_symbol != :sucker_punch
+        end
+      end
+      Protect.register(:obstruct, Obstruct)
+
       # Implement the Baneful Bunker effect
       class BanefulBunker < Protect
         private

@@ -12,7 +12,7 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user?(user, targets)
         return false unless super
-        return show_usage_failure(user) && false unless targets.any? {|target| target.type_grass? && !target.effects.has?(&:out_of_reach?)}
+        return show_usage_failure(user) && false unless targets.any? { |target| target.type_grass? && !target.effects.has?(&:out_of_reach?) }
 
         return true
       end

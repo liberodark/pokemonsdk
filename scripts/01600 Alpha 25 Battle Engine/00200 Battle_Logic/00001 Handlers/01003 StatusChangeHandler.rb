@@ -47,10 +47,11 @@ module Battle
       # @param message_overwrite [Integer] Index of the message to use if file 19 to apply the status (if there's specific reason)
       def status_change(status, target, launcher = nil, skill = nil, message_overwrite: nil)
         log_data("# status_change(#{status}, #{target}, #{launcher}, #{skill})")
-        if status == :cure
+        case status
+        when :cure
           message_overwrite ||= cure_message_id(target)
           target.send(STATUS_APPLY_METHODS[status])
-        elsif status == :confuse_cure
+        when :confuse_cure
           target.effects.get(:confusion)&.kill
           target.effects.delete_specific_dead_effect(:confusion)
         else
