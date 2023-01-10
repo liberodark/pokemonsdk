@@ -9,24 +9,20 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        if targets.all? { |target| user.hp > target.hp }
+        if targets.all? { |target| user.hp >= target.hp }
           show_usage_failure(user)
           return false
         end
-
         return true
       end
 
       private
 
-      # Test if the target is immune
-      # @param user [PFM::PokemonBattler]
-      # @param target [PFM::PokemonBattler]
-      # @return [Boolean]
-      def target_immune?(user, target)
-        return true if user.hp > target.hp
-
-        return super
+      # Function that deals the damage to the pokemon
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+      def deal_damage(user, actual_targets)
+        return true
       end
 
       # Function that deals the effect to the pokemon
