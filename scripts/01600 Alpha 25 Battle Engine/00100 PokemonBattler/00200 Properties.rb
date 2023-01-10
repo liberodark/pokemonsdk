@@ -171,16 +171,9 @@ module PFM
     # Set the battler's combat property
     # @param value [Integer]
     def gender=(value)
-      if primary_data.female_rate == -1
-        @battle_properties[:gender]  = 0
-      elsif primary_data.female_rate == 0
-        @battle_properties[:gender]  = 1
-      elsif primary_data.female_rate == 100
-        @battle_properties[:gender]  = 2
-      else
-        gender = %w[i m f].index(gender.downcase).to_i if gender.is_a?(String)
-        @battle_properties[:gender]  = gender.clamp(0, 2)
-      end
+      return log_info("Gender changed to #{value}") && @battle_properties[:gender] = value.clamp(0, 2) if value.is_a?(Integer)
+      
+      @battle_properties[:gender] = super
     end
 
     # Restore the battler's property original value

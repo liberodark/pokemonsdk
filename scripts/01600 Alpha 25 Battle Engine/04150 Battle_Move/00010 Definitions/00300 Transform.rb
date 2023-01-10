@@ -37,7 +37,15 @@ module Battle
         user.transform = target.sample(random: logic.generic_rng)
         scene.visual.show_switch_form_animation(user)
         scene.visual.wait_for_animation
+        scene.display_message_and_wait(parse_text_with_2pokemon(*message_id, user, user.transform))
         user.effects.add(Effects::Transform.new(logic, user))
+        user.type1 = data_type(:normal).id if target.type1 == 0
+      end
+
+      # Return the text's CSV ids
+      # @return [Array<Integer>]
+      def message_id
+        return 19, 644
       end
     end
 

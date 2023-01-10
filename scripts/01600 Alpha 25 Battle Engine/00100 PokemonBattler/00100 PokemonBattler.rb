@@ -15,10 +15,17 @@ module PFM
     ]
     # List of properties to copy with transform
     TRANSFORM_COPIED_PROPERTIES = %i[
-      @id @form @ability @nature
+      @id @form @nature
       @ev_hp @ev_atk @ev_dfe @ev_spd @ev_ats @ev_dfs
-      @gender
     ]
+    # List of @battle_properties to copy with transform
+    TRANSFORM_BP_METHODS = %i[
+      ability weight height type1 type2 gender
+      atk_basis dfe_basis ats_basis dfs_basis spd_basis
+      atk_stage dfe_stage ats_stage dfs_stage spd_stage
+    ]
+    # Setter cache for the Transform properties to write
+    TRANSFORM_SETTER_CACHE = TRANSFORM_BP_METHODS.to_h { |key| [key, :"#{key}="] }
     # List of properties to copy with Illusion
     ILLUSION_COPIED_PROPERTIES = %i[
       @id @form @gender @given_name @code @captured_in
@@ -116,11 +123,11 @@ module PFM
     attr_accessor :consumed_item
 
     # Get the transform pokemon
-    # @return [PFM::Pokemon]
+    # @return [PFM::PokemonBattler]
     attr_reader :transform
 
     # Get the Illusion pokemon
-    # @return [PFM::Pokemon]
+    # @return [PFM::PokemonBattler]
     attr_reader :illusion
 
     # Create a new PokemonBattler from a Pokemon
@@ -228,6 +235,12 @@ module PFM
       return false unless data_item(db_symbol)&.socket == 4
 
       return hold_item?(db_symbol)
+    end
+
+    # Return the Pokemon name in the Pokedex (using the original)
+    # @return [String]
+    def name
+      return Studio::Text.get(0,@step_remaining==0 ? (@illusion ? @id : original.id) : 0)
     end
 
     # Add a move to the move history
@@ -379,7 +392,7 @@ module PFM
     end
 
     # Transform this pokemon into another pokemon
-    # @param pokemon [PFM::Pokemon, nil]
+    # @param pokemon [PFM::PokemonBattler, nil]
     def transform=(pokemon)
       @transform = pokemon
       return unless @moveset
@@ -465,11 +478,12 @@ module PFM
     def copy_transform_properties
       if @transform
         @properties_before_transform = TRANSFORM_COPIED_PROPERTIES.map { |ivar_name| instance_variable_get(ivar_name) }
-        TRANSFORM_COPIED_PROPERTIES.each do |ivar_name|
-          instance_variable_set(ivar_name, @transform.instance_variable_get(ivar_name))
-        end
+        TRANSFORM_COPIED_PROPERTIES.each { |ivar| instance_variable_set(ivar, @transform.instance_variable_get(ivar)) }
+        @battle_properties_before_transform = TRANSFORM_BP_METHODS.map { |key| send(key) }
+        TRANSFORM_SETTER_CACHE.each { |key, setter| send(setter, @transform.send(key)) }
       elsif @properties_before_transform
         TRANSFORM_COPIED_PROPERTIES.map.with_index { |ivar_name, index| instance_variable_set(ivar_name, @properties_before_transform[index]) }
+        TRANSFORM_BP_METHODS.map.with_index { |key, index| send(TRANSFORM_SETTER_CACHE[key], @battle_properties_before_transform[index]) }
         @properties_before_transform = nil
       end
     end
