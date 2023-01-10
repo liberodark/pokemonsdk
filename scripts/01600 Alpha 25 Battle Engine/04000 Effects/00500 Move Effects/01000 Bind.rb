@@ -11,7 +11,7 @@ module Battle
         whirlpool: [827, false],
         sand_tomb: [836, false],
         magma_storm: [833, false],
-        infestation: [1234, false]
+        infestation: [1234, true]
       }
       # The Pokemon that launched the attack
       # @return [PFM::PokemonBattler]
@@ -37,6 +37,7 @@ module Battle
       def on_end_turn_event(logic, scene, battlers)
         return kill if @origin.dead?
         return if @pokemon.dead?
+        return if @pokemon.has_ability?(:magic_guard)
 
         scene.display_message(message)
         logic.damage_handler.damage_change((@pokemon.max_hp / hp_factor).clamp(1, Float::INFINITY), @pokemon)

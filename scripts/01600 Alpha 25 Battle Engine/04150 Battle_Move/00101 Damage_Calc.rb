@@ -117,8 +117,6 @@ module Battle
       logic.each_effects(user, target) do |e|
         result = (result * e.sp_def_multiplier(user, target, self)).floor
       end
-      # SX
-      result = (result * 0.5).floor if EXPLOSION_SELF_DESTRUCT_MOVE.include?(db_symbol)
       return result
     end
 
