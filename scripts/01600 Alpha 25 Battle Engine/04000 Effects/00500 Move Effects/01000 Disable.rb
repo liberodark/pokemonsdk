@@ -19,6 +19,18 @@ module Battle
         @logic.scene.display_message_and_wait(message)
       end
 
+      # Function called when we try to use a move as the user (returns :prevent if user fails)
+      # @param user [PFM::PokemonBattler]
+      # @param targets [Array<PFM::PokemonBattler>]
+      # @param move [Battle::Move]
+      # @return [:prevent, nil] :prevent if the move cannot continue
+      def on_move_prevention_user(user, targets, move)
+        return if user != @pokemon || move != @move
+
+        @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 595, user, PFM::Text::MOVE[1] => move.name))
+        return :prevent
+      end
+      
       # Function called when we try to check if the user cannot use a move
       # @param user [PFM::PokemonBattler]
       # @param move [Battle::Move]
