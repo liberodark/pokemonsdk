@@ -839,6 +839,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Shell Bell.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Sticky Barb.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Toxic Orb.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Weakness Policy.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 White Herb.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Wide Lens.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Zoom Lens.rb

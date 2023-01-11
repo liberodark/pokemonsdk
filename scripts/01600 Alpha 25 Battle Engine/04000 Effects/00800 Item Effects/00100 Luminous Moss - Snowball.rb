@@ -13,7 +13,7 @@ module Battle
           return unless expected_type?(skill)
 
           handler.scene.visual.show_item(target)
-          handler.logic.stat_change_handler.stat_change_with_process(:dfs, 1, target)
+          handler.logic.stat_change_handler.stat_change_with_process(stat_improved, 1, target)
           handler.logic.item_change_handler.change_item(:none, true, target)
         end
 
