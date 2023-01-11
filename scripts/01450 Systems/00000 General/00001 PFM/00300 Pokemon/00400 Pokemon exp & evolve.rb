@@ -354,5 +354,17 @@ module PFM
     def elv_nymphali
       return @skills_set.any? { |skill| skill&.type?(data_type(:fairy).id) }
     end
+
+    # Check evolve condition to evolve in Toxtricity-amped (Salarsen-aigüe)
+    # [0, 2, 3, 4, 6, 8, 9, 11, 13, 14, 19, 22, 24]
+    # return [Boolean] if the condition is valid
+    def elv_toxtricity_amped
+      natures_toxtricity = %i[hardy brave adamant naughty docile impish lax hasty jolly naive rash sassy quirky]
+      return natures_toxtricity.include?(Configs.natures.db_symbol_to_id.key(nature_id))
+    end
+
+    def elv_toxtricity_low_key
+      return !elv_toxtricity_amped
+    end
   end
 end
