@@ -17,11 +17,11 @@ module Battle
           stat_down = stats.select do |stat|
             stat != stat_up && logic.stat_change_handler.stat_decreasable?(stat, @target)
           end.sample(random: logic.generic_rng)
-          return unless stat_down && stat_up
-
+          return unless stat_up || stat_down
+          
           scene.visual.show_ability(@target)
-          logic.stat_change_handler.stat_change_with_process(stat_up, 2, @target)
-          logic.stat_change_handler.stat_change_with_process(stat_down, -1, @target)
+          logic.stat_change_handler.stat_change_with_process(stat_up, 2, @target) if stat_up
+          logic.stat_change_handler.stat_change_with_process(stat_down, -1, @target) if stat_down
         end
       end
       register(:moody, Moody)
