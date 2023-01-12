@@ -22,7 +22,8 @@ module Battle
       # @param move [Battle::Move]
       # @return [:prevent, nil] :prevent if the move cannot continue
       def on_move_prevention_user(user, targets, move)
-        return if user != @pokemon || user.has_ability?(:oblivious)
+        return if user != @pokemon
+        return @logic.scene.visual.show_ability(user) && kill if user.has_ability?(:oblivious)
 
         if move.status?
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 571, user, PFM::Text::MOVE[1] => move.name))
