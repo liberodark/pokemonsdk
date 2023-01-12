@@ -9,7 +9,8 @@ module Battle
         # @return [Boolean] if the target is immune to the move
         def on_move_ability_immunity(user, target, move)
           return false if target != @target
-
+          return false if move.db_symbol == :struggle
+          
           check = move.type_modifier(user, target) <= 1 && move.real_base_power(user, target) != 0 && user.can_be_lowered_or_canceled?
           @logic.scene.visual.show_ability(@target) if check
           return check
