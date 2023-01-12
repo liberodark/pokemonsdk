@@ -104,7 +104,9 @@ module UI
       def create_icon
         if @icon_type == UI::PokemonIconSprite
           @icon = add_sprite(1, 1, NO_INITIAL_IMAGE, false, type: @icon_type)
-          @icon.data = PFM::Pokemon.new(@reward_id, 1)
+          pokemon = PFM::Pokemon.new(@reward_id, 1)
+          pokemon.egg_init if @reward.earning_method_name == :earning_egg
+          @icon.data = pokemon
         else
           @icon = add_sprite(1, 1, NO_INITIAL_IMAGE, type: @icon_type)
           @icon.data = @reward_id
@@ -150,6 +152,19 @@ module UI
           type: UI::PokemonIconSprite,
           id: pokemon_id,
           name: data_creature(pokemon_id).name,
+          quantity: 1
+        }
+      end
+
+      # Hash defining how the reward should be created if it's a egg
+      # @return [Hash]
+      def earning_egg
+        data = @reward.earning_args[0]
+        pokemon_id = data.is_a?(Hash) ? data[:id] : data
+        return {
+          type: UI::PokemonIconSprite,
+          id: pokemon_id,
+          name: text_file_get(0)[0],
           quantity: 1
         }
       end

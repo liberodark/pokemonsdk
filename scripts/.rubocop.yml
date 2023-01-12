@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: '2.7'
+  TargetRubyVersion: "2.7"
 
 # Make sure we don't get issues with git
 Layout/EndOfLine:
@@ -132,7 +132,7 @@ Metrics/PerceivedComplexity:
 Lint/RescueException:
   Enabled: false
 
-Gemspec/DateAssignment:
+Gemspec/DeprecatedAttributeAssignment:
   Enabled: false
 Layout/SpaceBeforeBrackets:
   Enabled: true
