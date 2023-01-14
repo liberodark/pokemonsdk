@@ -16,11 +16,29 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_stats(user, actual_targets)
+        return true if battle_stage_mod.empty?
+
+        @switchable = switchable?(actual_targets)
         actual_targets.each do |target|
-          stat_to_change.each do |(stat, pow)|
-            logic.stat_change_handler.stat_change_with_process(stat, pow, target, user, self)
+          battle_stage_mod.each do |stage|
+            next if stage.count == 0
+
+            logic.stat_change_handler.stat_change_with_process(stage.stat, stage.count, target, user, self)
           end
         end
+      end
+
+      # Function that if the Pokemon can be switched or not
+      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+      def switchable?(actual_targets)
+        return false unless actual_targets.any? do |target|
+          next !target.has_ability?(:contrary) && battle_stage_mod.any? { |stage| logic.stat_change_handler.stat_decreasable?(stage.stat, target) } ||
+               target.has_ability?(:contrary) && battle_stage_mod.any? { |stage| logic.stat_change_handler.stat_increasable?(stage.stat, target) }
+        end
+        return false if actual_targets.all? { |target| target.has_ability?(:clear_body) }
+        return false if actual_targets.all? { |target| logic.bank_effects[target.bank].has?(:mist) }
+
+        return true
       end
 
       # Function that deals the effect to the pokemon
@@ -28,22 +46,11 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         return false unless @logic.switch_handler.can_switch?(user, self)
+        return false unless @switchable
 
         @logic.switch_request << { who: user }
       end
-
-      # List of the stats to change and the change power
-      # @return [Array<Symbol, Integer>] [[stat, power]]
-      def stat_to_change
-        STATS_TO_CHANGE
-      end
-
-      STATS_TO_CHANGE = [
-        [:atk, -1],
-        [:ats, -1]
-      ]
     end
-
     Move.register(:s_parting_shot, PartingShot)
   end
 end
