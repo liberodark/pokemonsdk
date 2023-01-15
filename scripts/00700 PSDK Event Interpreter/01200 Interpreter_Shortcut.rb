@@ -75,6 +75,19 @@ class Interpreter
     @wait_count = wait
   end
 
+  # Show an emotion on multiple events and/or the player
+  # @param type [Symbol] the type of emotion (see wiki)
+  # @param char_id [Integer] the ID of the event (> 0), the current event (0) or the player (-1)
+  # @param wait [Integer] the number of frame the event will wait after this command.
+  # @param params [Hash] particle
+  # @note See the #emotion method comments for the available emotion type
+  # @example Displaying the poison emotion on the player and multiple NPCs (with offset) :
+  #   emotion(:poison, [-1, 5, 8, 15], 34, oy_offset: 10)
+  def emotion_on_multiple_npc(type, chars_id = [0], wait = 34, params = {})
+    chars_id.each { |char_id| emotion(type, char_id, wait, params) }
+  end
+  alias emotion_on_multiple_pnj emotion_on_multiple_npc
+
   FEC_SKIP_CODES = [108, 121, 122]
   # Check if the front event calls a common event (in its first non comment commands)
   # @param common_event [Integer] the id of the common event in the database
