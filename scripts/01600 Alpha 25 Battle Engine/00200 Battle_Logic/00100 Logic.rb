@@ -40,6 +40,8 @@ module Battle
     # Get the generic rng
     # @return [Random]
     attr_reader :generic_rng
+    # If the battle is in debug and forcing the end of it
+    attr_accessor :debug_end_of_battle
 
     # Create a new Logic instance
     # @param scene [Scene] scene that hold the logic object
@@ -65,6 +67,7 @@ module Battle
       @switch_request = []
       @evolve_request = []
       $game_temp.battle_turn = 0
+
     end
 
     # Safe to_s & inspect

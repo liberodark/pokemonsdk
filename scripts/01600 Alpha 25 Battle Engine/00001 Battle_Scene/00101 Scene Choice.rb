@@ -240,6 +240,7 @@ module Battle
     def flee_attempt
       @message_window.width = @visual.viewport.rect.width if @visual.viewport
       @message_window.wait_input = true
+      return debug_terminate_trainer_battle if debug? && logic.battle_info.trainer_battle? && Input::Keyboard.press?(Input::Keyboard::LControl)
       result = @logic.flee_handler.attempt(@player_actions.size)
       if result == :success
         @logic.battle_result = 1
@@ -249,6 +250,16 @@ module Battle
       else
         @next_update = :trigger_all_AI
       end
+    end
+
+    def debug_terminate_trainer_battle
+      choice = display_message_and_wait("Do you want to terminate this battle?", 1, "Yes", "No")
+      return if choice == 1
+
+      choice = display_message_and_wait("Do you want to treat as a win or a lose?", 1, "Win", "Lose")
+      @logic.battle_result = choice == 0 ? 0 : 2
+      @logic.debug_end_of_battle = true
+      @next_update = :battle_end
     end
 
     # Method that checks if nuzlocke mode prevents capture

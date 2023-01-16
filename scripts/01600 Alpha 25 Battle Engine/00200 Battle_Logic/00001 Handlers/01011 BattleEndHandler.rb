@@ -278,7 +278,7 @@ module Battle
     end
 
     BattleEndHandler.register('PSDK send player back to Pokemon Center') do |handler, players_pokemon|
-      next unless players_pokemon.all?(&:dead?)
+      next unless players_pokemon.all?(&:dead?) || handler.logic.debug_end_of_battle
       next if handler.logic.battle_result != 2
 
       unless $game_temp.battle_can_lose

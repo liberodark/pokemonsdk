@@ -174,7 +174,7 @@ class Game_Player < Game_Character
   # @param last_moving [Boolean] if the player was moving before
   def update_check_trigger(last_moving)
     if last_moving && !check_event_trigger_here([1, 2])
-      unless debug? && Input.press?(:CTRL)
+      unless debug? && Input::Keyboard.press?(Input::Keyboard::LControl)
         @encounter_count -= 1 if @encounter_count > 1
         make_encounter_count if @encounter_count <= 1
       end
