@@ -154,7 +154,7 @@ class Interpreter
     $pokedex.mark_captured(pokemon.db_symbol)
     # TODO: Trade animation taking actor, pokemon (including messages)
     message("#{actor.given_name} is being traded with #{pokemon.name}!")
-    id, form = pokemon.evolve_check(:trade, pokemon)
+    id, form = pokemon.evolve_check(:trade, actor) || pokemon.evolve_check(:tradeWith, actor)
     GamePlay.make_pokemon_evolve(pokemon, id, form, true) if id
   end
 end

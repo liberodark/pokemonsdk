@@ -103,7 +103,7 @@ module GTS
       evo.pbEndScreen
     }
 =end
-    elv_id, elv_form = new_poke.evolve_check(:trade, my_pokemon)
+    elv_id, elv_form = new_poke.evolve_check(:trade, my_pokemon) || new_poke.evolve_check(:tradeWith, my_pokemon)
     GamePlay.make_pokemon_evolve(new_poke, elv_id, elv_form, true) if elv_id
 
     if !new_poke.game_code || new_poke.game_code != Settings::GAME_CODE
