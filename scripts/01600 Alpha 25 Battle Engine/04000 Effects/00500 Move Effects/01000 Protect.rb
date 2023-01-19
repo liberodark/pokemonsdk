@@ -211,7 +211,6 @@ module Battle
 
           @show_message = false
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 514, target))
-          kill
         end
       end
       Protect.register(:endure, Endure)
