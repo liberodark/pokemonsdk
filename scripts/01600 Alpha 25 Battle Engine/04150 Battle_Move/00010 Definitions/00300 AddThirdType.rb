@@ -6,6 +6,20 @@ module Battle
         trick_or_treat: :ghost,
         forest_s_curse: :grass
       }
+            
+      TYPES.default = :normal
+
+      # Test if the target is immune
+      # @param user [PFM::PokemonBattler]
+      # @param target [PFM::PokemonBattler]
+      # @return [Boolean]
+      def target_immune?(user, target)
+        return true if target.send(:"type_#{TYPES[db_symbol]}?")
+        return true if target.has_ability?(:multitype) || target.has_ability?(:rks_system)
+
+        return super
+      end
+
       # Function that deals the effect to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
