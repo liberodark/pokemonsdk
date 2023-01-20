@@ -26,6 +26,6 @@ module Battle
         end
       end
     end
-    Move.register(:s_venomdrench, VenomDrench)
+    Move.register(:s_venom_drench, VenomDrench)
   end
 end
