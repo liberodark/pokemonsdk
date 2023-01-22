@@ -83,6 +83,17 @@ module Battle
 
       # Implement the King's Shield effect
       class KingsShield < Protect
+        # Function called when we try to check if the target evades the move
+        # @param user [PFM::PokemonBattler]
+        # @param target [PFM::PokemonBattler] expected target
+        # @param move [Battle::Move]
+        # @return [Boolean] if the target is evading the move
+        def on_move_prevention_target(user, target, move)
+          return false if move.status?
+
+          return super
+        end
+
         private
 
         # Function responsive of playing the protect effect if protect got triggered (inc. message)
@@ -120,7 +131,7 @@ module Battle
         # @param move [Battle::Move]
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          move.scene.logic.stat_change_handler.stat_change_with_process(:spd, -1, user) if move.direct?
+          move.scene.logic.stat_change_handler.stat_change_with_process(:spd, -1, user) if move.direct? && !user.has_ability?(:long_reach)
         end
       end
       Protect.register(:silk_trap, SilkTrap)
@@ -135,7 +146,7 @@ module Battle
         # @param move [Battle::Move]
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          move.scene.logic.stat_change_handler.stat_change_with_process(:dfe, -2, user) if move.direct? && move.db_symbol != :sucker_punch
+          move.scene.logic.stat_change_handler.stat_change_with_process(:dfe, -2, user) if move.direct? && (move.db_symbol != :sucker_punch || !user.has_ability?(:long_reach))
         end
       end
       Protect.register(:obstruct, Obstruct)
