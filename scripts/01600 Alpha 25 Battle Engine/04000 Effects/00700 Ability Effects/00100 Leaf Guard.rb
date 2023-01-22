@@ -14,7 +14,7 @@ module Battle
         def on_status_prevention(handler, status, target, launcher, skill)
           msg_id = STATUS_LEAF_GUARD_MSG[status]
           return if target != @target
-          return unless msg_id && $env.sunny?
+          return unless msg_id && ($env.sunny? || $env.hardsun?)
           return unless launcher&.can_be_lowered_or_canceled?
 
           return handler.prevent_change do

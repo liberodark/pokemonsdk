@@ -6,8 +6,8 @@ module Battle
       def type
         al = @scene.logic.all_alive_battlers.any? { |battler| battler.has_ability?(:cloud_nine) || battler.has_ability?(:air_lock) }
         return data_type(data.type).id if al
-        return data_type(:fire).id if $env.sunny?
-        return data_type(:water).id if $env.rain?
+        return data_type(:fire).id if $env.sunny? || $env.hardsun?
+        return data_type(:water).id if $env.rain? || $env.hardrain?
         return data_type(:ice).id if $env.hail?
         return data_type(:rock).id if $env.sandstorm?
 

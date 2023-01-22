@@ -67,7 +67,7 @@ module PFM
       return current_weather_db_symbol == :hardsun
     end
 
-    # Is it hardsunny?
+    # Is it Strong Winds ? (Mega Rayquaza)
     # @return [Boolean]
     def wind?
       return current_weather_db_symbol == :wind

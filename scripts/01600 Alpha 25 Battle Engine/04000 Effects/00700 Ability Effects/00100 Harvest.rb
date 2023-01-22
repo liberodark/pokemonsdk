@@ -10,7 +10,7 @@ module Battle
           return unless battlers.include?(@target)
           return if @target.dead?
           return unless @target.item_consumed && data_item(@target.consumed_item)&.socket == 4 && @target.item_db_symbol == :__undef__
-          return unless bchance?(0.5) || $env.sunny?
+          return unless bchance?(0.5) || $env.sunny? || $env.hardsun?
 
           # TODO: Add the harvest animation
           scene.visual.show_ability(@target)

@@ -5,7 +5,7 @@ module Battle
         # Give the speed modifier over given to the Pokemon with this effect
         # @return [Float, Integer] multiplier
         def spd_modifier
-          return $env.rain? ? 2 : 1
+          return ($env.rain? || $env.hardrain?) ? 2 : 1
         end
       end
       register(:swift_swim, SwiftSwim)

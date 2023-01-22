@@ -31,7 +31,7 @@ module Battle
           return 1 if target.bank != @target.bank
           return 1 unless user.can_be_lowered_or_canceled?
 
-          return move.special? && $env.sunny? ? 1.5 : 1
+          return move.special? && ($env.sunny? || $env.hardsun?) ? 1.5 : 1
         end
       end
       register(:flower_gift, FlowerGift)

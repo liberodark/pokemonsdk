@@ -38,10 +38,10 @@ module Battle
           return unless battlers.include?(target)
           return if target.dead?
 
-          if $env.rain?
+          if $env.rain? || $env.hardrain?
             scene.visual.show_ability(target)
             logic.damage_handler.heal(target, target.max_hp / 8)
-          elsif $env.sunny?
+          elsif $env.sunny? || $env.hardsun?
             scene.visual.show_ability(target)
             logic.damage_handler.damage_change((target.max_hp / 8).clamp(1, Float::INFINITY), target)
           end

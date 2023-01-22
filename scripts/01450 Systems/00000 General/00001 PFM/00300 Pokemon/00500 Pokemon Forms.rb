@@ -186,9 +186,9 @@ module PFM
     FORM_GENERATION[:unown] = proc { @form = @code % 28 }
     FORM_GENERATION[:castform] = proc do
       env = $env
-      if env.sunny?
+      if env.sunny? || $env.hardsun?
         next @form = 2
-      elsif env.rain?
+      elsif env.rain? || $env.hardrain?
         next @form = 3
       elsif env.hail?
         next @form = 6
@@ -206,7 +206,7 @@ module PFM
 
       next @form = 1
     end
-    FORM_GENERATION[:cherrim] = proc { @form = $env.sunny? ? 1 : 0 }
+    FORM_GENERATION[:cherrim] = proc { @form = ($env.sunny? || $env.hardsun?) ? 1 : 0 }
     FORM_GENERATION[:deerling] = FORM_GENERATION[:sawsbuck] = proc { @form = current_deerling_form }
     FORM_GENERATION[:meowstic] = proc { @form = @gender == 2 ? 1 : 0 }
 

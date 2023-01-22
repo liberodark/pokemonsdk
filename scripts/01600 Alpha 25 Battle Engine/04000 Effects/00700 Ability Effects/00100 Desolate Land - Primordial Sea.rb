@@ -89,7 +89,7 @@ module Battle
         end
 
         def prevent
-          return 276
+          return 275
         end
 
         def temps
@@ -127,7 +127,7 @@ module Battle
         end
 
         def prevent
-          return 275
+          return 276
         end
 
         def temps

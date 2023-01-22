@@ -24,7 +24,7 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @return [Boolean]
       def shortcut?(user, targets)
-        return true if $env.sunny?
+        return true if $env.sunny? || $env.hardsun?
 
         return two_turns_shortcut?(user, targets)
       end
