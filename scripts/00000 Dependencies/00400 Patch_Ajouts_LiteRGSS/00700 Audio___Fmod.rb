@@ -77,6 +77,8 @@ if Object.const_defined?(:FMOD)
         return @bgm_channel.getPosition(FMOD::TIMEUNIT::PCM) if @bgm_channel
       end
       return 0
+    rescue FMOD::Error
+      return 0
     end
 
     # Set the BGM position
