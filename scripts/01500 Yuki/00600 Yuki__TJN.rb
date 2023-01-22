@@ -210,7 +210,6 @@ module Yuki
           update_switches_and_variables(Sw::TJN_NightTime, 0)
         elsif v >= timeset[1] # Sunset
           change_tone(1) if day_tone
-          $game_screen.start_tone_change(TONE[@current_tone = 1], tone_change_time) if day_tone
           update_switches_and_variables(Sw::TJN_SunsetTime, 1)
         elsif v >= timeset[2] # Day
           change_tone(3) if day_tone
