@@ -25,6 +25,9 @@ module PFM
       # Get the name to show
       # @return [String, nil]
       attr_reader :name
+      # Get the color of the name to show
+      # @return [Integer, nil]
+      attr_reader :name_color
       # Get all the faces to show
       # @return [Array<Face>]
       attr_reader :faces
@@ -51,6 +54,7 @@ module PFM
         @show_gold_window = false
         @can_skip_message = false
         @name = nil
+        @name_color = nil
         @faces = []
         @align = :left
         preparse_properties
@@ -66,9 +70,11 @@ module PFM
       private
 
       # Parse the speaker name
-      # @param name [String] name of the speaker
-      def parse_speaker_name(name)
+      # @param info_str [String] name of the speaker
+      def parse_speaker_name(info_str)
+        name, color = info_str.split(/,([0-9])/)
         @name = name
+        @name_color = color.to_i
       end
 
       # Parse the face of a speaker

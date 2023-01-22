@@ -51,7 +51,7 @@ module UI
         name_y = y + (current_position == :top ? height + default_vertical_margin : (-wb[5] - wb[-1] - default_line_height - default_vertical_margin))
         text_width = width_computer.normal_width(properties.name)
         @name_window = UI::Window.from_metrics(viewport, x, name_y, text_width, default_line_height, skin: current_name_windowskin)
-        @sub_stack.push_sprite(Text.new(0, @name_window, 0, -Text::Util::FOY, 0, default_line_height, properties.name))
+        @sub_stack.push_sprite(Text.new(0, @name_window, 0, -Text::Util::FOY, 0, default_line_height, properties.name, 0, nil, properties.name_color))
         @sub_stack.push_sprite(@name_window)
       end
 
