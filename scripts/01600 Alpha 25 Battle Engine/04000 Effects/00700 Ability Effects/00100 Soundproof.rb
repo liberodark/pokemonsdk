@@ -9,8 +9,9 @@ module Battle
         # @return [Boolean] if the target is immune to the move
         def on_move_ability_immunity(user, target, move)
           return false if target != @target
+          return @logic.scene.visual.show_ability(target) && true if move.sound_attack? && user.can_be_lowered_or_canceled?
 
-          return move.sound_attack? && user.can_be_lowered_or_canceled?
+          return false
         end
       end
       register(:soundproof, Soundproof)

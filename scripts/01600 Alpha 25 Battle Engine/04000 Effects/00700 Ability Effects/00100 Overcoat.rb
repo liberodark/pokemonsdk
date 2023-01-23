@@ -16,9 +16,9 @@ module Battle
         # @return [Boolean] if the target is immune to the move
         def on_move_ability_immunity(user, target, move)
           return false if target != @target
+          return @logic.scene.visual.show_ability(target) && true if move.powder? && user.can_be_lowered_or_canceled?
 
-          @logic.scene.visual.show_ability(target) if move.powder?
-          return move.powder?
+          return false
         end
       end
       register(:overcoat, Overcoat)
