@@ -17,14 +17,6 @@ module GamePlay
     #   GamePlay::Pokemon_Shop.new([25, 52], [2500, 500], [50, { level: 15, form: 1 }]) # Will open a Shop selling Pikachu lvl 50 at 2500 P$ and Alolan Meowth lvl 15 at 500 P$
     def initialize(symbol_or_list, prices = {}, parameters = [], show_background: true)
       super(false)
-      validate_param(:initialize, :symbol_or_list, symbol_or_list => [Symbol, Array])
-      validate_param(:initialize, :symbol_or_list, symbol_or_list => { Array => Integer }) if symbol_or_list.class == Array
-      if symbol_or_list.is_a?(Symbol)
-        validate_param(:initialize, :prices, prices => Hash)
-      else
-        validate_param(:initialize, :prices, prices => Array)
-      end
-      validate_param(:initialize, :params, parameters => Array) if symbol_or_list.class == Array
       @force_close = nil
       @shop = PFM.game_state.shop
       @show_background = :show_background

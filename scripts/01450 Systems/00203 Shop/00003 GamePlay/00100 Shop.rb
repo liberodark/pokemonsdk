@@ -7,9 +7,9 @@ module GamePlay
     #   @param symbol_shop [Symbol] the symbol of the shop to open
     #   @param price_overwrite [Hash] the hash containing the new price (value) of an item id (key)
     # @overload initialize(list_id_object)
-    #   @param list_id_object [Array] the array containing the id of the items to sell
+    #   @param list_id_object [Array<Symbol>] the array containing the id of the items to sell
     # @overload initialize(list_id_object, price_overwrite)
-    #   @param list_id_object [Array] the array containing the id of the items to sell
+    #   @param list_id_object [Array<Symbol>] the array containing the id of the items to sell
     #   @param price_overwrite [Hash] the hash containing the new price (value) of an id (key)
     # @example Opening an already defined shop with limited items
     #   GamePlay::Shop.new(:shop_pewter_city) # Will open the Shop with symbol :shop_pewter_city (the shop must be already defined beforehand)
@@ -22,9 +22,6 @@ module GamePlay
     def initialize(symbol_or_list, price_overwrite = {}, show_background: true)
       super()
       return if symbol_or_list == false
-      validate_param(:initialize, :symbol_or_list, symbol_or_list => [Symbol, Array])
-      validate_param(:initialize, :symbol_or_list, symbol_or_list => { Array => Integer }) if symbol_or_list.class == Array
-      validate_param(:initialize, :price_overwrite, price_overwrite => Hash)
       @force_close = nil
       @shop = PFM.game_state.shop
       @show_background = :show_background

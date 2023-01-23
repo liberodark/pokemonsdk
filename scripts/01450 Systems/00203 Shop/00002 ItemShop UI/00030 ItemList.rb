@@ -188,6 +188,7 @@ module UI
           @item_price = add_text(133, 8, 37, 17, nil.to_s, 2, color: 0)
           @item_price.draw_shadow = false
           @item_price.z = 2
+          # @type [UI::ItemSprite]
           @item_icon = add_sprite(3, 2, NO_INITIAL_IMAGE, type: ItemSprite)
           @item_icon.z = 3
         end
