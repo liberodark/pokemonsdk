@@ -230,13 +230,12 @@ module PFM
     #   @param index [true] indicating to return the index
     #   @return [Integer, false]
     def can_learn?(id, index = false)
-      id = data_move(id).id if id.is_a?(Symbol)
-      @actors.each_with_index do |pokemon, i|
-        if pokemon&.can_learn?(id)
-          return index ? i : true
-        end
+      id = data_move(id).db_symbol if id.is_a?(Integer)
+      if index
+        return @actors.find_index { |pokemon| pokemon&.can_learn?(id) } || false
+      else
+        return @actors.any? { |pokemon| pokemon&.can_learn?(id) }
       end
-      return false
     end
 
     # Return the index of the Pokemon who can learn the specified skill

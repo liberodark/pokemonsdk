@@ -104,11 +104,12 @@ module PFM
     end
 
     # Check if the Pokemon can learn a skill
-    # @param db_symbol [Symbol] db_symbol of the move
+    # @param db_symbol [Integer, Symbol] id or db_symbol of the move
     # @return [Boolean, nil] nil = learnt, false = cannot learn, true = can learn
     def can_learn?(db_symbol)
       return false if egg?
 
+      db_symbol = data_move(db_symbol).db_symbol if db_symbol.is_a?(Integer)
       return nil if skill_learnt?(db_symbol)
 
       return data.move_set.any? { |move| move.move == db_symbol && !move.breed_learnable? }
