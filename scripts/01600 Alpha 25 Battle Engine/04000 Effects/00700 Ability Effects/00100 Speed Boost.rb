@@ -26,11 +26,6 @@ module Battle
           return unless with == @target
           return unless who.dead?
           return @switch_by_ko = true unless @logic.actions.empty?
-
-          if @logic.stat_change_handler.stat_increasable?(:spd, @target)
-            @logic.scene.visual.show_ability(@target)
-            @logic.stat_change_handler.stat_change_with_process(:spd, 1, @target)
-          end
         end
       end
       register(:speed_boost, SpeedBoost)
