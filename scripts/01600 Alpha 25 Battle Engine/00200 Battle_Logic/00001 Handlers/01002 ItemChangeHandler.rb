@@ -7,20 +7,32 @@ module Battle
       # List of item that cannot be knocked off
       PROTECTED_ITEMS = %i[exp_share lucky_egg amulet_coin oak_s_letter gram_1 gram_2 gram_3 prof_s_letter letter
                            greet_mail favored_mail rsvp_mail thanks_mail inquiry_mail like_mail reply_mail
-                           bridge_mail_s bridge_mail_d bridge_mail_t bridge_mail_v bridge_mail_m gengarite
-                           gardevoirite ampharosite venusaurite charizardite_x blastoisinite mewtwonite_x mewtwonite_y
-                           blazikenite medichamite houndoominite aggronite banettite tyranitarite scizorite pinsirite
-                           aerodactylite lucarionite abomasite kangaskhanite gyaradosite absolite charizardite_y alakazite
-                           heracronite mawilite manectite garchompite latiasite latiosite swampertite sceptilite sablenite
-                           altarianite galladite audinite metagrossite sharpedonite slowbronite steelixite pidgeotite glalitite
-                           diancite cameruptite lopunnite salamencite beedrillite red_orb blue_orb jade_orb]
+                           bridge_mail_s bridge_mail_d bridge_mail_t bridge_mail_v bridge_mail_m]
       # TO DO : Add Z-Crystals to PROTECTED_ITEMS (7G)
       # List of items that cannot be knocked off if the holder is a specific Pokemon
       PROTECTED_POKEMON_ITEMS = {
         giratina: %i[griseous_orb],
         arceus: %i[flame_plate splash_plate zap_plate meadow_plate icicle_plate fist_plate toxic_plate earth_plate sky_plate mind_plate insect_plate
                    stone_plate spooky_plate draco_plate dread_plate iron_plate pixie_plate],
-        genesect: %i[shock_drive burn_drive chill_drive douse_drive]
+        genesect: %i[shock_drive burn_drive chill_drive douse_drive],
+        silvally: %i[ bug_memory dark_memory dragon_memory electry_memory fairy_memory fighting_memory fire_memory flying_memory ghost_memory
+                      grass_memory ground_memory ice_memory poison_memory psychic_memory rock_memory steel_memory water_memory],
+        kyogre: %i[blue_orb],
+        groudon: %i[red_orb],
+        zacian: %i[rusted_sword],
+        zamazenta: %i[rusted_shield],
+
+        venusaur: %i[venusaurite], charizard: %i[charizardite_x charizardite_y], blatoise: %i[blastoisinite],
+        alakazam: %i[alakazite], gengar: %i[gengarite], kangaskhan: %i[kangaskhanite], pinsir: %i[pinsirite],
+        gyarados: %i[gyaradosite], aerodactyl: %i[aerodactylite], mewtwo: %i[mewtwonite_x mewtwonite_y],
+        ampharos: %i[ampharosite], scizor: %i[scizorite], heracross: %i[heracronite], houndoom: %i[houndoominite],
+        tyranitar: %i[tyranitarite], blaziken: %i[blazikenite], gardevoir: %i[gardevoirite], mawile: %i[mawilite],
+        aggron: %i[aggronite], medicham: %i[medichamite], manectric: %i[manectite], banette: %i[banettite],
+        absol: %i[absolite], latias: %i[latiasite], latios: %i[latiosite], garchomp: %i[garchompite],
+        lucario: %i[lucarionite], abomasnow: %i[abomasite], beedril: %i[beedrillite], pidgeot: %i[pidgeotite],
+        slowbro: %i[slowbronite], steelix: %i[steelixite], sceptile: %i[sceptilite], swamper: %i[swampertite],
+        sableye: %i[sablenite], sharpedo: %i[sharpedoite], camerupt: %i[cameruptite], altaria: %i[altarianite],
+        glalie: %i[glalitite], salamence: %i[salamencite], metagross: %i[metagrossite], lopunny: %i[lopunnite],
       }
 
       # Function that change the item held by a Pokemon

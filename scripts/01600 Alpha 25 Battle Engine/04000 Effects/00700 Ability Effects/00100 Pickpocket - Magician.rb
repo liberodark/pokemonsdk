@@ -36,8 +36,10 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if launcher != @target || launcher == target || !%i[none __undef__].include?(launcher.item_db_symbol)
-          return unless skill&.direct? && launcher && launcher.hp > 0 && !launcher.has_ability?(:long_reach)
+          return unless launcher && launcher.hp > 0
           return unless handler.logic.item_change_handler.can_lose_item?(target, launcher)
+          return if skill&.recoil? && (hp / skill.recoil_factor >= launcher.hp)
+          return if skill&.direct? && (target.battle_item_db_symbol == :sticky_barb || (target.battle_item_db_symbol == :rocky_helmet && (launcher.max_hp / 6 >= launcher.hp)))
 
           handler.scene.visual.show_ability(launcher)
           handler.logic.item_change_handler.change_item(target.item_db_symbol, !$game_temp.trainer_battle, launcher)
