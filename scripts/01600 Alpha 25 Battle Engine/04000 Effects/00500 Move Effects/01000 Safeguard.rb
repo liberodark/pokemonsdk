@@ -16,13 +16,13 @@ module Battle
       # @param skill [Battle::Move, nil] Potential move used
       # @return [:prevent, nil] :prevent if the status cannot be applied
       def on_status_prevention(handler, status, target, launcher, skill)
+        return unless target.bank == @bank
         return if status == :cure
         return @logic.scene.visual.show_ability(launcher) if launcher&.has_ability?(:infiltrator) # Infiltrator bypass safeguard
-        return if item_exceptions.include?(target.item_db_symbol) # Status item held
-        return if move_exceptions.include?(skill&.db_symbol) # Induced statut from the pokemon's move (Outrage, etc)
+        return if item_exceptions.include?(target.item_db_symbol)
+        return if move_exceptions.include?(skill&.db_symbol)
         return if skill&.db_symbol == :yawn
         return if status == :sleep && target.effects.has?(:drowsiness)
-        # return unless target.item_consumed && target.consumed_item != :__undef__ # Berry consumed @todo
 
         @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, status_prevention_message_id, target))
         return :prevent

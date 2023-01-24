@@ -27,7 +27,7 @@ module Battle
           next if logic.bank_effects[target.bank].has?(effect_name)
 
           logic.bank_effects[target.bank].add(create_effect(user, target))
-          scene.display_message_and_wait(deal_message(user, target))
+          scene.display_message_and_wait(parse_text(18, 138 + target.bank.clamp(0, 1)))
         end
       end
 
@@ -37,14 +37,6 @@ module Battle
       # @return [Integer]
       def create_effect(user, target)
         Effects::Safeguard.new(logic, target.bank, 0, 5)
-      end
-
-      # Id of the message after the animation
-      # @param user [PFM::PokemonBattler] user of the move
-      # @param target [PFM::PokemonBattler] target of the move
-      # @return [Integer]
-      def deal_message(user, target)
-        parse_text_with_pokemon(18, 138, target)
       end
 
       # Name of the effect

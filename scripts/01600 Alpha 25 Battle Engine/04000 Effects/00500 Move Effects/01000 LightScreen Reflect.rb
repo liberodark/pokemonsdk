@@ -30,8 +30,9 @@ module Battle
         :light_screen
       end
 
+      # Function called when the effect has been deleted from the effects handler
       def on_delete
-        @logic.scene.display_message_and_wait(parse_text(18, message_id + bank.clamp(0, 1)))
+        @logic.scene.display_message_and_wait(parse_text(18, message_id + @bank.clamp(0, 1)))
       end
 
       private
