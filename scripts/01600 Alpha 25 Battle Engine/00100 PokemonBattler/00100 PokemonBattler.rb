@@ -20,7 +20,7 @@ module PFM
     ]
     # List of @battle_properties to copy with transform
     TRANSFORM_BP_METHODS = %i[
-      ability weight height type1 type2 gender
+      ability weight height type1 type2 gender shiny
       atk_basis dfe_basis ats_basis dfs_basis spd_basis
       atk_stage dfe_stage ats_stage dfs_stage spd_stage
     ]

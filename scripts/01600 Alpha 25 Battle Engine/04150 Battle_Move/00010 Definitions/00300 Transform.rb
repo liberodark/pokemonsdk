@@ -39,7 +39,7 @@ module Battle
         scene.visual.wait_for_animation
         scene.display_message_and_wait(parse_text_with_2pokemon(*message_id, user, user.transform))
         user.effects.add(Effects::Transform.new(logic, user))
-        user.type1 = data_type(:normal).id if target.type1 == 0
+        user.type1 = data_type(:normal).id if user.transform.type1 == 0
       end
 
       # Return the text's CSV ids
