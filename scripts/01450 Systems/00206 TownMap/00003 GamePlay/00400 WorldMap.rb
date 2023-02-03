@@ -383,13 +383,16 @@ module GamePlay
     # We try to fly to the selected zone
     def on_fly_attempt
       zone = $env.get_zone(@x, @y, @worldmap_id)
-      if zone&.warp&.x && zone&.warp&.y && $env.visited_zone?(zone)
+      if zone&.warp&.x && zone&.warp&.y && ($env.visited_zone?(zone) || debug?)
         map_id = zone.maps.first
+        $game_player.fly_reset_attributes
         $game_variables[::Yuki::Var::TMP1] = map_id
         $game_variables[::Yuki::Var::TMP2] = zone.warp.x
         $game_variables[::Yuki::Var::TMP3] = zone.warp.y
         $game_temp.common_event_id = 15
+        Yuki::FollowMe.smart_enable unless $game_switches[::Yuki::Sw::EV_Bicycle] || $game_switches[::Yuki::Sw::EV_AccroBike]
         return_to_scene(Scene_Map)
+        $game_player.return_to_previous_state
       end
     end
 

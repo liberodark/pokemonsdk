@@ -31,6 +31,19 @@ class Game_Character
     end
   end
 
+  # Reset some attributes when using Fly
+  def fly_reset_attributes
+    @slope_offset_y = @slope_origin_x = @slope_length = nil
+    @slope_y_modifier = 0
+    @z = 1
+    @__bridge = nil
+    @state = :walking
+    leave_surfing_state if @surfing
+    @in_swamp = false
+    leave_swamp_state if @state == :swamp
+    return_to_previous_state
+  end
+
   private
 
   # Update the pattern animation
