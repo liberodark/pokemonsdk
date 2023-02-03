@@ -32,14 +32,18 @@ class Interpreter
   end
   alias stocker_pokemon store_pokemon
 
-  # Add a pokemon (#add_pokemon) with specific informations. 
+  # Add a pokemon (#add_pokemon) with specific informations
   # @param hash [Hash] the parameters of the Pokemon, see PFM::Pokemon#generate_from_hash.
   # @return [PFM::Pokemon, nil] see #add_pokemon
   # @author Nuri Yuri
   def add_specific_pokemon(hash)
-    pokemon_id = hash[:id].to_i
-    raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists." if each_data_creature.none? { |creature| creature.id == pokemon_id }
-
+    pokemon_id = hash[:id]
+    case pokemon_id
+    when Integer
+      raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists." if each_data_creature.none? { |creature| creature.id == pokemon_id }
+    when Symbol
+      raise "Database Error : The Pokémon with db_symbol #{pokemon_id} doesn't exists." if each_data_creature.none? { |creature| creature.db_symbol == pokemon_id }
+    end
     return add_pokemon(PFM::Pokemon.generate_from_hash(hash))
   end
   alias ajouter_pokemon_param add_specific_pokemon
