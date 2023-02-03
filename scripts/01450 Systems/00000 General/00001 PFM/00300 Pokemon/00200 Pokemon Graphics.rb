@@ -1,30 +1,8 @@
 module PFM
   class Pokemon
-    # All possible attempt of finding an egg
+    # All possible attempt of finding an egg (for legacy)
+    # @todo Change this later
     EGG_FILENAMES = ['egg_%<id>03d_%<form>02d', 'egg_%<id>03d', 'egg_%<name>s_%<form>02d', 'egg_%<name>s', 'egg']
-    # All possible attempt of finding a sprite filename
-    SPRITES_FILENAMES = {
-      female: ['%<id>03df_%<form>02d', '%<id>03df', '%<name>s_female_%<form>02d', '%<name>s_female'],
-      default: ['%<id>03d_%<form>02d', '%<id>03d', '%<name>s_%<form>02d', '%<name>s']
-    }
-    # All possible attempt of finding a gif filename
-    GIF_FILENAMES = {
-      female: ['%<id>03df_%<form>02d.gif', '%<id>03df.gif', '%<name>s_female_%<form>02d.gif', '%<name>s_female.gif'],
-      default: ['%<id>03d_%<form>02d.gif', '%<id>03d.gif', '%<name>s_%<form>02d.gif', '%<name>s.gif']
-    }
-    # All possible attempt of finding a icon filename
-    ICON_FILENAMES = {
-      female_shiny: ['%<id>03dfs_%<form>02d', '%<id>03dfs', '%<name>s_female_shiny_%<form>02d', '%<name>s_female_shiny'],
-      default_shiny: ['%<id>03ds_%<form>02d', '%<id>03ds', '%<name>s_shiny_%<form>02d', '%<name>s_shiny'],
-      **SPRITES_FILENAMES
-    }
-    # All the sprite collection to check depending on the female & shiny couple
-    SPRITES_TO_CHECK = [
-      %i[default], # Nothing
-      %i[default_shiny default], # Shiny
-      %i[female default], # Female
-      %i[female_shiny default_shiny female default] # Female + Shiny
-    ]
     # Size of a battler
     BATTLER_SIZE = 96
     # Size of an icon
@@ -51,15 +29,12 @@ module PFM
         cache_exist = RPG::Cache.method(:b_icon_exist?)
         return correct_filename_from(EGG_FILENAMES, format_arg, cache_exist) || EGG_FILENAMES.last if egg
 
-        check_index = shiny ? 1 : 0
-        check_index += 2 if female
-
-        SPRITES_TO_CHECK[check_index].each do |symbol|
-          filename = correct_filename_from(ICON_FILENAMES[symbol], format_arg, cache_exist)
-          return filename if filename
-        end
-
-        return '000'
+        resources = data_creature_form(id, form).resources
+        filename = resources.icon_shiny_f if resources.has_female && shiny && female
+        filename ||= resources.icon_f if resources.has_female && female
+        filename ||= resources.icon_shiny if shiny
+        filename = filename && !filename&.empty? && File.exist?("graphics/pokedex/pokeicon/#{filename}") ? filename : resources.icon
+        return filename || '000'
       end
 
       # Return the front battler name
@@ -73,12 +48,11 @@ module PFM
         format_arg = { id: id, form: form, name: data_creature(id).db_symbol }
         return correct_filename_from(EGG_FILENAMES, format_arg, RPG::Cache.method(:poke_front_exist?)) || EGG_FILENAMES.last if egg
 
-        hue = shiny ? 1 : 0
-        cache_exist = proc { |filename| RPG::Cache.poke_front_exist?(filename, hue) }
-        filename = correct_filename_from(SPRITES_FILENAMES[:female], format_arg, cache_exist) if female
-        filename ||= correct_filename_from(SPRITES_FILENAMES[:default], format_arg, cache_exist)
-
-        return filename || '000'
+        resources = data_creature_form(id, form).resources
+        filename = resources.front_shiny_f if resources.has_female && shiny && female
+        filename ||= resources.front_f if resources.has_female && female
+        filename ||= resources.front_shiny if shiny
+        return filename || resources.front || '000'
       end
 
       # Return the front gif name
@@ -89,11 +63,10 @@ module PFM
       # @param egg [Boolean] egg state of the Pokemon
       # @return [String, nil]
       def front_gif_filename(id, form, female, shiny, egg)
-        format_arg = { id: id, form: form, name: data_creature(id).db_symbol }
         hue = shiny ? 1 : 0
         cache_exist = proc { |filename| RPG::Cache.poke_front_exist?(filename, hue) }
-        filename = correct_filename_from(GIF_FILENAMES[:female], format_arg, cache_exist) if female
-        return filename || correct_filename_from(GIF_FILENAMES[:default], format_arg, cache_exist)
+        filename = front_filename(id, form, female, shiny, egg) + '.gif'
+        return filename = filename_exist(filename, cache_exist)
       end
 
       # Return the back battler name
@@ -107,12 +80,11 @@ module PFM
         format_arg = { id: id, form: form, name: data_creature(id).db_symbol }
         return correct_filename_from(EGG_FILENAMES, format_arg, RPG::Cache.method(:poke_back_exist?)) || EGG_FILENAMES.last if egg
 
-        hue = shiny ? 1 : 0
-        cache_exist = proc { |filename| RPG::Cache.poke_back_exist?(filename, hue) }
-        filename = correct_filename_from(SPRITES_FILENAMES[:female], format_arg, cache_exist) if female
-        filename ||= correct_filename_from(SPRITES_FILENAMES[:default], format_arg, cache_exist)
-
-        return filename || '000'
+        resources = data_creature_form(id, form).resources
+        filename = resources.back_shiny_f if resources.has_female && shiny && female
+        filename ||= resources.back_f if resources.has_female && female
+        filename ||= resources.back_shiny if shiny
+        return filename || resources.back || '000'
       end
 
       # Return the back gif name
@@ -123,16 +95,15 @@ module PFM
       # @param egg [Boolean] egg state of the Pokemon
       # @return [String, nil]
       def back_gif_filename(id, form, female, shiny, egg)
-        format_arg = { id: id, form: form, name: data_creature(id).db_symbol }
         hue = shiny ? 1 : 0
         cache_exist = proc { |filename| RPG::Cache.poke_back_exist?(filename, hue) }
-        filename = correct_filename_from(GIF_FILENAMES[:female], format_arg, cache_exist) if female
-        return filename || correct_filename_from(GIF_FILENAMES[:default], format_arg, cache_exist)
+        filename = back_filename(id, form, female, shiny, egg) + '.gif'
+        return filename = filename_exist(filename, cache_exist)
       end
 
       private
 
-      # Find the correct filename in a collection
+      # Find the correct filename in a collection (for legacy egg sprites checks)
       # @param formats [Array<String>]
       # @param format_arg [Hash]
       # @param cache_exist [Method, Proc]
@@ -142,6 +113,16 @@ module PFM
           filename = format(filename_format, format_arg)
           return filename if cache_exist.call(filename)
         end
+
+        return nil
+      end
+
+      # Check if the filename exists in the cache
+      # @param filename [String]
+      # @param cache_exist [Method, Proc]
+      # @return [String, nil] filename if it exists
+      def filename_exist(filename, cache_exist)
+        return filename if cache_exist.call(filename)
 
         return nil
       end
@@ -176,19 +157,11 @@ module PFM
     # @return [String]
     def character_name
       unless @character
-        character = nil
-        if female?
-          character = sprintf("%03df%s_%d", id, shiny? ? "s" : nil, form)
-          character = nil unless RPG::Cache.character_exist?(character)
-        end
-        unless character
-          character = sprintf("%03d%s_%d", id, shiny? ? "s" : nil, form)
-          unless RPG::Cache.character_exist?(character)
-            character = sprintf("%03d%s_0", id, shiny? ? "s" : nil)
-            character = sprintf("%03d_0", id) unless RPG::Cache.character_exist?(character)
-          end
-        end
-        @character = character
+        resources = data_creature_form(id, form).resources
+        filename = resources.character_shiny_f if shiny && female?
+        filename ||= resources.character_f if female?
+        filename ||= resources.character_shiny if shiny?
+        @character = filename || resources.character || '000'
       end
       return @character
     end
@@ -197,10 +170,10 @@ module PFM
     # @return [String]
     def cry
       return nil.to_s if @step_remaining > 0
-      with_form = format('Audio/SE/Cries/%03d_%02dCry.ogg', @id, @form)
-      return with_form if File.exist?(with_form)
-      with_form = format('Audio/SE/Cries/%03d_%02dCry.wav', @id, @form)
-      return with_form if File.exist?(with_form)
+
+      cry = data&.resources&.cry
+      return "Audio/SE/Cries/#{data.resources.cry}" if cry && !cry&.empty? && File.exist?("Audio/SE/Cries/#{cry}")
+
       return format('Audio/SE/Cries/%03dCry', @id)
     end
 

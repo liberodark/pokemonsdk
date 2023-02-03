@@ -121,7 +121,7 @@ module PSDKEditor
       type_data = {
         textId: type.text_id, klass: 'Type', id: type.id, dbSymbol: generate_db_symbol('type', type.db_symbol, type.id),
         color: TYPE_TO_HEX[type.db_symbol] || '#C3B5B2', damageTo: GameData::Type.all.map do |def_type|
-          def_type.on_hit_tbl[index] != 1 ? { defensiveType: def_type.db_symbol, factor: def_type.on_hit_tbl[index] } : nil
+          def_type.on_hit_tbl[index] == 1 ? nil : { defensiveType: def_type.db_symbol, factor: def_type.on_hit_tbl[index] }
         end.compact
       }
       next if check_db_symbol(type)
@@ -147,7 +147,7 @@ module PSDKEditor
         isMental: move.mental, isNonSkyBattle: move.non_sky_battle, isDance: move.dance, isKingRockUtility: move.king_rock_utility,
         isPowder: move.powder, effectChance: move.effect_chance, battleEngineAimedTarget: move.target,
         battleStageMod: move.battle_stage_mod.map.with_index do |value, index|
-          value != 0 ? { battleStage: GameData::Stages::PSDK_EDITOR_VALUES[index], modificator: value } : nil
+          value == 0 ? nil : { battleStage: GameData::Stages::PSDK_EDITOR_VALUES[index], modificator: value }
         end.compact
       }
       if move.status && move.status > 0
@@ -283,11 +283,11 @@ module PSDKEditor
         evDfe: pokemon.ev_dfe, evSpd: pokemon.ev_spd, evAts: pokemon.ev_ats, evDfs: pokemon.ev_dfs, evolutions: build_evolutions(pokemon),
         experienceType: pokemon.exp_type, baseExperience: pokemon.base_exp, baseLoyalty: pokemon.base_loyalty, catchRate: pokemon.rareness,
         femaleRate: pokemon.female_rate, breedGroups: pokemon.breed_groupes, hatchSteps: pokemon.hatch_step,
-        babyDbSymbol: !pokemon.baby || pokemon.baby == 0 ? '__undef__' : GameData::Pokemon[pokemon.baby].db_symbol, 
+        babyDbSymbol: !pokemon.baby || pokemon.baby == 0 ? '__undef__' : GameData::Pokemon[pokemon.baby].db_symbol,
         babyForm: pokemon.form && pokemon.form < 30 ? pokemon.form : 0,
         itemHeld: pokemon.items.each_slice(2).map { |(id, chance)| { dbSymbol: GameData::Item[id].db_symbol, chance: chance.to_i } },
         abilities: pokemon.abilities.map { |id| GameData::Abilities.db_symbol(id) }, frontOffsetY: pokemon.front_offset_y.to_i,
-        moveSet: build_moveset(pokemon)
+        moveSet: build_moveset(pokemon), resources: build_resources(pokemon)
       }
     end
   end
@@ -350,6 +350,128 @@ module PSDKEditor
       evolutions << data
     end
     return evolutions
+  end
+
+  # Function that build the resources of a Pokemon
+  # @param pokemon [GameData::Pokemon]
+  # @return [Array<Hash>]
+  def build_resources(pokemon)
+    resources = {}
+    resources[:icon] = build_resources_dex(pokemon, 'pokeicon')
+    resources[:iconF] = build_resources_dex(pokemon, 'pokeicon', is_female: true)
+    resources[:iconShiny] = build_resources_dex(pokemon, 'pokeicon', is_shiny: true)
+    resources[:iconShinyF] = build_resources_dex(pokemon, 'pokeicon', is_female: true, is_shiny: true)
+    resources[:front] = build_resources_dex(pokemon, 'pokefront')
+    resources[:frontF] = build_resources_dex(pokemon, 'pokefront', is_female: true)
+    resources[:frontShiny] = build_resources_dex(pokemon, 'pokefrontshiny')
+    resources[:frontShinyF] = build_resources_dex(pokemon, 'pokefrontshiny', is_female: true)
+    resources[:back] = build_resources_dex(pokemon, 'pokeback')
+    resources[:backF] = build_resources_dex(pokemon, 'pokeback', is_female: true)
+    resources[:backShiny] = build_resources_dex(pokemon, 'pokebackshiny')
+    resources[:backShinyF] = build_resources_dex(pokemon, 'pokebackshiny', is_female: true)
+    resources[:footprint] = build_resources_dex(pokemon, 'footprint')
+    resources[:character] = build_resources_character(pokemon)
+    resources[:characterF] = build_resources_character(pokemon, is_female: true)
+    resources[:characterShiny] = build_resources_character(pokemon, is_shiny: true)
+    resources[:characterShinyF] = build_resources_character(pokemon, is_female: true, is_shiny: true)
+    resources[:cry] = build_resources_cry(pokemon)
+
+    resources = fix_resources_for_female_only(pokemon, resources)
+    resources[:hasFemale] = check_resources_has_female(resources)
+    return resources.compact
+  end
+
+  # Function that build the resource from dex resource folder
+  # @param pokemon [GameData::Pokemon]
+  # @param type [String] The type of the resources needed (pokeback, pokefront, etc.)
+  # @param is_female [Boolean]
+  # @param is_shiny [Boolean] Only for the icon
+  # @return [String]
+  def build_resources_dex(pokemon, type, is_female: false, is_shiny: false)
+    resource = format('%<id>03d%<female>s%<shiny>s_%<form>d', id: pokemon.id, female: is_female ? 'f' : nil, shiny: is_shiny ? 's' : nil,
+                                                              form: pokemon.form || 0)
+    return resource if resource_dex_exist?(resource, type)
+
+    # Check without the pokemon form
+    resource = format('%<id>03d%<female>s%<shiny>s', id: pokemon.id, female: is_female ? 'f' : nil, shiny: is_shiny ? 's' : nil)
+    return resource if resource_dex_exist?(resource, type)
+
+    return is_female ? nil : ''
+  end
+
+  # Function that build the resource from character resource folder
+  # @param pokemon [GameData::Pokemon]
+  # @param is_female [Boolean]
+  # @param is_shiny [Boolean]
+  # @return [String]
+  def build_resources_character(pokemon, is_female: false, is_shiny: false)
+    character = format('%<id>03d%<female>s%<shiny>s_%<form>d', id: pokemon.id, female: is_female ? 'f' : nil, shiny: is_shiny ? 's' : nil,
+                                                               form: pokemon.form || 0)
+    return character if RPG::Cache.character_exist?(character)
+
+    return is_female ? nil : ''
+  end
+
+  # Function that build the resource from cries folder
+  # @param pokemon [GameData::Pokemon]
+  # @return [String]
+  def build_resources_cry(pokemon)
+    with_form = format('audio/se/cries/%<id>03d_%<form>02dcry.ogg', id: pokemon.id, form: pokemon.form || 0)
+    return File.basename(with_form) if File.exist?(with_form)
+
+    with_form = format('audio/se/cries/%<id>03d_%<form>02dcry.wav', id: pokemon.id, form: pokemon.form || 0)
+    return File.basename(with_form) if File.exist?(with_form)
+
+    without_form = format('audio/se/cries/%03dcry.ogg', pokemon.id)
+    return File.basename(without_form) if File.exist?(without_form)
+
+    without_form = format('audio/se/cries/%03dcry.wav', pokemon.id)
+    return File.basename(without_form) if File.exist?(without_form)
+
+    return ''
+  end
+
+  # Check if the resource exists in the dex resource folder
+  # @param resource [String]
+  # @param type [String]
+  def resource_dex_exist?(resource, type)
+    case type
+    when 'footprint'
+      return RPG::Cache.foot_print_exist?(resource)
+    when 'pokeback'
+      return RPG::Cache.poke_back_exist?(resource)
+    when 'pokebackshiny'
+      return RPG::Cache.poke_back_exist?(resource, 1)
+    when 'pokefront'
+      return RPG::Cache.poke_front_exist?(resource)
+    when 'pokefrontshiny'
+      return RPG::Cache.poke_front_exist?(resource, 1)
+    when 'pokeicon'
+      return RPG::Cache.icon_exist?(resource)
+    end
+    return false
+  end
+
+  # Check if the resources have a female resource
+  # @param resources [Hash]
+  # @return [Boolean]
+  def check_resources_has_female(resources)
+    female_keys = %w[backF backShinyF characterF characterShinyF frontF frontShinyF iconF iconShinyF]
+    return female_keys.any? { |key| !resources[key].nil? }
+  end
+
+  # Duplicate the males resources in females resources if the Pokemon is female only (ex: Latias)
+  # @param pokemon [GameData::Pokemon]
+  # @param resources [Hash]
+  # @return [Hash]
+  def fix_resources_for_female_only(pokemon, resources)
+    return resources if pokemon.female_rate != 100
+
+    resource_male_keys = %w[back backShiny character characterShiny front frontShiny icon iconShiny]
+    resource_male_keys.each do |key|
+      resources["#{key}F"] = resources[key] if resources[key] != ''
+    end
+    return resources
   end
 
   # Move mega evolution (the evolution of the mega evolved form is moved in the form 0)
@@ -648,7 +770,8 @@ module PSDKEditor
 
   def convert_mapinfos
     map_infos = load_data_utf8('Data/MapInfos.rxdata')
-    File.write(File.join(ROOT, 'rmxp_maps.json'), JSON.pretty_generate(map_infos.sort_by { |_, v| v.order }.map { |(id, v)| { id: id, name: v.name } }))
+    json = JSON.pretty_generate(map_infos.sort_by { |_, v| v.order }.map { |(id, v)| { id: id, name: v.name } })
+    File.write(File.join(ROOT, 'rmxp_maps.json'), json)
   end
 
   # Function that check the db_symbol

@@ -127,6 +127,10 @@ module Studio
     # @return [Array<LearnableMove>]
     attr_reader :move_set
 
+    # Resources of the creature
+    # @return [Resources]
+    attr_reader :resources
+
     # Data class describing an evolution
     class Evolution
       # db_symbol of the creature to evolve to
@@ -158,6 +162,84 @@ module Studio
       # Chance that the creature is holding this item
       # @return [Integer]
       attr_reader :chance
+    end
+
+    class Resources
+      # Standard icon
+      # @return [String]
+      attr_reader :icon
+
+      # Female icon
+      # @return [String, nil]
+      attr_reader :icon_f
+
+      # Standard shiny icon
+      # @return [String]
+      attr_reader :icon_shiny
+
+      # Female shiny icon
+      # @return [String, nil]
+      attr_reader :icon_shiny_f
+
+      # Standard front
+      # @return [String]
+      attr_reader :front
+
+      # Female front
+      # @return [String, nil]
+      attr_reader :front_f
+
+      # Standard shiny front
+      # @return [String]
+      attr_reader :front_shiny
+
+      # Female shiny front
+      # @return [String, nil]
+      attr_reader :front_shiny_f
+
+      # Standard back
+      # @return [String]
+      attr_reader :back
+
+      # Female back
+      # @return [String, nil]
+      attr_reader :back_f
+
+      # Standard shiny back
+      # @return [String]
+      attr_reader :back_shiny
+
+      # Female shiny back
+      # @return [String, nil]
+      attr_reader :back_shiny_f
+
+      # Footprint
+      # @return [String]
+      attr_reader :footprint
+
+      # Standard character
+      # @return [String]
+      attr_reader :character
+
+      # Female character
+      # @return [String, nil]
+      attr_reader :character_f
+
+      # Standard shiny character
+      # @return [String]
+      attr_reader :character_shiny
+
+      # Female shiny character
+      # @return [String, nil]
+      attr_reader :character_shiny_f
+
+      # Cry
+      # @return [String]
+      attr_reader :cry
+
+      # Test if the females resources can be used
+      # @return [Boolean]
+      attr_reader :has_female
     end
   end
 

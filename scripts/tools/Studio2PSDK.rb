@@ -426,6 +426,7 @@ module Studio
         return unless (abilities = hash['abilities']).is_a?(Array)
         return unless (front_offset_y = hash['frontOffsetY']).is_a?(Integer)
         return unless (move_set = hash['moveSet']).is_a?(Array)
+        return unless (resources = hash['resources']).is_a?(Hash)
 
         obj = allocate
         obj.instance_variable_set(:@form, form)
@@ -459,6 +460,7 @@ module Studio
         obj.instance_variable_set(:@abilities, abilities.map(&:to_sym))
         obj.instance_variable_set(:@front_offset_y, front_offset_y)
         obj.instance_variable_set(:@move_set, move_set.map { |move| Studio2PSDK.json_to_psdk_studio_object(move) })
+        obj.instance_variable_set(:@resources, Studio::CreatureForm::Resources.new(resources))
         return obj
       end
     end
@@ -475,6 +477,30 @@ module Studio
       def initialize(hash)
         @db_symbol = hash['dbSymbol'].to_sym
         @chance = hash['chance']
+      end
+    end
+
+    class Resources
+      def initialize(hash)
+        @icon = hash['icon']
+        @icon_f = hash['iconF']
+        @icon_shiny = hash['iconShiny']
+        @icon_shiny_f = hash['iconShinyF']
+        @front = hash['front']
+        @front_f = hash['frontF']
+        @front_shiny = hash['frontShiny']
+        @front_shiny_f = hash['frontShinyF']
+        @back = hash['back']
+        @back_f = hash['backF']
+        @back_shiny = hash['backShiny']
+        @back_shiny_f = hash['backShinyF']
+        @footprint = hash['footprint']
+        @character = hash['character']
+        @character_f = hash['characterF']
+        @character_shiny = hash['characterShiny']
+        @character_shiny_f = hash['characterShinyF']
+        @cry = hash['cry']
+        @has_female = hash['hasFemale']
       end
     end
   end
