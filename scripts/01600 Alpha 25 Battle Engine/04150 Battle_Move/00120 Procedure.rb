@@ -85,11 +85,11 @@ module Battle
 
       decrease_pp(user, targets)
       # => proceed_move_accuracy will call display message if failure
-      return unless proceed_move_accuracy(user, targets) || (on_move_failure(user, targets, :accuracy) && false)
+      return unless !(actual_targets = proceed_move_accuracy(user, targets)).empty? || (on_move_failure(user, targets, :accuracy) && false)
 
-      user, targets = proceed_battlers_remap(user, targets)
+      user, actual_targets = proceed_battlers_remap(user, actual_targets)
 
-      actual_targets = accuracy_immunity_test(user, targets) # => Will call $scene.dislay_message for each accuracy fail
+      actual_targets = accuracy_immunity_test(user, actual_targets) # => Will call $scene.dislay_message for each accuracy fail
       return if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
 
       return actual_targets
@@ -99,18 +99,21 @@ module Battle
     # Test move accuracy
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
-    # @return [Boolean] if the move can continue
+    # @return [Array] the actual targets
     def proceed_move_accuracy(user, targets)
-      return log_data('# proceed_move_accuracy: bypassed') && true if bypass_accuracy?(user, targets)
-
-      accuracy_dice = logic.move_accuracy_rng.rand(100)
-      log_data("# accuracy= #{accuracy}, value = #{accuracy_dice} (testing=#{accuracy > 0}, failure=#{accuracy_dice >= accuracy})")
-      if accuracy > 0 && accuracy_dice >= accuracy
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 213, targets.first))
-        return false
+      if bypass_accuracy?(user, targets)
+        log_data('# proceed_move_accuracy: bypassed')
+        return targets
       end
 
-      return true
+      return targets.select do |target|
+        accuracy_dice = logic.move_accuracy_rng.rand(100)
+        hit_chance = chance_of_hit(user, target)
+        log_data("# target= #{target}, # accuracy= #{hit_chance}, value = #{accuracy_dice} (testing=#{hit_chance > 0}, failure=#{accuracy_dice >= hit_chance})")
+        next scene.display_message_and_wait(parse_text_with_pokemon(19, 213, target)) && false if hit_chance > 0 && accuracy_dice >= hit_chance
+
+        next true
+      end
     end
 
     # Tell if the move accuracy is bypassed
@@ -170,9 +173,6 @@ module Battle
       return targets.select do |pokemon|
         if target_immune?(user, pokemon)
           scene.display_message_and_wait(parse_text_with_pokemon(19, 210, pokemon))
-          next false
-        elsif logic.move_accuracy_rng.rand(100) >= chance_of_hit(user, pokemon)
-          scene.display_message_and_wait(parse_text_with_pokemon(19, 213, pokemon))
           next false
         elsif move_blocked_by_target?(user, pokemon)
           next false

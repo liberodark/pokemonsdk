@@ -14,8 +14,8 @@ module Battle
       factor = logic.each_effects(user, target).reduce(1) { |product, e| product * e.chance_of_hit_multiplier(user, target, self) }
       factor *= accuracy_mod(user)
       factor *= evasion_mod(target)
-      log_data("result = #{factor * 100}")
-      return factor * 100
+      log_data("result = #{factor * accuracy}")
+      return factor * accuracy
     end
 
     # Check if the move bypass chance of hit and cannot fail
