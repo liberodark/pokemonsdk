@@ -24,9 +24,9 @@ module Battle
           if should_confuse && (data = Yuki::Berries::BERRY_DATA[db_symbol])
             taste = FLAVORS.max_by { |flavor| data.send(flavor) } || FLAVORS.first
             return unless holder.flavor_disliked?(taste)
-            return unless @logic.status_change_handler.status_appliable?(:confuse)
+            return unless @logic.status_change_handler.status_appliable?(:confuse, holder, launcher, move)
 
-            @logic.status_change_handler.status_change(:confusion, holder)
+            @logic.status_change_handler.status_change(:confusion, holder, launcher, move)
           end
         end
 
