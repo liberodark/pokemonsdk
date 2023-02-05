@@ -33,7 +33,7 @@ module PFM
         filename = resources.icon_shiny_f if resources.has_female && shiny && female
         filename ||= resources.icon_f if resources.has_female && female
         filename ||= resources.icon_shiny if shiny
-        filename = filename && !filename&.empty? && File.exist?("graphics/pokedex/pokeicon/#{filename}") ? filename : resources.icon
+        filename = filename && !filename&.empty? && RPG::Cache.b_icon_exist?(filename) ? filename : resources.icon
         return filename || '000'
       end
 
