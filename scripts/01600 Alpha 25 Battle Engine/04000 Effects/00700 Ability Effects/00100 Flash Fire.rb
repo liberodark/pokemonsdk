@@ -65,7 +65,7 @@ module Battle
           return unless launcher&.can_be_lowered_or_canceled?
 
           return handler.prevent_change do
-            if skill.status?
+            if skill&.status?
               handler.scene.visual.show_ability(target)
               handler.scene.display_message_and_wait(parse_text_with_pokemon(19, @boost_enabled ? 24 : 427, target))
               @boost_enabled = true
