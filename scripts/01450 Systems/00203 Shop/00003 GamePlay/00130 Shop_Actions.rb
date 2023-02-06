@@ -71,7 +71,10 @@ module GamePlay
       max_amount = PFM.game_state.money / price
       if (max = Configs.settings.max_bag_item_count) > 0
         max -= $bag.item_quantity(item_id)
-        return display_message(parse_text(11, 31)) && true if max <= 0 # Not enough space
+        if max <= 0 # Not enough space
+          display_message(parse_text(11, 31))
+          return true
+        end
 
         max_amount = max if max < max_amount
         if @symbol_or_list.is_a?(Symbol) && @item_quantity[@index] < max_amount
