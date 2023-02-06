@@ -28,6 +28,10 @@ module Battle
 
             @logic.status_change_handler.status_change(:confusion, holder, launcher, move)
           end
+          if holder.has_ability?(:cheek_pouch) && !holder.effects.has?(:heal_block)
+            @logic.scene.visual.show_ability(holder)
+            @logic.damage_handler.heal(holder, holder.max_hp / 3)
+          end
         end
 
         # Function that tests if berry cannot be consumed

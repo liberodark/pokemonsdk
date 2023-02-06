@@ -18,6 +18,10 @@ module Battle
             # @type [Effects::Item::Berry]
             user_effect = Effects::Item.new(logic, user, target.item_effect.db_symbol)
             user_effect.execute_berry_effect(force_heal: true)
+            if user.has_ability?(:cheek_pouch) && !user.effects.has?(:heal_block)
+              @scene.visual.show_ability(user)
+              @logic.damage_handler.heal(user, user.max_hp / 3)
+            end
           end
           @logic.item_change_handler.change_item(:none, true, target, user, self)
         end
