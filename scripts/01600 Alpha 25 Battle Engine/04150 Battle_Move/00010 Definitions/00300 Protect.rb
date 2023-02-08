@@ -10,6 +10,11 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
+        if user.turn_count > 1 && db_symbol == :mat_block
+          show_usage_failure(user)
+          return false
+        end
+
         if user.effects.has?(:substitute) || logic.battler_attacks_last?(user)
           show_usage_failure(user)
           return false
