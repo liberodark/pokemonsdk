@@ -36,7 +36,7 @@ module Battle
       # @return [Array<[Float, Actions::Item]>]
       def item_actions_for(pokemon, move_heuristics)
         actions = boost_item_actions_for(pokemon, move_heuristics)
-        actions.concat(heal_item_actions_for(pokemon, move_heuristics)) if @can_heal && pokemon.hp_rate <= @heal_threshold
+        actions.concat(heal_item_actions_for(pokemon, move_heuristics)) if @can_heal && pokemon.hp_rate <= @heal_threshold && !pokemon.dead?
         actions.concat(status_heal_item_actions_for(pokemon, move_heuristics)) if @can_heal && pokemon.status != 0
         return actions
       end
