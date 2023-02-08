@@ -167,7 +167,7 @@ module UI
   # Dex sprite that show the Pokemon location
   class DexWinMap < SpriteStack
     # Filename of the World Map Icon
-    MAP_ICON = '344'
+    MAP_ICON = data_item(:town_map).icon
 
     # Create a new dex win sprite
     def initialize(viewport, display_controls = true)
