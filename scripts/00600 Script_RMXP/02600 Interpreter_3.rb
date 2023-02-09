@@ -138,7 +138,7 @@ class Interpreter_RMXP
         end
       end
     when 4 # Actor test
-      actor = PFM::BattleInterface.get_actor(@parameters[1]) # $game_actors[@parameters[1]]
+      actor = $game_actors[@parameters[1]]
       if actor
         case @parameters[2]
         when 0 # Is in Party => Alive
