@@ -183,6 +183,7 @@ module Battle
     BattleEndHandler.register_no_defeat('PSDK pickup') do |handler, players_pokemon|
       players_pokemon.each do |pokemon|
         next unless pokemon.original.ability_db_symbol == :pickup && pokemon.item_holding == 0 && handler.logic.generic_rng.rand(100) < 10
+        next unless handler.logic.battle_result == 0
         next if pokemon.original.egg?
 
         pokemon.item_holding = handler.pickup_item(pokemon.original)
