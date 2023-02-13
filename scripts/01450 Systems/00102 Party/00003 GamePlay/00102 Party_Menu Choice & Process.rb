@@ -197,6 +197,8 @@ module GamePlay
         display_message(parse_text(20, 33, ::PFM::Text::PKNICK[1] => pokemon.given_name))
       elsif pokemon.position.between?(0, $game_temp.vs_type)
         display_message(parse_text(20, 32, ::PFM::Text::PKNICK[1] => pokemon.given_name))
+      elsif __last_scene&.player_actions&.any? { |action| action.is_a?(Battle::Actions::Switch) && action.with == pokemon}
+        display_message(parse_text(20, 83, ::PFM::Text::PKNICK[1] => pokemon.given_name))
       else
         @return_data = @index
         @running = false
