@@ -214,6 +214,12 @@ module Battle
       4
     end
 
+    # Returns the drain factor
+    # @return [Integer]
+    def drain_factor
+      2
+    end
+
     # Is the skill a punching move ?
     # @return [Boolean]
     def punching?

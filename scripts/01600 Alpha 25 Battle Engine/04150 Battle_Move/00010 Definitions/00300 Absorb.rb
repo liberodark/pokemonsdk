@@ -2,6 +2,12 @@ module Battle
   class Move
     # Class describing a move that drains HP
     class Absorb < Move
+      # don't forget to add a "x.0" if the factor is a float, or it will be converted to 1 (= 100% damage-to-heal conversion)
+      DRAIN_FACTORS = {
+        draining_kiss: 4 / 3.0,
+        oblivion_wing: 4 / 3.0
+      }
+
       private
 
       # Test if the target is immune
@@ -25,7 +31,7 @@ module Battle
 
         actual_targets.each do |target|
           hp = damages(user, target)
-          @logic.damage_handler.drain_with_process(hp, target, user, self, hp_overwrite: hp, drain_factor: 2) do
+          @logic.damage_handler.drain_with_process(hp, target, user, self, hp_overwrite: hp, drain_factor: drain_factor) do
             if critical_hit?
               scene.display_message_and_wait(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
             elsif hp > 0
@@ -57,6 +63,12 @@ module Battle
       # @return [Boolean]
       def drain?
         return true
+      end
+
+      # Returns the drain factor
+      # @return [Integer]
+      def drain_factor
+        DRAIN_FACTORS[db_symbol] || super
       end
     end
 
