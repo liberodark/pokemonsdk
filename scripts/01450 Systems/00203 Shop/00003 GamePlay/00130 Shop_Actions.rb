@@ -51,7 +51,7 @@ module GamePlay
     # @return [Boolean] if the buy_item procedure should immediately exit
     def confirm_buy(price, item_id, quantity)
       if quantity > 0
-        item_str = quantity > 1 ? ext_text(9001, item_id) : data_item(item_id).exact_name
+        item_str = quantity > 1 ? ext_text(9001, data_item(item_id).id) : data_item(item_id).exact_name
         message = parse_text(11, 25,
                              ITEM2[0] => item_str,
                              NUM2[1] => quantity.to_s,
@@ -86,7 +86,7 @@ module GamePlay
       $game_temp.num_input_start = max_amount
       $game_temp.shop_calling = price
       # How much ?
-      display_message(parse_text(11, 23, ITEMPLUR1[0] => determine_article, ITEM2[0] => ext_text(9001, item_id)))
+      display_message(parse_text(11, 23, ITEMPLUR1[0] => determine_article, ITEM2[0] => ext_text(9001, data_item(item_id).id)))
       $game_temp.shop_calling = false
       return false
     end
