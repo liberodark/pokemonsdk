@@ -120,13 +120,10 @@ module Battle
       end
 
       add_ball_rate_calculation(:nest_ball) do |target, _pkm_ally|
-        if target.level >= 30
-          next target.rareness
-        elsif target.level >= 20
-          next target.rareness * 2
-        else
-          next target.rareness * 3
-        end
+        # https://bulbapedia.bulbagarden.net/wiki/Nest_Ball#Manual_activation
+        next target.rareness if target.level >= 30
+
+        next target.rareness * (((41 - target.level) * 4096 / 10.0).to_i / 4096.0).clamp(1,4)
       end
 
       add_ball_rate_calculation(:net_ball) do |target, _pkm_ally|
@@ -135,7 +132,7 @@ module Battle
       end
 
       add_ball_rate_calculation(:quick_ball) do |target, _pkm_ally|
-        next target.rareness * ($game_temp.battle_turn == 0 ? 4 : 1)
+        next target.rareness * ($game_temp.battle_turn == 0 ? 5 : 1)
       end
 
       add_ball_rate_calculation(:repeat_ball) do |target, _pkm_ally|
@@ -143,15 +140,8 @@ module Battle
       end
 
       add_ball_rate_calculation(:timer_ball) do |target, _pkm_ally|
-        if $game_temp.battle_turn > 30
-          next target.rareness * 4
-        elsif $game_temp.battle_turn >= 21
-          next target.rareness * 3
-        elsif $game_temp.battle_turn >= 11
-          next target.rareness * 2
-        else
-          next target.rareness
-        end
+        # https://bulbapedia.bulbagarden.net/wiki/Timer_Ball#Manual_activation
+        next [(1 + ($game_temp.battle_turn - 1) * 1229.0 / 4096), 4].min * target.rareness
       end
 
       private
