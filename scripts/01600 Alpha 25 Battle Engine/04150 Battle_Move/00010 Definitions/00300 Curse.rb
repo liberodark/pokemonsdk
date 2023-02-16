@@ -8,8 +8,13 @@ module Battle
       # @note Thing that prevents the move from being used should be defined by :move_prevention_target Hook.
       # @return [Boolean] if the target evade the move (and is not selected)
       def move_blocked_by_target?(user, target)
-        return true if super
-        return true if target.effects.has?(:curse)
+        if user.type_ghost? && super
+          return true
+        elsif user.type_ghost? && target.effects.has?(:curse)
+          scene.display_message_and_wait(parse_text(18, 74)) # shortened show_usage_failure
+          return true
+        end
+
         return false
       end
 
