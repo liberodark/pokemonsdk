@@ -24,8 +24,8 @@ module Battle
           return unless launcher&.can_be_lowered_or_canceled?
 
           return handler.prevent_change do
-            handler.scene.visual.show_ability(target)
-            handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1186, @target))
+            handler.scene.visual.show_ability(@target)
+            handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 1186, target))
           end
         end
       end
