@@ -286,7 +286,7 @@ module Battle
     def recoil(hp, user)
       return false if user.has_ability?(:rock_head) && !%i[struggle shadow_rush shadow_end].include?(db_symbol)
 
-      @logic.damage_handler.damage_change((hp / recoil_factor).to_i, user)
+      @logic.damage_handler.damage_change((hp / recoil_factor).to_i.clamp(1, Float::INFINITY), user)
       @scene.display_message_and_wait(parse_text_with_pokemon(19, 378, user))
     end
 
