@@ -5,9 +5,10 @@ module Battle
         # Give the speed modifier over given to the Pokemon with this effect
         # @return [Float, Integer] multiplier
         def spd_modifier
-          return 1 if target.item_holding >= 0
+          return 2 if @target.effects.has?(:item_stolen) || @target.effects.has?(:item_burnt)
+          return 2 if @target.item_consumed
 
-          return @target.item_holding == target.original.item_holding ? 1 : 2
+          return @boost_enabled ? 2 : 1
         end
 
         # Function called when a post_item_change is checked
@@ -17,16 +18,23 @@ module Battle
         # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_item_change(handler, db_symbol, target, launcher, skill)
+          @boost_enabled = false
           return unless db_symbol == :none
 
-          if (st_ch = handler.logic.stat_change_handler).stat_increasable?(:spd, target)
-            handler.scene.visual.show_ability(target)
-            st_ch.stat_change(:spd, 1, target)
-          end
-          st_ch.reset_prevention_reason
+          @boost_enabled = true
+          handler.scene.visual.show_ability(target)
+        end
+
+        # Reset the boost when leaving battle
+        def reset
+          @boost_enabled = false
         end
       end
       register(:unburden, Unburden)
     end
   end
+end
+
+Hooks.register(PFM::PokemonBattler, :on_reset_states, 'PSDK reset Unburden') do
+  ability_effect.reset if ability_effect.is_a?(Battle::Effects::Ability::Unburden)
 end
