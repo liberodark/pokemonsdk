@@ -10,8 +10,8 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target
-          return unless skill&.direct? && launcher && launcher.hp > 0
-          return if (target.effects.has?(:substitute) && !skill.authentic?) || skill.db_symbol == :struggle
+          return unless skill&.direct? && launcher && launcher.hp > 0 && bchance?(0.3, @logic) && !launcher.has_ability?(:long_reach)
+          return if (target.effects.has?(:substitute) && !skill.authentic?) || skill.db_symbol == :struggle || target.effects.has?(:disable)
 
           handler.scene.visual.show_ability(target)
           launcher.effects.add(Effects::Disable.new(@logic, launcher, skill))
