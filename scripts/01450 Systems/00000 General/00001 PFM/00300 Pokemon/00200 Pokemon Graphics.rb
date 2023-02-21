@@ -26,15 +26,14 @@ module PFM
       # @return [String]
       def icon_filename(id, form, female, shiny, egg)
         format_arg = { id: id, form: form, name: data_creature(id).db_symbol }
-        cache_exist = RPG::Cache.method(:b_icon_exist?)
-        return correct_filename_from(EGG_FILENAMES, format_arg, cache_exist) || EGG_FILENAMES.last if egg
+        return correct_filename_from(EGG_FILENAMES, format_arg, RPG::Cache.method(:b_icon_exist?)) || EGG_FILENAMES.last if egg
 
         resources = data_creature_form(id, form).resources
-        filename = resources.icon_shiny_f if resources.has_female && shiny && female
-        filename ||= resources.icon_f if resources.has_female && female
-        filename ||= resources.icon_shiny if shiny
-        filename = filename && !filename&.empty? && RPG::Cache.b_icon_exist?(filename) ? filename : resources.icon
-        return filename || '000'
+        return missing_resources_error(id) unless resources
+        return resources.icon_shiny_f if resources.has_female && shiny && female && !resources.icon_shiny_f.empty?
+        return resources.icon_f if resources.has_female && female && !resources.icon_f.empty?
+        return resources.icon_shiny if shiny && !resources.icon_shiny.empty?
+        return resources.icon.empty? ? '000' : resources.icon
       end
 
       # Return the front battler name
@@ -49,10 +48,11 @@ module PFM
         return correct_filename_from(EGG_FILENAMES, format_arg, RPG::Cache.method(:poke_front_exist?)) || EGG_FILENAMES.last if egg
 
         resources = data_creature_form(id, form).resources
-        filename = resources.front_shiny_f if resources.has_female && shiny && female
-        filename ||= resources.front_f if resources.has_female && female
-        filename ||= resources.front_shiny if shiny
-        return filename || resources.front || '000'
+        return missing_resources_error(id) unless resources
+        return resources.front_shiny_f if resources.has_female && shiny && female && !resources.front_shiny_f.empty?
+        return resources.front_f if resources.has_female && female && !resources.front_f.empty?
+        return resources.front_shiny if shiny && !resources.front_shiny.empty?
+        return resources.front.empty? || shiny ? '000' : resources.front
       end
 
       # Return the front gif name
@@ -81,10 +81,11 @@ module PFM
         return correct_filename_from(EGG_FILENAMES, format_arg, RPG::Cache.method(:poke_back_exist?)) || EGG_FILENAMES.last if egg
 
         resources = data_creature_form(id, form).resources
-        filename = resources.back_shiny_f if resources.has_female && shiny && female
-        filename ||= resources.back_f if resources.has_female && female
-        filename ||= resources.back_shiny if shiny
-        return filename || resources.back || '000'
+        return missing_resources_error(id) unless resources
+        return resources.back_shiny_f if resources.has_female && shiny && female && !resources.back_shiny_f.empty?
+        return resources.back_f if resources.has_female && female && !resources.back_f.empty?
+        return resources.back_shiny if shiny && !resources.back_shiny.empty?
+        return resources.back.empty? || shiny ? '000' : resources.back
       end
 
       # Return the back gif name
@@ -99,6 +100,14 @@ module PFM
         cache_exist = proc { |filename| RPG::Cache.poke_back_exist?(filename, hue) }
         filename = back_filename(id, form, female, shiny, egg) + '.gif'
         return filename = filename_exist(filename, cache_exist)
+      end
+
+      # Display an error in case of missing resources and fallback to the default one
+      # @param id [Integer, Symbol] ID of the Pokemon
+      # @return [String]
+      def missing_resources_error(id)
+        log_error("Missing resources error: Your Pokémon #{data_creature(id).name} has no resources in its data.")
+        return '000'
       end
 
       private
