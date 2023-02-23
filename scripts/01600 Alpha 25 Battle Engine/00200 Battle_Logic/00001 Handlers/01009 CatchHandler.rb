@@ -27,7 +27,7 @@ module Battle
       # @param ball [Studio::BallItem] db_symbol of the used ball
       def try_to_catch_pokemon(target, pkm_ally, ball)
         log_data("# FR: try_to_catch_pokemon(#{target}, #{pkm_ally}, #{ball})")
-        @bounces = -1
+        @bounces = 0
         @scene.message_window.blocking = true
         @scene.message_window.wait_input = true
         exec_hooks(Battle::Logic::CatchHandler, :ball_blocked, binding)
@@ -42,7 +42,7 @@ module Battle
       # Tells if the Pokemon is caught
       # @return [Boolean]
       def caught?
-        return @bounces == 3 || @critical_capture
+        return @bounces == 4 || @critical_capture
       end
 
       class << self
@@ -155,7 +155,7 @@ module Battle
         return if check_critical_capture(a)
 
         if a >= 255
-          @bounces = 3
+          @bounces = 4
         else
           4.times do |i|
             log_debug("bounce no.#{i}")
@@ -233,7 +233,7 @@ module Battle
 
       def show_message_and_animation(target, ball, nb_bounce, caught)
         @scene.visual.show_catch_animation(target, ball, nb_bounce, caught)
-        @scene.display_message_and_wait(parse_text(*TEXT_CATCH[(nb_bounce + 1) % 4], PFM::Text::PKNAME[0] => target.name)) unless caught
+        @scene.display_message_and_wait(parse_text(*TEXT_CATCH[(nb_bounce) % 4], PFM::Text::PKNAME[0] => target.name)) unless caught
         return caught
       end
 
