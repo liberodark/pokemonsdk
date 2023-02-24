@@ -12,12 +12,9 @@ module Battle
           return if target != @target || launcher == target
           return unless skill&.physical?
 
-          if handler.logic.stat_change_handler.stat_decreasable?(:dfe, target) &&
-             handler.logic.stat_change_handler.stat_increasable?(:spd, target)
-            handler.scene.visual.show_ability(target)
-            handler.logic.stat_change_handler.stat_change_with_process(:dfe, -1, target)
-            handler.logic.stat_change_handler.stat_change_with_process(:spd, 2, target)
-          end
+          handler.scene.visual.show_ability(target)
+          handler.logic.stat_change_handler.stat_change_with_process(:dfe, -1, target)
+          handler.logic.stat_change_handler.stat_change_with_process(:spd, 1, target)
         end
       end
       register(:weak_armor, WeakArmor)
