@@ -542,6 +542,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Attract.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Autotomize.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 BatonPass.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 BeakBlast.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Bestow.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Bind.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 CantSwitch.rb
@@ -890,6 +891,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Autotomize.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Avalanche.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 BatonPass.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 BeakBlast.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 BeatUp.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Belch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 BellyDrum.rb
