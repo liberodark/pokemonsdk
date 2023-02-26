@@ -24,7 +24,7 @@ module Battle
       # @param pokemon [PFM::Pokemon]
       # @return [Integer]
       def pickup_item(pokemon)
-        off = (((pokemon.level - 1.0) / Configs.settings.max_level) * 10).to_i # Offset should always depends on the final max level
+        off = (((pokemon.level - 1.0) / Configs.settings.max_level) * 10).round # Offset should always depends on the final max level
         ind = pickup_index(@logic.generic_rng.rand(100))
         env = $env
         return GrassItem[off][ind] if env.tall_grass? || env.grass?
