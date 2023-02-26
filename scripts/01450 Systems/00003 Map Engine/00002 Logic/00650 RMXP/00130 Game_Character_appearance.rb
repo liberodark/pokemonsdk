@@ -65,7 +65,6 @@ class Game_Character
 			end
     end
     frames.reverse! if reverse  # Invert the animation if asked
-    duration *= 2               # Double the frame to match the game framerate (30 / s)
     # Contain the charset animation data
     @charset_animation = {
       running:    true,                                       # Indicate if the animation need to be updated or not
