@@ -45,6 +45,10 @@ module Battle
         end
         alias two_turns_shortcut? shortcut?
 
+        def decrease_pp(user, targets)
+          super(user, targets) if @turn == 1
+        end
+
         # Add the effects to the pokemons (first turn)
         # @param user [PFM::PokemonBattler] user of the move
         # @param targets [Array<PFM::PokemonBattler>] expected targets
