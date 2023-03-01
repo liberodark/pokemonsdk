@@ -693,6 +693,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effe
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Ice Scales.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Immunity.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Imposter.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Innards Out.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Inner Focus.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Insomnia.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Intimidate.rb
