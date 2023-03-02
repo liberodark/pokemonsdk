@@ -47,7 +47,8 @@ module PFM
 
       @mega_evolved = @form
       @form = mega_evolution
-      self.ability = data_ability(data.abilities[rand(3)]).id # Pokemon will always be a PFM::PokemonBattler
+      @ability = data_ability(data.abilities.sample).id
+      self.ability = nil if self.is_a?(PFM::PokemonBattler)
     end
 
     # Reset the Pokemon to its normal form after mega evolution

@@ -38,5 +38,13 @@ module Battle
         e.on_end_turn_event(logic, scene, battlers)
       end
     end
+
+    EndTurnHandler.register_end_turn_event("PSDK end turn: Unmega evolve KO'd Mega Pokemon") do |logic, _, _|
+      logic.all_battlers do |battler|
+        next unless battler.dead? && battler.mega_evolved?
+
+        battler.unmega_evolve
+      end
+    end
   end
 end

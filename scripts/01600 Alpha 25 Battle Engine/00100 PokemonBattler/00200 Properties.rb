@@ -121,7 +121,7 @@ module PFM
 
     # Restore the battler's property original value
     def restore_ability
-      @battle_properties.delete(:ability)
+      @ability = original.ability
     end
 
     # Return the battler's combat property
