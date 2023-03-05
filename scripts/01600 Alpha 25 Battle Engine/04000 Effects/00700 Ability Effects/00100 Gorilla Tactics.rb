@@ -18,9 +18,14 @@ module Battle
         # @param move [Battle::Move]
         # @return [Proc, nil]
         def on_move_disabled_check(user, move)
-          return if user != @target || user.move_history.empty? || user.move_history.last.db_symbol == move.db_symbol
+          return unless user == @target && user.move_history.any?
+          return if user.move_history.last.db_symbol == move.db_symbol
+          return if user.move_history.last.turn < user.last_sent_turn
 
-          return proc {}
+          return proc {
+            move.scene.visual.show_ability(user)
+            move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, PFM::Text::MOVE[1] => move.name))
+          }
         end
       end
       register(:gorilla_tactics, GorillaTactics)
