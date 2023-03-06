@@ -11,7 +11,7 @@ module Battle
       # Proceed the procedure before any other attack.
       # @param user [PFM::PokemonBattler]
       def proceed_pre_attack(user)
-        @scene.display_message_and_wait(parse_text_with_pokemon(19, 616, user))
+        @scene.display_message_and_wait(parse_text_with_pokemon(59, 1880, user))
         user.effects.add(Effects::BeakBlast.new(@logic, user))
         # @todo play charging animation
       end
