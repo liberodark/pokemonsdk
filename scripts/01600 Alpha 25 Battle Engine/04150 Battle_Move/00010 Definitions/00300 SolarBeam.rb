@@ -26,7 +26,7 @@ module Battle
       def shortcut?(user, targets)
         return true if $env.sunny? || $env.hardsun?
 
-        return two_turns_shortcut?(user, targets)
+        super
       end
 
       # Display the message and the animation of the turn

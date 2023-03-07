@@ -16,6 +16,33 @@ module Battle
           return true
         end
 
+        # Function that updates the counter of the effect
+        def update_counter
+          return if paused?(@pokemon)
+
+          @counter -= 1
+          @counter = 0 if interrupted?(@pokemon)
+        end
+
+        # List of move that must be paused when user is asleep/frozen/flinched
+        MOVES_PAUSED = %i[freeze_shock geomancy ice_burn razor_wind skull_bash sky_attack solar_beam] 
+
+        # Function that tells us if we should pause the move or not
+        # @param user [PFM::PokemonBattler] user of the move
+        def paused?(user)
+          return true if MOVES_PAUSED.include?(move.db_symbol) && (user.frozen? || user.asleep? || user.effects.has?(:flinch))
+
+          return false
+        end
+
+        # Function that tells us if we should interrupt the move or not
+        # @param user [PFM::PokemonBattler] user of the move
+        def interrupted?(user)
+          return true if !MOVES_PAUSED.include?(move.db_symbol) && (user.frozen? || user.asleep? || user.effects.has?(:flinch))
+
+          return false
+        end
+
         # Make the Attack action that is forced by this effect
         # @return [Actions::Attack]
         def make_action
@@ -35,8 +62,8 @@ module Battle
 
         # Create a new Forced next move effect
         # @param move [Battle::Move]
-        # @param counter [Integer] number of turn the move is forced to be used
         # @param targets [Array<PFM::PokemonBattler>]
+        # @param counter [Integer] number of turn the move is forced to be used
         def init_force_next_move(move, targets, counter = 2)
           @move = move
           @targets = targets

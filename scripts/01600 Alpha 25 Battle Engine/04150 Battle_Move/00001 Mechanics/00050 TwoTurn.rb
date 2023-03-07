@@ -12,25 +12,75 @@ module Battle
         # @param user [PFM::PokemonBattler] user of the move
         # @param targets [Array<PFM::PokemonBattler>] expected targets
         def proceed_internal(user, targets)
+          # rubocop:disable Lint/LiteralAsCondition
+          # If you're interrupted (because the move isn't in the MOVES_PAUSED table), we must reset @turn otherwise we will do phase 2 next time
+          @turn = nil unless user.effects.has?(&:force_next_move?)
+
+          # Piece of proceed_internal_precheck(user, targets)
+          return unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
+
+          usage_message(user)
+          return scene.display_message_and_wait(parse_text(18, 106)) if targets.all?(&:dead?) && (on_move_failure(user, targets, :no_target) || true)
+          if pp == 0 && !(user.effects.has?(&:force_next_move?) && !@forced_next_move_decrease_pp)
+            return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp) && nil
+          end
+
+          # End of Piece of proceed_internal_precheck
+
           @turn = (@turn || 0) + 1
 
-          # Turn 1
+          # Loading Turn
           if @turn == 1
-            usage_message(user)
             decrease_pp(user, targets)
             play_animation_turn1(user, targets)
             proceed_message_turn1(user, targets)
             deal_effects_turn1(user, targets)
-            user.add_move_to_history(self, targets)
             @scene.visual.set_info_state(:move_animation)
             @scene.visual.wait_for_animation
             return prepare_turn2(user, targets) unless shortcut?(user, targets)
+
+            @turn += 1
           end
 
-          # Turn 2
-          @turn = nil
+          # Execution Turn
+          if @turn >= 2
+            @turn = nil
+            execution_turn(user, targets)
+          end
+          # rubocop:enable Lint/LiteralAsCondition
+        end
+
+        # TwoTurn Move execution procedure
+        # @param user [PFM::PokemonBattler] user of the move
+        # @param targets [Array<PFM::PokemonBattler>] expected targets
+        def execution_turn(user, targets)
+          # rubocop:disable Lint/LiteralAsCondition
           kill_turn1_effects(user)
-          super
+          # Piece of proceed_internal_precheck(user, targets)
+          # => proceed_move_accuracy will call display message if failure
+          return unless !(actual_targets = proceed_move_accuracy(user, targets)).empty? || (on_move_failure(user, targets, :accuracy) && false)
+
+          user, actual_targets = proceed_battlers_remap(user, actual_targets)
+          actual_targets = accuracy_immunity_test(user, actual_targets) # => Will call $scene.dislay_message for each accuracy fail
+          return if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
+
+          # Piece of super proceed_internal(user, targets)
+          post_accuracy_check_effects(user, actual_targets)
+
+          post_accuracy_check_move(user, actual_targets)
+
+          play_animation(user, targets)
+
+          deal_damage(user, actual_targets) &&
+            effect_working?(user, actual_targets) &&
+            deal_status(user, actual_targets) &&
+            deal_stats(user, actual_targets) &&
+            deal_effect(user, actual_targets)
+
+          user.add_move_to_history(self, actual_targets)
+          @scene.visual.set_info_state(:move_animation)
+          @scene.visual.wait_for_animation
+          # rubocop:enable Lint/LiteralAsCondition
         end
 
         # Check if the two turn move is executed in one turn
@@ -44,10 +94,6 @@ module Battle
           return false
         end
         alias two_turns_shortcut? shortcut?
-
-        def decrease_pp(user, targets)
-          super(user, targets) if @turn == 1
-        end
 
         # Add the effects to the pokemons (first turn)
         # @param user [PFM::PokemonBattler] user of the move
@@ -64,14 +110,15 @@ module Battle
         # @param targets [Array<PFM::PokemonBattler>] expected targets
         def prepare_turn2(user, targets)
           user.effects.add(Effects::ForceNextMoveBase.new(@logic, user, self, targets))
-          user.effects.add(Effects::OutOfReachBase.new(@logic, user, can_hit_moves)) if can_hit_moves
+          user.effects.add(Effects::OutOfReachBase.new(@logic, user, self, can_hit_moves)) if can_hit_moves
         end
         alias two_turn_prepare_turn2 prepare_turn2
 
         # Remove effects from the first turn
         # @param user [PFM::PokemonBattler]
         def kill_turn1_effects(user)
-          user.effects.get(&:out_of_reach?)&.kill
+          user.effects.get(&:force_next_move?).kill if user.effects.has?(&:force_next_move?)
+          user.effects.get(&:out_of_reach?).kill if user.effects.has?(&:out_of_reach?)
         end
         alias two_turn_kill_turn1_effects kill_turn1_effects
 
