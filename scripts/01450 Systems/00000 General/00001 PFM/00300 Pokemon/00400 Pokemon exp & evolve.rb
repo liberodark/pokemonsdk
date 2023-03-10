@@ -186,7 +186,7 @@ module PFM
       return data_creature(expected_evolution.db_symbol).id, expected_evolution.form
     end
     # Exchanged with another pokemon
-    add_evolution_criteria(:tradeWith) { |value, extend_data| extend_data&.db_symbol == value }
+    add_evolution_criteria(:tradeWith, [:tradeWith]) { |value, extend_data, reason| extend_data&.db_symbol == value && reason == :tradeWith }
     # Minimum level
     add_evolution_criteria(:minLevel) { |value| @level >= value.to_i }
     # Maximum level
