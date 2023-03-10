@@ -8,22 +8,26 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-
-        if user.effects.has?(:force_next_move_base)
-          @scene.display_message_and_wait(parse_text_with_pokemon(19, 851, user))
-          return false
-        end
+        return false if user.effects.has?(:force_next_move_base)
 
         return true
       end
+
+      private
 
       # Function that deals the effect to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        return if user.effects.has?(:force_next_move_base)
-
         user.effects.add(Effects::ForceNextMoveBase.new(@logic, user, self, actual_targets))
+      end
+
+      # Event called if the move failed
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param targets [Array<PFM::PokemonBattler>] expected targets
+      # @param reason [Symbol] why the move failed: :usable_by_user, :accuracy, :immunity, :pp
+      def on_move_failure(user, targets, reason)
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, 851, user)) if reason == :usable_by_user && user.effects.has?(:force_next_move_base)
       end
     end
     Move.register(:s_reload, Reload)
