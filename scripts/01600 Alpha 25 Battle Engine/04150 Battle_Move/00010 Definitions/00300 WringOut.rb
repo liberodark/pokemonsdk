@@ -6,7 +6,13 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        return (power * target.hp_rate).clamp(1, Float::INFINITY)
+        return (max_power * target.hp_rate).clamp(1, Float::INFINITY)
+      end
+
+      # Get the max power the moves can have
+      # @return [Integer]
+      def max_power
+        return 120
       end
     end
     Move.register(:s_wring_out, WringOut)
