@@ -12,15 +12,18 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-
-        target = targets.first
-        last_move = target.move_history.last
-        has_forced_effect = target.effects.has? { |e| e.force_next_move? && !e.dead? }
-        if !last_move || has_forced_effect || move_disallowed?(last_move.db_symbol) || last_move.original_move.pp <= 0
-          show_usage_failure(user)
-          return false
+        return show_usage_failure(user) && false if targets.empty?
+        
+        targets.each do |target|
+          next unless target
+          
+          last_move = target.move_history.last
+          has_forced_effect = target.effects.has? { |e| e.force_next_move? && !e.dead? }
+          if !last_move || has_forced_effect || move_disallowed?(last_move.db_symbol) || last_move.original_move.pp <= 0
+            show_usage_failure(user)
+            return false
+          end
         end
-
         return true
       end
 
@@ -38,13 +41,16 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         # Add effect
-        target = actual_targets.first
-        move_history = target.move_history.last
-        target.effects.add(effect = create_effect(move_history.original_move, target, move_history.targets))
-        @scene.display_message_and_wait(parse_text_with_pokemon(19, 559, target))
-        # Poison actions
-        if (index = logic.actions.find_index { |action| action.is_a?(Actions::Attack) && action.launcher == target })
-          logic.actions[index] = effect.make_action
+        actual_targets.each do |target|
+          next unless target
+
+          move_history = target.move_history.last
+          target.effects.add(effect = create_effect(move_history.original_move, target, move_history.targets))
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 559, target))
+          # Poison actions
+          if (index = logic.actions.find_index { |action| action.is_a?(Actions::Attack) && action.launcher == target })
+            logic.actions[index] = effect.make_action
+          end
         end
       end
 
