@@ -8,7 +8,7 @@ module Battle
       def process
         @scene.message_window.blocking = true
         players_pokemon = @logic.all_battlers.select(&:from_party?)
-        players_pokemon.concat($actors) if players_pokemon.empty?
+        players_pokemon.concat($actors.map {|pkmn| PFM::PokemonBattler.new(pkmn,$scene) }) if players_pokemon.empty?
         $game_temp.battle_can_lose = false if PFM.game_state.nuzlocke.enabled? && !$game_switches[Yuki::Sw::BT_AUTHORIZE_DEFEAT_NUZLOCKE]
         exec_hooks(BattleEndHandler, :battle_end, binding)
         exec_hooks(BattleEndHandler, :battle_end_no_defeat, binding) if @logic.battle_result != 2

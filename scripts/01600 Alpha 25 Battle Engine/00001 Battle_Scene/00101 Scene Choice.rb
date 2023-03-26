@@ -109,7 +109,7 @@ module Battle
       next_relative_mon = @player_actions.size.upto(@battle_info.vs_type - 1).find_index do |position|
         next false unless (pokemon = @logic.battler(0, position))
 
-        next pokemon.alive? && pokemon.from_party?
+        next pokemon.alive? && pokemon.from_player_party?
       end
       return false unless next_relative_mon
 

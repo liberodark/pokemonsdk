@@ -181,6 +181,12 @@ module PFM
       $actors.include?(@original)
     end
 
+    # Return if the Pokemon is in the player current team
+    # @ Return [Boolean]
+    def from_player_party?
+      @party_id == 0 && @bank == 0
+    end
+
     # Return the db_symbol of the current ability of the Pokemon
     # @return [Symbol]
     def ability_db_symbol

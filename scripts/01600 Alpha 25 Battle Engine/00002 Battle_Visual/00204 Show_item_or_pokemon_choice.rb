@@ -30,7 +30,7 @@ module Battle
     # Method that returns the party for the Bag & Party scene
     # @return [Array<PFM::PokemonBattler>]
     def retrieve_party
-      return @scene.logic.all_battlers.select(&:from_party?)
+      return @scene.logic.all_battlers.select(&:from_player_party?)
     end
   end
 end
