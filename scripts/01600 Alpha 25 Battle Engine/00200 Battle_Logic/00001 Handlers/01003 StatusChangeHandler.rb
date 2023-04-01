@@ -203,7 +203,7 @@ module Battle
 
     # Cannot be paralyzed
     StatusChangeHandler.register_status_prevention_hook('PSDK status prev: can_be_paralyzed') do |handler, status, target, _, skill|
-      next if status != :paralysis || target.can_be_paralyzed? || skill&.db_symbol == :body_slam
+      next if status != :paralysis || target.can_be_paralyzed?
 
       next handler.prevent_change do
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 285, target)) if skill.nil? || skill.status?
