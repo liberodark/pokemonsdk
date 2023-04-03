@@ -1,6 +1,6 @@
 class Game_Character
   # SystemTags that trigger Surfing
-  SurfTag = [TPond, TSea]
+  SurfTag = [TPond, TSea, RapidsL, RapidsR, RapidsU, RapidsD]
   # SystemTags that does not trigger leaving water
   SurfLTag = SurfTag + [BridgeUD, BridgeRL, RapidsL, RapidsR, RapidsU, RapidsD, AcroBikeRL, AcroBikeUD, WaterFall,
                         JumpD, JumpL, JumpR, JumpU, TUnderWater]
