@@ -28,7 +28,7 @@ module Battle
           scene.visual.show_hp_animations([user], [-hp])
           actual_targets.each do |target|
             target.effects.add(Effects::Curse.new(@logic, target))
-            scene.display_message_and_wait(parse_text_with_pokemon(19, 1070, user,
+            scene.display_message_and_wait(parse_text_with_pokemon(19, 1070, target,
                                                                   '[VAR PKNICK(0000)]' => user.given_name,
                                                                   '[VAR PKNICK(0001)]' => target.given_name))
           end
