@@ -18,15 +18,15 @@ module Battle
         raise 'Badly configured move, it should have positive power' if power < 0
 
         actual_targets.each do |target|
-          hp = damages(user, target)
-          @logic.damage_handler.damage_change_with_process(hp, target, user, self) do
+          @hp = damages(user, target)
+          @logic.damage_handler.damage_change_with_process(@hp, target, user, self) do
             if critical_hit?
               scene.display_message_and_wait(actual_targets.size == 1 ? parse_text(18, 84) : parse_text_with_pokemon(19, 384, target))
-            elsif hp > 0
+            elsif @hp > 0
               efficent_message(effectiveness, target)
             end
           end
-          recoil(hp, user) if recoil?
+          recoil(@hp, user) if recoil?
         end
 
         return true
@@ -39,6 +39,7 @@ module Battle
         return false unless @logic.switch_handler.can_switch?(user, self)
         return false if user.item_effect.is_a?(Effects::Item::RedCard)
         return false if actual_targets.any? { |target| target.item_effect.is_a?(Effects::Item::EjectButton) }
+        return false if actual_targets.any? { |target| target.has_ability?(:emergency_exit) && (target.hp + @hp) > target.max_hp / 2 && target.alive?}
 
         @logic.switch_request << { who: user }
       end

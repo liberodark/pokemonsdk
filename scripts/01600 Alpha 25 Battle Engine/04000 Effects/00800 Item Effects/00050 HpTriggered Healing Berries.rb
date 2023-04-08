@@ -33,8 +33,6 @@ module Battle
           process_effect(@target, nil, nil)
         end
 
-        private
-
         # Function that process the effect of the berry (if possible)
         # @param target [PFM::PokemonBattler]
         # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
@@ -70,7 +68,6 @@ module Battle
       end
 
       class SitrusBerry < OranBerry
-        private
 
         # Give the amount of HP healed
         # @return [Integer]
