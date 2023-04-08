@@ -50,14 +50,18 @@ module Battle
         return 1 unless other.is_a?(Attack)
 
         attack = Attack.from(other)
+
         return -1 if @ignore_speed && attack.move.priority(attack.launcher) == @move.priority(@launcher)
 
         priority_return = attack.move.priority(attack.launcher) <=> @move.priority(@launcher)
         return priority_return if priority_return != 0
 
-        return -1 if (@launcher.hold_item?(:lagging_tail) && !attack.launcher.hold_item?(:lagging_tail)) ||
-                     (@launcher.hold_item?(:full_incense) && !attack.launcher.hold_item?(:full_incense))
-        return -1 if @launcher.has_ability?(:stall) && !attack.launcher.has_ability?(:stall)
+        # Stall & LowPriorityItem Procedure
+        return 1 if @launcher.has_ability?(:stall) && (attack.launcher.battle_ability_db_symbol != :stall && %i[full_incense lagging_tail].none?(attack.launcher.battle_item_db_symbol))
+        return -1 if attack.launcher.has_ability?(:stall) && (@launcher.battle_ability_db_symbol != :stall && %i[full_incense lagging_tail].none?(@launcher.battle_item_db_symbol))
+
+        return 1 if %i[full_incense lagging_tail].any? { |db_symbol| @launcher.hold_item?(db_symbol)} && %i[full_incense lagging_tail].none?(attack.launcher.battle_item_db_symbol)
+        return -1 if %i[full_incense lagging_tail].any? { |db_symbol| attack.launcher.hold_item?(db_symbol)} && %i[full_incense lagging_tail].none?(@launcher.battle_item_db_symbol)
 
         trick_room_factor = @scene.logic.terrain_effects.has?(:trick_room) ? -1 : 1
         return (attack.launcher.spd <=> @launcher.spd) * trick_room_factor
