@@ -6,6 +6,12 @@ module Battle
       return type == type_id
     end
 
+    # Is the skill typeless ?
+    # @return [Boolean]
+    def typeless?
+      return type?(data_type(:__undef__).id)
+    end
+
     # Is the skill type normal ?
     # @return [Boolean]
     def type_normal?

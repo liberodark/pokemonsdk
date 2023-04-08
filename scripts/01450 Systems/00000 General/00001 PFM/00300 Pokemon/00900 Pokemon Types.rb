@@ -147,5 +147,23 @@ module PFM
     def type?(type)
       return (type1 == type || type2 == type || (type3 == type && type != 0))
     end
+
+    # Is the Pokemon typeless ?
+    # @return [Boolean]
+    def typeless?
+      return type1 == 0 && type2 == 0 && type3 == 0
+    end
+
+    # Is the user single typed ?
+    # @return [Boolean]
+    def single_type?
+      return type1 != 0 && type2 == 0 && type3 == 0
+    end
+
+    # Has the user a third type ?
+    # @return [Boolean]
+    def third_type?
+      type3 != 0
+    end
   end
 end

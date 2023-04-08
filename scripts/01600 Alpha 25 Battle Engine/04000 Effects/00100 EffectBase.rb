@@ -290,6 +290,16 @@ module Battle
         nil && handler && fterrain_type && last_fterrain
       end
 
+      # Function called before the accuracy check of a move is done
+      # @param logic [Battle::Logic] logic of the battle
+      # @param scene [Battle::Scene] battle scene
+      # @param targets [PFM::PokemonBattler]
+      # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+      # @param skill [Battle::Move, nil] Potential move used
+      def on_pre_accuracy_check(logic, scene, targets, launcher, skill)
+        nil && logic && scene && targets && launcher && skill
+      end
+
       # Function called after the accuracy check of a move is done (and the move should land)
       # @param logic [Battle::Logic] logic of the battle
       # @param scene [Battle::Scene] battle scene

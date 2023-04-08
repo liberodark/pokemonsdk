@@ -78,6 +78,8 @@ module Battle
       return unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
 
       usage_message(user)
+
+      pre_accuracy_check_effects(user, targets)
       return scene.display_message_and_wait(parse_text(18, 106)) if targets.all?(&:dead?) && (on_move_failure(user, targets, :no_target) || true)
       if pp == 0 && !(user.effects.has?(&:force_next_move?) && !@forced_next_move_decrease_pp)
         return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp) && nil
@@ -227,9 +229,19 @@ module Battle
       return user.ability_effect.on_move_priority_change(user, 1, self) == 2
     end
 
-    # Calls the post_accuracy_check method for each effects
+    # Calls the pre_accuracy_check method for each effects
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
+    def pre_accuracy_check_effects(user, targets)
+      creatures = [user] + targets
+      logic.each_effects(*creatures) do |e|
+        e.on_pre_accuracy_check(logic, scene, targets, user, self)
+      end
+    end
+
+    # Calls the post_accuracy_check method for each effects
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param actual_targets [Array<PFM::PokemonBattler>] expected targets
     def post_accuracy_check_effects(user, actual_targets)
       creatures = [user] + actual_targets
       logic.each_effects(*creatures) do |e|
