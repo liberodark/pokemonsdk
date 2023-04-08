@@ -6,6 +6,12 @@ module Battle
     def show_skill_choice(pokemon_index)
       return :try_next if spc_cannot_use_this_pokemon?(pokemon_index)
 
+      effect = @scene.logic.battler(0, pokemon_index).effects.get(&:force_next_move?)
+      if effect
+        @skill_choice_ui.encore_reset(@scene.logic.battler(0, pokemon_index), effect.move)
+        return true
+      end
+
       show_skill_choice_begin(pokemon_index)
       show_skill_choice_loop
       show_skill_choice_end(pokemon_index)
@@ -88,6 +94,7 @@ module Battle
     # Make the result of show_target_choice method
     # @param result [Array, :auto, :cancel]
     def stc_result(result = :auto)
+      return @skill_choice_ui.pokemon if result == :cancel && @skill_choice_ui.pokemon.effects.get(&:force_next_move?)
       return nil if result == :cancel
 
       arr = [@skill_choice_ui.pokemon, @skill_choice_ui.result]

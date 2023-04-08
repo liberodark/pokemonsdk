@@ -16,6 +16,12 @@ module Battle
           return true
         end
 
+        # Tell if the effect forces the next turn action into a Attack action
+        # @return [Boolean]
+        def force_next_turn_action?
+          return true
+        end
+
         # Function that updates the counter of the effect
         def update_counter
           return if paused?(@pokemon)
@@ -25,7 +31,7 @@ module Battle
         end
 
         # List of move that must be paused when user is asleep/frozen/flinched
-        MOVES_PAUSED = %i[freeze_shock geomancy ice_burn razor_wind skull_bash sky_attack solar_beam] 
+        MOVES_PAUSED = %i[freeze_shock geomancy ice_burn razor_wind skull_bash sky_attack solar_beam]
 
         # Function that tells us if we should pause the move or not
         # @param user [PFM::PokemonBattler] user of the move

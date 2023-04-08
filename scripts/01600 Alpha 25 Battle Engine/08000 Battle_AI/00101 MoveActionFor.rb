@@ -15,9 +15,10 @@ module Battle
       # @param pokemon [PFM::PokemonBattler]
       # @return [Array<[Float, Battle::Actions::Base]>]
       def move_action_for(move, pokemon)
+        action_class = (effect = pokemon.effects.get(&:force_next_move?)) ? effect.action_class : Actions::Attack
         targets = filter_targets(move.battler_targets(pokemon, @scene.logic), pokemon, move)
         actions = targets.map do |battler|
-          [move_heuristic(move, pokemon, battler), Actions::Attack.new(@scene, move, pokemon, battler.bank, battler.position)]
+          [move_heuristic(move, pokemon, battler), action_class.new(@scene, move, pokemon, battler.bank, battler.position)]
         end
         actions = group_move_action(actions) unless move.one_target?
 

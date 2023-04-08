@@ -85,8 +85,10 @@ module Battle
     # Method that asks the target of the choosen move
     def target_choice
       launcher, skill, target_bank, target_position, mega = @visual.show_target_choice
-      if launcher
-        next_action = Actions::Attack.new(self, skill, launcher, target_bank, target_position)
+      effect = launcher&.effects&.get(&:force_next_move?)
+      if launcher && skill
+        action_class = effect ? effect.action_class : Actions::Attack
+        next_action = action_class.new(self, skill, launcher, target_bank, target_position)
         if mega
           @player_actions << [next_action, Actions::Mega.new(self, launcher)]
         else
@@ -96,7 +98,7 @@ module Battle
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else
         # If the player canceled we return to the player action
-        @next_update = :skill_choice
+        @next_update = effect ? :player_action_choice : :skill_choice
       end
     ensure
       @skip_frame = true

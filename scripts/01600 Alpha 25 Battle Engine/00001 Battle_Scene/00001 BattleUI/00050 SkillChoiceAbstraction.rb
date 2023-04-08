@@ -27,6 +27,16 @@ module BattleUI
       super() if @super_reset
     end
 
+    # Ensure the info are reset properly with current Encore'd Pokemon
+    # @param pokemon [PFM::PokemonBattler]
+    # @param move [Battle::Move]
+    def encore_reset(pokemon, move)
+      @pokemon = pokemon
+      @mega_enabled = false
+      @index = @last_indexes[pokemon].to_i.clamp(0, max_index)
+      @result = move
+    end
+
     # If the player made a choice
     # @return [Boolean]
     def validated?

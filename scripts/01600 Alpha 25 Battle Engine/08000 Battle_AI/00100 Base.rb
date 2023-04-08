@@ -36,7 +36,7 @@ module Battle
       def trigger
         return controlled_pokemon.flat_map do |pokemon|
           # @type [Battle::Effects::ForceNextMove]
-          effect = pokemon.effects.get(&:force_next_move?)
+          effect = pokemon.effects.get(&:force_next_turn_action?)
           next effect.make_action if effect
 
           battle_action_for(pokemon)
@@ -132,6 +132,7 @@ module Battle
         return true if move.pp == 0
         return true if move.disable_reason(pokemon)
         return true if move.instance_of?(Battle::Move)
+        return true if pokemon.effects.has?(&:force_next_move?) && pokemon.effects.get(&:force_next_move?).move != move
 
         return move.status? && pokemon.effects.has?(:oblivious)
       end

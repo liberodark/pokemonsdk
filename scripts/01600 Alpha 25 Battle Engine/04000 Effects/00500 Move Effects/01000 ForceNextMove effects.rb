@@ -89,6 +89,12 @@ module Battle
         @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 562, @pokemon))
       end
 
+      # Tell if the effect forces the next turn action into a Attack action
+      # @return [Boolean]
+      def force_next_turn_action?
+        return false
+      end
+
       # Get the class of the action
       # @return [Class<Actions::Attack>]
       def action_class

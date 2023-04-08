@@ -1,7 +1,7 @@
 module Battle
   class Move
     # Move that forces the target to use the move previously used during 3 turns
-    class Encore < BasicWithSuccessfulEffect
+    class Encore < Move
       # List of move the target cannot use with encore
       NO_ENCORE_MOVES = %i[encore mimic mirror_move sketch struggle transform]
 
@@ -13,18 +13,10 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
         return show_usage_failure(user) && false if targets.empty?
-        
-        targets.each do |target|
-          next unless target
-          
-          last_move = target.move_history.last
-          has_forced_effect = target.effects.has? { |e| e.force_next_move? && !e.dead? }
-          if !last_move || has_forced_effect || move_disallowed?(last_move.db_symbol) || last_move.original_move.pp <= 0
-            show_usage_failure(user)
-            return false
-          end
-        end
-        return true
+
+        @verified = result = verify_targets(targets)
+        show_usage_failure(user) unless result
+        return result
       end
 
       private
@@ -36,13 +28,42 @@ module Battle
         return NO_ENCORE_MOVES.include?(db_symbol)
       end
 
+      # Verify all the targets and tell if the move can continue
+      # @param targets [Array<PFM::PokemonBattler>]
+      # @return [Boolean]
+      def verify_targets(targets)
+        targets.any? do |target|
+          next false unless target
+          next false if cant_encore_target?(target)
+
+          next true
+        end
+      end
+
+      # Tell if the target can be Encore'd
+      # @param target [PFM::PokemonBattler]
+      # @return [Boolean]
+      def cant_encore_target?(target)
+        last_move = target.move_history.last
+        has_forced_effect = target.effects.has? { |e| e.force_next_move? && !e.dead? }
+        return true if !last_move || has_forced_effect || move_disallowed?(last_move.db_symbol) || last_move.original_move.pp <= 0
+
+        return false
+      end
+
       # Function that deals the effect to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
+        if !@verified && verify_targets(actual_targets)
+          show_usage_failure(user)
+          @verified = nil
+          return false
+        end
+
         # Add effect
         actual_targets.each do |target|
-          next unless target
+          next unless target && !cant_encore_target?(target)
 
           move_history = target.move_history.last
           target.effects.add(effect = create_effect(move_history.original_move, target, move_history.targets))
