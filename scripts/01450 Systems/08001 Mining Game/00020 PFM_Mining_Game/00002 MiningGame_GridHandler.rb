@@ -6,6 +6,17 @@ module PFM
       MIN_ITEM_COUNT = 2
       # Constant telling the maximum amount of item possible on a grid
       MAX_ITEM_COUNT = 5
+      # Constant telling at how many unsuccessful tries the system switched from full randomness to semi-randomness
+      # A lower number means the system will switch to a more mechanical way earlier
+      # Might yield unexpected result, !!! Change with caution !!!
+      # @return [Integer]
+      SWITCH_METHOD_TRIES = 25
+      # Constant telling the max number of tries the system has to randomly place an item or an iron
+      # A higher number means a better probability of success but also means a higher loading time
+      # !!! Change with caution !!!
+      # @return [Integer]
+      MAX_TRIES_ALLOWED = 50
+
       # Get the grid width
       # @return [Integer]
       attr_reader :width
@@ -21,6 +32,7 @@ module PFM
       # Get the list of irons
       # @return [Array<Diggable>]
       attr_reader :arr_irons
+
       # Create a new grid handler
       # @param wanted_items [Array<Symbol>, nil] list of wanted items
       # @param item_count [Integer, nil] maximum number of items
@@ -244,33 +256,72 @@ module PFM
       # @param array [Array<Diggable>]
       def place_diggable(array)
         attempt = 0
+        array.sort_by!(&:area_size).reverse!
         array.each do |diggable|
+          attempt += 1
           diggable.set_new_rotation
-          diggable.x, diggable.y = attempt <= 20 ? random_diggable_position : alternate_random_diggable_position
+          if attempt <= SWITCH_METHOD_TRIES
+            diggable.x, diggable.y = random_diggable_position(diggable)
+          elsif attempt <= MAX_TRIES_ALLOWED
+            diggable.x, diggable.y = alternate_random_diggable_position(diggable)
+          elsif attempt > MAX_TRIES_ALLOWED
+            diggable.x, diggable.y = final_random_diggable_position(diggable)
+          end
           if check_diggable_well_placed(diggable)
             diggable.placed = true
             attempt = 0
           else
-            attempt += 1
-            redo unless attempt >= 200
-            break
+            redo unless attempt > MAX_TRIES_ALLOWED
+            attempt = 0
+            diggable.is_an_item ? @arr_items.delete(diggable) : @arr_irons.delete(diggable)
+            next
           end
         end
       end
 
       # Function that generates a random position for a diggable
+      # @param diggable [Diggable] the diggable used to clamp the width and height
       # @return [Array(Integer, Integer)]
-      def random_diggable_position
-        return rand(@width), rand(@height)
+      def random_diggable_position(diggable)
+        return rand(@width - diggable.width), rand(@height - diggable.height)
       end
 
       # Function that generates a random position using a quarter of the screen for the diggable
+      # @param diggable [Diggable] the diggable used to clamp the width and height
       # @return [Array(Integer, Integer)]
-      def alternate_random_diggable_position
-        @possible_rand ||= [[0...(@width / 2), 0...(@height / 2)], [0...(@width / 2), (@height / 2)...@height],
-                            [(@width / 2)...@width, 0...(@height / 2)], [(@width / 2)...@width, (@height / 2)...@height]]
+      def alternate_random_diggable_position(diggable)
+        new_width = @width - diggable.width
+        new_height = @height - diggable.height
+        @possible_rand ||= [[0...(new_width / 2), 0...(new_height / 2)], [0...(new_width / 2), (new_height / 2)...new_height],
+                            [(new_width / 2)...new_width, 0...(new_height / 2)], [(new_width / 2)...new_width, (new_height / 2)...new_height]]
         sample = @possible_rand.sample
         return rand(sample[0]), rand(sample[1])
+      end
+
+      # Function that tries to map available spaces depending on the diggable and return one randomly
+      # Will return 0, 0 if impossible
+      # @param diggable [Diggable]
+      # @return [Array(Integer, Integer)]
+      def final_random_diggable_position(diggable)
+        possible_combination = []
+        nb_tries = (diggable.accepted_rotation + 1).clamp(1, 2)
+        nb_tries.times do |i|
+          possible_combination.clear
+          diggable.set_specific_rotation(i)
+          new_width = @width - diggable.width
+          new_height = @height - diggable.height
+          (0..new_width).each do |line|
+            (0..new_height).each do |column|
+              diggable.x = line
+              diggable.y = column
+              possible_combination << [line, column] if check_diggable_well_placed(diggable)
+            end
+          end
+          break if possible_combination.any?
+        end
+        return 0, 0 if possible_combination.empty?
+
+        return *possible_combination.sample
       end
 
       # Function that check if a diggable is well placed
@@ -289,6 +340,7 @@ module PFM
         place_diggable(@arr_irons)
       end
 
+      # Function that randomize the irons and their
       def randomize_irons
         arr = []
         data = GameData::MiningGame::DATA_IRON
@@ -310,18 +362,41 @@ module PFM
     end
 
     class Diggable
+      # The x position of the diggable
+      # @return [Integer]
       attr_accessor :x
+      # The y position of the diggable
+      # @return [Integer]
       attr_accessor :y
+      # The width of the diggable
+      # @return [Integer]
       attr_accessor :width
+      # The height of the diggable
+      # @return [Integer]
       attr_accessor :height
+      # The symbol of the item the Diggable represent
+      # @return [Symbol]
       attr_accessor :symbol
+      # The original pattern of the diggable
+      # @return [Array<Array<Boolean>>]
       attr_accessor :origin_pattern
+      # The current pattern of the diggable
       # @return [Array<Array<Boolean>>]
       attr_accessor :pattern
+      # The accepted rotation of the diggable
+      # @return [Integer]
       attr_accessor :accepted_rotation
+      # The current rotation of the diggable
+      # @return [Integer]
       attr_accessor :rotation
+      # If the diggable is an item or not (then it's an iron)
+      # @return [Boolean]
       attr_accessor :is_an_item
+      # If the diggable is placed or not
+      # @return [Boolean]
       attr_accessor :placed
+      # If the diggable is revealed
+      # @return [Boolean]
       attr_accessor :revealed
 
       def initialize(hash)
@@ -335,8 +410,17 @@ module PFM
         @placed = @revealed = false
       end
 
+      # Set a new rotation to the diggable and change values accordingly
       def set_new_rotation
         @rotation = @accepted_rotation != 0 ? rand(0..@accepted_rotation) : 0
+        rotate_object
+        set_width_and_length
+      end
+
+      # Set a specific rotation to the diggable and change values accordingly
+      # @param rotation [Integer]
+      def set_specific_rotation(rotation)
+        @rotation = rotation.clamp(0, @accepted_rotation)
         rotate_object
         set_width_and_length
       end
@@ -350,19 +434,29 @@ module PFM
                        range_overlapping?(@y..(@y + @height - 1), (diggable.y..diggable.y + diggable.height))
       end
 
+      # Give the area size (for sorting purpose)
+      def area_size
+        area_size = 0
+        pattern.each { |line| area_size += line.size }
+        return area_size
+      end
+
       private
 
+      # Rotate the pattern according to the new rotation
       def rotate_object
         arr = @origin_pattern
         @rotation.times { arr = arr.transpose.each(&:reverse!) }
         @pattern = arr
       end
 
+      # Set the width and height of the diggable depending on current pattern
       def set_width_and_length
         @width = @pattern[0].size
         @height = @pattern.size
       end
 
+      # Check if two ranges are overlapping
       def range_overlapping?(range1, range2)
         return true if range1.begin <= range2.end && range2.begin <= range1.end
 

@@ -284,7 +284,7 @@ class Interpreter
     wait_character_move_completion 0
   end
   alias attendre_joueur wait_for_player
-  
+
   # Open the casino gameplay
   # @param arg [Symbol] the mode of the casino :voltorb_flip, :slotmachine, ...
   # @param speed [Integer] speed of the slot machine
@@ -317,31 +317,36 @@ class Interpreter
   # @overload mining_game(item_count, music_filename = GamePlay::MiningGame::DEFAULT_MUSIC)
   #   @param item_count [Integer] the number of items to search
   #   @param music_filename [String] the filename of the music to play
+  #   @param delete_after [Boolean] if the event should be deleted forever afterward
+  #   @param grid_handler [PFM::MiningGame::GridHandler, nil] a specific GridHandler for this instance of the Mining Game
   # @overload mining_game(wanted_item_db_symbols, music_filename = GamePlay::MiningGame::DEFAULT_MUSIC)
   #   @param wanted_item_db_symbols [Array<Symbol>] the array containing the specific items (comprised between 1 and 5 items)
   #   @param music_filename [String] the filename of the music to play
-  def mining_game(param = nil, music_filename = GamePlay::MiningGame::DEFAULT_MUSIC, delete_after: true)
+  #   @param delete_after [Boolean] if the event should be deleted forever afterward
+  #   @param grid_handler [PFM::MiningGame::GridHandler, nil] a specific GridHandler for this instance of the Mining Game
+  def mining_game(param = nil, music_filename = GamePlay::MiningGame::DEFAULT_MUSIC, delete_after: true, grid_handler: nil)
     message_id = $game_map.events[@event_id].event.name.downcase.include?('miningrock') ? 2 : 0
     if PFM.game_state.bag.contain_item?(:explorer_kit)
       if yes_no_choice(ext_text(9005, message_id))
         $game_system.bgm_memorize
         $game_system.bgm_fade(0.2)
-        $scene.call_scene(GamePlay::MiningGame, param, music_filename, fade_out_params: [:mining_game, 0])
+        $scene.call_scene(GamePlay::MiningGame, param, music_filename, grid_handler: grid_handler, fade_out_params: [:mining_game, 0])
         $game_system.bgm_restore
         @wait_count = 2
         delete_this_event_forever if delete_after
       end
     else
       message(ext_text(9005, message_id + 1))
+      @wait_count = 2
     end
   end
 
-    # Mirror a RMXP Picture
-    # @param id [Integer] the picture id
-    # @param bool [Boolean] the mirroring state
-    def mirror_picture(id)
-      $game_screen.pictures[id].mirror = true
-    end
+  # Mirror a RMXP Picture
+  # @param id [Integer] the picture id
+  # @param bool [Boolean] the mirroring state
+  def mirror_picture(id)
+    $game_screen.pictures[id].mirror = true
+  end
 
   # Give a certain amount of exp to one Pokemon
   # @param index [Integer] the Pokemon index
@@ -370,11 +375,8 @@ class Interpreter
         id, form = pokemon.evolve_check
         GamePlay.make_pokemon_evolve(pokemon, id, form, true) if id
       end
-    
     end
-
     pokemon.exp += @amount unless pokemon.level >= $pokemon_party.level_max_limit
-
   end
 
   # Give a certain amount of exp to every Pokemon in party
@@ -408,5 +410,4 @@ class Interpreter
   def give_level_all(amount)
     $actors.size.times { |i| give_level(i, amount) }
   end
-
 end

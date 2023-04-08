@@ -123,6 +123,13 @@ module Yuki
       File.binwrite('battle.dat', compressed_data)
     end
 
+    # Function building the reproduction file for the Mining Game
+    # @param grid_handler [PFM::MiningGame::GridHandler]
+    def mining_game_reproduction(grid_handler)
+      compressed_data = Zlib::Deflate.deflate(Marshal.dump(grid_handler), Zlib::BEST_COMPRESSION)
+      File.binwrite('mining_game.dat', compressed_data)
+    end
+
     # Function that shows the error window
     # @param log [String]
     def show_error_window(log)
@@ -261,4 +268,10 @@ def reload_battle
   $game_map.setup($game_map.map_id)
   Graphics.freeze
   $scene = Battle::Scene.new(battle_info)
+end
+
+# Function responsive of reloading the saved mining game instance
+# @return [PFM::MiningGame::GridHandler]
+def reload_mining_game
+  return Marshal.load(Zlib::Inflate.inflate(File.binread('mining_game.dat')))
 end

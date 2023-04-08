@@ -5,11 +5,18 @@ module GamePlay
     # Dull method, only here to check the win condition
     # @return [Boolean] false if @running == false
     def update_inputs
+      return save_instance_for_debug if Input::Keyboard.press?(Input::Keyboard::LControl) && !@saved_grid_debug
       return false if @transition_animation && !@transition_animation.done?
       return false if @running == false
 
       check_win_lose_condition if @ui_state != :animation
       return true
+    end
+
+    # Save the current instance of the Mining Game in a file
+    def save_instance_for_debug
+      @saved_grid_debug = true
+      Yuki::EXC.mining_game_reproduction(@handler)
     end
 
     # Check if a diggable item has been revealed

@@ -26,13 +26,16 @@ module GamePlay
     # @overload initialize(item_count, music_filename = DEFAULT_MUSIC)
     #   @param item_count [Integer, nil] the number of items to search (nil for random between 2 and 5)
     #   @param music_filename [String] the filename of the music to play
+    #   @param grid_handler [PFM::MiningGame::GridHandler, nil] hand-chosen grid handler
     # @overload initialize(wanted_item_db_symbols, music_filename = DEFAULT_MUSIC)
     #   @param wanted_item_db_symbols [Array<Symbol>] the array containing the specific items (comprised between 1 and 5 items)
     #   @param music_filename [String] the filename of the music to play
-    def initialize(param = nil, music_filename = DEFAULT_MUSIC)
+    #   @param grid_handler [PFM::MiningGame::GridHandler, nil] hand-chosen grid handler
+    def initialize(param = nil, music_filename = DEFAULT_MUSIC, grid_handler: nil)
       super()
       PFM.game_state.mining_game.nb_game_launched += 1
-      @handler = PFM::MiningGame::GridHandler.new(param.is_a?(Array) ? param : nil, param.is_a?(Integer) ? param : nil, NB_X_TILES, NB_Y_TILES)
+      @handler = grid_handler
+      @handler ||= PFM::MiningGame::GridHandler.new(param.is_a?(Array) ? param : nil, param.is_a?(Integer) ? param : nil, NB_X_TILES, NB_Y_TILES)
       @current_tool = :pickaxe
       @arr_items_won = []
       # @type [Yuki::Animation::TimedAnimation]
@@ -42,6 +45,7 @@ module GamePlay
       # States are :mouse, :animation
       @ui_state = :mouse
       @mbf_type = :mining_game
+      @saved_grid_debug = false
       Audio.bgm_play(music_filename)
       @running = true
     end
