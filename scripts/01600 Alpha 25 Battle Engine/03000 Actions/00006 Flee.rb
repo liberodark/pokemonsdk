@@ -17,9 +17,27 @@ module Battle
       # @param other [Base] other action
       # @return [Integer]
       def <=>(other)
+        return roaming_comparison_result(attack) if $wild_battle.is_roaming?(target.original) && other.is_a?(Attack) && (attack = Attack.from(other))
         return 1 if other.is_a?(Attack) && Attack.from(other).move.relative_priority > 0
 
         return -1
+      end
+
+      # Constant telling the priority applied to a Fleeing action for a Roaming Pokemon
+      # @return [Integer]
+      PRIORITY_ROAMING_FLEE = -7
+
+      # Give the comparison result for a Roaming Pokemon
+      # @param attack [Attack] other action
+      # @return [Integer]
+      # @note Based on Gen 5 mechanism as Gen 6 mechanism isn't a real Roaming feature
+      # In Gen 5, a Roaming Pokemon trying to escape has a Priority of -7
+      def roaming_comparison_result(attack)
+        return 1 if attack.move.relative_priority > PRIORITY_ROAMING_FLEE
+        return -1 if attack.move.relative_priority < PRIORITY_ROAMING_FLEE
+        return 1 if target.spd < attack.launcher.spd
+        return [-1, 1].sample if target.spd == attack.launcher.spd
+        return -1 if target.spd > attack.launcher.spd
       end
 
       # Execute the action

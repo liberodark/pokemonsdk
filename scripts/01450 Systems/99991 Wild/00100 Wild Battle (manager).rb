@@ -186,6 +186,7 @@ module PFM
     end
 
     # Test if a Pokemon is a roaming Pokemon (Usefull in battle)
+    # @param pokemon [PFM::Pokemon]
     # @return [Boolean]
     def roaming?(pokemon)
       return roaming_pokemons.any? { |info| info.pokemon == pokemon }

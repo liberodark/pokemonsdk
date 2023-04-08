@@ -44,6 +44,8 @@ module Battle
           return -1 if @pursuit_enabled
           return 1 if other.is_a?(Attack) && other.pursuit_enabled
         end
+
+        return (other.roaming_comparison_result(self) == 1 ? -1 : 1) if other.is_a?(Flee) && $wild_battle.is_roaming?(other.target.original)
         return -1 if other.is_a?(Flee) && move.relative_priority > 0
         return 1 unless other.is_a?(Attack)
 
