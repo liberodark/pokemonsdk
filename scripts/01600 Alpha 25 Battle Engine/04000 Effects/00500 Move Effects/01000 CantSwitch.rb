@@ -24,6 +24,7 @@ module Battle
       # @return [:prevent, nil] if :prevent, can_switch? will return false
       def on_switch_prevention(handler, pokemon, skill, reason)
         return if pokemon != @pokemon
+        return kill if @origin.dead?
 
         return handler.prevent_change do
           handler.scene.display_message_and_wait(message)
@@ -38,10 +39,10 @@ module Battle
         kill if who == @origin && !who.effects.has?(:baton_pass)
       end
 
-      # Tell if the effect is dead
+      # Tell if the effect must be cleared
       # @return [Boolean]
       def dead?
-        super || !@origin.position
+        super || !@origin.can_fight?
       end
 
       # Get the name of the effect
