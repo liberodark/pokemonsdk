@@ -57,6 +57,12 @@ module Battle
         return false
       end
 
+      # Tell if the effect forces the next turn action into a Attack action
+      # @return [Boolean]
+      def force_next_turn_action?
+        return false
+      end
+
       # Tell if the effect make the pokemon out reach
       # @return [Boolean]
       def out_of_reach?
