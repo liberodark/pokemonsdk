@@ -16,16 +16,8 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_stats(user, actual_targets)
-        return true if battle_stage_mod.empty?
-
         @switchable = switchable?(actual_targets)
-        actual_targets.each do |target|
-          battle_stage_mod.each do |stage|
-            next if stage.count == 0
-
-            logic.stat_change_handler.stat_change_with_process(stage.stat, stage.count, target, user, self)
-          end
-        end
+        super
       end
 
       # Function that if the Pokemon can be switched or not

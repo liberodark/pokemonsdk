@@ -3,7 +3,7 @@ module Battle
     # Jaw Lock move
     class JawLock < Basic
       private
-      
+
       # Test if the effect is working
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
@@ -22,7 +22,7 @@ module Battle
           user.effects.add(Effects::CantSwitch.new(logic, user, user, self))
           scene.display_message_and_wait(parse_text_with_pokemon(19, 875, user))
         end
-        
+
         actual_targets.each do |target|
           next if target.effects.has?(:cantswitch)
 

@@ -2,7 +2,6 @@ module Battle
   class Move
     # Purify move
     class Purify < Move
-
       # Function that tests if the user is able to use the move
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
@@ -17,7 +16,7 @@ module Battle
 
         return true
       end
-      
+
       # Function that deals the effect to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
