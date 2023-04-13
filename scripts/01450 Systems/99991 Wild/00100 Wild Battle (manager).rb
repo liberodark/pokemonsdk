@@ -124,6 +124,7 @@ module PFM
     #   @param args [Array<Integer, Integer>] array of id, level of the other Pokemon in the wild battle.
     #   @param battle_id [Integer] ID of the events to load for battle scenario
     def start_battle(id, level = 70, *others, battle_id: 1)
+      $game_temp.battle_can_lose = false
       init_battle(id, level, *others)
       Graphics.freeze
       $scene = Battle::Scene.new(setup(battle_id))
