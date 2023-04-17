@@ -34,6 +34,8 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
+        return show_usage_failure(user) && false unless user.effects.get(effect_name)&.usable?
+
         user.effects.get(effect_name).use
       end
 
