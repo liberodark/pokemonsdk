@@ -10,13 +10,17 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target
-          return unless skill&.direct? && launcher && launcher.hp > 0
-          return if (target.effects.has?(:substitute) && !skill.authentic?) || target.type1 == skill.type
+          return unless skill && launcher
+          return if skill.status? || skill.is_a?(Battle::Move::Basic::MultiHit) && !skill.last_hit?
+          definitive_types = skill.definitive_types(launcher, target)
+          return if definitive_types.any? { |type| target.type?(type) || type == 0}
 
           handler.scene.visual.show_ability(target)
-          target.type1 = skill.type
+          target.type1 = definitive_types.first
+          target.type2 = 0
+          target.type3 = 0
           text = parse_text_with_pokemon(19, 899, target, PFM::Text::PKNICK[0] => target.given_name,
-                                                          '[VAR TYPE(0001)]' => data_type(skill.type).name)
+                                                          '[VAR TYPE(0001)]' => data_type(definitive_types.first).name)
           handler.scene.display_message_and_wait(text)
         end
       end
