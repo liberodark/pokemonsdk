@@ -47,6 +47,12 @@ module Battle
         return @hit_amount == @nb_hit
       end
 
+      # Tells if the move hits multiple times
+      # @return [Boolean]
+      def multi_hit?
+        return true
+      end
+
       private
 
       # Get the number of hit the move can perform

@@ -1,0 +1,48 @@
+module Battle
+  class Move
+
+    # Check if an Effects imposes a specific proceed_internal
+    # @return [Symbol, nil] the symbol of the proceed_internal to call, nil if no specific procedure
+    def check_specific_procedure(user, targets)
+      logic.each_effects(user) do |e|
+        specific_procedure = e.specific_proceed_internal(user, targets, self)
+        return specific_procedure if specific_procedure
+      end
+
+      return nil
+    end
+
+    # Internal procedure of the move for Parental Bond Ability
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param targets [Array<PFM::PokemonBattler>] expected targets
+    def proceed_internal_parental_bond(user, targets)
+      return unless (actual_targets = proceed_internal_precheck(user, targets))
+
+      post_accuracy_check_effects(user, actual_targets)
+
+      post_accuracy_check_move(user, actual_targets)
+
+      play_animation(user, targets)
+
+      nb_loop = user.ability_effect&.number_of_attacks || 1
+      nb_loop.times do |nb_attack|
+        next unless nb_attack == 0 || ((one_target_from_zone_attack(user) || one_target?) && !multi_hit? && !status?)
+        next @scene.display_message_and_wait(parse_text(18, 33, PFM::Text::NUMB[1] => nb_attack.to_s)) if targets.any?(&:dead?)
+
+        user.ability_effect&.activated = true if nb_attack >= 1
+        deal_damage(user, actual_targets) &&
+          effect_working?(user, actual_targets) &&
+          deal_status(user, actual_targets) &&
+          deal_stats(user, actual_targets) &&
+          (user.ability_effect&.first_effect_can_be_applied?(be_method) || nb_attack > 0) &&
+          deal_effect(user, actual_targets)
+      end
+
+      @scene.display_message_and_wait(parse_text(18, 33, PFM::Text::NUMB[1] => nb_loop.to_s)) if user.ability_effect&.activated
+      user.ability_effect&.activated = false
+      user.add_move_to_history(self, actual_targets)
+      @scene.visual.set_info_state(:move_animation)
+      @scene.visual.wait_for_animation
+    end
+  end
+end

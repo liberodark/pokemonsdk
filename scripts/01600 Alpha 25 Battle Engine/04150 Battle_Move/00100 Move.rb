@@ -367,6 +367,12 @@ module Battle
       false
     end
 
+    # Tells if the move hits multiple times
+    # @return [Boolean]
+    def multi_hit?
+      return false
+    end
+
     # Tell if the move is a powder move
     # @return [Boolean]
     def powder?

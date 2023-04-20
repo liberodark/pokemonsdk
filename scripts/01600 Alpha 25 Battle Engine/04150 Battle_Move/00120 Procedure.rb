@@ -21,7 +21,11 @@ module Battle
       possible_targets.reverse!
       # Choose the right bank if user could choose bank
       possible_targets.select! { |pokemon| pokemon.bank == target_bank } unless no_choice_skill?
-      proceed_internal(user, possible_targets)
+
+      specific_procedure = check_specific_procedure(user, possible_targets)
+      return send(specific_procedure, user, possible_targets) if specific_procedure
+
+      return proceed_internal(user, possible_targets)
     end
 
     # Proceed the procedure before any other attack.
@@ -41,6 +45,10 @@ module Battle
       right_target = possible_targets.find { |pokemon| pokemon.bank == target_bank && pokemon.position == target_position }
       right_target ||= possible_targets.find { |pokemon| pokemon.bank == target_bank && (pokemon.position - target_position).abs == 1 }
       right_target ||= possible_targets.find { |pokemon| pokemon.bank == target_bank }
+
+      specific_procedure = check_specific_procedure(user, [right_target].compact)
+      return send(specific_procedure, user, [right_target].compact) if specific_procedure
+
       return proceed_internal(user, [right_target].compact)
     end
 
@@ -397,6 +405,13 @@ module Battle
       end
       action = Actions::Attack.new(@scene, move, user, target_bank, target_position)
       action.execute
+    end
+
+    # Check if an attack that targets multiple people is targeting only one
+    # @param user [PFM::PokemonBattler] user of the move
+    # @return [Boolean]
+    def one_target_from_zone_attack(user)
+      return battler_targets(user, logic).length == 1
     end
   end
 end

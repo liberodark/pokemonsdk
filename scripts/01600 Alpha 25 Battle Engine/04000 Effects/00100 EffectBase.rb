@@ -463,6 +463,14 @@ module Battle
         return 1
       end
 
+      # Return the specific proceed_internal if the condition is fulfilled
+      # @param user [PFM::PokemonBattler]
+      # @param targets [Array<PFM::PokemonBattler>]
+      # @param move [Battle::Move]
+      def specific_proceed_internal(user, targets, move)
+        return nil
+      end
+
       private
 
       # Function that disable all the hooks (putting aside on_delete)
