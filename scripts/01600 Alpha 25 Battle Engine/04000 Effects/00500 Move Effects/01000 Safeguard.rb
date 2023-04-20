@@ -21,8 +21,7 @@ module Battle
         return @logic.scene.visual.show_ability(launcher) if launcher&.has_ability?(:infiltrator) # Infiltrator bypass safeguard
         return if item_exceptions.include?(target.item_db_symbol)
         return if move_exceptions.include?(skill&.db_symbol)
-        return if skill&.db_symbol == :yawn
-        return if status == :sleep && target.effects.has?(:drowsiness)
+        return if target.effects.has?(:drowsiness)
 
         @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, status_prevention_message_id, target))
         return :prevent

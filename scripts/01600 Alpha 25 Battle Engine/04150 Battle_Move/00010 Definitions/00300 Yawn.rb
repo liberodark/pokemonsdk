@@ -5,14 +5,6 @@ module Battle
     class Yawn < Move
       private
 
-      # Tell if the move accuracy is bypassed
-      # @param user [PFM::PokemonBattler] user of the move
-      # @param targets [Array<PFM::PokemonBattler>] expected targets
-      # @return [Boolean]
-      def bypass_accuracy?(user, targets)
-        return true
-      end
-
       # Function that tests if the user is able to use the move
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
@@ -21,10 +13,16 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        if targets.all? { |target| target.effects.has?(:drowsiness) || target.effects.has?(:substitute) || target.has_ability?(:comatose) } ||
-           @logic.terrain_effects.has?(:electric_terrain) && targets.all?(&:grounded?)
+        if @logic.foes_of(user).any? { |target| %i[sweet_veil flower_veil].include?(target.battle_ability_db_symbol) }
+          @logic.scene.visual.show_ability(target)
           show_usage_failure(user)
           return false
+        end
+
+        if targets.any? { |target| @logic.bank_effects[target.bank].has?(:safeguard) ||
+          @logic.terrain_effects.has?(%i[electric_terrain misty_terrain]) && @pokemon.grounded?
+        }
+          return show_usage_failure(user) && false
         end
 
         return true
@@ -37,9 +35,11 @@ module Battle
       # @return [Boolean] if the target evade the move (and is not selected)
       def move_blocked_by_target?(user, target)
         return true if super
-        return failure_message if target.effects.has?(:drowsiness) || target.effects.has?(:substitute) || target.has_ability?(:comatose)
-        return failure_message if @logic.terrain_effects.has?(:electric_terrain) && target.grounded?
-        return true unless logic.status_change_handler.status_appliable?(:sleep, target, user)
+        return failure_message(target) if target.status?
+        return failure_message(target) if %i[drowsiness substitute].any? { |db_symbol| target.effects.has?(db_symbol) } || target.status?
+        return failure_message(target) if %i[insomnia vital_spirit comatose].include?(target.battle_ability_db_symbol)
+        return failure_message(target) if ($env.sunny? || $env.hardsun?) && target.has_ability?(:leaf_guard)
+        return failure_message(target) if target.db_symbol == :minior && target.form == 0
 
         return false
       end
@@ -49,9 +49,10 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
-          target.effects.add(Effects::Drowsiness.new(@logic, target, turn_count))
+          next if target.effects.has?(:drowsiness)
+  
+          target.effects.add(Effects::Drowsiness.new(@logic, target, turn_count, user))
         end
-        return true
       end
 
       # Return the turn countdown before the effect proc (including the current one)
@@ -61,9 +62,10 @@ module Battle
       end
 
       # Display failure message
+      # @param target [PFM::PokemonBattler] expected target
       # @return [Boolean] true if blocked
-      def failure_message
-        @logic.scene.display_message_and_wait(parse_text(18, 74))
+      def failure_message(target)
+        @logic.scene.display_message_and_wait(parse_text_with_pokemon(59, 2048, target))
         return true
       end
     end
