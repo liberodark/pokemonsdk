@@ -8,7 +8,7 @@ module Battle
       def target_immune?(user, target)
         return true if super
 
-        return db_symbol == :heal_pulse && target.effects.has?(:substitute)
+        return %i[heal_pulse floral_healing].include?(db_symbol) && target.effects.has?(:substitute)
       end
 
       # Function that deals the heal to the pokemon

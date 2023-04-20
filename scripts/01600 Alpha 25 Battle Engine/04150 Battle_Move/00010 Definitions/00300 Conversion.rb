@@ -51,7 +51,7 @@ module Battle
       end
 
       # Check the resistances to one type and return one random
-      # @param type [Integer] type of the move used by the target
+      # @param move_type [Integer] type of the move used by the target
       # @return Integer
       def random_resistances(move_type)
         resistances = each_data_type.select { |type| data_type(move_type).hit(type.db_symbol) < 1 }

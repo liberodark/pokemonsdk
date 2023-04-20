@@ -1,7 +1,7 @@
 module Battle 
   class Move
     # Class describing a heal move
-    class ShoreUp < Move 
+    class ShoreUp < HealMove 
       # Function that deals the heal to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] targets that will be affected by the move           
