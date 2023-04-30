@@ -22,7 +22,7 @@ module Battle
           return unless db_symbol == :none
 
           @boost_enabled = true
-          handler.scene.visual.show_ability(target)
+          handler.scene.visual.show_ability(@target)
         end
 
         # Reset the boost when leaving battle
