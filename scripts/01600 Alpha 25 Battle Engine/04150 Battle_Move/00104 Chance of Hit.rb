@@ -27,6 +27,7 @@ module Battle
       return true if user.has_ability?(:no_guard) || target.has_ability?(:no_guard)
       return true if db_symbol == :blizzard && $env.hail?
       return true if (status? && target == user) || accuracy <= 0
+      return true if db_symbol == :toxic && user.type_poison?
 
       return false
     end
