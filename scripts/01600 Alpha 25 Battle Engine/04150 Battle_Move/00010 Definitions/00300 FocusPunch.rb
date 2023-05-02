@@ -17,8 +17,10 @@ module Battle
       # Proceed the procedure before any other attack.
       # @param user [PFM::PokemonBattler]
       def proceed_pre_attack(user)
+        return unless can_pre_use_move?(user)
+
         @scene.display_message_and_wait(parse_text_with_pokemon(19, 616, user))
-        # @todo play charging animation
+        #TODO play charging animation
       end
 
       # Function that tests if the user is able to use the move
@@ -29,16 +31,22 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
         return show_usage_failure(user) && false if disturbed?(user)
+        return show_usage_failure(user) && false unless @enabled
 
         return true
       end
 
       private
 
-      # Show the usage failure when move is not usable by user
-      # @param user [PFM::PokemonBattler] user of the move
-      def show_usage_failure(user)
-        @scene.display_message_and_wait(parse_text_with_pokemon(19, 366, user))
+
+      # Check if the user is able to display the message related to the move
+      # @param user [PFM::PokemonBattler]
+      def can_pre_use_move?(user)
+        @enabled = false
+        return false if (user.frozen? || user.asleep?)
+
+        @enabled = true
+        return true
       end
 
       # Is the pokemon unable to proceed the attack ?
