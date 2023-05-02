@@ -14,6 +14,7 @@ module Battle
       def initialize(logic, pokemon)
         super
         @hp = @max_hp = pokemon.max_hp / 4
+        pokemon.effects.get(:bind)&.kill if pokemon.effects.has?(:bind)
       end
 
       # Function called when a stat_increase_prevention is checked
