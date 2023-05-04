@@ -3,7 +3,7 @@ module Battle
     class MegaEvolve
       # List of tools that allow MEGA Evolution
       MEGA_EVOLVE_TOOLS = %i[mega_ring mega_bracelet mega_pendant mega_glasses mega_anchor mega_stickpin mega_tiara mega_anklet
-                             mega_cuff]
+                             mega_cuff mega_charm mega_glove]
 
       # Create the MegaEvolve checker
       # @param scene [Battle::Scene]
