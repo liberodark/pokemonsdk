@@ -54,6 +54,7 @@ module Battle
         when :confuse_cure
           target.effects.get(:confusion)&.kill
           target.effects.delete_specific_dead_effect(:confusion)
+          message_overwrite = 351
         else
           message_overwrite ||= STATUS_APPLY_MESSAGE[status]
           target.send(STATUS_APPLY_METHODS[status], true)

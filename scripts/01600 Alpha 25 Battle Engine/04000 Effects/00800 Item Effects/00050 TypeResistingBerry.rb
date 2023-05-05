@@ -18,6 +18,24 @@ module Battle
 
           return 0.5
         end
+        
+        # Function that executes the effect of the berry (for Pluck & Bug Bite)
+        # @param force_heal [Boolean] tell if a healing berry should force the heal
+        def execute_berry_effect(force_heal: false)
+          process_effect(@target, nil, nil)
+        end
+
+        private
+
+        # Function that process the effect of the berry (if possible)
+        # @param target [PFM::PokemonBattler]
+        # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @param skill [Battle::Move, nil] Potential move used
+        def process_effect(target, launcher, skill)
+          return if cannot_be_consumed?
+
+          consume_berry(target, launcher, skill)
+        end
 
         class << self
           # Register an item with defense multiplier only

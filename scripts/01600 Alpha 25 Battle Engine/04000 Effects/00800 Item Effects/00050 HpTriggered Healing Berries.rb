@@ -44,9 +44,9 @@ module Battle
 
           @logic.damage_handler.heal(target, hp_healed) do
             item_name = target.item_name
-            consume_berry(target, launcher, skill, should_confuse: should_confuse)
             @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => item_name))
           end
+          consume_berry(target, launcher, skill, should_confuse: should_confuse)
         end
 
         # Give the hp rate that triggers the berry

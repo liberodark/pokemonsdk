@@ -15,8 +15,9 @@ module Battle
         end
 
         # Function that executes the effect of the berry (for Pluck & Bug Bite)
-        def execute_berry_effect
-          process_effect(@target, nil, nil) unless @target.status_effect.instance_of?(Status) && !@target.confused?
+        # @param force_heal [Boolean] tell if a healing berry should force the heal
+        def execute_berry_effect(force_heal: false)
+          process_effect(@target, nil, nil)
         end
 
         private
@@ -29,11 +30,10 @@ module Battle
           return if cannot_be_consumed?
 
           consume_berry(target, launcher, skill)
-          if target.confused?
-            @logic.status_change_handler.status_change(:confuse_cure, target, launcher, skill)
-          else
-            @logic.status_change_handler.status_change(:cure, target, launcher, skill)
-          end
+          return unless launcher && skill
+
+          @logic.status_change_handler.status_change(:confuse_cure, target, launcher, skill) if target.confused?
+          @logic.status_change_handler.status_change(:cure, target, launcher, skill) if target.status?
         end
       end
       register(:lum_berry, LumBerry)

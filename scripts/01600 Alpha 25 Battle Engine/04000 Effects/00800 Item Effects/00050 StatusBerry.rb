@@ -17,7 +17,7 @@ module Battle
         # Function that executes the effect of the berry (for Pluck & Bug Bite)
         # @param force_heal [Boolean] tell if a healing berry should force the heal
         def execute_berry_effect(force_heal: false)
-          process_effect(@target, nil, nil) if @target.status_effect.name == healed_status
+          process_effect(@target, nil, nil)
         end
 
         private
@@ -30,6 +30,8 @@ module Battle
           return if cannot_be_consumed?
 
           consume_berry(target, launcher, skill)
+          return unless target.status_effect.name == healed_status
+
           @logic.status_change_handler.status_change(:cure, target, launcher, skill)
         end
 

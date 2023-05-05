@@ -34,9 +34,9 @@ module Battle
 
           @logic.damage_handler.heal(target, hp_healed) do
             item_name = target.item_name
-            consume_berry(target, launcher, skill)
             @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => item_name))
           end
+          consume_berry(target, launcher, skill)
         end
 
         # Tell if the berry triggers
@@ -49,8 +49,6 @@ module Battle
         # Give the amount of HP healed
         # @return [Integer]
         def hp_healed
-          return (@target.max_hp * 2 / 4).clamp(1, Float::INFINITY) if @target.has_ability?(:ripen)
-
           return (@target.max_hp / 4).clamp(1, Float::INFINITY)
         end
       end

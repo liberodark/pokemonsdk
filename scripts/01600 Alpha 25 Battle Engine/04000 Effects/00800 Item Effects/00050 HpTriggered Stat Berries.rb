@@ -41,13 +41,12 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def process_effect(target, launcher, skill)
           return if cannot_be_consumed? || target.hp_rate > hp_rate_trigger
-
+          return if target.dead?
+          
           consume_berry(target, launcher, skill, should_confuse: should_confuse)
-          if target.has_ability?(:ripen)
-            @logic.stat_change_handler.stat_change_with_process(stat_improved, 2, target, launcher, skill)
-          else
-            @logic.stat_change_handler.stat_change_with_process(stat_improved, 1, target, launcher, skill)
-          end
+
+          power = target.has_ability?(:ripen) ? 2 : 1
+          @logic.stat_change_handler.stat_change_with_process(stat_improved, power, target, launcher, skill)
         end
 
         # Give the hp rate that triggers the berry

@@ -17,8 +17,6 @@ module Battle
         # Function that executes the effect of the berry (for Pluck & Bug Bite)
         # @param force_heal [Boolean] tell if a healing berry should force the heal
         def execute_berry_effect(force_heal: false)
-          return unless force_heal
-
           process_effect(@target, nil, nil)
         end
 
@@ -32,9 +30,12 @@ module Battle
           return if cannot_be_consumed?
 
           consume_berry(target, launcher, skill)
+
           move = target.moveset.find { |s| s.pp == 0 }
           move ||= target.moveset.reject { |s| s.pp == s.ppmax }.min_by(&:pp)
           move ||= target.moveset.min_by(&:pp)
+          return unless move
+
           @logic.scene.display_message_and_wait(message(target, move))
         end
 
