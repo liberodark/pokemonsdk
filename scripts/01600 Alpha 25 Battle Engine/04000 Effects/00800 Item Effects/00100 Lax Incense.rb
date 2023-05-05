@@ -14,7 +14,7 @@ module Battle
         end
       end
       register(:lax_incense, LaxIncense)
-      register(:brightpowder, LaxIncense)
+      register(:bright_powder, LaxIncense)
     end
   end
 end
