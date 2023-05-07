@@ -7,7 +7,7 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, targets)
         targets.each do |target|
-          if $env.normal? || $env.wind?
+          if $env.normal? || $env.strong_winds?
             hp = target.max_hp / 2
           elsif $env.sunny? || $env.hardsun?
             hp = target.max_hp * 2 / 3

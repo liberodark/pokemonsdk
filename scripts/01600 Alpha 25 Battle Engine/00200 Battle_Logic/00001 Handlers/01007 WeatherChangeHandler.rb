@@ -13,7 +13,7 @@ module Battle
         fog: 91,
         hardsun: 271,
         hardrain: 269,
-        wind: 273
+        strong_winds: 273
       }
 
       # Create a new Weather Change Handler
@@ -70,7 +70,7 @@ module Battle
       def show_weather_message(last_weather, current_weather)
         return if last_weather == current_weather
 
-        @scene.display_message_and_wait(parse_text(18, WEATHER_SYM_TO_MSG[current_weather])) if last_weather == :none || current_weather == :none
+        @scene.display_message_and_wait(parse_text(18, WEATHER_SYM_TO_MSG[current_weather])) # if last_weather == :none || current_weather == :none
       end
 
       class << self

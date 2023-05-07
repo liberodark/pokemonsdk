@@ -660,8 +660,6 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effe
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Dauntless Shield.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Defeatist.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Defiant.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Delta Stream.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Desolate Land - Primordial Sea.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Disguise.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Download.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Dry Skin.rb
@@ -736,6 +734,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effe
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 PowerSpot.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Prankster.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Pressure.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Primal Weathers.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Punk Rock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Pure Power - Huge Power.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Queenly Majesty - Dazzling.rb
@@ -858,8 +857,8 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effe
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effects/00100 Hardsun.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effects/00100 Rain.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effects/00100 Sandstorm.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effects/00100 StrongWinds.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effects/00100 Sunny.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effects/00100 Wind.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01200 Field Terrain Effects/00001 FieldTerrainBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01200 Field Terrain Effects/00100 Electric.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01200 Field Terrain Effects/00100 Grassy.rb

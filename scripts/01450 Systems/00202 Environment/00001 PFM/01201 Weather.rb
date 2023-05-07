@@ -1,7 +1,7 @@
 module PFM
   class Environment
     # List of weather symbols
-    WEATHER_NAMES = %i[none rain sunny sandstorm hail fog hardsun hardrain wind]
+    WEATHER_NAMES = %i[none rain sunny sandstorm hail fog hardsun hardrain strong_winds]
     # Apply a new weather to the current environment
     # @param id [Integer, Symbol] ID of the weather : 0 = None, 1 = Rain, 2 = Sun/Zenith, 3 = Darud Sandstorm, 4 = Hail, 5 = Foggy
     # @param duration [Integer, nil] the total duration of the weather (battle), nil = never stops
@@ -69,8 +69,8 @@ module PFM
 
     # Is it Strong Winds ? (Mega Rayquaza)
     # @return [Boolean]
-    def wind?
-      return current_weather_db_symbol == :wind
+    def strong_winds?
+      return current_weather_db_symbol == :strong_winds
     end
 
     # Duuuuuuuuuuuuuuuuuuuuuuun
