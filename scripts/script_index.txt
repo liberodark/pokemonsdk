@@ -841,6 +841,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Quick Powder.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Red Card.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Rocky Helmet.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 SafetyGoggles.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Shed Shell.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Shell Bell.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Sticky Barb.rb
