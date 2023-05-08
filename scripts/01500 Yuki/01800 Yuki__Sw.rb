@@ -70,10 +70,10 @@ module Yuki
     BT_Phase2 = 32
     # If the phase 3 of the battle is running (Target choice)
     BT_Phase3 = 33
-    # If the phase 4 of the battle is running (Action display)
-    BT_Phase4 = 34
-    # If the phase 5 of the battle is running (Defeat/Victory/Catch)
-    BT_Phase5 = 35
+    # If the wild Pokemon fled the battle
+    BT_Wild_Flee = 34
+    # If the player fled the battle
+    BT_Player_Flee = 35
     # If the player was defeated
     BT_Defeat = 36
     # If the player was victorious

@@ -47,7 +47,7 @@ module Battle
           execute_from_scene
         elsif @scene.logic.switch_handler.can_switch?(@target)
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 767, @target))
-          @scene.logic.battle_result = 1
+          @scene.logic.battle_result = @target.bank == 0 ? 1 : 3
           @scene.next_update = :battle_end
         end
       end

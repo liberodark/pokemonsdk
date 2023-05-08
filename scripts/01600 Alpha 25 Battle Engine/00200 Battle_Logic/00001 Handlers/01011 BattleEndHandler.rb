@@ -111,6 +111,8 @@ module Battle
       $game_switches[Yuki::Sw::BT_Catch] = !handler.logic.battle_info.caught_pokemon.nil?
       $game_switches[Yuki::Sw::BT_Defeat] = handler.logic.battle_result == 2
       $game_switches[Yuki::Sw::BT_Victory] = handler.logic.battle_result == 0
+      $game_switches[Yuki::Sw::BT_Player_Flee] = handler.logic.battle_result == 1
+      $game_switches[Yuki::Sw::BT_Wild_Flee] = handler.logic.battle_result == 3
       $game_switches[Yuki::Sw::BT_NoEscape] = false
     end
 
