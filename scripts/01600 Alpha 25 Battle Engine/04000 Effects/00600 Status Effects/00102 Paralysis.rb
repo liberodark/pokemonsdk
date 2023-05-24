@@ -38,6 +38,8 @@ module Battle
         # Give the speed modifier over given to the Pokemon with this effect
         # @return [Float, Integer] multiplier
         def spd_modifier
+          return 1 if @target.has_ability?(:quick_feet)
+
           return 0.25
         end
 
