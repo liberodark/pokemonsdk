@@ -222,7 +222,8 @@ PARGV.define_arg(:help, aliases: [:h]) do
     puts(
       '--tags : Open the system tag editor',
       '--worldmap : Open the worldmap editor',
-      '--util=scriptname : Load a plugin (scriptname in plugins)'
+      '--util=scriptname : Load a plugin (scriptname in plugins)',
+      '--mon : Monitor the user & psdk scripts to reload them on change'
     )
   end
   puts '--help : Show this'
@@ -234,4 +235,5 @@ unless File.exist?('Data/Scripts.dat')
   PARGV.define_arg(:tags)
   PARGV.define_arg(:worldmap)
   PARGV.define_arg(:util, flag: false, multiple: true, aliases: [:u])
+  PARGV.define_arg(:mon, flag: true, aliases: [:m])
 end

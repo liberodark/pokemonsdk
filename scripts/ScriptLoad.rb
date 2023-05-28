@@ -41,6 +41,10 @@ module ScriptLoader
     # Load Project Scripts
     load_vscode_scripts(PROJECT_SCRIPT_PATH) if index_filename == SCRIPT_INDEX_PATH
     save_packed_scripts if @should_build_script
+    if PARGV[:mon]
+      require_relative 'ScriptMonitor'
+      @monitor = ScriptMonitor.new
+    end
   end
 
   # Load the script from the packed archive
