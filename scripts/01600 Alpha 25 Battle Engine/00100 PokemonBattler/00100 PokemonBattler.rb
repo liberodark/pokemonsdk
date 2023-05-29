@@ -313,7 +313,7 @@ module PFM
     # @return [Boolean] potential changed result
     def can_be_lowered_or_canceled?(test = true)
       return false unless test
-      return test unless has_ability?(:mold_breaker) || has_ability?(:teravolt) || has_ability?(:turboblaze)
+      return test unless has_ability?(:mold_breaker) || has_ability?(:teravolt) || has_ability?(:turboblaze) || current_move_ignoring_ability?
 
       unless ability_used
         @scene.visual.show_ability(self)
@@ -321,6 +321,18 @@ module PFM
         self.ability_used = true
       end
       return false
+    end
+
+    # List of moves that ignore abilities
+    MOVES_IGNORING_ABILITIES = %i[sunsteel_strike moongeist_beam photon_geyser]
+    # Tell if the Pokémon is using a move ignoring ability
+    # @return [Boolean]
+    def current_move_ignoring_ability?
+      return $scene.logic.turn_actions.any? do |a|
+        a.is_a?(Battle::Actions::Attack) &&
+        Battle::Actions::Attack.from(a).launcher == self &&
+        MOVES_IGNORING_ABILITIES.include?(Battle::Actions::Attack.from(a).move.db_symbol)
+      end
     end
 
     # Return the Pokemon rareness
