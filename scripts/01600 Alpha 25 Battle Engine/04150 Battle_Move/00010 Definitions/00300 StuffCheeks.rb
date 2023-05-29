@@ -13,7 +13,10 @@ module Battle
 
         return true
       end
-
+      
+      # Get the reason why the move is disabled
+      # @param user [PFM::PokemonBattler] user of the move
+      # @return [#call] Block that should be called when the move is disabled
       def disable_reason(user)
         return proc { @logic.scene.display_message_and_wait(parse_text_with_pokemon(60, 508, user)) } unless user.hold_berry?(user.battle_item_db_symbol)
 
