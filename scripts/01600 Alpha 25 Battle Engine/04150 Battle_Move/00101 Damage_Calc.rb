@@ -34,7 +34,8 @@ module Battle
       damage = (damage * calc_type_n_multiplier(target, :type2, types)).floor            ; log_data("damage = #{damage} # after type2")
       damage = (damage * calc_type_n_multiplier(target, :type3, types)).floor            ; log_data("damage = #{damage} # after type3")
       damage = (damage * calc_mod3(user, target)).floor                                  ; log_data("damage = #{damage} # after mod3")
-      target_hp = target.effects.has?(:substitute) ? target.effects.get(:substitute).hp : target.hp
+      target_hp = target.effects.get(:substitute).hp if (target.effects.has?(:substitute) && !user.has_ability?(:infiltrator) && !self.authentic?)
+      target_hp ||= target.hp
       damage = damage.clamp(1, target_hp)                                                ; log_data("damage = #{damage} # after clamp")
 
       return damage
