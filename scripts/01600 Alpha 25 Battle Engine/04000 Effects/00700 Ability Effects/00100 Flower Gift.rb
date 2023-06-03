@@ -33,6 +33,18 @@ module Battle
 
           return move.special? && ($env.sunny? || $env.hardsun?) ? 1.5 : 1
         end
+
+        # Function called after the weather was changed (on_post_weather_change)
+        # @param handler [Battle::Logic::WeatherChangeHandler]
+        # @param weather_type [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
+        # @param last_weather [Symbol] :none, :rain, :sunny, :sandstorm, :hail, :fog
+        def on_post_weather_change(handler, weather_type, last_weather)
+          original_form = @target.form
+          return unless @target.form_generation(-1) != original_form
+
+          handler.scene.visual.show_ability(@target)
+          handler.scene.visual.show_switch_form_animation(@target)
+        end
       end
       register(:flower_gift, FlowerGift)
     end
