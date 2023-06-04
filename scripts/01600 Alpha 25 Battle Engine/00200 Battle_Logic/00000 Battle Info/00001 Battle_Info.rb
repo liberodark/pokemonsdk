@@ -75,7 +75,8 @@ module Battle
         @battle_bgm = hash[:battle_bgm] || guess_battle_bgm
         @additional_money = 0
         @victory_texts = hash[:victory_texts] || []
-        @defeat_texts = hash [:defeat_texts] || []
+        @defeat_texts = hash[:defeat_texts] || []
+        @background_name = hash[:background_name] || $game_temp.battleback_name.to_s
       end
 
       # Tell if the battle allow exp

@@ -491,7 +491,6 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00400 Groun
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00500 Effects.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/01000 MoveHistory.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/01100 DamageHistory.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00001 Battle_Info.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00100 Logic.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00101 Battler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00102 Actions.rb
@@ -500,6 +499,8 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00104 end of 
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00105 Handlers.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00106 Effects.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00400 MegaEvolve.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00000 Battle Info/00001 Battle_Info.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00000 Battle Info/00010 Background.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00001 Handlers/01000 ChangeHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00001 Handlers/01001 StatChangeHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00001 Handlers/01002 ItemChangeHandler.rb
