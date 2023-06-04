@@ -42,9 +42,9 @@ module Battle
         # @param move [Battle::Move]
         # @return [Boolean] if the target is evading the move
         def on_move_prevention_target(user, target, move)
-          return unless @super_effective_types.any? { |super_effective_type| move.definitive_types(user, target).include?(super_effective_type) } 
-          return if move.status?
-          return unless target.type_flying?
+          return true unless @super_effective_types.any? { |super_effective_type| move.definitive_types(user, target).include?(super_effective_type) } 
+          return true if move.status?
+          return true unless target.type_flying?
 
           move.scene.display_message_and_wait(parse_text(18, 279))
           return false

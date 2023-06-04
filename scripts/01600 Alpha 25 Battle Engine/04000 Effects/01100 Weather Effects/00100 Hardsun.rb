@@ -8,7 +8,6 @@ module Battle
         # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
         def on_end_turn_event(logic, scene, battlers)
           scene.visual.show_rmxp_animation(battlers.first || logic.battler(0, 0), 492)
-          return false
         end
 
         # Function called when we try to check if the target evades the move
@@ -17,7 +16,7 @@ module Battle
         # @param move [Battle::Move]
         # @return [Boolean] if the target is evading the move
         def on_move_prevention_target(user, target, move)
-          return unless move.type_water?
+          return false unless move.type_water?
 
           move.scene.display_message_and_wait(parse_text(18, 276))
           return true
