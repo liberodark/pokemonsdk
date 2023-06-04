@@ -287,6 +287,17 @@ module Battle
         @logic.battle_phase_end_caught
       end
       @next_update = caught ? :battle_end : :trigger_all_AI
+      should_activate_ball_fetch?(item_wrapper)
+    end
+
+    # Method to know if BallFetch should activate or not
+    # @param item_wrapper [PFM::ItemDescriptor::Wrapper]
+    def should_activate_ball_fetch?(item_wrapper)
+      result = logic.all_alive_battlers.select { |battler| battler.has_ability?(:ball_fetch) && logic.trainer_battlers.include?(battler) }
+      return if result.empty?
+
+      $bag.last_ball_used_db_symbol = item_wrapper.item.db_symbol
+      @logic.ball_fetch_on_field = result.sort_by(&:spd).reverse
     end
   end
 end

@@ -16,6 +16,9 @@ module PFM
     # Set the last battle item
     # @return [Symbol]
     attr_accessor :last_battle_item_db_symbol
+    # Set the last ball used
+    # @return [Symbol]
+    attr_accessor :last_ball_used_db_symbol
     # Tell if the bag is alpha sorted
     # @return [Boolean]
     attr_accessor :alpha_sorted
@@ -37,6 +40,7 @@ module PFM
       @shortcut = Array.new(SHORTCUT_AMOUNT, :__undef__)
       @locked = false
       @last_battle_item_db_symbol = :__undef__
+      @last_ball_used_db_symbol = :__undef__
       @alpha_sorted = false
     end
 

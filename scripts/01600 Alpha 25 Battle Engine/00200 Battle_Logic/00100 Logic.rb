@@ -42,6 +42,9 @@ module Battle
     attr_reader :generic_rng
     # If the battle is in debug and forcing the end of it
     attr_accessor :debug_end_of_battle
+    # All the Pokemon with Ball Fetch on the field sorted by decreasing speed when the player fails the capture
+    # @return [Array<PFM::PokemonBattler>]
+    attr_accessor :ball_fetch_on_field
 
     # Create a new Logic instance
     # @param scene [Scene] scene that hold the logic object
@@ -67,7 +70,8 @@ module Battle
       @switch_request = []
       @evolve_request = []
       $game_temp.battle_turn = 0
-
+      $bag.last_ball_used_db_symbol = :__undef__
+      @ball_fetch_on_field = []
     end
 
     # Safe to_s & inspect
