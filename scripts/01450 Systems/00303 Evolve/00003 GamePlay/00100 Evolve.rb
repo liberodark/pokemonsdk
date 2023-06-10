@@ -71,7 +71,7 @@ module GamePlay
       $game_system.bgm_restore2
     end
 
-    def evolution_first_step 
+    def evolution_first_step
       Audio.bgm_play(EVOLVE_MUSIC)
       $game_system.cry_play(@pokemon.id)
       @message_window.auto_skip = true
@@ -125,7 +125,11 @@ module GamePlay
     end
 
     def create_background
-      background_filename = Battle::Visual.allocate.send(:background_name)
+      # TODO: support gif
+      bi = @__last_scene.is_a?(Battle::Scene) ?  @__last_scene.battle_info : Battle::Logic::BattleInfo.new
+      background_filename = bi.find_background_name_to_display do |filename|
+        next RPG::Cache.battleback_exist?(filename)
+      end
       @background = Sprite.new(@viewport).set_bitmap(background_filename, :battleback)
     end
 

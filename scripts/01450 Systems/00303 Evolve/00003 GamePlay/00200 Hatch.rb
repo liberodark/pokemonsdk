@@ -165,7 +165,11 @@ module GamePlay
 
     # Create the background
     def create_background
-      background_filename = Battle::Visual.allocate.send(:background_name)
+      # TODO: support gif
+      bi = @__last_scene.is_a?(Battle::Scene) ?  @__last_scene.battle_info : Battle::Logic::BattleInfo.new
+      background_filename = bi.find_background_name_to_display do |filename|
+        next RPG::Cache.battleback_exist?(filename)
+      end
       @background = Sprite.new(@viewport).set_bitmap(background_filename, :battleback)
     end
 
