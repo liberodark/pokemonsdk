@@ -120,13 +120,10 @@ module UI
     # Set the Pokemon used to show the hold image
     # @param pokemon [PFM::Pokemon, nil]
     def data=(pokemon)
-      if pokemon
-        item_id = ($game_temp.in_battle ? pokemon.battle_item : pokemon.item_holding) || 0
-        self.visible = item_id != 0
-      else
-        self.visible = false
-      end
-      self.visible = (pokemon ? pokemon.item_holding != 0 : false)
+      return (self.visible = false) unless pokemon
+
+      item_id = ($game_temp.in_battle ? pokemon.battle_item : pokemon.item_holding) || 0
+      self.visible = item_id.positive?
     end
   end
 
@@ -135,13 +132,11 @@ module UI
     # Set the Pokemon used to show the hold image
     # @param pokemon [PFM::Pokemon, nil]
     def data=(pokemon)
-      if pokemon
-        item_id = ($game_temp.in_battle ? pokemon.battle_item : pokemon.item_holding) || 0
-        self.visible = item_id != 0
-        set_bitmap(data_item(item_id).icon, :icon) if visible
-      else
-        self.visible = false
-      end
+      return (self.visible = false) unless pokemon
+
+      item_id = ($game_temp.in_battle ? pokemon.battle_item : pokemon.item_holding) || 0
+      self.visible = item_id.positive?
+      set_bitmap(data_item(item_id).icon, :icon) if visible
     end
   end
 
