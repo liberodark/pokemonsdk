@@ -4,16 +4,19 @@ module Battle
     class AbilityChangeHandler < ChangeHandlerBase
       include Hooks
 
-      CANT_OVERWRITE_ABILITIES = %i[battle_bond comatose disguise multitype power_construct rks_system schooling shields_down stance_change zen_mode]
+      CANT_OVERWRITE_ABILITIES = %i[battle_bond comatose disguise multitype power_construct rks_system schooling shields_down stance_change zen_mode gulp_missile]
 
       RECEIVER_CANT_COPY_ABILITIES = %i[receiver power_of_alchemy trace forecast flower_gift multitype illusion wonder_guard zen_mode imposter
-                                        stance_change power_construct schooling comatose shields_down disguise rks_system battle_bond]
-      # Case of a move that fail if the target has this ability
+                                        stance_change power_construct schooling comatose shields_down disguise rks_system battle_bond gulp_missile
+      ]
+      
+      # These moves fail if the target has these abilities
       SKILL_BLOCKING_ABILITIES = {
         entrainment: %i[truant],
         role_play: %i[flower_gift forecast illusion imposter power_of_alchemy receiver trace wonder_guard],
         simple_beam: %i[simple truant],
-        skill_swap: %i[illusion wonder_guard]
+        skill_swap: %i[illusion wonder_guard],
+        worry_seed: %i[gulp_missile]
       }
       # Case of a ability that fail
       ABILITY_BLOCKING_ABILITIES = {

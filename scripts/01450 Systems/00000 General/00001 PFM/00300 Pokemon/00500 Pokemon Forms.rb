@@ -184,6 +184,16 @@ module PFM
       return 0
     end
 
+    # Determine the form of Cramorant
+    # @param reason [Symbol]
+    def cramorant_form(reason)
+      return 0 if reason == :base
+      return 1 if reason == :arrokuda
+      return 2 if reason == :pikachu
+
+      return 0
+    end
+
     FORM_GENERATION[:unown] = proc { @form = @code % 28 }
     FORM_GENERATION[:castform] = proc do
       env = $env
@@ -238,5 +248,6 @@ module PFM
     FORM_CALIBRATE[:zygarde] = proc { |reason| @form = hp_rate <= 0.5 && reason == :battle ? @form | 1 : 3 }
     FORM_CALIBRATE[:morpeko] = proc { |reason| @form = reason == :battle ? 1 : 0 }
     FORM_CALIBRATE[:greninja] = proc { |reason| @form = reason == :battle ? 1 : 0 }
+    FORM_CALIBRATE[:cramorant] = proc { |reason| @form = cramorant_form(reason) }
   end
 end
