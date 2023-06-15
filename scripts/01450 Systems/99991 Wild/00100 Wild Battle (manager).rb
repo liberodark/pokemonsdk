@@ -165,7 +165,8 @@ module PFM
       return nil unless (group = current_selected_group)
 
       maxed = MAX_POKEMON_LEVEL_ABILITY.include?(creature_ability) && rand(100) < 50
-      all_creatures = (group.encounters * (group.is_double_battle ? 2 : 1)).map do |encounter|
+      is_double_battle = group.is_double_battle || $game_variables[Yuki::Var::Allied_Trainer_ID] > 0
+      all_creatures = (group.encounters * (is_double_battle ? 2 : 1)).map do |encounter|
         encounter.to_creature(maxed ? encounter.level_setup.range.end : nil)
       end
       creature_to_select = configure_creature(all_creatures)

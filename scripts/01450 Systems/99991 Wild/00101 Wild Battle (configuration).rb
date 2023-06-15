@@ -122,8 +122,9 @@ module PFM
       # @type [Array<Float>]
       reduced_rareness = real_rareness.reduce([]) { |acc, curr| acc << (curr.last + (acc.last || 0)) }
       max_rand = reduced_rareness.last
-      # This reducer prevents to select the exact same Creature twice
-      return (group.is_double_battle ? 2 : 1).times.reduce([]) do |acc, _|
+      # This reducer prevents to select the exact same Creature twice 
+      is_double_battle = group.is_double_battle || $game_variables[Yuki::Var::Allied_Trainer_ID] > 0
+      return (is_double_battle ? 2 : 1).times.reduce([]) do |acc, _|
         nb = Random::WILD_BATTLE.rand(max_rand.to_i)
         index = reduced_rareness.find_index { |i| i > nb } || real_rareness.size - 1
         creature = real_rareness[index].first
@@ -139,9 +140,13 @@ module PFM
     def configure_battle(enemy_arr, battle_id)
       return if (!enemy_arr.is_a? Array) || !enemy_arr || enemy_arr&.empty?
 
+      allied_trainer_id = $game_variables[Yuki::Var::Allied_Trainer_ID]
+      ally = data_trainer(allied_trainer_id) if allied_trainer_id.positive?
+
       has_roaming = enemy_arr.any? { |pokemon| roaming?(pokemon) }
       info = Battle::Logic::BattleInfo.new
       info.add_party(0, *info.player_basic_info)
+      info.add_party(0, ally.party.map(&:to_creature), ally.name, ally.class_name, nil, nil, nil, ally.ai) if allied_trainer_id.positive?
       info.add_party(1, enemy_arr, nil, nil, nil, nil, nil, has_roaming ? -1 : 0)
       info.battle_id = battle_id
       info.fishing = !@fish_battle.nil?
