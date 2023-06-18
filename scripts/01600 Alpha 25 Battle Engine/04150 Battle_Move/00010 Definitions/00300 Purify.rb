@@ -10,7 +10,7 @@ module Battle
       def move_usable_by_user(user, targets)
         return unless super
 
-        unless target.status? && !target.has_ability?(:comatose)
+        unless targets.any?(&:status?)
           return show_usage_failure(user) && false
         end
 
@@ -22,12 +22,13 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
-          next @scene.display_message_and_wait(parse_text(18, 106)) unless target.status? && !target.has_ability?(:comatose)
+          next unless target.status?
 
           @logic.status_change_handler.status_change_with_process(:cure, target, user, self)
-          hp = user.max_hp / 2
-          logic.damage_handler.heal(user, hp)
         end
+
+        hp = user.max_hp / 2
+        logic.damage_handler.heal(user, hp)
       end
     end
     Move.register(:s_purify, Purify)
