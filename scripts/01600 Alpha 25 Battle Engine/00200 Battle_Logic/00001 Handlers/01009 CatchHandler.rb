@@ -141,7 +141,11 @@ module Battle
 
       add_ball_rate_calculation(:timer_ball) do |target, _pkm_ally|
         # https://bulbapedia.bulbagarden.net/wiki/Timer_Ball#Manual_activation
-        next [(1 + ($game_temp.battle_turn - 1) * 1229.0 / 4096), 4].min * target.rareness
+        next [(1 + ($game_temp.battle_turn) * 1229.0 / 4096), 4].min * target.rareness
+      end
+
+      add_ball_rate_calculation(:dream_ball) do |target, _pkm_ally|
+        next target.rareness * (target.asleep? ? 4 : 1)
       end
 
       private
