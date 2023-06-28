@@ -44,7 +44,9 @@ module Studio
     # @param text_id [Integer] ID of the text in the file
     # @return [String] the text
     def get(file_id, text_id)
-      get_dialog_message(CSV_BASE + file_id, text_id)
+      return get_dialog_message(CSV_BASE + file_id, text_id) if file_id < 100_000
+
+      return get_dialog_message(file_id, text_id)
     end
 
     # Get a list of text from the text database

@@ -17,10 +17,14 @@ module Studio
     # @return [Array<CreatureInfo>]
     attr_reader :creatures
 
+    # Get the dex name
+    # @return [CSVAccess]
+    attr_reader :csv
+
     # Get the name of the dex
     # @return [String]
     def name
-      return CSVAccess.from(@name).get
+      return csv.get
     end
 
     # Data class describing a creature info in the dex
