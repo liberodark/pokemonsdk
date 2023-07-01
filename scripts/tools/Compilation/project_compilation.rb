@@ -60,11 +60,14 @@ module ProjectCompilation
 
   def compile_psdk_scripts
     puts 'Compiling PSDK scripts...'
-    lines = File.readlines(ScriptLoader::SCRIPT_INDEX_PATH).map(&:chomp)
+    env_lookup = File.exist?('.git') ? ['ALTERNATIVE_PATH'] : ['ALTERNATIVE_PATH', 'PSDK_BINARY_PATH']
+    path = env_lookup.map { |name| ENV[name] }.compact.first&.tr('\\', '/') || '.'
+    lines = File.readlines(File.join(path, 'pokemonsdk/scripts/script_index.txt')).map(&:chomp)
     EXCLUDED_SCRIPTS.each { |filename| lines.delete(filename) }
+
     lines.each do |filename|
       puts "Compiling #{filename}"
-      script = File.read("#{ENV['PSDK_BINARY_PATH']&.tr('\\', '/')}#{filename}")
+      script = File.read(File.join(path, filename.chomp))
       if filename.end_with?(VD_SCRIPT)
         @scripts.insert(@yuki_vd, Utils.compile(filename, script))
         @yuki_vd += 1
@@ -122,12 +125,12 @@ module ProjectCompilation
     File.binwrite(File.join(RELEASE_PATH, 'Game.yarb'), Utils.compile('Game/Boot.rb', game_script))
     # Write Game.rb
     File.write(File.join(RELEASE_PATH, 'Game.rb'), <<~'SCRIPT' )
-      RubyVM::InstructionSequence.load_from_binary(File.binread('Game.yarb')).eval
-      begin
-        $GAME_LOOP.call
-      rescue Exception
-        display_game_exception('An error occured during Game Loop.')
-      end
+    RubyVM::InstructionSequence.load_from_binary(File.binread('Game.yarb')).eval
+    begin
+      $GAME_LOOP.call
+    rescue Exception
+      display_game_exception('An error occured during Game Loop.')
+    end
     SCRIPT
   end
 
