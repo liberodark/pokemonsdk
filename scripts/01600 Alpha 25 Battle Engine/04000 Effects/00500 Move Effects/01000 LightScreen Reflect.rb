@@ -19,7 +19,6 @@ module Battle
       # @return [Float, Integer] multiplier
       def mod1_multiplier(user, target, move)
         return 1 if @bank != target.bank || move.critical_hit? || user.has_ability?(:infiltrator)
-        return 1 if move.be_method == :s_psyshock
         return 1 unless move.special?
 
         return $game_temp.vs_type == 2 ? (2 / 3.0) : 0.5
@@ -54,7 +53,6 @@ module Battle
       # @return [Float, Integer] multiplier
       def mod1_multiplier(user, target, move)
         return 1 if @bank != target.bank || move.critical_hit? || user.has_ability?(:infiltrator)
-        return 1 unless move.physical? || move.be_method == :s_psyshock
 
         return $game_temp.vs_type == 2 ? (2 / 3.0) : 0.5
       end

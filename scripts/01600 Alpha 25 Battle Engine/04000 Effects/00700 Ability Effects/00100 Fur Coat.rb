@@ -11,7 +11,6 @@ module Battle
           return 1 if target != @target
           return 1 unless user.can_be_lowered_or_canceled?
 
-          return 2 if move.be_method == :s_psyshock
           return move.physical? ? 2 : 1
         end
       end
