@@ -164,31 +164,32 @@
       "text": "pokemon",
       "backgroundColor": "#00000000",
       "color": "#FF0000",
-      "textDecoration": "line-through",
+      "textDecoration": "line-through"
     },
     {
       "text": "Pokemon",
       "backgroundColor": "#00000000",
       "color": "#FF0000",
-      "textDecoration": "line-through",
+      "textDecoration": "line-through"
     },
     {
       "text": "pkm",
       "backgroundColor": "#00000000",
       "color": "#FF0000",
-      "textDecoration": "line-through",
+      "textDecoration": "line-through"
     },
     {
       "text": "pkmn",
       "backgroundColor": "#00000000",
       "color": "#FF0000",
-      "textDecoration": "line-through",
+      "textDecoration": "line-through"
     },
     {
       "text": "db_symbol",
       "backgroundColor": "#00000000",
-      "color": "#569CD6",
-    },
+      "color": "#569CD6"
+    }
   ],
-  "todohighlight.include": ["**/*.rb"]
+  "todohighlight.include": ["**/*.rb"],
+  "cSpell.words": ["PSDK"]
 }

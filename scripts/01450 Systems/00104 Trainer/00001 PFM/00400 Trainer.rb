@@ -57,7 +57,7 @@ module PFM
       @badges = Array.new(6 * 8, false)
       @region = 0
       @game_version = Configs.infos.game_version
-      @current_version = PSDK_Version rescue 0
+      @current_version = PSDK_VERSION
       @time_counter = 0
       load_time
     end

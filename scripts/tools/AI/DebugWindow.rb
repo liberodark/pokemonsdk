@@ -19,10 +19,6 @@ module Debug
 
       # Run the AiWindow
       def run
-        if PSDK_RUNNING_UNDER_MAC
-          log_error 'AI Window cannot run on MACOS'
-          return
-        end
         init_window unless window
       end
 

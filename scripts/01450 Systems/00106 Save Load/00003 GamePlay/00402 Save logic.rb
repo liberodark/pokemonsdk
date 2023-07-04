@@ -89,7 +89,7 @@ module GamePlay
       def update_save_info
         $game_system.save_count += 1
         $trainer.update_play_time
-        $trainer.current_version = PSDK_Version
+        $trainer.current_version = PSDK_VERSION
         $trainer.game_version = Configs.infos.game_version
       end
 

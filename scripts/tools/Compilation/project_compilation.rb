@@ -23,7 +23,6 @@ module ProjectCompilation
     copy_lib unless ARGV.include?('skip_lib')
     copy_audio unless ARGV.include?('skip_audio')
     copy_binaries unless ARGV.include?('skip_binary')
-    # copy_plugins
   end
 
   def start_script_compilation
@@ -112,7 +111,6 @@ module ProjectCompilation
     # Compile real Game.rb
     game_script = %w[
       PARGV.rb
-      GameLoader/0_fix_update.rb
       GameLoader/1_setupConstantAndLoadPath.rb
       GameLoader/2_displayException.rb
       GameLoader/3_load_extensions.rb
@@ -122,6 +120,8 @@ module ProjectCompilation
       GameLoader/Z_main.rb
       GameLoader/51_load_game_compiled.rb
     ].collect { |filename| File.read("#{ScriptLoader::VSCODE_SCRIPT_PATH}/tools/#{filename}") }.join("\r\n\r\n")
+    # Make the game not depending on a specific file for the PSDK version
+    game_script.sub!('PSDK_VERSION = File.read("#{PSDK_PATH}/version.txt").to_i', "PSDK_VERSION = #{PSDK_VERSION}")
     File.binwrite(File.join(RELEASE_PATH, 'Game.yarb'), Utils.compile('Game/Boot.rb', game_script))
     # Write Game.rb
     File.write(File.join(RELEASE_PATH, 'Game.rb'), <<~'SCRIPT' )
@@ -165,7 +165,8 @@ module ProjectCompilation
     File.copy_stream("#{ScriptLoader::VSCODE_SCRIPT_PATH.split('/')[0..-2].join('/')}/version.txt", File.join(RELEASE_PATH, 'pokemonsdk/version.txt'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'Fonts'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'Saves'))
-    # Dir.mkdir!(File.join(RELEASE_PATH, 'plugins'))
+    return if PSDK_PLATFORM != :windows
+
     Dir.mkdir!(File.join(RELEASE_PATH, 'ruby_builtin_dlls'))
     lib_dirs = Utils.lib_files_to_copy.collect { |filename| File.dirname(filename) }.uniq
     lib_dirs.each do |dirname|
@@ -174,10 +175,16 @@ module ProjectCompilation
   end
 
   def copy_lib
+    return if PSDK_PLATFORM == :android
     puts 'Copying Ruby Library (add skip_lib to arguments to skip this part)'
-    Utils.lib_files_to_copy.each do |filename|
-      real_filename = "#{ENV['PSDK_BINARY_PATH']}#{filename}".tr('\\', '/')
-      IO.copy_stream(real_filename, File.join(RELEASE_PATH, filename))
+    if PSDK_PLATFORM == :windows
+      Utils.lib_files_to_copy.each do |filename|
+        IO.copy_stream("#{ENV['PSDK_BINARY_PATH']}#{filename}".tr('\\', '/'), File.join(RELEASE_PATH, filename))
+      end
+    else
+      # Note: we need the setup.sh and additional files to make it run
+      # Note: -r = recursive -n = skip existing files
+      system("cp -r -n \"#{PSDK_LIB_PATH}/..\" \"#{RELEASE_PATH}/ruby-dist\"")
     end
   end
 
@@ -190,6 +197,8 @@ module ProjectCompilation
   end
 
   def copy_binaries
+    return make_game_sh if PSDK_PLATFORM != :windows
+
     puts 'Copying binaries'
     Dir["#{ENV['PSDK_BINARY_PATH']&.tr('\\', '/')}ruby_builtin_dlls/**"].each do |filename|
       next if File.directory?(filename)
@@ -206,13 +215,19 @@ module ProjectCompilation
     ].each { |filename| IO.copy_stream("#{ENV['PSDK_BINARY_PATH']&.tr('\\', '/')}#{filename}", File.join(RELEASE_PATH, filename)) }
   end
 
-  def copy_plugins
-    return # No longer needed
+  def make_game_sh
+    return if PSDK_PLATFORM == :android
 
-    puts 'Copying plugins'
-    %w[
-      plugins/LiteIGD.rb
-    ].each { |filename| IO.copy_stream(filename, File.join(RELEASE_PATH, filename)) }
+    file_content = <<~EOGAMESH
+      #!/bin/bash
+      cd ruby-dist
+      source setup.sh
+      cd ..
+      ruby Game.rb "$@"
+    EOGAMESH
+    path = File.join(RELEASE_PATH, 'Game.sh')
+    File.write(path, file_content) if !File.exist?(path) || File.read(path) != file_content
+    system("chmod u+x \"#{path}\"")
   end
 
   def add_graphics_folder(vd_filename, path_from_graphics, recursive = true)

@@ -17,7 +17,7 @@ raise 'You did not loaded LiteRGSS2' unless defined?(LiteRGSS::DisplayWindow)
 #     This function instanciate a shader by it's name_sym so you don't have to load the files several time and you have all the correct data
 # @note `#version 120` will be automatically added to the begining of the file if not present
 class Shader < LiteRGSS::Shader
-  SHADER_VERSION = PSDK_RUNNING_UNDER_MAC ? "#version 120\n" : "#version 130\n"
+  SHADER_VERSION = PSDK_PLATFORM == :macos ? "#version 120\n" : "#version 130\n"
   COLOR_UNIFORM = "\\0uniform vec4 color;\n"
   COLOR_PROCESS = "\n  frag.rgb = mix(frag.rgb, color.rgb, color.a);\\0"
   TONE_UNIFORM = "\\0uniform vec4 tone;\nconst vec3 lumaF = vec3(.299, .587, .114);\n"

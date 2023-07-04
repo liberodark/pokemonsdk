@@ -57,7 +57,7 @@ module Yuki
       str << format("Ligne : %<line>d\r\n", line: source_line)
       str << format("Date : %<date>s\r\n", date: Time.new.strftime('%d/%m/%Y %H:%M:%S'))
       str << format("Game Version : %<game_version>s\r\n", game_version: Configs.infos.game_version)
-      str << format("Logiciel : %<software>s %<version>s\r\n", software: Software, version: PSDK_Version.to_str_version)
+      str << format("Logiciel : %<software>s %<version>s\r\n", software: Software, version: PSDK_VERSION_STRING)
       str << format("Script used by eval command : \r\n%<script>s\r\n\r\n", script: @eval_script) if @eval_script
       str << 'Backtraces'.center(80, '=')
       str << "\r\n"
@@ -108,7 +108,7 @@ module Yuki
       str << format("Type : %<type>s\r\n", type: e.class)
       str << format("Date : %<date>s\r\n", date: Time.new.strftime('%d/%m/%Y %H:%M:%S'))
       str << format("Game Version : %<game_version>s\r\n", game_version: Configs.infos.game_version)
-      str << format("Logiciel : %<software>s %<version>s\r\n", software: Software, version: PSDK_Version.to_str_version)
+      str << format("Logiciel : %<software>s %<version>s\r\n", software: Software, version: PSDK_VERSION_STRING)
       str << format("Script used by eval command : \r\n%<script>s\r\n", script: @eval_script) if @eval_script
       str << (e.backtrace || ['Unkown Sources...']).join("\r\n")
       return str
@@ -174,7 +174,7 @@ module Yuki
     # @param images [Array<Image>]
     def show_window_and_wait(texts_to_show, images)
       @running = true
-      if PSDK_RUNNING_UNDER_MAC
+      if PSDK_PLATFORM == :macos
         show_window_and_wait_internal(texts_to_show, images) { update_graphics }
       else
         Thread.new { show_window_and_wait_internal(texts_to_show, images) }

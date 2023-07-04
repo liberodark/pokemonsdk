@@ -1,7 +1,6 @@
 ScriptLoader.load_tool('PARGV')
 PARGV.parse
 ScriptLoader.load_tool('Studio/Main') if PARGV.game_launched_by_studio?
-ScriptLoader.load_tool('GameLoader/0_fix_update')
 ScriptLoader.load_tool('GameLoader/1_setupConstantAndLoadPath')
 ScriptLoader.load_tool('GameLoader/2_displayException')
 ScriptLoader.load_tool('GameLoader/3_load_extensions')

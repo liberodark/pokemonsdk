@@ -34,10 +34,6 @@ module Graphics
       return unless (cmd = @__cmd_to_eval)
       @__cmd_to_eval = nil
       begin
-        if cmd.match?(/^Game /i)
-          system(PSDK_RUNNING_UNDER_WINDOWS ? "start #{cmd}" : cmd)
-          exit!
-        end
         puts Object.instance_eval(cmd)
       rescue StandardError, SyntaxError
         print "\r"

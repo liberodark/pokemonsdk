@@ -1,10 +1,19 @@
-# Constant telling PSDK runs under windows
-PSDK_RUNNING_UNDER_WINDOWS = !ENV['windir'].nil?
+# Constant telling on which platform PSDK is running (:windows, :android, :macos, :unix)
+PSDK_PLATFORM = -> () do
+  next :windows if !ENV['windir'].nil?
+  next :android if RUBY_PLATFORM.include? "android"
+  next :macos if RUBY_PLATFORM.include? "darwin"
+  next :unix
+end.call
 
-# Constant telling PSDK runs under mac
-PSDK_RUNNING_UNDER_MAC = RUBY_PLATFORM.include? "darwin"
+# Constant telling where the PSDK libs are
+PSDK_LIB_PATH = -> () do
+  next '' if PSDK_PLATFORM == :android
 
-PSDK_RUNNING_UNDER_ANDROID = RUBY_PLATFORM.include? "android"
+  game_deps = (ENV['GAMEDEPS'] || ENV['PSDK_BINARY_PATH'] || '.').tr('\\', '/')
+  next File.join(game_deps, 'lib') if PSDK_PLATFORM == :windows
+  next File.join(game_deps, 'ruby-dist', 'lib')
+end.call
 
 # Constant telling where is the PSDK master installation
 PSDK_PATH =
@@ -12,22 +21,13 @@ PSDK_PATH =
   (ENV['PSDK_BINARY_PATH'] && File.join(ENV['PSDK_BINARY_PATH'].tr('\\', '/'), 'pokemonsdk')) ||
   ((ENV['APPDATA'] || ENV['HOME']).dup.force_encoding('UTF-8') + '/.pokemonsdk')
 
-# Fix $LOAD_PATH
-# paths = $LOAD_PATH[0, 10]
-# $LOAD_PATH.clear
-# $LOAD_PATH.concat(paths.collect { |path| path.dup.force_encoding('UTF-8').freeze })
-# Add . and ./plugins to load_path
-# $LOAD_PATH << '.' unless $LOAD_PATH.include?('.')
 $LOAD_PATH << './plugins' unless $LOAD_PATH.include?('./plugins')
 
 ENV['SSL_CERT_FILE'] ||= './lib/cert.pem' if $0 == 'Game.rb' # Launched from PSDK
 
-begin
-  PSDK_Version = File.read("#{PSDK_PATH}/version.txt").to_i
-rescue Exception
-  puts('Failed to load PSDK Version')
-  PSDK_Version = 6401
-end
-# Display PSDK version
-arr = [PSDK_Version].pack('I>').unpack('C*')
-puts("\e[31mPSDK Version : #{arr.join('.').gsub(/^(0\.)+/, '')}\e[37m") # [PSDK_Version].pack('I>').unpack('C*').join('.')
+# Constant giving the current PSDK version
+PSDK_VERSION = File.read("#{PSDK_PATH}/version.txt").to_i
+# Constant giving the current PSDK version as human readable version
+PSDK_VERSION_STRING = [PSDK_VERSION].pack('I>').unpack('C*').join('.').gsub(/^(0\.)+/, '')
+
+puts("\e[31mPSDK Version : #{PSDK_VERSION_STRING}\e[37m")

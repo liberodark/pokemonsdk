@@ -92,7 +92,7 @@ class PluginManager
   # @return [Boolean]
   def need_to_refresh_plugins?
     return true if @plugin_filenames.size != @old_plugins.size
-    return true if @old_plugins.any? { |plugin| plugin.psdk_version != PSDK_Version }
+    return true if @old_plugins.any? { |plugin| plugin.psdk_version != PSDK_VERSION }
     return true if @old_plugins.any? { |plugin| !@plugin_filenames.include?(PluginManager.filename(plugin)) }
     return true if PARGV[:util].include?('plugin')
 
@@ -259,7 +259,7 @@ class PluginManager
       @config_data = @yuki_vd.read_data("\x00")
       # @type [Config]
       @config = Marshal.load(@config_data)
-      @config.psdk_version = PSDK_Version
+      @config.psdk_version = PSDK_VERSION
       validate_file
     end
 
