@@ -60,10 +60,12 @@ module PFM
     # @param pokemon [PFM::Pokemon] the Pokemon to store
     # @return [Boolean] if the Pokemon has been stored
     def store(pokemon)
-      return true if store_in_current_box(pokemon)
-      return false unless switch_to_box_with_space
+      unless store_in_current_box(pokemon)
+        switch_to_box_with_space
+        store_in_current_box(pokemon)
+      end
 
-      return store_in_current_box(pokemon)
+      return true
     end
 
     # Get the current box object
@@ -217,7 +219,8 @@ module PFM
     # @param pokemon [PFM::Pokemon] the Pokemon to store
     # @return [Boolean] if the Pokemon has been stored
     def store_in_current_box(pokemon)
-      return false unless (position = @boxes[@current_box].content.index(nil))
+      position = @boxes[@current_box]&.content&.index(nil)
+      return false if @boxes[@current_box].nil? || position.nil?
 
       store_pokemon_at(pokemon, position)
       return true
@@ -226,9 +229,11 @@ module PFM
     # Find a box with space and change @current_box if found
     # @return [Boolean] if a box with space could be found
     def switch_to_box_with_space
-      unless (box_index = @boxes.find_index { |box| box.content.include?(nil) })
-        add_box('')
-        return false unless (box_index = @boxes.find_index { |box| box.content.include?(nil) })
+      box_index = @boxes.find_index { |box| box.content.include?(nil) }
+
+      if box_index.nil?
+        add_box(text_get(16, 1).sub('2', (@boxes.size + 1).to_s))
+        box_index = @boxes.size - 1
       end
 
       @current_box = box_index
