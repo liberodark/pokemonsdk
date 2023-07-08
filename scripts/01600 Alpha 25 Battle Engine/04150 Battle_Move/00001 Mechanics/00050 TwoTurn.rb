@@ -109,7 +109,7 @@ module Battle
         # @param user [PFM::PokemonBattler] user of the move
         # @param targets [Array<PFM::PokemonBattler>] expected targets
         def prepare_turn2(user, targets)
-          user.effects.add(Effects::ForceNextMoveBase.new(@logic, user, self, targets))
+          user.effects.add(Effects::ForceNextMoveBase.new(@logic, user, self, targets, turn_count))
           user.effects.add(Effects::OutOfReachBase.new(@logic, user, self, can_hit_moves)) if can_hit_moves
         end
         alias two_turn_prepare_turn2 prepare_turn2
@@ -148,6 +148,12 @@ module Battle
         # @return [Array<Symbol>]
         def can_hit_moves
           nil
+        end
+
+        # Return the number of turns the effect works
+        # @return Integer
+        def turn_count
+          return 2
         end
       end
     end

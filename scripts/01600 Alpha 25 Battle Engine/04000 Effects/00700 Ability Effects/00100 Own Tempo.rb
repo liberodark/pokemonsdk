@@ -12,7 +12,7 @@ module Battle
         def on_status_prevention(handler, status, target, launcher, skill)
           return if target != @target
           return unless status == :confusion
-          return if launcher&.can_be_lowered_or_canceled?
+          return if launcher && !launcher.can_be_lowered_or_canceled?
 
           return handler.prevent_change do
             handler.scene.visual.show_ability(target)

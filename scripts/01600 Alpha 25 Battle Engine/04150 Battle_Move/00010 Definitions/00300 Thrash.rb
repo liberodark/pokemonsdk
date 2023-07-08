@@ -9,24 +9,33 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @param reason [Symbol] why the move failed: :usable_by_user, :accuracy, :immunity
       def on_move_failure(user, targets, reason)
-        user.effects.get(:force_next_move_disturbable)&.disturb
+        # @type [Effects::ForceNextMoveBase]
+        effect = user.effects.get(:force_next_move_base)
+        return if effect.nil?
+        return effect.kill unless effect.triggered?
+
+        logic.status_change_handler.status_change_with_process(:confusion, user, nil, self) unless user.confused?
       end
 
       # Function that deals the effect to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        # @type [Effects::ForceNextMoveDisturbable]
-        effect = user.effects.get(:force_next_move_disturbable)
+        # @type [Effects::ForceNextMoveBase]
+        effect = user.effects.get(:force_next_move_base)
         if effect
-          logic.status_change_handler.status_change_with_process(:confusion, user, nil, self) if !effect.disturbed?
+          logic.status_change_handler.status_change_with_process(:confusion, user, nil, self) if effect.triggered? && !user.confused?
         else
-          effect = Effects::ForceNextMoveDisturbable.new(logic, user, self, actual_targets, logic.generic_rng.rand(2..3))
-          user.effects.replace(effect, &:force_next_move?)
+          user.effects.add(Effects::ForceNextMoveBase.new(logic, user, self, actual_targets, turn_count))
         end
       end
-    end
 
+      # Return the number of turns the effect works
+      # @return Integer
+      def turn_count
+        return @logic.generic_rng.rand(2..3)
+      end
+    end
     Move.register(:s_thrash, Thrash)
     Move.register(:s_outrage, Thrash)
   end

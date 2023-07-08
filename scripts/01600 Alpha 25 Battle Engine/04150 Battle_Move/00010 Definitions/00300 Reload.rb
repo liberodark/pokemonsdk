@@ -19,7 +19,7 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        user.effects.add(Effects::ForceNextMoveBase.new(@logic, user, self, actual_targets))
+        user.effects.add(Effects::ForceNextMoveBase.new(@logic, user, self, actual_targets, turn_count))
       end
 
       # Event called if the move failed
@@ -28,6 +28,12 @@ module Battle
       # @param reason [Symbol] why the move failed: :usable_by_user, :accuracy, :immunity, :pp
       def on_move_failure(user, targets, reason)
         @scene.display_message_and_wait(parse_text_with_pokemon(19, 851, user)) if reason == :usable_by_user && user.effects.has?(:force_next_move_base)
+      end
+
+      # Return the number of turns the effect works
+      # @return Integer
+      def turn_count
+        return 2
       end
     end
     Move.register(:s_reload, Reload)

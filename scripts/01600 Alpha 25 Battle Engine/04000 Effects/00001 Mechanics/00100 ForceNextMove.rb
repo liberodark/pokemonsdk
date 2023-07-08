@@ -70,7 +70,7 @@ module Battle
         # @param move [Battle::Move]
         # @param targets [Array<PFM::PokemonBattler>]
         # @param counter [Integer] number of turn the move is forced to be used
-        def init_force_next_move(move, targets, counter = 2)
+        def init_force_next_move(move, targets, counter)
           @move = move
           @targets = targets
           self.counter = counter

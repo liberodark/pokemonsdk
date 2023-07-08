@@ -529,7 +529,6 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00001 EffectsHandl
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00100 EffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00200 PokemonTiedEffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00200 PositionTiedEffectBase.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00001 Mechanics/00100 Disturbable.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00001 Mechanics/00100 ForceFlying.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00001 Mechanics/00100 ForceNextMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00001 Mechanics/00100 Mark.rb
