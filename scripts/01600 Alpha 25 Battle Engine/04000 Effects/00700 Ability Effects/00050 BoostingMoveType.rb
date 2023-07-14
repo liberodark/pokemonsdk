@@ -44,9 +44,10 @@ module Battle
         register(:overgrow, :grass) { |user| user.hp_rate <= 0.333 }
         register(:torrent, :water) { |user| user.hp_rate <= 0.333 }
         register(:swarm, :bug) { |user| user.hp_rate <= 0.333 }
-        register(:"dragon's maw", :dragon)
+        register(:dragon_s_maw, :dragon)
         register(:steelworker, :steel)
-        register(:transitor, :electric)
+        register(:transistor, :electric)
+        register(:rocky_payload, :rock)
       end
     end
   end
