@@ -2,15 +2,22 @@ module ProjectCompilation
   ScriptLoader.load_tool('Compilation/project_compilation_utils')
   ScriptLoader.load_tool('Compilation/project_compilation_data_builder')
   ScriptLoader.load_tool('Compilation/project_compilation_graphics_builder')
-  VD_SCRIPT = 'Yuki__VD.rb'
+  ScriptLoader.load_tool('Compilation/project_compilation_scripts')
   RELEASE_PATH = 'Release'
   GRAPHICS_FILES = {}
   NO_RECURSIVE_PATH = []
   DATA_FILES = {}
-
-  @scripts = []
-  @next_scripts = []
-  @yuki_vd = 0
+  GAME_RB_SCRIPTS = %w[
+    PARGV.rb
+    GameLoader/1_setupConstantAndLoadPath.rb
+    GameLoader/2_displayException.rb
+    GameLoader/3_load_extensions.rb
+    GameLoader/31_ruby_dependencies.rb
+    GameLoader/32_console_compiled.rb
+    GameLoader/41_load_data_compiled.rb
+    GameLoader/Z_main.rb
+    GameLoader/51_load_game_compiled.rb
+  ]
 
   module_function
 
@@ -26,103 +33,21 @@ module ProjectCompilation
   end
 
   def start_script_compilation
-    compile_rmxp_scripts
-    # Compile script from PSDK
-    compile_psdk_scripts
-    # Compile script from project
-    compile_vscode_scripts(ScriptLoader::PROJECT_SCRIPT_PATH)
-    save_scripts
+    collector = ScriptCollector.new(ScriptCollector::Script)
+    saver = ScriptCollector::ScriptSaver.new(collector.collect_scripts([ScriptLoader::PROJECT_SCRIPT_PATH]))
+    saver.save(File.join(RELEASE_PATH, 'Data', 'Scripts.dat'))
   end
 
-  def compile_rmxp_scripts
-    ban1 = 'config'
-    ban2 = 'boot'
-    ban3 = '_'
-    load_data('Data/Scripts.rxdata').each do |script|
-      # @type [String]
-      name = script[1].force_encoding(Encoding::UTF_8)
-      next if name.downcase.start_with?(ban1, ban2, ban3)
-      @next_scripts << Utils.compile(name, Zlib::Inflate.inflate(script[2]).force_encoding(Encoding::UTF_8))
-    end
-    GC.start
-  end
-
-  EXCLUDED_SCRIPTS = [
-    'pokemonsdk/scripts/01500 Yuki/01200 Yuki__WorldMapEditor.rb',
-    'pokemonsdk/scripts/01500 Yuki/02400 Yuki_Debug.rb',
-    'pokemonsdk/scripts/01500 Yuki/02401 Yuki__Debug MainUI.rb',
-    'pokemonsdk/scripts/01500 Yuki/02402 Debug_SystemTags.rb',
-    'pokemonsdk/scripts/01500 Yuki/02403 Debug_Groups.rb',
-    'pokemonsdk/scripts/00700 Ajout_PSDK/00200 Tester.rb',
-    'pokemonsdk/scripts/00700 Ajout_PSDK/01700 Debugger.rb'
-  ]
-
-  def compile_psdk_scripts
-    puts 'Compiling PSDK scripts...'
-    env_lookup = File.exist?('.git') ? ['ALTERNATIVE_PATH'] : ['ALTERNATIVE_PATH', 'PSDK_BINARY_PATH']
-    path = env_lookup.map { |name| ENV[name] }.compact.first&.tr('\\', '/') || '.'
-    lines = File.readlines(File.join(path, 'pokemonsdk/scripts/script_index.txt')).map(&:chomp)
-    EXCLUDED_SCRIPTS.each { |filename| lines.delete(filename) }
-
-    lines.each do |filename|
-      puts "Compiling #{filename}"
-      script = File.read(File.join(path, filename.chomp))
-      if filename.end_with?(VD_SCRIPT)
-        @scripts.insert(@yuki_vd, Utils.compile(filename, script))
-        @yuki_vd += 1
-      elsif Utils.script_bootloader?(script)
-        Utils.process_bootloader(script, @scripts, File.dirname(filename))
-      else
-        @scripts << Utils.compile(filename, script)
-      end
-    end
-  end
-
-  def compile_vscode_scripts(path)
-    compile_scripts(path)
-    Dir[File.join(path, '*/')].grep(ScriptLoader::SCRIPT_FOLDER_REG).sort.each do |pathname|
-      compile_vscode_scripts(pathname)
-    end
-  end
-
-  def compile_scripts(path)
-    Dir[File.join(path, '*.rb')].sort.each do |filename|
-      next unless File.basename(filename) =~ /^[0-9]{5}[ _].*/
-
-      puts "Compiling #{filename}"
-      script = File.read(filename)
-      if filename.end_with?(VD_SCRIPT)
-        @scripts.insert(@yuki_vd, Utils.compile(filename, script))
-        @yuki_vd += 1
-      elsif Utils.script_bootloader?(script)
-        Utils.process_bootloader(script, @scripts, File.dirname(filename))
-      else
-        @scripts << Utils.compile(filename, script)
-      end
-    end
-  end
-
-  def save_scripts
-    File.binwrite(File.join(RELEASE_PATH, 'Data', 'Scripts.dat'), Zlib::Deflate.deflate(Marshal.dump(@scripts + @next_scripts)))
-    puts 'Script saved...'
+  def collect_game_rb_scripts
+    # Compile real Game.rb
+    game_script = GAME_RB_SCRIPTS.collect { |filename| File.read("#{ScriptLoader::VSCODE_SCRIPT_PATH}/tools/#{filename}") }.join("\r\n\r\n")
+    # Make the game not depending on a specific file for the PSDK version
+    game_script.sub!('PSDK_VERSION = File.read("#{PSDK_PATH}/version.txt").to_i', "PSDK_VERSION = #{PSDK_VERSION}")
+    return game_script
   end
 
   def make_game_rb
-    # Compile real Game.rb
-    game_script = %w[
-      PARGV.rb
-      GameLoader/1_setupConstantAndLoadPath.rb
-      GameLoader/2_displayException.rb
-      GameLoader/3_load_extensions.rb
-      GameLoader/31_ruby_dependencies.rb
-      GameLoader/32_console_compiled.rb
-      GameLoader/41_load_data_compiled.rb
-      GameLoader/Z_main.rb
-      GameLoader/51_load_game_compiled.rb
-    ].collect { |filename| File.read("#{ScriptLoader::VSCODE_SCRIPT_PATH}/tools/#{filename}") }.join("\r\n\r\n")
-    # Make the game not depending on a specific file for the PSDK version
-    game_script.sub!('PSDK_VERSION = File.read("#{PSDK_PATH}/version.txt").to_i', "PSDK_VERSION = #{PSDK_VERSION}")
-    File.binwrite(File.join(RELEASE_PATH, 'Game.yarb'), Utils.compile('Game/Boot.rb', game_script))
+    File.binwrite(File.join(RELEASE_PATH, 'Game.yarb'), Utils.compile('Game/Boot.rb', collect_game_rb_scripts))
     # Write Game.rb
     File.write(File.join(RELEASE_PATH, 'Game.rb'), <<~'SCRIPT' )
     RubyVM::InstructionSequence.load_from_binary(File.binread('Game.yarb')).eval
