@@ -7,7 +7,8 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        weight_index = MAXIMUM_WEIGHT.find_index { |weight| target.weight < weight } || MAXIMUM_WEIGHT.size
+        target_weight = (target.weight != target.data.weight) ? (user.can_be_lowered_or_canceled? ? target.weight : target.data.weight) : target.weight
+        weight_index = MAXIMUM_WEIGHT.find_index { |weight| target_weight < weight } || MAXIMUM_WEIGHT.size
         return 20 + 20 * weight_index
       end
     end

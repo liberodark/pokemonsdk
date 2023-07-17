@@ -7,7 +7,8 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        weight_percent = target.weight.to_f / user.weight
+        target_weight = (target.weight != target.data.weight) ? (user.can_be_lowered_or_canceled? ? target.weight : target.data.weight) : target.weight
+        weight_percent = target_weight.to_f / user.weight
         weight_index = MINIMUM_WEIGHT_PERCENT.find_index { |weight| weight_percent > weight } || MINIMUM_WEIGHT_PERCENT.size
         minimize_factor = target.effects.has?(:minimize) ? 2 : 1
         return (40 + 20 * weight_index) * minimize_factor
