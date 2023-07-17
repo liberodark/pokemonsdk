@@ -4,6 +4,17 @@ module Battle
     # @return [Boolean]
     attr_accessor :forced_next_move_decrease_pp
 
+    # Show the effectiveness message
+    # @param effectiveness [Numeric]
+    # @param target [PFM::PokemonBattler]
+    def efficent_message(effectiveness, target)
+      if effectiveness > 1
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 6, target))
+      elsif effectiveness > 0 && effectiveness < 1
+        scene.display_message_and_wait(parse_text_with_pokemon(19, 15, target))
+      end
+    end
+
     # Function starting the move procedure
     # @param user [PFM::PokemonBattler] user of the move
     # @param target_bank [Integer] bank of the target
@@ -312,17 +323,6 @@ module Battle
 
       @logic.damage_handler.damage_change((hp / recoil_factor).to_i.clamp(1, Float::INFINITY), user)
       @scene.display_message_and_wait(parse_text_with_pokemon(19, 378, user))
-    end
-
-    # Show the effectiveness message
-    # @param effectiveness [Numeric]
-    # @param target [PFM::PokemonBattler]
-    def efficent_message(effectiveness, target)
-      if effectiveness > 1
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 6, target))
-      elsif effectiveness > 0 && effectiveness < 1
-        scene.display_message_and_wait(parse_text_with_pokemon(19, 15, target))
-      end
     end
 
     # Test if the effect is working

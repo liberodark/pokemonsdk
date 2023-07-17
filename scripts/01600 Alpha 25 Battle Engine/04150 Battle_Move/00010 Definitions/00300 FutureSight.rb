@@ -14,7 +14,8 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-        return show_usage_failure(user) && false if targets.all? { |t| @logic.position_effects[t.bank][t.position].has?(effect_name) }
+
+        return show_usage_failure(user) && false if targets.all? { |t| @logic.position_effects[t.bank][t.position].has?(:future_sight) }
 
         return true
       end
@@ -27,23 +28,18 @@ module Battle
       def deal_effect(user, actual_targets)
         log_data("FutureSight targets : #{actual_targets}")
         actual_targets.each do |target|
-          next if @logic.position_effects[target.bank][target.position].has?(effect_name)
+          next if @logic.position_effects[target.bank][target.position].has?(:future_sight)
 
           @logic.add_position_effect(create_effect(user, target))
           @scene.display_message_and_wait(deal_message(user, target))
         end
       end
 
-      # Name of the effect dealt by the move
-      # @return [Symbol]
-      def effect_name
-        :future_sight
-      end
-
       # Hash containing the countdown for each "Future Sight"-like move
       # @return [Hash]
       COUNTDOWN = {
-        futuresight: 3
+        future_sight: 3,
+        doom_desire: 3
       }
 
       # Return the right countdown depending on the move, or a static one
@@ -57,7 +53,7 @@ module Battle
       # @param target [PFM::PokemonBattler] expected target
       # @return [Effects::PositionTiedEffectBase]
       def create_effect(user, target)
-        Effects::FutureSight.new(@logic, target.bank, target.position, countdown, damages(user, target))
+        Effects::FutureSight.new(@logic, target.bank, target.position, user, countdown, self)
       end
 
       # Message displayed when the effect is dealt
