@@ -66,7 +66,7 @@ module Studio2PSDK
   def convert
     @data ||= {}
 
-    convert_all_entities(directories.map { |dirname| dirname.split('/').last })
+    convert_all_entities((directories.map { |dirname| dirname.split('/').last }).reject { |dirname| dirname == 'maps' })
 
     puts 'saving'
     File.binwrite(File.join(ROOT, 'psdk.dat'), Marshal.dump(@data))
