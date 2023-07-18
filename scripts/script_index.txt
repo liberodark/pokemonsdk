@@ -483,6 +483,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transi
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00001 BattleStart.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00100 RBYTrainer.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00100 RBYWild.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00110 DPPGymLeader.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00200 Gen6Trainer.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00100 PokemonBattler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00200 Properties.rb
