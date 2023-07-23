@@ -344,7 +344,7 @@ module PFM
     # Return the base HP
     # @return [Integer]
     def base_hp
-      @original.base_hp
+      data.base_hp
     end
 
     # Copy all the properties back to the original pokemon

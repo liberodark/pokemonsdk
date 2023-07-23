@@ -174,14 +174,17 @@ module PFM
       return 0
     end
 
-    # Determine the form of the Calyrex
-    # @param [Symbol] reason The db_symbol of the Pokemon used for the fusion
-    def calyrex_form(reason)
-      return @form unless %i[glastrier spectrier none].include?(reason)
-      return 1 if reason == :glastrier
-      return 2 if reason == :spectrier
+    # Determine the form of the Zygarde
+    # @param reason [Symbol]
+    # @return form [Integer] form of zygarde
+    def zygarde_form(reason)
+      current_hp = @hp
+      @base_form = @form unless @form == 3
 
-      return 0
+      new_form = 3 if !dead? && hp_rate <= 0.5 && reason == :battle
+      @form = new_form || @base_form || 1
+      self.hp = current_hp
+      return @form
     end
 
     # Determine the form of Cramorant
@@ -190,6 +193,16 @@ module PFM
       return 0 if reason == :base
       return 1 if reason == :arrokuda
       return 2 if reason == :pikachu
+
+      return 0
+    end
+
+    # Determine the form of the Calyrex
+    # @param [Symbol] reason The db_symbol of the Pokemon used for the fusion
+    def calyrex_form(reason)
+      return @form unless %i[glastrier spectrier none].include?(reason)
+      return 1 if reason == :glastrier
+      return 2 if reason == :spectrier
 
       return 0
     end
@@ -207,6 +220,7 @@ module PFM
 
       next @form = 0
     end
+
     FORM_GENERATION[:burmy] = FORM_GENERATION[:wormadam] = proc do
       env = $env
       if env.building?
@@ -217,7 +231,8 @@ module PFM
 
       next @form = 1
     end
-    FORM_GENERATION[:cherrim] = proc { @form = ($env.sunny? || $env.hardsun?) ? 1 : 0 }
+
+    FORM_GENERATION[:cherrim] = proc { @form = $env.sunny? || $env.hardsun? ? 1 : 0 }
     FORM_GENERATION[:deerling] = FORM_GENERATION[:sawsbuck] = proc { @form = current_deerling_form }
     FORM_GENERATION[:meowstic] = proc { @form = @gender == 2 ? 1 : 0 }
 
@@ -245,7 +260,7 @@ module PFM
     FORM_CALIBRATE[:kyogre] = proc { @form = item_db_symbol == :blue_orb ? 1 : 0 }
     FORM_CALIBRATE[:wishiwashi] = proc { |reason| @form = hp_rate >= 0.25 && level >= 20 && reason == :battle ? 1 : 0 }
     FORM_CALIBRATE[:minior] = proc { |reason| @form = hp_rate <= 0.5 && reason == :battle ? @form | 1 : 0 }
-    FORM_CALIBRATE[:zygarde] = proc { |reason| @form = hp_rate <= 0.5 && reason == :battle ? @form | 1 : 3 }
+    FORM_CALIBRATE[:zygarde] = proc { |reason| @form = zygarde_form(reason) }
     FORM_CALIBRATE[:morpeko] = proc { |reason| @form = reason == :battle ? 1 : 0 }
     FORM_CALIBRATE[:greninja] = proc { |reason| @form = reason == :battle ? 1 : 0 }
     FORM_CALIBRATE[:cramorant] = proc { |reason| @form = cramorant_form(reason) }

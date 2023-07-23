@@ -61,19 +61,6 @@ module Battle
       end
       register(:schooling, Schooling)
 
-      class PowerConstruct < ZenMode
-        private
-
-        def transform
-          return 292
-        end
-
-        def back
-          return 293
-        end
-      end
-      register(:power_construct, PowerConstruct)
-
       class ShieldsDown < ZenMode
         # Function called when a status_prevention is checked
         # @param handler [Battle::Logic::StatusChangeHandler]
