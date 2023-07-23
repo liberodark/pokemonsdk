@@ -3,7 +3,7 @@ module Yuki
   # @author Nuri Yuri
   #
   # The berry informations are stored in PFM.game_state.berries, a 2D Array of berry information
-  #   PFM.game_state.berries[map_id][event_id] = [berry_id, stage, timer, stage_time, water_timer, water_time, water_counter, info_engrais]
+  #   PFM.game_state.berries[map_id][event_id] = [berry_id, stage, timer, stage_time, water_timer, water_time, water_counter, info_fertilizer]
   module Berries
     # The base name of berry character
     PLANTED_CHAR = 'Z_BP'
@@ -16,13 +16,13 @@ module Yuki
     # Init a berry tree
     # @param map_id [Integer] id of the map where the berry tree is
     # @param event_id [Integer] id of the event where the berry tree is shown
-    # @param berry_id [Integer] ID of the berry Item in the database
+    # @param berry_id [Symbol, Integer] db_symbol or ID of the berry Item in the database
     # @param state [Integer] the growth state of the berry
     def init_berry(map_id, event_id, berry_id, state = 4)
       return unless (berry_data = BERRY_DATA[data_item(berry_id).db_symbol])
 
       data = find_berry_data(map_id)[event_id] = Array.new(8, 0)
-      data[0] = berry_id
+      data[0] = data_item(berry_id).id
       data[1] = state
       data[3] = berry_data.time_to_grow * 15
       data[5] = data[3] - 1
