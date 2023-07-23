@@ -14,15 +14,29 @@ module Battle
           return unless handler.logic.item_change_handler.can_lose_item?(launcher, target)
 
           handler.scene.visual.show_ability(target)
-          handler.logic.item_change_handler.change_item(launcher.item_db_symbol, !$game_temp.trainer_battle, target)
-          text = parse_text_with_pokemon(19, 460, launcher, PFM::Text::PKNICK[0] => launcher.given_name, PFM::Text::ITEM2[1] => target.item_name)
+
+          text = parse_text_with_pokemon(*steal_text, launcher, PFM::Text::PKNICK[0] => launcher.given_name, PFM::Text::ITEM2[1] => launcher.item_name)
           handler.scene.display_message_and_wait(text)
+
           target.effects.get(:item_stolen).kill if target.effects.has?(:item_stolen)
-          if launcher.from_party?
-            launcher.effects.add(Effects::ItemStolen.new(@logic, launcher))
-          else
-            handler.logic.item_change_handler.change_item(:none, true, launcher)
+          if $game_temp.trainer_battle
+            @logic.item_change_handler.change_item(launcher.item_db_symbol, false, target, launcher, self)
+            if launcher.from_party? && !launcher.effects.has?(:item_stolen)
+              launcher.effects.add(Effects::ItemStolen.new(@logic, launcher))
+            else
+              @logic.item_change_handler.change_item(:none, true, launcher, launcher, self)
+            end
+          else # wild battle
+            overwrite = target.from_party? && !launcher.from_party?
+            @logic.item_change_handler.change_item(launcher.item_db_symbol, overwrite, target, launcher, self)
+            @logic.item_change_handler.change_item(:none, false, launcher, launcher, self)
           end
+        end
+
+        # Function returning the file number and the line id of the text
+        # @return [Array<Integer>]
+        def steal_text
+          return 19, 460
         end
       end
       register(:pickpocket, Pickpocket)
@@ -42,17 +56,30 @@ module Battle
           return if skill&.direct? && (target.battle_item_db_symbol == :sticky_barb || (target.battle_item_db_symbol == :rocky_helmet && (launcher.max_hp / 6 >= launcher.hp)))
 
           handler.scene.visual.show_ability(launcher)
-          handler.logic.item_change_handler.change_item(target.item_db_symbol, !$game_temp.trainer_battle, launcher)
-          text = parse_text_with_pokemon(19, 1063, launcher, '[VAR 1400(0002)]' => nil.to_s,
-                                                             '[VAR ITEM2(0002)]' => target.item_name,
-                                                             '[VAR PKNICK(0001)]' => target.given_name)
+          text = parse_text_with_pokemon(*steal_text, launcher, '[VAR 1400(0002)]' => nil.to_s,
+                                                                             '[VAR ITEM2(0002)]' => target.item_name,
+                                                                             '[VAR PKNICK(0001)]' => target.given_name)
           handler.scene.display_message_and_wait(text)
+
           launcher.effects.get(:item_stolen).kill if launcher.effects.has?(:item_stolen)
-          if target.from_party?
-            target.effects.add(Effects::ItemStolen.new(@logic, target))
-          else
-            handler.logic.item_change_handler.change_item(:none, true, target)
+          if $game_temp.trainer_battle
+            @logic.item_change_handler.change_item(target.item_db_symbol, false, launcher, launcher, self)
+            if target.from_party? && !target.effects.has?(:item_stolen)
+              target.effects.add(Effects::ItemStolen.new(@logic, target))
+            else
+              @logic.item_change_handler.change_item(:none, true, target, launcher, self)
+            end
+          else # wild battle
+            overwrite = launcher.from_party? && !target.from_party?
+            @logic.item_change_handler.change_item(target.item_db_symbol, overwrite, launcher, launcher, self)
+            @logic.item_change_handler.change_item(:none, false, target, launcher, self)
           end
+        end
+
+        # Function returning the file number and the line id of the text
+        # @return [Array<Integer>]
+        def steal_text
+          return 19, 1063
         end
       end
       register(:magician, Magician)
