@@ -34,7 +34,7 @@ module Battle
         def on_post_damage_death(handler, hp, target, launcher, skill)
           return if target != @target
           return unless $env.hardsun?
-          return if handler.logic.all_alive_battlers.any? { |battler| primal_weather_ability?(pokemon) && battler != @target }
+          return if handler.logic.all_alive_battlers.any? { |battler| primal_weather_ability?(battler) && battler != @target }
 
           handler.logic.weather_change_handler.weather_change(:none, 0)
           handler.scene.display_message_and_wait(parse_text(18, msg))
