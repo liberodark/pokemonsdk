@@ -104,6 +104,14 @@ module Studio
     # @return [Boolean]
     attr_reader :is_sound_attack
 
+    # If the move deals 1.5x damage when user has sharpness ability
+    # @return [Boolean]
+    attr_reader :is_slicing_attack
+
+    # If target of this move with ability wind power or wind rider will be activated to this move
+    # @return [Boolean]
+    attr_reader :is_wind
+
     # If the move can reach any target regardless of the position
     # @return [Boolean]
     attr_reader :is_distance

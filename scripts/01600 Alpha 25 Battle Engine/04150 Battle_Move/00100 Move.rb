@@ -232,10 +232,22 @@ module Battle
       return data.is_sound_attack
     end
 
+    # Is the skill a slicing attack ?
+    # @return [Boolean]
+    def slicing_attack?
+      return data.is_slicing_attack
+    end
+
     # Does the skill unfreeze
     # @return [Boolean]
     def unfreeze?
       return data.is_unfreeze
+    end
+
+    # Is the skill a wind attack ?
+    # @return [Boolean]
+    def wind_attack?
+      return data.is_wind
     end
 
     # Does the skill trigger the king rock
