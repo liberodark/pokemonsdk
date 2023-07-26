@@ -20,7 +20,7 @@ module Battle
         end
 
         if targets.any? { |target| @logic.bank_effects[target.bank].has?(:safeguard) ||
-          @logic.terrain_effects.has?(%i[electric_terrain misty_terrain]) && @pokemon.grounded?
+          %i[electric_terrain misty_terrain].include?(logic.field_terrain) && target.grounded?
         }
           return show_usage_failure(user) && false
         end

@@ -39,7 +39,7 @@ module Battle
       def on_end_turn_event(logic, scene, battlers)
         return unless triggered?
         return if @pokemon.dead?
-        return kill if logic.terrain_effects.has?(%i[electric_terrain misty_terrain]) && @pokemon.grounded?
+        return kill if %i[electric_terrain misty_terrain].include?(logic.field_terrain) && @pokemon.grounded?
         return kill if @pokemon.status?
         return kill if @pokemon.db_symbol == :minior && @pokemon.form == 0
 
