@@ -67,7 +67,7 @@ module Battle
       end
     end
 
-    # Class describing a move hiting twice
+    # Class describing a move hitting twice
     class TwoHit < MultiHit
       private
 
@@ -149,8 +149,31 @@ module Battle
       end
     end
 
+    # Class describing Water Shuriken : Changes power and number of hit depending on greninja's base or Ash form.
+    class WaterShuriken < MultiHit
+      # Get the real base power of the move (taking in account all parameter)
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @return [Integer]
+      def real_base_power(user, target)
+        modified_power = 20 if user.db_symbol == :greninja && user.form == 1
+        return modified_power || power
+      end
+
+      # Get the number of hit the move can perform
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+      # @return [Integer]
+      def hit_amount(user, actual_targets)
+        return 3 if user.db_symbol == :greninja && user.form == 1
+
+        return super
+      end
+    end
+
     Move.register(:s_multi_hit, MultiHit)
     Move.register(:s_2hits, TwoHit)
     Move.register(:s_triple_kick, TripleKick)
+    Move.register(:s_water_shuriken, WaterShuriken)
   end
 end
