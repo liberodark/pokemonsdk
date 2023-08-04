@@ -41,7 +41,6 @@ build/
 .rvmrc
 psdk.code-workspace
 scripts/my_scripts/scripts
-LiteRGSS.rb.yard.rb
 
 # useless mac files
 .DS_Store
