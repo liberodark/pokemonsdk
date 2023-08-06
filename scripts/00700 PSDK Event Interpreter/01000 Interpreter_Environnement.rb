@@ -146,6 +146,17 @@ class Interpreter < Interpreter_RMXP
     $game_map.events[@event_id]&.erase
   end
 
+  # Delete the provided event forever
+  # @param event_id [Integer]
+  def delete_event_forever(event_id)
+    return false unless $game_map.events[event_id]
+
+    log_info("Event #{event_id} #{$game_map.events[event_id].event.name} was deleted forever.")
+    $env.set_event_delete_state(event_id)
+    $game_map.events[event_id]&.erase
+  end
+  alias delete_event delete_event_forever
+
   # Wait for the end of the movement of this particular character
   # @param event_id [Integer] <default : calling event's> the id of the event to watch
   def wait_character_move_completion(event_id = @event_id)
