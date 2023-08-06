@@ -230,7 +230,7 @@ module PFM
         rate = 30
       end
       rate *= 1.5 if FishIncRate.include?(creature_ability)
-      return rate < rand(100)
+      return rand(100) < rate 
     end
 
     # yield a block on every available roaming Pokemon
