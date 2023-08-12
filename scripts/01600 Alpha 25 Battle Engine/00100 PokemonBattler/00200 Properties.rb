@@ -2,7 +2,7 @@
 module PFM
   # Class defining a Pokemon during a battle, it aim to copy its properties but also to have the methods related to the battle.
   class PokemonBattler < Pokemon
-    
+
     # Return the battler's combat property
     # @return [Integer]
     def atk_basis
@@ -114,7 +114,7 @@ module PFM
     # Set the battler's combat property
     # @param value [Integer]
     def ability=(value)
-      return log_error("Wrong ability id : #{value}") if data_ability(value).id != value
+      return log_error("Wrong ability id : #{value}") if data_ability(value).id != value && !value.nil?
 
       @battle_properties[:ability] = value
     end
@@ -172,7 +172,7 @@ module PFM
     # @param value [Integer]
     def gender=(value)
       return log_info("Gender changed to #{value}") && @battle_properties[:gender] = value.clamp(0, 2) if value.is_a?(Integer)
-      
+
       @battle_properties[:gender] = super
     end
 
