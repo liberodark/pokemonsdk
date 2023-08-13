@@ -464,10 +464,19 @@ module Battle
       end
 
       # Return the specific proceed_internal if the condition is fulfilled
-      # @param user [PFM::PokemonBattler]
-      # @param targets [Array<PFM::PokemonBattler>]
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param targets [Array<PFM::PokemonBattler>] expected targets 
       # @param move [Battle::Move]
       def specific_proceed_internal(user, targets, move)
+        return nil
+      end
+
+      # Return the new target if the conditions are fulfilled
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param targets [Array<PFM::PokemonBattler>] expected targets
+      # @param move [Battle::Move]
+      # @return [PFM::PokemonBattler] the new target if the conditions are fulfilled, the initial target otherwise
+      def target_redirection(user, targets, move)
         return nil
       end
 

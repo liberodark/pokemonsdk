@@ -355,6 +355,24 @@ module Battle
       return data.is_heal
     end
 
+    # Tell if the move is a two turn move
+    # @return [Boolean]
+    def two_turn?
+      return data.is_charge
+    end
+
+    # Tell if the move is a powder move
+    # @return [Boolean]
+    def powder?
+      return data.is_powder
+    end
+
+    # Tell if the move is a move that can bypass Substitute
+    # @return [Boolean]
+    def authentic?
+      return data.is_authentic
+    end
+
     # Tell if the move is an OHKO move
     # @return [Boolean]
     def ohko?
@@ -383,18 +401,6 @@ module Battle
     # @return [Boolean]
     def multi_hit?
       return false
-    end
-
-    # Tell if the move is a powder move
-    # @return [Boolean]
-    def powder?
-      return data.is_powder
-    end
-
-    # Tell if the move is a move that can bypass Substitute
-    # @return [Boolean]
-    def authentic?
-      return data.is_authentic
     end
 
     # Get the effectiveness

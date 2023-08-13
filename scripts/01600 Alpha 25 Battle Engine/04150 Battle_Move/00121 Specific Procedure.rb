@@ -2,6 +2,8 @@ module Battle
   class Move
 
     # Check if an Effects imposes a specific proceed_internal
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param targets [Array<PFM::PokemonBattler>] expected targets
     # @return [Symbol, nil] the symbol of the proceed_internal to call, nil if no specific procedure
     def check_specific_procedure(user, targets)
       logic.each_effects(user) do |e|

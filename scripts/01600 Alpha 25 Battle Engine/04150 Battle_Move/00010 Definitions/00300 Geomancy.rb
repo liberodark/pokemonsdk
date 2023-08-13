@@ -2,9 +2,7 @@ module Battle
   class Move
     # Class managing the Geomancy move
     # @see https://pokemondb.net/move/geomancy
-    class Geomancy < BasicWithSuccessfulEffect
-      include Mechanics::TwoTurn
-
+    class Geomancy < TwoTurnBase
       private
 
       # Display the message and the animation of the turn

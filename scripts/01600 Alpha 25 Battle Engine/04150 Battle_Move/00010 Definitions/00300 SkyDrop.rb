@@ -4,9 +4,7 @@ module Battle
     # @see https://pokemondb.net/move/sky-drop
     # @see https://bulbapedia.bulbagarden.net/wiki/Sky_Drop_(move)
     # @see https://www.pokepedia.fr/Chute_Libre
-    class SkyDrop < Basic
-      include Mechanics::TwoTurn
-
+    class SkyDrop < TwoTurnBase
       private
 
       # Return the list of the moves that can reach the pokemon event in out_of_reach, nil if all attack reach the user

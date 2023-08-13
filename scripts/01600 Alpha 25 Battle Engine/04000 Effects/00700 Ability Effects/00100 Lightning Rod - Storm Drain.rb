@@ -2,8 +2,6 @@ module Battle
   module Effects
     class Ability
       class LightningRod < Ability
-        # List of effect that prevent Lightning Rod from working
-        BLOCKING_EFFECTS = %i[rage_powder follow_me]
         # Create a new FlowerGift effect
         # @param logic [Battle::Logic]
         # @param target [PFM::PokemonBattler]
@@ -25,7 +23,7 @@ module Battle
           return unless launcher != @target
           return unless (@target == target) || (skill && %i[adjacent_pokemon adjacent_foe random_foe any_other_pokemon].include?(skill.target))
           return unless launcher&.can_be_lowered_or_canceled?
-          return if @logic.all_alive_battlers.any? { |battler| BLOCKING_EFFECTS.any? { |e| battler.effects.has?(e) } }
+          return if @logic.all_alive_battlers.any? { |battler| battler.effects.has?(:center_of_attention) }
 
           return handler.prevent_change do
             handler.scene.visual.show_ability(@target)

@@ -12,6 +12,13 @@ module Battle
     end
     alias is_one_target? one_target? # BE24
 
+    # Check if an attack that targets multiple people is targeting only one
+    # @param user [PFM::PokemonBattler] user of the move
+    # @return [Boolean]
+    def one_target_from_zone_attack(user)
+      return battler_targets(user, logic).length == 1
+    end
+
     # Does the skill doesn't show a target choice
     # @return [Boolean]
     def no_choice_skill?

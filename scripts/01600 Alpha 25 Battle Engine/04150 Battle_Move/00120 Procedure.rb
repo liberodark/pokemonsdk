@@ -24,7 +24,6 @@ module Battle
 
       @damage_dealt = 0
       possible_targets = battler_targets(user, logic).select { |target| target&.alive? }
-      exec_hooks(Move, :possible_targets, binding)
       possible_targets.sort_by(&:spd)
       return proceed_one_target(user, possible_targets, target_bank, target_position) if one_target?
 
@@ -56,6 +55,7 @@ module Battle
       right_target = possible_targets.find { |pokemon| pokemon.bank == target_bank && pokemon.position == target_position }
       right_target ||= possible_targets.find { |pokemon| pokemon.bank == target_bank && (pokemon.position - target_position).abs == 1 }
       right_target ||= possible_targets.find { |pokemon| pokemon.bank == target_bank }
+      right_target = target_redirected(user, right_target)
 
       specific_procedure = check_specific_procedure(user, [right_target].compact)
       return send(specific_procedure, user, [right_target].compact) if specific_procedure
@@ -407,11 +407,17 @@ module Battle
       action.execute
     end
 
-    # Check if an attack that targets multiple people is targeting only one
+    # Return the new target if redirected or the initial target
     # @param user [PFM::PokemonBattler] user of the move
-    # @return [Boolean]
-    def one_target_from_zone_attack(user)
-      return battler_targets(user, logic).length == 1
+    # @param targets [Array<PFM::PokemonBattler>] expected targets
+    # @return [PFM::PokemonBattler] the target
+    def target_redirected(user, targets)
+      logic.each_effects(*logic.adjacent_foes_of(user)) do |e|
+        new_target = e.target_redirection(user, targets, self)
+        return new_target if new_target
+      end
+
+      return targets
     end
   end
 end
