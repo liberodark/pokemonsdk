@@ -53,7 +53,7 @@ module Battle
           # Tell which status the berry tries to fix
           # @return [Symbol]
           def healed_status
-            return :poison
+            return %i[poison toxic].include?(@target.status_effect.name) ? @target.status_effect.name : false
           end
         end
 
