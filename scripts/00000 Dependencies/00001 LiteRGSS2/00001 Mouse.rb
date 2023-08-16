@@ -147,8 +147,14 @@ module Mouse
     # @param x [Integer]
     # @param y [Integer]
     def on_mouse_moved(x, y)
-      @x = (x / PSDK_CONFIG.window_scale).floor
-      @y = (y / PSDK_CONFIG.window_scale).floor
+      settings = window.settings
+      if settings[7]
+        @x = (x * settings[1] / LiteRGSS::DisplayWindow.desktop_width)
+        @y = (y * settings[2] / LiteRGSS::DisplayWindow.desktop_height)
+      else
+        @x = (x / PSDK_CONFIG.window_scale).floor
+        @y = (y / PSDK_CONFIG.window_scale).floor
+      end
       @moved = true
     end
 
