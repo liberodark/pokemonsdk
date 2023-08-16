@@ -122,6 +122,9 @@ module PFM
     # @return [Symbol] the symbol of the consumed item
     attr_accessor :consumed_item
 
+    # @return [Integer] number of times the pokémon has been knocked out
+    attr_accessor :ko_count
+
     # Get the transform pokemon
     # @return [PFM::PokemonBattler]
     attr_reader :transform
@@ -161,6 +164,7 @@ module PFM
       @exp_distributed = false
       @item_consumed = false
       @consumed_item = :__undef__
+      @ko_count = 0
       self.hp = hp_rate > 0 ? (max_hp * hp_rate).to_i.clamp(1, max_hp) : 0
       initialize_set_is_follower
     end

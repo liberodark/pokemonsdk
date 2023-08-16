@@ -32,7 +32,10 @@ module Battle
         @scene.visual.show_hp_animations([target], [-hp], [skill&.effectiveness], &messages)
         target.last_hit_by_move = skill if skill
         exec_hooks(DamageHandler, :post_damage, binding) if target.hp > 0
-        exec_hooks(DamageHandler, :post_damage_death, binding) if target.hp <= 0
+        if target.hp <= 0
+          exec_hooks(DamageHandler, :post_damage_death, binding)
+          target.ko_count += 1
+        end
         target.add_damage_to_history(hp, launcher, skill, target.hp <= 0)
         log_data("# damage_change(#{hp}, #{target}, #{launcher}, #{skill}, #{target.hp <= 0})")
       rescue Hooks::ForceReturn => e
