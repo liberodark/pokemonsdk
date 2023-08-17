@@ -147,7 +147,7 @@ module Mouse
     # @param x [Integer]
     # @param y [Integer]
     def on_mouse_moved(x, y)
-      settings = window.settings
+      settings = Graphics.window.settings
       if settings[7]
         @x = (x * settings[1] / LiteRGSS::DisplayWindow.desktop_width)
         @y = (y * settings[2] / LiteRGSS::DisplayWindow.desktop_height)
