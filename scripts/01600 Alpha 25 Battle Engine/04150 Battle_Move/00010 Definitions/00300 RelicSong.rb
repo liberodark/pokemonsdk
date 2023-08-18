@@ -13,6 +13,7 @@ module Battle
       def deal_damage(user, actual_targets)
         super
         return unless user.db_symbol == :meloetta
+        return if user.has_ability?(:sheer_force) && user.ability_effect&.activated?
         return unless user.form_calibrate(:dance)
 
         scene.visual.battler_sprite(user.bank, user.position).pokemon = user

@@ -11,6 +11,7 @@ module Battle
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target || target.hp_rate > 0.5
           return unless (target.hp + hp) > (target.max_hp / 2)
+          return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated?
 
           if handler.logic.stat_change_handler.stat_increasable?(:ats, target)
             handler.scene.visual.show_ability(target)

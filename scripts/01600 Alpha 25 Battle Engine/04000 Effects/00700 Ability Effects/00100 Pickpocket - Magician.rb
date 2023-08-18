@@ -12,6 +12,7 @@ module Battle
           return if target != @target || launcher == target || !%i[none __undef__].include?(target.item_db_symbol)
           return unless skill&.direct? && launcher && launcher.hp > 0 && !launcher.has_ability?(:long_reach)
           return unless handler.logic.item_change_handler.can_lose_item?(launcher, target)
+          return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated?
 
           handler.scene.visual.show_ability(target)
 

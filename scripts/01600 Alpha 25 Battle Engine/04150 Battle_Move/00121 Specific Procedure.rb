@@ -46,5 +46,42 @@ module Battle
       @scene.visual.set_info_state(:move_animation)
       @scene.visual.wait_for_animation
     end
+
+    # Internal procedure of the move for Sheer Force Ability
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param targets [Array<PFM::PokemonBattler>] expected targets
+    def proceed_internal_sheer_force(user, targets)
+      return unless (actual_targets = proceed_internal_precheck(user, targets))
+
+      post_accuracy_check_effects(user, actual_targets)
+
+      post_accuracy_check_move(user, actual_targets)
+
+      play_animation(user, targets)
+
+      user.ability_effect&.activated = true
+
+      deal_damage(user, actual_targets) &&
+        effect_working?(user, actual_targets) &&
+        deal_status(user, actual_targets) &&
+        deal_stats(user, actual_targets) &&
+        deal_effect_sheer_force(user, actual_targets)
+
+      user.ability_effect&.activated = false
+      user.add_move_to_history(self, actual_targets)
+      @scene.visual.set_info_state(:move_animation)
+      @scene.visual.wait_for_animation
+    end
+
+    # Function that deals the effect to the pokemon
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+    def deal_effect_sheer_force(user, actual_targets)
+      if user.ability_effect&.excluded_db_symbol&.include?(db_symbol) || user.ability_effect&.excluded_methods&.include?(be_method)
+        return deal_effect(user, actual_targets)
+      end
+
+      return false
+    end
   end
 end

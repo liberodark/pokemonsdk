@@ -11,6 +11,7 @@ module Battle
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target
           return unless trigger?(skill) && launcher
+          return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated
 
           process_effect(target, launcher, skill)
         end

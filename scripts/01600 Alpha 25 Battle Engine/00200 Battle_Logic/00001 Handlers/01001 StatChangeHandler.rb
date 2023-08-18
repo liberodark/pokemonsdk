@@ -264,7 +264,7 @@ module Battle
     end
     StatChangeHandler.register_stat_increase_prevention_hook('PSDK stat incr: Effects') do |handler, stat, target, launcher, skill|
       next handler.logic.each_effects(target, launcher) do |effect|
-        next effect.on_stat_decrease_prevention(handler, stat, target, launcher, skill)
+        next effect.on_stat_increase_prevention(handler, stat, target, launcher, skill)
       end
     end
     StatChangeHandler.register_stat_change_hook('PSDK stat_change: Effects') do |handler, stat, power, target, launcher, skill|

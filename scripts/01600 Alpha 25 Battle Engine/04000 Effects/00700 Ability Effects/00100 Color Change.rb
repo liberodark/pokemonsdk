@@ -14,6 +14,7 @@ module Battle
           return if skill.status? || skill.is_a?(Battle::Move::Basic::MultiHit) && !skill.last_hit?
           definitive_types = skill.definitive_types(launcher, target)
           return if definitive_types.any? { |type| target.type?(type) || type == 0}
+          return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated?
 
           handler.scene.visual.show_ability(target)
           target.type1 = definitive_types.first

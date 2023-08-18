@@ -21,7 +21,8 @@ module Battle
           return if target != @target || launcher == target
           return if target.hp_rate > 0.5 || target.effects.has?(&:out_of_reach?)
           return if skill_prevention?(hp, skill) || item_prevention?(target)
-          return if handler.logic.switch_request.any? { |request| request[:who] == target }
+          return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated? 
+          return if handler.logic.switch_request.any? { |request| request[:who] == target }     
 
           @damage_dealt = 0
           if @logic.battle_info.trainer_battle?
