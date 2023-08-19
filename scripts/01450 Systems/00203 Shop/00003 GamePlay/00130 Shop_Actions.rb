@@ -77,10 +77,8 @@ module GamePlay
         end
 
         max_amount = max if max < max_amount
-        if @symbol_or_list.is_a?(Symbol) && @item_quantity[@index] < max_amount
-          max_amount = @item_quantity[@index]
-        end
       end
+      max_amount = @item_quantity[@index] if @symbol_or_list.is_a?(Symbol) && @item_quantity[@index] < max_amount
       $game_temp.num_input_variable_id = ::Yuki::Var::EnteredNumber
       $game_temp.num_input_digits_max = max_amount.to_s.size
       $game_temp.num_input_start = max_amount
@@ -131,7 +129,7 @@ module GamePlay
     def update_shop_ui_after_buying(index)
       # Adjust the bag info
       reload_item_list
-      unless @force_close 
+      unless @force_close
         @index = index.clamp(0, @last_index)
         @item_list.index = @index
         # Reload the graphics
