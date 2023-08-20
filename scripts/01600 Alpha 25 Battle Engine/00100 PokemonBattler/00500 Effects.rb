@@ -1,7 +1,7 @@
 module PFM
   # Class defining a Pokemon during a battle, it aim to copy its properties but also to have the methods related to the battle.
   class PokemonBattler
-    # Get the effect hanndler
+    # Get the effect handler
     # @return [Battle::Effects::EffectsHandler]
     attr_reader :effects
 

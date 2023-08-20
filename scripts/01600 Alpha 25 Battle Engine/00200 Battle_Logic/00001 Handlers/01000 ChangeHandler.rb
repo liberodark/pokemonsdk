@@ -8,12 +8,16 @@ module Battle
       # Get the scene
       # @return [Battle::Scene]
       attr_reader :scene
+      # Get the list of the pre-checked effects
+      # @return [Array<Battle::Effects::EffectBase]
+      attr_accessor :pre_checked_effects
       # Create a new ChangeHandler
       # @param logic [Battle::Logic]
       # @param scene [Battle::Scene]
       def initialize(logic, scene)
         @logic = logic
         @scene = scene
+        @pre_checked_effects = []
         # @type [Proc]
         @reason = nil
       end

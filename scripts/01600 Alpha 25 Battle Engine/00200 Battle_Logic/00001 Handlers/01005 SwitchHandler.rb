@@ -129,8 +129,28 @@ module Battle
         next e.on_switch_prevention(handler, pokemon, skill, reason)
       end
     end
+
+    SwitchHandler.register_switch_event_hook('PSDK switch: Neutralizing Gas Effect') do |handler, who, with|
+      if who != with && who.has_ability?(:neutralizing_gas) && who.ability_effect.activated?
+        who.ability_effect.on_switch_event(handler, who, with)
+        handler.pre_checked_effects << who.ability_effect
+      end
+
+      battlers = handler.logic.all_alive_battlers.find_all { |battler| battler.has_ability?(:neutralizing_gas) }
+      next if battlers.empty?
+
+      battlers.each { |battler| handler.pre_checked_effects << battler.ability_effect }
+      next if battlers.any? { |battler| battler.ability_effect.activated? }
+
+      # @type [PFM::PokemonBattler]
+      battler = battlers.sort_by(&:spd).reverse.first
+      battler.ability_effect.on_switch_event(handler, battler, battler)
+    end
+
     SwitchHandler.register_switch_event_hook('PSDK switch: Effects') do |handler, who, with|
       next handler.logic.each_effects(*[who, with].uniq) do |e|
+        next if handler.pre_checked_effects.include?(e)
+
         next e.on_switch_event(handler, who, with)
       end
     end
