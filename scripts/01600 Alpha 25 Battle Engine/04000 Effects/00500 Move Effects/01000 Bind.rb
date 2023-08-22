@@ -4,14 +4,17 @@ module Battle
     class Bind < PokemonTiedEffectBase
       # Hash giving the message info based on the db_symbol of the move
       MESSAGE_INFO = {
-        bind: [806, true],
-        wrap: [813, true],
-        fire_spin: [830, false],
-        clamp: [820, true],
-        whirlpool: [827, false],
-        sand_tomb: [836, false],
-        magma_storm: [833, false],
-        infestation: [1234, true]
+        bind: [19, 806, true],
+        wrap: [19, 813, true],
+        fire_spin: [19, 830, false],
+        clamp: [19, 820, true],
+        whirlpool: [19, 827, false],
+        sand_tomb: [19, 836, false],
+        magma_storm: [19, 833, false],
+        infestation: [19, 1234, true],
+        octolock: [59, 1978, false],
+        snap_trap: [59, 1974, false],
+        thunder_cage: [59, 2052, true]
       }
       # The Pokemon that launched the attack
       # @return [PFM::PokemonBattler]
@@ -94,10 +97,10 @@ module Battle
       # Get the message text
       # @return [String]
       def message
-        message_id, two_pokemon_message = (MESSAGE_INFO[@move.db_symbol] || [0, false])
-        return parse_text_with_2pokemon(19, message_id, @pokemon, @origin) if two_pokemon_message
+        file_id, message_id, two_pokemon_message = (MESSAGE_INFO[@move.db_symbol] || [0, 0, false])
+        return parse_text_with_2pokemon(file_id, message_id, @pokemon, @origin) if two_pokemon_message
 
-        return parse_text_with_pokemon(19, message_id, @pokemon)
+        return parse_text_with_pokemon(file_id, message_id, @pokemon)
       end
 
       # Get the HP factor delt by the move
