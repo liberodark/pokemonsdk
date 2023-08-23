@@ -28,7 +28,7 @@ module PFM
     TRANSFORM_SETTER_CACHE = TRANSFORM_BP_METHODS.to_h { |key| [key, :"#{key}="] }
     # List of properties to copy with Illusion
     ILLUSION_COPIED_PROPERTIES = %i[
-      @id @form @gender @given_name @code @captured_in
+      @id @form @gender @given_name @code @captured_with
     ]
     # List of properties to copy back to original
     BACK_PROPERTIES = %i[
@@ -152,7 +152,7 @@ module PFM
       @type3 = 0
       @bank = 0
       @position = -1
-      @place_in_party = scene.logic.battle_info.party(self).index(self.original)
+      @place_in_party = 0
       @battle_item_data = []
       @battle_item = @item_holding
       @last_battle_turn = -1
@@ -245,12 +245,6 @@ module PFM
       return false unless data_item(db_symbol)&.socket == 4
 
       return hold_item?(db_symbol)
-    end
-
-    # Return the Pokemon name in the Pokedex (using the original)
-    # @return [String]
-    def name
-      return Studio::Text.get(0,@step_remaining==0 ? (@illusion ? @id : original.id) : 0)
     end
 
     # Add a move to the move history
@@ -514,7 +508,7 @@ module PFM
     def copy_illusion_properties
       if @illusion
         change_types(type1, type2, type3)
-        @properties_before_illusion = ILLUSION_COPIED_PROPERTIES.map { |ivar_name| instance_variable_get(ivar_name) }
+        @properties_before_illusion ||= ILLUSION_COPIED_PROPERTIES.map { |ivar_name| instance_variable_get(ivar_name) }
         ILLUSION_COPIED_PROPERTIES.each do |ivar_name|
           instance_variable_set(ivar_name, @illusion.instance_variable_get(ivar_name))
         end

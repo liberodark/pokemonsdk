@@ -215,6 +215,7 @@ module Battle
       party.each do |pokemon|
         battler = max_level ? PFM::PokemonBattler.new(pokemon, @scene, max_level) : PFM::PokemonBattler.new(pokemon, @scene)
         battler.bank = bank
+        battler.place_in_party = scene.logic.battle_info.party(battler).index(battler.original)
         battler.party_id = index
         battler.bag = @bags[bank][index] || PFM::Bag.new
         battlers << battler

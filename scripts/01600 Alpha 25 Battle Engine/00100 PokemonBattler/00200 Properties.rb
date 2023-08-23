@@ -2,6 +2,91 @@
 module PFM
   # Class defining a Pokemon during a battle, it aim to copy its properties but also to have the methods related to the battle.
   class PokemonBattler < Pokemon
+    # List of the UIs able to omit the Illusion form of the Pokemon
+    # @return [Array<Class>]
+    ILLUSION_PROOF_SCENES = [GamePlay::Party_Menu, GamePlay::Summary]
+
+    # Return the current ID of the Pokemon
+    # If the current UI is one defined in PFM::PokemonBattler::ILLUSION_PROOF_SCENES
+    # then it'll send the id saved before Illusion was triggered
+    # @return [Integer]
+    def id
+      if @illusion && ILLUSION_PROOF_SCENES.include?($scene.class)
+        index = ILLUSION_COPIED_PROPERTIES.index(:@id)
+        return @properties_before_illusion[index]
+      end
+
+      return @id
+    end
+
+    # Return the current form of the Pokemon
+    # If the current UI is one defined in PFM::PokemonBattler::ILLUSION_PROOF_SCENES
+    # then it'll send the form saved before Illusion was triggered
+    # @return [Integer]
+    def form
+      if @illusion && ILLUSION_PROOF_SCENES.include?($scene.class)
+        index = ILLUSION_COPIED_PROPERTIES.index(:@form)
+        return @properties_before_illusion[index]
+      end
+
+      return @form
+    end
+
+    # Return the current given name of the Pokemon
+    # If the current UI is one defined in PFM::PokemonBattler::ILLUSION_PROOF_SCENES
+    # then it'll send the given_name saved before Illusion was triggered
+    # @return [String]
+    def given_name
+      if @illusion && ILLUSION_PROOF_SCENES.include?($scene.class)
+        index = ILLUSION_COPIED_PROPERTIES.index(:@given_name)
+        return @properties_before_illusion[index] || name
+      end
+
+      return super
+    end
+
+    # Return the current name of the Pokemon
+    # If the current UI is one defined in PFM::PokemonBattler::ILLUSION_PROOF_SCENES
+    # then it'll send the name of the original
+    # @return [String]
+    def name
+      return Studio::Text.get(0, @step_remaining == 0 ? (@illusion && !ILLUSION_PROOF_SCENES.include?($scene.class) ? @id : original.id) : 0)
+    end
+
+    # Return the current code of the Pokemon
+    # If the current UI is one defined in PFM::PokemonBattler::ILLUSION_PROOF_SCENES
+    # then it'll send the code saved before Illusion was triggered
+    # @return [Integer]
+    def code
+      if @illusion && ILLUSION_PROOF_SCENES.include?($scene.class)
+        index = ILLUSION_COPIED_PROPERTIES.index(:@code)
+        return @properties_before_illusion[index]
+      end
+
+      return @code
+    end
+
+    # Return the current ball ID the Pokemon was captured with
+    # If the current UI is one defined in PFM::PokemonBattler::ILLUSION_PROOF_SCENES
+    # then it'll send the ball id saved before Illusion was triggered
+    # @return [Integer]
+    def captured_with
+      if @illusion && ILLUSION_PROOF_SCENES.include?($scene.class)
+        index = ILLUSION_COPIED_PROPERTIES.index(:@captured_with)
+        return @properties_before_illusion[index]
+      end
+
+      return @captured_with
+    end
+
+    # Return the cry file name of the Pokemon
+    # If the Pokemon is under the effect of Illusion, returns the cry from the target of the ability
+    # @return [String]
+    def cry
+      return @illusion&.cry if @illusion && !ILLUSION_PROOF_SCENES.include?($scene.class)
+
+      return super
+    end
 
     # Return the battler's combat property
     # @return [Integer]
@@ -165,6 +250,11 @@ module PFM
     # Return the battler's combat property
     # @return [Integer]
     def gender
+      if @illusion && $scene.is_a?(GamePlay::Party_Menu)
+        index = ILLUSION_COPIED_PROPERTIES.index(:@gender)
+        return @battle_properties[:gender] || @properties_before_illusion[index]
+      end
+
       return @battle_properties[:gender] || super
     end
 
