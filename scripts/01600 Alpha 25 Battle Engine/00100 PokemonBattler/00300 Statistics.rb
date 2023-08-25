@@ -8,13 +8,20 @@ module PFM
     # Return the current atk
     # @return [Integer]
     def atk
-      return (atk_basis * atk_modifier).floor
+      raw_atk = (atk_basis * atk_modifier).floor
+
+      return @scene.logic.each_effects(self).reduce(raw_atk) do |product, e|
+        (product * e.atk_modifier).floor
+      end
     end
 
     # Return the current dfe
     # @return [Integer]
     def dfe
-      return (dfe_basis * dfe_modifier).floor
+      raw_dfe = (dfe_basis * dfe_modifier).floor
+      return @scene.logic.each_effects(self).reduce(raw_dfe) do |product, e|
+        (product * e.dfe_modifier).floor
+      end
     end
 
     # Return the current spd
@@ -29,13 +36,19 @@ module PFM
     # Return the current ats
     # @return [Integer]
     def ats
-      return (ats_basis * ats_modifier).floor
+      raw_ats = (ats_basis * ats_modifier).floor
+      return @scene.logic.each_effects(self).reduce(raw_ats) do |product, e|
+        (product * e.ats_modifier).floor
+      end
     end
 
     # Return the current dfs
     # @return [Integer]
     def dfs
-      return (dfs_basis * dfs_modifier).floor
+      raw_dfs = (dfs_basis * dfs_modifier).floor
+      return @scene.logic.each_effects(self).reduce(raw_dfs) do |product, e|
+        (product * e.dfs_modifier).floor
+      end    
     end
 
     # Return the atk modifier

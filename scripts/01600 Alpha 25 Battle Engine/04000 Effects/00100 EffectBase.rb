@@ -441,9 +441,33 @@ module Battle
         return 1
       end
 
+      # Give the atk modifier over given to the Pokemon with this effect
+      # @return [Float, Integer] multiplier
+      def atk_modifier
+        return 1
+      end
+
+      # Give the dfe modifier over given to the Pokemon with this effect
+      # @return [Float, Integer] multiplier
+      def dfe_modifier
+        return 1
+      end
+
       # Give the speed modifier over given to the Pokemon with this effect
       # @return [Float, Integer] multiplier
       def spd_modifier
+        return 1
+      end
+
+      # Give the ats modifier over given to the Pokemon with this effect
+      # @return [Float, Integer] multiplier
+      def ats_modifier
+        return 1
+      end
+
+      # Give the dfs modifier over given to the Pokemon with this effect
+      # @return [Float, Integer] multiplier
+      def dfs_modifier
         return 1
       end
 
@@ -526,7 +550,11 @@ module Battle
           alias mod1_multiplier base_power_multiplier
           alias mod2_multiplier base_power_multiplier
           alias mod3_multiplier base_power_multiplier
+          alias atk_modifier base_power_multiplier
+          alias dfe_modifier base_power_multiplier
           alias spd_modifier base_power_multiplier
+          alias ats_modifier base_power_multiplier
+          alias dfs_modifier base_power_multiplier
           alias chance_of_hit_multiplier base_power_multiplier
         end
       end
