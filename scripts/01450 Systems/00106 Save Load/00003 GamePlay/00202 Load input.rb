@@ -75,6 +75,7 @@ module GamePlay
       play_decision_se
       Save.save_index = Configs.save_config.single_save? ? 0 : @index + 1
       if @index < @all_saves.size && @all_saves[@index]
+        Graphics.update
         load_game
       else
         create_new_game
