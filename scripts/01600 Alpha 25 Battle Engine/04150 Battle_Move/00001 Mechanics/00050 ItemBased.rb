@@ -22,14 +22,20 @@ module Battle
 
         private
 
-        # Function that deals the damage to the pokemon
+        # Method calculating the damages done by the actual move
+        # @note : I used the 4th Gen formula : https://www.smogon.com/dp/articles/damage_formula
         # @param user [PFM::PokemonBattler] user of the move
-        # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
-        def deal_damage(user, actual_targets)
-          super
+        # @param target [PFM::PokemonBattler] target of the move
+        # @note The formula is the following:
+        #       (((((((Level * 2 / 5) + 2) * BasePower * [Sp]Atk / 50) / [Sp]Def) * Mod1) + 2) *
+        #         CH * Mod2 * R / 100) * STAB * Type1 * Type2 * Mod3)
+        # @return [Integer]
+        def damages(user, target)
+          power = super
           consume_item(user)
+          return power
         end
-        alias item_based_deal_damage deal_damage
+        alias item_based_damages damages
 
         # Remove the item from the battler
         # @param battler [PFM::PokemonBattler]

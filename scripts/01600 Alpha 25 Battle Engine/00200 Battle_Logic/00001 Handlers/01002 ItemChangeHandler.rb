@@ -76,8 +76,8 @@ module Battle
       # @return [Boolean]
       def can_give_item?(giver, target, launcher = giver)
         return false unless can_lose_item?(giver, launcher)
-        return false if target.hold_item?(target.item_db_symbol)
-        return false if target.battle_item_db_symbol == :__undef__
+        return false if target.hold_item?(target.battle_item_db_symbol)
+        return false unless target.battle_item_db_symbol == :__undef__
         return false if PROTECTED_POKEMON_ITEMS.keys.include?(target.db_symbol)
 
         return true
