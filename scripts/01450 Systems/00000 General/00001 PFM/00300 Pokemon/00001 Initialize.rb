@@ -116,6 +116,7 @@ module PFM
     def shiny_attempts
       n = 1
       n += 2 if $bag.contain_item?(:shiny_charm)
+      n += 2 * $wild_battle.compute_fishing_chain
       return n
     end
 

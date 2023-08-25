@@ -26,6 +26,9 @@ module PFM
     # Get the game state responsive of the whole game state
     # @return [PFM::GameState]
     attr_accessor :game_state
+    # Get the history of the encounters wild Pokémon
+    # @return [Array<Hash>]
+    attr_reader :encounters_history
 
     # Create a new Wild_Battle manager
     # @param game_state [PFM::GameState] variable responsive of containing the whole game state for easier access
@@ -34,6 +37,7 @@ module PFM
       @forced_wild_battle = false
       @groups = []
       @game_state = game_state
+      @encounters_history = []
     end
 
     # Reset the wild battle
@@ -159,11 +163,15 @@ module PFM
     # @return [Battle::Logic::BattleInfo, nil]
     def setup(battle_id = 1)
       # If it was a forced battle
-      return configure_battle(@forced_wild_battle, battle_id) if @forced_wild_battle
+      if @forced_wild_battle
+        reset_encounters_history
+        return configure_battle(@forced_wild_battle, battle_id)
+      end
       # Security for when a Repel is used at the same time an encounter is happening
       return nil if PFM.game_state.repel_count > 0
       return nil unless (group = current_selected_group)
 
+      reset_encounters_history if can_encounters_history_reset?(group)
       maxed = MAX_POKEMON_LEVEL_ABILITY.include?(creature_ability) && rand(100) < 50
       is_double_battle = group.is_double_battle || $game_variables[Yuki::Var::Allied_Trainer_ID] > 0
       all_creatures = (group.encounters * (is_double_battle ? 2 : 1)).map do |encounter|
@@ -171,6 +179,10 @@ module PFM
       end
       creature_to_select = configure_creature(all_creatures)
       selected_creature = select_creature(group, creature_to_select)
+      selected_creature.each do |creature|
+        add_encounter_history(creature, group)
+        reset_encounters_history if creature.shiny?
+      end
       return configure_battle(selected_creature, battle_id)
     ensure
       @forced_wild_battle = false
@@ -221,6 +233,10 @@ module PFM
     # @param type [Symbol] :mega, :super, :normal
     # @return [Boolean]
     def check_fishing_chances(type)
+      creek_amount = game_state.game_player.fishing_creek_amount
+      is_inc_rate = FishIncRate.include?(creature_ability)
+      return true if creek_amount >= 3
+
       case type
       when :mega
         rate = 60
@@ -229,8 +245,11 @@ module PFM
       else
         rate = 30
       end
-      rate *= 1.5 if FishIncRate.include?(creature_ability)
-      return rand(100) < rate 
+      rate *= 1.5 if is_inc_rate
+      rate *= 1 + 0.1 * creek_amount
+      result = rand(100) < rate
+      reset_encounters_history unless result
+      return result
     end
 
     # yield a block on every available roaming Pokemon
@@ -245,6 +264,31 @@ module PFM
       @roaming_pokemons.each do |info|
         info.spotted = true
       end
+    end
+
+    # Reset the history of the encounters wild Pokémon
+    def reset_encounters_history
+      @encounters_history = []
+    end
+
+    # Compute the fishing chain
+    # @return [Integer] The total fishing chain (max 20)
+    def compute_fishing_chain
+      return 0 unless @encounters_history
+
+      return @encounters_history.take_while { |encounter| %i[old_rod good_rod super_rod].include?(encounter[:tool]) }.count.clamp(0, 20)
+    end
+
+    # Method that prevent non wanted data save of the Wild_Battle object
+    def begin_save
+      $TMP_ENCOUNTERS_HISTORY = @encounters_history
+      @encounters_history = []
+    end
+
+    # Method that end the save state of the Wild_Battle object
+    def end_save
+      @encounters_history = $TMP_ENCOUNTERS_HISTORY
+      $TMP_ENCOUNTERS_HISTORY = nil
     end
 
     private
@@ -297,6 +341,32 @@ module PFM
       system_tag = game_state.game_player.system_tag_db_symbol
       terrain_tag = game_state.game_player.terrain_tag
       return @groups.find { |group| group.tool.nil? && group.system_tag == system_tag && group.terrain_tag == terrain_tag }
+    end
+
+    # Add an encounter in the history
+    # @param creature [PFM::Pokemon]
+    # @param group [Studio::Group]
+    def add_encounter_history(creature, group)
+      @encounters_history ||= []
+      hash = {}
+      hash[:db_symbol] = creature.db_symbol
+      hash[:form] = creature.form
+      hash[:system_tag] = group.system_tag
+      hash[:terrain_tag] = group.terrain_tag
+      hash[:tool] = group.tool
+      @encounters_history << hash
+    end
+
+    # Check and reset if necessary the history of the encounters
+    # @param group [Studio::Group]
+    def can_encounters_history_reset?(group)
+      last = @encounters_history&.last
+      return false unless last
+
+      # Here we can add other rules to reset the history
+      is_fishing_group = %i[old_rod good_rod super_rod].include?(group.tool)
+      is_fishing_last = %i[old_rod good_rod super_rod].include?(last[:tool])
+      return is_fishing_group != is_fishing_last
     end
   end
 

@@ -51,6 +51,7 @@ module Scheduler
     Yuki::Particles.update
     PFM::Wild_RoamingInfo.unlock
     $wild_battle.reset
+    $wild_battle.reset_encounters_history
     $wild_battle.load_groups
   end
 

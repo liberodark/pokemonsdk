@@ -91,4 +91,16 @@ class Game_Character
   def system_tag_db_symbol
     GameData::SystemTags.system_tag_db_symbol(system_tag)
   end
+
+  # Count the number of impassable tiles around the fishing spot
+  # @return [Integer] The number of impassable tiles
+  def fishing_creek_amount
+    xf, yf = front_tile
+    d = game_state.game_player.direction
+    top = !($game_map.passable?(xf, yf - 1, d) && SurfTag.include?($game_map.system_tag(xf, yf - 1)))
+    right = !($game_map.passable?(xf + 1, yf, d) && SurfTag.include?($game_map.system_tag(xf + 1, yf)))
+    bottom = !($game_map.passable?(xf, yf + 1, d) && SurfTag.include?($game_map.system_tag(xf, yf + 1)))
+    left = !($game_map.passable?(xf - 1, yf, d) && SurfTag.include?($game_map.system_tag(xf - 1, yf)))
+    return [top, right, bottom, left].count { |b| b }
+  end
 end
