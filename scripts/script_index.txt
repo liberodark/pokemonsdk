@@ -1123,6 +1123,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Thunder.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 TopsyTurvy.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Torment.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 ToxicThread.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Toxic_Spikes.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Transform.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 TriAttack.rb
