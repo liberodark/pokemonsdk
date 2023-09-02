@@ -16,7 +16,7 @@ module Studio
 end
 
 PFM::ItemDescriptor.define_chen_prevention(Studio::BallItem) do
-  next !$game_temp.in_battle || $game_temp.trainer_battle || $game_switches[Yuki::Sw::BT_NoCatch]
+  next !$game_temp.in_battle || $game_temp.trainer_battle
 end
 
 PFM::ItemDescriptor.define_bag_use(Studio::BallItem, true) do |item, scene|
@@ -35,7 +35,7 @@ PFM::ItemDescriptor.define_bag_use(Studio::BallItem, true) do |item, scene|
 end
 
 PFM::ItemDescriptor.define_chen_prevention(:rocket_ball) do
-  next !$game_temp.in_battle || $game_switches[Yuki::Sw::BT_NoCatch]
+  next !$game_temp.in_battle
 end
 
 PFM::ItemDescriptor.define_bag_use(:rocket_ball, true) do |item, scene|
