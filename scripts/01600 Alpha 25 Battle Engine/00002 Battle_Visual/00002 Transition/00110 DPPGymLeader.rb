@@ -28,9 +28,14 @@ module Battle
         # Get the resource name according to the current state of the player and requested prefix
         # @return [String]
         def resource_name(prefix)
-          @scene.battle_info.find_background_name_to_display(prefix) do |filename|
+          resource_filename = @scene.battle_info.find_background_name_to_display(prefix) do |filename|
             next RPG::Cache.battleback_exist?(filename)
-          end || "#{prefix}#{@default_battler_name}"
+          end
+          unless RPG::Cache.battleback_exist?(resource_filename)
+            log_debug("Defaulting to file #{prefix}_#{@default_battler_name}")
+            resource_filename = "#{prefix}_#{@default_battler_name}"
+          end
+          return resource_filename
         end
 
         # Function that creates the top sprite

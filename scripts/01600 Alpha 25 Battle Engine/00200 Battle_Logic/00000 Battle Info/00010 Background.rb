@@ -44,8 +44,9 @@ module Battle
 
         timed = timed_background_names(background_name)
         return [
-          *(timed ? timed.flat_map { |name| trainer_background_name(name) } : trainer_background_name(background_name)),
+          *(timed && timed.flat_map { |name| trainer_background_name(name) }),
           *timed,
+          *trainer_background_name(background_name),
           background_name
         ]
       end
