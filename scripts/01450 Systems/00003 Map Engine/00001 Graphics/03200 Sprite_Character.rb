@@ -65,7 +65,7 @@ class Sprite_Character < RPG::Sprite
 
   # Update every informations about the Sprite_Character
   def update
-    super if @_animation || @_loop_animation
+    super if (@_animation || @_loop_animation) && !Graphics::FPSBalancer.global.skipping?
     # Check if the graphic info where updated
     update_graphics if @character_name != @character.character_name || @tile_id != @character.tile_id
 

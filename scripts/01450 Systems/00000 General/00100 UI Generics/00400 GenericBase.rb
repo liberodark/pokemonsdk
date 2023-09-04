@@ -71,7 +71,8 @@ module UI
 
     # Update the background animation
     def update_background_animation
-      @background.set_origin((@background.ox - 0.5) % 16, (@background.oy - 0.5) % 16)
+      @on_update_background_animation&.call
+      @background_animation&.update
     end
 
     private
@@ -84,6 +85,18 @@ module UI
 
     def create_background
       @background = add_background(background_filename).set_z(-10)
+      create_background_animation
+    end
+
+    def create_background_animation
+      ya = Yuki::Animation
+      duration = 0.5
+      @background_animation = ya.timed_loop_animation(duration)
+      @background_animation.play_before(ya.shift(duration, @background, 16, 16, 0, 0))
+      @on_update_background_animation = proc do
+        @background_animation.start
+        @on_update_background_animation = nil
+      end
     end
 
     def create_button_background

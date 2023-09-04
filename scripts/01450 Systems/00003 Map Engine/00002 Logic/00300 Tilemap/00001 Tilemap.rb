@@ -23,6 +23,7 @@ module Yuki
       @ox = 0
       @oy = 0
       @autotile_idle_count = Configs.display.tilemap_settings.autotile_idle_frame_count
+      @autotile_counter = 0
       reset
     end
 
@@ -34,12 +35,14 @@ module Yuki
     # Update the tilemap
     def update
       return if @disposed
+      return if Graphics::FPSBalancer.global.skipping?
 
       # ox / 32 = first visible tile (x), oy / 32 first visible tile (y)
       x = @ox / 32 - 1
       y = @oy / 32 - 1
+      @autotile_counter += 1
 
-      if x != @last_x || y != @last_y || (update_autotile = (Graphics.frame_count % @autotile_idle_count == 0))
+      if x != @last_x || y != @last_y || (update_autotile = (@autotile_counter % @autotile_idle_count == 0))
         @map_datas.each(&:update_counters) if update_autotile
         draw(@last_x = x, @last_y = y)
         update_position(@ox % 32, @oy % 32)

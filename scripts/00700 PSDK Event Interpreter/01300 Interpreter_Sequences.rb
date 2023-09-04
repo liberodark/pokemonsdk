@@ -120,20 +120,14 @@ class Interpreter
       Audio.se_play(*exclamation_se)
       emotion(:exclamation)
       EXCLAMATION_PARTICLE_DURATION.times do
-        $game_player.update
-        $scene.spriteset.update
-        Graphics.update
+        move_player_and_update_graphics
       end
     end
     Audio.bgm_play(*eye_bgm)
     # We move to the trainer
     while (($game_player.x - character.x).abs + ($game_player.y - character.y).abs) > 1
       character.move_toward_player
-      while character.moving?
-        $game_map.update
-        $scene.spriteset.update
-        Graphics.update
-      end
+      move_player_and_update_graphics while character.moving?
     end
     $game_player.turn_toward_character(character)
     # We do the speech
@@ -156,5 +150,16 @@ class Interpreter
     message("#{actor.given_name} is being traded with #{pokemon.name}!")
     id, form = pokemon.evolve_check(:trade, actor) || pokemon.evolve_check(:tradeWith, actor)
     GamePlay.make_pokemon_evolve(pokemon, id, form, true) if id
+  end
+
+  private
+
+  def move_player_and_update_graphics
+    Graphics::FPSBalancer.global.run do
+      $game_player.update
+      $game_map.update
+      $scene.spriteset.update
+    end
+    Graphics.update
   end
 end

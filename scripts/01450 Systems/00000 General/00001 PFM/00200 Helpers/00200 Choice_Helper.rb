@@ -54,8 +54,6 @@ module PFM
       window = build_choice_window(viewport, x, y, width, align_right)
       loop do
         Graphics.update
-        next if Graphics::FPSBalancer.global.skipping? && (!$scene.message_window || $scene.message_window.can_sub_window_be_updated?)
-
         window.update
         on_update&.call(*args)
         break if check_cancel(window)

@@ -43,6 +43,7 @@ module RPG
     # Update the sprite display
     def update
       return if @type == 0
+      return if Graphics::FPSBalancer.global.skipping?
       send(UPDATE_METHODS[@type])
     end
 

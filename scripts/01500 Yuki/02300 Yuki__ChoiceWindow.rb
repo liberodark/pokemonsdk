@@ -49,9 +49,11 @@ module Yuki
 
     # Update the choice, if player hit up or down the choice index changes
     def update
-      if Input.repeat?(:DOWN)
+      return @cool_down.update if @cool_down && !@cool_down.done?
+
+      if Input.press?(:DOWN)
         update_cursor_down
-      elsif Input.repeat?(:UP)
+      elsif Input.press?(:UP)
         update_cursor_up
       elsif @my != Mouse.y || Mouse.wheel != 0
         update_mouse
@@ -118,6 +120,7 @@ module Yuki
       end
       cursor_rect.y -= default_line_height
       @index -= 1
+      cool_down
     end
 
     # Update the choice display when player hit DOWN
@@ -132,6 +135,7 @@ module Yuki
         self.oy += default_line_height unless @index < DeltaChoice || @index > (@choices.size - DeltaChoice)
       end
       cursor_rect.y += default_line_height
+      cool_down
     end
 
     # Change the window builder and rebuild the window
@@ -238,6 +242,13 @@ module Yuki
       end
       window.viewport.sort_z
       return choice_window
+    end
+
+    private
+
+    def cool_down
+      @cool_down = Yuki::Animation.wait(0.15)
+      @cool_down.start
     end
   end
 end

@@ -18,6 +18,7 @@ module Yuki
     # Update of the particles & stack cleaning if requested
     def update
       return unless ready?
+      return if Graphics::FPSBalancer.global.skipping?
 
       @stack.each do |i|
         i.update if i && !i.disposed

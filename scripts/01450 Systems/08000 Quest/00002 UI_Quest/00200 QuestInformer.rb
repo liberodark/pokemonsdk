@@ -35,6 +35,7 @@ module UI
 
     # Update the animation for the quest informer
     def update
+      return if Graphics::FPSBalancer.global.skipping?
       if @counter < TRANSITION_LENGHT
         @background.opacity = (@counter + 1) * 255 / TRANSITION_LENGHT
       elsif @counter < PHASE2

@@ -21,7 +21,7 @@ module Yuki
         shader.set_float_uniform('r3', ((r * h - 10) / h)**2)
         shader.set_float_uniform('r2', ((r * h - 20) / h)**2)
         shader.set_float_uniform('r1', ((r * h - 30) / h)**2)
-        Graphics.update
+        update_graphics_60_fps
       end
       sp1.shader = shader = nil
       dispose_sprites(sp1)
@@ -74,7 +74,7 @@ module Yuki
       NB_Frame.times do |i|
         yield(i, sp1) if block_given?
         sp1.set_position(sp1.x + dx, sp1.y + dy)
-        Graphics.update
+        update_graphics_60_fps
       end
       sp1.shader = nil
       dispose_sprites(sp1)
@@ -98,7 +98,7 @@ module Yuki
         yield(i, sp) if block_given?
         shader.set_float_uniform('alpha', max_alpha * i / nb_frame)
         shader.set_float_uniform('tau', min_tau + (delta_tau * i / nb_frame))
-        Graphics.update
+        update_graphics_60_fps
       end
       sp.shader = shader = nil
       bitmap ? sp.dispose : dispose_sprites(sp)
@@ -109,15 +109,21 @@ module Yuki
     def bw_zoom(transition_sprite)
       60.times do
         transition_sprite.zoom_x = (transition_sprite.zoom_y *= 1.005)
-        Graphics.update
+        update_graphics_60_fps
       end
       30.times do
         transition_sprite.zoom_x = (transition_sprite.zoom_y *= 1.01)
         transition_sprite.opacity -= 9
-        Graphics.update
+        update_graphics_60_fps
       end
       transition_sprite.bitmap.dispose
       transition_sprite.dispose
+    end
+
+    # TODO: rework all animations to rely on Yuki::Animation instead of using that dirty trick
+    def update_graphics_60_fps
+      Graphics.update
+      Graphics.update while Graphics::FPSBalancer.global.skipping?
     end
 
     # Dispose the sprites

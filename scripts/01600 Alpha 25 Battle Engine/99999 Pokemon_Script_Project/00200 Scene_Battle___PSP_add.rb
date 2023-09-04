@@ -32,7 +32,7 @@ module PSP
         sp.viewport.need_to_sort = true
         sp.viewport.sort_z
         Graphics.update
-        Graphics.update if Graphics.frame_count % 3 == 0
+        Graphics.update while Graphics::FPSBalancer.global.skipping?
       end
       sp.reset_position
       sp.update
