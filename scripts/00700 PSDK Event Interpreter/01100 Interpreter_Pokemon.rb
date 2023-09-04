@@ -173,32 +173,6 @@ class Interpreter
   end
   alias demarrer_combat call_battle_wild
 
-  # Save the team somewhere and make it empty in the point of view of the player.
-  # @param id_storage [String] the specific name of the storage, if nil sent to $storage.other_party
-  # @author Nuri Yuri
-  def empty_and_save_party(id_storage = nil)
-    var_id = id_storage ? "@_str_#{id_storage}".to_sym : :@other_party
-    $actors.compact!
-    party = Marshal.load(Marshal.dump($actors))
-    $actors.clear
-    $storage.instance_variable_set(var_id, party)
-  end
-
-  # Retrieve the saved team when emptied ( /!\ empty the current team)
-  # @param id_storage [String] the specific name of the storage, if nil sent to $storage.other_party
-  # @author Nuri Yuri
-  def retrieve_saved_party(id_storage = nil)
-    var_id = id_storage ? "@_str_#{id_storage}".to_sym : :@other_party
-    party = $storage.instance_variable_get(var_id)
-    return nil if party.empty?
-    $actors.each do |pokemon|
-      $storage.store(pokemon)
-    end
-    $actors = PFM.game_state.actors = party
-    $storage.remove_instance_variable(var_id) if id_storage
-  end
-  alias retreive_saved_party retrieve_saved_party
-
   # Save some Pokemon of the team somewhere and remove them from the party
   # @param id_storage [String] the specific name of the storage, if nil sent to $storage.other_party
   # @param indexes [Array, Range] list of index in the team

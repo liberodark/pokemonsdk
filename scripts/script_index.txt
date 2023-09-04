@@ -61,6 +61,7 @@ pokemonsdk/scripts/00700 PSDK Event Interpreter/01201 Interpreter_add_item.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01205 Interpreter_Fiber.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01300 Interpreter_Sequences.rb
 pokemonsdk/scripts/00700 PSDK Event Interpreter/01301 Interpreter_Shop.rb
+pokemonsdk/scripts/00700 PSDK Event Interpreter/01400 Interpreter_Player.rb
 pokemonsdk/scripts/00800 Studio/00001 Accessors.rb
 pokemonsdk/scripts/00800 Studio/00400 Text.rb
 pokemonsdk/scripts/00800 Studio/00000 Configs/00001 Natures.rb

@@ -86,5 +86,8 @@ module Yuki
     E_Return_Y = 49
     # Battle mode, 0 : Normal, 1 : P2P server, 2 : P2P Client
     BT_Mode = 50
+
+    # Id of the current player ID
+    Current_Player_ID = 51
   end
 end
