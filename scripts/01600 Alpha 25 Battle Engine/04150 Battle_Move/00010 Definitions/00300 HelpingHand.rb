@@ -56,7 +56,7 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @return [String]
       def deal_message(user, target)
-        parse_text_with_2pokemon(19, 1050, user, target)
+        parse_text_with_pokemon(19, 1050, user, PFM::Text::PKNICK[1] => target.given_name)
       end
     end
     Move.register(:s_helping_hand, HelpingHand)
