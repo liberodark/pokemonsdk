@@ -5,8 +5,6 @@ module Battle
     # @see https://bulbapedia.bulbagarden.net/wiki/Solar_Beam_(move)
     # @see https://www.pokepedia.fr/Lance-Soleil
     class SolarBeam < TwoTurnBase
-      private
-
       # Get the real base power of the move (taking in account all parameter)
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
