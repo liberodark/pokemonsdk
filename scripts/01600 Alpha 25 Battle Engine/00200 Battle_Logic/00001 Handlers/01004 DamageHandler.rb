@@ -115,7 +115,10 @@ module Battle
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 905, target))
         end
         exec_hooks(DamageHandler, :post_damage, binding) if target.hp > 0
-        exec_hooks(DamageHandler, :post_damage_death, binding) if target.hp <= 0
+        if target.hp <= 0
+          exec_hooks(DamageHandler, :post_damage_death, binding) 
+          target.ko_count += 1
+        end
         target.add_damage_to_history(hp, launcher, skill, target.hp <= 0)
         log_data("# drain damage_change(#{hp}, #{target}, #{launcher}, #{skill}, #{target.hp <= 0})")
       rescue Hooks::ForceReturn => e
