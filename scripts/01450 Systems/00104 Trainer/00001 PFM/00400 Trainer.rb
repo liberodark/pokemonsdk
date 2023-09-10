@@ -76,7 +76,8 @@ module PFM
       else
         @name_boy = value
       end
-      game_state.game_actors[1].name = value
+      id_current_player = $game_variables[Yuki::Var::Current_Player_ID]
+      game_state.game_actors[id_current_player].name = value
     end
 
     # Return the id of the trainer
@@ -88,7 +89,8 @@ module PFM
     # Redefine some variable RMXP uses with the right values
     def redefine_var
       game_state.game_variables[Yuki::Var::Player_ID] = id
-      game_state.game_actors[1].name = name
+      id_current_player = $game_variables[Yuki::Var::Current_Player_ID] = $game_variables[Yuki::Var::Current_Player_ID].clamp(1, Float::INFINITY)
+      game_state.game_actors[id_current_player].name = name
       # redefinir les badges
     end
 
@@ -158,7 +160,8 @@ module PFM
       @playing_girl = playing_girl
       game_state.game_switches[Yuki::Sw::Gender] = playing_girl
       game_state.game_variables[Yuki::Var::Player_ID] = id
-      game_state.game_actors[1].name = name
+      id_current_player = $game_variables[Yuki::Var::Current_Player_ID]
+      game_state.game_actors[id_current_player].name = name
     end
     alias set_gender define_gender
 
