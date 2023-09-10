@@ -1,11 +1,16 @@
 module Battle
   module Effects
     class StickyWeb < PositionTiedEffectBase
+      # The Pokemon that launched the attack
+      # @return [PFM::PokemonBattler]
+      attr_reader :origin
       # Create a new Sticky Web effect
       # @param logic [Battle::Logic]
       # @param bank [Integer] bank where the effect acts
-      def initialize(logic, bank)
-        super(logic, bank, 0)
+      # @param origin [PFM::PokemonBattler] the Pokemon that launched the attack
+      def initialize(logic, bank, origin)
+        super(logic, bank, origin.position)
+        @origin = origin
       end
 
       # Function that tells if the move is affected by Rapid Spin
@@ -35,7 +40,7 @@ module Battle
         return if with.hold_item?(:heavy_duty_boots)
 
         handler.scene.display_message_and_wait(message(with))
-        handler.logic.stat_change_handler.stat_change_with_process(:spd, -1, with)
+        handler.logic.stat_change_handler.stat_change_with_process(:spd, -1, with, with.has_ability?(:mirror_armor) ? origin : nil)
       end
 
       # Get the message text

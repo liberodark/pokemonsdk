@@ -140,6 +140,9 @@ module Battle
     if move.affects_bank? # Send move back to user if affects the bank in order to apply the effect to the bank
       blocker = actual_targets.find { |target| target.has_ability?(:magic_bounce) }
       move.scene.visual.show_ability(blocker)
+      move.scene.visual.wait_for_animation
+
+      @original_target = actual_targets
       actual_targets.clear << user
       next
     end
@@ -149,6 +152,9 @@ module Battle
       next target unless target.has_ability?(:magic_bounce)
 
       move.scene.visual.show_ability(target)
+      move.scene.visual.wait_for_animation
+
+      @original_target << target
       next user
     end
   end
@@ -165,11 +171,17 @@ module Battle
     next unless user.can_be_lowered_or_canceled?(move.status? && actual_targets.any? { |target| target.effects.has?(:magic_coat) })
 
     if move.affects_bank? # Send move back to user if affects the bank in order to apply the effect to the bank
+      @original_target = actual_targets
       actual_targets.clear << user
       next
     end
 
     # Send the moves back to the user if target has magic bounce
-    actual_targets.map! { |target| target.effects.has?(:magic_coat) ? user : target }
+    actual_targets.map! do |target|
+      next target unless target.has_ability?(:magic_coat)
+
+      @original_target << target
+      next user
+    end 
   end
 end

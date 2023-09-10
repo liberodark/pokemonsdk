@@ -102,7 +102,7 @@ module Battle
         # @param move [Battle::Move]
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          move.scene.logic.stat_change_handler.stat_change_with_process(:atk, -1, user) if move.direct? && !user.has_ability?(:long_reach)
+          move.scene.logic.stat_change_handler.stat_change_with_process(:atk, -1, user, user.has_ability?(:mirror_armor) ? target : nil) if move.direct? && !user.has_ability?(:long_reach)
         end
       end
       Protect.register(:king_s_shield, KingsShield)
@@ -131,7 +131,7 @@ module Battle
         # @param move [Battle::Move]
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          move.scene.logic.stat_change_handler.stat_change_with_process(:spd, -1, user) if move.direct? && !user.has_ability?(:long_reach)
+          move.scene.logic.stat_change_handler.stat_change_with_process(:spd, -1, user, user.has_ability?(:mirror_armor) ? target : nil) if move.direct? && !user.has_ability?(:long_reach)
         end
       end
       Protect.register(:silk_trap, SilkTrap)
@@ -146,7 +146,7 @@ module Battle
         # @param move [Battle::Move]
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          move.scene.logic.stat_change_handler.stat_change_with_process(:dfe, -2, user) if move.direct? && (move.db_symbol != :sucker_punch || !user.has_ability?(:long_reach))
+          move.scene.logic.stat_change_handler.stat_change_with_process(:dfe, -2, user, user.has_ability?(:mirror_armor) ? target : nil) if move.direct? && (move.db_symbol != :sucker_punch || !user.has_ability?(:long_reach))
         end
       end
       Protect.register(:obstruct, Obstruct)

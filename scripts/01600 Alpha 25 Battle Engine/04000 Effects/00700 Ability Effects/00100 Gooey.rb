@@ -14,7 +14,7 @@ module Battle
 
           if handler.logic.stat_change_handler.stat_decreasable?(:spd, launcher)
             handler.scene.visual.show_ability(target)
-            handler.logic.stat_change_handler.stat_change_with_process(:spd, -1, launcher)
+            handler.logic.stat_change_handler.stat_change_with_process(:spd, -1, launcher, launcher.has_ability?(:mirror_armor) ? target : nil)
           end
         end
       end

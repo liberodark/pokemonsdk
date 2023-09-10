@@ -26,7 +26,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         bank = actual_targets.map(&:bank).first
-        @logic.add_bank_effect(Effects::StickyWeb.new(@logic, bank))
+        @logic.add_bank_effect(Effects::StickyWeb.new(@logic, bank, user))
         @scene.display_message_and_wait(parse_text(18, bank == 0 ? 214 : 215))
       end
     end

@@ -144,6 +144,8 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @param no_message [Boolean] if the message about stat increase should be shown
       def show_stat_change_text_and_animation(stat, power, amount, target, no_message)
+        return if power.zero? && amount.zero?
+
         text_index = stat_text_index(amount, power)
         @scene.visual.show_rmxp_animation(target, ANIMATION[stat] + animation_offset(target, power)) if amount != 0
         @scene.display_message_and_wait(parse_text_with_pokemon(19, TEXT_POS[stat][text_index], target)) unless no_message

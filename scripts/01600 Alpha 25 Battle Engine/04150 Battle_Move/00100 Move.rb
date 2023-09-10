@@ -29,6 +29,9 @@ module Battle
     # Number of damage dealt last time the move was used (to be used with move history)
     # @return [Integer]
     attr_accessor :damage_dealt
+    # The original target of the move (to be used with Magic Bounce/Coat)
+    # @return [Array<PFM::PokemonBattler>]
+    attr_accessor :original_target
 
     # Create a new move
     # @param db_symbol [Symbol] db_symbol of the move in the database
@@ -45,6 +48,7 @@ module Battle
       @consecutive_use_count = 0
       @effectiveness = 1
       @damage_dealt = 0
+      @original_target = []
       @scene = scene
       @logic = scene.logic
     end

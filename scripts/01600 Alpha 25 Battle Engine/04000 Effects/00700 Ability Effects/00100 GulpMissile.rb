@@ -48,7 +48,7 @@ module Battle
 
           case @target.form
           when 1
-            handler.logic.stat_change_handler.stat_change_with_process(:dfe, -1, launcher, target)
+            handler.logic.stat_change_handler.stat_change_with_process(:dfe, -1, launcher, launcher.has_ability?(:mirror_armor) ? target : nil)
           else
             handler.logic.status_change_handler.status_change_with_process(:paralysis, launcher, target)
           end
