@@ -232,7 +232,7 @@ module PFM
       # @param name [String] name of the npc
       # @param amount [Integer] number of time the npc should be beaten
       # @return [String]
-      def text_beat_npc(_index, name, amount)
+      def text_beat_npc(index, name, amount)
         if amount > 1
           found = data_get(:npc_beaten, index, 0).clamp(0, amount)
           return format(ext_text(9000, 57), amount: amount, name: name, found: found)
