@@ -4,6 +4,9 @@ module Battle
       # Get the db_symbol of the field terrain
       # @return [Symbol]
       attr_reader :db_symbol
+      # Get the counter of the field terrain
+      # @return [Integer]
+      attr_accessor :internal_counter
 
       @registered_field_terrains = {}
 
