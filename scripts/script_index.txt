@@ -801,6 +801,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effe
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Tinted Lens.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Tough Claws.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Toxic Boost.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 ToxicDebris.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Trace.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Triage.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Truant.rb
