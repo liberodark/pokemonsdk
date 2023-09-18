@@ -63,6 +63,9 @@ module Battle
         return 1 if %i[full_incense lagging_tail].any? { |db_symbol| @launcher.hold_item?(db_symbol)} && %i[full_incense lagging_tail].none?(attack.launcher.battle_item_db_symbol)
         return -1 if %i[full_incense lagging_tail].any? { |db_symbol| attack.launcher.hold_item?(db_symbol)} && %i[full_incense lagging_tail].none?(@launcher.battle_item_db_symbol)
 
+        priority_return = mycelium_might_priority(attack)
+        return priority_return if priority_return != 0
+
         trick_room_factor = @scene.logic.terrain_effects.has?(:trick_room) ? -1 : 1
         return (attack.launcher.spd <=> @launcher.spd) * trick_room_factor
       end
@@ -93,6 +96,18 @@ module Battle
           @scene.visual.show_ability(launcher)
           @move.dup.proceed(launcher, @target_bank, @target_position)
         end
+      end
+
+      # Define which Pokémon should go first if either of them or both have the ability Mycelium Might.
+      # @param attack [Battle::Actions::Attack]
+      # @return [Integer]
+      def mycelium_might_priority(attack)
+        return 0 if @launcher.battle_ability_db_symbol != :mycelium_might && attack.launcher.battle_ability_db_symbol != :mycelium_might
+
+        return 1 if @launcher.has_ability?(:mycelium_might) && attack.launcher.battle_ability_db_symbol != :mycelium_might && @move.status?
+        return -1 if attack.launcher.has_ability?(:mycelium_might) && launcher.battle_ability_db_symbol != :mycelium_might && attack.move.status?
+
+        return 0
       end
 
       # Action describing the action forced by Encore

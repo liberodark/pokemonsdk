@@ -316,6 +316,11 @@ module PFM
       return true
     end
 
+    # List of abilities that ignore abilities
+    ABILITIES_IGNORING_ABILITIES = %i[mold_breaker teravolt turboblaze]
+    # List of moves that ignore abilities
+    MOVES_IGNORING_ABILITIES = %i[sunsteel_strike moongeist_beam photon_geyser]
+
     # Test if the Pokemon can have a lowering stat or have its move canceled (return false if the Pokemon has mold breaker)
     #
     # List of ability that should be affected:
@@ -324,24 +329,38 @@ module PFM
     # :shield_dust|:simple|:snow_cloak|:solid_rock|:soundproof|:sticky_hold|:storm_drain|:sturdy|:suction_cups|:tangled_feet|:thick_fat|:unaware|:vital_spirit|
     # :volt_absorb|:water_absorb|:water_veil|:white_smoke|:wonder_guard|:big_pecks|:contrary|:friend_guard|:heavy_metal|:light_metal|:magic_bounce|:multiscale|
     # :sap_sipper|:telepathy|:wonder_skin|:aroma_veil|:bulletproof|:flower_veil|:fur_coat|:overcoat|:sweet_veil|:dazzling|:disguise|:fluffy|:queenly_majesty|
-    # :water_bubble|:mirror_armor|:punk_rock|:ice_scales|:ice_face|:pastel_veil
+    # :water_bubble|:mirror_armor|:punk_rock|:ice_scales|:ice_face|:pastel_veil||:armor_tail|:earth_eater|:good_as_gold|:purifying_salt|:well_backed_body|:wind_rider
     # @param test [Boolean] if the test should be done
     # @return [Boolean] potential changed result
     def can_be_lowered_or_canceled?(test = true)
       return false unless test
-      return test unless has_ability?(:mold_breaker) || has_ability?(:teravolt) || has_ability?(:turboblaze) || current_move_ignoring_ability?
+      return test unless current_ability_ignoring_ability? || current_move_ignoring_ability?
 
       unless ability_used
         @scene.visual.show_ability(self)
 
         self.ability_used = true
       end
+
       return false
     end
 
-    # List of moves that ignore abilities
-    MOVES_IGNORING_ABILITIES = %i[sunsteel_strike moongeist_beam photon_geyser]
-    # Tell if the Pokémon is using a move ignoring ability
+    # Tell if the Pokémon has a ability ignoring ability
+    # @return [Boolean]
+    def current_ability_ignoring_ability?
+      return true if ABILITIES_IGNORING_ABILITIES.include?(self.battle_ability_db_symbol)
+      
+      result = $scene.logic.turn_actions.any? do |a|
+        a.is_a?(Battle::Actions::Attack) &&
+        Battle::Actions::Attack.from(a).launcher == self &&
+        self.has_ability?(:mycelium_might) &&
+        Battle::Actions::Attack.from(a).move.status?
+      end
+
+      return result
+    end
+
+    # Tell if the Pokemon has an ability ignoring abilities
     # @return [Boolean]
     def current_move_ignoring_ability?
       return $scene.logic.turn_actions.any? do |a|
