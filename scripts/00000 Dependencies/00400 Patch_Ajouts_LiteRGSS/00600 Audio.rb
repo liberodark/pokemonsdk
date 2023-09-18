@@ -16,6 +16,13 @@ module Audio
   def music_volume=(value)
     value = value.to_i.abs
     @music_volume = value < 101 ? value : 100
+    if Object.const_defined?(:FMOD)
+      adjust_volume(@bgm_channel, @music_volume)
+      adjust_volume(@me_channel, @music_volume)
+    elsif Object.const_defined?(:SFMLAudio)
+      adjust_volume(@bgm_sound, @music_volume)
+      adjust_volume(@me_sound, @music_volume)
+    end
   end
 
   # Get volume of sfx
@@ -29,6 +36,11 @@ module Audio
   def sfx_volume=(value)
     value = value.to_i.abs
     @sfx_volume = value < 101 ? value : 100
+    if Object.const_defined?(:FMOD)
+      adjust_volume(@bgs_channel, @sfx_volume)
+    elsif Object.const_defined?(:SFMLAudio)
+      adjust_volume(@bgs_sound, @sfx_volume)
+    end
   end
 
   # A weird alias of #se_play

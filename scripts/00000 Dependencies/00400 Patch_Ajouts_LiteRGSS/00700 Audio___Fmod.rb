@@ -464,6 +464,15 @@ if Object.const_defined?(:FMOD)
       channel.setPaused(false)
     end
 
+    # Adjust the volume of a channel
+    # @param channel [Fmod::Channel]
+    # @param volume [Numeric]
+    def adjust_volume(channel, volume)
+      return unless channel
+
+      channel.setVolume(volume / 100.0)
+    end
+
     # Automatically call the "was playing callback"
     def call_was_playing_callback
       @was_playing_callback&.call
@@ -668,6 +677,15 @@ elsif Object.const_defined?(:SFMLAudio)
       @cries_stack.each(&:stop)
       @cries_stack.clear
       @se_sounds.clear
+    end
+
+    # Adjust the volume of a channel
+    # @param channel [SFMLAudio::Music, SFMLAudio::Sound]
+    # @param volume [Numeric]
+    def adjust_volume(channel, volume)
+      return unless channel
+
+      channel.setVolume(volume / 100.0)
     end
 
     # Load the file data
