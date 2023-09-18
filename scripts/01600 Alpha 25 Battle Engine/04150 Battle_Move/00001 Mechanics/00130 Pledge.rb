@@ -73,6 +73,7 @@ module Battle
 
       # Check the order to know if the user uses its Pledge Move or wait for the other to attack
       # @param user [PFM::PokemonBattler]
+      # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @return [Boolean]
       def check_order_of_attack(user, targets)
         allied_actions = scene.logic.turn_actions.select { |action| action.is_a?(Actions::Attack) && Actions::Attack.from(action).launcher.bank == user.bank }
@@ -84,7 +85,7 @@ module Battle
         other = other_move.launcher
         if user.attack_order < other.attack_order
           scene.display_message_and_wait(pledge_wait_text(user, other))
-          user.add_move_to_history(self, targets)
+          user.add_successful_move_to_history(self, targets)
           return false
         else
           @combined_pledge = other_move.move.db_symbol

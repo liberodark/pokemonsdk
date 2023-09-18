@@ -37,7 +37,7 @@ module Battle
       end
 
       # Find the last skill used position in the moveset of the Pokemon
-      # pokemon [PFM::PokemonBattler]
+      # @param pokemon [PFM::PokemonBattler]
       # @return [Integer]
       def find_last_skill_position(pokemon)
         return 0 if pokemon.move_history.empty?

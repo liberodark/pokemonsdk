@@ -17,6 +17,7 @@ module Battle
         return false unless super
 
         last_used_move = last_move(user, targets)
+        log_error("1111111111 #{last_used_move}")
         if !last_used_move || move_excluded?(last_used_move)
           show_usage_failure(user)
           return false
@@ -60,17 +61,20 @@ module Battle
 
           return move_history.move
         end
-        return copy_cat_last_move
+
+        return copy_cat_last_move(user)
       end
 
       # Function that gets the last used move for copy cat
+      # @param user [PFM::PokemonBattler] user of the move
       # @return [Battle::Move, nil] the last move
-      def copy_cat_last_move
-        # @type [Array<PFM::PokemonBattler::MoveHistory>]
-        last_move_history = logic.all_alive_battlers.map { |battler| battler.move_history.last }.compact
+      def copy_cat_last_move(user)
+        battlers = logic.all_alive_battlers.select { |battler| battler != user }
+        # @type [Array<PFM::PokemonBattler::SuccessfulMoveHistory>]
+        last_move_history = battlers.map { |battler| battler.move_history.last }.compact
         max_turn = last_move_history.map(&:turn).max
         last_turn_history = last_move_history.select { |history| history.turn == max_turn }
-        # @type [PFM::PokemonBattler::MoveHistory]
+        # @type [PFM::PokemonBattler::SuccessfulMoveHistory]
         last_history = last_turn_history.max_by(&:attack_order)
         return last_history&.move
       end

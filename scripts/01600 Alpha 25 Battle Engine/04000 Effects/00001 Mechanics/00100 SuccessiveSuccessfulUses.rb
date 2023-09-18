@@ -2,11 +2,11 @@ module Battle
   module Effects
     module Mechanics
       module SuccessiveSuccessfulUses
-        # Return the number of successive succesful use of the move.
+        # Return the number of successive successful use of the move.
         # @return [Integer]
         def successive_uses
-          return @successive_uses if @pokemon.move_history.last&.last_turn? && @pokemon.last_successfull_move_is?(@move_db_symbol)
-          if @pokemon.move_history.last&.last_turn? && accepted_moves.any? { |move_sym| @pokemon.last_successfull_move_is?(move_sym) }
+          return @successive_uses if @pokemon.successful_move_history.last&.last_turn? && @pokemon.last_successful_move_is?(@move_db_symbol)
+          if @pokemon.successful_move_history.last&.last_turn? && accepted_moves.any? { |move_sym| @pokemon.last_successful_move_is?(move_sym) }
             return @successive_uses
           end
 

@@ -30,7 +30,7 @@ module Battle
 
       private
 
-      # Get the value used to test if the flee is successfull
+      # Get the value used to test if the flee is successful
       # @param index [Integer] index of the Pokemon on the trainer bank
       # @note formula ajusted according to: https://docs.google.com/document/d/1Jv-hDNpeEU-cLTiy1c1b3YSRgSEDt2ffbgk5vkPhkKE
       # @return [Integer]

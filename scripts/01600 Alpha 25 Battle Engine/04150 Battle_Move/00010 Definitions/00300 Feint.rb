@@ -10,7 +10,7 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        return increased_power if target.move_history.any? && increased_power_move?(target.move_history.last)
+        return increased_power if target.successful_move_history.any? && increased_power_move?(target.successful_move_history.last)
 
         return super
       end
@@ -43,10 +43,10 @@ module Battle
       INCREASED_POWER_MOVES = %i[protect]
 
       # Does the move increase the attack power ?
-      # @param move_history [PFM::PokemonBattler::MoveHistory]
+      # @param successful_move_history [PFM::PokemonBattler::SuccessfulMoveHistory]
       # @return [Boolean]
-      def increased_power_move?(move_history)
-        move_history.current_turn? && INCREASED_POWER_MOVES.include?(move_history.move.db_symbol)
+      def increased_power_move?(successful_move_history)
+        successful_move_history.current_turn? && INCREASED_POWER_MOVES.include?(successful_move_history.move.db_symbol)
       end
 
       # Increased power value

@@ -57,7 +57,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @param symbol [Symbol]
     def blocked_by?(target, symbol)
-      return blocable? && target.effects.has?(:protect) && target.last_successfull_move_is?(symbol)
+      return blocable? && target.effects.has?(:protect) && target.last_successful_move_is?(symbol)
     end
 
     class << self

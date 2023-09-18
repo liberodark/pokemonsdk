@@ -64,7 +64,7 @@ module Battle
       # @param test_heal_block [Boolean]
       # @param animation_id [Symbol, Integer] animation to use instead of the original one
       # @yieldparam hp [Integer] the actual hp healed
-      # @return [Boolean] if the heal was successfull or not
+      # @return [Boolean] if the heal was successful or not
       # @note this method yields a block in order to show the message after the animation
       # @note this shows the default message if no block has been given
       def heal(target, hp, test_heal_block: true, animation_id: nil)

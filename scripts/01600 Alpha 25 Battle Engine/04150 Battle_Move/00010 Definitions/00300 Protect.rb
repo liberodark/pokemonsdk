@@ -21,7 +21,7 @@ module Battle
         end
 
         turn = $game_temp.battle_turn
-        consecutive_uses = user.move_history.reverse.take_while do |history|
+        consecutive_uses = user.successful_move_history.reverse.take_while do |history|
           if history.move.be_method == :s_protect
             turn -= 1
             next turn == history.turn

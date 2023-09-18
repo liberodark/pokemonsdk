@@ -101,7 +101,7 @@ module Battle
       # @return [Boolean]
       def forced_switch?(who)
         @scene.logic.all_alive_battlers.each do |pokemon|
-          pmh = pokemon.move_history
+          pmh = pokemon.successful_move_history
           next if pmh.empty?
 
           return true if pmh.last.move.force_switch? && pmh.last.targets.include?(who) && pmh.last.current_turn?

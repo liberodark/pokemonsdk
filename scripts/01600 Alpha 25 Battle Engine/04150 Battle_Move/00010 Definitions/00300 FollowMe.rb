@@ -33,7 +33,7 @@ module Battle
       # @return [Boolean]
       def any_battler_with_follow_me_effect?(user)
         # @type [Array<PFM::PokemonBattler::MoveHistory>]
-        last_move_history = logic.adjacent_allies_of(user).map { |battler| battler.move_history.last }.compact
+        last_move_history = logic.adjacent_allies_of(user).map { |battler| battler.successful_move_history.last }.compact
         return last_move_history.any? { |move_history| move_history.current_turn? && move_history.move.be_method == :s_follow_me }
       end
     end

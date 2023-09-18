@@ -24,7 +24,7 @@ module Battle
 
         return other_move_actions.any? do |move_action|
           other = Actions::Attack.from(move_action).launcher
-          next false unless user.attack_order > other.attack_order && other.last_successfull_move_is?(fusion_move)
+          next false unless user.attack_order > other.attack_order && other.last_successful_move_is?(fusion_move)
 
           next user.attack_order == other.attack_order.next
         end

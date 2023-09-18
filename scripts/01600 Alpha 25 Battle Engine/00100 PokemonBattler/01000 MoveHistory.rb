@@ -48,5 +48,8 @@ module PFM
         return @move.db_symbol
       end
     end
+
+    class SuccessfulMoveHistory < MoveHistory
+    end
   end
 end

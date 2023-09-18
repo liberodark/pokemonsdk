@@ -202,7 +202,7 @@ module Battle
     # Update the move use count
     # @param user [PFM::PokemonBattler] user of the move
     def update_use_count(user)
-      if user.last_successfull_move_is?(db_symbol)
+      if user.last_successful_move_is?(db_symbol)
         @consecutive_use_count += 1
       else
         @consecutive_use_count = 0

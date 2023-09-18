@@ -11,7 +11,7 @@ module Battle
       def on_post_damage(handler, hp, target, launcher, skill)
         return if target != @pokemon
 
-        if target.move_history.last.move.be_method == :s_rage
+        if target.successful_move_history.last.move.be_method == :s_rage
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 532, target))
           handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, target)
         else

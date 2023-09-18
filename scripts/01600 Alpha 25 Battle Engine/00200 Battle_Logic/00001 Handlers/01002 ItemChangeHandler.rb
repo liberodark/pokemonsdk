@@ -41,7 +41,7 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
-      # @return [Boolean] if the operation was successfull
+      # @return [Boolean] if the operation was successful
       def change_item(db_symbol, overwrite, target, launcher = nil, skill = nil)
         log_data("# change_item(#{db_symbol}, #{overwrite}, #{target}, #{launcher}, #{skill})")
         exec_hooks(ItemChangeHandler, :pre_item_change, binding)

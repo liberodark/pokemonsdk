@@ -10,7 +10,7 @@ module Battle
         # @type [Effects::Rollout]
         rollout_effect = user.effects.get(effect_name)
         mod = rollout_effect.successive_uses if rollout_effect
-        mod = (mod || 0) + 1 if user.move_history.any? { |move| move.db_symbol == :defense_curl }
+        mod = (mod || 0) + 1 if user.successful_move_history.any? { |move| move.db_symbol == :defense_curl }
         return super * 2 ** (mod || 0)
       end
 

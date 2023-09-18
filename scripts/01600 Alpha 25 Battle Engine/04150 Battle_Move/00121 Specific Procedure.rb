@@ -18,6 +18,7 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def proceed_internal_parental_bond(user, targets)
+      user.add_move_to_history(self, targets)
       return unless (actual_targets = proceed_internal_precheck(user, targets))
 
       post_accuracy_check_effects(user, actual_targets)
@@ -42,7 +43,7 @@ module Battle
 
       @scene.display_message_and_wait(parse_text(18, 33, PFM::Text::NUMB[1] => nb_loop.to_s)) if user.ability_effect&.activated
       user.ability_effect&.activated = false
-      user.add_move_to_history(self, actual_targets)
+      user.add_successful_move_to_history(self, actual_targets)
       @scene.visual.set_info_state(:move_animation)
       @scene.visual.wait_for_animation
     end
@@ -51,6 +52,7 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def proceed_internal_sheer_force(user, targets)
+      user.add_move_to_history(self, targets)
       return unless (actual_targets = proceed_internal_precheck(user, targets))
 
       post_accuracy_check_effects(user, actual_targets)
@@ -68,7 +70,7 @@ module Battle
         deal_effect_sheer_force(user, actual_targets)
 
       user.ability_effect&.activated = false
-      user.add_move_to_history(self, actual_targets)
+      user.add_successful_move_to_history(self, actual_targets)
       @scene.visual.set_info_state(:move_animation)
       @scene.visual.wait_for_animation
     end

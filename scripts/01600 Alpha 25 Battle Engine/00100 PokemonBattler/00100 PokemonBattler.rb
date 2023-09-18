@@ -84,6 +84,10 @@ module PFM
     # @return [Array<DamageHistory>]
     attr_reader :damage_history
 
+    # Get the successful move history
+    # @return [Array<SuccessfulMoveHistory>]
+    attr_reader :successful_move_history
+
     # Get the encounter list
     # @return [Array<PFM::PokemonBattler>]
     attr_reader :encounter_list
@@ -159,6 +163,7 @@ module PFM
       @last_sent_turn = -1
       @move_history = []
       @damage_history = []
+      @successful_move_history = []
       @encounter_list = []
       @mega_evolved = false
       @exp_distributed = false
@@ -248,7 +253,6 @@ module PFM
     end
 
     # Add a move to the move history
-    # @note This method should only be used for sucessfull moves!!!
     # @param move [Battle::Move]
     # @param targets [Array<PFM::PokemonBattler>]
     def add_move_to_history(move, targets)
@@ -256,13 +260,21 @@ module PFM
     end
 
     # Add a damage to the damage history
-    # @note This method should only be used for sucessfull damages!!!
+    # @note This method should only be used for successful damages!!!
     # @param damage [Integer]
     # @param launcher [PFM::PokemonBattler]
     # @param move [Battle::Move]
     # @param ko [Boolean]
     def add_damage_to_history(damage, launcher, move, ko)
       @damage_history << DamageHistory.new(damage, launcher, move, ko)
+    end
+
+    # Add a successful move to the successful move history
+    # @note This method should only be used for successful moves!!!
+    # @param move [Battle::Move]
+    # @param targets [Array<PFM::PokemonBattler>]
+    def add_successful_move_to_history(move, targets)
+      @successful_move_history << SuccessfulMoveHistory.new(move, targets, attack_order)
     end
 
     # Add a battler to the encounter list
@@ -286,8 +298,14 @@ module PFM
 
     # Test if the last move was of a certain symbol
     # @param db_symbol [Symbol] symbol of the move
-    def last_successfull_move_is?(db_symbol)
+    def last_move_is?(db_symbol)
       return @move_history.last&.db_symbol == db_symbol
+    end
+
+    # Test if the last successful move was of a certain symbol
+    # @param db_symbol [Symbol] symbol of the move
+    def last_successful_move_is?(db_symbol)
+      return @successful_move_history.last&.db_symbol == db_symbol
     end
 
     # Test if the Pokemon can use a move

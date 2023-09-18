@@ -15,7 +15,7 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @return [Boolean] does the attack fails ?
       def counter_fails?(attacker, user, targets)
-        return !attacker || logic.allies_of(user).include?(attacker) || attacker.type_ghost? || !attacker.move_history.last.move.physical?
+        return !attacker || logic.allies_of(user).include?(attacker) || attacker.type_ghost? || !attacker.successful_move_history.last.move.physical? || attacker.successful_move_history.last.turn != $game_temp.battle_turn
       end
     end
     Move.register(:s_counter, Counter)
@@ -35,7 +35,7 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @return [Boolean] does the attack fails ?
       def counter_fails?(attacker, user, targets)
-        return !attacker || logic.allies_of(user).include?(attacker) || attacker.type_dark? || !attacker.move_history.last.move.special?
+        return !attacker || logic.allies_of(user).include?(attacker) || attacker.type_dark? || !attacker.successful_move_history.last.move.special? || attacker.successful_move_history.last.turn != $game_temp.battle_turn
       end
     end
     Move.register(:s_mirror_coat, MirrorCoat)
@@ -55,7 +55,7 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @return [Boolean] does the attack fails ?
       def counter_fails?(attacker, user, targets)
-        return !attacker || logic.allies_of(user).include?(attacker) || attacker.move_history.last.move.status? || attacker.move_history.last.turn != $game_temp.battle_turn
+        return !attacker || logic.allies_of(user).include?(attacker) || attacker.successful_move_history.last.move.status? || attacker.successful_move_history.last.turn != $game_temp.battle_turn
       end
 
       # Damage multiplier if the effect proc
