@@ -859,6 +859,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Micle Berry.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Persim Berry.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 PowerHerb.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Protosynthesis.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Quick Powder.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Red Card.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Rocky Helmet.rb

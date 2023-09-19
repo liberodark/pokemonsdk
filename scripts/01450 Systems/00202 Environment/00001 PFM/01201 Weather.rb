@@ -25,7 +25,6 @@ module PFM
     def decrease_weather_duration
       @duration -= 1 if @duration > 0
       if @duration <= 0 && @battle_weather != 0
-        apply_weather(0, 0)
         return true
       end
       return false
