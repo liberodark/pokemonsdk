@@ -321,6 +321,24 @@ module Battle
     # @param user [PFM::PokemonBattler]
     def recoil(hp, user)
       return false if user.has_ability?(:rock_head) && !%i[struggle shadow_rush shadow_end].include?(db_symbol)
+      return special_recoil(hp, user) if user.has_ability?(:parental_bond)
+
+      @logic.damage_handler.damage_change((hp / recoil_factor).to_i.clamp(1, Float::INFINITY), user)
+      @scene.display_message_and_wait(parse_text_with_pokemon(19, 378, user))
+    end
+
+    # Function applying recoil damage to the user 
+    # @note Only for Parental Bond !!
+    # @param hp [Integer]
+    # @param user [PFM::PokemonBattler]
+    def special_recoil(hp, user)
+      if user.ability_effect.first_turn_recoil == 0
+        user.ability_effect.first_turn_recoil = hp
+        return false
+      end
+
+      hp += user.ability_effect.first_turn_recoil
+      user.ability_effect.first_turn_recoil = 0
 
       @logic.damage_handler.damage_change((hp / recoil_factor).to_i.clamp(1, Float::INFINITY), user)
       @scene.display_message_and_wait(parse_text_with_pokemon(19, 378, user))

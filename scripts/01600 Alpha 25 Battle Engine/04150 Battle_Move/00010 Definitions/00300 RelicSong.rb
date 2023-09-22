@@ -14,6 +14,7 @@ module Battle
         super
         return unless user.db_symbol == :meloetta
         return if user.has_ability?(:sheer_force) && user.ability_effect&.activated?
+        return if user.has_ability?(:parental_bond) && (user.ability_effect.number_of_attacks - user.ability_effect.attack_number != 1)
         return unless user.form_calibrate(:dance)
 
         scene.visual.battler_sprite(user.bank, user.position).pokemon = user

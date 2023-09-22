@@ -16,14 +16,22 @@ module Battle
         # If the talent is activated or not
         # @return [Boolean]
         attr_writer :activated
+        # Returns the amount of damage the launcher must take from the recoil
+        # @return [Integer]
+        attr_accessor :first_turn_recoil
+        # Which attack number are we currently on this turn?
+        # @return [Integer]
+        attr_accessor :attack_number
 
-        # Create a new PowerSpot effect
+        # Create a new Parental Bond effect
         # @param logic [Battle::Logic]
         # @param target [PFM::PokemonBattler]
         # @param db_symbol [Symbol] db_symbol of the ability
         def initialize(logic, target, db_symbol)
           super
           @activated = false
+          @first_turn_recoil = 0
+          @attack_number = 0
         end
 
         def activated?

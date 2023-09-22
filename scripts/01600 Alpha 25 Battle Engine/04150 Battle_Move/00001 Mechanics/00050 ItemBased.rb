@@ -41,6 +41,7 @@ module Battle
         # @param battler [PFM::PokemonBattler]
         def consume_item(battler)
           return unless consume_item?
+          return if battler.has_ability?(:parental_bond) && battler.ability_effect.number_of_attacks - battler.ability_effect.attack_number == 1
 
           @logic.item_change_handler.change_item(:none, true, battler, battler, self)
         end

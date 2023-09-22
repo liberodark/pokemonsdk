@@ -32,7 +32,12 @@ module Battle
         next unless nb_attack == 0 || ((one_target_from_zone_attack(user) || one_target?) && !multi_hit? && !status?)
         next @scene.display_message_and_wait(parse_text(18, 33, PFM::Text::NUMB[1] => nb_attack.to_s)) if targets.any?(&:dead?)
 
-        user.ability_effect&.activated = true if nb_attack >= 1
+        if nb_attack >= 1
+          user.ability_effect&.activated = true
+          scene.visual.show_ability(user)
+        end
+
+        user.ability_effect.attack_number = nb_attack
         deal_damage(user, actual_targets) &&
           effect_working?(user, actual_targets) &&
           deal_status(user, actual_targets) &&
