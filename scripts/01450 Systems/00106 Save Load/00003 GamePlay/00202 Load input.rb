@@ -44,13 +44,13 @@ module GamePlay
 
     def action_left
       last_visible_index = @all_saves.size
-      
+
       if @index == 0
         @index = last_visible_index
       else
         @index -= 1
       end
-      
+
       play_cursor_se
       @mode = :rotating
       @signs.each do |sign|
@@ -60,16 +60,16 @@ module GamePlay
 
     def action_right
       last_visible_index = @all_saves.size
-      
+
       if @index == last_visible_index
         @index = 0
       else
-        return if @index >= last_visible_index 
+        return if @index >= last_visible_index
         return if (!Configs.save_config.unlimited_saves? && (@index + 1) >= Configs.save_config.maximum_save_count)
-      
+
         @index += 1
       end
-      
+
       play_cursor_se
       @mode = :rotating
       @signs.each do |sign|

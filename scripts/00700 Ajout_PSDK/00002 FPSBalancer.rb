@@ -49,6 +49,12 @@ module Graphics
       FPSBalancer.globally_enabled && @frame_to_execute == 0
     end
 
+    # Force all the scripts to render if we're about to do something important
+    def disable_skip_for_next_rendering
+      return unless FPSBalancer.globally_enabled
+      @frame_to_execute = 1
+    end
+
     private
 
     def update_intervals

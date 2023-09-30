@@ -109,6 +109,7 @@ module Yuki
     # Force the next update to update the tone
     # @param value [Boolean] true to force the next update to update the tone
     def force_update_tone(value = true)
+      Graphics::FPSBalancer.global.disable_skip_for_next_rendering
       @forced = value
     end
 
