@@ -1,5 +1,5 @@
 module Scheduler
-  add_proc(:on_warp_start, ::Scene_Map, 'Enregistrement positions', 1000) do
+  add_proc(:on_warp_start, ::Scene_Map, 'Registering positions', 1000) do
     @storage[:was_outside] = $game_switches[Yuki::Sw::Env_CanFly]
     @storage[:old_player_x] = $game_player.x - Yuki::MapLinker.current_OffsetX
     @storage[:old_player_y] = $game_player.y - Yuki::MapLinker.current_OffsetY
@@ -8,7 +8,7 @@ module Scheduler
     $game_player.reset_follower
   end
 
-  add_proc(:on_warp_start, ::Scene_Map, 'Calcul des positions des followers', 999) do
+  add_proc(:on_warp_start, ::Scene_Map, 'Calculation of follower positions', 999) do
     @storage[:follower_arr] = arr = []
     add_x = $game_temp.player_new_x - $game_player.x
     add_y = $game_temp.player_new_y - $game_player.y
@@ -23,7 +23,7 @@ module Scheduler
     $game_temp.battleback_name = nil.to_s unless $game_switches[Yuki::Sw::DISABLE_BATTLEBACK_RESET]
   end
 
-  add_proc(:on_warp_process, ::Scene_Map, 'Descendre du vélo s\'il faut & reset force', 100) do
+  add_proc(:on_warp_process, ::Scene_Map, 'Getting off the bike if required & reset Strength', 100) do
     if $env.get_current_zone_data.is_warp_disallowed
       if $game_switches[::Yuki::Sw::EV_Bicycle]
         $game_system.map_interpreter.launch_common_event(11)
@@ -36,7 +36,7 @@ module Scheduler
     $game_switches[::Yuki::Sw::EV_Strength] = false
   end
 
-  add_proc(:on_warp_end, ::Scene_Map, 'Reposition followers + update système', 1000) do
+  add_proc(:on_warp_end, ::Scene_Map, 'Reposition followers + system update', 1000) do
     unless Game_Character::SurfTag.include? $game_player.system_tag
       $game_player.leave_surfing_state
     end
@@ -55,7 +55,7 @@ module Scheduler
     $wild_battle.load_groups
   end
 
-  add_proc(:on_warp_end, ::Scene_Map, 'Tunnel', 999) do
+  add_proc(:on_warp_end, ::Scene_Map, 'Dig', 999) do
     if @storage[:was_outside] && $game_switches[Yuki::Sw::Env_CanDig]
       $game_variables[Yuki::Var::E_Dig_ID] = @storage[:old_player_id]
       $game_variables[Yuki::Var::E_Dig_X] = @storage[:old_player_x]
@@ -63,7 +63,13 @@ module Scheduler
     end
   end
 
-  add_proc(:on_scene_switch, ::Scene_Title, 'Correction du TJN', 1000) do
+  add_proc(:on_scene_switch, ::Scene_Title, 'TJN Correction for the first save', 1000) do
+    next unless $scene.is_a?(Scene_Map)
+
+    Yuki::TJN.init_variables
+  end
+
+  add_proc(:on_scene_switch, ::GamePlay::Load, 'TJN Correction if a save already exists', 1000) do
     next unless $scene.is_a?(Scene_Map)
 
     Yuki::TJN.init_variables
@@ -74,7 +80,7 @@ module Scheduler
   end
 
 =begin
-  add_proc(:on_update, ::Scene_Map, 'Ajout Visual Debug', 1100) do
+  add_proc(:on_update, ::Scene_Map, 'Added Visual Debug', 1100) do
     if false#Input.trigger?(Input::F9) #£VisualDebug
       unless Yuki::VisualDebug.enabled? #£VisualDebug
         Yuki::VisualDebug.enable #£VisualDebug
@@ -86,20 +92,20 @@ module Scheduler
   end
 =end
 
-  add_proc(:on_hour_update, ::Scene_Map, 'Actualisation des groupes', 1000) do
+  add_proc(:on_hour_update, ::Scene_Map, 'Updating groups', 1000) do
     $wild_battle.reset
     $wild_battle.load_groups
   end
 
-  add_proc(:on_hour_update, ::Scene_Map, 'Actualisation de la forme de Shaymin', 1000) do
+  add_proc(:on_hour_update, ::Scene_Map, 'Updating Shaymin\'s form', 1000) do
     selected = $actors.select { |pkmn| pkmn.db_symbol == :shaymin }
     selected.each { |pkmn| pkmn.form_calibrate(:none) if $env.sunset? || $env.night? }
   end
 
-  add_proc(:on_scene_switch, GamePlay::Load, 'Correction des formes', 1000) do
+  add_proc(:on_scene_switch, GamePlay::Load, 'Correction of forms', 1000) do
     next unless $scene.is_a?(Scene_Map)
 
-    log_info('Correction des formes des Pokémon')
+    log_info('Correcting the form of a Pokémon')
     block = proc { |pokemon| pokemon&.form_calibrate(:load) }
     $actors.each(&block)
     $storage.each_pokemon(&block)
@@ -133,8 +139,8 @@ module Scheduler
   end
 
 =begin
-  # Exemple de chargement de tileset automatique
-  add_proc(:on_getting_tileset_name, :any, 'Changement de tileset map 9', 1000,
+  # Example of automatic tileset loading
+  add_proc(:on_getting_tileset_name, :any, 'Changing tileset of map 9', 1000,
     proc {
       if $game_temp.maplinker_map_id == 9
         $game_temp.tileset_name = '4G tileset_glace'
