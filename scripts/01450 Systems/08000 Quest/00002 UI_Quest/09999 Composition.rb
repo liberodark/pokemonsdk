@@ -50,7 +50,7 @@ module UI
       end
 
       # Update the current category and launch the corresponding procedure
-      # @param new_category [Symbol] 
+      # @param new_category [Symbol]
       def update_category(new_category)
         return if @category == new_category
 
@@ -66,7 +66,7 @@ module UI
       # Get the current QuestList index
       # @return [Integer]
       def index
-        return current_list.index
+        return current_list&.index || 0
       end
 
       # Input the direction of the scrolling

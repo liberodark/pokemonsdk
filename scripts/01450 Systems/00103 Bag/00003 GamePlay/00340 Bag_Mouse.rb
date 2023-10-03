@@ -55,7 +55,7 @@ module GamePlay
     # Update the list index according to a delta with mouse interaction
     # @param delta [Integer] number of index we want to add / remove
     def update_mouse_delta_index(delta)
-      new_index = (@index + delta).clamp(0, @scroll_bar.max_index)
+      new_index = (@index + delta).clamp(0, @last_index)
       delta = new_index - @index
       return if delta == 0
       if delta.abs < 5

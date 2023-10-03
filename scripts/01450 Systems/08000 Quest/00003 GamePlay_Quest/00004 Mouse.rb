@@ -32,7 +32,8 @@ module GamePlay
     # Update the list index according to a delta with mouse interaction
     # @param delta [Integer] number of index we want to add / remove
     def update_mouse_delta_index(delta)
-      new_index = (@composition.index + delta).clamp(0, @composition.scrollbar.max_index)
+      nb_button = @composition.current_list&.number_of_buttons || 0
+      new_index = (@composition.index + delta).clamp(0, nb_button == 0 ? nb_button : nb_button - 1)
       delta = new_index - @composition.index
       return if delta == 0
 
