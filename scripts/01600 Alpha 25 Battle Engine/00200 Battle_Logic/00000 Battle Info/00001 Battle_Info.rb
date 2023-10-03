@@ -101,7 +101,7 @@ module Battle
           add_trainer(battle_info, 1, id_trainer2) if id_trainer2 != 0
           # Add friend
           add_trainer(battle_info, 0, id_friend) if id_friend != 0
-          battle_info.vs_type = 2 if battle_info.trainer_is_couple || battle_info.parties[1]&.size == 2
+          battle_info.vs_type = 2 if battle_info.trainer_is_couple || battle_info.parties.any? { |party| party.size == 2 }
           return battle_info
         end
 
