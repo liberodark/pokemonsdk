@@ -1,7 +1,7 @@
 module Battle
   module Effects
     class Ability
-      class Protosynhesis < Ability
+      class Protosynthesis < Ability
         # Create a new FlowerGift effect
         # @param logic [Battle::Logic]
         # @param target [PFM::PokemonBattler]
@@ -105,7 +105,7 @@ module Battle
           return highest_stat_key.to_sym
         end
       end
-      register(:protosynthesis, Protosynhesis)
+      register(:protosynthesis, Protosynthesis)
     end
   end
 end
