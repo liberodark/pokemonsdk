@@ -111,6 +111,7 @@ module PFM
     # @param pokemon [PFM::PokemonBattler]
     # @return [Boolean]
     def enemy_pokemon?(pokemon)
+      return false unless $scene.is_a?(Battle::Scene)
       return false unless pokemon
       return pokemon.bank != 0 if pokemon.is_a?(PFM::PokemonBattler)
 
