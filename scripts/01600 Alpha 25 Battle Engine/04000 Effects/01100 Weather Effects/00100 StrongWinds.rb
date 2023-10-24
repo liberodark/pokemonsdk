@@ -36,18 +36,20 @@ module Battle
           end
         end
 
-        # Function called when we try to check if the target evades the move
-        # @param user [PFM::PokemonBattler]
-        # @param target [PFM::PokemonBattler] expected target
-        # @param move [Battle::Move]
-        # @return [Boolean] if the target is evading the move
-        def on_move_prevention_target(user, target, move)
-          return true unless @super_effective_types.any? { |super_effective_type| move.definitive_types(user, target).include?(super_effective_type) } 
-          return true if move.status?
-          return true unless target.type_flying?
+        # Function called before the accuracy check of a move is done
+        # @param logic [Battle::Logic] logic of the battle
+        # @param scene [Battle::Scene] battle scene
+        # @param targets [PFM::PokemonBattler]
+        # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @param skill [Battle::Move, nil] Potential move used
+        def on_post_accuracy_check(logic, scene, targets, launcher, skill)
+          return if skill.status?
+          return if targets.none?(&:type_flying?)
+          if targets.none? { |target| @super_effective_types.any? { |super_effective_type| skill.definitive_types(launcher, target).include?(super_effective_type) } }
+            return false
+          end
 
-          move.scene.display_message_and_wait(parse_text(18, 279))
-          return false
+          skill.scene.display_message_and_wait(parse_text(18, 279))
         end
 
         # Function that computes an overwrite of the type multiplier
