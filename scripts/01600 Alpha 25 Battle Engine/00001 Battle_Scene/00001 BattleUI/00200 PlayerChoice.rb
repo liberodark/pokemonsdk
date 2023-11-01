@@ -262,6 +262,7 @@ module BattleUI
         $game_system.se_play($data_system.decision_se)
         @choice.use_item(item)
         @item_info.hide
+        @scene.visual.hide_info_bars(bank: 0) unless @bar_visibility
         @choice.show
       end
 
