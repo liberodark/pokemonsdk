@@ -147,6 +147,26 @@ module Battle
       battler.ability_effect.on_switch_event(handler, battler, battler)
     end
 
+    SwitchHandler.register_switch_event_hook('PSDK switch: Tablets of Ruin Effect') do |handler, who, with|
+      if who != with && %i[tablets_of_ruin beads_of_ruin vessel_of_ruin sword_of_ruin].include?(who.battle_ability_db_symbol) && who.ability_effect.activated?
+        who.ability_effect.on_switch_event(handler, who, with)
+        handler.pre_checked_effects << who.ability_effect
+      end
+
+      owner_ability = with.battle_ability_db_symbol
+      next unless %i[tablets_of_ruin beads_of_ruin vessel_of_ruin sword_of_ruin].include?(owner_ability)
+
+      battlers = handler.logic.all_alive_battlers.select { |battler| battler.has_ability?(owner_ability) }
+      next if battlers.empty?
+
+      battlers.each { |battler| handler.pre_checked_effects << battler.ability_effect }
+      next if battlers.any? { |battler| battler.ability_effect.activated? }
+
+      # @type [PFM::PokemonBattler]
+      battler = battlers.sort_by(&:spd).reverse.first
+      battler.ability_effect.on_switch_event(handler, battler, battler)
+    end
+
     SwitchHandler.register_switch_event_hook('PSDK switch: Effects') do |handler, who, with|
       next handler.logic.each_effects(*[who, with].uniq) do |e|
         next if handler.pre_checked_effects.include?(e)
