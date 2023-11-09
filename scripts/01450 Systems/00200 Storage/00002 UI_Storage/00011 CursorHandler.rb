@@ -6,6 +6,8 @@ module UI
       # @param cursor [Cursor]
       def initialize(cursor)
         @cursor = cursor
+        @row_index = 0
+        @column_index = 0
       end
 
       # Get the cursor mode
@@ -45,11 +47,14 @@ module UI
       # @return [Boolean] if the action was a success
       def move_up
         @cursor.visible = true
-        return false if @cursor.select_box
 
         if @cursor.inbox && @cursor.index <= 5
+          @row_index = @cursor.index
           @cursor.select_box = true
-        else
+        elsif @cursor.select_box
+          @cursor.inbox = true
+          @cursor.index = @row_index + 24
+        else  
           @cursor.index -= @cursor.inbox ? 6 : 2
         end
         return true
@@ -74,32 +79,42 @@ module UI
       # @return [Boolean] if the action was a success
       def move_right_inbox
         if @cursor.index % 6 == 5
+          @column_index = @cursor.index
           @cursor.inbox = false
-          @cursor.index = @cursor.index / 12 * 2 # / # <= Fix for VSCode thinking it's a regular expression
+          @cursor.index = (@cursor.index / 11.5).floor * 2
         else
           @cursor.index += 1
         end
+
         return true
       end
 
       # Move the cursor to the right in the party
       # @return [Boolean] if the action was a success
       def move_right_party
-        return false if @cursor.index.odd?
+        if @cursor.index.odd?
+          @cursor.inbox = true
+          @cursor.index = @column_index - 5
+        else
+          @cursor.index += 1
+        end
 
-        @cursor.index += 1
         return true
       end
 
       # Move the cursor to the left in the box
       # @return [Boolean] if the action was a success
       def move_left_inbox
-        if (@cursor.index % 6) > 0
+        if @cursor.index % 6 == 0
+          @column_index = @cursor.index + 5
+          @cursor.inbox = false
+          @cursor.index = @cursor.index / 9 * 2 
+          @cursor.index += 1
+        else  
           @cursor.index -= 1
-          return true
         end
 
-        return false
+        return true
       end
 
       # Move the cursor to the left in the party
@@ -107,7 +122,7 @@ module UI
       def move_left_party
         if @cursor.index.even?
           @cursor.inbox = true
-          @cursor.index = @cursor.index / 2 * 12 + 5 # / # <= Fix for VSCode thinking it's a regular expression
+          @cursor.index = @column_index
         else
           @cursor.index -= 1
         end

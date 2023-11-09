@@ -23,6 +23,12 @@ module UI
       # Get the selection handler
       # @return [SelectionHandler]
       attr_reader :selection_handler
+
+      # Y Offset of the cursor while inside of the box
+      OFFSET_Y_CURSOR = [0, -1, -2, -3, -4, -5, -5, -4, -3, -2, -1, 0]
+      # Y Offset of the cursor while outside of the box
+      OFFSET_Y_CURSOR_OUT_OF_THE_BOX = [15, 30, 63, 79, 111, 126]
+
       # Create a new Composition
       # @param viewport [Viewport] viewport used to display the sprites
       # @param mode [Symbol] :pokemon, :item, :battle or :box
@@ -43,6 +49,7 @@ module UI
 
       # Update the composition state
       def update
+        @root&.update
         @summary.update
         @cursor.update
         return if !@animation || @animation.done?
@@ -221,7 +228,38 @@ module UI
 
       def create_cursor
         @cursor = Cursor.new(@viewport, 0, true, @mode_handler)
+        @cursor_origin = @cursor.send(:y)
+
+        @root = Yuki::Animation::TimedLoopAnimation.new(1.2)
+        @cursor_anim = Yuki::Animation::DiscreetAnimation.new(1.2, self, :move_cursor, 0, OFFSET_Y_CURSOR.size - 1)
+        @root.play_before(@cursor_anim)
+        @root.start
+
         @cursor_handler = CursorHandler.new(@cursor)
+      end
+
+      # Function that moves the cursor according to the positioning of the cursor, creating the cursor moving up and down animation
+      # @param index [Integer]
+      def move_cursor(index)
+        if @cursor.inbox
+          if @cursor.index < 6
+            @cursor.y = @cursor_origin + OFFSET_Y_CURSOR[index]
+          elsif @cursor.index.between?(6, 11)
+            @cursor.y = @cursor_origin + OFFSET_Y_CURSOR[index] + 32
+          elsif @cursor.index.between?(12, 17)
+            @cursor.y = @cursor_origin + OFFSET_Y_CURSOR[index] + 64
+          elsif @cursor.index.between?(18, 23)
+            @cursor.y = @cursor_origin + OFFSET_Y_CURSOR[index] + 96
+          elsif @cursor.index >= 24
+            @cursor.y = @cursor_origin + OFFSET_Y_CURSOR[index] + 128
+          end
+        else
+          @cursor.y = @cursor_origin + OFFSET_Y_CURSOR[index] + OFFSET_Y_CURSOR_OUT_OF_THE_BOX[@cursor.index] if @cursor.index.between?(0, 5)
+        end
+
+        if @cursor.select_box
+          @cursor.y = @cursor_origin + OFFSET_Y_CURSOR[index] - 30
+        end
       end
     end
   end
