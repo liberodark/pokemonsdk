@@ -263,7 +263,7 @@ module Battle
       # @param battler [PFM::PokemonBattler]
       # @return [Integer]
       def party_index(battler)
-        return @parties[battler.bank].index(battler.original) || 0
+        return @parties[battler.bank].find_index { |party| party.include?(battler.original) } || 0
       end
     end
   end
