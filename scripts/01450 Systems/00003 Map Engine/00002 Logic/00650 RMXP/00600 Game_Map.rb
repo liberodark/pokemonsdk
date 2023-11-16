@@ -1,14 +1,5 @@
 # Describe the Map processing
 class Game_Map
-
-  # The list of ability that decrease the encounter frequency
-  ENC_FREQ_DEC = %i[white_smoke quick_feet stench]
-  # The list of ability that increase the encounter frequency
-  ENC_FREQ_INC = %i[no_guard illuminate arena_trap]
-  # Ability that decrese the encounter during hail weather
-  ENC_FREQ_DEC_HAIL = [:snow_cloak]
-  # Ability that decrese the encounter during sandstorm weather
-  ENC_FREQ_DEC_SANDSTORM = [:sand_veil]
   # Audiofile to play when the player is on mach bike
   # @return [RPG::AudioFile]
   MACH_BIKE_BGM = RPG::AudioFile.new('09 Bicycle', 100, 100)
@@ -166,26 +157,6 @@ class Game_Map
   # @return [Integer]
   def rmxp_encounter_steps
     @map.encounter_step
-  end
-
-  # Returns the encounter step of the map (including ability modifier)
-  # @return [Integer] number of step the player must do before each encounter
-  def encounter_step
-    return rmxp_encounter_steps unless $actors
-
-    ability = $actors[0]&.ability_db_symbol || :__undef__ # the first pokemon in the party's ability
-
-    # if the ability matches the encounter increasing ability the encounter rate is doubled
-    return rmxp_encounter_steps / 2 if ENC_FREQ_INC.include?(ability)
-
-    # if the ability matches the encounter lowering ability the encounter rate is halved
-    if ENC_FREQ_DEC.include?(ability) ||
-       (ENC_FREQ_DEC_HAIL.include?(ability) && $env.hail?) ||
-       (ENC_FREQ_DEC_SANDSTORM.include?(ability) && $env.sandstorm?)
-      return rmxp_encounter_steps * 2
-    end
-
-    return rmxp_encounter_steps # else the normal encounter rate is returned
   end
 
   # Returns the tile matrix of the Map

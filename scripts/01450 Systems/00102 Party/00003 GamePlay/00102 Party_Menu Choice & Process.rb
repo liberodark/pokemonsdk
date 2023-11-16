@@ -41,7 +41,11 @@ module GamePlay
         .register_choice(text_get(23, 4), on_validate: method(:launch_summary)) # Summary
         .register_choice(text_get(23, 8), on_validate: method(:action_move_current_pokemon), disable_detect: proc { @party.size <= 1 }) # Move
       unless pokemon.egg?
-        choices.register_choice(ext_text(9009, 0), on_validate: method(:launch_reminder), disable_detect: proc { pokemon.remindable_skills == [] }) if $game_switches[Yuki::Sw::BT_Party_Menu_Reminder]
+        if $game_switches[Yuki::Sw::BT_Party_Menu_Reminder]
+          choices.register_choice(ext_text(9009, 0), on_validate: method(:launch_reminder), disable_detect: proc {
+                                                                                                              pokemon.remindable_skills == []
+                                                                                                            })
+        end
         if Yuki::FollowMe.in_lets_go_mode?
           if $storage.lets_go_follower == pokemon
             choices.register_choice(text_get(23, 165), on_validate: method(:deselect_follower)) # Unfollow
@@ -197,7 +201,7 @@ module GamePlay
         display_message(parse_text(20, 33, ::PFM::Text::PKNICK[1] => pokemon.given_name))
       elsif pokemon.position.between?(0, $game_temp.vs_type)
         display_message(parse_text(20, 32, ::PFM::Text::PKNICK[1] => pokemon.given_name))
-      elsif __last_scene&.player_actions&.any? { |action| action.is_a?(Battle::Actions::Switch) && action.with == pokemon}
+      elsif __last_scene&.player_actions&.any? { |action| action.is_a?(Battle::Actions::Switch) && action.with == pokemon }
         display_message(parse_text(20, 83, ::PFM::Text::PKNICK[1] => pokemon.given_name))
       else
         @return_data = @index
@@ -346,9 +350,10 @@ module GamePlay
 
     # Check if the temporary team contains the right number of Pokemon
     # @param caller [Symbol] used to determine the caller of the method
-    # return Boolean 
+    # return Boolean
     def enough_pokemon?(caller = :validate)
       return if check_select_mon_var == true
+
       if caller == :button
         if @temp_team.size + 1 > $game_variables[Yuki::Var::Max_Pokemon_Select]
           display_message(text_get(23, 115 + $game_variables[Yuki::Var::Max_Pokemon_Select]))
@@ -404,6 +409,7 @@ module GamePlay
     # Process the switch between two pokemon
     def process_switch
       return $game_system.se_play($data_system.buzzer_se) if @move == @index
+
       tmp = @team_buttons[@move].data
       @team_buttons[@move].selected = false
       @party[@move] = @team_buttons[@move].data = @team_buttons[@index].data
@@ -411,12 +417,13 @@ module GamePlay
       @move = -1
       @base_ui.hide_win_text
       @intern_mode = :normal
-      $game_player.make_encounter_count
+      $wild_battle.make_encounter_count
     end
 
     # Process the switch between the items of two pokemon
     def process_item_switch
       return $game_system.se_play($data_system.buzzer_se) if @move == @index
+
       tmp = @team_buttons[@move].data.item_holding
       # @type [PFM::Pokemon]
       pokemon = @team_buttons[@move].data

@@ -423,6 +423,7 @@ pokemonsdk/scripts/01450 Systems/10000 Movie/00099 Movie.rb
 pokemonsdk/scripts/01450 Systems/99990 Global Systems/01500 HoneyTree.rb
 pokemonsdk/scripts/01450 Systems/99991 Wild/00100 Wild Battle (manager).rb
 pokemonsdk/scripts/01450 Systems/99991 Wild/00101 Wild Battle (configuration).rb
+pokemonsdk/scripts/01450 Systems/99991 Wild/00102 Encounter Count.rb
 pokemonsdk/scripts/01450 Systems/99991 Wild/00300 Wild_RoamingInfo.rb
 pokemonsdk/scripts/01500 Yuki/00100 Yuki__Sprite.rb
 pokemonsdk/scripts/01500 Yuki/00600 Yuki__TJN.rb

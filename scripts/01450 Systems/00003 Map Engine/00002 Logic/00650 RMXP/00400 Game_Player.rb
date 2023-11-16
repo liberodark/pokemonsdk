@@ -9,6 +9,7 @@ class Game_Player < Game_Character
   # true if the player is on the back wheel of its Acro bike
   # @return [Boolean]
   attr_accessor :acro_appearence
+
   # Default initializer
   def initialize
     super
@@ -40,7 +41,6 @@ class Game_Player < Game_Character
   def moveto(x, y)
     super
     center(x, y)
-    make_encounter_count
     @reflection_enabled = true if @reflection_enabled.nil?
   end
 
@@ -57,6 +57,7 @@ class Game_Player < Game_Character
   def screen_y
     value = super
     return value unless surfing?
+
     return value + SURF_OFFSET_Y[Graphics.frame_count / 6 % SURF_OFFSET_Y.size]
   end
 
@@ -69,21 +70,10 @@ class Game_Player < Game_Character
     end
   end
 
-  # Returns the number of steps remaining to the next encounter
-  def encounter_count
-    return @encounter_count
-  end
-
-  # Generate the number of steps remaining to the next encounter
-  def make_encounter_count
-    return if $game_map.map_id == 0
-    n = $game_map.encounter_step
-    @encounter_count = rand(n) + rand(n) + 1
-  end
-
   # Refresh the player graphics
   def refresh
     return set_appearance(nil.to_s) if $game_party.actors.empty?
+
     actor = $game_party.actors[0]
     set_appearance(actor.character_name, actor.character_hue)
     @opacity = 255
@@ -93,6 +83,7 @@ class Game_Player < Game_Character
   # Update the player movements according to inputs
   def update
     return send(@update_callback) if @update_callback
+
     last_moving = moving?
     if moving? || $game_system.map_interpreter.running? ||
        @move_route_forcing || $game_temp.message_window_showing || @sliding # or follower_sliding?
@@ -109,7 +100,7 @@ class Game_Player < Game_Character
 
     super
 
-    # _BUMP
+# _BUMP
 =begin
     if(@cant_bump and moving?)
       @cant_bump=false
@@ -141,6 +132,7 @@ class Game_Player < Game_Character
     update_cycling_state if @state == :cycle_stop && moving?
     # Ensure the player to be in the swamp state
     return unless @in_swamp && (@state == :walking || @state == :running)
+
     @state == :walking ? enter_in_walking_state : enter_in_running_state
   end
 
@@ -157,28 +149,17 @@ class Game_Player < Game_Character
   # @param last_real_x [Integer] the last real_x value of the player
   # @param last_real_y [Integer] the last real_y value of the player
   def update_scroll_map(last_real_x, last_real_y)
-    if @real_y > last_real_y && @real_y - $game_map.display_y > CENTER_Y
-      $game_map.scroll_down(@real_y - last_real_y)
-    end
-    if @real_x < last_real_x && @real_x - $game_map.display_x < CENTER_X
-      $game_map.scroll_left(last_real_x - @real_x)
-    end
-    if @real_x > last_real_x && @real_x - $game_map.display_x > CENTER_X
-      $game_map.scroll_right(@real_x - last_real_x)
-    end
-    if @real_y < last_real_y && @real_y - $game_map.display_y < CENTER_Y
-      $game_map.scroll_up(last_real_y - @real_y)
-    end
+    $game_map.scroll_down(@real_y - last_real_y) if @real_y > last_real_y && @real_y - $game_map.display_y > CENTER_Y
+    $game_map.scroll_left(last_real_x - @real_x) if @real_x < last_real_x && @real_x - $game_map.display_x < CENTER_X
+    $game_map.scroll_right(@real_x - last_real_x) if @real_x > last_real_x && @real_x - $game_map.display_x > CENTER_X
+    $game_map.scroll_up(last_real_y - @real_y) if @real_y < last_real_y && @real_y - $game_map.display_y < CENTER_Y
   end
 
   # Check the triggers during the update
   # @param last_moving [Boolean] if the player was moving before
   def update_check_trigger(last_moving)
-    if last_moving && !check_event_trigger_here([1, 2])
-      unless debug? && Input::Keyboard.press?(Input::Keyboard::LControl)
-        @encounter_count -= 1 if @encounter_count > 1
-        make_encounter_count if @encounter_count <= 1
-      end
+    if last_moving && !check_event_trigger_here([1, 2]) && !(debug? && Input::Keyboard.press?(Input::Keyboard::LControl))
+      $wild_battle.update_encounter_count
     end
     return unless Input.trigger?(:A)
 

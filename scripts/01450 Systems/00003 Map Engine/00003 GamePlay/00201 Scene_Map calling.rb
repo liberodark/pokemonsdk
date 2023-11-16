@@ -39,7 +39,7 @@ class Scene_Map
     Graphics.freeze
     $game_temp.menu_calling = false
     $game_temp.menu_beep = false
-    $game_player.make_encounter_count
+    $wild_battle.make_encounter_count
     $game_temp.map_bgm = $game_system.playing_bgm.clone if $game_system.playing_bgm
     $game_system.se_play($data_system.battle_start_se)
     $game_player.straighten
@@ -53,13 +53,11 @@ class Scene_Map
   # Function responsive of testing all the scene calling and doing the job
   def update_scene_calling
     # Trigger the menu if the player press on the menu button
-    if player_menu_trigger
-      # We ensure we don't set the flag if it's not possible
-      unless $game_system.map_interpreter.running? ||
-             $game_system.menu_disabled || $game_player.moving? || $game_player.sliding?
-        $game_temp.menu_calling = true
-        $game_temp.menu_beep = true
-      end
+    # We ensure we don't set the flag if it's not possible
+    if player_menu_trigger && !($game_system.map_interpreter.running? ||
+                 $game_system.menu_disabled || $game_player.moving? || $game_player.sliding?)
+      $game_temp.menu_calling = true
+      $game_temp.menu_beep = true
     end
     # We can call scene only if the player is not moving
     unless $game_player.moving?
@@ -85,6 +83,7 @@ class Scene_Map
   # @return [Boolean]
   def player_menu_trigger
     return false if $game_map.map_id == Configs.scene_title_config.intro_movie_map_id
+
     return Input.trigger?(:X) || (Mouse.trigger?(:left) && @spriteset.game_player_sprite&.mouse_in?)
   end
 

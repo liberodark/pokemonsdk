@@ -49,6 +49,7 @@ module PFM
       # @forced_wild_battle=false
       @fished = false
       @fish_battle = nil
+      @groups_encounter_counts = []
     end
 
     # Load the groups of Wild Pokemon (map change/ time change)
@@ -56,6 +57,8 @@ module PFM
       # @type [Array<Studio::Group>]
       groups = $env.get_current_zone_data.wild_groups.map { |group_name| data_group(group_name) }
       @groups = groups.select { |group| group.custom_conditions.reduce(true) { |prev, curr| curr.reduce_evaluate(prev) } }
+      @groups_encounter_steps = @groups.map { |group| group.steps_average == 0 ? $game_map.rmxp_encounter_steps : group.steps_average }
+      make_encounter_count
     end
 
     # Is a wild battle available ?
@@ -146,7 +149,7 @@ module PFM
     #   @param level [Integer] level of the first Pokemon
     #   @param args [Array<Integer, Integer>] array of id, level of the other Pokemon in the wild battle.
     def init_battle(id, level = 70, *others)
-      if id.class == PFM::Pokemon
+      if id.instance_of?(PFM::Pokemon)
         @forced_wild_battle = [id, *others]
       else
         id = data_creature(id).id if id.is_a?(Symbol)

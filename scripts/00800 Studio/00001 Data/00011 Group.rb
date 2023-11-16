@@ -37,6 +37,10 @@ module Studio
     # @return [Array<Encounter>]
     attr_reader :encounters
 
+    # Average number of steps for the group to have a creature spawn
+    # @return [Integer]
+    attr_reader :steps_average
+
     # Data class describing a custom group condition
     class CustomCondition
       # Type of the custom condition (:enabled_switch or :map_id)

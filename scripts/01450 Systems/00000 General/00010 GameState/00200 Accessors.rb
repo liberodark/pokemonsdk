@@ -37,6 +37,7 @@ module PFM
     # The Pokemon of the Player
     # @return [Array<PFM::Pokemon>]
     attr_accessor :actors
+
     on_initialize(:actors) do
       # @type [Array<PFM::Pokemon>]
       @actors = []
@@ -49,16 +50,19 @@ module PFM
     # The number of steps the repel will work
     # @return [Integer]
     attr_reader :repel_count
+
     on_initialize(:repel_count) { @repel_count = 0 }
 
     # The number of steps the player did
     # @return [Integer]
     attr_accessor :steps
+
     on_initialize(:steps) { @steps = 0 }
 
     # The $game_variables
     # @return [Game_Variables]
     attr_accessor :game_variables
+
     on_player_initialize(:game_variables) do
       @game_variables = Game_Variables.new
       $game_variables ||= @game_variables
@@ -71,6 +75,7 @@ module PFM
     # The $game_switches
     # @return [Game_Switches]
     attr_accessor :game_switches
+
     on_player_initialize(:game_switches) do
       @game_switches = Game_Switches.new
       $game_switches ||= @game_switches
@@ -83,6 +88,7 @@ module PFM
     # The $game_self_switches
     # @return [Game_SelfSwitches]
     attr_accessor :game_self_switches
+
     on_player_initialize(:game_self_switches) { @game_self_switches = Game_SelfSwitches.new }
     on_expand_global_variables(:game_self_switches) do
       # Variable containing all the "Self Switches" (internal boolean logic of events)
@@ -92,6 +98,7 @@ module PFM
     # The $game_self_variables
     # @return [Game_SelfVariables]
     attr_accessor :game_self_variables
+
     on_player_initialize(:game_self_variables) { @game_self_variables = Game_SelfVariables.new }
     on_expand_global_variables(:game_self_variables) do
       # Variable containing all the "Self Variables" (internal numeric logic of events)
@@ -101,6 +108,7 @@ module PFM
     # The $game_system
     # @return [Game_System]
     attr_accessor :game_system
+
     on_player_initialize(:game_system) { @game_system = Game_System.new }
     on_expand_global_variables(:game_system) do
       # Variable containing the Music logic, Menu & Save access and Interpreters
@@ -110,6 +118,7 @@ module PFM
     # The $game_screen
     # @return [Game_Screen]
     attr_accessor :game_screen
+
     on_player_initialize(:game_screen) { @game_screen = Game_Screen.new }
     on_expand_global_variables(:game_screen) do
       # Variable containing the screen logic (tone, pictures, weather)
@@ -119,6 +128,7 @@ module PFM
     # The $game_actors
     # @return [Game_Actors]
     attr_accessor :game_actors
+
     on_player_initialize(:game_actors) { @game_actors = Game_Actors.new }
     on_expand_global_variables(:game_actors) do
       # Variable containing the RMXP Hero living informations
@@ -128,6 +138,7 @@ module PFM
     # The $game_party
     # @return [Game_Party]
     attr_accessor :game_party
+
     on_player_initialize(:game_party) { @game_party = Game_Party.new }
     on_expand_global_variables(:game_party) do
       # Variable containing the RMXP Party informations
@@ -139,6 +150,7 @@ module PFM
     # The $game_map
     # @return [Game_Map]
     attr_accessor :game_map
+
     on_player_initialize(:game_map) { @game_map = Game_Map.new }
     on_expand_global_variables(:game_map) do
       # Variable contaning the current Map info
@@ -148,6 +160,7 @@ module PFM
     # The $game_player
     # @return [Game_Player]
     attr_accessor :game_player
+
     on_player_initialize(:game_player) { @game_player = Game_Player.new }
     on_expand_global_variables(:game_player) do
       # Variable containing the Player Character info on Map
@@ -157,6 +170,7 @@ module PFM
     # The $game_temp
     # @return [Game_Temp]
     attr_accessor :game_temp
+
     on_player_initialize(:game_temp) { @game_temp = Game_Temp.new }
     on_expand_global_variables(:game_temp) do
       # Variable containing all the temporary information (to communicate between scenes)
@@ -179,6 +193,7 @@ module PFM
     # The pathfinding requests
     # @return [Array<Object>]
     attr_accessor :pathfinding_requests
+
     on_player_initialize(:pathfinding_requests) { @pathfinding_requests = Pathfinding::DEFAULT_SAVE }
     on_expand_global_variables(:pathfinding_requests) { @pathfinding_requests ||= Pathfinding::DEFAULT_SAVE }
 
@@ -189,6 +204,7 @@ module PFM
     # User data
     # @return [Hash]
     attr_reader :user_data
+
     on_player_initialize(:user_data) { @user_data = {} }
     on_expand_global_variables(:user_data) do
       @user_data ||= {}
@@ -199,12 +215,14 @@ module PFM
     # Maximum level an allied Pokemon can reach
     # @return [Integer]
     attr_accessor :level_max_limit
+
     on_player_initialize(:level_max_limit) { @level_max_limit = Configs.settings.max_level }
     on_expand_global_variables(:level_max_limit) { @level_max_limit ||= Configs.settings.max_level }
 
     # The in game berry data
     # @return [Hash]
     attr_accessor :berries
+
     on_player_initialize(:berries) { @berries = {} }
 
     # Create a new Pokemon Party
@@ -272,9 +290,8 @@ module PFM
     def battle_starting_update
       return if cant_process_event_tasks?
 
-      encounter_count = $game_player.encounter_count
-      if !$game_system.encounter_disabled && ((@steps % encounter_count) == 0) && @wild_battle.available?
-        $game_system.map_interpreter.launch_common_event(1) unless $game_system.map_interpreter.running?
+      if !$game_system.encounter_disabled && !$game_system.map_interpreter.running? && @wild_battle.group_encounter_detected?
+        $game_system.map_interpreter.launch_common_event(1)
       end
     end
 
@@ -291,9 +308,7 @@ module PFM
         $scene.delay_display_call(:display_poison_animation) unless psn_event
         psn_event = true
         pokemon.hp -= (pokemon.toxic? ? 2 : 1)
-        if pokemon.hp <= 0 && $game_switches[::Yuki::Sw::OW_Poison]
-          $scene.delay_display_call(:display_poison_faint, pokemon)
-        end
+        $scene.delay_display_call(:display_poison_faint, pokemon) if pokemon.hp <= 0 && $game_switches[::Yuki::Sw::OW_Poison]
         next unless pokemon.hp <= 1 && !$game_switches[::Yuki::Sw::OW_Poison]
 
         pokemon.hp = 1
