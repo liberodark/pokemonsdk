@@ -26,8 +26,8 @@ module Battle
           end
         end
 
-        private 
-        
+        private
+
         # Check if we have an immunity to hail
         # @param battler [PFM::PokemonBattler]
         # @return [Boolean]
@@ -35,6 +35,7 @@ module Battle
           return true if HAIL_BLOCKING_ABILITIES.include?(battler.battle_ability_db_symbol)
           return true if HAIL_BLOCKING_ITEMS.include?(battler.battle_item_db_symbol)
           return true if battler.type_ice?
+          return true if battler.effects.has?(:out_of_reach_base)
 
           return false
         end

@@ -38,7 +38,7 @@ module Battle
           return 1.5
         end
 
-        private 
+        private
 
         # Check if we have an immunity to sandstorm
         # @param battler [PFM::PokemonBattler]
@@ -47,6 +47,7 @@ module Battle
           return true if SANDSTORM_BLOCKING_ABILITIES.include?(battler.battle_ability_db_symbol)
           return true if HAIL_BLOCKING_ITEMS.include?(battler.battle_item_db_symbol)
           return true if battler.type_rock? || battler.type_ground? || battler.type_steel?
+          return true if battler.effects.has?(:out_of_reach_base)
 
           return false
         end
