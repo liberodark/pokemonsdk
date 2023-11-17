@@ -349,7 +349,7 @@ module PFM
     # @return [Boolean]
     def current_ability_ignoring_ability?
       return true if ABILITIES_IGNORING_ABILITIES.include?(self.battle_ability_db_symbol)
-      
+
       result = $scene.logic.turn_actions.any? do |a|
         a.is_a?(Battle::Actions::Attack) &&
         Battle::Actions::Attack.from(a).launcher == self &&
@@ -385,6 +385,7 @@ module PFM
     # Copy all the properties back to the original pokemon
     def copy_properties_back_to_original
       return if @scene.battle_info.max_level
+      return if Storage::HEAL_AND_CURE_POKEMON && @scene.battle_info.caught_pokemon == self && !$actors.include?(self.original)
 
       @battle_properties.clear
       self.transform = nil
