@@ -6,7 +6,7 @@ class Game_Player
   def player_update_move
     # mouse_input = Input.kpress?(1)
     # Turn on itself system
-    @wturn = 10 - @move_speed if @lastdir4 == 0 && !(Input.repeat?(:UP) || Input.repeat?(:DOWN) || 
+    @wturn = 10 - @move_speed if @lastdir4 == 0 && !(Input.repeat?(:UP) || Input.repeat?(:DOWN) ||
                                  Input.repeat?(:LEFT) || Input.repeat?(:RIGHT))
 
     @lastdir4 = Input.dir4 # (mouse_input ? mouse_dir4 : Input.dir4)
@@ -133,61 +133,37 @@ class Game_Player
   end
 
   # Manage the bump part of the player_update_move
-  # @param bool [Boolean]
+  # @param bool [Boolean] tell if the player did a fast direction change
   def player_update_move_bump(bool)
-    unless moving?
-      unless $game_temp.common_event_id != 0 or @surfing or @sliding
-        if @last_x == @x and @last_y == @y
-          if @lastdir4 != 0 and !bool
-            @step_anime = true
-            if (@old_pattern == 3 and @pattern == 0) or (@old_pattern == 1 and @pattern == 2)
-              Audio.se_play(BUMP_FILE)
-            end
-          else
-            @step_anime = false
-          end
-        else
-          @last_x = @x
-          @last_y = @y
-        end
-      else
-        if @surfing
-          if @last_x == @x and @last_y == @y
-            if @lastdir4 != 0 and !bool
-              if (@old_pattern == 3 and @pattern == 0) or (@old_pattern == 1 and @pattern == 2)
-                Audio.se_play(BUMP_FILE)
-              end
-            end
-          else
-            @last_x = @x
-            @last_y = @y
-          end
-        end
+    return player_update_move_bump_restore_step_anime if moving? # No bump while moving
+
+    # No bump if coordinate aren't identic
+    if @__last_x != @x || @__last_y != @y
+      @__last_x = @x
+      @__last_y = @y
+      return player_update_move_bump_restore_step_anime
+    end
+
+    if @lastdir4 != 0 && !bool # If the direction is set and it's not a fast direction change
+      # Store & set step anime to mimic the trying to walk into wall effect
+      @__previous_step_anim = @step_anime if @__previous_step_anim.nil?
+      @step_anime = true
+      if (@__old_pattern == 3 && @pattern == 0) || (@__old_pattern == 1 && @pattern == 2)
+        Audio.se_play(BUMP_FILE)
       end
     else
-      @step_anime = false unless @surfing
+      player_update_move_bump_restore_step_anime
     end
-    @old_pattern = @pattern
-    # _BUMP
-    # Lines for the Pokemon like bump
-=begin
-    if(@bump_count>0)
-      @bump_count -= 1
-      unless @surfing or @sliding
-        if @on_acro_bike or $game_switches[::Yuki::Sw::EV_Bicycle]
-          @step_anime = false
-        else
-          @step_anime = !(@bump_count==0 or @lastdir4==0)
-        end
-        if @step_anime
-          if (@old_pattern == 0 and @pattern == 1) or (@old_pattern == 2 and @pattern == 3)
-            Audio.se_play(BUMP_FILE)
-          end
-        end
-        @old_pattern = @pattern
-      end
-    end
-=end
+
+    @__old_pattern = @pattern
+  end
+
+  # Restore step anime if it was changed
+  def player_update_move_bump_restore_step_anime
+    return if @__previous_step_anim.nil?
+
+    @step_anime = @__previous_step_anim
+    @__previous_step_anim = nil
   end
 
   # Manage the common event calling of player_update_move

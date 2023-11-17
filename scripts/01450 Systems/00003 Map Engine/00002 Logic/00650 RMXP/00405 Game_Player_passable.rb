@@ -14,15 +14,6 @@ class Game_Player
     result = super
     #> Check passable avec acro bike
     result = acro_passable_check(d, result)
-=begin
-    #Lignes pour faire le bump à la Pokémon, faut les conserver !!!
-    if(!result and @bump_count < 1 and $game_temp.common_event_id == 0) # 
-      #Audio.se_play(BUMP_FILE)
-      puts "bmp"
-      @bump_count = 30
-      @step_anime = true if @lastdir4 != 0 and !@surfing and !@sliding
-    end
-=end
     return result
   end
 

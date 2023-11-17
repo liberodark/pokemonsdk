@@ -96,7 +96,6 @@ class Game_Player < Game_Character
     if moving? || $game_system.map_interpreter.running? ||
        @move_route_forcing || $game_temp.message_window_showing || @sliding # or follower_sliding?
       if $game_system.map_interpreter.running?
-        @step_anime = false
         enter_in_walking_state if @state == :running
       end
     else
