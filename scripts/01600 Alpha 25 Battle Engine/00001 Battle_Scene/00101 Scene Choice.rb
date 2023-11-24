@@ -201,7 +201,6 @@ module Battle
           GamePlay.open_dex_to_show_pokemon(pkmn)
         end
       end
-      $pokedex.increase_creature_caught_count(pkmn.id)
     end
 
     # Rename question and scene
