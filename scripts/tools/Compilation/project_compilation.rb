@@ -8,6 +8,7 @@ module ProjectCompilation
   NO_RECURSIVE_PATH = []
   DATA_FILES = {}
   GAME_RB_SCRIPTS = %w[
+    GameLoader/z_close_stdin.rb
     PARGV.rb
     GameLoader/1_setupConstantAndLoadPath.rb
     GameLoader/2_displayException.rb
@@ -17,6 +18,7 @@ module ProjectCompilation
     GameLoader/41_load_data_compiled.rb
     GameLoader/Z_main.rb
     GameLoader/51_load_game_compiled.rb
+    GameLoader/60_start_game.rb
   ]
 
   module_function
@@ -51,11 +53,6 @@ module ProjectCompilation
     # Write Game.rb
     File.write(File.join(RELEASE_PATH, 'Game.rb'), <<~'SCRIPT' )
     RubyVM::InstructionSequence.load_from_binary(File.binread('Game.yarb')).eval
-    begin
-      $GAME_LOOP.call
-    rescue Exception
-      display_game_exception('An error occured during Game Loop.')
-    end
     SCRIPT
   end
 
