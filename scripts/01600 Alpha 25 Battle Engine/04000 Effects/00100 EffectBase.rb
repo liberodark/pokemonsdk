@@ -99,6 +99,12 @@ module Battle
         false
       end
 
+      # Check if the user of this ability ignore the center of attention in the enemy bank
+      # @return [Boolean]
+      def ignore_target_redirection?
+        return false
+      end
+
       # Function called when a stat_increase_prevention is checked
       # @param handler [Battle::Logic::StatChangeHandler] handler use to test prevention
       # @param stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva

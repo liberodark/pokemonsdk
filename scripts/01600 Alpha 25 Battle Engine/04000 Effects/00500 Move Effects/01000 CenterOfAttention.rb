@@ -25,7 +25,7 @@ module Battle
       # @param move [Battle::Move]
       # @return [PFM::PokemonBattler] the new target if the conditions are fulfilled, the initial target otherwise
       def target_redirection(user, targets, move)
-        return if user.ability_effect&.ignore_target_redirection?
+        return if user&.ability_effect&.ignore_target_redirection?
         return if MOVES_IGNORING_THIS_EFFECT.include?(move.db_symbol) || move.two_turn?
         return if @origin_move.db_symbol == :rage_powder && rage_powder_immunity?(user)
         return if @pokemon.effects.has?(:prevent_targets_move)
