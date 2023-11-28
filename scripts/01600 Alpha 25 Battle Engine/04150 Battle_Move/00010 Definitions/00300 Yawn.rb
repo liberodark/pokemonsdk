@@ -13,11 +13,14 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
-        if @logic.foes_of(user).any? { |target| %i[sweet_veil flower_veil].include?(target.battle_ability_db_symbol) }
-          @logic.scene.visual.show_ability(target)
+        target_with_ability = @logic.foes_of(user).find { |target| %i[sweet_veil flower_veil].include?(target.battle_ability_db_symbol) }
+
+        if target_with_ability
+          @logic.scene.visual.show_ability(target_with_ability)
           show_usage_failure(user)
           return false
         end
+        
 
         if targets.any? { |target| @logic.bank_effects[target.bank].has?(:safeguard) ||
           %i[electric_terrain misty_terrain].include?(logic.field_terrain) && target.grounded?
