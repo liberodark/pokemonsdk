@@ -23,7 +23,7 @@ Here's the principles of PSDK Plugin Manager:
 The PSDK Plugin Manager install/remove plugins when one of the following criteria is met:
 - A `.psdkplug` file was added or removed.
 - The PSDK version changed (update)
-- The command `game --util=plugin load` was called.
+- The command `psdk --util=plugin load` was called.
 
 ## How to build a plugin?
 
@@ -109,7 +109,7 @@ In the case you need any visual example, please check this repository as it show
 
 Once you've made sure everything has been setup you can run the command:
 ```
-game --util=plugin build name
+psdk --util=plugin build name
 ```
 Replace `name` with the name of the plugin. You can build several plugin at once by adding names after the name of the first plugin to build.
 
@@ -119,7 +119,7 @@ You should end up with a `.psdkplug` file with the name you provided in `config.
 
 The easiest way to know if the files were all added is to run the command:
 ```
-game --util=plugin load
+psdk --util=plugin load
 ```
 
 This will force the plugin to reinstall, and then it'll show all the files that could not be extracted because they already exist (since the plugin was already installed / the files were expected to be at their final destination).
