@@ -155,7 +155,7 @@ module GamePlay
 
     # Create the background image (blur)
     def create_background
-      add_disposable @background = UI::BlurScreenshot.new(@__last_scene)
+      add_disposable @background = UI::BlurScreenshot.new(@viewport, @__last_scene)
       @background.opacity -= 255 / ENTERING_ANIMATION_DURATION * ENTERING_ANIMATION_DURATION
     end
 

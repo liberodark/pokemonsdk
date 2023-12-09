@@ -65,7 +65,7 @@ module BattleUI
     end
 
     def create_sprites
-      push_sprite(BlurScreenshot.new(@scene))
+      push_sprite(BlurScreenshot.new(@viewport, @scene))
       # @type [Array<PokemonInfo>]
       @bars = @pokemon.map.with_index do |pokemon, index|
         push_sprite(PokemonInfo.new(@viewport, index, @originals[index], @exp_data[pokemon].to_i))

@@ -31,7 +31,7 @@ module GamePlay
 
     # Create the background
     def create_background
-      add_disposable @background = UI::BlurScreenshot.new(@__last_scene)
+      add_disposable @background = UI::BlurScreenshot.new(@viewport, @__last_scene)
     end
 
     # Create the window background

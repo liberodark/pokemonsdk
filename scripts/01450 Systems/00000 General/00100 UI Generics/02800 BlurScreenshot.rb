@@ -37,6 +37,8 @@ module UI
       bitmap&.dispose
 
       return @last_scene.snap_to_bitmap
+    rescue Exception
+      return Texture.new(32, 32) # Failsafe in case the last scene got disposed for real (which is stupid in that context but we never know)
     end
   end
 end

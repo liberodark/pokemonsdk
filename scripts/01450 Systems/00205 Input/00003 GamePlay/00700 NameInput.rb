@@ -86,7 +86,7 @@ module GamePlay
     end
 
     def create_base_ui
-      @base_ui = UI::NameInputBaseUI.new(@viewport)
+      @base_ui = UI::NameInputBaseUI.new(@viewport, @__last_scene)
     end
 
     def create_name_input_ui

@@ -61,7 +61,7 @@ module GamePlay
     end
 
     def create_background
-      add_disposable UI::BlurScreenshot.new(@__last_scene)
+      add_disposable UI::BlurScreenshot.new(@viewport, @__last_scene)
     end
 
     def create_elements
