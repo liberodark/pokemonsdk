@@ -3,7 +3,7 @@ module Battle
     # List of symbol describe a one target aim
     OneTarget = %i[any_other_pokemon random_foe adjacent_pokemon adjacent_foe user user_or_adjacent_ally adjacent_ally]
     # List of symbol that doesn't show any choice of target
-    TargetNoAsk = %i[adjacent_all_foe all_foe adjacent_all_pokemon all_pokemon user all_ally random_foe]
+    TargetNoAsk = %i[adjacent_all_foe all_foe adjacent_all_pokemon all_pokemon user all_ally all_ally_but_user random_foe]
 
     # Does the skill aim only one Pokemon
     # @return [Boolean]
@@ -61,6 +61,9 @@ module Battle
       #  ex ex ex / u! a! a!
       when :all_ally
         return [pokemon].concat(logic.allies_of(pokemon))
+      # ex ex ex / ux a! a!
+      when :all_ally_but_user
+        return logic.allies_of(pokemon)
       # eo eo eo / ux ao ao
       when :any_other_pokemon
         return logic.foes_of(pokemon).concat(logic.allies_of(pokemon))
