@@ -133,14 +133,18 @@ class Interpreter
   alias ajouter_renommer_pokemon add_rename_pokemon
 
   # Add an egg to the Party (or in the PC)
-  # @param id [Integer, Hash, Symbol] the id of the Pokemon in the database
+  # @param id [Integer, Hash, Symbol, PFM::Pokemon] the id of the Pokemon, its db_symbol, a hash describing it (see: #generate_from_hash), or the Pokemon itself
   # @return [PFM::Pokemon, nil]
   # @author Nuri Yuri
   def add_egg(id)
-    creature = data_creature(id.is_a?(Hash) ? id[:id].to_i : id)
-    raise "Database Error : The Pokémon ##{id} doesn't exists." if creature.db_symbol == :__undef__
+    if id.is_a?(PFM::Pokemon)
+      pokemon = id
+    else
+      creature = data_creature(id.is_a?(Hash) ? id[:id] : id)
+      raise "Database Error : The Pokémon ##{id} doesn't exists." if creature.db_symbol == :__undef__
 
-    pokemon = id.is_a?(Hash) ? PFM::Pokemon.generate_from_hash(id) : PFM::Pokemon.new(id, 1)
+      pokemon = id.is_a?(Hash) ? PFM::Pokemon.generate_from_hash(id) : PFM::Pokemon.new(id, 1)
+    end
     pokemon.egg_init
     pokemon.memo_text = [28, 31]
     return add_pokemon(pokemon)
