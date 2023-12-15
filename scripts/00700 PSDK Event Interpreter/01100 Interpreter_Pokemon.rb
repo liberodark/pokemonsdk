@@ -92,11 +92,13 @@ class Interpreter
 
   # Play the cry of a Pokemon
   # @param id [Integer, Symbol] the id of the Pokemon in the database
-  def cry_pokemon(id)
+  # @param volume [Integer] the volume of the cry
+  # @param tempo [Integer] the tempo/pitch of the cry
+  def cry_pokemon(id, volume: 100, tempo: 100)
     creature = data_creature(id)
     raise "Database Error : The Pokémon ##{id} doesn't exists." if creature.db_symbol == :__undef__
 
-    Audio.se_play(format('Audio/SE/Cries/%03dCry', creature.id))
+    Audio.se_play(format('Audio/SE/Cries/%03dCry', creature.id), volume, tempo)
   end
 
   # Show the rename interface of a Pokemon
