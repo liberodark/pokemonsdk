@@ -260,8 +260,8 @@ class Spriteset_Map
 
   # update weather and picture sprites
   def update_weather_picture
-    @weather.type = $game_screen.weather_type
     @weather.max = $game_screen.weather_max
+    @weather.type = $game_screen.weather_type
     @weather.ox = $game_map.display_x / 4
     @weather.oy = $game_map.display_y / 4
     @weather.update
@@ -375,7 +375,7 @@ class Spriteset_Map
   Hooks.register(self, :update, 'Quest Informer') { update_quest_informer }
 
   # Hook that load the saved fog if we are on a outdoor map without any fog
-  Hooks.register(Spriteset_Map, :reload, 'Spriteset_Map reloaded') do 
+  Hooks.register(Spriteset_Map, :reload, 'Spriteset_Map reloaded') do
     if $game_map.fog_name == nil.to_s && $game_switches[Yuki::Sw::Env_CanFly] && $fog_info
       $game_map.fog_name = $fog_info[0]
       $game_map.fog_hue = $fog_info[1]

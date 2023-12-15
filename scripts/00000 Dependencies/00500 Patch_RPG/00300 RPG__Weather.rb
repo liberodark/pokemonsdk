@@ -224,8 +224,8 @@ module RPG
     def set_type_reset_sprite(bitmap)
       @sprites.each_with_index do |sprite, i|
         next unless sprite
-        sprite.visible = (i <= @max)
         sprite.bitmap = bitmap
+        sprite.visible = (@max.positive? && i <= @max)
         sprite.src_rect.set(0, 0, bitmap.width, bitmap.height) if bitmap
         sprite.counter = 0
       end
