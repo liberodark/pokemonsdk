@@ -154,12 +154,12 @@ class Interpreter
   # @param event_id [Integer] the id of the event that see the self switch
   # @param map_id [Integer] the id of the map where the event see the self switch
   # @author Leikt
-  def set_self_switch(value, self_switch, event_id, map_id = @map_id) # Notre fonction
-    key = [map_id, event_id, self_switch]  # Clef pour retrouver l'interrupteur local que l'on veut modifier
-    $game_self_switches[key] = (value == true) # Modification de l'interrupteur local (on le veut à True ou à False)
-    $game_map.events[event_id].refresh if $game_map.map_id == map_id # On rafraichi l'event s'il est sur la même map, pour qu'il prenne en compte la modification
+  def set_self_switch(value, self_switch, event_id = @event_id, map_id = @map_id)
+    key = [map_id, event_id, self_switch] # Key to retrieve the local switch we want to modify
+    $game_self_switches[key] = (value == true) # Modify the local switch to true or false only
+    $game_map.events[event_id].refresh if $game_map.map_id == map_id # We refresh the event if it's on the same map, to have it account the modification
   end
-  alias set_ss set_self_switch # Création d'un alias : on peut appeler notre fonction par set_ss ou par set_self_switch (comme vous préférer)
+  alias set_ss set_self_switch # Creating an alias: we can call the method with set_ss or with set_self_switch (as you prefer)
 
   # Get the value of a self_switch
   # @param self_switch [String] the name of the self switch ("A", "B", "C", "D")
@@ -167,11 +167,12 @@ class Interpreter
   # @param map_id [Integer] the id of the map where the event see the self switch
   # @return [Boolean] the value of the self switch
   # @author Leikt
-  def get_self_switch(self_switch, event_id, map_id = @map_id)
-    key = [map_id, event_id, self_switch]  # Clef pour retrouver l'interrupteur local que l'on veut modifier
-    return $game_self_switches[key]
+  def get_self_switch(self_switch, event_id = @event_id, map_id = @map_id)
+    key = [map_id, event_id, self_switch] # Key to retrieve the local switch we want to see
+    return $game_self_switches[key] || false
   end
   alias get_ss get_self_switch
+
   # Show the party menu in order to select a Pokemon
   # @param id_var [Integer] id of the variable in which the index will be store (-1 = no selection)
   # @param party [Array<PFM::Pokemon>] the array of Pokemon to show in the menu
