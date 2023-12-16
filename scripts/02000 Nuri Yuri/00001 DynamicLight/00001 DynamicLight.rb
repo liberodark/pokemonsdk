@@ -29,6 +29,7 @@ module NuriYuri
       return start_delay(&block) if block
 
       stop(true)
+      @started = true
       create_viewport
       load_blendmode
       register
@@ -41,6 +42,7 @@ module NuriYuri
       return unless $scene.is_a?(Scene_Map)
 
       PFM.game_state.nuri_yuri_dynamic_light.clear
+      @started = false
       unregister
       clear_stack
       dispose_viewport unless from_start
@@ -58,6 +60,7 @@ module NuriYuri
         start
         yield(self)
       end
+      @started = true
       Scheduler.add_message(:on_warp_end, Scene_Map, 'NuriYuri::DynamicLight', 100, self, :update)
     end
 
@@ -68,6 +71,12 @@ module NuriYuri
       @stack ||= []
       @delay = proc { stop }
       Scheduler.__remove_task(:on_update, Scene_Map, 'NuriYuri::DynamicLight', 100)
+    end
+
+    # Tells if the DynamicLight is started and running or not
+    # @return [Integer]
+    def started?
+      return @started ||= false
     end
 
     # Update the lights
@@ -91,7 +100,7 @@ module NuriYuri
       return -1 unless animation_type.between?(0, ANIMATIONS.size - 1)
 
       if chara_id < 0
-        character = nil # Not supported now.
+        character = determine_follower_character(chara_id)
       elsif chara_id == 0
         character = $game_player
       else
@@ -103,6 +112,15 @@ module NuriYuri
       light_id = @stack.last.light_id = @stack.size - 1
       PFM.game_state.nuri_yuri_dynamic_light << { params: [chara_id, light_type, animation_type, zoom_count, opacity_count, *args], on: true, type: type }
       return light_id
+    end
+
+    # Recursively get to the asked follower and return the result
+    # @param chara_id [Integer]
+    # @return [Game_Character, Game_Event, nil] the Game_Character/Game_Event is it exists, else nil
+    def determine_follower_character(chara_id)
+      entity = $game_player
+      chara_id.abs.times { entity = entity&.follower }
+      return entity
     end
 
     # Switch a light on

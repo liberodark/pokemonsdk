@@ -41,6 +41,13 @@ class Interpreter
     PFM.game_state
   end
 
+  # Return the NuriYuri::DynamicLight module
+  # @return [NuriYuri::DynamicLight]
+  def dynamic_light
+    return NuriYuri::DynamicLight
+  end
+  alias dyn_light dynamic_light
+
   # Start the storage PC
   def start_pc
     Audio.se_play('audio/se/computeropen')
