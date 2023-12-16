@@ -210,10 +210,10 @@ module PFM
     # Add a roaming Pokemon
     # @param chance [Integer] the chance divider to see the Pokemon
     # @param proc_id [Integer] ID of the Wild_RoamingInfo::RoamingProcs
-    # @param pokemon_hash [Hash] the Hash that help the generation of the Pokemon, see PFM::Pokemon#generate_from_hash
+    # @param pokemon_hash [Hash, PFM::Pokemon] hash to generate the mon (cf. PFM::Pokemon#generate_from_hash), or the Pokemon
     # @return [PFM::Pokemon] the generated roaming Pokemon
     def add_roaming_pokemon(chance, proc_id, pokemon_hash)
-      pokemon = ::PFM::Pokemon.generate_from_hash(pokemon_hash)
+      pokemon = pokemon_hash.is_a?(PFM::Pokemon) ? pokemon_hash : ::PFM::Pokemon.generate_from_hash(pokemon_hash)
       PFM::Wild_RoamingInfo.unlock
       @roaming_pokemons << Wild_RoamingInfo.new(pokemon, chance, proc_id)
       PFM::Wild_RoamingInfo.lock
