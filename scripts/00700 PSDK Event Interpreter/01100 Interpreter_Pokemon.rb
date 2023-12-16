@@ -236,4 +236,21 @@ class Interpreter
     @wait_count = 2
   end
   # TODO : Faire le reste
+
+  # Returns the db_symbol of the type of the Pokemon's Hidden Power
+  # @param index_or_pokemon [Integer, PFM::Pokemon] the Pokemon or the index of the Pokemon in the party (0~5)
+  # @author Rey
+  def pokemon_hidden_power(index_or_pokemon)
+    if index_or_pokemon.is_a?(Integer)
+      pokemon = $actors[index_or_pokemon]
+      raise "IndexError : Pokemon at index #{index_or_pokemon} couldn't be found." unless pokemon
+    else
+      pokemon = index_or_pokemon
+    end
+    iv_list = Battle::Move::HiddenPower::IV_LIST
+    index = 0
+    iv_list.each_with_index { |iv, i| index += (pokemon.send(iv) & 1) * 2**i }
+    index = (index * (Battle::Move::HiddenPower::TYPES_TABLE.length - 1) / 63).floor
+    return Battle::Move::HiddenPower::TYPES_TABLE[index]
+  end
 end
