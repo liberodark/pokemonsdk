@@ -83,7 +83,7 @@ class Game_Character
         @slope_origin_x = @real_x
         @slope_length *= -128 # display_length conversion
       end
-    
+
     # End of the left up slope
     elsif sys_tag == SlopesL && front_sys_tag != SlopesL
       @slope_offset_y = @slope_origin_x = @slope_length = nil if passable?(@x, @y - 1, 4) && write
@@ -178,7 +178,7 @@ class Game_Character
         @slope_origin_x = @real_x
         @slope_length *= -128 # display_length conversion
       end
-    
+
     # End of the right up slope
     elsif sys_tag == SlopesR && front_sys_tag != SlopesR
       @slope_offset_y = @slope_origin_x = @slope_length = nil if passable?(@x, @y - 1, 6) && write
@@ -318,6 +318,63 @@ class Game_Character
     when 2
       move_right(false)
     when 3
+      move_up(false)
+    end
+  end
+
+  # Move the Game_Character to a random direction within a rectangular zone
+  # @param lx [Integer] the x coordinate of the left border of the zone
+  # @param rx [Integer] the x coordinate of the right border of the zone
+  # @param ty [Integer] the y coordinate of the top border of the zone
+  # @param dy [Integer] the y coordinate of the down border of the zone
+  def move_random_within_zone(lx, rx, ty, dy)
+    lx, rx = rx, lx if lx > rx
+    ty, dy = dy, ty if ty > dy
+    ox = ((lx + rx) / 2).floor
+    oy = ((ty + dy) / 2).floor
+    return move_toward(ox, oy) unless (lx..rx).include?(@x) && (ty..dy).include?(@y)
+
+    case rand(4)
+    when 0
+      return if @y + 1 > dy
+
+      move_down(false)
+    when 1
+      return if @x - 1 < lx
+
+      move_left(false)
+    when 2
+      return if @x + 1 > rx
+
+      move_right(false)
+    when 3
+      return if @y - 1 < ty
+
+      move_up(false)
+    end
+  end
+
+  # Move the Game_Character to a random direction within a rectangular zone
+  # @param sys_tag_id [Integer] the ID of the systemtag the character should only move into
+  def move_random_within_systemtag(sys_tag_id)
+    return if system_tag != sys_tag_id
+
+    case rand(4)
+    when 0
+      return if $game_map.system_tag(@x, @y + 1) != sys_tag_id
+
+      move_down(false)
+    when 1
+      return if $game_map.system_tag(@x - 1, @y) != sys_tag_id
+
+      move_left(false)
+    when 2
+      return if $game_map.system_tag(@x + 1, @y) != sys_tag_id
+
+      move_right(false)
+    when 3
+      return if $game_map.system_tag(@x, @y - 1) != sys_tag_id
+
       move_up(false)
     end
   end
