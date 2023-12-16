@@ -18,9 +18,11 @@ module PFM
 
     # Forget a skill by its id
     # @param db_symbol [Symbol] db_symbol of the move in the database
-    def forget_skill(db_symbol)
+    # @param delete_from_learnt [Boolean] if the skill should be deleted from the skill_learnt attribute of the Pokemon
+    def forget_skill(db_symbol, delete_from_learnt: false)
       move = data_move(db_symbol)
       @skills_set.delete_if { |skill| skill.db_symbol == move.db_symbol }
+      @skill_learnt.delete_if { |skill_id| data_move(skill_id).db_symbol == move.db_symbol } if delete_from_learnt
       form_calibrate if data.db_symbol == :keldeo
     end
 
