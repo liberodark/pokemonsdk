@@ -76,8 +76,12 @@ module GamePlay
 
     # Create the trainer sprite
     def create_trainer_sprite
+      gender = $game_switches[1] ? '_f' : '_m'
+      gp = $game_player
+      filename = "tcard/#{gp.charset_base}#{gender}" if RPG::Cache.interface_exist?("tcard/#{gp.charset_base}#{gender}")
+      filename ||= "tcard/#{$game_player.charset_base}"
       @trainer_sprite = Sprite.new(@viewport)
-                              .set_bitmap("tcard/#{$game_player.charset_base}", :interface)
+                              .set_bitmap(filename, :interface)
       # Adjust the origin of the sprite since the TCard has a smaller surface for the sprite
       @trainer_sprite.set_origin((@trainer_sprite.width - PLAYER_SURFACE.first) / 2,
                                  (@trainer_sprite.height - PLAYER_SURFACE.last) / 2)
