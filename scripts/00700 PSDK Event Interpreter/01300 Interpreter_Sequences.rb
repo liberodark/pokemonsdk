@@ -129,6 +129,7 @@ class Interpreter
       character.move_toward_player
       move_player_and_update_graphics while character.moving?
     end
+    character.turn_toward_player
     $game_player.turn_toward_character(character)
     # We do the speech
     text = PFM::Text.parse_string_for_messages(phrase)
