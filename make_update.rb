@@ -1,6 +1,8 @@
 require 'uri'
 require 'zlib'
-p RUBY_VERSION
+
+system('git checkout release')
+system('git pull')
 system("git log --oneline")
 print("Enter commit short sha1 : ")
 sha1 = STDIN.gets.chomp
@@ -21,13 +23,15 @@ update_rubyfmod = STDIN.gets.downcase.start_with?('y')
 
 psdk_path = File.basename(File.expand_path('.'))
 
+system('git checkout HEAD~1')
 version = File.read('version.txt').to_i
+system('git pull')
+next_version = File.read('version.txt')
 
 Dir.chdir('..')
 Dir.mkdir('psdk_update') unless Dir.exist?(update_path = 'psdk_update')
 update_path << "/#{version}"
 Dir.mkdir(update_path) unless Dir.exist?(update_path)
-
 
 UPDATE_PATH = update_path
 def copy_file(filename, update_path = UPDATE_PATH)
@@ -56,15 +60,6 @@ files.each do |filename|
 end
 update_file_contents << "mega_script.deflate:%PSDK%/scripts/mega_script.deflate\n"
 File.binwrite(File.join(UPDATE_PATH, 'mega_script.deflate'), Zlib::Deflate.deflate(Marshal.dump(mega_script_arch)))
-=begin
-files.each do |filename|
-  if File.exist?(File.join(psdk_path, filename))
-    basename = File.basename(filename)
-    update_file_contents << "#{URI.encode(basename)}:%PSDK%/#{filename}\n"
-    copy_file(File.join(psdk_path, filename))
-  end
-end
-=end
 
 current_path = File.expand_path('.') + '/'
 print 'Additionnal ressource : '
@@ -88,8 +83,7 @@ if update_rubyfmod
 end
 
 # Copy version & finalize
-File.write(File.join(psdk_path, 'version.txt'), version.next.to_s)
-File.write(File.join(update_path, 'version.txt'), version.next.to_s)
+File.write(File.join(update_path, 'version.txt'), next_version)
 update_file_contents << 'version.txt:version.txt'
 File.write(File.join(update_path, 'file_index.txt'), update_file_contents)
 

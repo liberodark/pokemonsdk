@@ -46,3 +46,4 @@ scripts/my_scripts/scripts
 .DS_Store
 
 scripts.dat
+.release/
