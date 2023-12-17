@@ -20,6 +20,20 @@ class Interpreter
     $storage.remove_instance_variable(var_id) if id_storage
   end
 
+  # Combined the saved bag with the current bag
+  # @param id_storage [String] the specific name of the storage, if nil $storage.other_bag is picked
+  # @author Beef'
+  def combine_with_saved_bag(id_storage = nil)
+    var_id = id_storage ? "@_str_bag_#{id_storage}".to_sym : :@other_bag
+    saved_bag = $storage.instance_variable_get(var_id)
+    return nil if saved_bag.empty?
+    each_data_item.each do |item|
+      item_db_symbol = item.db_symbol 
+      $bag.add_item(item_db_symbol, saved_bag.item_quantity(item_db_symbol))
+    end
+    $storage.remove_instance_variable(var_id) if id_storage
+  end
+
   # Save the trainer somewhere and make it empty in the point of view of the player.
   # @param id_storage [String] the specific name of the storage, if nil sent to $storage.other_trainer
   # @author Beef'
@@ -36,7 +50,7 @@ class Interpreter
   def retrieve_saved_trainer(id_storage = nil)
     var_id = id_storage ? "@_str_trainer_#{id_storage}".to_sym : :@other_trainer
     trainer = $storage.instance_variable_get(var_id)
-    return nil if !trainer.is_a? PFM::Trainer
+    return nil unless trainer.is_a? PFM::Trainer
     $trainer = PFM.game_state.trainer = trainer
     PFM.game_state.game_switches[Yuki::Sw::Gender] = $trainer.playing_girl
     $storage.remove_instance_variable(var_id) if id_storage
@@ -48,7 +62,7 @@ class Interpreter
   def empty_and_save_pokedex(id_storage = nil)
     var_id = id_storage ? "@_str_pokedex_#{id_storage}".to_sym : :@other_pokedex
     pokedex = Marshal.load(Marshal.dump($pokedex))
-    $pokedex = PFM::Pokedex.new
+    $pokedex = PFM.game_state.pokedex = PFM::Pokedex.new
     $storage.instance_variable_set(var_id, pokedex)
   end
   
@@ -58,9 +72,24 @@ class Interpreter
   def retrieve_saved_pokedex(id_storage = nil)
     var_id = id_storage ? "@_str_pokedex_#{id_storage}".to_sym : :@other_pokedex
     pokedex = $storage.instance_variable_get(var_id)
-    return nil if !pokedex.is_a? PFM::Pokedex
+    return nil unless pokedex.is_a? PFM::Pokedex
     $pokedex = PFM.game_state.pokedex = pokedex
     $storage.remove_instance_variable(var_id) if id_storage
+  end
+
+  # Combined the saved pokedex with the current pokedex
+  # @param id_storage [String] the specific name of the storage, if nil $storage.other_pokedex is picked
+  # @author Beef'
+  def combine_with_saved_pokedex(id_storage = nil, empty_pokedex: false)
+    var_id = id_storage ? "@_str_pokedex_#{id_storage}".to_sym : :@other_pokedex
+    saved_pokedex = $storage.instance_variable_get(var_id)
+    return nil unless saved_pokedex.is_a? PFM::Pokedex
+    each_data_creature.each do |pkmn|
+      pkmn_db_symbol = pkmn.db_symbol
+      $pokedex.mark_seen(pkmn_db_symbol) if saved_pokedex.creature_seen?(pkmn_db_symbol)
+      $pokedex.mark_captured(pkmn_db_symbol) if saved_pokedex.creature_caught?(pkmn_db_symbol)
+    end
+    $storage.remove_instance_variable(var_id) if id_storage && empty_pokedex
   end
 
   # Save the money somewhere and make it null in the point of view of the player.
@@ -79,8 +108,19 @@ class Interpreter
   def retrieve_saved_money(id_storage = nil)
     var_id = id_storage ? "@_str_money_#{id_storage}".to_sym : :@other_money
     money = $storage.instance_variable_get(var_id)
-    return nil if !money.is_a? Integer
+    return nil unless money.is_a? Integer
     PFM.game_state.money = money
+    $storage.remove_instance_variable(var_id) if id_storage
+  end 
+
+  # Combined the saved money with the current money 
+  # @param id_storage [String] the specific name of the storage, if nil $storage.other_money is picked
+  # @author Beef'
+  def combine_with_saved_money(id_storage = nil)
+    var_id = id_storage ? "@_str_money_#{id_storage}".to_sym : :@other_money
+    saved_money = $storage.instance_variable_get(var_id)
+    return nil unless saved_money.is_a? Integer
+    PFM.game_state.add_money(saved_money) 
     $storage.remove_instance_variable(var_id) if id_storage
   end 
 
@@ -100,7 +140,7 @@ class Interpreter
   def retrieve_saved_appearance(id_storage = nil)
     var_id = id_storage ? "@_str_appearance_#{id_storage}".to_sym : :@other_appearance
     charset_base = $storage.instance_variable_get(var_id)
-    return nil if !charset_base.is_a? String
+    return nil unless charset_base.is_a? String
     $game_player.set_appearance_set(charset_base)
     $storage.remove_instance_variable(var_id) if id_storage
   end
