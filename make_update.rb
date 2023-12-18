@@ -9,7 +9,7 @@ sha1 = STDIN.gets.chomp
 files = []
 IO.popen("git diff #{sha1} --name-only") do |f|
   while line = f.gets
-    if line.start_with?('scripts/') && !File.directory?(line.chomp)
+    if (line.start_with?('scripts/') || line.start_with?('docs/')) && !File.directory?(line.chomp)
       files << line.chomp
     end
   end
@@ -25,6 +25,7 @@ psdk_path = File.basename(File.expand_path('.'))
 
 system('git checkout HEAD~1')
 version = File.read('version.txt').to_i
+system('git checkout release')
 system('git pull')
 next_version = File.read('version.txt')
 
