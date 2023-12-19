@@ -173,8 +173,7 @@ module GamePlay
     # Create the player marker
     def create_player_sprite
       @marker_player = Sprite::WithColor.new(@viewport_map_markers)
-      player_icon = 'worldmap/player_icons/' \
-                    "#{$game_player.charset_base}_#{$game_switches[Yuki::Sw::Gender] ? 'f' : 'm'}"
+      player_icon = "worldmap/player_icons/#{$game_player.charset_base}_#{$game_switches[Yuki::Sw::Gender] ? 'f' : 'm'}"
       player_icon = 'worldmap/player_icons/default' unless RPG::Cache.interface_exist?(player_icon)
       @marker_player.set_bitmap(player_icon, :interface)
       @marker_player.ox = @marker_player.src_rect.width / 2 - TileSize / 2
