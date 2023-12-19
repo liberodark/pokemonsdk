@@ -502,7 +502,7 @@ module PFM
       indexes.each do |i|
         next unless (skill = original.skills_set[i])
 
-        moveset[i] = Battle::Move[skill.symbol].new(skill.id, skill.pp, skill.ppmax, @scene)
+        moveset[i] = Battle::Move[skill.symbol].new(skill.id, skill.pp, skill.ppmax, @scene, self)
       end
     end
 
@@ -561,9 +561,9 @@ module PFM
     # Copy the moveset of the original Pokemon
     def copy_moveset
       @skills_set = @moveset = @original.skills_set.map do |skill|
-        next Battle::Move[skill.symbol].new(skill.db_symbol, skill.pp, skill.ppmax, @scene)
+        next Battle::Move[skill.symbol].new(skill.db_symbol, skill.pp, skill.ppmax, @scene, self)
       end
-      @moveset << Battle::Move.new(:__undef__, 0, 9001, @scene) if @moveset.empty?
+      @moveset << Battle::Move.new(:__undef__, 0, 9001, @scene, self) if @moveset.empty?
     end
 
     # Copy the moveset of the pokemon it transforms
@@ -571,9 +571,9 @@ module PFM
       if @transform
         @moveset_before_transform ||= @moveset
         @skills_set = @moveset = @transform.skills_set.map do |skill|
-          next Battle::Move[skill.symbol].new(skill.id, 5, 5, @scene)
+          next Battle::Move[skill.symbol].new(skill.id, 5, 5, @scene, self)
         end
-        @moveset << Battle::Move.new(0, 0, 9001, @scene) if @moveset.empty?
+        @moveset << Battle::Move.new(0, 0, 9001, @scene, self) if @moveset.empty?
       elsif @moveset_before_transform
         @moveset = @skills_set = @moveset_before_transform
         @moveset_before_transform = nil

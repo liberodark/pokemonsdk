@@ -14,7 +14,7 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       def play_animation(user, targets)
         @secret_power = element_by_location # Already tested as not nil
-        mock = Move.new(@secret_power.mock, 1, 1, @scene)
+        mock = Move.new(@secret_power.mock, 1, 1, @scene, user)
         mock.send(:play_animation, user, targets)
       end
 

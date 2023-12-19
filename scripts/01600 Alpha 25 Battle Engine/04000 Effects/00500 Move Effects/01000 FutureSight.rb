@@ -43,7 +43,7 @@ module Battle
       def find_target
         return affected_pokemon if affected_pokemon.alive?
 
-        proto_move = Battle::Move.new(:__undef__, 1, 1, @logic.scene)
+        proto_move = Battle::Move.new(:__undef__, 1, 1, @logic.scene, @origin)
         def proto_move.target
           :user_or_adjacent_ally
         end
