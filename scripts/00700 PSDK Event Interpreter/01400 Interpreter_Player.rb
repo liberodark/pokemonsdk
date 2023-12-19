@@ -5,7 +5,7 @@ class Interpreter
   def empty_and_save_bag(id_storage = nil)
     var_id = id_storage ? "@_str_bag_#{id_storage}".to_sym : :@other_bag
     bag = Marshal.load(Marshal.dump($bag))
-    $bag = PFM::Bag.new
+    $bag = PFM.game_state.bag = PFM::Bag.new
     $storage.instance_variable_set(var_id, bag)
   end
   
@@ -40,7 +40,7 @@ class Interpreter
   def empty_and_save_trainer(id_storage = nil)
     var_id = id_storage ? "@_str_trainer_#{id_storage}".to_sym : :@other_trainer
     trainer = Marshal.load(Marshal.dump($trainer))
-    $trainer = PFM::Trainer.new
+    $trainer = PFM.game_state.trainer = PFM::Trainer.new
     $storage.instance_variable_set(var_id, trainer)
   end
   
