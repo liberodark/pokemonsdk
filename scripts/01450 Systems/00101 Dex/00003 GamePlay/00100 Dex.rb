@@ -235,12 +235,6 @@ module GamePlay
         end
       end
     end
-
-    # Dispose the interface
-    def dispose
-      super
-      # @viewport.dispose
-    end
   end
 end
 

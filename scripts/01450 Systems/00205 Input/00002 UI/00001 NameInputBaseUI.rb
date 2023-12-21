@@ -1,4 +1,5 @@
 module UI
+  # Base UI for name input scenes
   class NameInputBaseUI < GenericBase
     alias create_button_background void
     alias update_background_animation void

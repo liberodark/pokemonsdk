@@ -1,4 +1,5 @@
 module GamePlay
+  # Shop scene
   class Shop < BaseCleanUpdate::FrameBalanced
     # Create a new Item Shop
     # @overload initialize(symbol_shop)

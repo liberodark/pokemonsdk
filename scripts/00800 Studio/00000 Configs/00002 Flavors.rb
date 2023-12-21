@@ -73,6 +73,7 @@ module Configs
       }
     end
 
+    # Convert the config to json
     def to_json(*)
       {
         klass: self.class.to_s,

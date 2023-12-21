@@ -1,5 +1,3 @@
-raise 'You did not loaded LiteRGSS2' unless defined?(LiteRGSS::DisplayWindow)
-
 module LiteRGSS
   module Fonts
     @line_heights = []

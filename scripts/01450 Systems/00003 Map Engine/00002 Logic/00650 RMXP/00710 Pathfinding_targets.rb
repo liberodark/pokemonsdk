@@ -26,6 +26,7 @@ module Pathfinding
       return const_defined?(type) ? const_get(type).load(data) : nil
     end
 
+    # Coords target type
     class Coords
       def initialize(*args)
         coords = args[0]
@@ -67,6 +68,7 @@ module Pathfinding
       end
     end
 
+    # Character target type
     class Character
       def initialize(*args)
         @character = args[0]
@@ -114,6 +116,7 @@ module Pathfinding
       end
     end
 
+    # Character reject target type
     class Character_Reject
       def initialize(*args)
         @character = args[0]
@@ -161,6 +164,7 @@ module Pathfinding
       end
     end
 
+    # Border target type
     class Border
       def initialize(*args)
         @border = args[0]

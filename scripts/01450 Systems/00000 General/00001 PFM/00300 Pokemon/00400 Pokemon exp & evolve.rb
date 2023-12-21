@@ -363,6 +363,7 @@ module PFM
       return natures_toxtricity.include?(Configs.natures.db_symbol_to_id.key(nature_id))
     end
 
+    # Check evolve condition when not in Toxtricity-amped (Salarsen-aigüe)
     def elv_toxtricity_low_key
       return !elv_toxtricity_amped
     end

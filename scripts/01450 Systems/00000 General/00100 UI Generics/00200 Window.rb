@@ -1,6 +1,7 @@
 module UI
   # Window utility allowing to make Window easilly
   class Window < ::Window
+    # Default window skin
     DEFAULT_SKIN = 'message'
     # Create a new Window
     # @param viewport [Viewport] viewport where the window is shown

@@ -1,8 +1,12 @@
 module UI
   module Options
+    # Button UI element
     class Button < SpriteStack
+      # Offset Y of each options
       OPTION_OFFSET_Y = 40
+      # Base X of each options
       OPTION_BASE_X = 19
+      # Offset X of each options
       OPTION_OFFSET_X = 4
       # Option modified by the button
       # @return [GamePlay::Options::Helper]

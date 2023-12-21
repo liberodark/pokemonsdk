@@ -1,5 +1,3 @@
-raise 'You did not loaded LiteRGSS2' unless defined?(LiteRGSS::DisplayWindow)
-
 # Module responsive of giving global state of mouse Inputs
 #
 # The buttons of the mouse are : :LEFT, :MIDDLE, :RIGHT, :X1, :X2

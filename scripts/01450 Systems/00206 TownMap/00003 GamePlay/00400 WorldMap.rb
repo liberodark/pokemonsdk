@@ -103,6 +103,8 @@ module GamePlay
       update_display_position
     end
 
+    # Scene the scene visibility
+    # @param value [Boolean]
     def visible=(value)
       super
       @viewport_background.visible = value
@@ -113,6 +115,7 @@ module GamePlay
       @viewport_ui.visible = value
     end
 
+    # Dispose the scene
     def dispose
       super
       @__last_scene.sprite_set_visible = true if @__last_scene.class == ::Scene_Map

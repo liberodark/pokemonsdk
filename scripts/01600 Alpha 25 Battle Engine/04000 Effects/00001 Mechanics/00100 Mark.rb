@@ -1,5 +1,6 @@
 module Battle
   module Effects
+    # Module holding all the common mechanics
     module Mechanics
       # Effect linked to another, if the other die, this one dies too.
       #

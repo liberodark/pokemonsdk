@@ -1,6 +1,8 @@
 module UI
   module Quest
+    # Reward Screen composition
     class RewardScreen < SpriteStack
+      # Coordinate of all the reward buttons
       REWARD_COORDINATE = [
         [3, 1],
         [137, 1],
@@ -67,6 +69,7 @@ module UI
       end
     end
 
+    # Reward button UI element
     class RewardButton < SpriteStack
       # Create the RewardButton
       # @param viewport [Viewport]

@@ -115,6 +115,8 @@ module Configs
         @order = v.map(&:to_sym)
       end
 
+      # Set the options of the game
+      # @param v [nil]
       def options=(v)
         # 000
       end

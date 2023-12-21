@@ -16,7 +16,7 @@ class Game_Player < Game_Character
     @bump_count = 0 # Used for the Pokemon bump
     @on_acro_bike = false
     @acro_count = 0
-    ## @cant_bump = false
+    # # @cant_bump = false
   end
 
   # Adjust the map display according to the given position
@@ -50,6 +50,7 @@ class Game_Player < Game_Character
     return super(true)
   end
 
+  # Offset Screen Y of the surf sprite when surfing
   SURF_OFFSET_Y = [2, 2, 0, 0, 0, -2, -2, 0, 0, 0]
   # Overwrite the screen_y to add the surfing animation
   # @return [Integer]
@@ -119,6 +120,7 @@ class Game_Player < Game_Character
     update_check_trigger(last_moving) unless moving? || @sliding
   end
 
+  # Process the slope y modifier with scrolling handling
   def process_slope_y_modifier(y_modifier)
     super(y_modifier)
     $game_map.start_scroll(y_modifier < 0 ? 8 : 2, 1, 4, false, true)

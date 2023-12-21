@@ -19,6 +19,7 @@ module Yuki
       fix_follower_event
     end
 
+    # Remove event follower from player when the FollowMe gets re-initialized
     def fix_follower_event
       last_follower = $game_player
       last_follower = last_follower.follower while last_follower.follower && last_follower.class != Game_Event

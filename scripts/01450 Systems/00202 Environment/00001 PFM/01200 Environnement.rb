@@ -413,6 +413,7 @@ module PFM
     end
   end
 
+  # Constant for previous PSDK usage when the typo was there
   Environnement = Environment
   class GameState
     # The environment informations

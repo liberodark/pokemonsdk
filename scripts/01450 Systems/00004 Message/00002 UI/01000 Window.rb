@@ -1,5 +1,6 @@
 module UI
   module Message
+    # Definition of the Message Window UI element
     class Window < ::Window
       include Layout
       include Transition

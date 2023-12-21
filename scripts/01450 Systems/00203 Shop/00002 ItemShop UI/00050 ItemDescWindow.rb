@@ -1,5 +1,6 @@
 module UI
   module Shop
+    # UI element showing the item description
     class ItemDesc < SpriteStack
       # Initialize the item description window graphisms and texts
       # @param viewport [Viewport] the viewport in which the SpriteStack will be displayed

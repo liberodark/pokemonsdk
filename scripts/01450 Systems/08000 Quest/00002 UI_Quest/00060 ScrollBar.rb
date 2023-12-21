@@ -1,5 +1,6 @@
 module UI
   module Quest
+    # Scrollbar UI element for quest
     class ScrollBar < SpriteStack
       # @return [Integer] current index of the scrollbar
       attr_reader :index

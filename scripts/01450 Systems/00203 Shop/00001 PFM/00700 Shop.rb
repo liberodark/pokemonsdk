@@ -188,8 +188,8 @@ module PFM
       # Migration of old saves
       @shop.pokemon_shop_list ||= {}
       @shop.game_state = self
-      # This line is put as a comment for the same reason as line 203
-      #@shop.migrate_ids_to_symbols if trainer.current_version < 6662
+      # This code is temporarily put in commentary to keep it for later after Studio 1.4 update
+      # # @shop.migrate_ids_to_symbols if trainer.current_version < 6662
     end
   end
 end

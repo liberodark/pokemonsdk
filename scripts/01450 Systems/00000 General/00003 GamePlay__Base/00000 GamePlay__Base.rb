@@ -453,6 +453,7 @@ module GamePlay
   # All the update methods are optionnal but you should define at least one otherwise your Scene
   # will be useless and softlock the game
   class BaseCleanUpdate < Base
+    # List of methods to call based on the key that was pressed for automatic_input_update function
     AIU_KEY2METHOD = {
       A: :action_a, B: :action_b, X: :action_x, Y: :action_y, L: :action_l, R: :action_r,
       L2: :action_l2, R2: :action_r2, L3: :action_l3, R3: :action_r3,

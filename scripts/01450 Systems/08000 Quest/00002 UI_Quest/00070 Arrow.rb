@@ -1,4 +1,5 @@
 module UI
+  # Module holding all the quest UI elements
   module Quest
     # Arrow telling which item is selected
     class Arrow < Sprite

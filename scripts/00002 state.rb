@@ -1,3 +1,4 @@
+# Ruby Object class
 class Object
   private
 

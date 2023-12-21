@@ -129,6 +129,7 @@ def move_documentation_files
   --output-dir yard-docs
   --no-private docs/*.rb
   --no-private docs/**/*.rb
+  --plugin junk
   LiteRGSS.rb.yard.rb
   docs/*.rb
 

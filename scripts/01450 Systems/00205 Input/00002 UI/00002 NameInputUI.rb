@@ -1,4 +1,5 @@
 module UI
+  # Name Input UI window
   class NameInputUI < Window
     # Return the chars the user has inserted
     # @return [Array<String>]
@@ -22,17 +23,21 @@ module UI
       @counter = 0
     end
 
+    # Add a character to the input
+    # @param char [String]
     def add_char(char)
       return if @chars.size >= @max_size
       @chars.push(char)
       refresh_chars
     end
 
+    # Remove a character from the input
     def remove_char
       @chars.pop
       refresh_chars
     end
 
+    # Update the window (caret)
     def update
       @counter += 1
       if @counter == 30

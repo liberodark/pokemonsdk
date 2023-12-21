@@ -69,6 +69,7 @@ module BattleUI
       end
     end
 
+    # Set the Creature to show in the Info Bar
     def data=(pokemon)
       super
       @star.visible = pokemon.shiny && !pokemon.egg?
@@ -201,6 +202,9 @@ module BattleUI
         set_bitmap(background_filename(pokemon), :interface)
       end
 
+      # Name of the background based on the creature shown
+      # @param pokemon [PFM::PokemonBattler]
+      # @return [String]
       def background_filename(pokemon)
         return 'battle/battlebar_enemy' if pokemon.bank != 0
         return 'battle/battlebar_actor' if pokemon.from_party?

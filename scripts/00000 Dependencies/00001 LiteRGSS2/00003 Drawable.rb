@@ -1,5 +1,3 @@
-raise 'You did not loaded LiteRGSS2' unless defined?(LiteRGSS::DisplayWindow)
-
 # Class that describe a sprite shown on the screen or inside a viewport
 class Sprite < LiteRGSS::ShaderedSprite
   # RGSS Compatibility "update" the sprite
@@ -96,6 +94,7 @@ end
 
 # Class simulating repeating texture
 class Plane < Sprite
+  # Shader of the Plane sprite
   SHADER = <<~ENDOFSHADER
     // Viewport tone (required)
     uniform vec4 tone;

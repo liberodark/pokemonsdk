@@ -413,6 +413,7 @@ class Game_Character
     @stop_count = 0
   end
 
+  # Process the slope y modifier
   def process_slope_y_modifier(y_modifier)
     @y += y_modifier
     @real_y = @y * 128

@@ -15,10 +15,20 @@ module GameData
       return false
     end
 
+    # Register an item
+    # @param db_symbol [Symbol] db_symbol of the item
+    # @param probability [Integer] chance of the item to appear
+    # @param layout [Array<Array<boolean>>] layout of the item
+    # @param accepted_max_rotation [Integer] ask Rey about it
     def register_item(db_symbol, probability, layout, accepted_max_rotation)
       DATA_ITEM[db_symbol] = {probability: probability, layout: layout, accepted_max_rotation: accepted_max_rotation}
     end
 
+    # Register an iron
+    # @param symbol [Symbol] unique name of the iron
+    # @param probability [Integer] chance of the iron to appear
+    # @param layout [Array<Array<boolean>>] layout of the iron
+    # @param accepted_max_rotation [Integer] ask Rey about it
     def register_iron(symbol, probability, layout, accepted_max_rotation)
       DATA_IRON[symbol] = {probability: probability, layout: layout, accepted_max_rotation: accepted_max_rotation}
     end

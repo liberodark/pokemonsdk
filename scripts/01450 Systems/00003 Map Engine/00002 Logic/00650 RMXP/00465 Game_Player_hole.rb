@@ -4,6 +4,7 @@ class Game_Player
     13 => [13, 1, 0]
   }
 
+  # Function that makes the player warp based on hole data for each map
   def falling_hole_warp
     return unless (hole_data = FALLING_HOLES[$game_map.map_id])
     $game_temp.player_transferring = true

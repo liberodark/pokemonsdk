@@ -1,4 +1,5 @@
 module UI
+  # UI element shown on the screen to inform the player a quest was started, failed or finished
   class QuestInformer < SpriteStack
     # Name of the ME to play
     ME_TO_PLAY = 'audio/me/rosa_keyitemobtained'

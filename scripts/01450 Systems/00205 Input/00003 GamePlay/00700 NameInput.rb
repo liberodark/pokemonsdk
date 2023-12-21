@@ -1,4 +1,5 @@
 module GamePlay
+  # Name input scene
   class NameInput < GamePlay::BaseCleanUpdate::FrameBalanced
     include NameInputMixin
     # Hint shown about how to enter name

@@ -1,5 +1,3 @@
-raise 'You did not loaded LiteRGSS2' unless defined?(LiteRGSS::DisplayWindow)
-
 # Shader loaded applicable to a Sprite/Viewport or Graphics
 #
 # Special features:
@@ -17,12 +15,19 @@ raise 'You did not loaded LiteRGSS2' unless defined?(LiteRGSS::DisplayWindow)
 #     This function instanciate a shader by it's name_sym so you don't have to load the files several time and you have all the correct data
 # @note `#version 120` will be automatically added to the begining of the file if not present
 class Shader < LiteRGSS::Shader
+  # Shader version based on the platform
   SHADER_VERSION = PSDK_PLATFORM == :macos ? "#version 120\n" : "#version 130\n"
+  # Color uniform
   COLOR_UNIFORM = "\\0uniform vec4 color;\n"
+  # Color process
   COLOR_PROCESS = "\n  frag.rgb = mix(frag.rgb, color.rgb, color.a);\\0"
+  # Tone uniform
   TONE_UNIFORM = "\\0uniform vec4 tone;\nconst vec3 lumaF = vec3(.299, .587, .114);\n"
+  # Tone process
   TONE_PROCESS = "\n  float luma = dot(frag.rgb, lumaF);\n  frag.rgb = mix(frag.rgb, vec3(luma), tone.w);\n  frag.rgb += tone.rgb;\\0"
+  # Alpha process
   ALPHA_PROCESS = "\n  frag.a *= gl_Color.a;\\0"
+  # Default shader when there's nothing to do
   DEFAULT_SHADER = <<~EODEFAULTSHADER
     #{SHADER_VERSION}
     uniform sampler2D texture;
@@ -31,9 +36,13 @@ class Shader < LiteRGSS::Shader
       gl_FragColor = frag;
     }
   EODEFAULTSHADER
+  # Part detecting the shader code begin
   SHADER_CONTENT_DETECTION = 'void main()'
+  # Part detecting the shader version pre-processor
   SHADER_VERSION_DETECTION = '#version '
+  # Part responsive of detecting where to add the processes
   SHADER_FRAG_FEATURE_ADD = /\n( |)+gl_FragColor( |)+=/
+  # Part responsive of detecting where to add the uniforms
   SHADER_UNIFORM_ADD = /#version[^\n]+\n/
   # List of registered shaders
   @registered_shaders = {}

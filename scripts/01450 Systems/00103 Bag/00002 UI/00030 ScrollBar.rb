@@ -1,5 +1,6 @@
 module UI
   module Bag
+    # Scrollbar UI element for the bag
     class ScrollBar < SpriteStack
       # @return [Integer] current index of the scrollbar
       attr_reader :index

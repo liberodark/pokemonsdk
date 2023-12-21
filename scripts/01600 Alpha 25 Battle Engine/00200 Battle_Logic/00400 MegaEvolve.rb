@@ -1,5 +1,6 @@
 module Battle
   class Logic
+    # Logic for mega evolution
     class MegaEvolve
       # List of tools that allow MEGA Evolution
       MEGA_EVOLVE_TOOLS = %i[mega_ring mega_bracelet mega_pendant mega_glasses mega_anchor mega_stickpin mega_tiara mega_anklet

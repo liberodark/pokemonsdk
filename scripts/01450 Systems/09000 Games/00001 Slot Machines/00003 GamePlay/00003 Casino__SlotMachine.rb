@@ -1,5 +1,6 @@
 module GamePlay
   module Casino
+    # Scene of the Slot Machines
     class SlotMachine < BaseCleanUpdate::FrameBalanced
       include UI::Casino
       # PAYOUT associated to each values
@@ -21,10 +22,12 @@ module GamePlay
         @payout = 1
       end
 
+      # Update the inputs of the slot machines
       def update_inputs
         return send(@update_input_method)
       end
 
+      # Update the graphics of the slot machines
       def update_graphics
         @bands.each(&:update)
         @credit_display.update

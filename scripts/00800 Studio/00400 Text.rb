@@ -1,3 +1,4 @@
+# Module holding all the Studio data definition
 module Studio
   # Module that helps the game to get text in various langages
   # @author Nuri Yuri

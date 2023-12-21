@@ -1,6 +1,8 @@
 module UI
   module Quest
+    # UI element displaying a quest category
     class CategoryDisplay < SpriteStack
+      # All the category text getters
       TEXT_CATEGORY = {
         primary: [:ext_text, 9006, 5],
         secondary: [:ext_text, 9006, 6],

@@ -2,6 +2,7 @@ module UI
   module Hall_of_Fame
     # Class that define the Pokemon text box stack
     class Pokemon_Text_Box < SpriteStack
+      # White color
       WHITE_COLOR = Color.new(255, 255, 255)
       # Initialize the SpriteStack
       # @param viewport [Viewport]

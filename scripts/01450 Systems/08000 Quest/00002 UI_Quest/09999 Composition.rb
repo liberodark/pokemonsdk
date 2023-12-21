@@ -1,5 +1,6 @@
 module UI
   module Quest
+    # UI Composition of the quest scene
     class Composition < SpriteStack
       # Get the scrollbar element
       # @return [UI::Quest::ScrollBar]

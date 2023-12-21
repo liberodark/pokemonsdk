@@ -3,7 +3,9 @@ module UI
     # Class that define the League Champion text box stack
     class League_Champion_Text_Box < SpriteStack
       attr_accessor :text
+      # Final Y coordinate
       Y_FINAL = 10
+      # White color
       WHITE_COLOR = Color.new(255, 255, 255, 255)
       # Initialize the SpriteStack
       # @param viewport [Viewport]

@@ -1,5 +1,6 @@
 module UI
   module Shop
+    # Scrollbar for the Creature shop
     class PkmScrollBar < SpriteStack
       # @return [Integer] current index of the scrollbar
       attr_reader :index

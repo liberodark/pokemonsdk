@@ -1,4 +1,5 @@
 module GamePlay
+  # Evolve scene
   class Evolve < BaseCleanUpdate::FrameBalanced
     include EvolveMixin
     # Constant telling if you have gifs or not during the scene
@@ -8,10 +9,15 @@ module GamePlay
     # Path of the music of the pokemon in evolved
     EVOLVED_MUSIC = 'audio/bgm/xy_trainer_battle_victory'
 
+    # Counter value for the first step end
     FIRST_STEP = 60
+    # Frequency count for the second step to repeat
     SECOND_STEP_FREQUENCY = 60
+    # Counter value for the second step end
     SECOND_STEP = FIRST_STEP + (2.5 * SECOND_STEP_FREQUENCY).to_i
+    # Counter value for the last step end
     LAST_STEP = SECOND_STEP + 60
+    # 2pi value
     PI2 = Math::PI * 2
 
     # Launch the Pokemon Evolution scene

@@ -361,6 +361,7 @@ module PFM
       end
     end
 
+    # Class handling the property of a diggable element
     class Diggable
       # The x position of the diggable
       # @return [Integer]

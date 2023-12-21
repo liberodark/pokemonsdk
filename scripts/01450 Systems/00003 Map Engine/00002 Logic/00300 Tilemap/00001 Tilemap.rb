@@ -180,6 +180,7 @@ module Yuki
     end
   end
 
+  # Tilemap definition for tilemap rendered with 16x16 tiles (default)
   class Tilemap16px < Tilemap
     private
 

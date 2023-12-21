@@ -3,14 +3,22 @@ module Battle
     module Transition
       # Trainer transition of DPP Gym Leader
       class DPPGymLeader < RBYTrainer
+        # Start x coordinate of the bar
         BAR_START_X = 320
+        # Y coordinate of the bar
         BAR_Y = 64
+        # VS image x coordinate
         VS_X = 64
+        # VS image y offset
         VS_OFFSET_Y = 30
+        # Mugshot final x coordinate
         MUGSHOT_FINAL_X = BAR_START_X - 100
+        # Mugshot pre final x coordinate (animation purposes)
         MUGSHOT_PRE_FINAL_X = MUGSHOT_FINAL_X - 20
+        # Text offset Y
         TEXT_OFFSET_Y = 36
 
+        # Update the transition
         def update
           super
           @default_battler_name = @scene.battle_info.battlers[1][0]

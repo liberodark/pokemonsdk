@@ -6,16 +6,19 @@ module GamePlay
       @config = Configs.credits_config
     end
 
+    # Update inputs
     def update_inputs
       return false unless @animation && !@animation.done?
 
       @running = false if Input.trigger?(:A)
     end
 
+    # Update mouse
     def update_mouse(*)
       @running = false if Mouse.trigger?(:LEFT)
     end
 
+    # Update graphics
     def update_graphics
       return @animation.update if @animation && !@animation.done?
 
@@ -24,6 +27,7 @@ module GamePlay
       @running = false if @scroller.done?
     end
 
+    # Process called when the scene ends
     def main_end
       super
       $scene = Scheduler.get_boot_scene

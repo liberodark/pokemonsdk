@@ -1,4 +1,5 @@
 module Configs
+  # Configuration of the saves
   class SaveConfig
     # Number of save the player can have
     # @return [Integer] 0 = infinite
@@ -27,10 +28,11 @@ module Configs
     def single_save?
       @maximum_save_count == 1
     end
+  end
 
-    module Project
-      Save = SaveConfig
-    end
+  module Project
+    # Allow configuration of the saves from being accessed through the Project module
+    Save = SaveConfig
   end
 
   # @!method self.save_config

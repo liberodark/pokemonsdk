@@ -1,5 +1,6 @@
 module GamePlay
   class Bag
+    # Update the bag inputs
     def update_inputs
       return false if @animation
       return update_search &&

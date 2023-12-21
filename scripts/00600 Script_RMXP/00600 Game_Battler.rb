@@ -38,54 +38,67 @@ class Game_Battler
     @blink = false
   end
 
+  # Strength of the battler
   def str
     return 1
   end
 
+  # Dexterity of the battler
   def dex
     return 1
   end
 
+  # Agility of the battler
   def agi
     return 1
   end
 
+  # Intelligence of the battler
   def int
     return 1
   end
 
+  # Hit amount
   def hit
     return 0
   end
 
+  # Attack of the battler
   def atk
     return 1
   end
 
+  # Physical defense of the battler
   def pdef
     return 1
   end
 
+  # Magical defense of the battler
   def mdef
     return 1
   end
 
+  # Evasion of the battler
   def eva
     return 1
   end
 
+  # Set th HP of the battler
   def hp=(hp)
     @hp = hp.clamp(0, 1)
   end
 
+  # Set the SP of the battler
   def sp=(sp)
     @sp = sp.clamp(0, 1)
   end
 
+  # Is the battler dead?
   def dead?
     return false
   end
 
+  # Does the battler exists?
   def exist?
     return true
   end
@@ -93,46 +106,59 @@ end
 
 # @deprecated Not used by the core.
 class Game_Enemy < Game_Battler
+  # Create a new Game_Enemy instance
+  # @param troop_id [Integer] ID of the troop
+  # @param member_index [Integer] index of the member in the troop
   def initialize(troop_id, member_index)
     super()
   end
 
+  # ID of the enemy
   def id
     return 0
   end
 
+  # Index of the enemy
   def index
     return 0
   end
 
+  # Name of the enemy
   def name
     return nil.to_s
   end
 
+  # Actions of the enemy
   def actions
     return []
   end
 
+  # Experience points of the enemy
   def exp
     return 1
   end
 
+  # Money of the enemy
   def gold
     return 1
   end
 
+  # Item of the enemy
   def item_id
     return 0
   end
 
+  # Screen X position of the enemy
   def screen_x
     return 0
   end
 
+  # Screen Y position of the enemy
   def screen_y
     return 0
   end
 
+  # Screen Z position of the enemy
   def screen_z
     return 0
   end

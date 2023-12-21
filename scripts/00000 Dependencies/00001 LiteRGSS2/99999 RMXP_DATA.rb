@@ -1,3 +1,4 @@
+# @private
 module RPG
   class Animation
     attr_accessor :id

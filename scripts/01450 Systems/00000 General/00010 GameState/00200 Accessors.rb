@@ -243,7 +243,7 @@ module PFM
       @game_player.moveto($data_system.start_x + Yuki::MapLinker.get_OffsetX, $data_system.start_y + Yuki::MapLinker.get_OffsetY)
       @game_player.refresh
       @game_map.autoplay
-      ## @game_map.update
+      # # @game_map.update
     end
 
     public
@@ -267,6 +267,8 @@ module PFM
       end
     end
 
+    # Update section to detect if a wild battle must start
+    # @note this methods calls common event 1 if a battle must start
     def battle_starting_update
       return if cant_process_event_tasks?
 

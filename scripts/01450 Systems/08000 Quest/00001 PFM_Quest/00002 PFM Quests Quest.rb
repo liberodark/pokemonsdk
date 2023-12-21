@@ -125,7 +125,7 @@ module PFM
       # @param _index [Integer] index of the npc (ignored)
       # @param name [String] name of the npc
       # @return [String]
-      def text_speak_to(index, name)
+      def text_speak_to(_index, name)
         return format(ext_text(9000, 53), name: name)
       end
 
@@ -228,7 +228,7 @@ module PFM
       end
 
       # Text of the beat NPC objective
-      # @param _index [Integer] index of the npc (ignored)
+      # @param index [Integer] index of the npc
       # @param name [String] name of the npc
       # @param amount [Integer] number of time the npc should be beaten
       # @return [String]

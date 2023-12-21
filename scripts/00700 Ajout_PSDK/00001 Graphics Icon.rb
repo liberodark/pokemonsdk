@@ -16,7 +16,8 @@ module Graphics
       window.icon = image
       image.dispose
     end
-
+    
+    # Swap the fullscreen state
     alias original_swap_fullscreen swap_fullscreen
     # Define swap_fullscreen so the icon is taken in account
     def swap_fullscreen

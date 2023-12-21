@@ -1,4 +1,5 @@
 module PFM
+  # Module holding all the logic about Honey Trees
   module HoneyTree
     # Maximum number of honney trees
     COUNT = 21

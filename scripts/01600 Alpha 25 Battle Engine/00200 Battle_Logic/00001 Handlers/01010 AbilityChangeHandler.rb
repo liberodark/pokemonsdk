@@ -4,8 +4,10 @@ module Battle
     class AbilityChangeHandler < ChangeHandlerBase
       include Hooks
 
+      # List of abilities that can be overwritten
       CANT_OVERWRITE_ABILITIES = %i[battle_bond comatose disguise multitype power_construct rks_system schooling shields_down stance_change zen_mode gulp_missile]
 
+      # List of abilities the receiver/power_of_alchemy ability can't copy
       RECEIVER_CANT_COPY_ABILITIES = %i[receiver power_of_alchemy trace forecast flower_gift multitype illusion wonder_guard zen_mode imposter
                                         stance_change power_construct schooling comatose shields_down disguise rks_system battle_bond gulp_missile
       ]

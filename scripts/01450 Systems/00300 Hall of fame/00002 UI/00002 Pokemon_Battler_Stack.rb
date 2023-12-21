@@ -2,13 +2,17 @@ module UI
   module Hall_of_Fame
     # Class that define the stack containing the Pokemon's battlers
     class Pokemon_Battler_Stack < SpriteStack
+      # All the colors based on 1st type of the creature
       COLORS = [[0, 0, 0, 255], [188, 187, 187, 255], [224, 56, 24, 255], [8, 124, 248, 255],
                 [248, 208, 64, 255], [32, 192, 80, 255], [125, 186, 228, 255], [190, 74, 39, 255],
                 [178, 74, 155, 255], [183, 122, 36, 255], [78, 176, 228, 255], [212, 108, 170, 255],
                 [176, 213, 115, 255], [173, 126, 94, 255], [136, 111, 186, 255], [75, 155, 217, 255],
                 [172, 178, 188, 255], [184, 85, 140, 255], [221, 139, 180, 255]]
+      # X Left
       X_LEFT = -48
+      # X Right
       X_RIGHT = 78
+      # X Right color
       X_COLOR_RIGHT = 88
       # The Array containing every back sprites of the player team
       # @return [Array<UI::PokemonBackSprite>]

@@ -1,5 +1,6 @@
 module Battle
   class Visual
+    # Animation shown when a Creature is currently selected and wait for the player to choose its actions
     class IdlePokemonAnimation
       # Pixel offset for each index of the sprite
       OFFSET_SPRITE = [0, 1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0]

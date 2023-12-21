@@ -1,4 +1,5 @@
 module UI
+  # Module holding the Hall of fame UI elements
   module Hall_of_Fame
     # The class that define the type background displayed during phase 1
     class Type_Background < SpriteStack

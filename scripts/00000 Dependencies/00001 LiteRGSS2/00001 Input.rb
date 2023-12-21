@@ -1,5 +1,3 @@
-raise 'You did not loaded LiteRGSS2' unless defined?(LiteRGSS::DisplayWindow)
-
 # Module responsive of giving information about user Inputs
 #
 # The virtual keys of the Input module are : :A, :B, :X, :Y, :L, :R, :L2, :R2, :L3, :R3, :START, :SELECT, :HOME, :UP, :DOWN, :LEFT, :RIGHT

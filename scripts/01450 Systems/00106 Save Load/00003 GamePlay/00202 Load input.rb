@@ -3,6 +3,7 @@ module GamePlay
     # CTRL button actions
     ACTIONS = %i[action_a action_a action_a action_b]
 
+    # Update the load scene inputs
     def update_inputs
       return false unless @signs.first.done?
 
@@ -18,6 +19,7 @@ module GamePlay
       end
     end
 
+    # Update the load scene mouse interactions
     def update_mouse(*)
       if Mouse.wheel_delta > 0
         action_left

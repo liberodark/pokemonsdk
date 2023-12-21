@@ -35,16 +35,19 @@ unless PARGV[:worldmap] || PARGV[:"animation-editor"] || PARGV[:test] || PARGV[:
         sleep(ts) while Input::Keyboard.press?(Input::Keyboard::F12)
       end
 
+      # Prevent any kind of update
       def update
         return
       end
 
+      # Prevent the messages from being shown
       def display_message(*)
         return
       end
     end
   end
 
+  # Error class used to signal a Reset request (F12)
   class Reset < StandardError
   end
 end

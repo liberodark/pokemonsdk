@@ -28,15 +28,19 @@ module Pathfinding
       @character_name = character.character_name
     end
 
+    # Get the current state of the cursor
     def state
       return [@__bridge, @sliding, @surfing]
     end
 
     # Simulate the mouvement of the character and store the data into cursor's attributes
-    # @param x [Integer] start coords X
-    # @param y [Integer] start coords Y
-    # @param z [Integer] start coords z
+    # @param sx [Integer] start coords X
+    # @param sy [Integer] start coords Y
+    # @param sz [Integer] start coords z
     # @param code [Integer] mouvement's code
+    # @param b [Array, nil] bridge metadata
+    # @param slide [Boolean] slide meta data
+    # @param surf [Boolean] surf meta data
     # @return [Boolean]
     def sim_move?(sx, sy, sz, code, b = @__bridge, slide = @sliding, surf = @surfing)
       moveto(sx, sy)
@@ -66,7 +70,6 @@ module Pathfinding
     end
 
     # Move Game_Character down
-    # @param turn_enabled [Boolean] if the Game_Character turns when impossible move
     def move_down
       @direction = 2
       if passable?(@x, @y, 2)
@@ -83,7 +86,6 @@ module Pathfinding
     end
 
     # Move Game_Character left
-    # @param turn_enabled [Boolean] if the Game_Character turns when impossible move
     def move_left
       @direction = 4
       return if stair_move_left
@@ -132,7 +134,6 @@ module Pathfinding
     end
 
     # Move Game_Character right
-    # @param turn_enabled [Boolean] if the Game_Character turns when impossible move
     def move_right
       @direction = 6
       return if stair_move_right
@@ -183,7 +184,6 @@ module Pathfinding
     end
 
     # Move Game_Character up
-    # @param turn_enabled [Boolean] if the Game_Character turns when impossible move
     def move_up
       @direction = 8
       if passable?(@x, @y, 8)
@@ -281,7 +281,7 @@ module Pathfinding
     # Check the bridge related passabilities
     # @param x [Integer] current x position
     # @param y [Integer] current y position
-    # @param z [Integer] current direction
+    # @param d [Integer] current direction
     # @param new_x [Integer] new x position
     # @param new_y [Integer] new y position
     # @param z [Integer] current z position
@@ -395,7 +395,7 @@ module Pathfinding
     alias bridge_up_check bridge_down_check
 
     # Check bridge information and adjust the z position of the Game_Character
-    # @param sys_tag [Integer] the SystemTag
+    # @param z [Integer] the z level
     # @author Nuri Yuri
     def bridge_left_check(z)
       if (z > 1) && !@__bridge

@@ -20,6 +20,7 @@ module GamePlay
       @delta_acc = 0
     end
 
+    # Update the inputs for the Movie scene
     def update_inputs
       return false unless @start_time
 
@@ -32,6 +33,7 @@ module GamePlay
       return false
     end
 
+    # Update the graphics for the move scene
     def update_graphics
       return start_video unless @start_time
       return @running = false unless @video.playing?

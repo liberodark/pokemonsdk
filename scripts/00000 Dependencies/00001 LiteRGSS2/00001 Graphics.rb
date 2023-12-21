@@ -1,5 +1,3 @@
-raise 'You did not loaded LiteRGSS2' unless defined?(LiteRGSS::DisplayWindow)
-
 # Module responsive of showing graphics into the main window
 module Graphics
   include Hooks
@@ -287,6 +285,8 @@ module Graphics
       window.settings = settings
     end
 
+    # Set the screen scale factor
+    # @param scale [Float] scale of the screen
     def screen_scale=(scale)
       settings = window.settings
       settings[3] = scale

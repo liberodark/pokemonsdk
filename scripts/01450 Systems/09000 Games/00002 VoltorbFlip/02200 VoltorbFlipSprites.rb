@@ -1,4 +1,5 @@
 module UI
+  # Module holding all the VoltorbFlip UI elements
   module VoltorbFlip
     # Object that show a text using a method of the data object sent
     class Texts < SpriteStack

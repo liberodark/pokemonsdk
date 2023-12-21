@@ -18,6 +18,7 @@ module BattleUI
       create_sprites
     end
 
+    # Update the scene
     def update
       if @statistics
         update_statistics
@@ -27,10 +28,13 @@ module BattleUI
       @bars.each(&:update)
     end
 
+    # Test if the scene is done distributing experience
+    # @return [Boolean]
     def done?
       return @done
     end
 
+    # Start the exp distribution animation
     def start_animation
       animations = @exp_data.map do |pokemon, exp|
         create_exp_animation_for(pokemon, exp)

@@ -1,6 +1,8 @@
 module Yuki
   class Particle_Object
+    # List of action handler to know how to compute the current frame of the particle
     ACTION_HANDLERS = {}
+    # Order of the particle handlers
     ACTION_HANDLERS_ORDER = []
 
     # Add a new action handler

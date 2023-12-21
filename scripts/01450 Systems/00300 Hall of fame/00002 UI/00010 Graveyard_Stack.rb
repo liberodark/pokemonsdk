@@ -8,13 +8,21 @@ module UI
       # The array containing every Dead_Pokemon_Text SpriteStack
       # @return [Array<UI::Hall_of_Fame::Dead_Pokemon_Text>]
       attr_accessor :text_boxes
+      # Sprite X Right
       SPRITE_X_RIGHT = 422
+      # Sprite X Middle
       SPRITE_X_MIDDLE = 112
+      # Sprite X Left
       SPRITE_X_LEFT = -198
+      # Sprite Y
       SPRITE_Y = 100
+      # Box X Right
       BOX_X_RIGHT = 320
+      # Box X Middle
       BOX_X_MIDDLE = 10
+      # Box X Left
       BOX_X_LEFT = -300
+      # Box Y
       BOX_Y = 80
       # Initialize the SpriteStack
       # @param viewport [Viewport]

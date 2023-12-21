@@ -13,12 +13,17 @@ module UI
       # Attribute that holds the UI::InputNumber object
       # @return [UI::InputNumber]
       attr_accessor :input_number_window
+
+      protected
+
       # Get the text stack
       # @return [UI::SpriteStack]
-      protected attr_reader :text_stack
+      attr_reader :text_stack
       # Get the sub_stack
       # @return [UI::SpriteStack]
-      protected attr_reader :sub_stack
+      attr_reader :sub_stack
+
+      public
 
       # Initialize the states
       def initialize(...)

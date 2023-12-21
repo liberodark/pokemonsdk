@@ -1,4 +1,5 @@
 module UI
+  # Module holding all the UI elements for the Options
   module Options
     # Arrow telling which option is selected
     class Arrow < Sprite

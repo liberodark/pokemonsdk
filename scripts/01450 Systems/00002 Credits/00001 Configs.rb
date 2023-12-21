@@ -1,4 +1,5 @@
 module Configs
+  # Configuration for the Credit Scene
   class CreditsConfig
     # Get the project title splash (in grahics/titles)
     # @return [String]
@@ -30,6 +31,7 @@ module Configs
   end
 
   module Project
+    # Allow the credit config from being accessed through project settings
     Credits = CreditsConfig
   end
 

@@ -2,9 +2,11 @@ module GamePlay
   class Options < BaseCleanUpdate::FrameBalanced
     # List of valid option type
     VALID_OPTION_TYPE = %i[choice slider]
+    # How to get message frames
     MESSAGE_FRAME = 'GameData::Windows::MESSAGE_FRAME'
+    # How to get message frame names
     MESSAGE_FRAME_NAMES = 'GameData::Windows::MESSAGE_FRAME_NAMES'
-
+    # All the pre-defined options
     PREDEFINED_OPTIONS = {
       message_speed: [:message_speed, :choice, [1, 2, 3], [[:text_get, 42, 4], [:text_get, 42, 5], [:text_get, 42, 6]], [:text_get, 42, 3], [:text_get, 42, 7], :message_speed],
       message_frame: [:message_frame, :choice, MESSAGE_FRAME, MESSAGE_FRAME_NAMES, [:ext_text, 9000, 165], [:ext_text, 9000, 166], :message_frame],
@@ -57,6 +59,7 @@ module GamePlay
       return value
     end
 
+    # Option helper allowing to work with a specific option (get next value, set it etc...)
     class Helper
       # Option type
       # @return [Symbol]

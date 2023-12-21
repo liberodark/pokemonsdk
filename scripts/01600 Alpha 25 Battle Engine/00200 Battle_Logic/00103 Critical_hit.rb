@@ -41,6 +41,7 @@ module Battle
       return critical_count
     end
 
+    # List of items that unconditionally improve critical rate
     UNCONDITIONAL_CRITICAL_ITEMS = %i[razor_claw scope_lens]
     # Tell if the user has an item that increase the critical count
     # @param user [PFM::PokemonBattler]

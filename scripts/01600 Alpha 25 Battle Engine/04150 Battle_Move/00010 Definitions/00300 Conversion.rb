@@ -18,7 +18,6 @@ module Battle
     # Move that sets the type of the Pokemon as type of the last move used by target
     class Conversion2 < BasicWithSuccessfulEffect
       # Return the exceptions to the Conversion 2 effect
-      # @return Array<Symbol>
       MOVE_EXCEPTIONS = %i[revelation_dance struggle]
 
       # Function that tests if the user is able to use the move

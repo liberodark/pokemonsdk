@@ -1,5 +1,6 @@
 module UI
   module Quest
+    # UI element listing the quests
     class QuestList < SpriteStack
       # Number of buttons generated
       NB_QUEST_BUTTON = 7
@@ -13,7 +14,7 @@ module UI
       attr_reader :index
       # @return [Array<QuestButton>]
       attr_reader :buttons
-      # @param [Symbol] the pace of the timing (:slow, :medium, :fast)
+      # @return [Symbol] the pace of the timing (:slow, :medium, :fast)
       attr_writer :timing
 
       # Create a new QuestList

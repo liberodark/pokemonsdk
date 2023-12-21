@@ -429,6 +429,7 @@ class Game_Character
     end
   end
 
+  # Move the entity toward a specific coordinate
   def move_toward(tx, ty)
     sx = @x - tx
     sy = @y - ty

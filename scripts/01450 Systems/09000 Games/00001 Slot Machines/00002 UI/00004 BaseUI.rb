@@ -1,5 +1,6 @@
 module UI
   module Casino
+    # Base UI for the Slot Machines
     class BaseUI < GenericBase
       private
 

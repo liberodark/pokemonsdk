@@ -2,7 +2,9 @@ module UI
   module Hall_of_Fame
     # Class that define the Pokemon Stars animation
     class Pokemon_Stars_Animation < SpriteStack
+      # All the X coordinate for the stars around Creature
       X_ARRAY = [67, 16, 90, 40, 65, 30]
+      # All the Y coordinate for the stars around Creature
       Y_ARRAY = [20, 32, 90, 54, 48, 90]
       # Initialize the SpriteStack
       # @param viewport [Viewport]

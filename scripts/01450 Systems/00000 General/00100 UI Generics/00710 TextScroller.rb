@@ -1,4 +1,5 @@
 module UI
+  # Class describing a text scroller (used in Credits)
   class TextScroller < SpriteStack
     # Separator for double column
     DOUBLE_COLUMN_SEP = ' || '

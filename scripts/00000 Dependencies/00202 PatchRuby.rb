@@ -11,11 +11,13 @@ class String
   end
 end
 
+# Binding class of Ruby
 class Binding
   alias [] local_variable_get
   alias []= local_variable_set
 end
 
+# Kernel module of Ruby
 module Kernel
   # Infer the object as the specified class (lint)
   # @return [self]

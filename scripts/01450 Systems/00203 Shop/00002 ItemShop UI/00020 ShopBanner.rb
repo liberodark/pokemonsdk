@@ -1,6 +1,8 @@
 module UI
   module Shop
+    # Banner sprite for the shop
     class ShopBanner < Sprite
+      # Base name of the banner (without language modifier)
       FILENAME = 'shop/banner_'
 
       # Initialize the graphism for the shop banner

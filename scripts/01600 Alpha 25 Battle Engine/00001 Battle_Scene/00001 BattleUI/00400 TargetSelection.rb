@@ -1,6 +1,8 @@
 module BattleUI
+  # UI element responsive of letting the Player choose which creature to aim
   class TargetSelection < UI::SpriteStack
     include TargetSelectionAbstraction
+    # Tell if moves with no choice should not show that UI
     SKIP_NO_CHOICE_SKILL = true
     # Create a new TargetSelection
     # @param viewport [Viewport]
@@ -195,6 +197,7 @@ module BattleUI
         return (29 - 10 * y + 141 * x), 65 + y * 58
       end
 
+      # Background of the target
       class Background < Sprite
         # Set the Pokemon shown
         # @param pokemon [PFM::PokemonBattler]

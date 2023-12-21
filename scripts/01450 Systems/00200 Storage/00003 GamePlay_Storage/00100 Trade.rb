@@ -1,4 +1,5 @@
 module GamePlay
+  # Storage scene in trading context
   class PokemonTradeStorage < PokemonStorage
     include PokemonTradeStorageMixin
     # Message shown to tell to choose a Pokemon

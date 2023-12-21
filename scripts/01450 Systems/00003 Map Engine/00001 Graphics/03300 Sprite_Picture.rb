@@ -1,5 +1,6 @@
 # A sprite that show a Game_Picture on the screen
 class Sprite_Picture < ShaderedSprite
+  # Shader of a Sprite Picture to allow color & tone processing over them
   SPRITE_SHADER = <<-EOSHADER
   uniform vec4 tone;
   const vec3 lumaF = vec3(.299, .587, .114);

@@ -1,5 +1,6 @@
 module UI
   module Quest
+    # UI element showing the object list
     class ObjectiveList < SpriteStack
       # Initialize the ObjectiveList component
       # @param viewport [Viewport]

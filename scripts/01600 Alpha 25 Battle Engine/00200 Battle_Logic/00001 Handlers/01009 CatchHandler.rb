@@ -13,6 +13,7 @@ module Battle
         freeze: 2.5,
         toxic: 1.5
       }
+      # List all the special ball rate calculation block
       BALL_RATE_CALCULATION = {}
 
       # ID of the catching text in the text database

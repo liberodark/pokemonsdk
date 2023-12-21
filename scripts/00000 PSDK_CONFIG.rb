@@ -1,5 +1,6 @@
 # Class describing the PSDK Config
 module ScriptLoader
+  # PSDK config info so the game knows what's the context at start
   class PSDKConfig
     # @return [Integer] the window scale
     attr_reader :window_scale

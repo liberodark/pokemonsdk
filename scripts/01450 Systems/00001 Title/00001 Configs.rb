@@ -1,4 +1,5 @@
 module Configs
+  # Definition of the scene title config
   class SceneTitleConfig
     # Get the intro movie map id
     # @return [Integer] 0 = No intro movie
@@ -21,6 +22,7 @@ module Configs
   end
 
   module Project
+    # Allow SceneTitleConfig from being accessed from Project::SceneTitle
     SceneTitle = SceneTitleConfig
   end
 

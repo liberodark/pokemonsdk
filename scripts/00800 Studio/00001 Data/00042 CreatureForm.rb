@@ -154,6 +154,7 @@ module Studio
       end
     end
 
+    # Item held by the creature when generated
     class ItemHeld
       # db_symbol of the item that should be held
       # @return [Symbol]
@@ -164,6 +165,7 @@ module Studio
       attr_reader :chance
     end
 
+    # Resource of the creature for UI purpose
     class Resources
       # Standard icon
       # @return [String]

@@ -1,4 +1,7 @@
 class Interpreter
+  # Start the Alpha Ruins puzzle
+  # @param id [Integer] ID of the puzzle (see graphics/interface/puzzle_ruines files)
+  # @param id_switch [Integer] ID of the switch to enable when winning
   def puzzle_alpha(id = 1, id_switch = Yuki::Sw::RuinsVictory)
     $game_switches[id_switch] = false
     $scene = GamePlay::Alph_Ruins_Puzzle.new(id, id_switch)
@@ -7,6 +10,7 @@ class Interpreter
 end
 
 module GamePlay
+  # @private
   class Alph_Ruins_Puzzle
     #Choix des fichiers son
     #SE

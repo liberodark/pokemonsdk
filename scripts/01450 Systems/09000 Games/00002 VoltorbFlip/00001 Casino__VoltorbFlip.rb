@@ -1,5 +1,6 @@
 module GamePlay
   module Casino
+    # @private
     class VoltorbFlip < Base
       # Duration of the increment duration in frame
       # @return [Float]

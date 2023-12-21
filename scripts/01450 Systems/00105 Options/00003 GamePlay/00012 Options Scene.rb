@@ -1,4 +1,5 @@
 module GamePlay
+  # Options scene
   class Options
     include OptionsMixin
     # List of action the mouse can perform with ctrl button
@@ -21,6 +22,7 @@ module GamePlay
       @options_copy = $options.clone
     end
 
+    # Update the options input
     def update_inputs
       if index_changed!(:@index, :UP, :DOWN, @max_index)
         play_cursor_se
@@ -44,6 +46,7 @@ module GamePlay
       return false
     end
 
+    # Update the options graphics
     def update_graphics
       @base_ui&.update_background_animation
       @arrow&.update

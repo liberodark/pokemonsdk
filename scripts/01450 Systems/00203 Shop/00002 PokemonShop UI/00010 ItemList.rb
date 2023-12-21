@@ -1,5 +1,6 @@
 module UI
   module Shop
+    # List of Creatures for the shop UI
     class PkmList < Array
       # Number of button in the list
       AMOUNT = 4
@@ -172,6 +173,7 @@ module UI
         @index - 1
       end
 
+      # Button for a Creature in the list
       class ListButtonPkm < SpriteStack
         # @return [Integer] Index of the button in the list
         attr_accessor :index
@@ -198,6 +200,8 @@ module UI
           @item_name.text = text
         end
 
+        # Set the price text of the button
+        # @param text [String, nil] set nil to hide
         def price=(text)
           return unless (self.visible = !text.nil?)
 

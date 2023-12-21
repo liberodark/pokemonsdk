@@ -1,5 +1,6 @@
 module Battle
   class Logic
+    # Handler responsive of defining how damage should be dealt (if possible)
     class DamageHandler < ChangeHandlerBase
       include Hooks
       # Function telling if a damage can be applied and how much

@@ -13,15 +13,22 @@ class Game_Character
   # @return [Array<RPG::MoveCommand>, :pending, nil]
   attr_accessor :path
 
+  # Move route that is empty and serve as a template for all the generate move route (by Path Finding)
   EMPTY_MOVE_ROUTE = RPG::MoveRoute.new
   EMPTY_MOVE_ROUTE.repeat = false
 
   # Request a path to the target and follow it as soon as it found
-  def find_path(to:, radius: 0, tries: Pathfinding::TRY_COUNT, type: nil, tags: :DEFAULT)
+  # @param to [Array<Integer, Integer>, Game_Character] the target, [x, y] or Game_Character object
+  # @param radius [Integer] <default : 0> the distance from the target to consider it as reached
+  # @param tries [Integer, Symbol] <default : 5> the number of tries allowed to this request, use :infinity to unlimited try count
+  # @param type [Symbol]
+  # @example find path to x=10 y=15 with an error radius of 5 tiles
+  #   find_path(to:[10,15], radius:5)
+  def find_path(to:, radius: 0, tries: Pathfinding::TRY_COUNT, type: nil)
     # Wrap data to match
     type ||= (to.is_a?(Array) ? :Coords : :Character)
     # Create the request
-    Pathfinding.add_request(self, [type, to, radius], tries, tags)
+    Pathfinding.add_request(self, [type, to, radius], tries, :DEFAULT)
     # Set move route forcing to true
     @move_route_forcing_path_finder ||= @move_route_forcing
     @move_route_forcing = true

@@ -1,4 +1,5 @@
 module GamePlay
+  # Hall Of Fame scene
   class Hall_of_Fame
     # Update the inputs only at the end of the animation
     def update_inputs

@@ -47,6 +47,7 @@ module GamePlay
       @item_desc_window.text = text
     end
 
+    # Update the specie text of the currently shown creature
     def update_pkm_specie_text(species)
       @item_desc_window.species = species
     end

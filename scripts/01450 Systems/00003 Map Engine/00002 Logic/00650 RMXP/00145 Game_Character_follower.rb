@@ -115,6 +115,7 @@ class Game_Character
     return f.is_a?(Game_Event) ? f : nil
   end
 
+  # Reset the follower stack of the current entity
   def reset_follower
     return unless (current_follower = @follower)
 

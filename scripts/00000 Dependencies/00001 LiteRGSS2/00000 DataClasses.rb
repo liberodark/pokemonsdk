@@ -1,5 +1,3 @@
-raise 'You did not loaded LiteRGSS2' unless defined?(LiteRGSS::DisplayWindow)
-
 # Class that describes RGBA colors in integer scale (0~255)
 class Color < LiteRGSS::Color
 end

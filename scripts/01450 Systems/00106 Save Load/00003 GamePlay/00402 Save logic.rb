@@ -57,10 +57,12 @@ module GamePlay
         return nil
       end
 
+      # Get the root path of the save for the game
       def save_root_path
         SAVE_ROOT_PATHS.find(&File.method(:writable?)) || ''
       end
 
+      # Get the filename of the current save
       def save_filename
         root = save_root_path.tr('\\', '/').encode(Encoding::UTF_8)
         game_name = root.start_with?('.') ? '' : ".#{Configs.infos.game_title}/"

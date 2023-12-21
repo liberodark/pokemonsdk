@@ -26,6 +26,7 @@ module Configs
       @ids.key(id)
     end
 
+    # Convert the config to json
     def to_json(*)
       {
         klass: self.class.to_s,

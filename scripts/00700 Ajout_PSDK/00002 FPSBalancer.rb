@@ -80,6 +80,7 @@ module Graphics
       attr_reader :global
     end
 
+    # Marker allowing the game to know the scene should be frame balanced
     module Marker
       # Function telling the object is supposed to be frame balanced
       def frame_balanced?
@@ -91,6 +92,7 @@ module Graphics
   end
 
   class << self
+    # Update the game without fps balancing
     alias original_update update
     # Update with fps balancing
     def update

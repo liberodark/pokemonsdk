@@ -181,6 +181,8 @@ module PFM
       return @position && @position >= 0 && !dead?
     end
 
+    # Format the Battler for logging purpose
+    # @return [String]
     def to_s
       "<PB:#{name},#{@bank},#{@position} lv=#{@level} hp=#{@hp_rate.round(3)} st=#{@status}>"
     end

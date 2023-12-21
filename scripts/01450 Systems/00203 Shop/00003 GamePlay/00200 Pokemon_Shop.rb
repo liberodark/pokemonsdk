@@ -1,4 +1,5 @@
 module GamePlay
+  # Creature shop scene
   class Pokemon_Shop < Shop
     # Create a new Pokemon Shop
     # @overload initialize(symbol_shop)

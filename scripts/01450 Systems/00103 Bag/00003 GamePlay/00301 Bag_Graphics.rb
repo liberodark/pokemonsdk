@@ -33,6 +33,7 @@ module GamePlay
     }
     CTRL_TEXTS_PER_MODE.default = CTRL_TEXTS_PER_MODE[:menu]
 
+    # Update the bag graphics
     def update_graphics
       @base_ui.update_background_animation
       @animation&.call

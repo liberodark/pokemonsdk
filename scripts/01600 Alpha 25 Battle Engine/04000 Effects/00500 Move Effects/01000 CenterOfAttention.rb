@@ -11,7 +11,7 @@ module Battle
       # Create a new Center of Attention effect
       # @param logic [Battle::Logic]
       # @param pokemon [PFM::PokemonBattler]
-      # @param turncount [Integer] amount of turn the effect is active
+      # @param turn_count [Integer] amount of turn the effect is active
       # @param origin_move [Battle::Move] the move that caused this effect
       def initialize(logic, pokemon, turn_count, origin_move)
         super(logic, pokemon)

@@ -68,6 +68,7 @@ module UI
       @visual_index = target_visual_index
     end
 
+    # Animate the cursor when moving
     def animate_cursor
       @cursor.visible = true
       @animation = Yuki::Animation::TimedLoopAnimation.new(1)

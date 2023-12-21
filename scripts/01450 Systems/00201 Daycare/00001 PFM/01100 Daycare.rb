@@ -220,7 +220,7 @@ module PFM
     # @param parents [Array] the list of Pokemon in the daycar
     def layable_check(daycare, parents)
       # @type [PFM::Pokemon]
-      male, female = assign_gender(parents)
+      male, female = assign_gender(*parents)
       rate = perform_simple_rate_calculation(male, female)
       daycare[:rate] = rate
       # If there's a change to breed, we try to find the right baby using the special lay check
@@ -290,7 +290,7 @@ module PFM
     # @param parents [Array(PFM::Pokemon, PFM::Pokemon)] the parents
     def inherit(pokemon, parents)
       # @type [PFM::Pokemon]
-      male, female = assign_gender(parents)
+      male, female = assign_gender(*parents)
 
       # Inherit sequence
       unless NON_INHERITED_BALL.include?(data_item(female.captured_with).db_symbol)
@@ -314,7 +314,7 @@ module PFM
     # @param potential_male [PFM::Pokemon]
     # @param potential_female [PFM::Pokemon]
     # @return [Array<PFM::Pokemon>]
-    def assign_gender((potential_male, potential_female))
+    def assign_gender(potential_male, potential_female)
       # If the potential male is a female, potential_female is a male
       # If the potential_female is a ditto, potential_male will be the mother
       if potential_male.gender == 2 || potential_female.db_symbol == :ditto

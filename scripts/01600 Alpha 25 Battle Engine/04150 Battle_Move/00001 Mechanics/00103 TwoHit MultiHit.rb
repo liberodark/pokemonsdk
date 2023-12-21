@@ -2,7 +2,9 @@ module Battle
   class Move
     # Class describing a move hiting multiple time
     class MultiHit < Basic
+      # Number of hit randomly picked from that array
       MULTI_HIT_CHANCES = [2, 2, 2, 3, 3, 5, 4, 3]
+      # Moves that always deal 3 hits
       TRIPLE_HIT_MOVES = %i[surging_strikes]
       # Function that deals the damage to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
@@ -85,7 +87,6 @@ module Battle
       # Get the real base power of the move (taking in account all parameter)
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
-      # @param i number of iterations of triple kick move
       # @return [Integer]
       def real_base_power(user, target)
         final_power = power + @nb_hit * power

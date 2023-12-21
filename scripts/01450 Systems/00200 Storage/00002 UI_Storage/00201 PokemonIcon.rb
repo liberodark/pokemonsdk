@@ -1,5 +1,6 @@
 module UI
   module Storage
+    # Icon of a creature in the storage UI
     class PokemonIcon < UI::PokemonIconSprite
       def initialize(viewport, index)
         super(viewport, false)
@@ -19,6 +20,7 @@ module UI
       end
     end
 
+    # Icon of a held item in the storage UI
     class PokemonItemIcon < UI::ItemSprite
       def initialize(viewport, index)
         super(viewport)

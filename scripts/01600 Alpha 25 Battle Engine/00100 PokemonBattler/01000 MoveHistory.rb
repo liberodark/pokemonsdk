@@ -49,6 +49,7 @@ module PFM
       end
     end
 
+    # History specialization for successful moves
     class SuccessfulMoveHistory < MoveHistory
     end
   end

@@ -8,9 +8,13 @@ module UI
       # The trainer battler
       # @return [Sprite]
       attr_accessor :trainer_battler
+      # X coordinates for the party elements
       X_PARTY = [99, 221, 69, 251, 38, 282]
+      # Y coordinates for the party elements
       Y_PARTY = [180, 150, 120]
+      # Y coordinate for the trainer
       Y_TRAINER = 102
+      # Trainer sprite filename based on its gender
       PLAYER_SPRITE_NAME = { true => 'hall_of_fame/female', false => 'hall_of_fame/male' }
       # Initialize the SpriteStack
       # @param viewport [Viewport]

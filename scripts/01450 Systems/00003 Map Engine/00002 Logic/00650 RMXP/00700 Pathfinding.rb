@@ -64,6 +64,7 @@ module Pathfinding
   # Last updated researching request
   @last_request_id = 0
 
+  # Method giving a preset command (the 5 first move commands)
   PRESET_COMMANDS = Array.new(5) { |i| RPG::MoveCommand.new(i) }.method(:[])
 
   # Add the request to the system list and start looking for path
@@ -146,6 +147,8 @@ module Pathfinding
   end
 
   @debug = false
+  # Enable or disable the debug mode
+  # @param value [Boolean] if debug must be enabled
   def self.debug=(value)
     @debug = value
     if value && @debug_viewport.nil?
@@ -319,7 +322,7 @@ module Pathfinding
     end
 
     # Update the request search and return the new remaining node count
-    # @param node_counter [Integer] the amount of node per frame remaining
+    # @param operation_counter [Integer] the amount of node per frame remaining
     # @return [Integer]
     def update_search(operation_counter)
       # Check target already reached
@@ -507,7 +510,9 @@ module Pathfinding
     end
 
     # Calculate the path from the given node
-    # @param x [Object] the node
+    # @param tx [Integer] target x?
+    # @param ty [Integer] target y?
+    # @param tz [Integer] target z?
     # @return [Array<Integer>] the path
     def backtrace(tx, ty, tz)
       x = tx

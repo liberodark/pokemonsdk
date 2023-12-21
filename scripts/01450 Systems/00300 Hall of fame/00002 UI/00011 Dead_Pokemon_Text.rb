@@ -2,6 +2,7 @@ module UI
   module Hall_of_Fame
     # Class that define the Dead Pokemon text
     class Dead_Pokemon_Text < SpriteStack
+      # White Color
       WHITE_COLOR = Color.new(255, 255, 255)
       # Initialize the SpriteStack
       # @param viewport [Viewport]

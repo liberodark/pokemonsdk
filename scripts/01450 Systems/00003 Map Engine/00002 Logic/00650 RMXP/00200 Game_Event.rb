@@ -151,8 +151,15 @@ class Game_Event < Game_Character
     @interpreter.update
   end
   
-  def find_path(**kwargs)
-    super(**kwargs) if Yuki::MapLinker.from_center_map?(self)
+  # Use path finding to locate the current event move else
+  # @param to [Array<Integer, Integer>, Game_Character] the target, [x, y] or Game_Character object
+  # @param radius [Integer] <default : 0> the distance from the target to consider it as reached
+  # @param tries [Integer, Symbol] <default : 5> the number of tries allowed to this request, use :infinity to unlimited try count
+  # @param type [Symbol]
+  # @example find path to x=10 y=15 with an error radius of 5 tiles
+  #   find_path(to:[10,15], radius:5)
+  def find_path(to:, radius: 0, tries: Pathfinding::TRY_COUNT, type: nil)
+    super(to: to, radius: radius, tries: tries, type: type) if Yuki::MapLinker.from_center_map?(self)
   end
 
   # Check if the character is activate. Useful to make difference between event without active page and others.

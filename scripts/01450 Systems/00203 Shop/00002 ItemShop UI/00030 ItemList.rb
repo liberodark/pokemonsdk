@@ -1,5 +1,6 @@
 module UI
   module Shop
+    # List of items in the UI
     class ItemList < Array
       # Number of button in the list
       AMOUNT = 3
@@ -172,6 +173,7 @@ module UI
         @index - 1
       end
 
+      # Button for an item in the list
       class ListButton < SpriteStack
         # @return [Integer] Index of the button in the list
         attr_accessor :index

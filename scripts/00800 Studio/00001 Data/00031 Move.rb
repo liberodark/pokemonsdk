@@ -172,6 +172,7 @@ module Studio
     # @return [Array<MoveStatus>]
     attr_reader :move_status
 
+    # Class describing the stat modification
     class BattleStageMod
       # Stat this stage mod change (:atk, :dfe, :spd, :ats, :dfs, :eva, :acc)
       # @return [Symbol]
@@ -182,6 +183,7 @@ module Studio
       attr_reader :count
     end
 
+    # Class describing the status modification with it's chance to happen
     class MoveStatus
       # Status this move applies
       # @return [Symbol]

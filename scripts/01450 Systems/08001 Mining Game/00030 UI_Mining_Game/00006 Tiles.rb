@@ -1,4 +1,5 @@
 module UI
+  # Module holding all the UI elements for the Mining Game
   module MiningGame
     # Class that describes the Tiles sprite
     class Tiles < SpriteSheet

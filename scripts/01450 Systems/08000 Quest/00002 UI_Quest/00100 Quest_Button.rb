@@ -1,5 +1,6 @@
 module UI
   module Quest
+    # Quest Button UI element
     class QuestButton < SpriteStack
       attr_accessor :hidden
       # Return the quest linked to this button

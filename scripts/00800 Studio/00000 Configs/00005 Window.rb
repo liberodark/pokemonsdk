@@ -54,6 +54,7 @@ module Configs
       @message_frame_names ||= @message_frames.values.map { |s| s.is_a?(String) ? s : text_get(*s) }
     end
 
+    # Convert the config to json
     def to_json(*)
       {
         klass: self.class.to_s,

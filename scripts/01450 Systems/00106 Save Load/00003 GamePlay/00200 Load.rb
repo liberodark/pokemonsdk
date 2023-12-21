@@ -12,6 +12,7 @@ module GamePlay
       @mode = :waiting_input
     end
 
+    # Update the load scene graphics
     def update_graphics
       @base_ui&.update_background_animation
       @signs.each(&:update)

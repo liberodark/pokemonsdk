@@ -137,6 +137,9 @@ module BattleUI
         set_bitmap(background_filename(pokemon), :interface)
       end
 
+      # Name of the background based on the creature shown
+      # @param pokemon [PFM::PokemonBattler]
+      # @return [String]
       def background_filename(pokemon)
         return 'battle/ability_bar_enemy' if pokemon.bank != 0
         return 'battle/ability_bar_actor' if pokemon.from_party?

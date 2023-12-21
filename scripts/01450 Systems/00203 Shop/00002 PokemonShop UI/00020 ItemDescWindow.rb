@@ -1,6 +1,8 @@
 module UI
   module Shop
+    # Description of a creature in the Shop UI
     class PkmDesc < SpriteStack
+      # White color
       WHITE_COLOR = Color.new(255, 255, 255)
       # Initialize the item description window graphisms and texts
       # @param viewport [Viewport] the viewport in which the SpriteStack will be displayed

@@ -1,9 +1,14 @@
 module UI
   module Shop
+    # Window displaying the money amount
     class MoneyWindow < SpriteStack
+      # X coordinate of the money window
       COORD_X = 7
+      # Y coordinate of the money window
       COORD_Y = 4
+      # Black color
       BLACK_COLOR = Color.new(0, 0, 0)
+      # White color
       WHITE_COLOR = Color.new(255, 255, 255)
 
       # Initializing the money window graphics and texts

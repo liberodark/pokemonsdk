@@ -44,10 +44,9 @@
 #
 ################################################################################
 
-# require 'net/http'
-# ENV['SSL_CERT_FILE'] = './lib/cert.pem'
-
+# GTS Script
 module GTS
+  # Settings of the GTS
   module Settings
     # ID of the game, replace 0 by what you got on the panel
     GAMEID = 67
@@ -181,6 +180,7 @@ module GTS
     end
   end
 
+  # List of the genders
   def genders
     return %w[Either Male Female]
   end
@@ -200,6 +200,8 @@ module GTS
       self.x -= bmp.width / 2
     end
 
+    # Width of the button
+    # @return [Integer]
     def width
       @stack.first.width
     end
@@ -722,6 +724,7 @@ module GTS
       end
     end
 
+    # Create the graphics of the wanted summary UI
     def create_graphics
       super
       draw_page_one_gts_wanted(@wanted_data)
@@ -754,7 +757,8 @@ module GTS
   # Child of the Memo that doesn't write the text_info itself
   class Summary_Memo_GTS < UI::Summary_Memo
     attr_reader :text_info
-    def load_text_info(pokemon) end
+    # Load the text info
+    alias load_text_info void
   end
 
   ################################################################################
@@ -1011,6 +1015,7 @@ end
 __LINE__.to_i
 module GamePlay
   class Save
+    # Original save game method
     alias gts_save_game save_game
     def save_game
       potential_old_party = current_game_state

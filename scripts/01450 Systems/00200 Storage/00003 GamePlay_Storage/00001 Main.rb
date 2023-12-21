@@ -1,4 +1,5 @@
 module GamePlay
+  # Storage scene
   class PokemonStorage < BaseCleanUpdate
     # List of keys supported by the base UI depending on the mode
     BASE_UI_KEYS = [
@@ -38,6 +39,7 @@ module GamePlay
       Mouse.wheel = 0
     end
 
+    # Update the graphics of the Storage scene
     def update_graphics
       @composition.update
       @base_ui&.update_background_animation

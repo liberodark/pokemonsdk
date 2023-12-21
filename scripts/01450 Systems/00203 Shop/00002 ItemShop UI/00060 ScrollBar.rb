@@ -1,5 +1,6 @@
 module UI
   module Shop
+    # UI element showing the scrollbar of the shop
     class ScrollBar < SpriteStack
       # @return [Integer] current index of the scrollbar
       attr_reader :index

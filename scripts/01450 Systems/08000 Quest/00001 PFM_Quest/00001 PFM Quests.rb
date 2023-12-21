@@ -282,6 +282,7 @@ module PFM
       return quest.data_get(:earnings_distributed, false)
     end
 
+    # Import the quest data from dot 24 version of PSDK
     def import_from_dot24
       mapper = ->((id, quest)) { [id, convert_quest_from_dot24_to_dot25(id, quest)] }
       @active_quests = @active_quests.map(&mapper).to_h
@@ -289,6 +290,7 @@ module PFM
       @failed_quests = @failed_quests.map(&mapper).to_h
     end
 
+    # Update teh quest data for Studio
     def update_quest_data_for_studio
       mapper = ->((id, quest)) { [id, convert_quest_for_studio(id, quest)] }
       @active_quests = @active_quests.map(&mapper).to_h

@@ -1,5 +1,3 @@
-raise 'You did not loaded LiteRGSS2' unless defined?(LiteRGSS::DisplayWindow)
-
 # Class that describes a surface of the screen where texts and sprites are shown (with some global effect)
 class Viewport < LiteRGSS::Viewport
   # Hash containing all the Viewport configuration (:main, :sub etc...)
@@ -94,8 +92,10 @@ class Viewport < LiteRGSS::Viewport
     end
   end
 
+  # Format the viewport to string for logging purposes
   def to_s
-    return format('#<Vewport:%08x : %00d>', __id__, __index__)
+    return '#<Viewport:disposed>' if disposed?
+    return format('#<Viewport:%08x : %00d>', __id__, __index__)
   end
   alias inspect to_s
 
@@ -124,14 +124,24 @@ class Viewport < LiteRGSS::Viewport
     end
   end
 
+  # Module defining a shader'd entity that has .color and .tone methods (for flash or other purpose)
   module WithToneAndColors
+    # Extended class of Tone allowing setters to port back values to the shader and its tied entity
     class Tone < LiteRGSS::Tone
+      # Create a new Tied Tone
+      # @param viewport [Viewport, Sprite] element on which the tone is tied
+      # @param r [Integer] red color
+      # @param g [Integer] green color
+      # @param b [Integer] blue color
+      # @param g2 [Integer] gray factor
       def initialize(viewport, r, g, b, g2)
         @viewport = viewport
         super(r, g, b, g2)
         update_viewport
       end
 
+      # Set the attribute (according to how it works in normal class)
+      # @param args [Array<Integer>]
       def set(*args)
         r = red
         g = green
@@ -141,6 +151,17 @@ class Viewport < LiteRGSS::Viewport
         update_viewport if r != red || g != green || b != blue || g2 != gray
       end
 
+      # Set the red value
+      # @param v [Integer]
+      def red=(v)
+        return if v == red
+
+        super
+        update_viewport
+      end
+
+      # Set the green value
+      # @param v [Integer]
       def green=(v)
         return if v == green
 
@@ -148,6 +169,8 @@ class Viewport < LiteRGSS::Viewport
         update_viewport
       end
 
+      # Set the blue value
+      # @param v [Integer]
       def blue=(v)
         return if v == blue
 
@@ -155,6 +178,8 @@ class Viewport < LiteRGSS::Viewport
         update_viewport
       end
 
+      # Set the gray value
+      # @param v [Integer]
       def gray=(v)
         return if v == gray
 
@@ -164,18 +189,28 @@ class Viewport < LiteRGSS::Viewport
 
       private
 
+      # Update the viewport tone shader attribute
       def update_viewport
         @viewport.shader&.set_float_uniform('tone', self)
       end
     end
 
+    # Extended class of Color allowing setters to port back values to the shader and its tied entity
     class Color < LiteRGSS::Color
+      # Create a new Tied Color
+      # @param viewport [Viewport, Sprite] element on which the color is tied
+      # @param r [Integer] red color
+      # @param g [Integer] green color
+      # @param b [Integer] blue color
+      # @param a [Integer] alpha factor
       def initialize(viewport, r, g, b, a)
         @viewport = viewport
         super(r, g, b, a)
         update_viewport
       end
 
+      # Set the attribute (according to how it works in normal class)
+      # @param args [Array<Integer>]
       def set(*args)
         r = red
         g = green
@@ -185,6 +220,17 @@ class Viewport < LiteRGSS::Viewport
         update_viewport if r != red || g != green || b != blue || a != alpha
       end
 
+      # Set the red value
+      # @param v [Integer]
+      def red=(v)
+        return if v == red
+
+        super
+        update_viewport
+      end
+
+      # Set the green value
+      # @param v [Integer]
       def green=(v)
         return if v == green
 
@@ -192,6 +238,8 @@ class Viewport < LiteRGSS::Viewport
         update_viewport
       end
 
+      # Set the blue value
+      # @param v [Integer]
       def blue=(v)
         return if v == blue
 
@@ -199,6 +247,8 @@ class Viewport < LiteRGSS::Viewport
         update_viewport
       end
 
+      # Set the alpha value
+      # @param v [Integer]
       def alpha=(v)
         return if v == alpha
 
@@ -208,6 +258,7 @@ class Viewport < LiteRGSS::Viewport
 
       private
 
+      # Update the viewport color shader attribute
       def update_viewport
         @viewport.shader&.set_float_uniform('color', self)
       end

@@ -1,4 +1,5 @@
 module GamePlay
+  # Battle specialization of the bag
   class Battle_Bag < Bag
     # Create a new Battle_Bag
     # @param team [Array<PFM::PokemonBattler>] party that use this bag UI

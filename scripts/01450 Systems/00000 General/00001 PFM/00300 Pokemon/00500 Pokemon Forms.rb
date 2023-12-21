@@ -2,7 +2,9 @@
 
 module PFM
   class Pokemon
+    # List of form calibration hook for Creatures that needs form calibration (when switching items, being place in computer or when team changes)
     FORM_CALIBRATE = {}
+    # List of form generation hook for Creatures that needs an initial form when the PFM::Pokemon object is generated.
     FORM_GENERATION = {}
     # List of items (in the form index order) that change the form of Arceus
     ArceusItem = %i[__undef__ flame_plate splash_plate zap_plate meadow_plate
@@ -176,7 +178,7 @@ module PFM
 
     # Determine the form of the Zygarde
     # @param reason [Symbol]
-    # @return form [Integer] form of zygarde
+    # @return [Integer] form of zygarde
     def zygarde_form(reason)
       current_hp = @hp
       @base_form = @form unless @form == 3

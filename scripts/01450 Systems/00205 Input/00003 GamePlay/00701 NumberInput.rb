@@ -1,4 +1,5 @@
 module GamePlay
+  # Number input scene
   class NumberInput < NameInput
     private
 

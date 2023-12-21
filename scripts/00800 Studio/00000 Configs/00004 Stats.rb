@@ -79,6 +79,7 @@ module Configs
       @acc_stage_index = 6
     end
 
+    # Convert the config to json
     def to_json(*)
       {
         klass: self.class.to_s,

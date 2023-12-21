@@ -22,7 +22,6 @@ module Battle
           scene.display_message_and_wait(parse_text(18, 127, '[VAR MOVE(0000)]' => name))
           PFM::Text.reset_variables
         end
-
         def move.move_usable_by_user(user, targets)
           return true
         end

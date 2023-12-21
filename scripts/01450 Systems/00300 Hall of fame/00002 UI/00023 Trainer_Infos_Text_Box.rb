@@ -11,7 +11,9 @@ module UI
       # The play_time text
       # @return [Text]
       attr_accessor :play_time
+      # Final Y coordinate
       Y_FINAL = 202
+      # White color
       WHITE_COLOR = Color.new(255, 255, 255, 255)
       # Initialize the SpriteStack
       # @param viewport [Viewport]

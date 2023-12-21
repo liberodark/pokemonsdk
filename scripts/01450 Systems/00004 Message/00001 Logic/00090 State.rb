@@ -20,15 +20,20 @@ module PFM
       # The last unprocessed text the window has shown
       # @return [String, nil]
       attr_reader :last_text
+
+      protected
+  
       # Get the current instruction
       # @return [Instructions::Text, Instructions::Marker, Instructions::Marker, nil]
-      protected attr_reader :current_instruction
+      attr_reader :current_instruction
       # Get the instructions
       # @return [Instructions]
-      protected attr_reader :instructions
+      attr_reader :instructions
       # Get the properties
       # @return [Properties]
-      protected attr_reader :properties
+      attr_reader :properties
+
+      public
 
       # Initialize the states
       def initialize(...)

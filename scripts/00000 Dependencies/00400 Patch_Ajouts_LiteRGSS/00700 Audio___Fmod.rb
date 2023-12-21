@@ -770,36 +770,50 @@ else
 
     module_function
 
-    def bgm_play(*) end
+    def bgm_play(file_name, volume = 100, pitch = 100, fade_in = true)
+    end
 
     def bgm_position
       return 0
     end
 
-    def bgm_position=(*) end
+    def bgm_position=(position)
+    end
 
-    def bgs_play(*) end
+    def bgs_play(file_name, volume = 100, pitch = 100, fade_in = true)
+    end
 
-    def me_play(*) end
+    def me_play(file_name, volume = 100, pitch = 100, preserve_bgm = false)
+    end
 
-    def se_play(*) end
+    def se_play(file_name, volume = 100, pitch = 100)
+    end
 
-    def bgm_fade(time) end
+    def bgm_fade(time)
+    end
 
-    def bgs_fade(time) end
+    def bgs_fade(time)
+    end
 
-    def me_fade(time) end
+    def me_fade(time)
+    end
 
-    def bgm_stop() end
+    def bgm_stop
+    end
 
-    def bgs_stop() end
+    def bgs_stop
+    end
 
-    def me_stop() end
+    def me_stop
+    end
 
-    def se_stop() end
+    def se_stop
+    end
 
-    def __reset__() end
+    def __reset__
+    end
 
-    def update() end
+    def update
+    end
   end
 end

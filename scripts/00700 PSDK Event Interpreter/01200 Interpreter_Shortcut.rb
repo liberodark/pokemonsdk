@@ -84,17 +84,18 @@ class Interpreter
 
   # Show an emotion on multiple events and/or the player
   # @param type [Symbol] the type of emotion (see wiki)
-  # @param char_id [Integer] the ID of the event (> 0), the current event (0) or the player (-1)
+  # @param chars_id [Array<Integer>] the ID of the event (> 0), the current event (0) or the player (-1)
   # @param wait [Integer] the number of frame the event will wait after this command.
   # @param params [Hash] particle
   # @note See the #emotion method comments for the available emotion type
   # @example Displaying the poison emotion on the player and multiple NPCs (with offset) :
-  #   emotion(:poison, [-1, 5, 8, 15], 34, oy_offset: 10)
+  #   emotion_on_multiple_npc(:poison, [-1, 5, 8, 15], 34, oy_offset: 10)
   def emotion_on_multiple_npc(type, chars_id = [0], wait = 34, params = {})
     chars_id.each { |char_id| emotion(type, char_id, wait, params) }
   end
   alias emotion_on_multiple_pnj emotion_on_multiple_npc
 
+  # List of command cods that needs to be skipped in order to detect the from event calling call
   FEC_SKIP_CODES = [108, 121, 122]
   # Check if the front event calls a common event (in its first non comment commands)
   # @param common_event [Integer] the id of the common event in the database
@@ -248,14 +249,15 @@ class Interpreter
     return index
   end
 
-  # Shortcut for get_character(@event_id).find_path(*args).
-  # Exemple : find_path to:[10,15], radius:5
+  # Use path finding to locate the current event move else
   # @param to [Array<Integer, Integer>, Game_Character] the target, [x, y] or Game_Character object
   # @param radius [Integer] <default : 0> the distance from the target to consider it as reached
-  # @param priority [Integer] <default : Pathfinding::PRIORITY_NORMAL> the priority in front of the other requests
-  # @param tries [Integer, Symbol] <default : 5> the number of tries allowed to this request, use :infinity to unlimited tris count
-  def find_path(**kwargs)
-    get_character(@event_id).find_path(**kwargs)
+  # @param tries [Integer, Symbol] <default : 5> the number of tries allowed to this request, use :infinity to unlimited try count
+  # @param type [Symbol]
+  # @example find path to x=10 y=15 with an error radius of 5 tiles
+  #   find_path(to:[10,15], radius:5)
+  def find_path(to:, radius: 0, tries: Pathfinding::TRY_COUNT, type: nil)
+    get_character(@event_id).find_path(to: to, radius: radius, tries: tries, type: type)
   end
 
   # Shortcut for get_character(@event_id).stop_path
@@ -352,8 +354,8 @@ class Interpreter
   # Mirror a RMXP Picture
   # @param id [Integer] the picture id
   # @param bool [Boolean] the mirroring state
-  def mirror_picture(id)
-    $game_screen.pictures[id].mirror = true
+  def mirror_picture(id, bool = true)
+    $game_screen.pictures[id].mirror = bool
   end
 
   # Give a certain amount of exp to one Pokemon

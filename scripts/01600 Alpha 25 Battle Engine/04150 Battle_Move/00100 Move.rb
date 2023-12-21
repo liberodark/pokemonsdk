@@ -53,6 +53,8 @@ module Battle
       @logic = scene.logic
     end
 
+    # Format move for logging purpose
+    # @return [String]
     def to_s
       "<PM:#{name},#{@consecutive_use_count} pp=#{@pp}>"
     end

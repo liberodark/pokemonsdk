@@ -1,4 +1,5 @@
 module UI
+  # Module holding all the MoveTeaching UI elements
   module MoveTeaching
     # UI part displaying a Skill in the Skill Learn UI
     class Skill < SpriteStack

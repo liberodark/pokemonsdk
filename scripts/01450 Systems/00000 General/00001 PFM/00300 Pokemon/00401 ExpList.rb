@@ -18,12 +18,15 @@ module PFM
         send(@method, level)
       end
 
+      # Iterate over all the experience curve
+      # @yieldparam total_exp [Integer] the total exp at the current level
       def each
         return to_enum(__method__) unless block_given?
 
         1.upto(size) { |i| yield(self[i]) }
       end
 
+      # Get the size of the exp list table for this curve
       def size
         Configs.settings.max_level
       end

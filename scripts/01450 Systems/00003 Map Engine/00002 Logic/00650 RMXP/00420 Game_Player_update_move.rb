@@ -1,4 +1,5 @@
 class Game_Player
+  # List of system tags that makes the player Jump
   JumpTags = [JumpL, JumpR, JumpU, JumpD]
 
   # Move or turn the player according to its input. The common event 2 can be triggered there
@@ -113,7 +114,6 @@ class Game_Player
   end
 
   # Update the Acro Bike jump info when not moving
-  # @param count [Integer] number of @acro_count frame before the player is allowed to jump
   # @param sys_tag [Integer] the current system tag
   # @return [Boolean, nil] if the player can jump (nil = not allowed to jump but can move forward)
   # @author Leikt
