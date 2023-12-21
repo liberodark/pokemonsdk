@@ -126,7 +126,7 @@ module PFM
     # The current moveset of the Pokemon
     # @return [Array<PFM::Skill>] 4 or less moves
     attr_accessor :skills_set
-    # If the Truant (Absenteisme) ability has been "used"
+    # Check whether the ability has been already used in battle
     # @return [Boolean]
     attr_accessor :ability_used
     # ID of the Pokemon ability in the database
