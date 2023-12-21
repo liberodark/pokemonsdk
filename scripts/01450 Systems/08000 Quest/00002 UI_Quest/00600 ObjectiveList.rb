@@ -22,7 +22,7 @@ module UI
         @max_index = data.size - 4
         @max_index = 0 if @max_index < 0
         data.each_with_index do |arr, i|
-          color = arr[1] ? "\c[13]" : "\c[12]"
+          color = arr[1] ? '\c[13]' : '\c[12]'
           text += arr[0]
           text += "\n" if i < data.size - 1
         end
