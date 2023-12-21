@@ -9,12 +9,12 @@ module GamePlay
 
       def create_graphics
         create_viewport
-
         create_background
         create_clock
         create_am_pm
         create_minute_aiguille
         create_hour_aiguille
+        update_aiguilles
       end
 
       def create_background
