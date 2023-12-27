@@ -48,13 +48,13 @@ class Interpreter
   end
 
   # Start a trainer battle
-  # @param trainer_id [Integer] ID of the trainer in Ruby Host
+  # @param trainer_id [Integer] ID of the trainer in Studio
   # @param bgm [String, Array] BGM to play for battle
   # @param disable [String] Name of the local switch to disable (if defeat)
   # @param enable [String] Name of the local switch to enable (if victory)
   # @param troop_id [Integer] ID of the troop to use : 3 = trainer, 4 = Gym Leader, 5 = Elite, 6 = Champion
   # @example Start a simple trainer battle
-  #   start_trainer_battle(5) # 5 is the trainer 5 in Ruby Host
+  #   start_trainer_battle(5) # 5 is the trainer 5 in Studio
   # @example Start a trainer battle agains a gym leader
   #   start_trainer_battle(5, bgm: '28 Pokemon Gym', troop_id: 4)
   def start_trainer_battle(trainer_id, bgm: DEFAULT_TRAINER_BGM, disable: 'A', enable: 'B', troop_id: 3)
@@ -78,8 +78,8 @@ class Interpreter
   end
 
   # Start a trainer battle
-  # @param trainer_id [Integer] ID of the trainer in Ruby Host
-  # @param second_trainer_id [Integer] ID of the second trainer in Ruby Host
+  # @param trainer_id [Integer] ID of the trainer in Studio
+  # @param second_trainer_id [Integer] ID of the second trainer in Studio
   # @param bgm [String, Array] BGM to play for battle
   # @param disable [String] Name of the local switch to disable (if defeat)
   # @param enable [String] Name of the local switch to enable (if victory)
@@ -90,9 +90,9 @@ class Interpreter
   end
 
   # Start a trainer battle
-  # @param trainer_id [Integer] ID of the trainer in Ruby Host
-  # @param second_trainer_id [Integer] ID of the second trainer in Ruby Host
-  # @param friend_trainer_id [Integer] ID of the friend trainer in Ruby Host
+  # @param trainer_id [Integer] ID of the trainer in Studio
+  # @param second_trainer_id [Integer] ID of the second trainer in Studio
+  # @param friend_trainer_id [Integer] ID of the friend trainer in Studio
   # @param bgm [String, Array] BGM to play for battle
   # @param disable [String] Name of the local switch to disable (if defeat)
   # @param enable [String] Name of the local switch to enable (if victory)

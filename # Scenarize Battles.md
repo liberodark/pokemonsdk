@@ -20,7 +20,7 @@ Note: The digits are the most important part because they are figured out by `Ba
 
 ## How to define which events to load
 
-In PSDK `Battle::Logic::BattleInfo#battle_id` tells which event to load. For example if `battle_id` is equal to 5, `Data/Events/Battle/00005*.rb` will be loaded. You have two solution to define this value. Either you use `Battle::Logic::BattleInfo` (see: [Create Trainer With Script](/#%20Create%20Trainer%20With%20Script.md")) or set `Battle Group ID` to a non-null value in `Ruby Host`.
+In PSDK `Battle::Logic::BattleInfo#battle_id` tells which event to load. For example if `battle_id` is equal to 5, `Data/Events/Battle/00005*.rb` will be loaded. You have two solution to define this value. Either you use `Battle::Logic::BattleInfo` (see: [Create Trainer With Script](/#%20Create%20Trainer%20With%20Script.md")) or set `Battle Group ID` to a non-null value in `Studio`.
 
 Note: Wild battle always use `battle_id = 1` unless you manually call `$wild_battle.setup(battle_id)`.
 

@@ -245,7 +245,7 @@ module GamePlay
       @black_frame.visible = false
     end
 
-    # Fix special characters used in some Ruby Host texts
+    # Fix special characters used in some Studio texts
     def fix_number(string)
       string = string.sub('', 'er')
       string.sub!('', 'ème')

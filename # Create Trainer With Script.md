@@ -2,17 +2,16 @@
 
 In this tutorial we will see the true power of .25: creating any kind of trainer battle through the unique Battle Information interface (aka. `Battle::Logic::BattleInfo`).
 
-For now, you should be used to create a trainer in `Ruby Host` or `Studio` and then start the battle with either of those three functions: 
+For now, you should be used to create a trainer in `Studio` and then start the battle with either of those three functions: 
 - `start_trainer_battle`
 - `start_double_trainer_battle`
 - `start_double_trainer_battle_with_friend`
 
 This is kind of great but there's some limitations to those functions:
-1. The team is "static" meaning that each call of those function with the same parameter will almost give the same result (putting aside few random attributes of Pokémon if they were random)
+1. The team is "static" meaning that each call of those function with the same parameter will almost give the same result (putting aside few random attributes of Pokémon if they were random).
 2. Rivals become a bit incoherent if you forgot to lock some attribute like gender.
 3. You can't build Battle Frontier battles without going crazy (presetting 1000+ battles with GUI is just a huge waste of time)
-4. In `Ruby Host`, you can't define the bag of the trainers
-5. Names will always be the same for a specific trainer
+4. Names will always be the same for a specific trainer
 
 ## What is `Battle::Logic::BattleInfo`
 

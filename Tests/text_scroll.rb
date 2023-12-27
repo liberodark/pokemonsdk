@@ -32,6 +32,8 @@ txt = UI::TextScroller.new(vp, texts = <<~Texts.each_line.to_a.compact, 12, 60.0
   Nuri Yuri || Aerun
   Rey || SirMalo
   Leikt || Palbolsky
+  Lexio || Zozo
+  Matatix || Invatorzen
 
   ### PSDK Wiki
   Aerun || Akiyra
@@ -61,11 +63,14 @@ txt = UI::TextScroller.new(vp, texts = <<~Texts.each_line.to_a.compact, 12, 60.0
   SirMalo || SoloReprise
   SMB64 || yyyyj
 
-  ### Ruby Host
-  Aerun || AEliso
-  Bentoxx || Buttjuice
-  Maxoumi || Nuri Yuri
-  Splifingald || yyyyj
+  ### Studio
+  Aerun || Arki
+  Badong || Cypmars
+  Hollowgap || Karbbone
+  Menta || Nuri Yuri
+  Palbolsky || Toinane
+  Walven || Waris
+  Zozo ||  
 
   ### Other Contributors
   Amras || Anti-NT

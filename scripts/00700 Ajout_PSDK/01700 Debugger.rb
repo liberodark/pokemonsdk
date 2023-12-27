@@ -29,7 +29,7 @@ module Debugger
   end
 
   # Fight a specific trainer by its ID
-  # @param id [Integer] ID of the trainer in Ruby Host
+  # @param id [Integer] ID of the trainer in Studio
   # @param bgm [Array(String, Integer, Integer)] bgm description of the trainer battle
   # @param troop_id [Integer] ID of the RMXP Troop to use
   def battle_trainer(id, bgm = Interpreter::DEFAULT_TRAINER_BGM, troop_id = 3)
