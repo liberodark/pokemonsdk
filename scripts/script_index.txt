@@ -1031,6 +1031,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 MagnetRise.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 MagneticFlux.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Magnitude.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 MakeItRain.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Me First.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Memento.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Metronome.rb
