@@ -3,8 +3,9 @@ class Game_Player
   # @param triggers [Array<Integer>] the list of triggers to check
   # @return [Boolean]
   def check_event_trigger_here(triggers)
-    return false if $game_system.map_interpreter.running?
     result = false
+    return false if $game_system.map_interpreter.running?
+
     z = @z
     $game_map.events.each_value do |event|
       y_modifier = (@direction == 4 ? slope_check_left(false) : @direction == 6 ? slope_check_right(false) : 0)
@@ -14,14 +15,17 @@ class Game_Player
       result = true
     end
     return result
+  ensure
+    player_update_move_bump_restore_step_anime if result
   end
 
   # Check if there's an event trigger in front of the player (when he presses A)
   # @param triggers [Array<Integer>] the list of triggers to check
   # @return [Boolean]
   def check_event_trigger_there(triggers)
-    return false if $game_system.map_interpreter.running?
     result = false
+    return false if $game_system.map_interpreter.running?
+
     d = @direction
     new_x = @x + (d == 6 ? 1 : d == 4 ? -1 : 0)
     new_y = @y + (d == 2 ? 1 : d == 8 ? -1 : 0) + (@direction == 4 ? slope_check_left(false) : @direction == 6 ? slope_check_right(false) : 0)
@@ -52,6 +56,8 @@ class Game_Player
     check_common_event_trigger_there(new_x, new_y, z, d)
     result ||= check_follower_trigger_there(new_x, new_y) if @follower
     return result
+  ensure
+    player_update_move_bump_restore_step_anime if result
   end
 
   # Tile tha allow to use DIVE
@@ -99,10 +105,10 @@ class Game_Player
   # @param x [Integer] the x position to check
   # @param y [Integer] the y position to check
   def check_event_trigger_touch(x, y)
-    return false if $game_system.map_interpreter.running?
     result = false
-    z = @z
+    return false if $game_system.map_interpreter.running?
 
+    z = @z
     $game_map.events.each_value do |event|
       next unless event.contact?(x, y, z) && [1, 2].include?(event.trigger)
       next if event.jumping? || event.over_trigger?
@@ -110,5 +116,7 @@ class Game_Player
       result = true
     end
     return result
+  ensure
+    player_update_move_bump_restore_step_anime if result
   end
 end
