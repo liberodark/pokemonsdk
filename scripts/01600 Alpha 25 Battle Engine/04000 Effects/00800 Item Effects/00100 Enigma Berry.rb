@@ -33,7 +33,7 @@ module Battle
           return if target.dead?
 
           @logic.damage_handler.heal(target, hp_healed) do
-            item_name = target.item_name
+            item_name = data_item(db_symbol).name
             @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 914, target, PFM::Text::ITEM2[1] => item_name))
           end
           consume_berry(target, launcher, skill)

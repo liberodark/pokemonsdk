@@ -22,6 +22,9 @@ module Battle
               @scene.visual.show_ability(user)
               @logic.damage_handler.heal(user, user.max_hp / 3)
             end
+
+
+            user.effects.add(Effects::CudChewEffect.new(logic, user, user.ability_effect.turn_count, target.item_effect.db_symbol)) if user.has_ability?(:cud_chew)
           end
           @logic.item_change_handler.change_item(:none, true, target, user, self)
         end

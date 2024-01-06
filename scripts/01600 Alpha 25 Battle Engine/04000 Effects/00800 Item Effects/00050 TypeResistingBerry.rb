@@ -13,7 +13,7 @@ module Battle
           return 1 if cannot_be_consumed?
           return 1 if target != @target || !CONDITIONS[db_symbol].call(user, target, move)
 
-          berry_name = target.item_name
+          berry_name = data_item(db_symbol).name
           consume_berry(target, user, move)
           move.logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 219, target, PFM::Text::ITEM2[1] => berry_name))
           return 0.25 if target.has_ability?(:ripen)
