@@ -2,6 +2,19 @@ module Battle
   module Effects
     class Ability
       class Sturdy < Ability
+        # Function called when we try to check if the effect changes the definitive priority of the move
+        # @param user [PFM::PokemonBattler]
+        # @param target [PFM::PokemonBattler]
+        # @param move [Battle::Move]
+        # @return [Boolean] if the target is immune to the move
+        def on_move_ability_immunity(user, target, move)
+          return false unless @target == target
+          return false unless move.ohko?
+
+          move.scene.visual.show_ability(target)
+          return true
+        end
+
         # Function called when a damage_prevention is checked
         # @param handler [Battle::Logic::DamageHandler]
         # @param hp [Integer] number of hp (damage) dealt
