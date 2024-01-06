@@ -196,6 +196,12 @@ module Battle
       return data.is_direct
     end
 
+    # Tell if the move is a mental move
+    # @return [Boolean]
+    def mental?
+      return data.is_mental
+    end
+
     # Is the skill affected by Mirror Move
     # @return [Boolean]
     def mirror_move_affected?

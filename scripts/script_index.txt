@@ -862,6 +862,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Life Orb.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Lum Berry.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Luminous Moss - Snowball.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 MentalHerb.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Metronome.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Micle Berry.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00100 Persim Berry.rb

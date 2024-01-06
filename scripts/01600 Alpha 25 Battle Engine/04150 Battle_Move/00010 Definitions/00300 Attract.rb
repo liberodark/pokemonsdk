@@ -14,10 +14,7 @@ module Battle
         return true if target.effects.has?(:attract) || (user.gender * target.gender) != 2
 
         ally = @logic.allies_of(target).find { |a| BLOCKING_ABILITY.include?(a.battle_ability_db_symbol) }
-        if target.hold_item?(:mental_herb)
-          @logic.item_change_handler.change_item(:none, true, target)
-          return true
-        elsif user.can_be_lowered_or_canceled?(BLOCKING_ABILITY.include?(target.battle_ability_db_symbol))
+        if user.can_be_lowered_or_canceled?(BLOCKING_ABILITY.include?(target.battle_ability_db_symbol))
           @scene.visual.show_ability(target)
           return true
         elsif user.can_be_lowered_or_canceled? && ally
@@ -34,7 +31,13 @@ module Battle
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
           target.effects.add(Effects::Attract.new(@logic, target, user))
-          user.effects.add(Effects::Attract.new(@logic, user, target)) if target.hold_item?(:destiny_knot)
+          @scene.display_message_and_wait(parse_text_with_pokemon(19, 327, target))
+
+          if target.hold_item?(:destiny_knot) && !user.effects.has?(:attract)
+            user.effects.add(Effects::Attract.new(@logic, user, target))
+            @logic.scene.visual.show_item(target)
+            @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 327, user))
+          end
         end
       end
     end
