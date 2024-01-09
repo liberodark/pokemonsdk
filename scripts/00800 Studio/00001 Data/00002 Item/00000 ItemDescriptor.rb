@@ -319,6 +319,24 @@ module PFM
       $game_system.map_interpreter.launch_common_event(1)
     end
 
+    # Specific case ability_capsule
+    define_chen_prevention(:ability_capsule) { $game_temp.in_battle }
+    define_on_creature_usability(:ability_capsule) do |item, creature|
+      next false if creature.egg?
+      next false if %i[zygarde greninja].include?(creature.db_symbol)
+      next false if creature.db_symbol == :rockruff && creature.ability_db_symbol == :own_tempo
+      next false if creature.data.abilities[0] == creature.data.abilities[1]
+      next false if creature.ability_db_symbol == creature.data.abilities.last
+    
+      next true
+    end
+
+    define_on_creature_use(:ability_capsule) do |item, creature, scene|
+      creature.ability_index = creature.ability_index.zero? ? 1 : 0
+      creature.update_ability
+      $scene.display_message_and_wait(parse_text_with_pokemon(19, 405, creature, PFM::Text::ABILITY[1] => creature.ability_name))
+    end
+
     # All the event conditions
     define_event_condition(6)
     define_event_condition(7)
