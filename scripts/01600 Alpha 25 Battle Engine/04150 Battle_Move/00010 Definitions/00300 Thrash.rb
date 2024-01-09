@@ -9,12 +9,22 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @param reason [Symbol] why the move failed: :usable_by_user, :accuracy, :immunity
       def on_move_failure(user, targets, reason)
+        return if user.has_ability?(:dancer) && user.ability_effect.activated?
+
         # @type [Effects::ForceNextMoveBase]
         effect = user.effects.get(:force_next_move_base)
         return if effect.nil?
         return effect.kill unless effect.triggered?
 
         logic.status_change_handler.status_change_with_process(:confusion, user, nil, self) unless user.confused?
+      end
+
+      # Test if the effect is working
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+      # @return [Boolean]
+      def effect_working?(user, actual_targets)
+        return !(user.has_ability?(:dancer) && user.ability_effect.activated?)
       end
 
       # Function that deals the effect to the pokemon

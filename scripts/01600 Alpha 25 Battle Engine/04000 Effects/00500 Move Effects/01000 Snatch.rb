@@ -16,5 +16,13 @@ module Battle
         :snatch
       end
     end
+
+    class Snatched < Snatch
+      # Function giving the name of the effect
+      # @return [Symbol]
+      def name
+        :snatched
+      end
+    end
   end
 end

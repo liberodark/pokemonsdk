@@ -65,7 +65,6 @@ module Battle
     # Process specific behaviours
     def refine_actions
       handle_pre_attack_action
-      handle_dancer
     end
 
     # Execute post action effects
@@ -155,18 +154,6 @@ module Battle
       triggered_action.ignore_speed = true
       # Add the message of the item activation
       actions << Actions::HighPriorityItem.new(@scene, triggered_action.launcher)
-    end
-
-    # Function that handle the dancer ability
-    def handle_dancer
-      # @type [Array<Actions::Attack>]
-      dancing_moves = @actions.select { |action| action.is_a?(Actions::Attack) && action.move.dance? }
-      # @type [Array<PFM::PokemonBattler>]
-      dancers = all_alive_battlers.select { |battler| battler.has_ability?(:dancer) }
-      # Add all dancer as sub launcher
-      dancing_moves.each do |move|
-        move.sub_launchers.concat(dancers.reject { |dancer| dancer == move.launcher })
-      end
     end
 
     # Handle the attakcs with pre attack effects

@@ -10,6 +10,19 @@ module Battle
         # @return [Array<PFM::PokemonBattler>]
         attr_reader :targets
 
+        # Function called when we try to use a move as the user (returns :prevent if user fails)
+        # @param user [PFM::PokemonBattler]
+        # @param targets [Array<PFM::PokemonBattler>]
+        # @param move [Battle::Move]
+        # @return [:prevent, nil] :prevent if the move cannot continue
+        def on_move_prevention_user(user, targets, move)
+          return if user != @pokemon
+          return if move.db_symbol == @move.db_symbol
+
+          move.show_usage_failure(user)
+          return :prevent
+        end
+
         # Tell if the effect forces the next move
         # @return [Boolean]
         def force_next_move?

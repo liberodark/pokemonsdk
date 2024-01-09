@@ -13,19 +13,44 @@ module Battle
           return move.physical? ? 1.5 : 1
         end
 
+        # Function called when we try to use a move as the user (returns :prevent if user fails)
+        # @param user [PFM::PokemonBattler]
+        # @param targets [Array<PFM::PokemonBattler>]
+        # @param move [Battle::Move]
+        # @return [:prevent, nil] :prevent if the move cannot continue
+        def on_move_prevention_user(user, targets, move)
+          return unless move_can_be_used?(user, move)
+
+          move.show_usage_failure(user)
+          return :prevent
+        end
+
         # Function called when we try to check if the user cannot use a move
         # @param user [PFM::PokemonBattler]
         # @param move [Battle::Move]
         # @return [Proc, nil]
         def on_move_disabled_check(user, move)
-          return unless user == @target && user.move_history.any?
-          return if user.move_history.last.db_symbol == move.db_symbol
-          return if user.move_history.last.turn < user.last_sent_turn
+          return unless move_can_be_used?(user, move)
 
           return proc {
             move.scene.visual.show_ability(user)
             move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, PFM::Text::MOVE[1] => move.name))
           }
+        end
+
+
+        private
+
+        # Checks if the user can use the movement
+        # @param user [PFM::PokemonBattler]
+        # @param move [Battle::Move]
+        # @return [Boolean]
+        def move_can_be_used?(user, move)
+          return false unless user == @target && user.move_history.any?
+          return false if user.move_history.last.db_symbol == move.db_symbol
+          return false if user.move_history.last.turn < user.last_sent_turn
+
+          return true
         end
       end
       register(:gorilla_tactics, GorillaTactics)

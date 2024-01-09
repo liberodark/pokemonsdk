@@ -15,6 +15,13 @@ module Battle
       end
     end
 
+    # Show the usage failure when move is not usable by user
+    # @param user [PFM::PokemonBattler] user of the move
+    def show_usage_failure(user)
+      usage_message(user)
+      scene.display_message_and_wait(parse_text(18, 74))
+    end
+
     # Function starting the move procedure
     # @param user [PFM::PokemonBattler] user of the move
     # @param target_bank [Integer] bank of the target
@@ -158,13 +165,6 @@ module Battle
       return false
     end
 
-    # Show the usage failure when move is not usable by user
-    # @param user [PFM::PokemonBattler] user of the move
-    def show_usage_failure(user)
-      usage_message(user)
-      scene.display_message_and_wait(parse_text(18, 74))
-    end
-
     # Show the move usage message
     # @param user [PFM::PokemonBattler] user of the move
     def usage_message(user)
@@ -179,13 +179,15 @@ module Battle
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     # @return [PFM::PokemonBattler, Array<PFM::PokemonBattler>] user, targets
     def proceed_battlers_remap(user, targets)
-      # Snatch
+      # Snatch Case
       if snatchable? && logic.all_alive_battlers.any? { |pkm| pkm != user && pkm.effects.has?(:snatch) }
         snatcher = logic.all_alive_battlers.max_by { |pkm| pkm != user && pkm.effects.has?(:snatch) ? pkm.spd : -1 }
         snatcher.effects.get(:snatch).kill
+        user.effects.add(Effects::Snatched.new(logic, user))
         logic.scene.display_message_and_wait(parse_text_with_2pokemon(19, 754, snatcher, user))
         return snatcher, [snatcher]
       end
+
       # Normal way
       return user, targets
     end

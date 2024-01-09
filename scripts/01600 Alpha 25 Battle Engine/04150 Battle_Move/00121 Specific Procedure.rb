@@ -90,5 +90,18 @@ module Battle
 
       return false
     end
+
+    # Internal procedure of the move
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param targets [Array<PFM::PokemonBattler>] expected targets
+    def proceed_internal_dancer(user, targets)
+      proceed_internal(user, targets)
+
+      last_move = user.move_history.last
+      last_successful_move = user.successful_move_history&.last
+
+      user.move_history.pop if last_move.move == self && last_move.current_turn?
+      user.successful_move_history.pop if last_successful_move&.move == self && last_successful_move.current_turn?
+    end
   end
 end

@@ -68,7 +68,7 @@ module Battle
       # Get all the controlled Pokemon
       # @return [Array<PFM::PokemonBattler>]
       def controlled_pokemon
-        0.upto(@scene.battle_info.vs_type - 1).map { |i| @scene.logic.battler(@bank, i) }.compact.select { |battler| battler.party_id == @party_id }
+        0.upto(@scene.battle_info.vs_type - 1).map { |i| @scene.logic.battler(@bank, i) }.compact.select { |battler| battler.party_id == @party_id && battler.alive? }
       end
 
       private

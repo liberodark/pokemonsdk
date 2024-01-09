@@ -17,7 +17,6 @@ module Battle
         return false unless super
 
         last_used_move = last_move(user, targets)
-        log_error("1111111111 #{last_used_move}")
         if !last_used_move || move_excluded?(last_used_move)
           show_usage_failure(user)
           return false

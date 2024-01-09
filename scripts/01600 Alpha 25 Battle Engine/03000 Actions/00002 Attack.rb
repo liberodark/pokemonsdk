@@ -14,9 +14,6 @@ module Battle
       # Tell if this action can ignore speed of the other pokemon
       # @return [Boolean]
       attr_accessor :ignore_speed
-      # List all the sub launcher that will use the same move due to their ability (Dancer)
-      # @return [Array]
-      attr_reader :sub_launchers
       # Create a new attack action
       # @param scene [Battle::Scene]
       # @param move [Battle::Move]
@@ -31,7 +28,6 @@ module Battle
         @target_position = target_position
         @pursuit_enabled = false
         @ignore_speed = false
-        @sub_launchers = []
       end
 
       # Compare this action with another
@@ -92,9 +88,35 @@ module Battle
         # Reset flee attempt count
         @scene.battle_info.flee_attempt_count = 0 if @launcher.from_party?
         @move.proceed(@launcher, @target_bank, @target_position)
-        @sub_launchers.each do |launcher|
-          @scene.visual.show_ability(launcher)
-          @move.dup.proceed(launcher, @target_bank, @target_position)
+
+        dancer_sub_launchers if @move.dance?
+      end
+
+      # Function that manages the effect of the dancer ability
+      def dancer_sub_launchers
+        return if @launcher.effects.has?(:snatched)
+
+        dancers = @scene.logic.all_alive_battlers.select { |battler| battler.has_ability?(:dancer) && battler != @launcher }
+        return if dancers.empty?
+
+        dancers = dancers.sort_by(&:spd)
+        dancers.each do |dancer|
+          next if dancer.dead?
+          next if dancer.effects.has?(:out_of_reach_base) || dancer.effects.has?(:flinch)
+
+          @scene.visual.show_ability(dancer)
+          @scene.visual.wait_for_animation
+          dancer.ability_effect&.activated = true
+
+          if @launcher.bank == dancer.bank && @launcher != target
+            @move.dup.proceed(dancer, @target_bank, @target_position)
+          elsif @launcher.bank != dancer.bank && @launcher != target && @move.db_symbol != :lunar_dance
+            @move.dup.proceed(dancer, @launcher.bank, @launcher.position)
+          else
+            @move.dup.proceed(dancer, dancer.bank, dancer.position)
+          end
+
+          dancer.ability_effect&.activated = false
         end
       end
 
