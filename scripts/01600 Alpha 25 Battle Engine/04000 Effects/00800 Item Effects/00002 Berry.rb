@@ -37,7 +37,7 @@ module Battle
         # Function that tests if berry cannot be consumed
         # @return [Boolean]
         def cannot_be_consumed?
-          return @logic.foes_of(@target).any? { |foe| foe.has_ability?(:unnerve) && foe.alive? }
+          return @logic.foes_of(@target).any? { |foe| %i[unnerve as_one].include?(foe.battle_ability_db_symbol) && foe.alive? }
         end
       end
     end

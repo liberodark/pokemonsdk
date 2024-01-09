@@ -1,7 +1,7 @@
 module Battle
   module Effects
     class Ability
-      class AsOne < ChillingNeigh
+      class AsOne < Moxie
         # Function called when a Pokemon has actually switched with another one
         # @param handler [Battle::Logic::SwitchHandler]
         # @param who [PFM::PokemonBattler] Pokemon that is switched out
@@ -10,25 +10,20 @@ module Battle
           return if with != @target
 
           handler.scene.visual.show_ability(with)
-          handler.scene.display_message_and_wait(parse_text(18, with.bank == 0 ? 183 : 182))
+          handler.scene.visual.wait_for_animation
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(59, 2062, with))
         end
 
-        private
-
+        # The stat that will be boosted
+        # @return [Symbol]
         def boosted_stat
-          return :atk
+          stat = :atk if @target.form == 1
+          stat = :ats if @target.form == 2
+
+          return stat
         end
       end
       register(:as_one, AsOne)
-
-      class AsOneBis < AsOne
-        private
-
-        def boosted_stat
-          return :ats
-        end
-      end
-      register(:as_one_bis, AsOneBis)
     end
   end
 end
