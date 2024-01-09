@@ -37,7 +37,10 @@ module Battle
         # @param move [Battle::Move, nil] Potential move used
         # @return [Boolean]
         def move_check?(move)
-          return move&.type_electric? || false
+          return false unless move&.type_electric?
+          return false if move.status? && move.db_symbol != :thunder_wave
+
+          return true
         end
       end
       register(:lightning_rod, LightningRod)
