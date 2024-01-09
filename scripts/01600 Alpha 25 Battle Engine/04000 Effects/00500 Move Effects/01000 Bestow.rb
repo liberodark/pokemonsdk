@@ -23,7 +23,7 @@ module Battle
       def give_back_item
         return if @receiver.bank != 0 && !@logic.battle_info.trainer_battle?
 
-        @logic.item_change_handler.change_item(item, true, @giver)
+        @logic.item_change_handler.change_item(@item, true, @giver)
         @logic.item_change_handler.change_item(:none, true, @receiver)
       end
     end
