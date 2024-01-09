@@ -4,7 +4,7 @@ module Battle
     class MagnetRise < PokemonTiedEffectBase
       include Mechanics::ForceFlying
 
-      # Make to pokemon flying in grounded? test
+      # Makes the grounded pokemon fly
       Mechanics::ForceFlying.register_force_flying_hook('PSDK flying: Magnet Rise', :magnet_rise)
 
       # Create a new Pokemon tied effect
@@ -13,22 +13,17 @@ module Battle
       # @param duration [Integer] (default: 5) duration of the move (including the current turn)
       def initialize(logic, pokemon, duration = 5)
         super(logic, pokemon)
-        force_flying_initialize(duration)
+
+        force_flying_initialize(pokemon, name, duration)
       end
 
       # Function giving the name of the effect
       # @return [Symbol]
       def name
-        :magnet_rise
+        return :magnet_rise
       end
 
       private
-
-      # Message displayed when the effect procs
-      # @return [String]
-      def on_proc_message
-        parse_text_with_pokemon(19, 658, @pokemon)
-      end
 
       # Message displayed when the effect wear off
       # @return [String]

@@ -126,10 +126,17 @@ module Battle
       next nil
     end
 
-    Move.register_single_type_multiplier_overwrite_hook('PSDK Grounded: Levitate & Air Balloon') do |target, _, type|
-      next 0 if type == data_type(:ground).id && !target.grounded?
+    Move.register_single_type_multiplier_overwrite_hook('PSDK Force Flying') do |target, _, type|
+      next if target.grounded? || type != data_type(:ground).id
 
-      next nil
+      next 0
+    end
+
+    Move.register_single_type_multiplier_overwrite_hook('PSDK Force Grounded') do |target, target_type, type|
+      next unless target.grounded? || type == data_type(:ground).id
+      next 1 if target_type == data_type(:flying).id
+
+      next data_type(type).hit(data_type(target_type).db_symbol)
     end
   end
 end

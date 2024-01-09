@@ -23,11 +23,12 @@ module Battle
     # @param target [PFM::PokemonBattler] target of the move
     # @return [Boolean]
     def bypass_chance_of_hit?(user, target)
-      return true if user.effects.get(:lock_on)&.target == target
-      return true if user.has_ability?(:no_guard) || target.has_ability?(:no_guard)
-      return true if db_symbol == :blizzard && $env.hail?
       return true if (status? && target == user) || accuracy <= 0
+      return true if user.has_ability?(:no_guard) || target.has_ability?(:no_guard)
+      return true if user.effects.get(:lock_on)&.target == target
+      return true if target.effects.has?(:telekinesis) && !ohko?
       return true if db_symbol == :toxic && user.type_poison?
+      return true if db_symbol == :blizzard && $env.hail?
 
       return false
     end

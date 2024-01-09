@@ -1,21 +1,32 @@
 module Battle
   class Move
-    # Telekinesis raises the target into the air for three turns, guaranteeing that all attacks against 
-    # the target (except OHKO moves) will hit, regardless of Accuracy or Evasion.
-    # @see https://pokemondb.net/move/telekinesis
-    # @see https://bulbapedia.bulbagarden.net/wiki/Telekinesis_(move)
-    # @see https://www.pokepedia.fr/L%C3%A9vikin%C3%A9sie
-    # @see [Effects::Telekinesis]
     class Telekinesis < Move
-      # Function that tests if the targets blocks the move
+      # @type [Array<Symbol>]
+      POKEMON_UNAFFECTED = %i[diglett dugtrio sandygast palossand]
+      # @type [Array<Symbol>]
+      EFFECTS_TO_CHECK = %i[telekinesis ingrain smack_down]
+      # Function that tests if the user is able to use the move
       # @param user [PFM::PokemonBattler] user of the move
-      # @param target [PFM::PokemonBattler] expected target
-      # @note Thing that prevents the move from being used should be defined by :move_prevention_target Hook.
-      # @return [Boolean] if the target evade the move (and is not selected)
-      def move_blocked_by_target?(user, target)
-        return true if super
-        return true if target.effects.has?(effect_name)
-        return false
+      # @param targets [Array<PFM::PokemonBattler>] expected targets
+      # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
+      # @return [Boolean] if the procedure can continue
+      def move_usable_by_user(user, targets)
+        return false unless super
+        return show_usage_failure(user) && false if EFFECTS_TO_CHECK.any? { |effect_name| targets.all? { |target| target.effects.has?(effect_name) } }
+        return show_usage_failure(user) && false if @logic.terrain_effects.has?(:gravity)
+      
+        return true
+      end
+
+      # Test if the target is immune
+      # @param user [PFM::PokemonBattler]
+      # @param target [PFM::PokemonBattler]
+      # @return [Boolean]
+      def target_immune?(user, target)
+        return true if target.db_symbol == :gengar && target.form == 30
+        return true if POKEMON_UNAFFECTED.include?(target.db_symbol)
+
+        return super
       end
 
       # Function that deals the effect to the pokemon
@@ -23,24 +34,25 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
-          next if target.effects.has?(effect_name)
+          next if EFFECTS_TO_CHECK.any? { |effect_name| target.effects.has?(effect_name) }
 
-          target.effects.add(create_effect(user, target))
+          target.effects.add(Effects::Telekinesis.new(logic, target, turn_count))
+          @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 1146, target))
         end
       end
 
       private
 
+      # Return the number of turns the effect works
+      # @return [Integer]
+      def turn_count
+        return 3
+      end
+
       # Name of the effect
       # @return [Symbol]
       def effect_name
-        :telekinesis
-      end
-
-      # Create the effect applied to the target
-      # @return [Effects::EffectBase]
-      def create_effect(user, target)
-        Effects::Telekinesis.new(logic, target, 4)
+        return :telekinesis
       end
     end
     Move.register(:s_telekinesis, Telekinesis)

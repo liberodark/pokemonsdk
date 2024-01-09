@@ -2,6 +2,16 @@ module Battle
   module Effects
     # Ingrain Effect
     class Ingrain < CantSwitch
+      # Create a new Pokemon tied effect
+      # @param logic [Battle::Logic]
+      # @param pokemon [PFM::PokemonBattler]
+      # @param origin [PFM::PokemonBattler] Pokemon that used the move dealing this effect
+      # @param move [Battle::Move] move responsive of the effect
+      def initialize(logic, pokemon, origin, move)
+        super
+
+        kill_flying_effects(pokemon)
+      end
       # Function called when testing if pokemon can switch (when he couldn't passthrough)
       # @param handler [Battle::Logic::SwitchHandler]
       # @param pokemon [PFM::PokemonBattler]
@@ -56,6 +66,12 @@ module Battle
       # @return [Integer]
       def hp_factor
         return 16
+      end
+
+      # kill effects that force battlers to fly
+      # @param battlers [PFM::PokemonBattler]
+      def kill_flying_effects(pokemon)
+        pokemon.effects.get(:magnet_rise)&.kill
       end
     end
   end

@@ -10,7 +10,7 @@ module Battle
       CAN_HIT_BY_TYPE = [
         %i[spikes toxic_spikes stealth_rock], # Phantom Force & Shadow Force
         %i[earthquake fissure magnitude spikes toxic_spikes stealth_rock], # Dig
-        %i[gust whirlwind thunder swift sky_uppercut twister smack_down hurricane thousand_arrows spikes toxic_spikes stealth_rock], # Fly & Bounce
+        %i[gust gravity whirlwind thunder swift sky_uppercut twister smack_down hurricane thousand_arrows spikes toxic_spikes stealth_rock], # Fly & Bounce
         %i[surf whirlpool spikes toxic_spikes stealth_rock], # Dive
         nil # Others moves
       ]
