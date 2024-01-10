@@ -16,13 +16,18 @@ module Battle
           # If you're interrupted (because the move isn't in the MOVES_PAUSED table), we must reset @turn otherwise we will do phase 2 next time
           @turn = nil unless user.effects.has?(&:force_next_move?)
 
-          user.add_move_to_history(self, targets)
           # Piece of proceed_internal_precheck(user, targets)
-          return unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
+          return user.add_move_to_history(self, targets) unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
 
           usage_message(user)
-          return scene.display_message_and_wait(parse_text(18, 106)) if targets.all?(&:dead?) && (on_move_failure(user, targets, :no_target) || true)
+
+          if targets.all?(&:dead?) && (on_move_failure(user, targets, :no_target) || true)
+            user.add_move_to_history(self, targets)
+            return scene.display_message_and_wait(parse_text(18, 106)) 
+          end
+          
           if pp == 0 && !(user.effects.has?(&:force_next_move?) && !@forced_next_move_decrease_pp)
+            user.add_move_to_history(self, targets)
             return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp) && nil
           end
 
@@ -59,11 +64,11 @@ module Battle
           kill_turn1_effects(user)
           # Piece of proceed_internal_precheck(user, targets)
           # => proceed_move_accuracy will call display message if failure
-          return unless !(actual_targets = proceed_move_accuracy(user, targets)).empty? || (on_move_failure(user, targets, :accuracy) && false)
+          return user.add_move_to_history(self, targets) unless !(actual_targets = proceed_move_accuracy(user, targets)).empty? || (on_move_failure(user, targets, :accuracy) && false)
 
           user, actual_targets = proceed_battlers_remap(user, actual_targets)
           actual_targets = accuracy_immunity_test(user, actual_targets) # => Will call $scene.dislay_message for each accuracy fail
-          return if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
+          return user.add_move_to_history(self, actual_targets) if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
 
           # Piece of super proceed_internal(user, targets)
           post_accuracy_check_effects(user, actual_targets)
@@ -78,6 +83,7 @@ module Battle
             deal_stats(user, actual_targets) &&
             deal_effect(user, actual_targets)
 
+          user.add_move_to_history(self, actual_targets)
           user.add_successful_move_to_history(self, actual_targets)
           @scene.visual.set_info_state(:move_animation)
           @scene.visual.wait_for_animation
