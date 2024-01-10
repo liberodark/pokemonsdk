@@ -56,6 +56,7 @@ module BattleUI
     def show_level_up(pokemon)
       original = pokemon.original
       original.hp = pokemon.hp unless pokemon.transform
+      pokemon.update_loyalty
       list = original.level_up_stat_refresh
       yield(original, list)
       level_up_message(pokemon)

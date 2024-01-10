@@ -96,11 +96,10 @@ module PFM
       exp_last = exp_list[@level]
       delta = exp_lvl - exp_last
       self.exp += (delta - (exp - exp_last))
-      update_loyalty if $game_temp.in_battle
       return true
     end
 
-    # Update the Pokemon loyalty
+    # Update the PFM::Pokemon loyalty
     def update_loyalty
       value = 3
       value = 4 if loyalty < 200
@@ -113,8 +112,6 @@ module PFM
     # Generate the level up stat list for the level up window
     # @return [Array<Array<Integer>>] list0, list1 : old, new basis value
     def level_up_stat_refresh
-      st = $game_temp.in_battle
-      $game_temp.in_battle = false
       list0 = [max_hp, atk_basis, dfe_basis, ats_basis, dfs_basis, spd_basis]
       @level += 1 if @level < PFM.game_state.level_max_limit
       self.exp = exp_list[@level] if @exp < exp_list[@level].to_i
@@ -122,7 +119,6 @@ module PFM
       hp_diff = list0[0] - @hp
       list1 = [max_hp, atk_basis, dfe_basis, ats_basis, dfs_basis, spd_basis]
       self.hp = (max_hp - hp_diff) if @hp > 0
-      $game_temp.in_battle = st
       return [list0, list1]
     end
 

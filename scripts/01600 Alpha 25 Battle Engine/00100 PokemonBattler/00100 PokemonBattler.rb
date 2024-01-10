@@ -518,6 +518,16 @@ module PFM
       end
     end
 
+    # Update the PFM::PokemonBattler loyalty when level up
+    def update_loyalty
+      value = 3
+      value = 4 if loyalty < 200
+      value = 5 if loyalty < 100
+      value *= 2 if data_item(captured_with).db_symbol == :luxury_ball
+      value *= 1.5 if item_db_symbol == :soothe_bell
+      self.loyalty += value.floor
+    end
+
     private
 
     # Copy the properties of the original pokemon
