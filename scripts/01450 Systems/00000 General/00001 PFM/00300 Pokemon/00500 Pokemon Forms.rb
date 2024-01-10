@@ -266,5 +266,6 @@ module PFM
     FORM_CALIBRATE[:morpeko] = proc { |reason| @form = reason == :battle ? 1 : 0 }
     FORM_CALIBRATE[:greninja] = proc { |reason| @form = reason == :battle ? 1 : 0 }
     FORM_CALIBRATE[:cramorant] = proc { |reason| @form = cramorant_form(reason) }
+    FORM_CALIBRATE[:palafin] = proc { |reason| @form = reason == :hero ? 1 : 0 }
   end
 end
