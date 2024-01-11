@@ -51,17 +51,26 @@ module Battle
         end
 
         def create_battlers
-          filename = @scene.battle_info.battlers[1][0]
-          @battler = Sprite.new(@viewport).set_bitmap(filename + '_sma', :battler)
+          filename1, filename2 = *determine_battler_filename(@scene.battle_info.battlers[1][0])
+          @battler = Sprite.new(@viewport).set_bitmap(filename1, :battler)
           @battler.set_position(-@battler.width / 4, @viewport.rect.height)
           @battler.set_origin(@battler.width / 2, @battler.height)
           @battler.z = @background.z
-          @battler2 = Sprite.new(@viewport).set_bitmap(filename + '_big', :battler)
+          @battler2 = Sprite.new(@viewport).set_bitmap(filename2, :battler)
           @battler2.set_position(@viewport.rect.width / 2, @viewport.rect.height)
           @battler2.set_origin(@battler2.width / 2, @battler2.height)
           @battler2.z = @background.z
           @battler2.opacity = 0
           @actor_sprites = actor_sprites
+        end
+
+        # Determine the right filenames for the transition sprites
+        # @param filename [String]
+        # @return [Array<String>]
+        def determine_battler_filename(filename)
+          filename1 = filename.gsub('_big', '') + '_sma'
+          filename2 = filename.include?('_big') ? filename : filename + '_big'
+          return filename1, filename2
         end
 
         def create_shader
@@ -151,5 +160,6 @@ module Battle
       end
     end
     TRAINER_TRANSITIONS[0] = Transition::Gen6Trainer
+    Visual.register_transition_resource(0, :artwork_full)
   end
 end

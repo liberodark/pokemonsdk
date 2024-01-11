@@ -42,6 +42,29 @@ module Battle
       @battlers.dig(bank, position)
     end
 
+    class << self
+      # Register the transition resource type for a specific transition
+      # @note If no resource type was registered, will send the default sprite one
+      # @param id [Integer] id of the transition
+      # @param resource_type [Symbol] the symbol of the resource_type (:sprite, :artwork_full, :artwork_small)
+      def register_transition_resource(id, resource_type)
+        return unless id.is_a?(Integer)
+        return unless resource_type.is_a?(Symbol)
+
+        TRANSITION_RESOURCE_TYPE[id] = resource_type
+      end
+
+      # Return the transition resource type for a given transition ID
+      # @param id [Integer] ID of the transition
+      # @return [Symbol]
+      def transition_resource_type_for(id)
+        resource_type = TRANSITION_RESOURCE_TYPE[id]
+        return :sprite unless resource_type
+
+        return resource_type
+      end
+    end
+
     private
 
     # Return the current battle transition
@@ -70,5 +93,9 @@ module Battle
     # List of Trainer Transitions
     # @return [Hash{ Integer => Class<Transition::Base> }]
     TRAINER_TRANSITIONS = {}
+
+    # List of the resource type for each transition
+    # @return [Hash{ Integer => Symbol }]
+    TRANSITION_RESOURCE_TYPE = []
   end
 end

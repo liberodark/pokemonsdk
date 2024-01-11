@@ -105,7 +105,7 @@ class Interpreter
 
   # Sequence to call before start trainer battle
   # @param phrase [String] the full speech of the trainer
-  # @param eye_bgm [String, Array] BGM to play during the speech
+  # @param eye_bgm [String, Array, Integer] String => filepath, Array => filepath + volume + pitch, Integer => music from trainer resources
   # @param exclamation_se [String, Array] SE to play when the trainer detect the player
   # @example Simple eye sequence
   #   trainer_eye_sequence('Hello!')
@@ -123,6 +123,7 @@ class Interpreter
         move_player_and_update_graphics
       end
     end
+    eye_bgm = determine_eye_sequence_bgm(eye_bgm)
     Audio.bgm_play(*eye_bgm)
     # We move to the trainer
     while (($game_player.x - character.x).abs + ($game_player.y - character.y).abs) > 1
@@ -162,5 +163,34 @@ class Interpreter
       $scene.spriteset.update
     end
     Graphics.update
+  end
+
+  # Return the filename of the BGM depending on the parameter
+  # @param eye_bgm [String, Array, Integer] String for direct filepath, integer for parsing the Studio database for the right file
+  # @return [Array] the array containing the filepath of the BGM, the volume and the pitch
+  def determine_eye_sequence_bgm(eye_bgm)
+    if eye_bgm.is_a?(Array)
+      return eye_bgm if eye_bgm.first.is_a?(String)
+      return DEFAULT_EYE_BGM unless (bgm_filepath = convert_trainer_id_to_bgm(eye_bgm.first))
+
+      eye_bgm[0] = bgm_filepath
+      return eye_bgm
+    end
+
+    return [eye_bgm, 100, 100] if eye_bgm.is_a?(String)
+    return DEFAULT_EYE_BGM unless (bgm_filepath = convert_trainer_id_to_bgm(eye_bgm))
+
+    return [bgm_filepath, 100, 100]
+  end
+
+  # Convert a trainer ID to something the Audio class will accept
+  # @param id [Integer] the Studio trainer ID of the trainer
+  # @return [String, nil] String if a music is properly setup, else nil
+  def convert_trainer_id_to_bgm(id)
+    return nil unless id.is_a?(Integer)
+    return nil if (trainer = data_trainer(id)).id != id
+    return nil if trainer&.resources&.encounter_bgm&.empty?
+
+    return "audio/bgm/#{trainer.resources.encounter_bgm}"
   end
 end

@@ -4,6 +4,7 @@ module Battle
       # Trainer transition of Red/Blue/Yellow games
       class RBYTrainer < Base
         # Constant giving the X displacement done by the sprites
+        # @return [Integer]
         DISPLACEMENT_X = 360
 
         private
@@ -126,6 +127,7 @@ module Battle
     end
 
     TRAINER_TRANSITIONS[2] = Transition::RBYTrainer
+    Visual.register_transition_resource(2, :sprite)
   end
 end
 

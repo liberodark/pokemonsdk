@@ -162,7 +162,6 @@ module Studio2PSDK
         obj = klass.allocate
         json_object.each do |key, value|
           next if key == 'klass'
-          next obj.instance_variable_set(:@battlers, value) if key == 'battlers'
 
           ivar_value = STRING_PROPERTIES.include?(key) ? value.to_s : json_to_psdk_studio_object(value)
           obj.instance_variable_set(INSTANCE_VARIABLE[key], ivar_value)
@@ -206,6 +205,7 @@ module Studio2PSDK
           Studio::Move::BattleStageMod.try_create(hash) ||
           Studio::Move::MoveStatus.try_create(hash) ||
           Studio::CreatureForm.try_create(hash) ||
+          Studio::Trainer::Resources.try_create(hash) ||
           Studio::Quest::Objective.try_create(hash) ||
           Studio::Quest::Earning.try_create(hash) ||
           Studio::Type::DamageTo.try_create(hash) ||
@@ -501,6 +501,34 @@ module Studio
         @character_shiny_f = hash['characterShinyF']
         @cry = hash['cry']
         @has_female = hash['hasFemale']
+      end
+    end
+  end
+
+  class Trainer
+    class Resources
+      class << self
+        def try_create(hash)
+          return unless (sprite = hash['sprite']).is_a?(String)
+          return unless (artwork_full = hash['artworkFull']).is_a?(String)
+          return unless (artwork_small = hash['artworkSmall']).is_a?(String)
+          return unless (character = hash['character']).is_a?(String)
+          return unless (encounter_bgm = hash['musics']['encounter']).is_a?(String)
+          return unless (victory_bgm = hash['musics']['victory']).is_a?(String)
+          return unless (defeat_bgm = hash['musics']['defeat']).is_a?(String)
+          return unless (battle_bgm = hash['musics']['bgm']).is_a?(String)
+
+          obj = allocate
+          obj.instance_variable_set(:@sprite, sprite)
+          obj.instance_variable_set(:@artwork_full, artwork_full)
+          obj.instance_variable_set(:@artwork_small, artwork_small)
+          obj.instance_variable_set(:@character, character)
+          obj.instance_variable_set(:@encounter_bgm, encounter_bgm)
+          obj.instance_variable_set(:@victory_bgm, victory_bgm)
+          obj.instance_variable_set(:@defeat_bgm, defeat_bgm)
+          obj.instance_variable_set(:@battle_bgm, battle_bgm)
+          return obj
+        end
       end
     end
   end

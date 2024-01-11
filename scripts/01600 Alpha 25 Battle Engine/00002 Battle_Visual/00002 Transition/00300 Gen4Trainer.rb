@@ -71,5 +71,6 @@ module Battle
     end
 
     TRAINER_TRANSITIONS[1] = Transition::Gen4Trainer
+    Visual.register_transition_resource(1, :sprite)
   end
 end

@@ -37,11 +37,9 @@ module Studio
     # @return [Array<Hash>]
     attr_reader :bag_entries
 
-    # Get the graphic battler of the trainer
-    # @return [String]
-    def battler
-      return @battlers.is_a?(String) ? @battlers : (@battlers.first || '__undefined__')
-    end
+    # Resources of the trainer
+    # @return [Resources]
+    attr_reader :resources
 
     # Get the class name of the trainer
     # @return [String]
@@ -53,6 +51,50 @@ module Studio
     # @return [String]
     def name
       return text_get(62, @id)
+    end
+
+    # Get the victory text of the trainer
+    def victory_text
+      return text_get(47, @id)
+    end
+
+    # Get the defeat text of the trainer
+    def defeat_text
+      return text_get(48, @id)
+    end
+
+    class Resources
+      # Sprite of the trainer (Gen 4/5 style)
+      # @return [String]
+      attr_reader :sprite
+
+      # Full artwork of the trainer (Gen 6+ style)
+      # @return [String]
+      attr_reader :artwork_full
+
+      # Small artwork of the trainer (Gen 6+ style)
+      # @return [String]
+      attr_reader :artwork_small
+
+      # Character of the trainer
+      # @return [String]
+      attr_reader :character
+
+      # BGM played when the enemy trainer sees the player (trainer_eye_sequence)
+      # @return [String]
+      attr_reader :encounter_bgm
+
+      # BGM played when the enemy trainer wins the battle
+      # @return [String]
+      attr_reader :victory_bgm
+
+      # BGM played when the enemy trainer loses the battle
+      # @return [String]
+      attr_reader :defeat_bgm
+
+      # BGM played during the battle
+      # @return [String]
+      attr_reader :battle_bgm
     end
   end
 end

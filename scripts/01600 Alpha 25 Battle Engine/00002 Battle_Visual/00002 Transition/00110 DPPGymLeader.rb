@@ -156,5 +156,6 @@ module Battle
     end
 
     TRAINER_TRANSITIONS[3] = Transition::DPPGymLeader
+    Visual.register_transition_resource(3, :sprite)
   end
 end

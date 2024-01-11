@@ -39,7 +39,10 @@ module Battle
       # Get the caught Pokemon
       # @return [PFM::PokemonBattler]
       attr_accessor :caught_pokemon
-      # Get the victory BGM
+      # Get the defeat BGM (defeat of the enemies)
+      # @return [String]
+      attr_accessor :defeat_bgm
+      # Get the victory BGM (victory of the enemies)
       # @return [String]
       attr_accessor :victory_bgm
       # Get the battle bgm
@@ -48,10 +51,10 @@ module Battle
       # Get the additionnal money
       # @return [Integer]
       attr_accessor :additional_money
-      # Get the victory text
+      # Get the victory texts of the enemy trainers
       # @return [Array<String>]
       attr_accessor :victory_texts
-      # Get the defeat text
+      # Get the defeat text of the enemy trainers
       # @return [Array<String>]
       attr_accessor :defeat_texts
 
@@ -71,7 +74,8 @@ module Battle
         @battle_id = hash[:battle_id] || -1
         @flee_attempt_count = 0
         @fishing = hash[:fishing] || false
-        @victory_bgm = hash[:victory_bgm] || guess_victory_bgm
+        @defeat_bgm = hash[:defeat_bgm] || guess_defeat_bgm
+        @victory_bgm = hash[:victory_bgm]
         @battle_bgm = hash[:battle_bgm] || guess_battle_bgm
         @additional_money = 0
         @victory_texts = hash[:victory_texts] || []
@@ -112,16 +116,19 @@ module Battle
         def add_trainer(battle_info, bank, id_trainer)
           trainer = data_trainer(id_trainer)
           klass = trainer.class_name
-          battler = trainer.battler
+          battler = trainer.resources
           name = trainer.name
           party = trainer.party.map(&:to_creature)
           bag = PFM::Bag.new
+          victory_text = trainer.victory_text.empty? ? nil : trainer.victory_text
+          defeat_text = trainer.victory_text.empty? ? nil : trainer.defeat_text
           trainer.bag_entries.each { |bag_entry| bag.add_item(bag_entry[:dbSymbol], bag_entry[:amount]) }
-          battle_info.add_party(bank, party, name, klass, battler, bag, nil, trainer.ai)
+          battle_info.add_party(bank, party, name, klass, battler, bag, nil, trainer.ai, victory_text, defeat_text)
           # We add the base money only for the enemy side (prevents the ally to have a base money)
           battle_info.base_moneys[bank] << trainer.base_money if bank == 1
           battle_info.trainer_is_couple = battle_info.parties[1].size == 1 if bank == 1 && trainer.vs_type == 2
           battle_info.battle_id = trainer.battle_id if trainer.battle_id != 0
+          change_battle_bgms(battle_info, trainer)
         end
 
         # Guess the AI level based on the base money (or a variable)
@@ -131,6 +138,19 @@ module Battle
           return $game_variables[Yuki::Var::AI_LEVEL] if $game_variables[Yuki::Var::AI_LEVEL] > 0
 
           return AI_LEVELS_BASE_MONEY.find_index { |base_money_limit| base_money < base_money_limit } || 1
+        end
+
+        # Give the new BGMs to the Battle_Info if the current BGMs are the guessed one
+        # This means the first trainer added will give its info to the Battle_Info
+        # @param battle_info [BattleInfo]
+        # @param trainer [Studio::Trainer]
+        def change_battle_bgms(battle_info, trainer)
+          t_battle_bgm = trainer.resources.battle_bgm
+          t_victory_bgm = trainer.resources.victory_bgm
+          t_defeat_bgm = trainer.resources.defeat_bgm
+          battle_info.battle_bgm = "audio/bgm/#{t_battle_bgm}" unless t_battle_bgm.empty? || battle_info.battle_bgm != battle_info.guess_battle_bgm
+          battle_info.defeat_bgm = "audio/bgm/#{t_defeat_bgm}" unless t_defeat_bgm.empty? || battle_info.defeat_bgm != battle_info.guess_defeat_bgm
+          battle_info.victory_bgm = "audio/bgm/#{t_victory_bgm}" unless t_victory_bgm.empty? || battle_info.victory_bgm
         end
       end
 
@@ -166,7 +186,7 @@ module Battle
         @classes[bank] ||= []
         @classes[bank] << klass if klass
         @battlers[bank] ||= []
-        @battlers[bank] << battler if battler
+        @battlers[bank] << determine_battler(battler) if battler
         @bags[bank] ||= []
         @bags[bank] << (bag || PFM::Bag.new)
         @base_moneys[bank] ||= []
@@ -177,6 +197,16 @@ module Battle
           @victory_texts << victory_text
           @defeat_texts << defeat_text
         end
+      end
+
+      # Determine the battler that should be sent back
+      # @param resources [String, Studio::Trainer::Resources] direct filepath of the battler, or the resource class
+      # @return [String]
+      def determine_battler(resources)
+        return resources if resources.is_a?(String)
+
+        resource_type = Visual::TRANSITION_RESOURCE_TYPE[$game_variables[Yuki::Var::TrainerTransitionType]]
+        return resources.send(resource_type)
       end
 
       # Get the trainer name of a battler
@@ -238,8 +268,6 @@ module Battle
         return battler_list.any? { |battler| logic.all_battlers.any? { |p| p != battler && p.encountered?(battler) } }
       end
 
-      private
-
       # Function that guess the battle bgm
       # @return [Array, String]
       def guess_battle_bgm
@@ -249,15 +277,17 @@ module Battle
         return ["audio/bgm/#{audio_file.name}", audio_file.volume, audio_file.pitch]
       end
 
-      # Function that guess the victory bgm
+      # Function that guess the defeat bgm (defeat of the enemy trainer)
       # @return [Array, String]
-      def guess_victory_bgm
+      def guess_defeat_bgm
         audio_file = $game_system.battle_end_me
-        filename = "audio/bgm/#{audio_file.name}"
+        filename = "audio/bgm/#{audio_file&.name}"
         return 'audio/bgm/xy_trainer_battle_victory' unless File.exist?(filename)
 
         return [filename, audio_file.volume, audio_file.pitch]
       end
+
+      private
 
       # Find the party index of a battler
       # @param battler [PFM::PokemonBattler]

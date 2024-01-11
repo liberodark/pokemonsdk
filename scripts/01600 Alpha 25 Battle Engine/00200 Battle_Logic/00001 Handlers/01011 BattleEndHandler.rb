@@ -130,13 +130,13 @@ module Battle
       ids = [$game_variables[Yuki::Var::Trainer_Battle_ID], $game_variables[Yuki::Var::Second_Trainer_ID]].select { |i| i > 0 }
       if handler.logic.battle_result == 0
         handler.logic.battle_phase_exp
-        Audio.bgm_play(*handler.scene.battle_info.victory_bgm)
+        Audio.bgm_play(*handler.scene.battle_info.defeat_bgm)
         # Defeat message
         handler.scene.battle_info.defeat_texts.each_with_index do |text, i|
           if text
             handler.scene.display_message_and_wait(text)
-          elsif ids[i]
-            handler.scene.display_message_and_wait(text_get(48, ids[i]))
+          #elsif ids[i] #@TEST
+          #  handler.scene.display_message_and_wait(text_get(48, ids[i]))
           end
         end
         # Add money
@@ -145,12 +145,14 @@ module Battle
           handler.scene.display_message_and_wait(parse_text(18, 60, PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => v.to_s))
         end
       else
+        victory_bgm = handler.scene.battle_info.victory_bgm
+        Audio.bgm_play(*victory_bgm) if victory_bgm
         # Victory message
         handler.scene.battle_info.victory_texts.each_with_index do |text, i|
           if text
             handler.scene.display_message_and_wait(text)
-          elsif ids[i]
-            handler.scene.display_message_and_wait(text_get(47, ids[i]))
+          #elsif ids[i] #@TEST
+          #  handler.scene.display_message_and_wait(text_get(47, ids[i]))
           end
         end
       end
