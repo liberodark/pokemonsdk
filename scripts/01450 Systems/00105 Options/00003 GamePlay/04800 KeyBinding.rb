@@ -170,6 +170,7 @@ module GamePlay
         ch = display_message_and_wait(ext_text(8998, 31), 1, ext_text(8998, 32), ext_text(8998, 33))
         return if ch == 0
       end
+      key_value = Sf::Keyboard.delocalize(key_value) if key_value >= 0
       Input::Keys[@ui.current_key][@ui.current_key_index] = key_value
       @ui.update
     ensure

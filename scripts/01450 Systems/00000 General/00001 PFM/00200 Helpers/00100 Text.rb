@@ -304,6 +304,7 @@ module PFM
       return GameKeys[0] unless key_id
       key_value = Input::Keys[key_id][0]
       return "J#{-(key_value + 1) / 32 + 1}K#{(-key_value - 1) % 32}" if key_value < 0
+      key_value = Sf::Keyboard.localize(key_value)
       keybd = Input::Keyboard
       keybd.constants.each do |key_name|
         return key_name.to_s if keybd.const_get(key_name) == key_value

@@ -191,5 +191,5 @@
     }
   ],
   "todohighlight.include": ["**/*.rb"],
-  "cSpell.words": ["PSDK"]
+  "cSpell.words": ["PSDK", "Scancode"]
 }

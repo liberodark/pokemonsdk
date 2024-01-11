@@ -29,7 +29,8 @@ module UI
     # @param key [Symbol] the Virtual Input Key.
     def find_key(key)
       key_array = Input::Keys[key]
-      key_array.each do |i|
+      key_array.each do |scan_code|
+        i = Sf::Keyboard.localize(scan_code)
         if (id = KeyIndex.index(i) || NUMPAD_KEY_INDEX.index(i))
           return set_rect_div(id % 10, id / 10, 10, 5)
         end
@@ -63,7 +64,7 @@ module UI
     # Find the key rect in the Sprite according to the input key requested
     # @param key [Symbol] the Virtual Input Key.
     def find_key(key)
-      key_val = Input::Keys[key][@index] || -1
+      key_val = Sf::Keyboard.localize(Input::Keys[key][@index] || -1)
       if (id = KeyIndex.index(key_val) || NUMPAD_KEY_INDEX.index(key_val))
         return set_rect_div(id % 10, id / 10, 10, 5)
       end

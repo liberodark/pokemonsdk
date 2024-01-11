@@ -34,25 +34,26 @@ module Input
   @y_joy_axis = Sf::Joystick::Y
   # Last text user entered
   @last_text = nil
+  s = Keyboard::Scancode
   # List of keys the input knows
   Keys = {
-    A: [Sf::Keyboard::C, Sf::Keyboard::Space, Sf::Keyboard::Enter, Sf::Keyboard::C, -1],
-    B: [Sf::Keyboard::X, Sf::Keyboard::Backspace, Sf::Keyboard::Escape, Sf::Keyboard::RShift, -2],
-    X: [Sf::Keyboard::V, Sf::Keyboard::Num3, Sf::Keyboard::Slash, Sf::Keyboard::V, -3],
-    Y: [Sf::Keyboard::B, Sf::Keyboard::Num1, Sf::Keyboard::Quote, Sf::Keyboard::B, -4],
-    L: [Sf::Keyboard::F, Sf::Keyboard::F, Sf::Keyboard::LBracket, Sf::Keyboard::F, -5],
-    R: [Sf::Keyboard::G, Sf::Keyboard::G, Sf::Keyboard::RBracket, Sf::Keyboard::G, -6],
-    L2: [Sf::Keyboard::R, Sf::Keyboard::R, Sf::Keyboard::R, Sf::Keyboard::R, -7],
-    R2: [Sf::Keyboard::T, Sf::Keyboard::T, Sf::Keyboard::T, Sf::Keyboard::T, -8],
-    L3: [Sf::Keyboard::Num4, Sf::Keyboard::Y, Sf::Keyboard::Y, Sf::Keyboard::Y, -9],
-    R3: [Sf::Keyboard::Num5, Sf::Keyboard::U, Sf::Keyboard::U, Sf::Keyboard::U, -10],
-    START: [Sf::Keyboard::J, Sf::Keyboard::RControl, Sf::Keyboard::J, Sf::Keyboard::J, -8],
-    SELECT: [Sf::Keyboard::H, Sf::Keyboard::LControl, Sf::Keyboard::H, Sf::Keyboard::L, -7],
-    HOME: [Sf::Keyboard::M, Sf::Keyboard::LSystem, Sf::Keyboard::RSystem, Sf::Keyboard::M, 255],
-    UP: [Sf::Keyboard::Up, Sf::Keyboard::Z, Sf::Keyboard::W, Sf::Keyboard::Numpad8, -13],
-    DOWN: [Sf::Keyboard::Down, Sf::Keyboard::S, Sf::Keyboard::S, Sf::Keyboard::Numpad2, -14],
-    LEFT: [Sf::Keyboard::Left, Sf::Keyboard::Q, Sf::Keyboard::A, Sf::Keyboard::Numpad4, -15],
-    RIGHT: [Sf::Keyboard::Right, Sf::Keyboard::D, Sf::Keyboard::D, Sf::Keyboard::Numpad6, -16]
+    A: [s::C, s::Space, s::Enter, s::NumpadEnter, -1],
+    B: [s::X, s::Backspace, s::Escape, s::LShift, -2],
+    X: [s::V, s::Menu, s::Numpad3, s::V, -3],
+    Y: [s::B, s::Numpad1, s::RShift, s::B, -4],
+    L: [s::F, s::Num1, s::Numpad7, s::F, -5],
+    R: [s::G, s::Num3, s::Numpad9, s::G, -6],
+    L2: [s::R, s::R, s::R, s::R, -7],
+    R2: [s::T, s::T, s::T, s::T, -8],
+    L3: [s::Num4, s::Num4, s::Y, s::Y, -9],
+    R3: [s::Num5, s::Num5, s::U, s::U, -10],
+    START: [s::J, s::J, s::Insert, s::Insert, -8],
+    SELECT: [s::H, s::H, s::Pause, s::Pause, -7],
+    HOME: [s::Semicolon, s::Semicolon, s::Home, s::Home, 255],
+    UP: [s::Up, s::W, s::Numpad8, s::Up, -13],
+    DOWN: [s::Down, s::S, s::Numpad2, s::Down, -14],
+    LEFT: [s::Left, s::A, s::Numpad4, s::Left, -15],
+    RIGHT: [s::Right, s::D, s::Numpad6, s::Right, -16]
   }
   # List of key ALIAS
   ALIAS_KEYS = { up: :UP, down: :DOWN, left: :LEFT, right: :RIGHT, a: :A, b: :B, x: :X, y: :Y, start: :START, select: :SELECT }
@@ -190,8 +191,8 @@ module Input
     # @param window [LiteRGSS::DisplayWindow]
     def register_events(window)
       window.on_text_entered = proc { |text| on_text_entered(text) }
-      window.on_key_pressed = proc { |key, alt| on_key_down(key, alt) }
-      window.on_key_released = proc { |key| on_key_up(key) }
+      window.on_key_pressed = proc { |_, scan, alt| on_key_down(scan, alt) }
+      window.on_key_released = proc { |_, scan| on_key_up(scan) }
       window.on_joystick_button_pressed = proc { |id, button| on_joystick_button_pressed(id, button) }
       window.on_joystick_button_released = proc { |id, button| on_joystick_button_released(id, button) }
       window.on_joystick_connected = proc { |id| on_joystick_connected(id) }
@@ -211,7 +212,7 @@ module Input
     # @param key [Integer]
     # @param alt [Boolean] if the alt key is pressed
     def on_key_down(key, alt = false)
-      return Graphics.swap_fullscreen if alt && key == Sf::Keyboard::Enter && Graphics.fullscreen_toggle_enabled
+      return Graphics.swap_fullscreen if alt && key == Sf::Keyboard::Scancode::Enter && Graphics.fullscreen_toggle_enabled
 
       vkey, = Keys.find { |_, v| v.include?(key) }
       return unless vkey

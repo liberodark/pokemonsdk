@@ -114,7 +114,7 @@ module LiteRGSS
     # @!method self.new(filename_or_memory, from_memory = nil)
     #   Create a new texture from existing texture data (PNG)
     #   @param filename_or_memory [String] texture data filename or content
-    #   @param from_memory [Boolean] if filename_or_memory is content 
+    #   @param from_memory [Boolean] if filename_or_memory is content
     # @!method self.new(width, height)
     #   Create a new empty texture
     #   @param width [Integer] width of the new texture
@@ -619,7 +619,7 @@ module LiteRGSS
   # Module that holds information about text fonts.
   #
   # You can define fonts loaded from a ttf file, you have to associate a default size, fill color and outline color to the font
-  # 
+  #
   # You can define outline color and fill_color without defining a font but do not create a text with a font_id using the id of these color, it could raise an error, use load_color instead.
   module Fonts
     # @!method self.load_font(font_id, filename)
@@ -1384,10 +1384,313 @@ module Sf
     F15 = sf::Keyboard::F15
     # Pause key
     Pause = sf::Keyboard::Pause
+    # All the supported scan codes
+    module Scancode
+      # AT-101 scancode for A key
+      A = sf::Keyboard::Scan::Scancode::A
+      # AT-101 scancode for B key
+      B = sf::Keyboard::Scan::Scancode::B
+      # AT-101 scancode for C key
+      C = sf::Keyboard::Scan::Scancode::C
+      # AT-101 scancode for D key
+      D = sf::Keyboard::Scan::Scancode::D
+      # AT-101 scancode for E key
+      E = sf::Keyboard::Scan::Scancode::E
+      # AT-101 scancode for F key
+      F = sf::Keyboard::Scan::Scancode::F
+      # AT-101 scancode for G key
+      G = sf::Keyboard::Scan::Scancode::G
+      # AT-101 scancode for H key
+      H = sf::Keyboard::Scan::Scancode::H
+      # AT-101 scancode for I key
+      I = sf::Keyboard::Scan::Scancode::I
+      # AT-101 scancode for J key
+      J = sf::Keyboard::Scan::Scancode::J
+      # AT-101 scancode for K key
+      K = sf::Keyboard::Scan::Scancode::K
+      # AT-101 scancode for L key
+      L = sf::Keyboard::Scan::Scancode::L
+      # AT-101 scancode for M key
+      M = sf::Keyboard::Scan::Scancode::M
+      # AT-101 scancode for N key
+      N = sf::Keyboard::Scan::Scancode::N
+      # AT-101 scancode for O key
+      O = sf::Keyboard::Scan::Scancode::O
+      # AT-101 scancode for P key
+      P = sf::Keyboard::Scan::Scancode::P
+      # AT-101 scancode for Q key
+      Q = sf::Keyboard::Scan::Scancode::Q
+      # AT-101 scancode for R key
+      R = sf::Keyboard::Scan::Scancode::R
+      # AT-101 scancode for S key
+      S = sf::Keyboard::Scan::Scancode::S
+      # AT-101 scancode for T key
+      T = sf::Keyboard::Scan::Scancode::T
+      # AT-101 scancode for U key
+      U = sf::Keyboard::Scan::Scancode::U
+      # AT-101 scancode for V key
+      V = sf::Keyboard::Scan::Scancode::V
+      # AT-101 scancode for W key
+      W = sf::Keyboard::Scan::Scancode::W
+      # AT-101 scancode for X key
+      X = sf::Keyboard::Scan::Scancode::X
+      # AT-101 scancode for Y key
+      Y = sf::Keyboard::Scan::Scancode::Y
+      # AT-101 scancode for Z key
+      Z = sf::Keyboard::Scan::Scancode::Z
+      # AT-101 scancode for Num1 key
+      Num1 = sf::Keyboard::Scan::Scancode::Num1
+      # AT-101 scancode for Num2 key
+      Num2 = sf::Keyboard::Scan::Scancode::Num2
+      # AT-101 scancode for Num3 key
+      Num3 = sf::Keyboard::Scan::Scancode::Num3
+      # AT-101 scancode for Num4 key
+      Num4 = sf::Keyboard::Scan::Scancode::Num4
+      # AT-101 scancode for Num5 key
+      Num5 = sf::Keyboard::Scan::Scancode::Num5
+      # AT-101 scancode for Num6 key
+      Num6 = sf::Keyboard::Scan::Scancode::Num6
+      # AT-101 scancode for Num7 key
+      Num7 = sf::Keyboard::Scan::Scancode::Num7
+      # AT-101 scancode for Num8 key
+      Num8 = sf::Keyboard::Scan::Scancode::Num8
+      # AT-101 scancode for Num9 key
+      Num9 = sf::Keyboard::Scan::Scancode::Num9
+      # AT-101 scancode for Num0 key
+      Num0 = sf::Keyboard::Scan::Scancode::Num0
+      # AT-101 scancode for Enter key
+      Enter = sf::Keyboard::Scan::Scancode::Enter
+      # AT-101 scancode for Escape key
+      Escape = sf::Keyboard::Scan::Scancode::Escape
+      # AT-101 scancode for Backspace key
+      Backspace = sf::Keyboard::Scan::Scancode::Backspace
+      # AT-101 scancode for Tab key
+      Tab = sf::Keyboard::Scan::Scancode::Tab
+      # AT-101 scancode for Space key
+      Space = sf::Keyboard::Scan::Scancode::Space
+      # AT-101 scancode for Hyphen key
+      Hyphen = sf::Keyboard::Scan::Scancode::Hyphen
+      # AT-101 scancode for Equal key
+      Equal = sf::Keyboard::Scan::Scancode::Equal
+      # AT-101 scancode for LBracket key
+      LBracket = sf::Keyboard::Scan::Scancode::LBracket
+      # AT-101 scancode for RBracket key
+      RBracket = sf::Keyboard::Scan::Scancode::RBracket
+      # AT-101 scancode for Backslash key
+      Backslash = sf::Keyboard::Scan::Scancode::Backslash
+      # AT-101 scancode for Semicolon key
+      Semicolon = sf::Keyboard::Scan::Scancode::Semicolon
+      # AT-101 scancode for Apostrophe key
+      Apostrophe = sf::Keyboard::Scan::Scancode::Apostrophe
+      # AT-101 scancode for Grave key
+      Grave = sf::Keyboard::Scan::Scancode::Grave
+      # AT-101 scancode for Comma key
+      Comma = sf::Keyboard::Scan::Scancode::Comma
+      # AT-101 scancode for Period key
+      Period = sf::Keyboard::Scan::Scancode::Period
+      # AT-101 scancode for Slash key
+      Slash = sf::Keyboard::Scan::Scancode::Slash
+      # AT-101 scancode for F1 key
+      F1 = sf::Keyboard::Scan::Scancode::F1
+      # AT-101 scancode for F2 key
+      F2 = sf::Keyboard::Scan::Scancode::F2
+      # AT-101 scancode for F3 key
+      F3 = sf::Keyboard::Scan::Scancode::F3
+      # AT-101 scancode for F4 key
+      F4 = sf::Keyboard::Scan::Scancode::F4
+      # AT-101 scancode for F5 key
+      F5 = sf::Keyboard::Scan::Scancode::F5
+      # AT-101 scancode for F6 key
+      F6 = sf::Keyboard::Scan::Scancode::F6
+      # AT-101 scancode for F7 key
+      F7 = sf::Keyboard::Scan::Scancode::F7
+      # AT-101 scancode for F8 key
+      F8 = sf::Keyboard::Scan::Scancode::F8
+      # AT-101 scancode for F9 key
+      F9 = sf::Keyboard::Scan::Scancode::F9
+      # AT-101 scancode for F10 key
+      F10 = sf::Keyboard::Scan::Scancode::F10
+      # AT-101 scancode for F11 key
+      F11 = sf::Keyboard::Scan::Scancode::F11
+      # AT-101 scancode for F12 key
+      F12 = sf::Keyboard::Scan::Scancode::F12
+      # AT-101 scancode for F13 key
+      F13 = sf::Keyboard::Scan::Scancode::F13
+      # AT-101 scancode for F14 key
+      F14 = sf::Keyboard::Scan::Scancode::F14
+      # AT-101 scancode for F15 key
+      F15 = sf::Keyboard::Scan::Scancode::F15
+      # AT-101 scancode for F16 key
+      F16 = sf::Keyboard::Scan::Scancode::F16
+      # AT-101 scancode for F17 key
+      F17 = sf::Keyboard::Scan::Scancode::F17
+      # AT-101 scancode for F18 key
+      F18 = sf::Keyboard::Scan::Scancode::F18
+      # AT-101 scancode for F19 key
+      F19 = sf::Keyboard::Scan::Scancode::F19
+      # AT-101 scancode for F20 key
+      F20 = sf::Keyboard::Scan::Scancode::F20
+      # AT-101 scancode for F21 key
+      F21 = sf::Keyboard::Scan::Scancode::F21
+      # AT-101 scancode for F22 key
+      F22 = sf::Keyboard::Scan::Scancode::F22
+      # AT-101 scancode for F23 key
+      F23 = sf::Keyboard::Scan::Scancode::F23
+      # AT-101 scancode for F24 key
+      F24 = sf::Keyboard::Scan::Scancode::F24
+      # AT-101 scancode for CapsLock key
+      CapsLock = sf::Keyboard::Scan::Scancode::CapsLock
+      # AT-101 scancode for PrintScreen key
+      PrintScreen = sf::Keyboard::Scan::Scancode::PrintScreen
+      # AT-101 scancode for ScrollLock key
+      ScrollLock = sf::Keyboard::Scan::Scancode::ScrollLock
+      # AT-101 scancode for Pause key
+      Pause = sf::Keyboard::Scan::Scancode::Pause
+      # AT-101 scancode for Insert key
+      Insert = sf::Keyboard::Scan::Scancode::Insert
+      # AT-101 scancode for Home key
+      Home = sf::Keyboard::Scan::Scancode::Home
+      # AT-101 scancode for PageUp key
+      PageUp = sf::Keyboard::Scan::Scancode::PageUp
+      # AT-101 scancode for Delete key
+      Delete = sf::Keyboard::Scan::Scancode::Delete
+      # AT-101 scancode for End key
+      End = sf::Keyboard::Scan::Scancode::End
+      # AT-101 scancode for PageDown key
+      PageDown = sf::Keyboard::Scan::Scancode::PageDown
+      # AT-101 scancode for Right key
+      Right = sf::Keyboard::Scan::Scancode::Right
+      # AT-101 scancode for Left key
+      Left = sf::Keyboard::Scan::Scancode::Left
+      # AT-101 scancode for Down key
+      Down = sf::Keyboard::Scan::Scancode::Down
+      # AT-101 scancode for Up key
+      Up = sf::Keyboard::Scan::Scancode::Up
+      # AT-101 scancode for NumLock key
+      NumLock = sf::Keyboard::Scan::Scancode::NumLock
+      # AT-101 scancode for NumpadDivide key
+      NumpadDivide = sf::Keyboard::Scan::Scancode::NumpadDivide
+      # AT-101 scancode for NumpadMultiply key
+      NumpadMultiply = sf::Keyboard::Scan::Scancode::NumpadMultiply
+      # AT-101 scancode for NumpadMinus key
+      NumpadMinus = sf::Keyboard::Scan::Scancode::NumpadMinus
+      # AT-101 scancode for NumpadPlus key
+      NumpadPlus = sf::Keyboard::Scan::Scancode::NumpadPlus
+      # AT-101 scancode for NumpadEqual key
+      NumpadEqual = sf::Keyboard::Scan::Scancode::NumpadEqual
+      # AT-101 scancode for NumpadEnter key
+      NumpadEnter = sf::Keyboard::Scan::Scancode::NumpadEnter
+      # AT-101 scancode for NumpadDecimal key
+      NumpadDecimal = sf::Keyboard::Scan::Scancode::NumpadDecimal
+      # AT-101 scancode for Numpad1 key
+      Numpad1 = sf::Keyboard::Scan::Scancode::Numpad1
+      # AT-101 scancode for Numpad2 key
+      Numpad2 = sf::Keyboard::Scan::Scancode::Numpad2
+      # AT-101 scancode for Numpad3 key
+      Numpad3 = sf::Keyboard::Scan::Scancode::Numpad3
+      # AT-101 scancode for Numpad4 key
+      Numpad4 = sf::Keyboard::Scan::Scancode::Numpad4
+      # AT-101 scancode for Numpad5 key
+      Numpad5 = sf::Keyboard::Scan::Scancode::Numpad5
+      # AT-101 scancode for Numpad6 key
+      Numpad6 = sf::Keyboard::Scan::Scancode::Numpad6
+      # AT-101 scancode for Numpad7 key
+      Numpad7 = sf::Keyboard::Scan::Scancode::Numpad7
+      # AT-101 scancode for Numpad8 key
+      Numpad8 = sf::Keyboard::Scan::Scancode::Numpad8
+      # AT-101 scancode for Numpad9 key
+      Numpad9 = sf::Keyboard::Scan::Scancode::Numpad9
+      # AT-101 scancode for Numpad0 key
+      Numpad0 = sf::Keyboard::Scan::Scancode::Numpad0
+      # AT-101 scancode for NonUsBackslash key
+      NonUsBackslash = sf::Keyboard::Scan::Scancode::NonUsBackslash
+      # AT-101 scancode for Application key
+      Application = sf::Keyboard::Scan::Scancode::Application
+      # AT-101 scancode for Execute key
+      Execute = sf::Keyboard::Scan::Scancode::Execute
+      # AT-101 scancode for ModeChange key
+      ModeChange = sf::Keyboard::Scan::Scancode::ModeChange
+      # AT-101 scancode for Help key
+      Help = sf::Keyboard::Scan::Scancode::Help
+      # AT-101 scancode for Menu key
+      Menu = sf::Keyboard::Scan::Scancode::Menu
+      # AT-101 scancode for Select key
+      Select = sf::Keyboard::Scan::Scancode::Select
+      # AT-101 scancode for Redo key
+      Redo = sf::Keyboard::Scan::Scancode::Redo
+      # AT-101 scancode for Undo key
+      Undo = sf::Keyboard::Scan::Scancode::Undo
+      # AT-101 scancode for Cut key
+      Cut = sf::Keyboard::Scan::Scancode::Cut
+      # AT-101 scancode for Copy key
+      Copy = sf::Keyboard::Scan::Scancode::Copy
+      # AT-101 scancode for Paste key
+      Paste = sf::Keyboard::Scan::Scancode::Paste
+      # AT-101 scancode for VolumeMute key
+      VolumeMute = sf::Keyboard::Scan::Scancode::VolumeMute
+      # AT-101 scancode for VolumeUp key
+      VolumeUp = sf::Keyboard::Scan::Scancode::VolumeUp
+      # AT-101 scancode for VolumeDown key
+      VolumeDown = sf::Keyboard::Scan::Scancode::VolumeDown
+      # AT-101 scancode for MediaPlayPause key
+      MediaPlayPause = sf::Keyboard::Scan::Scancode::MediaPlayPause
+      # AT-101 scancode for MediaStop key
+      MediaStop = sf::Keyboard::Scan::Scancode::MediaStop
+      # AT-101 scancode for MediaNextTrack key
+      MediaNextTrack = sf::Keyboard::Scan::Scancode::MediaNextTrack
+      # AT-101 scancode for MediaPreviousTrack key
+      MediaPreviousTrack = sf::Keyboard::Scan::Scancode::MediaPreviousTrack
+      # AT-101 scancode for LControl key
+      LControl = sf::Keyboard::Scan::Scancode::LControl
+      # AT-101 scancode for LShift key
+      LShift = sf::Keyboard::Scan::Scancode::LShift
+      # AT-101 scancode for LAlt key
+      LAlt = sf::Keyboard::Scan::Scancode::LAlt
+      # AT-101 scancode for LSystem key
+      LSystem = sf::Keyboard::Scan::Scancode::LSystem
+      # AT-101 scancode for RControl key
+      RControl = sf::Keyboard::Scan::Scancode::RControl
+      # AT-101 scancode for RShift key
+      RShift = sf::Keyboard::Scan::Scancode::RShift
+      # AT-101 scancode for RAlt key
+      RAlt = sf::Keyboard::Scan::Scancode::RAlt
+      # AT-101 scancode for RSystem key
+      RSystem = sf::Keyboard::Scan::Scancode::RSystem
+      # AT-101 scancode for Back key
+      Back = sf::Keyboard::Scan::Scancode::Back
+      # AT-101 scancode for Forward key
+      Forward = sf::Keyboard::Scan::Scancode::Forward
+      # AT-101 scancode for Refresh key
+      Refresh = sf::Keyboard::Scan::Scancode::Refresh
+      # AT-101 scancode for Stop key
+      Stop = sf::Keyboard::Scan::Scancode::Stop
+      # AT-101 scancode for Search key
+      Search = sf::Keyboard::Scan::Scancode::Search
+      # AT-101 scancode for Favorites key
+      Favorites = sf::Keyboard::Scan::Scancode::Favorites
+      # AT-101 scancode for HomePage key
+      HomePage = sf::Keyboard::Scan::Scancode::HomePage
+      # AT-101 scancode for LaunchApplication1 key
+      LaunchApplication1 = sf::Keyboard::Scan::Scancode::LaunchApplication1
+      # AT-101 scancode for LaunchApplication2 key
+      LaunchApplication2 = sf::Keyboard::Scan::Scancode::LaunchApplication2
+      # AT-101 scancode for LaunchMail key
+      LaunchMail = sf::Keyboard::Scan::Scancode::LaunchMail
+      # AT-101 scancode for LaunchMediaSelect key
+      LaunchMediaSelect = sf::Keyboard::Scan::Scancode::LaunchMediaSelect
+    end
     # @!method self.press?(key)
     #   Tell if the key is pressed
     #   @param key [Integer]
     #   @return [Boolean]
+    # @!method self.localize(scan_code)
+    #   Get the corresponding keyboard Key for the given scan_code
+    #   @param scan_code [Integer]
+    #   @return [Integer]
+    # @!method self.delocalize(key)
+    #   Get the corresponding keyboard scan_code for the given key
+    #   @param key [Integer]
+    #   @return [Integer]
   end
   # Joystick utility of SFML
   module Joystick

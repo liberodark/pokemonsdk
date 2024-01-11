@@ -166,7 +166,7 @@ module GamePlay
       @searching = ''
       @item_ids ||= each_data_item.map(&:id)
       @saved_keys = Input::Keys[:A].clone
-      Input::Keys[:A].clear << Input::Keyboard::Enter
+      Input::Keys[:A].clear << Sf::Keyboard::Scancode::Enter
       @pocket_name.text = ext_text(9000, 160)
       @item_list = []
       @last_index = 0
