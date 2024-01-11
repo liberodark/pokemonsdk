@@ -34,6 +34,7 @@ module Yuki
       # Get the side of the map
       # @return [Symbol]
       attr_reader :side
+
       # Variable containing tileset chunks
       @tileset_chunks = {}
 
@@ -88,7 +89,9 @@ module Yuki
         priority = @priorities[tile_id] || 0
         if tile_id < 384 # Autotile
           tileset = @autotiles[tile_id / 48 - 1]
-          tileset && layer.dig(priority, ty).set(tx, tileset, @rect.set((tile_id % 48) * 32, @autotile_counter[tile_id / 48] * 32))
+          src_x = tile_id % 48
+          src_y = @animated_tile_counters[tile_id / 48 - 1][src_x]&.count || 0
+          tileset && layer.dig(priority, ty).set(tx, tileset, @rect.set(src_x * 32, src_y * 32))
         else
           tile_id -= 384
           tileset = @tilesets[tile_id / 256]
@@ -133,13 +136,8 @@ module Yuki
 
       # Update the autotiles counter (for tilemap)
       def update_counters
-        @autotiles.each_with_index do |autotile, index|
-          next unless autotile
-          next if autotile.height <= 32
-
-          frame_count = autotile.height / 32
-          @autotile_counter[index + 1] = (@autotile_counter[index + 1] + 1) % frame_count
-        end
+        @unique_counters.each(&:update)
+        AnimatedTileCounter.last_update_counter_time = Graphics.current_time
       end
 
       private
@@ -163,7 +161,16 @@ module Yuki
         @tilesets = load_tileset_chunks(@tileset_name = name)
         # @type [Array<Texture>]
         @autotiles = @tileset.autotile_names.map { |aname| MapLinker.spriteset.load_autotile(aname) }
-        @autotile_counter = Array.new(@autotiles.size + 1, 0)
+        load_counters
+      end
+
+      def load_counters
+        # @type [Array<Array<Yuki::Tilemap::MapData::AnimatedTileCounter>>]
+        @animated_tile_counters = @tileset.autotile_names.map.with_index do |aname, index|
+          $data_animated_tiles[aname] || AnimatedTileCounter.defaults(@autotiles[index], aname)
+        end
+        # @type [Array<Yuki::Tilemap::MapData::AnimatedTileCounter>]
+        @unique_counters = @animated_tile_counters.flatten.uniq
       end
 
       # Load tileset chunks
@@ -174,9 +181,7 @@ module Yuki
         chunks&.compact!
         return chunks if chunks&.none?(&:disposed?)
 
-        unless RPG::Cache.tileset_exist?(name)
-          return (MapData.tileset_chunks[name] = [RPG::Cache.default_bitmap])
-        end
+        return (MapData.tileset_chunks[name] = [RPG::Cache.default_bitmap]) unless RPG::Cache.tileset_exist?(name)
 
         image = RPG::Cache.tileset_image(name)
         working_surface = Image.new(256, 1024)
@@ -252,6 +257,77 @@ module Yuki
         # Get tileset chunks
         # @return [Hash{filename => Array<Texture>}]
         attr_reader :tileset_chunks
+      end
+
+      class AnimatedTileCounter
+        # Hash of default AnimatedTileCounters
+        DEFAULT_COUNTERS = Hash.new { |h, k| h[k] = {} }
+
+        # @return [Integer]
+        attr_reader :count
+
+        # @return [Array<Integer>]
+        attr_reader :waits
+
+        # @return [Time]
+        attr_reader :last_update_time
+
+        # Create a new animated tile counter
+        # @param waits [Array<Integer>] list of number of frame to wait for each count
+        def initialize(waits)
+          @waits = waits
+          @count = 0
+          @waited_count = 0
+        end
+
+        # Update the count value
+        def update
+          # Tiny safety to prevent autotiles going wild when used in several maps
+          return if Graphics.current_time == @last_update_time
+
+          @last_update_time = Graphics.current_time
+          @waited_count += 1
+          if @waits[@count] <= @waited_count
+            @count = (@count + 1) % @waits.size
+            @waited_count = 0
+          end
+        end
+
+        # Synchronize itself with another animated tile
+        # @param animated_tile [AnimatedTileCounter]
+        def synchronize(animated_tile)
+          @count = animated_tile.count
+        end
+
+        class << self
+          # Set or get the last update counter time
+          attr_accessor :last_update_counter_time
+
+          # Get the default counters for the specified texture
+          # @param texture [Texture]
+          # @param texture_name [String]
+          # @return [Array<AnimatedTileCounter>]
+          def defaults(texture, texture_name)
+            default = DEFAULT_COUNTERS[texture_name]
+            return default if default
+
+            counter = new(Array.new((texture.height / 32).clamp(1, Float::INFINITY), 1))
+            default = (0...48).map { counter }
+
+            return DEFAULT_COUNTERS[texture_name] = default
+          end
+
+          # Synchronize all the counter based on their wait type
+          def synchronize_all
+            # @type [Array<Array<AnimatedTileCounter>>]
+            @grouped_values ||= $data_animated_tiles.values.flatten.group_by { |i| i.waits }.values
+            time = @last_update_counter_time
+            @grouped_values.each do |group|
+              sync_point = group.find { |i| i.last_update_time == time } || group[0]
+              group.each { |animated_tile| animated_tile.synchronize(sync_point) }
+            end
+          end
+        end
       end
     end
   end

@@ -85,6 +85,8 @@ class Scene_Title < GamePlay::BaseCleanUpdate
       thread_load('Data/CommonEvents.rxdata') { |d| $data_common_events = d }
       # @type [RPG::System]
       thread_load('Data/System.rxdata', clean: false) { |d| $data_system = d }
+      # @type [Hash<Array<Yuki::Tilemap::MapData::AnimatedTileCounter>>]
+      thread_load('Data/AnimatedTiles.rxdata', clean: false) { |d| $data_animated_tiles = d }
     end
     # @type [GameSystem]
     $game_system = Game_System.new

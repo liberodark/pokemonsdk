@@ -4,9 +4,11 @@ class Spriteset_Map
   # Retrieve the Game Player sprite
   # @return [Sprite_Character]
   attr_reader :game_player_sprite
+
   # Initialize a new Spriteset_Map object
   # @param zone [Integer, nil] the id of the zone where the player is
   def initialize(zone = nil)
+    @loaded_autotiles = []
     # Type of viewport the spriteset map uses
     viewport_type = :main
     exec_hooks(Spriteset_Map, :viewport_type, binding)
@@ -99,25 +101,38 @@ class Spriteset_Map
     Yuki::ElapsedTime.show(:spriteset_map, 'Creating tilemap object took')
     map_datas = Yuki::MapLinker.map_datas
     Yuki::MapLinker.spriteset = self
+    Yuki::Tilemap::MapData::AnimatedTileCounter.synchronize_all
+    last_loaded_autotiles = @loaded_autotiles
+    @loaded_autotiles = []
     map_datas.each(&:load_tileset)
     Yuki::ElapsedTime.show(:spriteset_map, 'Loading tilesets took')
     @tilemap.map_datas = map_datas
     @tilemap.reset
     Yuki::ElapsedTime.show(:spriteset_map, 'Resetting the tilemap took')
+    (last_loaded_autotiles - @loaded_autotiles).each(&:dispose)
   end
 
   # Attempt to load an autotile
   # @param filename [String] name of the autotile
   # @return [Texture] the bitmap of the autotile
   def load_autotile(filename)
+    autotile = load_autotile_internal(filename)
+    @loaded_autotiles << autotile unless @loaded_autotiles.include?(autotile)
+    return autotile
+  end
+
+  # Attempt to load an autotile
+  # @param filename [String] name of the autotile
+  # @return [Texture] the bitmap of the autotile
+  def load_autotile_internal(filename)
+    return RPG::Cache.autotile(filename) if filename.start_with?('_')
+
     target_filename = filename + '_._tiled'
     if RPG::Cache.autotile_exist?(target_filename)
       filename = target_filename
-    else
-      if !filename.empty? && RPG::Cache.autotile_exist?(filename)
-        Converter.convert_autotile("graphics/autotiles/#{filename}.png")
-        filename = target_filename
-      end
+    elsif !filename.empty? && RPG::Cache.autotile_exist?(filename)
+      Converter.convert_autotile("graphics/autotiles/#{filename}.png")
+      filename = target_filename
     end
     return RPG::Cache.autotile(filename)
   end
@@ -144,9 +159,11 @@ class Spriteset_Map
     if (character_sprites = @character_sprites)
       return recycle_characters(character_sprites)
     end
+
     @character_sprites = character_sprites = []
     $game_map.events.each_value do |event|
       next unless event.can_be_shown?
+
       sprite = Sprite_Character.new(@viewport1, event)
       event.particle_push
       character_sprites.push(sprite)
@@ -161,6 +178,7 @@ class Spriteset_Map
     i = -1
     $game_map.events.each_value do |event|
       next unless event.can_be_shown?
+
       character = character_sprites[i += 1]
       event.particle_push
       if character
@@ -210,8 +228,9 @@ class Spriteset_Map
   # @param from_warp [Boolean] if true, prepare a screenshot with some conditions and cancel the sprite dispose process
   # @return [Sprite, nil] a screenshot or nothing
   def dispose(from_warp = false)
-    return take_map_snapshot if $game_switches[Yuki::Sw::WRP_Transition] && $scene.class == Scene_Map && from_warp
+    return take_map_snapshot if $game_switches[Yuki::Sw::WRP_Transition] && $scene.instance_of?(Scene_Map) && from_warp
     return nil if from_warp
+
     @tilemap.dispose
     @panorama.dispose
     @fog.dispose

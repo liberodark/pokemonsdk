@@ -35,6 +35,9 @@ begin
   end
   pausable_util = /(update)/
   system('pause') if !PARGV[:util].empty? && PARGV[:util].any? { |util| util.match?(pausable_util) }
+  if File.exist?(fn = 'Data/Tiled/.jobs/map_jobs.json') && File.size(fn) > 6
+    ScriptLoader.load_tool('Tiled2Rxdata/Tiled2Rxdata')
+  end
 rescue StandardError
   display_game_exception('An error occured during Utility loading...')
 end
