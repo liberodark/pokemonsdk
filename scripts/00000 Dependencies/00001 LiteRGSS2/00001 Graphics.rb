@@ -151,7 +151,10 @@ module Graphics
       Input.register_events(@window)
       Mouse.register_events(@window)
       @window.on_lost_focus = proc { @has_focus = false }
-      @window.on_gained_focus = proc { @has_focus = true }
+      @window.on_gained_focus = proc do
+        @has_focus = true
+        FMOD::System.update if Object.const_defined?(:FMOD)
+      end
       @window.on_closed = proc do
         @window = nil
         next true

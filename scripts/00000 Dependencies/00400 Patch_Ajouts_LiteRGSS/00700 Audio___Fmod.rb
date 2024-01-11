@@ -29,6 +29,7 @@ if Object.const_defined?(:FMOD)
     # @param pitch [Integer] speed of the BGM in percent
     # @param fade_in [Boolean, Integer] if the BGM fades in when different (or time in ms)
     def bgm_play(file_name, volume = 100, pitch = 100, fade_in = true)
+      FMOD::System.update
       Thread.new do
         synchronize(@bgm_mutex) { bgm_play_internal(file_name, volume, pitch, fade_in) }
       end
@@ -125,6 +126,7 @@ if Object.const_defined?(:FMOD)
     # @param pitch [Integer] speed of the BGS in percent
     # @param fade_in [Boolean, Integer] if the BGS fades in when different (Integer = time to fade)
     def bgs_play(file_name, volume = 100, pitch = 100, fade_in = true)
+      FMOD::System.update
       Thread.new do
         synchronize(@bgs_mutex) { bgs_play_internal(file_name, volume, pitch, fade_in) }
       end
@@ -201,6 +203,7 @@ if Object.const_defined?(:FMOD)
     # @param pitch [Integer] speed of the ME in percent
     # @param preserve_bgm [Boolean] tell the function not to pause the bgm
     def me_play(file_name, volume = 100, pitch = 100, preserve_bgm = false)
+      FMOD::System.update
       Thread.new do
         synchronize(@bgm_mutex) do
           synchronize(@me_mutex) do
