@@ -85,6 +85,7 @@ class Scene_Title < GamePlay::BaseCleanUpdate
       thread_load('Data/CommonEvents.rxdata') { |d| $data_common_events = d }
       # @type [RPG::System]
       thread_load('Data/System.rxdata', clean: false) { |d| $data_system = d }
+      auto_fix_animated_tiles
       # @type [Hash<Array<Yuki::Tilemap::MapData::AnimatedTileCounter>>]
       thread_load('Data/AnimatedTiles.rxdata', clean: false) { |d| $data_animated_tiles = d }
     end
@@ -106,6 +107,14 @@ class Scene_Title < GamePlay::BaseCleanUpdate
       data = _clean_name_utf8(data) if clean
       yield(data)
     end
+  end
+
+  # Function that autofixes the missing animated tiles files on RMXP projects
+  def auto_fix_animated_tiles
+    return if PSDK_CONFIG.release?
+    return if File.exist?('Data/AnimatedTiles.rxdata')
+
+    File.binwrite('Data/AnimatedTiles.rxdata', Marshal.dump({}))
   end
 
   # Function that tells if all data was loaded
