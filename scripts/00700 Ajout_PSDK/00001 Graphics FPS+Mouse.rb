@@ -56,8 +56,8 @@ module Graphics
 
     def fps_update
       update_ruby_time(Time.new - @ruby_time)
-      fps_visibility(!@ingame_fps_text.visible) if !@last_f2 && Sf::Keyboard.press?(Sf::Keyboard::F2)
-      @last_f2 = Sf::Keyboard.press?(Sf::Keyboard::F2)
+      fps_visibility(!@ingame_fps_text.visible) if !@last_f2 && Input.press?(:L3)
+      @last_f2 = Input.press?(:L3)
       dt = @current_time - @last_fps_update_time
       if dt >= 1
         @last_fps_update_time = @current_time

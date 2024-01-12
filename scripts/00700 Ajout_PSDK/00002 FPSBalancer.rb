@@ -27,7 +27,7 @@ module Graphics
         @frame_to_execute = Graphics.frame_rate - @last_interval_index + current_index
       end
       @last_interval_index = current_index
-      if Sf::Keyboard.press?(Sf::Keyboard::F3)
+      if Input.press?(:R3)
         FPSBalancer.last_f3_up = Graphics.current_time
       elsif FPSBalancer.last_f3_up == Graphics.last_time
         FPSBalancer.globally_enabled = !FPSBalancer.globally_enabled

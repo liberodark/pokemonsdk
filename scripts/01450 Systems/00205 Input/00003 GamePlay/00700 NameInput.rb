@@ -67,7 +67,7 @@ module GamePlay
         ord = char.ord
         if char_valid?(ord)
           @name_input_ui.add_char(char)
-        elsif ord == 13 && !from_clipboard
+        elsif (ord == 13 || ord == 10) && !from_clipboard
           confirm_name
         elsif ord == 8
           @name_input_ui.remove_char
