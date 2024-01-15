@@ -16,37 +16,37 @@ module Battle
       def initialize(logic, db_symbol)
         super(logic)
         @db_symbol = db_symbol
-        @internal_counter = db_symbol == :none ? Float::INFINITY : 5
+        @internal_counter = Float::INFINITY
       end
 
       # Tell if the field terrain is none
       # @return [Boolean]
       def none?
-        @db_symbol == :none
+        return @db_symbol == :none
       end
 
       # Tell if the field terrain is electric
       # @return [Boolean]
       def electric?
-        @db_symbol == :electric_terrain
+        return @db_symbol == :electric_terrain
       end
 
       # Tell if the field terrain is grassy
       # @return [Boolean]
       def grassy?
-        @db_symbol == :grassy_terrain
+        return @db_symbol == :grassy_terrain
       end
 
       # Tell if the field terrain is psychic
       # @return [Boolean]
       def psychic?
-        @db_symbol == :psychic_terrain
+        return @db_symbol == :psychic_terrain
       end
 
       # Tell if the field terrain is psychic
       # @return [Boolean]
       def misty?
-        @db_symbol == :misty_terrain
+        return @db_symbol == :misty_terrain
       end
 
       class << self

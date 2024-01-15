@@ -13,7 +13,10 @@ module Battle
           return unless fterrain_handler.fterrain_appliable?(terrain_type)
 
           handler.scene.visual.show_ability(with)
-          fterrain_handler.fterrain_change(terrain_type)
+          handler.scene.visual.wait_for_animation
+
+          turn_count = with.hold_item?(:terrain_extender) ? 8 : 5
+          fterrain_handler.fterrain_change(terrain_type, turn_count)
         end
 
         private

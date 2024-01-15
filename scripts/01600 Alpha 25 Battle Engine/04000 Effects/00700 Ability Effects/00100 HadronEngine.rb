@@ -8,14 +8,14 @@ module Battle
         # @param with [PFM::PokemonBattler] Pokemon that is switched in
         def on_switch_event(handler, who, with)
           return if with != @target
+          return if handler.logic.field_terrain_effect.electric?
 
-          unless handler.logic.field_terrain_effect.electric?
-            handler.scene.visual.show_ability(with)
-            handler.scene.visual.wait_for_animation
-            handler.logic.fterrain_change_handler.fterrain_change(:electric_terrain)
-            handler.logic.field_terrain_effect.internal_counter += 3 if with.hold_item?(:terrain_extender)
-            # Add the corresponding text
-          end
+          handler.scene.visual.show_ability(with)
+          handler.scene.visual.wait_for_animation
+
+          turn_count = with.hold_item?(:terrain_extender) ? 8 : 5
+          handler.logic.fterrain_change_handler.fterrain_change(:electric_terrain, turn_count)
+          # Add the corresponding text
         end
 
         # Give the ats modifier over given to the Pokemon with this effect

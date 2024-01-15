@@ -33,11 +33,15 @@ module Battle
 
       # Function that actually change the terrain
       # @param fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
-      def fterrain_change(fterrain_type)
-        log_data("# fterrain_change(#{fterrain_type})")
+      # @param nb_turn [Integer] INFINITY if last_fterrain == :none, turn_count else
+      def fterrain_change(fterrain_type, turn_count = 5)
+        log_data("# fterrain_change : (#{fterrain_type})")
         last_fterrain = @logic.field_terrain || :none
+
         @logic.field_terrain = fterrain_type
-        @logic.field_terrain_effect # <= This will force the field terrain effect to be initialized to the right value
+        @logic.field_terrain_effect
+        @logic.field_terrain_effect.internal_counter = turn_count unless fterrain_type == :none
+
         show_fterrain_message(last_fterrain, fterrain_type)
         exec_hooks(FTerrainChangeHandler, :post_fterrain_change, binding)
       rescue Hooks::ForceReturn => e
@@ -47,10 +51,11 @@ module Battle
 
       # Function that test if the change is possible and perform the change if so
       # @param fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
-      def fterrain_change_with_process(fterrain_type)
+      # @param nb_turn [Integer] INFINITY if last_fterrain == :none, turn_count else
+      def fterrain_change_with_process(fterrain_type, turn_count = 5)
         return process_prevention_reason unless fterrain_appliable?(fterrain_type)
 
-        fterrain_change(fterrain_type)
+        fterrain_change(fterrain_type, turn_count)
       end
 
       private
