@@ -161,7 +161,7 @@ module Battle
     BattleEndHandler.register('PSDK wild victory') do |handler|
       next if $game_temp.trainer_battle || handler.logic.battle_result.between?(1, 2)
 
-      Audio.bgm_play(*handler.scene.battle_info.victory_bgm)
+      Audio.bgm_play(*handler.scene.battle_info.defeat_bgm)
       handler.logic.battle_phase_exp
       if (v = handler.scene.battle_info.additional_money) > 0
         PFM.game_state.add_money(v)

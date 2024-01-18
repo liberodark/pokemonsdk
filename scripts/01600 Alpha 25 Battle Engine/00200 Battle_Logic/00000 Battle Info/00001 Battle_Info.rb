@@ -39,15 +39,9 @@ module Battle
       # Get the caught Pokemon
       # @return [PFM::PokemonBattler]
       attr_accessor :caught_pokemon
-      # Get the defeat BGM (defeat of the enemies)
-      # @return [String]
-      attr_accessor :defeat_bgm
       # Get the victory BGM (victory of the enemies)
       # @return [String]
-      attr_accessor :victory_bgm
-      # Get the battle bgm
-      # @return [String]
-      attr_accessor :battle_bgm
+      attr_reader :victory_bgm
       # Get the additionnal money
       # @return [Integer]
       attr_accessor :additional_money
@@ -74,9 +68,9 @@ module Battle
         @battle_id = hash[:battle_id] || -1
         @flee_attempt_count = 0
         @fishing = hash[:fishing] || false
-        @defeat_bgm = hash[:defeat_bgm] || guess_defeat_bgm
+        @defeat_bgm = hash[:defeat_bgm]
         @victory_bgm = hash[:victory_bgm]
-        @battle_bgm = hash[:battle_bgm] || guess_battle_bgm
+        @battle_bgm = hash[:battle_bgm]
         @additional_money = 0
         @victory_texts = hash[:victory_texts] || []
         @defeat_texts = hash[:defeat_texts] || []
@@ -268,23 +262,64 @@ module Battle
         return battler_list.any? { |battler| logic.all_battlers.any? { |p| p != battler && p.encountered?(battler) } }
       end
 
+      # Get the defeat bgm music
+      # @return [String, Array] string if it's the filename only, Array if volume/pitch/fade are forwarded
+      def defeat_bgm
+        return (@defeat_bgm = guess_defeat_bgm) unless @defeat_bgm
+
+        return @defeat_bgm
+      end
+
+      # Set the defeat_bgm
+      # @param bgm [String, Array] String if it's the filename only, Array if volume/pitch/fade are forwarded
+      def defeat_bgm=(bgm)
+        return unless bgm.is_a?(String) || bgm.is_a?(Array)
+
+        @defeat_bgm = bgm
+      end
+
+      # Set the victory_bgm
+      # @param bgm [String, Array] String if it's the filename only, Array if volume/pitch/fade are forwarded
+      def victory_bgm=(bgm)
+        return unless bgm.is_a?(String) || bgm.is_a?(Array)
+
+        @victory_bgm = bgm
+      end
+
+      # Get the battle bgm music
+      # @return [String, Array] string if it's the filename only, Array if volume/pitch/fade are forwarded
+      def battle_bgm
+        return @battle_bgm ||= guess_battle_bgm unless @battle_bgm
+
+        return @battle_bgm
+      end
+
+      # Set the battle_bgm
+      # @param bgm [String, Array] String if it's the filename only, Array if volume/pitch/fade are forwarded
+      def battle_bgm=(bgm)
+        return unless bgm.is_a?(String) || bgm.is_a?(Array)
+
+        @battle_bgm = bgm
+      end
+
       # Function that guess the battle bgm
       # @return [Array, String]
       def guess_battle_bgm
         audio_file = $game_system.battle_bgm || $game_system.playing_bgm
-        return 'audio/bgm/rosa_wild_battle' if audio_file.name.empty?
+        return ["audio/bgm/#{audio_file.name}", audio_file.volume, audio_file.pitch] if audio_file && !audio_file.name&.empty? && File.exist?("audio/bgm/#{audio_file.name}")
+        return 'audio/bgm/rosa_wild_battle' unless trainer_battle?
 
-        return ["audio/bgm/#{audio_file.name}", audio_file.volume, audio_file.pitch]
+        return 'audio/bgm/xy_trainer_battle'
       end
 
-      # Function that guess the defeat bgm (defeat of the enemy trainer)
+      # Function that guess the defeat bgm (defeat of the enemy trainer/wild Pokemon)
       # @return [Array, String]
       def guess_defeat_bgm
         audio_file = $game_system.battle_end_me
-        filename = "audio/bgm/#{audio_file&.name}"
-        return 'audio/bgm/xy_trainer_battle_victory' unless File.exist?(filename)
+        return [audio_file.name, audio_file.volume, audio_file.pitch] if audio_file && !audio_file.name&.empty? && File.exist?("audio/bgm/#{audio_file.name}")
+        return 'audio/bgm/xy_wild_battle_victory' if !trainer_battle? && File.exist?('audio/bgm/xy_wild_battle_victory')
 
-        return [filename, audio_file.volume, audio_file.pitch]
+        return 'audio/bgm/xy_trainer_battle_victory'
       end
 
       private
