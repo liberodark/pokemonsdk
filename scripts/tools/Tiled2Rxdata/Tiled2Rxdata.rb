@@ -6,6 +6,8 @@ module Tiled2Rxdata
   TILESETS = load_data(TILESET_FILENAME)
   SYSTEM_TAGS_FILENAME = 'Data/PSDK/SystemTags.rxdata'
   SYSTEM_TAGS = load_data(SYSTEM_TAGS_FILENAME)
+  MAP_INFO_FILENAME = 'Data/MapInfos.rxdata'
+  MAP_INFO = load_data(MAP_INFO_FILENAME)
   ANIMATED_TILES_FILENAME = 'Data/AnimatedTiles.rxdata'
   ANIMATED_COUNTS = File.exist?(ANIMATED_TILES_FILENAME) ? load_data(ANIMATED_TILES_FILENAME) : {}
   STUDIO_ANIMATED_TILES_FILENAME = 'Data/Tiled/.jobs/animated_tiles.json'

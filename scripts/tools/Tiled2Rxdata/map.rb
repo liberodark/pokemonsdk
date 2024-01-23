@@ -57,9 +57,9 @@ module Tiled2Rxdata
     # Update the map metadata according to studio info
     def update_map_meta
       @data.bgm = RPG::AudioFile.new(@bgm, 100)
-      @data.autoplay_bgm = @bgm.empty?
+      @data.autoplay_bgm = !@bgm.empty?
       @data.bgs = RPG::AudioFile.new(@bgs, 100)
-      @data.autoplay_bgs = @bgs.empty?
+      @data.autoplay_bgs = !@bgs.empty?
       @data.encounter_step = @encounter_step
       @data.width = @width
       @data.height = @height
@@ -97,6 +97,8 @@ module Tiled2Rxdata
       tileset_id = Settings.get.tileset_id(@id)
       @data.tileset_id = tileset_id
       tileset = TILESETS[tileset_id]
+      map_info = MAP_INFO.find { |map| map[0] == @id }
+      tileset.name = map_info[1].name if map_info
       tileset.tileset_name = "_#{tileset_id}"
       tileset.autotile_names = Array.new(8, '')
       tileset.passages = passages = Table.new(384 + @translator.size)
