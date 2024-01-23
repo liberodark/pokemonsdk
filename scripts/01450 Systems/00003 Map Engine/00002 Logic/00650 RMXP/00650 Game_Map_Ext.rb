@@ -4,6 +4,9 @@ class Game_Map
   # If an event has been erased (helps removing it)
   # @return [Boolean]
   attr_accessor :event_erased
+  # The system_tags linked to each tiles of the tileset
+  # @return [Table]
+  attr_reader :system_tags
 
   # Retrieve the ID of the SystemTag on a specific tile
   # @param x [Integer] x position of the tile

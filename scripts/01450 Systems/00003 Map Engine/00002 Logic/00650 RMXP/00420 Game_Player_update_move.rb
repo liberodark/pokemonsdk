@@ -198,7 +198,12 @@ class Game_Player
   # Update the cracked floor when the player move on it
   def player_move_on_cracked_floor_update
     if (sys_tag = system_tag) == CrackedSoil
-      $game_map.data[@x, @y, 0] = $game_map.data[@x, @y, 0] + 1
+      tile_z = 0
+      2.downto(0) do |i|
+        tile_id = $game_map.data[x, y, i]
+        break tile_z = i if $game_map.system_tags[tile_id] == CrackedSoil
+      end
+      $game_map.data[@x, @y, tile_z] = $game_map.data[@x, @y, tile_z] + 1
       # The player falls if it has not the right speed and it's now a hole
       $game_temp.common_event_id = Game_CommonEvent::HOLE_FALLING if system_tag == Hole && @move_speed < 5
     elsif sys_tag == Hole
