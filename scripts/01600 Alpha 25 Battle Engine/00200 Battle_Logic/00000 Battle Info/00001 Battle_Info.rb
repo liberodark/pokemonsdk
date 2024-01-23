@@ -6,6 +6,18 @@ module Battle
       MONEY_ITEMS = %i[amulet_coin luck_incense]
       # List of base money giving AI levels (if strictly below the value)
       AI_LEVELS_BASE_MONEY = [16, 20, 36, 48, 80, 100, 200, Float::INFINITY]
+      # Information of the base trainer battle bgm
+      # @return [Array]
+      BASE_TRAINER_BATTLE_BGM = ['audio/bgm/xy_trainer_battle', 100, 100]
+      # Information of the base wild battle bgm
+      # @return [Array]
+      BASE_WILD_BATTLE_BGM = ['audio/bgm/rosa_wild_battle', 100, 100]
+      # Information of the base trainer defeat bgm
+      # @return [Array]
+      BASE_TRAINER_DEFEAT_BGM = ['audio/bgm/xy_trainer_battle_victory', 100, 100]
+      # Information of the base wild defeat bgm
+      # @return [Array]
+      BASE_WILD_DEFEAT_BGM = ['audio/bgm/xy_wild_battle_victory.ogg', 100, 100]
       # @return [Array<Array<String>>] List of the name of the battlers according to the bank & their position
       attr_accessor :names
       # @return [Array<Array<String>>] List of the classes of the battlers according to the bank & their position
@@ -306,20 +318,20 @@ module Battle
       # @return [Array, String]
       def guess_battle_bgm
         audio_file = $game_system.battle_bgm || $game_system.playing_bgm
-        return ["audio/bgm/#{audio_file.name}", audio_file.volume, audio_file.pitch] if audio_file && !audio_file.name&.empty? && File.exist?("audio/bgm/#{audio_file.name}")
-        return 'audio/bgm/rosa_wild_battle' unless trainer_battle?
+        return ["audio/bgm/#{audio_file.name}", audio_file.volume, audio_file.pitch] if audio_file && !audio_file.name.empty?
+        return BASE_WILD_BATTLE_BGM unless trainer_battle?
 
-        return 'audio/bgm/xy_trainer_battle'
+        return BASE_TRAINER_BATTLE_BGM
       end
 
       # Function that guess the defeat bgm (defeat of the enemy trainer/wild Pokemon)
       # @return [Array, String]
       def guess_defeat_bgm
         audio_file = $game_system.battle_end_me
-        return [audio_file.name, audio_file.volume, audio_file.pitch] if audio_file && !audio_file.name&.empty? && File.exist?("audio/bgm/#{audio_file.name}")
-        return 'audio/bgm/xy_wild_battle_victory' if !trainer_battle? && File.exist?('audio/bgm/xy_wild_battle_victory')
+        return [audio_file.name, audio_file.volume, audio_file.pitch] if audio_file && !audio_file.name.empty?
+        return BASE_WILD_DEFEAT_BGM if !trainer_battle? && File.exist?(BASE_WILD_DEFEAT_BGM[0])
 
-        return 'audio/bgm/xy_trainer_battle_victory'
+        return BASE_TRAINER_DEFEAT_BGM
       end
 
       private

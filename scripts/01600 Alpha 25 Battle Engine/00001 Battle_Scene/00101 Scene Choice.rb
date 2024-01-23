@@ -167,7 +167,7 @@ module Battle
     # @param ball [Studio::BallItem]
     def give_pokemon_procedure(battler, ball)
       pkmn = battler.original
-      Audio.bgm_play(*@battle_info.victory_bgm)
+      Audio.bgm_play(*@battle_info.defeat_bgm)
       message_window.blocking = true
       message_window.wait_input = true
       battler.captured_with = ball.id
