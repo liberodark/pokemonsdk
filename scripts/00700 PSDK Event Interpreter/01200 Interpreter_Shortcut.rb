@@ -420,4 +420,13 @@ class Interpreter
   def give_level_all(amount)
     $actors.size.times { |i| give_level(i, amount) }
   end
+
+  # Take a screenshot of the map and save it as a png
+  # @param filename [String]
+  # @param scale [Integer] the scale of the final screenshot (between 1 and 3, this helps to multiply 320*240 by a factor)
+  def take_screenshot(filename = 'map_screenshot%d.png', scale = 1)
+    return unless $scene.is_a?(Scene_Map)
+
+    Graphics.player_view_screenshot(filename, scale)
+  end
 end

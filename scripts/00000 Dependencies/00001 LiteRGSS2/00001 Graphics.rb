@@ -137,6 +137,30 @@ module Graphics
       return result_texture
     end
 
+    # Take a screenshot of what's currently displayed on the player's screen and save it as a png file
+    # @param filename [String] the filename of the png file (will automatically increment if filename contains '%d')
+    # @param scale [Integer] the scale of the final screenshot (between 1 and 3, this helps to multiply 320*240 by a factor)
+    def player_view_screenshot(filename, scale)
+      raise "You can't call player_view_screenshot in this scene!" unless $scene.respond_to?(:snap_to_bitmap)
+
+      scale = scale.is_a?(Integer) ? scale.clamp(1, 3) : 1
+      bmp = $scene.snap_to_bitmap
+      png = bmp.to_png
+      bmp.dispose
+      img = Image.new(png, true)
+      img2 = Image.new(img.width * scale, img.height * scale)
+      img2.stretch_blt!(img2.rect, img, img.rect)
+      id_screenshot = 0
+      if filename.include?('%d')
+        id_screenshot += 1 while File.exist?(format(filename, id_screenshot))
+        img2.to_png_file(format(filename, id_screenshot))
+      else
+        img2.to_png_file(filename)
+      end
+      img.dispose
+      img2.dispose
+    end
+
     # Start the graphics
     def start
       return if @window
