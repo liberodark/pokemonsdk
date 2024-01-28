@@ -21,6 +21,7 @@ module Battle
       battle_phase_switch_exp_check
       log_debug('battle_phase_switch_exp_check called')
       all_alive_battlers.each { |pokemon| pokemon.switching = false }
+      @scene.on_battle_turn_end
     end
 
     # Function that test the experience distribution

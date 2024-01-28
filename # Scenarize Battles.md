@@ -43,13 +43,13 @@ end
 
 This event will set the LightScreen & Reflect effect on enemy side for an infinite amount of turn.
 
-### `Battle::Scene.register_event(:battle_begin)`
+### `Battle::Scene.register_event(:pre_battle_begin)`
 
-This event is called when the player & enemy just sent out their Pokémon and right before the player chooses what to do. This allows you to add more stuff than just "X sends Y out". Example:
+This event is called after the "Trainer wants to fight" message, and just before every parties send their first Pokémon. This helps in scenarizing some dialogs before the real battle begins, display things, play some sounds, etc.
 
 ```ruby
 Battle::Scene.register_event(:battle_begin) do |scene|
-  scene.show_event_message('Ah Ah! I\'m so bad I need light screen & reflect effect on battle field by default!') # It's calling scene.visual.lock ;)
+  scene.show_event_message('The real battle has yet to begun, first we\'re going to talk!') # It's calling scene.visual.lock ;)
 end
 ```
 
@@ -91,6 +91,16 @@ module Battle
 end
 ```
 
+### `Battle::Scene.register_event(:battle_begin)`
+
+This event is called when the player & enemy just sent out their Pokémon and right before the player chooses what to do. This allows you to add more stuff than just "X sends Y out". Example:
+
+```ruby
+Battle::Scene.register_event(:battle_begin) do |scene|
+  scene.show_event_message('Ah Ah! I\'m so bad I need light screen & reflect effect on battle field by default!') # It's calling scene.visual.lock ;)
+end
+```
+
 ### `Battle::Scene.register_event(:trainer_dialog)`
 
 This event is called right after the player choosed what to do and right before the AI choose what to do. Example:
@@ -105,7 +115,7 @@ end
 
 ### `Battle::Scene.register_event(:AI_force_action)`
 
-This event gets called when the AI what to do. Since battle can involve several AI it will be called as much as the battle has AI. So right after the `scene` parameter you have the `ai` and `index` parameter giving you all the information about the AI you might force the action. 
+This event gets called when the AI what to do. Since battle can involve several AI it will be called as much as the battle has AI. So right after the `scene` parameter you have the `ai` and `index` parameter giving you all the information about the AI you might force the action.
 
 Since an AI can control more than one Pokémon, the event should return an array of actions if the actions are forced. Otherwise return nil and PSDK will use the default AI behavior.
 
@@ -126,6 +136,34 @@ end
 ```
 This event will force the AI to swicth the Pokemon to a random Pokémon of its own Party.
 
+### `Battle::Scene.register_event(:after_attack)`
+
+This event is called after each move's procedure completion. For example, if you want the enemy trainer to compliment you for landing a super effective hit, or landing a critical hit, you will want to use this event. Of course, this event isn't limited to the player and any and every party on the board can use this, as long as you correctly write your conditions.
+
+Example:
+```ruby
+# Register after attack message
+# This kind of event is called for all attacking Pokemon, after the end of any attack
+# This allows you to write messages like "OMG YOU SO LUCKY WHY YOU CRIT" or "OOF, SUPER EFFECTIVE MOVE BE SUPER EFFECTIVE"
+#
+# In this example, we'll make the enemy trainer talk when the player crit or hit a super effective move
+Battle::Scene.register_event(:after_attack) do |scene, launcher, move|
+  next if launcher.bank != 0
+  next if launcher.dead?
+  next if scene.instance_variable_get(:@super_effective_text) && scene.instance_variable_get(:@crit_message)
+
+  if move.instance_variable_get(:@effectiveness) >= 2 && !scene.instance_variable_get(:@super_effective_text)
+    scene.instance_variable_set(:@super_effective_text, true)
+    next scene.show_event_message("A well done attack you made there! I can see you have experience when it comes to targetting weaknesses!")
+  end
+
+  if move.instance_variable_get(:@critical) && !scene.instance_variable_get(:@crit_message)
+    scene.instance_variable_set(:@crit_text, true)
+    next scene.show_event_message("Oof, it must have dealt a ton of damages!")
+  end
+end
+```
+
 ### `Battle::Scene.register_event(:after_action_dialog)`
 
 This event is called after all move got proceed and right before the enemy sends out another Pokémon (in case of KO). If you want to do DPP gym leader event that's what you might need to use!
@@ -136,8 +174,33 @@ Battle::Scene.register_event(:after_action_dialog) do |scene|
   next if scene.artificial_intelligences[0].party.count { |pokemon| pokemon.alive? } > 1
   next if scene.instance_variable_get(:@event_last_dialog_executed)
 
-  scene.instance_variable_set(:@event_last_dialog_executed, true) # Ensure the event does not get called gain
+  scene.instance_variable_set(:@event_last_dialog_executed, true) # Ensure the event does not get called again
   scene.show_event_message('Oh no! I can no longer switch :(') # It's calling scene.visual.lock ;)
+end
+```
+
+### `Battle::Scene.register_event(:battle_turn_end)`
+
+This event is called right after every KO'd Pokémon during the turn are replaced by alive Pokémon. You'll want to use this event if you want to change the music for the last Pokémon (like in Gen 5 Gym battles), or you want the enemy trainer to boast about their Ace. In terms of utility, this is kind of similar to `:after_action_dialog`, just the timing is different (before switching vs after switching)
+
+Example:
+```ruby
+# Register after action dialog event
+# This kind of event is called right after all the actions got executed but right before ai send out Pokemon after KO
+# Don't forget to call scene.visual.lock otherwise you might get some troubles!
+#
+# In this example, we'll wait that the 1st AI party has no more Pokemon to switch and make the enemy say something about it
+Battle::Scene.register_event(:battle_turn_end) do |scene|
+  next if scene.logic.alive_battlers_without_check(1).size > 1
+  next if scene.instance_variable_get(:@event_last_dialog_executed)
+
+  scene.instance_variable_set(:@event_last_dialog_executed, true)
+  #
+  bgm_pos = Audio.bgm_position
+  bgm_name = Audio.instance_variable_get(:@bgm_name)
+  Audio.bgm_play(bgm_name, 100, 110)
+  Audio.bgm_position = bgm_pos
+  scene.show_event_message("You are pushing me to my limits! But I'm not going to give up! Here's my best Pokémon!")
 end
 ```
 

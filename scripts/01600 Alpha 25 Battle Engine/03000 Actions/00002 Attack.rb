@@ -88,6 +88,7 @@ module Battle
         # Reset flee attempt count
         @scene.battle_info.flee_attempt_count = 0 if @launcher.from_party?
         @move.proceed(@launcher, @target_bank, @target_position)
+        @scene.on_after_attack(@launcher, @move)
 
         dancer_sub_launchers if @move.dance?
       end

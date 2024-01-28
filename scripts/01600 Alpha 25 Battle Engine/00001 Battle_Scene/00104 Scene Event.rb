@@ -13,6 +13,26 @@ module Battle
       end
     end
 
+    # Call the after_attack Battle Event
+    # This event is called at the end of each attack
+    # @param launcher [PFM::PokemonBattler]
+    # @param move [Battle::Move]
+    def on_after_attack(launcher, move)
+      call_event(:after_attack, launcher, move)
+    end
+
+    # Call the pre_battle_begin Battle Event
+    # This event is called right after the "Trainer wants to battle" text
+    def on_pre_battle_begin
+      call_event(:pre_battle_begin)
+    end
+
+    # Call the battle_phase_end Battle Event
+    # This event is called at the very end of a turn (after the switching in of new mons)
+    def on_battle_turn_end
+      call_event(:battle_turn_end)
+    end
+
     private
 
     # Register an event for the battle
