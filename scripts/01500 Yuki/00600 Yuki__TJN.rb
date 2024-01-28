@@ -62,6 +62,32 @@ module Yuki
         Tone.new(-60, -60, -14, 0), # 21
         Tone.new(-65, -65, -13, 0), # 22
         Tone.new(-70, -70, -10, 0) # 23
+      ],
+      platinum_daynight: [
+        Tone.new(-52, -50, -5, 90), # 0
+        Tone.new(-52, -50, -5, 90), # 1
+        Tone.new(-52, -50, -5, 90), # 2
+        Tone.new(-52, -50, -5, 90), # 3
+        Tone.new(-40, -37, -5, 80), # 4
+        Tone.new(-15, -25, 0, 50), # 5
+        Tone.new(-15, -25, 0, 50), # 6
+        Tone.new(28, 16, -25, 25), # 7
+        Tone.new(0, 0, 0, 0), # 8
+        Tone.new(0, 0, 0, 0), # 9
+        Tone.new(0, 0, 0, 0), # 10
+        Tone.new(0, 0, 0, 0), # 11
+        Tone.new(0, 0, 0, 0), # 12
+        Tone.new(0, 0, 0, 0), # 13
+        Tone.new(0, 0, 0, 0), # 14
+        Tone.new(0, 0, 0, 0), # 15
+        Tone.new(0, 0, 0, 0), # 16
+        Tone.new(0, -10, -35, 20), # 17
+        Tone.new(0, -38, -58, 45), # 18
+        Tone.new(-35, -40, -32, 75), # 19
+        Tone.new(-48, -46, -12, 90), # 20
+        Tone.new(-48, -46, -12, 90), # 21
+        Tone.new(-48, -46, -12, 90), # 22
+        Tone.new(-48, -46, -12, 90) # 23
       ]
     }
     # The different tones
