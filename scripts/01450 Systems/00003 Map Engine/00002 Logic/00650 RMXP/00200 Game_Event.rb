@@ -18,6 +18,8 @@ class Game_Event < Game_Character
   NO_SPRITE_TAG = '[sprite=off]'
   # Tag that give the event an symbol alias
   SYMBOL_ALIAS_TAG = /\[alias=([a-z\-0-9\-_]+)\]/
+  # Tag that detect z=
+  SET_Z_TAG = /\[z=([0-9\-]+)\]/
   # Tag enabling reflection
   REFLECTION_TAG = '[reflection=on]'
   # @return [Integer, nil] Type of trigger for the event (0: Action key, 1: Player contact, 2: Event contact, 3: Autorun, 4: Parallel process)
@@ -68,6 +70,7 @@ class Game_Event < Game_Character
     @invisible_event = (name == INVISIBLE_EVENT_NAME || name.include?(INVISIBLE_EVENT_TAG))
     name.sub(SYMBOL_ALIAS_TAG) { @sym_alias = $1.to_sym }
     @reflection_enabled = name.include?(REFLECTION_TAG)
+    name.sub(SET_Z_TAG) { @z = $1.to_i }
   end
 
   # Tell if the event can execute in parallel process or automatic process

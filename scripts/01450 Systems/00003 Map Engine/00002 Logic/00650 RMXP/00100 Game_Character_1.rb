@@ -151,7 +151,7 @@ class Game_Character
     sys_tag = system_tag
     unless skip_bridges
       if BRIDGE_TILES.include?(sys_tag)
-        @z = $game_map.priorities[$game_map.get_tile(@x, @y)].to_i + 1
+        @z = $game_map.priorities[$game_map.get_tile(@x, @y)].to_i + 1 unless self.is_a?(Game_Event) && self.event&.name&.include?('z=')
       elsif ZTag.include?(sys_tag)
         @z = ZTag.index(sys_tag)
       else
