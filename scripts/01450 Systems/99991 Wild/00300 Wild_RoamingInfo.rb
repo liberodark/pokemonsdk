@@ -77,7 +77,7 @@ module PFM
   end
 end
 # The procs of Roaming Pokemon.
-# 
+#
 # The proc takes the Wild_RoamingInfo in parameter and change the informations.
 ::PFM::Wild_RoamingInfo::RoamingProcs = [
   proc do |infos|
@@ -86,7 +86,7 @@ end
     infos.tag = 1
   end,
   proc do |infos|
-    maps = [25, 46, 35, 27] # Maps where the pokemon can spawn
+    maps = [5, 20] # Maps where the pokemon can spawn
     if (infos.map_id == $game_map.map_id && infos.spotted) || infos.map_id == -1
       infos.map_id = (maps - [infos.map_id]).sample
       infos.spotted = false
