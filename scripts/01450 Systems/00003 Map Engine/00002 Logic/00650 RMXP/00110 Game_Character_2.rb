@@ -38,6 +38,7 @@ class Game_Character
     @z = 1
     @__bridge = nil
     @state = :walking
+    $game_switches[Yuki::Sw::CantLeaveBike] = false
     leave_surfing_state if @surfing
     @in_swamp = false
     leave_swamp_state if @state == :swamp

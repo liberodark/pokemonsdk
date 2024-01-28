@@ -75,6 +75,8 @@ module Yuki
 
     # Coin case amount of coin
     CoinCase = 41
+    # Soot sack: amount of volcanic ash in the bag
+    SootSack = 42
 
     # Index of the Pokemon that use its skill in the Party_Menu
     Party_Menu_Sel = 43

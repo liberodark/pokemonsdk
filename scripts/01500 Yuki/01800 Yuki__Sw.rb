@@ -127,6 +127,8 @@ module Yuki
 
     # Disable player detection by all the detection methods
     Env_Detection = 75
+    # Tells if the player can't currently leave the bike (useful for Cycling Road)
+    CantLeaveBike = 76
 
     # Enable/disable if pokemon die from poison in overworld
     OW_Poison = 77
