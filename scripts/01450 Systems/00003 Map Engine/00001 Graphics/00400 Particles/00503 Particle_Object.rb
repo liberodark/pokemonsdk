@@ -162,6 +162,7 @@ module Yuki
         else
           @sprite.z = (screen_z - 1)
         end
+        @sprite.z = @set_z if @set_z
         @sprite.y = (@sprite.y * @tile_zoom).floor
         @sprite.ox = @ox + @ox_off
         @sprite.oy = @oy + @oy_off
@@ -169,6 +170,7 @@ module Yuki
         @sprite.x = @character.screen_x * @tile_zoom
         @sprite.y = @character.screen_y * @tile_zoom
         @sprite.z = (@character.screen_z(0) + @add_z)
+        @sprite.z = @set_z if @set_z
         @sprite.ox = @ox + @ox_off
         @sprite.oy = @oy + @oy_off
       end
