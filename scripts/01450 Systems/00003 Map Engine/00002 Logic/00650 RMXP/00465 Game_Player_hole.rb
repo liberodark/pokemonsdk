@@ -1,7 +1,7 @@
 class Game_Player
-  # @return [Hash{map_id=>Array<map_id, offset_x, offset_y>}] list of falling hole info 
+  # @return [Hash{map_id=>Array<map_id, offset_x, offset_y>}] list of falling hole info
   FALLING_HOLES = {
-    13 => [13, 1, 0]
+    7 => [7, 0, 35]
   }
 
   # Function that makes the player warp based on hole data for each map
