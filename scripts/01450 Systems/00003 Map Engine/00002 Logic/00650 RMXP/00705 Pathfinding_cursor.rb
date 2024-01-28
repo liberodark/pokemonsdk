@@ -118,7 +118,7 @@ module Pathfinding
       end
       return false
     end
-    
+
     # Update the slope values when moving to left
     def slope_check_left
       front_sys_tag = front_system_tag
@@ -167,7 +167,7 @@ module Pathfinding
       return false
     end
 
-    
+
     # Update the slope values when moving to right, and return y slope modifier
     # @return [Integer]
     def slope_check_right
@@ -320,6 +320,7 @@ module Pathfinding
       if @surfing
         return false unless SurfLTag.include?(sys_tag)
         return false if sys_tag == WaterFall
+        return false if sys_tag == Whirlpool
       end
       return true
     end

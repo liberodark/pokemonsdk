@@ -3,7 +3,7 @@ class Game_Character
   SurfTag = [TPond, TSea, RapidsL, RapidsR, RapidsU, RapidsD]
   # SystemTags that does not trigger leaving water
   SurfLTag = SurfTag + [BridgeUD, BridgeRL, RapidsL, RapidsR, RapidsU, RapidsD, AcroBikeRL, AcroBikeUD, WaterFall,
-                        JumpD, JumpL, JumpR, JumpU, TUnderWater]
+                        JumpD, JumpL, JumpR, JumpU, TUnderWater, Whirlpool]
   # Is the tile in front of the character passable ?
   # @param x [Integer] x position on the Map
   # @param y [Integer] y position on the Map
@@ -34,6 +34,7 @@ class Game_Character
       return false unless $game_player.through || @character_name.empty?
     end
 
+    return false if @sliding && system_tag == StopSlide
     return false unless follower_check?(new_x, new_y, z)
 
     return true
@@ -76,9 +77,11 @@ class Game_Character
   # @return [Boolean] if the tile is passable according to the surf rules
   def passage_surf_check?(sys_tag)
     return false if !@surfing && SurfTag.include?(sys_tag)
+
     if @surfing
       return false unless SurfLTag.include?(sys_tag)
       return false if sys_tag == WaterFall
+      return false if sys_tag == Whirlpool
     end
     return true
   end

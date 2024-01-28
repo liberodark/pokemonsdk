@@ -27,12 +27,16 @@ module GameData
     TSand = gen 6, 1
     # Wet sand SystemTag, used to display a particle when walking on it, same purpose as TSand.
     TWetSand = gen 2, 0
+    # Define a tile that acts like a puddle
+    Puddle = gen 3, 2
     # Pond SystemTag, used to start Pond/River Wild Pokemon Battle.
     TPond = gen 7, 1
     # Sea SystemTag, used to start Sea/Ocean Wild Pokemon Battle.
     TSea = gen 5, 2
     # Under water SystemTag, used to start Under water Wild Pokemon Battle.
     TUnderWater = gen 6, 2
+    # Define a tag that acts like a whirlpool
+    Whirlpool = gen 5, 7
     # Snow SystemTag, used to start Snow Wild Pokemon Battle.
     TSnow = gen 7, 2
     # SystemTag that is used by the pathfinding system as a road.
@@ -107,6 +111,8 @@ module GameData
     RocketRU = gen 6, 6
     # Defines a tile that force the character to move Right until he hits a wall. (With Rotation)
     RocketRR = gen 7, 6
+    # Defines a tile that force the character to be stopped when sliding on it
+    StopSlide = gen 1, 2
 
     # Gives the db_symbol of the system tag
     # @param system_tag [Integer]
@@ -135,6 +141,8 @@ module GameData
         return :ice
       when HeadButt
         return :headbutt
+      when Puddle
+        return :puddle
       else
         return :regular_ground
       end

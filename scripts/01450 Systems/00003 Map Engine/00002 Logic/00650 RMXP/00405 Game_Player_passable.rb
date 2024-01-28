@@ -69,6 +69,10 @@ class Game_Player
         $game_temp.common_event_id = Game_CommonEvent::WATERFALL
         return false
       end
+      if sys_tag == Whirlpool
+        $game_temp.common_event_id = Game_CommonEvent::WHIRLPOOL
+        return false
+      end
     end
     return true
   end

@@ -16,6 +16,8 @@ class Game_CommonEvent
   HEADBUTT = 20
   # @return [Integer] ID of the waterfall common event
   WATERFALL = 26
+  # @return [Integer] ID of the whirlpool common event
+  WHIRLPOOL = 28
   # @return [Integer] ID of the dive common event
   DIVE = 29
   # Initialize the Game_CommonEvent

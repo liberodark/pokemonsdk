@@ -155,7 +155,8 @@ class Game_Map
     GameData::SystemTags::RapidsL => :water,
     GameData::SystemTags::RapidsD => :water,
     GameData::SystemTags::RapidsU => :water,
-    GameData::SystemTags::RapidsR => :water
+    GameData::SystemTags::RapidsR => :water,
+    GameData::SystemTags::Whirlpool => :water
   }
 
   # List of variable to remove in order to keep the map data safe

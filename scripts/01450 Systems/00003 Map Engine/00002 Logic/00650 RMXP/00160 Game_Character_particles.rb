@@ -19,7 +19,8 @@ class Game_Character
     TSand => :particle_push_sand,
     TSnow => :particle_push_snow,
     TPond => :particle_push_pond,
-    TWetSand => :particle_push_wetsand
+    TWetSand => :particle_push_wetsand,
+    Puddle => :particle_push_puddle
   }
 
   # Push a particle to the particle stack if possible
@@ -66,5 +67,10 @@ class Game_Character
   # Push a pond particle
   def particle_push_pond
     Yuki::Particles.add_particle(self, :pond) if surfing?
+  end
+
+  # Push a pond particle
+  def particle_push_puddle
+    Yuki::Particles.add_particle(self, :puddle)
   end
 end
