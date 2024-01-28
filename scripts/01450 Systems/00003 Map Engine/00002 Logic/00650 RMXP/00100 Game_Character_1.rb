@@ -80,7 +80,7 @@ class Game_Character
     @sliding_parameter = nil # Variable giving extra information for sliding
     @pattern_state = false # Indicateur de la direction du pattern
     @can_make_footprint = true
-    @reflection_enabled = $game_player&.reflection_enabled 
+    @reflection_enabled = $game_player&.reflection_enabled
   end
 
   # Set the move_frequency (and define the max_stop_count value)
@@ -188,7 +188,9 @@ class Game_Character
   # Return the x position of the sprite on the screen
   # @return [Integer]
   def screen_x
-    return (@real_x - $game_map.display_x + 3) / 4 + 16
+    x = (@real_x - $game_map.display_x + 3) / 4 + 16
+    x += @offset_screen_x if @offset_screen_x
+    return x
   end
 
   # Return the y position of the sprite on the screen
@@ -208,7 +210,9 @@ class Game_Character
   # Return the x position of the shadow of the character on the screen
   # @return [Integer]
   def shadow_screen_x
-    return (@real_x - $game_map.display_x + 3) / 4 + 16
+    x = (@real_x - $game_map.display_x + 3) / 4 + 16
+    x += @offset_shadow_screen_x if @offset_shadow_screen_x
+    return x
   end
 
   # Return the y position of the shadow of the character on the screen

@@ -21,6 +21,10 @@ class Game_Character
   attr_accessor :offset_screen_y
   # @return [Integer, nil] offset y of the character on the screen
   attr_accessor :offset_shadow_screen_y
+  # @return [Integer, nil] offset x of the character on the screen
+  attr_accessor :offset_screen_x
+  # @return [Integer, nil] offset x of the character on the screen
+  attr_accessor :offset_shadow_screen_x
 
   # Values that allows the shadow_disabled update in set_appearance
   SHADOW_DISABLED_UPDATE_VALUES = [false, true, nil]

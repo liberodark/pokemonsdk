@@ -12,6 +12,8 @@ class Game_Event < Game_Character
   PARTICLE_OFF_TAG = '[particle=off]'
   # Tag that detect offset_screen_y
   OFFSET_Y_TAG = /\[offset_y=([0-9\-]+)\]/
+  # Tag that detect offset_screen_x
+  OFFSET_X_TAG = /\[offset_x=([0-9\-]+)\]/
   # Tag that forbid the creation of a Sprite_Character for this event
   NO_SPRITE_TAG = '[sprite=off]'
   # Tag that give the event an symbol alias
@@ -61,6 +63,7 @@ class Game_Event < Game_Character
     @particles_disabled = name.include?(PARTICLE_OFF_TAG) || @event.name.include?(NO_SPRITE_TAG)
     @autocharset = name.include?(AUTO_CHARSET_TAG)
     name.sub(OFFSET_Y_TAG) { @offset_screen_y = $1.to_i }
+    name.sub(OFFSET_X_TAG) { @offset_shadow_screen_x = @offset_screen_x = $1.to_i }
     @surfing = name.include?(SURFING_TAG)
     @invisible_event = (name == INVISIBLE_EVENT_NAME || name.include?(INVISIBLE_EVENT_TAG))
     name.sub(SYMBOL_ALIAS_TAG) { @sym_alias = $1.to_sym }
@@ -167,7 +170,7 @@ class Game_Event < Game_Character
   def activated?
     return !@page.nil?
   end
-  
+
   private
 
   # Refresh all the information of the event according to the new page
