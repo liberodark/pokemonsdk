@@ -11,7 +11,7 @@ module PFM
     # Size of a box
     BOX_SIZE = 30
     # Number of box theme (background : Graphics/PC/f_id, title : Graphics/PC/title_id
-    NB_THEMES = 32
+    NB_THEMES = 16
     # Tell if the Pokemon gets healed & cured when stored
     HEAL_AND_CURE_POKEMON = true
     # The party of the other actor (friend)
@@ -37,7 +37,7 @@ module PFM
     def initialize(game_state)
       self.game_state = game_state
       # @type [Array<Box>]
-      @boxes = Array.new(MAX_BOXES) { |index| Box.new(BOX_SIZE, send(*box_name_init(index)), index + 1) }
+      @boxes = Array.new(MAX_BOXES) { |index| Box.new(BOX_SIZE, send(*box_name_init(index)), index >= NB_THEMES ? rand(1..NB_THEMES) : index + 1) }
       @battle_boxes = Array.new(MAX_BATTLE_BOX) { |index| BattleBox.new("##{index + 1}") }
       @current_box = 0
       @current_battle_box = 0
