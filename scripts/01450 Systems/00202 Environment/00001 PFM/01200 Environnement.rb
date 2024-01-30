@@ -130,10 +130,11 @@ module PFM
     # @return [String]
     def current_zone_name
       zone = @master_zone
-      return data_zone(zone).name if zone
+      return PFM::Text.parse_string_for_messages(data_zone(zone).name) if zone
 
       UNKNOWN_ZONE
     end
+
 
     # Return the warp zone ID (where the player will teleport with skills)
     # @return [Integer] the ID of the zone in the database

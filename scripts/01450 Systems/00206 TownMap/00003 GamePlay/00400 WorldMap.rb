@@ -361,7 +361,7 @@ module GamePlay
     def update_infobox
       zone = $env.get_zone(@x, @y, @worldmap_id)
       if zone
-        @ui_infobox.set_location(zone.name)
+        @ui_infobox.set_location(PFM::Text.parse_string_for_messages(zone.name))
       else
         @ui_infobox.set_location '...'
       end
