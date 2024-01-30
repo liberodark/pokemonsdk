@@ -15,6 +15,7 @@ class Game_Character
 
     return if @sliding
     return @wait_count -= 1 if @wait_count > 0 # or follower_sliding?
+    return if @wait_charset_animation && @charset_animation && @charset_animation[:running] && @charset_animation[:repeat] != true
     return move_type_path if @path # Needs to have priority over move_type_custom
     return move_type_custom if @move_route_forcing
     return if @starting || lock?
@@ -125,7 +126,14 @@ class Game_Character
     # end
 
     # Force the event to move down if it is on a tile that require the Mach Bike to go up
-    move_down if system_tag == MachBike && !($game_switches[::Yuki::Sw::EV_Bicycle] && @lastdir4 == 8)
+    if system_tag == MachBike && !($game_switches[::Yuki::Sw::EV_Bicycle] && @lastdir4 == 8)
+      unless @no_slide
+        last_direction_fix = @direction_fix
+        @direction_fix = true
+        move_down
+        @direction_fix = last_direction_fix
+      end
+    end
   end
 
   # SystemTags that forces the Game_Character to move
@@ -168,6 +176,8 @@ class Game_Character
   # Function that tells if the character can slide
   # @return [Boolean]
   def can_slide?
+    return true unless @no_slide
+
     ROCKET_TAGS.include?(@sliding_parameter) || SlideTags.include?(sys_tag = system_tag) || sys_tag == MachBike
   end
 

@@ -20,6 +20,8 @@ class Game_Event < Game_Character
   SYMBOL_ALIAS_TAG = /\[alias=([a-z\-0-9\-_]+)\]/
   # Tag that detect z=
   SET_Z_TAG = /\[z=([0-9\-]+)\]/
+  # Tag enabling no slide
+  NOSLIDE_TAG = '[noslide=on]'
   # Tag enabling reflection
   REFLECTION_TAG = '[reflection=on]'
   # @return [Integer, nil] Type of trigger for the event (0: Action key, 1: Player contact, 2: Event contact, 3: Autorun, 4: Parallel process)
@@ -71,6 +73,7 @@ class Game_Event < Game_Character
     name.sub(SYMBOL_ALIAS_TAG) { @sym_alias = $1.to_sym }
     @reflection_enabled = name.include?(REFLECTION_TAG)
     name.sub(SET_Z_TAG) { @z = $1.to_i }
+    @no_slide = name.include?(NOSLIDE_TAG)
   end
 
   # Tell if the event can execute in parallel process or automatic process

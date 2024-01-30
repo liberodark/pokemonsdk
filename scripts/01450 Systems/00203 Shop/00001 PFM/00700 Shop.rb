@@ -40,7 +40,7 @@ module PFM
       if @shop_list.key?(symbol_of_shop)
         items_to_refill.each_with_index do |id, index|
           key = @shop_list[symbol_of_shop].keys.index { |hash_key| data_item(hash_key).db_symbol == data_item(id).db_symbol }
-          id = data_item(id).id
+          id = data_item(id).db_symbol
           @shop_list[symbol_of_shop][id] = 0 unless key
           @shop_list[symbol_of_shop][id] += quantities_to_refill[index] || 1
           @shop_list[symbol_of_shop][id] = 1 unless data_item(id).is_limited
@@ -59,7 +59,7 @@ module PFM
 
       items_to_remove.each_with_index do |id, index|
         key = @shop_list[symbol_of_shop].keys.index { |hash_key| data_item(hash_key).db_symbol == data_item(id).db_symbol }
-        id = data_item(id).id
+        id = data_item(id).db_symbol
         next unless key
 
         @shop_list[symbol_of_shop][id] -= (quantities_to_remove[index].nil? ? Float::INFINITY : quantities_to_remove[index])
@@ -156,24 +156,25 @@ module PFM
       @pokemon_shop_list[symbol_of_shop].sort_by! { |hash| [data_creature(hash[:id]).id, hash[:form].to_i] }
     end
 
-# This code is temporarily put in commentary to keep it for later after Studio 1.4 update
-=begin
     # Ensure every ids stocked for every available shop is converted to a db_symbol
     def migrate_ids_to_symbols
       shop_list.each do |sym_shop, shop|
-        shop.keys.each do |key, value|
+        new_shop = shop.dup
+        shop.each_key do |key|
           next if key.is_a?(Symbol)
-          shop[data_item(key).db_symbol] = shop.delete key
+
+          new_shop[data_item(key).db_symbol] = new_shop.delete key
         end
+        shop_list[sym_shop] = new_shop
       end
-      pokemon_shop_list.each do |sym_shop, shop|
+      pokemon_shop_list.each do |_sym_shop, shop|
         shop.each do |pokemon_hash|
           next if pokemon_hash[:id].is_a? Symbol
+
           pokemon_hash[:id] = data_creature(pokemon_hash.delete(:id)).db_symbol
         end
       end
     end
-=end
   end
 
   class GameState
@@ -188,8 +189,8 @@ module PFM
       # Migration of old saves
       @shop.pokemon_shop_list ||= {}
       @shop.game_state = self
-      # This code is temporarily put in commentary to keep it for later after Studio 1.4 update
-      # # @shop.migrate_ids_to_symbols if trainer.current_version < 6662
+      # We convert all the IDs to db_symbols in the already created shops
+      @shop.migrate_ids_to_symbols if trainer.current_version < 6677
     end
   end
 end

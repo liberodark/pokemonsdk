@@ -17,6 +17,8 @@ class Game_Character
   attr_accessor :step_anime
   # @return [Boolean] if the shadow should be shown or not
   attr_accessor :shadow_disabled
+  # @return [Hash, nil] hash if a charset animation is setup, else nil
+  attr_accessor :charset_animation
   # @return [Integer, nil] offset y of the character on the screen
   attr_accessor :offset_screen_y
   # @return [Integer, nil] offset y of the character on the screen
@@ -25,6 +27,8 @@ class Game_Character
   attr_accessor :offset_screen_x
   # @return [Integer, nil] offset x of the character on the screen
   attr_accessor :offset_shadow_screen_x
+  # @return [Integer, nil] value that helps in changing the y rect of the Sprite_Character
+  attr_accessor :height_changer
 
   # Values that allows the shadow_disabled update in set_appearance
   SHADOW_DISABLED_UPDATE_VALUES = [false, true, nil]
@@ -58,32 +62,41 @@ class Game_Character
   # @param lines [Array<Integer>] list of the lines to animates (0,1,2,3)
   # @param duration [Integer] duration of the animation in frame (30 frames per secondes)
   # @param reverse [Boolean] <default: false> set it to true if the animation is reversed
-  # @param repeat [Boolean] <default: false> set it to true if the animation is looped
+  # @param repeat [Boolean, Integer] true if looping continuously, Integer for the number of loops, false for no loops
+  # @param last_frame_delay [Boolean] if the delay should also be applied to the last frame of the animation
+  # @param reset_at_end [Boolean] if the character's appearance should be set back to the first frame at the end of the anim
   # @return [Boolean]
-  def animate_from_charset(lines, duration, reverse: false, repeat: false)
+  def animate_from_charset(lines, duration, reverse: false, repeat: false, last_frame_delay: false, reset_at_end: false)
     # Calculate and store the frames to display
     frames = []
     lines.each do |dir|
-			[0,1,2,3].each do |pattern|
-				frames.push ((((dir+1)*2)<<2) | pattern)	# A frame is 0bdddpp with ddd the direction, pp the pattern
-			end
+      [0, 1, 2, 3].each do |pattern|
+        frames.push((((dir + 1) * 2) << 2) | pattern)	# A frame is 0bdddpp with ddd the direction, pp the pattern
+      end
     end
     frames.reverse! if reverse  # Invert the animation if asked
     # Contain the charset animation data
     @charset_animation = {
-      running:    true,                                       # Indicate if the animation need to be updated or not
-      frames:     frames,                                     # List of frames
-      delay:      (duration.to_f / frames.size.to_f).round,   # Delay between two frame in frames
-      repeat:     repeat,                                     # Indicate if the animation is looped or not
-      counter:    -1,                                         # Frame counter (initialized at -1 so the first update will set the appearance)
-      index:      0                                           # Index of the current frame to display
+      running: true,                                     # Indicate if the animation need to be updated or not
+      frames: frames,                                    # List of frames
+      delay: (duration.to_f / frames.size.to_f).round,   # Delay between two frame in frames
+      repeat: repeat,                                    # Indicate if the animation is looped or not
+      last_frame_delay: last_frame_delay,                # Indicate if the last_frame should also have the delay applied
+      reset_at_end: reset_at_end,                        # Indicate if the appearance should be set to the first frame at the end
+      counter: -1,                                       # Frame counter (initialized at -1 so the first update will set the appearance)
+      index: 0                                           # Index of the current frame to display
     }
-    return update_charset_animation   # First update, display the first frame
+    return update_charset_animation # First update, display the first frame
   end
 
   # Cancel the charset animation
   def cancel_charset_animation
     @charset_animation = nil
+  end
+
+  # Tell the Game_Character to wait for its charset animation to finish
+  def wait_charset_animation
+    @wait_charset_animation = true
   end
 
   private
@@ -108,23 +121,58 @@ class Game_Character
   # Update the charset animation and return true if there is a charset animation
   # @return [Boolean]
   def update_charset_animation
+    anim = @charset_animation
     # Check update need
-    return false unless @charset_animation&.dig(:running)
+    return false unless anim&.dig(:running)
     # Check delay
-    return true unless ((@charset_animation[:counter]+=1) % @charset_animation[:delay]) == 0
-    # Update the appearance
-    frame = @charset_animation[:frames][@charset_animation[:index]]
-    @direction = (frame >> 2)
-    @pattern = (frame & 0b11)
+    return true unless ((anim[:counter] += 1) % anim[:delay]) == 0
+
+    update_charset_anim_appearance(anim[:index]) if anim[:frames][anim[:index]]
     # Update the index and the repeat
-    if (@charset_animation[:index]+=1)>=@charset_animation[:frames].length
-      if @charset_animation[:repeat]
-        @charset_animation[:index]=0
+    if (anim[:index] += 1) >= anim[:frames].length
+      return true if last_frame_delay? && (anim[:repeat].is_a?(Integer) ? (anim[:repeat] - 1) == 0 : anim[:repeat])
+
+      if should_charset_anim_loop?
+        anim[:index] = 0
       else
-        @charset_animation[:running] = false
-        @original_pattern = @pattern
+        if anim[:reset_at_end]
+          update_charset_anim_appearance(0)
+        else
+          @original_pattern = @pattern
+        end
+        anim[:running] = false
+        @wait_charset_animation = false
       end
     end
     return true
+  end
+
+  # Tell if the @charset_animation should loop
+  # @return [Boolean]
+  def should_charset_anim_loop?
+    return true if @charset_animation[:repeat] == true
+
+    if @charset_animation[:repeat].is_a?(Integer) && @charset_animation[:repeat] > 0
+      return true if (@charset_animation[:repeat] -= 1) > 0
+    end
+    return false
+  end
+
+  # Tells if a delay should be applied on the last frame of the charset_animation
+  # @return [Boolean]
+  def last_frame_delay?
+    anim = @charset_animation
+    return true if anim[:last_frame_delay] && anim[:index] == anim[:frames].length
+
+    return false
+  end
+
+  # Update the appearance with the given index in the charset_animation
+  # @param index [Integer] the index of the frame we want to update to
+  def update_charset_anim_appearance(index)
+    # Update the appearance
+    frame = @charset_animation[:frames][index]
+    @direction = (frame >> 2)
+    @pattern = (frame & 0b11)
   end
 end

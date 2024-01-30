@@ -539,7 +539,7 @@ class Game_Character
   def movement_process_end(no_follower_move = false)
     follower_move unless no_follower_move
     particle_push
-    if SlideTags.include?(sys_tag = system_tag) ||
+    if (!@no_slide && SlideTags.include?(sys_tag = system_tag)) ||
        (sys_tag == MachBike && !($game_switches[::Yuki::Sw::EV_Bicycle] && @lastdir4 == 8))
       @sliding = true
       @sliding_parameter = sys_tag

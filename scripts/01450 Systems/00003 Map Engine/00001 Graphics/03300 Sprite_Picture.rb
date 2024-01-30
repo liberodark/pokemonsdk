@@ -1,5 +1,9 @@
 # A sprite that show a Game_Picture on the screen
 class Sprite_Picture < ShaderedSprite
+  # Tell if the loop of the gif is disabled or not
+  # @return [Boolean]
+  attr_accessor :gif_loop_disabled
+
   # Shader of a Sprite Picture to allow color & tone processing over them
   SPRITE_SHADER = <<-EOSHADER
   uniform vec4 tone;
@@ -52,6 +56,14 @@ class Sprite_Picture < ShaderedSprite
     update_gif if @gif_handle
   end
 
+  # Tell if the gif animation is done
+  # @return [Boolean]
+  def gif_done?
+    return true unless @gif_handle
+
+    return @gif_handle.frame + 1 >= @gif_handle.frame_count
+  end
+
   private
 
   # Update the picture properties on the sprite
@@ -79,6 +91,7 @@ class Sprite_Picture < ShaderedSprite
 
   # Update the gif animation
   def update_gif
+    return if @gif_loop_disabled && gif_done?
     @gif_handle.update(bitmap)
   end
 

@@ -21,6 +21,7 @@ module Battle
           create_top_sprite
           create_enemy_sprites
           create_actors_sprites
+          Graphics.sort_z
         end
 
         # Function that creates the top sprite

@@ -320,6 +320,13 @@ class Spriteset_Map
     @fog.tone = $game_map.fog_tone
   end
 
+  # Get the Sprite_Picture linked to the ID of the Game_Picture
+  # @param [Integer] the ID of the Game_Picture
+  # @return [Sprite_Picture]
+  def sprite_picture(id_game_picture)
+    return @picture_sprites[id_game_picture - 1]
+  end
+
   # create the zone panel of the current zone
   # @param zone [Integer, nil] the id of the zone where the player is
   def create_panel(zone)

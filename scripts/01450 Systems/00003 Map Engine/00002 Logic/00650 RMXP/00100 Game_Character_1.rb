@@ -26,6 +26,8 @@ class Game_Character
   attr_accessor :move_speed
   # @return [Game_Character, nil] the follower
   attr_reader :follower
+  # @return [Boolean] if the character is unaffected by sliding tags
+  attr_accessor :no_slide
   # @return [Boolean] if the character is sliding
   attr_reader :sliding
   # If the direction is fixed
@@ -75,10 +77,11 @@ class Game_Character
     @slope_y_modifier = 0
     @locked = false
     @prelock_direction = 0
-    @surfing = false # Variable indiquant si le chara est sur l'eau
-    @sliding = false # Variable indiquant si le chara slide
+    @surfing = false # Variable indicating if the character is surfing (on the water)
+    @no_slide = false # Variable indicating if the character is unaffected by sliding systemtags
+    @sliding = false # Variable indicating if the character is sliding
     @sliding_parameter = nil # Variable giving extra information for sliding
-    @pattern_state = false # Indicateur de la direction du pattern
+    @pattern_state = false # Indicator of the pattern's direction
     @can_make_footprint = true
     @reflection_enabled = $game_player&.reflection_enabled
   end

@@ -28,6 +28,10 @@ class Interpreter_RMXP
     @move_route_waiting = false
     # If the Interpreter is waiting for a specific event to complete its moves
     @move_route_waiting_id = nil
+    # If the Interpreter is waiting for a charset animation to complete
+    @animate_charset_waiting = false
+    # If the Interpreter is waiting for a specific event to finish its charset animation
+    @animate_charset_waiting_id = nil
     # ID of the variable where the Interpreter should put the Input key value
     @button_input_variable_id = 0
     # Number of frame the Interpreter has to wait until next execution
@@ -115,6 +119,7 @@ class Interpreter_RMXP
       break if @message_waiting
       # If we used a Wait events command
       break if waiting_event?
+      break if waiting_animate_charset_event?
       # Process input if asked (need to return)
       break input_button if @button_input_variable_id > 0
       # Return if we're waiting
@@ -247,7 +252,7 @@ class Interpreter_RMXP
   end
 
   # Create the Interpreter Fiber
-  # @param block [Proc] the ruby commands to execute using a fiber 
+  # @param block [Proc] the ruby commands to execute using a fiber
   def create_fiber(block)
     raise 'Another fiber is running!' if @fiber
     @fiber = Fiber.new do

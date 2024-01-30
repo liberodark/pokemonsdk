@@ -284,8 +284,41 @@ class Interpreter
   # @param reverse [Boolean] <default: false> set it to true if the animation is reversed
   # @param repeat [Boolean] <default: false> set it to true if the animation is looped
   # @return [Boolean]
-  def animate_from_charset(lines, duration, reverse: false, repeat: false)
-    return get_character(@event_id).animate_from_charset(lines, duration, reverse: reverse, repeat: repeat)
+  def animate_from_charset(lines, duration, reverse: false, repeat: false, last_frame_delay: false)
+    return get_character(@event_id).animate_from_charset(lines, duration, reverse: reverse, repeat: repeat, last_frame_delay: last_frame_delay)
+  end
+
+  # Wait for the end of the charset animation of this particular event
+  # @param event_id [Integer] <default : calling event's> the id of the event to watch
+  def wait_charset_animation(event_id = @event_id)
+    @animate_charset_waiting = true
+    @animate_charset_waiting_id = event_id
+  end
+
+  # Test if the Interpreter is currently waiting for an event
+  # @return [Boolean]
+  # @note This function automatically update the states it use if it returns false
+  def waiting_animate_charset_event?
+    return false unless @animate_charset_waiting
+    # If we're waiting for a specific event
+    if @animate_charset_waiting_id
+      return true if @animate_charset_waiting_id == 0 && $game_player.charset_animation &&
+                     $game_player.charset_animation[:running] && $game_player.charset_animation[:repeat] != true
+
+      wanted_event = $game_map.events[@animate_charset_waiting_id]
+      return true if wanted_event.charset_animation && wanted_event.charset_animation[:running] &&
+                     wanted_event.charset_animation[:repeat] != true
+
+      @animate_charset_waiting = false
+      @animate_charset_waiting_id = nil
+      return false
+    end
+    # Otherwise we're waiting for all event
+    return true if $game_player.charset_animation[:running]
+    return true if $game_map.events.any? { |_, event| event.charset_animation && event.charset_animation[:running] && event.charset_animation[:repeat] != true }
+
+    @animate_charset_waiting = false
+    return false
   end
 
   # Shortcut for wait_character_move_completion(0)

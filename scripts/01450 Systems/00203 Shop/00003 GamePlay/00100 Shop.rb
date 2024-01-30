@@ -25,9 +25,12 @@ module GamePlay
       return if symbol_or_list == false
       @force_close = nil
       @shop = PFM.game_state.shop
-      @show_background = :show_background
+      @show_background = show_background
       @symbol_or_list = symbol_or_list
-      @price_overwrite = price_overwrite
+      @price_overwrite = price_overwrite.map do |key, value|
+        key = data_item(key).db_symbol
+        next [key, value] if key != :__undef__
+      end.compact.to_h
       @what_was_buyed = []
       load_item_list
       unless @force_close == true
@@ -52,16 +55,19 @@ module GamePlay
     # Create the initial list from symbol_or_list
     def get_list_item
       if @symbol_or_list.is_a? Symbol
-        if @shop.shop_list.key?(@symbol_or_list)
-          @list_item = @shop.shop_list[@symbol_or_list].keys
-          @item_quantity = []
-          @list_item.each {|id| @item_quantity << @shop.shop_list[@symbol_or_list][id]}
-        else
-          raise 'Shop with symbol :' + @symbol_or_list.to_s + ' must be created before calling it'
-          @running = false
-        end
+        raise "Shop with symbol : #{@symbol_or_list} must be created before calling it" unless @shop.shop_list.key?(@symbol_or_list)
+
+        @list_item = @shop.shop_list[@symbol_or_list].keys.map do |item|
+          db_symbol = data_item(item).db_symbol
+          next db_symbol != :__undef__ ? db_symbol : nil
+        end.compact
+        @item_quantity = []
+        @list_item.each { |id| @item_quantity << @shop.shop_list[@symbol_or_list][id]}
       elsif @symbol_or_list.is_a? Array
-        @list_item = @symbol_or_list
+        @list_item = @symbol_or_list.map do |item|
+          db_symbol = data_item(item).db_symbol
+          next db_symbol != :__undef__ ? db_symbol : nil
+        end.compact
         check_if_shop_empty
       end
       @index = 0

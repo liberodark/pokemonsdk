@@ -85,6 +85,7 @@ module Battle
           super
           create_vs_sprites
           create_mugshot_sprite
+          Graphics.sort_z
         end
 
         # Function that creates the Yuki::Animation related to the pre transition
