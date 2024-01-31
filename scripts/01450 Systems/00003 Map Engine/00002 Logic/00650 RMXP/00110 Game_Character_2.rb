@@ -176,7 +176,7 @@ class Game_Character
   # Function that tells if the character can slide
   # @return [Boolean]
   def can_slide?
-    return true unless @no_slide
+    return false if @no_slide
 
     ROCKET_TAGS.include?(@sliding_parameter) || SlideTags.include?(sys_tag = system_tag) || sys_tag == MachBike
   end
