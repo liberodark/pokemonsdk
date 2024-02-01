@@ -67,9 +67,7 @@ class Sprite_Character < RPG::Sprite
   def update
     super if (@_animation || @_loop_animation) && !Graphics::FPSBalancer.global.skipping?
     # Check if the graphic info where updated
-    if @character_name != @character.character_name || @tile_id != @character.tile_id || @height_changer != @character.height_changer
-      update_graphics
-    end
+    update_graphics if @character_name != @character.character_name || @tile_id != @character.tile_id
 
     return unless update_position
 
@@ -97,11 +95,10 @@ class Sprite_Character < RPG::Sprite
   def update_sprite_graphic
     self.bitmap = RPG::Cache.character(@character_name, 0)
     @cw = bitmap.width / 4
-    @height = @ch = bitmap.height / 4 - (@character.height_changer || 0)
-    clean_height = @ch + (@character.height_changer || 0)
-    set_origin(@cw / 2, clean_height)
+    @height = @ch = bitmap.height / 4
+    set_origin(@cw / 2, @ch)
     self.zoom = SPRITE_ZOOM
-    src_rect.set(@character.pattern * @cw, (@character.direction - 2) / 2 * clean_height, @cw, @ch)
+    src_rect.set(@character.pattern * @cw, (@character.direction - 2) / 2 * @ch, @cw, @ch)
     @pattern = @character.pattern
     @direction = @character.direction
   end

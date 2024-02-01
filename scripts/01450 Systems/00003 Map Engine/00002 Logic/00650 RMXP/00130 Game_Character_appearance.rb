@@ -27,8 +27,6 @@ class Game_Character
   attr_accessor :offset_screen_x
   # @return [Integer, nil] offset x of the character on the screen
   attr_accessor :offset_shadow_screen_x
-  # @return [Integer, nil] value that helps in changing the y rect of the Sprite_Character
-  attr_accessor :height_changer
 
   # Values that allows the shadow_disabled update in set_appearance
   SHADOW_DISABLED_UPDATE_VALUES = [false, true, nil]
