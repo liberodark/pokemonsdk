@@ -4,7 +4,7 @@ module Battle
     class SleepTalk < Move
       CANNOT_BE_SELECTED_MOVES = %i[
         assist belch bide bounce copycat dig dive freeze_shock fly focus_punch geomancy ice_burn me_first metronome sleep_talk
-        mirror_move mimic phantom_force razor_wind shadow_force sketch skull_bash sky_attack sky_drop solar_beam uproar
+        mirror_move mimic phantom_force razor_wind shadow_force sketch skull_bash sky_attack sky_drop solar_beam uproar electro_shot
       ]
 
       # Function that tests if the user is able to use the move

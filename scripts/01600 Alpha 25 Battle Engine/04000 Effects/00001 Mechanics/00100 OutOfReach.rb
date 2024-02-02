@@ -36,7 +36,7 @@ module Battle
         end
 
         # List of move that must be paused when user is asleep/frozen/flinched
-        MOVES_PAUSED = %i[freeze_shock geomancy ice_burn razor_wind skull_bash sky_attack solar_beam] 
+        MOVES_PAUSED = %i[freeze_shock geomancy ice_burn razor_wind skull_bash sky_attack solar_beam electro_shot] 
 
         # Function that tells us if we should interrupt the move or not
         # @param user [PFM::PokemonBattler] user of the move

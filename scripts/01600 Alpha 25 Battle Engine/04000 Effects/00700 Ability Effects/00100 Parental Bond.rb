@@ -5,7 +5,7 @@ module Battle
         # Constant telling the be_method of the moves not affected by Parental Bond
         # @return [Array<Symbol>]
         ONLY_ONE_ATTACK = %i[s_solar_beam s_2turns s_endeavor s_ohko s_fling s_explosion s_final_gambit s_uproar
-          s_rollout s_ice_ball s_relic_sound
+          s_rollout s_ice_ball s_relic_sound s_electro_shot
         ]
         # Constant telling which be_method can activate their effect on the second attack only
         # @return [Array<Symbol>]

@@ -36,7 +36,8 @@ module Battle
       # Move db_symbol to a list of stat and power
       # @return [Hash<Symbol, Array<Array[Symbol, Power]>]
       MOVE_TO_STAT = {
-        skull_bash: [[:dfe, 1]]
+        skull_bash: [[:dfe, 1]],
+        electro_shot: [[:ats, 1]]
       }
 
       # Move db_symbol to a list of stat and power change on the user

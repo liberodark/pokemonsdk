@@ -964,6 +964,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 EerieSpell.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Electrify.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 ElectroBall.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 ElectroShot.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Embargo.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Encore.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Endeavor.rb
