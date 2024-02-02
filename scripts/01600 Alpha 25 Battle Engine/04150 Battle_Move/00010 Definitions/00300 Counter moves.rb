@@ -1,69 +1,82 @@
 module Battle
   class Move
-    # When hit by a Physical Attack, user strikes back with 2x power.
-    # @see https://pokemondb.net/move/counter
-    # @see https://bulbapedia.bulbagarden.net/wiki/Counter_(move)
-    # @see https://www.pokepedia.fr/Riposte_(capacit%C3%A9)
-    class Counter < Basic
+    # Base class for counter moves
+    class CounterBase < Basic
       include Mechanics::Counter
 
+      # Test if the attack fails based on common conditions
+      # @param attacker [PFM::PokemonBattler] the last attacker
+      # @param user [PFM::PokemonBattler] user of the move
+      # @return [Boolean] does the attack fails ?
+      def counter_fails_common?(attacker, user)
+        return true unless attacker
+        return true if logic.allies_of(user).include?(attacker)
+        return true unless attacker.successful_move_history&.last&.turn == $game_temp.battle_turn
+
+        return false
+      end
+    end
+
+    # When hit by a Physical Attack, user strikes back with 2x power.
+    class Counter < CounterBase
       private
 
+
+      
       # Test if the attack fails
       # @param attacker [PFM::PokemonBattler] the last attacker
       # @param user [PFM::PokemonBattler] user of the move
-      # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @return [Boolean] does the attack fails ?
       def counter_fails?(attacker, user, targets)
-        return !attacker || logic.allies_of(user).include?(attacker) || attacker.type_ghost? || !attacker.successful_move_history.last.move.physical? || attacker.successful_move_history.last.turn != $game_temp.battle_turn
+        return true if counter_fails_common?(attacker, user)
+        return true if attacker.type_ghost?
+        return true unless attacker.successful_move_history&.last&.move&.physical?
+
+        return false
       end
     end
-    Move.register(:s_counter, Counter)
 
     # When hit by a Special Attack, user strikes back with 2x power.
-    # @see https://pokemondb.net/move/mirror-coat
-    # @see https://bulbapedia.bulbagarden.net/wiki/Mirror_Coat_(move)
-    # @see https://www.pokepedia.fr/Voile_Miroir
-    class MirrorCoat < Basic
-      include Mechanics::Counter
-
-      private
-
-      # Test if the attack fails
-      # @param attacker [PFM::PokemonBattler] the last attacker in this round
-      # @param user [PFM::PokemonBattler] user of the move
-      # @param targets [Array<PFM::PokemonBattler>] expected targets
-      # @return [Boolean] does the attack fails ?
-      def counter_fails?(attacker, user, targets)
-        return !attacker || logic.allies_of(user).include?(attacker) || attacker.type_dark? || !attacker.successful_move_history.last.move.special? || attacker.successful_move_history.last.turn != $game_temp.battle_turn
-      end
-    end
-    Move.register(:s_mirror_coat, MirrorCoat)
-
-    # Deals damage equal to 1.5x opponent's attack.
-    # @see https://pokemondb.net/move/metal-burst
-    # @see https://bulbapedia.bulbagarden.net/wiki/Metal_Burst_(move)
-    # @see https://www.pokepedia.fr/Fulmifer
-    class MetalBurst < Basic
-      include Mechanics::Counter
-
+    class MirrorCoat < CounterBase
       private
 
       # Test if the attack fails
       # @param attacker [PFM::PokemonBattler] the last attacker
       # @param user [PFM::PokemonBattler] user of the move
-      # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @return [Boolean] does the attack fails ?
       def counter_fails?(attacker, user, targets)
-        return !attacker || logic.allies_of(user).include?(attacker) || attacker.successful_move_history.last.move.status? || attacker.successful_move_history.last.turn != $game_temp.battle_turn
+        return true if counter_fails_common?(attacker, user)
+        return true if attacker.type_dark?
+        return true unless attacker.successful_move_history&.last&.move&.special?
+
+        return false
+      end
+    end
+
+    # Deals damage equal to 1.5x opponent's attack.
+    class MetalBurst < CounterBase
+      private
+
+      # Test if the attack fails
+      # @param attacker [PFM::PokemonBattler] the last attacker
+      # @param user [PFM::PokemonBattler] user of the move
+      # @return [Boolean] does the attack fails ?
+      def counter_fails?(attacker, user, targets)
+        return true if counter_fails_common?(attacker, user)
+        return true unless attacker.successful_move_history&.last&.move&.status?
+
+        return false
       end
 
       # Damage multiplier if the effect proc
       # @return [Integer, Float]
       def damage_multiplier
-        1.5
+        return 1.5
       end
     end
+
+    Move.register(:s_counter, Counter)
+    Move.register(:s_mirror_coat, MirrorCoat)
     Move.register(:s_metal_burst, MetalBurst)
   end
 end
