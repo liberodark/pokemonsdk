@@ -36,6 +36,7 @@ module PFM
       return false if @active_quests.fetch(quest_id, nil)
 
       @active_quests[quest_id] = Quest.new(quest_id)
+      @failed_quests.delete(quest_id) if failed?(quest_id)
       @signal[:start] << quest_id
       return true
     end
@@ -54,9 +55,17 @@ module PFM
       return @finished_quests[quest_id]
     end
 
+    # Fail a quest
     # Return a failed quest by its id
     # @param quest_id [Integer]
     # @return [Quest]
+    def fail_quest(quest_id)
+      return false if finished?(quest_id)
+      @signal[:failed] << quest_id
+      check_up_signal if AUTO_CHECK_SIGNAL_ON_ALL_OBJECTIVE_VALIDATED
+      return true
+    end
+
     def failed_quest(quest_id)
       return @failed_quests[quest_id]
     end
@@ -220,19 +229,29 @@ module PFM
 
       if @signal[:start].any?
         start_names = @signal[:start].map { |quest_id| data_quest(quest_id).name }
-        show_quest_inform(start_names, true)
+        show_quest_inform(start_names, :new)
       end
       if @signal[:finish].any?
         finish_names = @signal[:finish].collect { |quest_id| data_quest(quest_id).name }
-        show_quest_inform(finish_names, false)
+        show_quest_inform(finish_names, :completed)
         # Switch the quests from stack to stack
         @signal[:finish].each do |quest_id|
           @finished_quests[quest_id] = @active_quests[quest_id] if @active_quests[quest_id]
           @active_quests.delete(quest_id)
         end
       end
+      if @signal[:failed].any?
+        failed_names = @signal[:failed].map { |quest_id| data_quest(quest_id).name }
+        show_quest_inform(failed_names, :failed)
+        # Move the quests to the failed stack
+        @signal[:failed].each do |quest_id|
+          @failed_quests[quest_id] = @active_quests[quest_id] if @active_quests[quest_id]
+          @active_quests.delete(quest_id)
+        end
+      end
       @signal[:start].clear
       @signal[:finish].clear
+      @signal[:failed].clear
     end
 
     # Check if a quest is done or not
@@ -379,13 +398,13 @@ module PFM
 
     # Show the new/finished quest info
     # @param names [Array<String>]
-    # @param is_new [Boolean]
-    def show_quest_inform(names, is_new)
+    # @param quest_status [Symbol] status of quest (:new, :completed, :failed)
+    def show_quest_inform(names, quest_status)
       return unless $scene.is_a?(Scene_Map)
 
       # @type [Spriteset_Map]
       helper = $scene.spriteset
-      names.each { |name| helper.inform_quest(name, is_new) }
+      names.each { |name| helper.inform_quest(name, quest_status) }
     end
   end
 

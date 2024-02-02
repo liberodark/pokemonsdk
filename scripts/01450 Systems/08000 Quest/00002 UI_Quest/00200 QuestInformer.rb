@@ -18,14 +18,14 @@ module UI
     # Create a new quest informer UI
     # @param viewport [Viewport]
     # @param name [String] Name of the quest
-    # @param is_new [Boolean] if the quest is new
+    # @param quest_status [Symbol] status of quest (:new, :completed, :failed)
     # @param index [Integer] index of the quest
-    def initialize(viewport, name, is_new, index)
+    def initialize(viewport, name, quest_status, index)
       super(viewport, 0, BASE_Y + index * OFFSET_Y)
       @background = add_background('quest/quest_bg')
       @background.opacity = 0
-      text = ext_text(9000, is_new ? 147 : 148)
-      @info_text = add_text(0, 3, 0, 16, text, 0, 0, color: is_new ? 13 : 12)
+      text = ext_text(9000, quest_status == :new ? 147 : (quest_status == :completed ? 148 : 149))
+      @info_text = add_text(0, 3, 0, 16, text, 0, 0, color: quest_status == :new ? 13 : 12)
       @name_text = add_text(@info_text.real_width + OFFSET_TEXT_X, 3, 0, 16, name, 0, 0)
       @max_x = (viewport.rect.width - @name_text.real_width) / 2
       @info_ini_x = @info_text.x = -(@max_x * 2 + @name_text.x)

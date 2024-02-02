@@ -370,9 +370,9 @@ class Spriteset_Map
 
   # Add a new quest informer
   # @param name [String] Name of the quest
-  # @param is_new [Boolean] if the quest is new
-  def inform_quest(name, is_new)
-    @quest_informers << UI::QuestInformer.new(@viewport2, name, is_new, @quest_informers.size)
+  # @param quest_status [Symbol] status of quest (:new, :completed, :failed)
+  def inform_quest(name, quest_status)
+    @quest_informers << UI::QuestInformer.new(@viewport2, name, quest_status, @quest_informers.size)
   end
 
   private

@@ -6,7 +6,8 @@ module UI
       TEXT_CATEGORY = {
         primary: [:ext_text, 9006, 5],
         secondary: [:ext_text, 9006, 6],
-        finished: [:ext_text, 9006, 7]
+        finished: [:ext_text, 9006, 7],
+        failed: [:ext_text, 9006, 9]
       }
       # Initialize the QuestButton component
       # @param viewport [Viewport]
@@ -61,6 +62,8 @@ module UI
           @left_arrow.visible = true
           @right_arrow.visible = true
         when :finished
+          @right_arrow.visible = true
+        when :failed
           @right_arrow.visible = false
         end
       end

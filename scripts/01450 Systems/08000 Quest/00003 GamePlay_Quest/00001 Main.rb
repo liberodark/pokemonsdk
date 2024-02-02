@@ -2,12 +2,12 @@ module GamePlay
   class QuestUI < BaseCleanUpdate::FrameBalanced
     # List of the categories of the quests
     # @return [Array<Symbol>]
-    CATEGORIES = %i[primary secondary finished]
+    CATEGORIES = %i[primary secondary finished failed]
     # Initialize the whole Quest UI
     # @param quests [PFM::Quests] the quests to send to the Quest UI
     def initialize(quests = PFM.game_state.quests)
       super()
-      @category = :primary # Possible categories are, in order, :primary, :secondary, :finished
+      @category = :primary # Possible categories are, in order, :primary, :secondary, :finished, :failed
       @quest_deployed = :compact
       @deployed_mode = :descr # Possible modes are :descr, :rewards and :objectives
       @last_key = nil

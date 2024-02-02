@@ -158,12 +158,16 @@ module UI
             @quest_list_secondary.opacity = 0
           end
         end
-        unless @quests.finished_quests.empty? #&& @quests.failed_quests.empty? => In a future update maybe
+        unless @quests.finished_quests.empty?
           @quest_list_finished = QuestList.new(@viewport, @quests.finished_quests, :finished)
           @quest_list_finished.opacity = 0
         end
+        unless @quests.failed_quests.empty?
+          @quest_list_failed = QuestList.new(@viewport, @quests.failed_quests, :failed)
+          @quest_list_failed.opacity = 0
+        end
         # @type [Hash<QuestList>]
-        @sym_to_list = { primary: @quest_list_primary, secondary: @quest_list_secondary, finished: @quest_list_finished }
+        @sym_to_list = { primary: @quest_list_primary, secondary: @quest_list_secondary, finished: @quest_list_finished, failed: @quest_list_failed}
       end
 
       def create_quest_description
