@@ -13,7 +13,7 @@ module Rxdata2Tiled
     map_info = load_data('Data/MapInfos.rxdata')
     map_info.each do |id, map|
       puts "converting #{map.name}"
-      Map.new(format("Data/Map%03d.rxdata", id), map.name, tilesets, tiled_tilesets, system_tags).save
+      Map.new(format("Data/Map%03d.rxdata", id), id, map.name, tilesets, tiled_tilesets, system_tags).save
     end
     nil
   end

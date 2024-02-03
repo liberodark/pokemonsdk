@@ -1,8 +1,9 @@
 module Rxdata2Tiled
   class Map
-    def initialize(filename, name, tilesets, tiled_tilesets, system_tags)
+    def initialize(filename, id, name, tilesets, tiled_tilesets, system_tags)
       # @type [RPG::Map]
       @map = load_data(filename)
+      @id = id
       @name = name.downcase.gsub(/[^a-z0-9_]/, '_')
       # @type [RPG::Tileset]
       @tileset = tilesets[@map.tileset_id]
@@ -52,7 +53,7 @@ module Rxdata2Tiled
     end
 
     def save
-      filename = "Data/Tiled/Maps/#{@name}.tmx"
+      filename = "Data/Tiled/Maps/rm_#{@id}_#{@name}.tmx"
       return if File.exist?(filename)
 
       @tiled_tilesets[-1].save
