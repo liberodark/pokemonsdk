@@ -400,10 +400,8 @@ module PFM
       ability = female.ability_db_symbol
       chances = female.data.abilities.index(ability) == 2 ? 60 : 80
       if rand(100) < chances
-        index = pokemon.data.abilities.index(ability)
-        return unless index # ability does not exist in the baby
-
-        pokemon.ability_index = index
+        # The female ability is inherited, we use its ability slot
+        pokemon.ability_index = female.data.abilities.index(ability)
         pokemon.update_ability
       end
     end
