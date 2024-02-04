@@ -30,13 +30,13 @@ module Battle
       # Is the skill physical ?
       # @return [Boolean]
       def physical?
-        return @physical
+        return @physical.nil? ? super : @physical
       end
 
       # Is the skill special ?
       # @return [Boolean]
       def special?
-        return @special
+        return @special.nil? ? super : @special
       end
 
       # Is the skill direct ?
