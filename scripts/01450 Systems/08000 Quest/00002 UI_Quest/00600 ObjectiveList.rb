@@ -20,10 +20,9 @@ module UI
         text = ''
         # Reducing by 4 to get an index and to account for the first 4 items
         # Useful to make sure the player can't scroll until he sees only one objective
-        @max_index = data.size - 4
-        @max_index = 0 if @max_index < 0
+        @max_index = (data.size - 4).clamp(0, Float::INFINITY)
         data.each_with_index do |arr, i|
-          color = arr[1] ? '\c[13]' : '\c[12]'
+          # color = arr[1] ? '\c[13]' : '\c[12]'
           text += arr[0]
           text += "\n" if i < data.size - 1
         end
@@ -34,12 +33,12 @@ module UI
       # Scroll the text in the right direction if there's more than 4 objectives
       # @param direction [Symbol] :UP or :DOWN
       def scroll_text(direction)
-        return if @max_index <= 4
+        return if @max_index == 0
         return if @index_text == 0 && direction == :UP
         return if @index_text == @max_index && direction == :DOWN
 
         coord = direction == :UP ? 16 : -16
-        @index_text += direction == :UP ? -1 : 1
+        @index_text += (direction == :UP ? -1 : 1)
         @text.y = @text.y + coord
         update_arrows
       end
