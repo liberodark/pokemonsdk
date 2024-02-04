@@ -112,6 +112,7 @@ class Game_Player
     $game_switches[::Yuki::Sw::EV_Bicycle] = true
     $game_switches[::Yuki::Sw::EV_AccroBike] = false
     self.on_acro_bike = false
+    @acro_bike_bunny_hop = false
     $game_map.need_refresh = true
     @state = moving? ? :cycling : :cycle_stop
     update_move_parameter(:cycling)
@@ -134,6 +135,7 @@ class Game_Player
     $game_switches[::Yuki::Sw::EV_Bicycle] = false
     $game_switches[::Yuki::Sw::EV_AccroBike] = false
     self.on_acro_bike = false
+    @acro_bike_bunny_hop = false
     $game_map.need_refresh = true
     enter_in_walking_state
   end

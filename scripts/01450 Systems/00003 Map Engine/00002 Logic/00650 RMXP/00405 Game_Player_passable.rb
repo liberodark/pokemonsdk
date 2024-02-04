@@ -36,7 +36,11 @@ class Game_Player
         return true if AccroTag.include?(sys_tag)
       end
       return false if @__bridge and AccroTag.include?(@__bridge.first) and !ZTag.include?(sys_tag)
-      @__bridge = nil if result and ZTag.include?(sys_tag)
+      if result and ZTag.include?(sys_tag)
+        @__bridge = nil
+        $game_switches[76] = @bike_forced unless @bike_forced.nil?
+        @bike_forced = nil
+      end
     elsif on_bike
       return false if NO_BIKE_TILE.include?(front_system_tag)
     end

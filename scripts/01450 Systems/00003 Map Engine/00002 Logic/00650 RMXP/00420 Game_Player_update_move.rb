@@ -114,20 +114,33 @@ class Game_Player
   end
 
   # Update the Acro Bike jump info when not moving
+  # @param count [Integer] number of @acro_count frame before the player is allowed to jump
   # @param sys_tag [Integer] the current system tag
   # @return [Boolean, nil] if the player can jump (nil = not allowed to jump but can move forward)
   # @author Leikt
   def update_acro_bike_turn(sys_tag)
     if sys_tag == AcroBike
+      if @bunny_bike_forced.nil?
+        @bunny_bike_forced = $game_switches[::Yuki::Sw::CantLeaveBike]
+        $game_switches[::Yuki::Sw::CantLeaveBike] = true
+      end
       if update_acro_bike(5, sys_tag)
         jump(0,0)
       end
     elsif Input.press?(:B)
+      unless @bunny_bike_forced.nil?
+        $game_switches[::Yuki::Sw::CantLeaveBike] = @bunny_bike_forced
+        @bunny_bike_forced = nil
+      end
       if update_acro_bike((@acro_bike_bunny_hop ? 5 : 35), sys_tag)
         jump(0,0)
         @acro_bike_bunny_hop = true
       end
     elsif !Input.press?(:B)
+      unless @bunny_bike_forced.nil?
+        $game_switches[::Yuki::Sw::CantLeaveBike] = @bunny_bike_forced
+        @bunny_bike_forced = nil
+      end
       @acro_bike_bunny_hop = false
     end
   end
