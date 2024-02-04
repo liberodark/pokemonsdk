@@ -962,7 +962,9 @@ module LiteRGSS
   # Class that describe a Window holding the OpenGL context & all drawable
   class DisplayWindow
     # Maximum size of the texture for the device the OpenGL context are currently running over
-    MAX_TEXTURE_SIZE = 1024
+    # @return [Integer]
+    def self.max_texture_size
+    end
     # Create a new DisplayWindow
     # @param title [String] title of the window
     # @param width [Integer] width of the window content

@@ -324,7 +324,7 @@ module Editors
         set_position(0, 0)
         return if !tileset.tileset_name || tileset.tileset_name.empty?
 
-        mheight = LiteRGSS::DisplayWindow::MAX_TEXTURE_SIZE
+        mheight = LiteRGSS::DisplayWindow.max_texture_size
         image = Image.new("graphics/tilesets/#{tileset.tileset_name}.png")
         (image.height.to_f / mheight).ceil.times do |i|
           sprite = add_sprite(0, i * mheight, NO_INITIAL_IMAGE)
