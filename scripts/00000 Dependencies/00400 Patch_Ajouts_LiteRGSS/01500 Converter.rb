@@ -2,44 +2,6 @@
 module Converter
   module_function
 
-  # Convert a tileset to a PSDK readable PSDK tileset (if required)
-  # @param filename [String]
-  # @param max_size [Integer] Maximum Size of the texture in the Graphic Card
-  # @param min_size [Integer] Minimum Size of the texture for weak Graphic Card
-  # @example Converter.convert_tileset("Graphics/tilesets/tileset.png")
-  def convert_tileset(filename, max_size = 4096, min_size = 1024)
-    return unless File.exist?(filename.downcase)
-
-    img = Image.new(filename.downcase)
-    new_filename = filename.downcase.gsub('.png', '_._ingame.png')
-
-    if img.height > (min_size / 256 * min_size)
-      log_error("#{filename} is too big for weak Graphic Card !")
-      min_size = max_size
-    end
-
-    if img.height > (max_size / 256 * max_size)
-      log_error("#{filename} is too big for most Graphic Card !")
-      return
-    end
-    nb_col = (img.height / min_size.to_f).ceil
-    # return img.dispose if nb_col == 1 # Removed to get better loading.
-    if nb_col > 32
-      log_error("#{filename} cannot be converted to #{new_filename}, there's too much tiles.")
-      return
-    end
-    new_image = Image.new(256 * nb_col, min_size)
-    nb_col.times do |i|
-      height = min_size
-      height = img.height - (i * min_size) if (i * min_size + height) > img.height
-      new_image.blt(256 * i, 0, img, Rect.new(0, i * min_size, 256, height))
-    end
-    new_image.to_png_file(new_filename)
-    log_info("#{filename} converted to #{new_filename}!")
-    img.dispose
-    new_image.dispose
-  end
-
   # Convert an autotile file to a specific autotile file
   # @param filename [String]
   # @example Converter.convert_autotile("Graphics/autotiles/eauca.png")

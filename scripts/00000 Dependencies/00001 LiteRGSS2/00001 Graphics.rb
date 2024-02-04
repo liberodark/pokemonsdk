@@ -222,6 +222,7 @@ module Graphics
       exec_hooks(Graphics, :pre_update_internal, bnd)
       Input.swap_states
       Mouse.swap_states
+      Audio.update
       window.update
       @last_time = @current_time
       @current_time = Time.new

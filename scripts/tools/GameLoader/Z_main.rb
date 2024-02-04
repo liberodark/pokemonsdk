@@ -1,5 +1,6 @@
 need_to_open_window = true
 rgss_main do
+  Audio.__init__
   if need_to_open_window
     Graphics.start
   else
@@ -25,4 +26,6 @@ rescue Exception
   else
     raise
   end
+ensure
+  Audio.__release__
 end

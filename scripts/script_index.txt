@@ -16,11 +16,14 @@ pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00003 Drawable.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00009 Fonts.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00011 Shader.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/99999 RMXP_DATA.rb
+pokemonsdk/scripts/00000 Dependencies/00002 Audio/00001 AudioDriverBase.rb
+pokemonsdk/scripts/00000 Dependencies/00002 Audio/00002 Audio.rb
+pokemonsdk/scripts/00000 Dependencies/00002 Audio/00003 AudioVolumes.rb
+pokemonsdk/scripts/00000 Dependencies/00002 Audio/00004 AudioChannels.rb
+pokemonsdk/scripts/00000 Dependencies/00002 Audio/00101 SFMLAudioDriver.rb
+pokemonsdk/scripts/00000 Dependencies/00002 Audio/00102 FMODDriver.rb
 pokemonsdk/scripts/00000 Dependencies/00200 GameData(dep)/00100 GameData__SystemTags.rb
 pokemonsdk/scripts/00000 Dependencies/00200 GameData(dep)/00900 Yuki__VD.rb
-pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/00600 Audio.rb
-pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/00700 Audio___Fmod.rb
-pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/00800 Audio___Cache.rb
 pokemonsdk/scripts/00000 Dependencies/00400 Patch_Ajouts_LiteRGSS/01500 Converter.rb
 pokemonsdk/scripts/00000 Dependencies/00500 Patch_RPG/00100 RPG__Cache.rb
 pokemonsdk/scripts/00000 Dependencies/00500 Patch_RPG/00300 RPG__Weather.rb
