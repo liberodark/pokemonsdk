@@ -318,7 +318,8 @@ module Battle
       # @return [Array, String]
       def guess_battle_bgm
         audio_file = $game_system.battle_bgm || $game_system.playing_bgm
-        return ["audio/bgm/#{audio_file.name}", audio_file.volume, audio_file.pitch] if audio_file && !audio_file.name.empty?
+        filename = "audio/bgm/#{audio_file.name}" if audio_file
+        return [filename, audio_file.volume, audio_file.pitch] if filename && !audio_file.name.empty?
         return BASE_WILD_BATTLE_BGM unless trainer_battle?
 
         return BASE_TRAINER_BATTLE_BGM
@@ -328,7 +329,8 @@ module Battle
       # @return [Array, String]
       def guess_defeat_bgm
         audio_file = $game_system.battle_end_me
-        return [audio_file.name, audio_file.volume, audio_file.pitch] if audio_file && !audio_file.name.empty?
+        filename = "audio/bgm/#{audio_file.name}" if audio_file
+        return [filename, audio_file.volume, audio_file.pitch] if filename && !audio_file.name.empty?
         return BASE_WILD_DEFEAT_BGM if !trainer_battle? && File.exist?(BASE_WILD_DEFEAT_BGM[0])
 
         return BASE_TRAINER_DEFEAT_BGM
