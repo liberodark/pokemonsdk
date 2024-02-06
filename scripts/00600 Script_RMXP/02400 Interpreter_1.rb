@@ -78,6 +78,7 @@ class Interpreter_RMXP
     $game_map.refresh if $game_map.need_refresh
     # Start common event if required
     if $game_temp.common_event_id > 0
+      $game_player.player_update_move_bump_restore_step_anime
       setup($data_common_events[$game_temp.common_event_id].list, 0)
       $game_temp.common_event_id = 0
       return
@@ -89,11 +90,13 @@ class Interpreter_RMXP
         event.clear_starting
         event.lock
       end
+      $game_player.player_update_move_bump_restore_step_anime
       return setup(event.list, event.id)
     end
     # Try to start a common event
     $data_common_events.each do |common_event|
       next unless common_event&.trigger == 1 && $game_switches[common_event.switch_id]
+      $game_player.player_update_move_bump_restore_step_anime
       return setup(common_event.list, 0)
     end
   end

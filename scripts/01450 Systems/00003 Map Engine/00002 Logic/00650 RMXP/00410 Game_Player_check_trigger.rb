@@ -15,8 +15,6 @@ class Game_Player
       result = true
     end
     return result
-  ensure
-    player_update_move_bump_restore_step_anime if result
   end
 
   # Check if there's an event trigger in front of the player (when he presses A)
@@ -56,8 +54,6 @@ class Game_Player
     check_common_event_trigger_there(new_x, new_y, z, d)
     result ||= check_follower_trigger_there(new_x, new_y) if @follower
     return result
-  ensure
-    player_update_move_bump_restore_step_anime if result
   end
 
   # Tile tha allow to use DIVE
@@ -116,7 +112,5 @@ class Game_Player
       result = true
     end
     return result
-  ensure
-    player_update_move_bump_restore_step_anime if result
   end
 end
