@@ -261,7 +261,7 @@ module Yuki
 
       class AnimatedTileCounter
         # Hash of default AnimatedTileCounters
-        DEFAULT_COUNTERS = Hash.new { |h, k| h[k] = {} }
+        DEFAULT_COUNTERS = {}
 
         # @return [Integer]
         attr_reader :count
