@@ -6,8 +6,8 @@
 # To execute this script write :
 #   PSDKEditor.convert
 
-require_relative '../../keep/GameData'
-require_relative '../../keep/legacy_psdk_config'
+require_relative './PSDKEditorRequired/GameData'
+require_relative './PSDKEditorRequired/legacy_psdk_config'
 module PSDKEditor
   # Root folder of the PSDK Editor data
   ROOT = 'Data/Studio'
