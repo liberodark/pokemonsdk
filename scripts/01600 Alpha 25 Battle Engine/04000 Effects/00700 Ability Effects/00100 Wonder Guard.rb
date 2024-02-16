@@ -10,10 +10,20 @@ module Battle
         def on_move_ability_immunity(user, target, move)
           return false if target != @target
           return false if move.db_symbol == :struggle
-          
-          check = move.type_modifier(user, target) <= 1 && move.real_base_power(user, target) != 0 && user.can_be_lowered_or_canceled?
-          @logic.scene.visual.show_ability(@target) if check
-          return check
+
+          @logic.scene.visual.show_ability(@target) if blocked?(user, move, target)
+          return blocked?(user, move, target)
+        end
+
+        # Function called when we try to check if the move is blocked by Wonder Guard
+        # @param user [PFM::PokemonBattler]
+        # @param target [PFM::PokemonBattler]
+        # @param move [Battle::Move]
+        # @return [Boolean] if the target is immune to the move
+        def blocked?(user, move, target)
+          return false if move.status?
+
+          return move.type_modifier(user, target) <= 1 && user.can_be_lowered_or_canceled?
         end
       end
       register(:wonder_guard, WonderGuard)

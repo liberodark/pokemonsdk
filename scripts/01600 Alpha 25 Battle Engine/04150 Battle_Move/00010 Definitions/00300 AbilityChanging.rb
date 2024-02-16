@@ -44,7 +44,7 @@ module Battle
       end
     end
 
-    # Role Play move
+    # Entrainment move
     class Entrainment < AbilityChanging
       # Function that tests if the user is able to use the move
       # @param user [PFM::PokemonBattler] user of the move
