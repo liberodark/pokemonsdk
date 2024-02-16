@@ -117,10 +117,10 @@ module GamePlay
     # Execute the special offer of the shop when the player bough an item
     # @param quantity [Integer] Number of item bought
     def buy_item_special_offer(quantity)
-      if (1..16).include?(@list_item[@index]) && quantity >= 10
+      if data_item(@list_item[@index]).is_a?(Studio::BallItem) && quantity >= 10
         # Honnor ball gift
         display_message(text_get(11, 32))
-        $bag.add_item(12, (quantity / 10))
+        $bag.add_item(:premier_ball, (quantity / 10))
       end
     end
 
