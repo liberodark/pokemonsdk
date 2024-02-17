@@ -114,9 +114,10 @@ module Battle
         @nb_hit = 0
         @hit_amount = hit_amount(user, actual_targets)
         @hit_amount.times.count do |i|
-          next false unless actual_targets.all?(&:alive?)
-          next false if user.dead?
-          next false if i > 0 && !user.has_ability?(:skill_link) && (actual_targets = recalc_targets(user, actual_targets)).empty?
+          break false unless actual_targets.all?(&:alive?)
+          break false if user.dead?
+
+          break false if i > 0 && !user.has_ability?(:skill_link) && (actual_targets = recalc_targets(user, actual_targets)).empty?
 
           play_animation(user, actual_targets) if i > 0
           actual_targets.each do |target|
@@ -142,9 +143,10 @@ module Battle
       # Recalculate the target each time it's needed
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] the current targets we need the accuracy recalculation on
+      # @return [Array] the targets hit after accuracy recalculation
       def recalc_targets(user, targets)
-        # => proceed_move_accuracy will call display message if failure
-        return [] unless proceed_move_accuracy(user, targets) || (on_move_failure(user, targets, :accuracy) && false)
+
+        return [] unless proceed_move_accuracy(user, targets).any? || (on_move_failure(user, targets, :accuracy) && false)
 
         user, targets = proceed_battlers_remap(user, targets)
 
@@ -170,7 +172,7 @@ module Battle
       # @return [Integer]
       def real_base_power(user, target)
         return super unless user.db_symbol == :greninja
-        return super if (user.form != 1 || BATTLE_BOND_GEN_NINE)
+        return super if user.form != 1 || BATTLE_BOND_GEN_NINE
 
         modified_power = 20
         log_data("Water Shuriken Power = #{modified_power}")
@@ -183,7 +185,7 @@ module Battle
       # @return [Integer]
       def hit_amount(user, actual_targets)
         return super unless user.db_symbol == :greninja
-        return super if (user.form != 1 || BATTLE_BOND_GEN_NINE)
+        return super if user.form != 1 || BATTLE_BOND_GEN_NINE
 
         return 3
       end
