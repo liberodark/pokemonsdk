@@ -161,7 +161,7 @@ module PFM
       bag = PFM::Bag.new
       ally.bag_entries.each { |bag_entry| bag.add_item(bag_entry[:dbSymbol], bag_entry[:amount]) }
       party = ally.party.map(&:to_creature)
-      info.add_party(0, party, ally.name, ally.class_name, ally.resources.sprite, bag, ally.base_money, ally.ai)
+      bi.add_party(0, party, ally.name, ally.class_name, ally.resources.sprite, bag, ally.base_money, ally.ai)
     end
   end
 end
