@@ -135,6 +135,7 @@ The game will sleep 10 seconds to make sure you see this message')
       register(:battle_backout, 'graphics/shaders/battle_backout.frag')
       register(:graphics_transition, Graphics::TRANSITION_FRAG_SHADER)
       register(:graphics_transition_static, Graphics::STATIC_TRANSITION_FRAG_SHADER)
+      register(:fake_3d, 'graphics/shaders/fake_3d.frag', 'graphics/shaders/fake_3d.vert') if Fake3D::ENABLED
     end
   end
 end

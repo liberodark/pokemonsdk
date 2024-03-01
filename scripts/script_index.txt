@@ -15,6 +15,7 @@ pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00002 Viewport.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00003 Drawable.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00009 Fonts.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00011 Shader.rb
+pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/00012 Fake3D.rb
 pokemonsdk/scripts/00000 Dependencies/00001 LiteRGSS2/99999 RMXP_DATA.rb
 pokemonsdk/scripts/00000 Dependencies/00002 Audio/00001 AudioDriverBase.rb
 pokemonsdk/scripts/00000 Dependencies/00002 Audio/00002 Audio.rb
