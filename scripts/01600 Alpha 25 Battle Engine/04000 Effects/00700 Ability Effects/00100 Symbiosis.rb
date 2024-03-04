@@ -73,13 +73,14 @@ module Battle
 
         private
 
-        # Check if we can give our object to the target that just lost it 
+        # Check if we can give our object to the target that just lost it
         # @param handler [Battle::Logic::DamageHandler]
         # @param ally [PFM::PokemonBattler]
         # @param skill [Battle::Move, nil] Potential move used
         # @return [Boolean]
         def valid_target?(handler, ally, skill)
           return false unless handler.logic.allies_of(@target).include?(ally)
+          return false if handler.logic.switch_request.any? { |request| request[:who] == ally }
           return false if skill && INVALID_BE_METHOD.include?(skill.be_method)
           return false if ally.effects.has?(:item_burnt)
 
@@ -107,6 +108,7 @@ module Battle
           handler.logic.item_change_handler.change_item(new_item, true, ally, @target)
         end
       end
+
       register(:symbiosis, Symbiosis)
     end
   end

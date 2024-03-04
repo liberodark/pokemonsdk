@@ -15,9 +15,9 @@ module Battle
           return if handler.logic.switch_request.any? { |request| request[:who] == target }
 
           handler.logic.actions.reject! { |a| a.is_a?(Actions::Attack) && a.launcher == target }
+          handler.logic.switch_request << { who: target }
           handler.scene.visual.show_item(target)
           handler.logic.item_change_handler.change_item(:none, true, target)
-          handler.logic.switch_request << { who: target }
         end
       end
       register(:eject_button, EjectButton)
