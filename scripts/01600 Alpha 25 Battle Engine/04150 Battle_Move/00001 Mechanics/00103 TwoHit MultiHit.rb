@@ -99,7 +99,7 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        final_power = power + @nb_hit * power
+        final_power = power + (@nb_hit || 0) * power
         return final_power
       end
 
