@@ -8,13 +8,10 @@ module Battle
       # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
-        return true if targets.all? { |target| target.has_ability?(:comatose) }
         return false unless super
 
-        if targets.all? { |target| target.effects.has?(:nightmare) }
-          show_usage_failure(user)
-          return false
-        end
+        return show_usage_failure(user) && false if targets.none? { |target| target.asleep? && target.has_ability?(:comatose) }
+        return show_usage_failure(user) && false if targets.all? { |target| target.effects.has?(:nightmare) }
 
         return true
       end
@@ -26,6 +23,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
+          next unless target.asleep?
           next if target.effects.has?(:nightmare)
 
           target.effects.add(Effects::Nightmare.new(@logic, target))
