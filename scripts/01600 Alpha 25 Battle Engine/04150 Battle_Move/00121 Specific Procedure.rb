@@ -74,7 +74,7 @@ module Battle
         deal_stats(user, actual_targets) &&
         deal_effect_sheer_force(user, actual_targets)
 
-      user.ability_effect&.activated = false
+      user.ability_effect&.activated = false if user.has_ability?(:sheer_force)
 
       user.add_move_to_history(self, actual_targets)
       user.add_successful_move_to_history(self, actual_targets)
@@ -86,11 +86,11 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
     def deal_effect_sheer_force(user, actual_targets)
-      if user.ability_effect&.excluded_db_symbol&.include?(db_symbol) || user.ability_effect&.excluded_methods&.include?(be_method)
-        return deal_effect(user, actual_targets)
-      end
+      return false unless user.has_ability?(:sheer_force)
+      return false unless user.ability_effect.excluded_db_symbol.include?(db_symbol)
+      return false unless user.ability_effect.excluded_methods.include?(be_method)
 
-      return false
+      return deal_effect(user, actual_targets)
     end
 
     # Internal procedure of the move
