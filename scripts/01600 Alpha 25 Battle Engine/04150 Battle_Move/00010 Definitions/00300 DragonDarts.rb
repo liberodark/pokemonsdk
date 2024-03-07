@@ -53,7 +53,7 @@ module Battle
         if $game_temp.vs_type == 1
           return actual_targets.empty? ? nil : actual_targets
         end
-        
+
         return actual_targets if actual_targets && original_targets.bank == user.bank
 
         if actual_targets.nil? && original_targets.bank != user.bank
@@ -82,7 +82,7 @@ module Battle
         @nb_hit = 0
         @hit_amount = 2
         @all_targets = nil
-      
+
         @all_targets = actual_targets unless actual_targets.nil?
         @all_targets += @allies_targets unless @allies_targets.nil?
 
@@ -110,9 +110,9 @@ module Battle
         end
         @scene.display_message_and_wait(parse_text(18, 33, PFM::Text::NUMB[1] => @nb_hit.to_s))
         return false if user.dead?
-      
+
         return true
-      end      
+      end
 
       # Check if this the last hit of the move
       # Don't call this method before deal_damage method call
@@ -133,5 +133,3 @@ module Battle
     Move.register(:s_dragon_darts, DragonDarts)
   end
 end
-
-
