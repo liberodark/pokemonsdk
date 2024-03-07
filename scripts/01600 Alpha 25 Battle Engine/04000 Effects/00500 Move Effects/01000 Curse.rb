@@ -10,9 +10,9 @@ module Battle
         return if @pokemon.dead?
         return if @pokemon.has_ability?(:magic_guard)
 
-        hp = @pokemon.max_hp / 4
+        hp = (@pokemon.max_hp / 4).clamp(1, @pokemon.hp)
         scene.display_message_and_wait(parse_text_with_pokemon(19, 1077, @pokemon))
-        logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), @pokemon)
+        logic.damage_handler.damage_change(hp, @pokemon)
       end
 
       # Get the name of the effect
