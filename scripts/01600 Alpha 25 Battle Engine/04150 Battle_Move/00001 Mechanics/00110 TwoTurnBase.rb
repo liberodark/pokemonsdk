@@ -22,38 +22,54 @@ module Battle
       # Return the list of the moves that can reach the pokemon event in out_of_reach, nil if all attack reach the user
       # @return [Array<Symbol>]
       def can_hit_moves
-        CAN_HIT_BY_TYPE[TYPES[db_symbol] || 4]
+        return CAN_HIT_BY_TYPE[TYPES[db_symbol] || 4]
       end
 
       # List all the text_id used to announce the waiting turn in TwoTurnBase moves
       ANNOUNCES = {
-        dig: 538, fly: 529, dive: 535, bounce: 544,
-        phantom_force: 541, shadow_force: 541,
-        skull_bash: 556, razor_wind: 547, freeze_shock: 866,
-        ice_burn: 869, sky_attack: 550
+        bounce: [19, 544],
+        dig: [19, 538],
+        dive: [19, 535],
+        freeze_shock: [59, 866],
+        geomancy: [19, 1213],
+        ice_burn: [19, 869],
+        meteor_beam: [59, 2014],
+        phantom_force: [19, 541],
+        razor_wind: [19, 547],
+        shadow_force: [19, 541],
+        sky_attack: [19, 550],
+        skull_bash: [19, 556],
+        solar_beam: [19, 553],
+        fly: [19, 529]
+
+        # TODO: Add the corresponding text for Electro Shot
       }
 
       # Move db_symbol to a list of stat and power
       # @return [Hash<Symbol, Array<Array[Symbol, Power]>]
       MOVE_TO_STAT = {
-        skull_bash: [[:dfe, 1]],
-        electro_shot: [[:ats, 1]]
+        electro_shot: [[:ats, 1]],
+        meteor_beam: [[:ats, 1]],
+        skull_bash: [[:dfe, 1]]
       }
 
       # Move db_symbol to a list of stat and power change on the user
       # @return [Hash<Symbol, Array<Array[Symbol, Power]>]
       def stat_changes_turn1(user, targets)
-        MOVE_TO_STAT[db_symbol]
+        return MOVE_TO_STAT[db_symbol]
       end
 
       # Display the message and the animation of the turn
       # @param user [PFM::PokemonBattler]
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       def proceed_message_turn1(user, targets)
-        txt_id = ANNOUNCES[db_symbol]
-        @scene.display_message_and_wait(parse_text_with_pokemon(19, txt_id, user)) if txt_id
+        file_id, text_id = ANNOUNCES[db_symbol]
+        return unless file_id && text_id
+
+        @scene.display_message_and_wait(parse_text_with_pokemon(file_id, text_id, user))
       end
     end
+
     Move.register(:s_2turns, TwoTurnBase)
   end
 end

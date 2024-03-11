@@ -1,9 +1,6 @@
 module Battle
   class Move
-    # The user of Solar Beam will absorb light on the first turn. On the second turn, Solar Beam deals damage.
-    # @see https://pokemondb.net/move/solar-beam
-    # @see https://bulbapedia.bulbagarden.net/wiki/Solar_Beam_(move)
-    # @see https://www.pokepedia.fr/Lance-Soleil
+    # Solar Beam Move
     class SolarBeam < TwoTurnBase
       # Get the real base power of the move (taking in account all parameter)
       # @param user [PFM::PokemonBattler] user of the move
@@ -26,14 +23,8 @@ module Battle
 
         super
       end
-
-      # Display the message and the animation of the turn
-      # @param user [PFM::PokemonBattler]
-      # @param targets [Array<PFM::PokemonBattler>] expected targets
-      def proceed_message_turn1(user, targets)
-        @scene.display_message_and_wait(parse_text_with_pokemon(19, 553, user))
-      end
     end
+
     Move.register(:s_solar_beam, SolarBeam)
   end
 end

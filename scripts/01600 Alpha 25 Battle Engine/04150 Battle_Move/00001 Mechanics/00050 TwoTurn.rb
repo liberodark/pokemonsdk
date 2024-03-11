@@ -23,9 +23,9 @@ module Battle
 
           if targets.all?(&:dead?) && (on_move_failure(user, targets, :no_target) || true)
             user.add_move_to_history(self, targets)
-            return scene.display_message_and_wait(parse_text(18, 106)) 
+            return scene.display_message_and_wait(parse_text(18, 106))
           end
-          
+
           if pp == 0 && !(user.effects.has?(&:force_next_move?) && !@forced_next_move_decrease_pp)
             user.add_move_to_history(self, targets)
             return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp) && nil

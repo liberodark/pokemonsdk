@@ -5,13 +5,6 @@ module Battle
     class Geomancy < TwoTurnBase
       private
 
-      # Display the message and the animation of the turn
-      # @param user [PFM::PokemonBattler]
-      # @param targets [Array<PFM::PokemonBattler>] expected targets
-      def proceed_message_turn1(user, targets)
-        @scene.display_message_and_wait(parse_text_with_pokemon(19, 1213, user))
-      end
-
       # Function that deals the effect to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move

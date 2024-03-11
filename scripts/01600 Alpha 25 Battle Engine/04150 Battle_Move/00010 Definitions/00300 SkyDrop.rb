@@ -1,9 +1,7 @@
 module Battle
   class Move
-    # Sky Drop takes the target into the air on the first turn, then drops them on the second turn, wherein they receive damage.
-    # @see https://pokemondb.net/move/sky-drop
-    # @see https://bulbapedia.bulbagarden.net/wiki/Sky_Drop_(move)
-    # @see https://www.pokepedia.fr/Chute_Libre
+    # Sky Drop Move
+    # TODO: Need to be reworked
     class SkyDrop < TwoTurnBase
       private
 
