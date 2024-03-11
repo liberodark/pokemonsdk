@@ -5,9 +5,9 @@ module Battle
       # Create a new Pokemon HealBlock effect
       # @param logic [Battle::Logic]
       # @param target [PFM::PokemonBattler]
-      def initialize(logic, target)
+      def initialize(logic, target, turn_count = 5)
         super(logic, target)
-        self.counter = 5
+        self.counter = turn_count
       end
 
       # Get the name of the effect
