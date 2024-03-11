@@ -26,6 +26,7 @@ module Battle
       return true if (status? && target == user) || accuracy <= 0
       return true if user.has_ability?(:no_guard) || target.has_ability?(:no_guard)
       return true if user.effects.get(:lock_on)&.target == target
+      return true if target.effects.has?(:glaive_rush)
       return true if target.effects.has?(:telekinesis) && !ohko?
       return true if db_symbol == :toxic && user.type_poison?
       return true if db_symbol == :blizzard && $env.hail?
