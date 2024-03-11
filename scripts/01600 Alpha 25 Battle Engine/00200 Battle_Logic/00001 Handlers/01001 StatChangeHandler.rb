@@ -277,7 +277,7 @@ module Battle
       next power
     end
     StatChangeHandler.register_stat_change_post_event_hook('PSDK stat_change_post: Effects') do |handler, stat, power, target, launcher, skill|
-      next handler.logic.each_effects(target, launcher) do |effect|
+      next handler.logic.each_effects(*handler.logic.all_alive_battlers) do |effect|
         next effect.on_stat_change_post(handler, stat, power, target, launcher, skill)
       end
     end

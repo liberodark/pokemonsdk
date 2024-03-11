@@ -3,7 +3,7 @@ module Battle
   module Effects
     class Ability
       class Electromorphosis < Ability
-        # Create a new Wind Rider effect
+        # Create a new Electromorphosis effect
         # @param logic [Battle::Logic]
         # @param target [PFM::PokemonBattler]
         # @param db_symbol [Symbol] db_symbol of the ability
@@ -11,7 +11,7 @@ module Battle
           super
           @activated = false
         end
-    
+
         # Function called after damages were applied (post_damage, when target is still alive)
         # @param handler [Battle::Logic::DamageHandler]
         # @param hp [Integer] number of hp (damage) dealt
@@ -26,7 +26,7 @@ module Battle
           #TODO: Add the corresponding text
         end
         alias on_post_damage_death on_post_damage
-    
+
         # Give the move base power mutiplier
         # @param user [PFM::PokemonBattler] user of the move
         # @param target [PFM::PokemonBattler] target of the move
