@@ -177,7 +177,9 @@ class Sprite_Character < RPG::Sprite
   # Change the bush_depth
   # @param value [Integer]
   def bush_depth=(value)
-    @bush_depth = value.to_i
+    return if @bush_depth == (value = value.to_i)
+
+    @bush_depth = value
     return if (@bush_depth_sprite.visible = @bush_depth > 0)
 
     src_rect.height = @height
