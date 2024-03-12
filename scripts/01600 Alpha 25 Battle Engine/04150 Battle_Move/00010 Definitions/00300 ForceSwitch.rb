@@ -11,14 +11,20 @@ module Battle
 
       private
 
-      # Test if the target is immune
-      # @param user [PFM::PokemonBattler]
-      # @param target [PFM::PokemonBattler]
-      # @return [Boolean]
-      def target_immune?(user, target)
-        return true if target.effects.has?(:crafty_shield) && be_method == :s_roar
+      # Function that tests if the user is able to use the move
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param targets [Array<PFM::PokemonBattler>] expected targets
+      # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
+      # @return [Boolean] if the procedure can continue
+      def move_usable_by_user(user, targets)
+        return true unless super
+        return true unless be_method == :s_roar
 
-        return super
+        if targets.all? { |target| target.effects.has?(:crafty_shield) || target.has_ability?(:guard_dog) }
+          show_usage_failure(user)
+          return false
+        end
+        return true
       end
 
       # Check if the move bypass chance of hit and cannot fail
@@ -38,6 +44,7 @@ module Battle
         actual_targets.each do |target|
           next false unless @logic.switch_handler.can_switch?(target, self) && user.alive?
           next false if target.effects.has?(:substitute) && be_method == :s_dragon_tail
+          next false if target.has_ability?(:guard_dog)
           next false if @logic.switch_request.any? { |request| request[:who] == target }
 
           if !@logic.battle_info.trainer_battle? && @logic.alive_battlers_without_check(target.bank).size == 1 && target.bank == 1 && user.level >= target.level && !$game_switches[Yuki::Sw::BT_NoEscape]

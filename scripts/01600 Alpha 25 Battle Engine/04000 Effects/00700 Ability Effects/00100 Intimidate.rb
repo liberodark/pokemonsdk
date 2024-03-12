@@ -11,13 +11,16 @@ module Battle
 
           alive_foes = handler.logic.foes_of(with).select(&:alive?)
           handler.scene.visual.show_ability(with) if alive_foes.any?
+          @activated = true
           alive_foes.each do |foe|
             handler.logic.stat_change_handler.stat_change_with_process(:atk, -1, foe, with)
-            if foe.has_ability?(:rattled)
-              handler.scene.visual.show_ability(foe)
-              handler.logic.stat_change_handler.stat_change_with_process(:spd, 1, foe, with)
-            end
           end
+          @activated = false
+        end
+
+        # @return [Boolean] if the ability is currently activated
+        def activated?
+          return @activated
         end
       end
       register(:intimidate, Intimidate)

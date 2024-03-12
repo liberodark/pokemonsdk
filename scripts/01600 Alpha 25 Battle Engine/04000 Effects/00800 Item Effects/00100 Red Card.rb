@@ -16,7 +16,7 @@ module Battle
 
           handler.scene.visual.show_item(target)
           rand_pkmn = (@logic.alive_battlers_without_check(launcher.bank).select { |p| p if p.party_id == launcher.party_id && p.position == -1 }).compact
-          @logic.switch_request << { who: launcher, with: rand_pkmn.sample } unless rand_pkmn.empty?
+          @logic.switch_request << { who: launcher, with: rand_pkmn.sample } unless rand_pkmn.empty? || launcher.has_ability?(:guard_dog)
           target.item_holding = target.battle_item = 0
         end
       end
