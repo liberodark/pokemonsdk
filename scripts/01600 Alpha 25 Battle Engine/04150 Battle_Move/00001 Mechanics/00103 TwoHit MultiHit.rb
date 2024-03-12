@@ -92,7 +92,7 @@ module Battle
       end
     end
 
-    # This method applies for triple kick and triple axel : power ramps up but the move stops if the subsequent attack misses.
+    # This method applies for triple kick and triple axel: power ramps up but the move stops if the subsequent attack misses.
     class TripleKick < MultiHit
       # Get the real base power of the move (taking in account all parameter)
       # @param user [PFM::PokemonBattler] user of the move
@@ -162,6 +162,25 @@ module Battle
       end
     end
 
+    # This method applies for Population Bomb: can hit up to 10 times, each subsequent hit checks accuracy.
+    class PopulationBomb < TripleKick
+      # Get the real base power of the move (taking in account all parameter)
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @return [Integer]
+      def real_base_power(user, target)
+        return power
+      end
+
+      # Get the number of hit the move can perform
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+      # @return [Integer]
+      def hit_amount(user, actual_targets)
+        return 10
+      end
+    end
+
     # Class describing Water Shuriken : Changes power and number of hit depending on greninja's base or Ash form.
     class WaterShuriken < MultiHit
       # New version of the Greninja ability (9G+)
@@ -195,6 +214,7 @@ module Battle
     Move.register(:s_2hits, TwoHit)
     Move.register(:s_3hits, ThreeHit)
     Move.register(:s_triple_kick, TripleKick)
+    Move.register(:s_population_bomb, PopulationBomb)
     Move.register(:s_water_shuriken, WaterShuriken)
   end
 end

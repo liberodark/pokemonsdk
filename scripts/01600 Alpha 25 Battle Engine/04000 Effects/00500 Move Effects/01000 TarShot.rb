@@ -58,12 +58,12 @@ module Battle
 
         return
       end
-      
+
       # Get the name of the effect
       # @return [Symbol]
       def name
         return :tar_shot
-      end    
+      end
     end
   end
 end

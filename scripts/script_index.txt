@@ -573,7 +573,6 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Foresight.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 FuryCutter.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 FutureSight.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 GlaiveRush.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Gravity.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Grudge.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 HappyHour.rb
@@ -956,6 +955,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Captivate.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 ChangeType.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Charge.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 ChillyReception.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 ClangorousSoul.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Conversion.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 CoreEnforcer.rb
@@ -983,6 +983,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Fangs.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Feint.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 FellStinger.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 FickleBeam.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 FinalGambit.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 FishiousRend.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 FixedDamages.rb
@@ -1143,6 +1144,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Switcheroo.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Synchronoise.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Tailwind.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 TakeHeart.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 TarShot.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Taunt.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 TeaTime.rb
