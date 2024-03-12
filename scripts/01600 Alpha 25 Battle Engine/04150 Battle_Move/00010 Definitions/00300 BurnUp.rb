@@ -4,7 +4,8 @@ module Battle
     class BurnUp < Basic
       # Text of the loss of our type after launching the attack
       TEXTS_IDS = {
-        burn_up: [:parse_text_with_pokemon, 59, 1856]
+        burn_up: [:parse_text_with_pokemon, 59, 1856],
+        double_shock: [:parse_text_with_pokemon, 59, 1856] # TODO: add double shock's text
       }
       # Function that tests if the user is able to use the move
       # @param user [PFM::PokemonBattler] user of the move

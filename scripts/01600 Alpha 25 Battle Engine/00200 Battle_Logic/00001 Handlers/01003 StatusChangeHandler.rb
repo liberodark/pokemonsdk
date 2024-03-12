@@ -44,7 +44,7 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
       # @param skill [Battle::Move, nil] Potential move used
-      # @param message_overwrite [Integer] Index of the message to use if file 19 to apply the status (if there's specific reason)
+      # @param message_overwrite [Integer] Index of the message to use of file 19 to apply the status (if there's specific reason)
       def status_change(status, target, launcher = nil, skill = nil, message_overwrite: nil)
         log_data("# status_change(#{status}, #{target}, #{launcher}, #{skill})")
         case status
