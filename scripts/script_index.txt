@@ -1165,6 +1165,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 TrumpCard.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 UTurn.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 UpRoar.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 UpperHand.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 VenomDrench.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Venoshock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 WeatherBall.rb
