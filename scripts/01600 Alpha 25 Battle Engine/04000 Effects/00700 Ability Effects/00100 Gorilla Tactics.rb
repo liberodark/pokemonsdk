@@ -19,6 +19,7 @@ module Battle
         # @param move [Battle::Move]
         # @return [:prevent, nil] :prevent if the move cannot continue
         def on_move_prevention_user(user, targets, move)
+          return if move&.be_method == :s_struggle
           return unless move_can_be_used?(user, move)
 
           move.show_usage_failure(user)
@@ -47,8 +48,9 @@ module Battle
         # @return [Boolean]
         def move_can_be_used?(user, move)
           return false unless user == @target && user.move_history.any?
-          return false if user.move_history.last.db_symbol == move.db_symbol
-          return false if user.move_history.last.turn < user.last_sent_turn
+          last_move = user.move_history.reject { |move| move.db_symbol == :struggle }.last
+          return false if last_move.db_symbol == move.db_symbol
+          return false if last_move.turn < user.last_sent_turn
 
           return true
         end
