@@ -41,7 +41,7 @@ module Battle
     # @param pp [Integer] number of pp the move currently has
     # @param ppmax [Integer] maximum number of pp the move currently has
     # @param scene [Battle::Scene] current battle scene
-    # @param original_launcher [PFM::PokemonBattler] 
+    # @param original_launcher [PFM::PokemonBattler]
     def initialize(db_symbol, pp, ppmax, scene, original_launcher = nil)
       data = data_move(db_symbol)
       @id = data.id
@@ -56,6 +56,7 @@ module Battle
       @scene = scene
       @logic = scene.logic
       @original_launcher = original_launcher
+      @reloading = false
     end
 
     # Format move for logging purpose
