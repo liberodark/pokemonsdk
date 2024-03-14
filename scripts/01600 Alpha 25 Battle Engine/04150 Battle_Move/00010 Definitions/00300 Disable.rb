@@ -39,7 +39,9 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
-          move = target.move_history.last.original_move
+          move = target.move_history&.last&.original_move
+          next unless move
+
           message = parse_text_with_pokemon(19, 592, target, PFM::Text::MOVE[1] => move.name)
           target.effects.add(Effects::Disable.new(@logic, target, move))
           @scene.display_message_and_wait(message)
@@ -55,6 +57,7 @@ module Battle
         return true
       end
     end
+
     Move.register(:s_disable, Disable)
   end
 end

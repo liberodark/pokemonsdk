@@ -30,7 +30,7 @@ module Battle
         @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 595, user, PFM::Text::MOVE[1] => move.name))
         return :prevent
       end
-      
+
       # Function called when we try to check if the user cannot use a move
       # @param user [PFM::PokemonBattler]
       # @param move [Battle::Move]
