@@ -1,6 +1,6 @@
 module GamePlay
   # Class that show the KeyBinding UI and allow to change it
-  class KeyBinding < BaseCleanUpdate
+  class KeyBinding < BaseCleanUpdate::FrameBalanced
     # List of keys use by the 3 modes
     KEYS = [%i[A RIGHT DOWN B]] * 3
     # List of mouse action in navigation mode

@@ -52,6 +52,14 @@ module PFM
       @canceled = false
       # @type [Yuki::ChoiceWindow]
       window = build_choice_window(viewport, x, y, width, align_right)
+      # Fix for high end monitors
+      animation = Yuki::Animation.wait(0.25)
+      animation.start
+      until animation.done?
+        animation.update
+        Graphics.update
+        on_update&.call(*args)
+      end
       loop do
         Graphics.update
         window.update
