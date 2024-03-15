@@ -209,19 +209,17 @@ module PFM
       return 0
     end
 
-    FORM_GENERATION[:unown] = proc { @form = @code % 28 }
-    FORM_GENERATION[:castform] = proc do
-      env = $env
-      if env.sunny? || $env.hardsun?
-        next @form = 2
-      elsif env.rain? || $env.hardrain?
-        next @form = 3
-      elsif env.hail?
-        next @form = 6
-      end
+    # Determine the form of Castform
+    # @param reason [Symbol]
+    def castform_form(reason)
+      return 2 if reason == :fire
+      return 3 if reason == :rain
+      return 6 if reason == :ice
 
-      next @form = 0
+      return 0
     end
+
+    FORM_GENERATION[:unown] = proc { @form = @code % 28 }
 
     FORM_GENERATION[:burmy] = FORM_GENERATION[:wormadam] = proc do
       env = $env
@@ -267,5 +265,6 @@ module PFM
     FORM_CALIBRATE[:greninja] = proc { |reason| @form = reason == :battle ? 1 : 0 }
     FORM_CALIBRATE[:cramorant] = proc { |reason| @form = cramorant_form(reason) }
     FORM_CALIBRATE[:palafin] = proc { |reason| @form = reason == :hero ? 1 : 0 }
+    FORM_CALIBRATE[:castform] = proc { |reason| @form = castform_form(reason) }
   end
 end
