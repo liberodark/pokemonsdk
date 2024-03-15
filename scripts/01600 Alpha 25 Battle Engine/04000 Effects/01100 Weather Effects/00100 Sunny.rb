@@ -21,7 +21,7 @@ module Battle
         # @param move [Battle::Move] move
         # @return [Float, Integer] multiplier
         def mod1_multiplier(user, target, move)
-          return 1.5 if move.type_fire?
+          return 1.5 if move.type_fire? || move.db_symbol == :hydro_steam
           return 0.5 if move.type_water?
 
           return 1
