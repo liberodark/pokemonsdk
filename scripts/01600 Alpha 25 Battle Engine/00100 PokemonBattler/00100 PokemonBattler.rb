@@ -88,6 +88,10 @@ module PFM
     # @return [Array<SuccessfulMoveHistory>]
     attr_reader :successful_move_history
 
+    # Get the stat history
+    # @return [Array<StatHistory>]
+    attr_reader :stat_history
+
     # Get the encounter list
     # @return [Array<PFM::PokemonBattler>]
     attr_reader :encounter_list
@@ -164,6 +168,7 @@ module PFM
       @move_history = []
       @damage_history = []
       @successful_move_history = []
+      @stat_history = []
       @encounter_list = []
       @mega_evolved = false
       @exp_distributed = false
@@ -277,6 +282,16 @@ module PFM
     # @param targets [Array<PFM::PokemonBattler>]
     def add_successful_move_to_history(move, targets)
       @successful_move_history << SuccessfulMoveHistory.new(move, targets, attack_order)
+    end
+
+    # Add a stat to the stat history
+    # @param stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva
+    # @param power [Integer] power of the stat change
+    # @param target [PFM::PokemonBattler] target of the stat change
+    # @param launcher [PFM::PokemonBattler, nil] launcher of the stat change
+    # @param move [Battle::Move, nil] move that cause the stat change
+    def add_stat_to_history(stat, power, target, launcher, move)
+      @stat_history << StatHistory.new(stat, power, target, launcher, move)
     end
 
     # Add a battler to the encounter list

@@ -499,6 +499,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00400 Groun
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00500 Effects.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/01000 MoveHistory.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/01100 DamageHistory.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/01200 StatsHistory.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00100 Logic.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00101 Battler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00200 Battle_Logic/00102 Actions.rb

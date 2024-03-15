@@ -87,6 +87,8 @@ module Battle
         amount = target.change_stat(STAT_INDEX[stat], power)
         show_stat_change_text_and_animation(stat, power, amount, target, no_message)
         exec_hooks(StatChangeHandler, :stat_change_post_event, binding)
+
+        target.add_stat_to_history(stat, power, target, launcher, skill)
       rescue Hooks::ForceReturn => e
         log_data("# FR: stat_change #{e.data} from #{e.hook_name} (#{e.reason})")
         return e.data
