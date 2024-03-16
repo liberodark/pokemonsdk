@@ -574,6 +574,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Foresight.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 FuryCutter.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 FutureSight.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 GlaiveRush.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Gravity.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Grudge.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 HappyHour.rb
@@ -1176,7 +1177,6 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 VenomDrench.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Venoshock.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 WeatherBall.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 WeatherBoosting.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 WeatherMove.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Wish.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 WonderRoom.rb
