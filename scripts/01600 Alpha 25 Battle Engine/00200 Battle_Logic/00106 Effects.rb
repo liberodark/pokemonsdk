@@ -88,6 +88,13 @@ module Battle
       return @field_terrain_effect
     end
 
+    # Switch bank effects
+    # @param bank1 [Integer]
+    # @param bank2 [Integer]
+    def switch_bank_effects(bank1, bank2)
+      @bank_effects[bank1], @bank_effects[bank2] = @bank_effects[bank2], @bank_effects[bank1]
+    end
+
     private
 
     def init_effects
