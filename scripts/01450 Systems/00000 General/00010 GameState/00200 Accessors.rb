@@ -59,6 +59,12 @@ module PFM
 
     on_initialize(:steps) { @steps = 0 }
 
+    # If the repel is on cooldown
+    # @return [Boolean]
+    attr_accessor :repel_step_cooldown
+
+    on_initialize(:repel_step_cooldown) { @repel_step_cooldown = false }
+
     # The $game_variables
     # @return [Game_Variables]
     attr_accessor :game_variables
@@ -372,6 +378,18 @@ module PFM
     end
     alias set_repel_count repel_count=
     alias get_repel_count repel_count
+
+    # Assign the state of the cooldown provided by cancelling a Repel check
+    # @param repel_step_cooldown [Boolean]
+    def repel_step_cooldown=(repel_step_cooldown)
+      @repel_step_cooldown = repel_step_cooldown
+    end
+
+    # Tell the state of the cooldown provided by cancelling a Repel check
+    # @return [Boolean]
+    def repel_on_cooldown?
+      return repel_step_cooldown
+    end
 
     # Return the money the player has
     # @return [Integer]

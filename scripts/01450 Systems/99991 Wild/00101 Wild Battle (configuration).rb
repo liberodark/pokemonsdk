@@ -24,14 +24,14 @@ module PFM
     def configure_creature(creatures)
       main_creature = $actors[0]
       ability = creature_ability
-      repel_active = PFM.game_state.repel_count > 0
+
       return creatures.map do |creature|
         rate = 1
         rate = send(CHANGE_POKEMON_CHANCE[ability], creature, main_creature) if respond_to?(CHANGE_POKEMON_CHANCE[ability] || :__undef__, true)
         # Cleanse tag & repel
         if creature.level < main_creature.level
           rate *= 0.33 if main_creature.item_db_symbol == :cleanse_tag
-          rate = 0 if repel_active
+          rate = 0 if repel_active? && !fishing_battle?
         end
         next [creature, rate]
       end
@@ -114,15 +114,20 @@ module PFM
     # @param creature_to_select [Array<Array(PFM::Pokemon, Float)>] list of Pokemon to select with their rates
     # @return [Array<PFM::Pokemon>]
     def select_creature(group, creature_to_select)
-      encounters = group.encounters
-      # @note i % wi.ids.size is there to prevent bugs due to double battle that basically double the pokemons to ensure we can get twice the same
-      #       creature
-      # @type [Array<Array(PFM::Pokemon, Float)>]
-      real_rareness = creature_to_select.map.with_index { |arr, i| [arr.first, arr.last * encounters[i % encounters.size].encounter_rate] }
-      # @type [Array<Float>]
+      main_creature = $actors[0]
+
+      real_rareness = creature_to_select.map.with_index do |(creature, rate), index|
+        encounter = group.encounters[index % group.encounters.size]
+        next [creature, 0] if repel_active? && !fishing_battle? && creature.level < main_creature.level
+
+        next [creature, rate * encounter.encounter_rate]
+      end
+
+      # This reducer prevents to select the exact same Creature twice
       reduced_rareness = real_rareness.reduce([]) { |acc, curr| acc << (curr.last + (acc.last || 0)) }
       max_rand = reduced_rareness.last
-      # This reducer prevents to select the exact same Creature twice
+      return [] if max_rand.zero?
+
       is_double_battle = group.is_double_battle || $game_variables[Yuki::Var::Allied_Trainer_ID] > 0
       return (is_double_battle ? 2 : 1).times.reduce([]) do |acc, _|
         nb = Random::WILD_BATTLE.rand(max_rand.to_i)
@@ -162,6 +167,18 @@ module PFM
       ally.bag_entries.each { |bag_entry| bag.add_item(bag_entry[:dbSymbol], bag_entry[:amount]) }
       party = ally.party.map(&:to_creature)
       bi.add_party(0, party, ally.name, ally.class_name, ally.resources.sprite, bag, ally.base_money, ally.ai)
+    end
+
+    # Check if repel is active
+    # @return [Boolean]
+    def repel_active?
+      return PFM.game_state.repel_count > 0
+    end
+
+    # Check if the battle is a fishing battle
+    # @return [Boolean]
+    def fishing_battle?
+      return FISHING_TOOLS.include?(current_selected_group.tool)
     end
   end
 end

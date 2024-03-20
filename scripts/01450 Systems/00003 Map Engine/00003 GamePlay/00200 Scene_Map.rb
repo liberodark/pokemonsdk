@@ -57,7 +57,10 @@ class Scene_Map < GamePlay::Base
   def display_repel_check
     if $bag.item_quantity($game_temp.last_repel_used_id || 0) == 0
       display_message(parse_text(39, 0))
-    elsif display_message(parse_text(39, 1), 1, text_get(25, 20), text_get(25, 21)) == 0
+    else
+      choice = display_message(parse_text(39, 1), 1, text_get(25, 20), text_get(25, 21))
+      return PFM.game_state.repel_step_cooldown = true if choice == 1
+
       PFM.game_state.set_repel_count(data_item($game_temp.last_repel_used_id).repel_count)
       $bag.remove_item($game_temp.last_repel_used_id, 1)
     end

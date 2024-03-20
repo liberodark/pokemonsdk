@@ -7,6 +7,8 @@ module PFM
     WEAK_POKEMON_ABILITY = %i[intimidate keen_eye]
     # List of special wild battle that are actually fishing
     FISHING_BATTLES = %i[normal super mega]
+    # List of Rod
+    FISHING_TOOLS = %i[old_rod good_rod super_rod]
     # List of ability giving the max level of the pokemon we can encounter
     MAX_POKEMON_LEVEL_ABILITY = %i[hustle pressure vital_spirit]
     # Mapping allowing to get the correct tool based on the input
@@ -170,8 +172,13 @@ module PFM
         reset_encounters_history
         return configure_battle(@forced_wild_battle, battle_id)
       end
-      # Security for when a Repel is used at the same time an encounter is happening
-      return nil if PFM.game_state.repel_count > 0
+
+      # If a repel is about to finish
+      if PFM.game_state.repel_on_cooldown?
+        PFM.game_state.repel_step_cooldown = false
+        return nil
+      end
+
       return nil unless (group = current_selected_group)
 
       reset_encounters_history if can_encounters_history_reset?(group)
@@ -182,6 +189,8 @@ module PFM
       end
       creature_to_select = configure_creature(all_creatures)
       selected_creature = select_creature(group, creature_to_select)
+      return if selected_creature.empty?
+
       selected_creature.each do |creature|
         add_encounter_history(creature, group)
         reset_encounters_history if creature.shiny?
