@@ -26,8 +26,11 @@ module UI
       public
 
       # Initialize the states
-      def initialize(...)
-        super(...) # Forward any arguments to original super ;)
+      # @param args [Array<Viewport>] arguments to forward to parents
+      # @param scene [GamePlay::Base] scene holding this message instance
+      def initialize(*args, scene)
+        @owning_scene = scene
+        super(*args)
         # Content of the message
         @text_stack = UI::SpriteStack.new(self)
         # Sub stack of sprites/window related to the Message layout
@@ -41,7 +44,7 @@ module UI
       # @return [Configs::Project::Texts::MessageConfig]
       def current_layout
         config = Configs.texts.messages
-        return config[$scene.class.to_s] || config[:any]
+        return config[@owning_scene.class.to_s] || config[:any]
       end
 
       # Dispose the layout
