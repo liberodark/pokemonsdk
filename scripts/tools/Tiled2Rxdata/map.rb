@@ -14,10 +14,10 @@ module Tiled2Rxdata
       @width = hash[:tileMetadata][:width]
       # @type [Integer]
       @height = hash[:tileMetadata][:height]
-      # @type [String]
-      @bgm = hash[:bgm]
-      # @type [String]
-      @bgs = hash[:bgs]
+      # @type [RPG::AudioFile]
+      @bgm = RPG::AudioFile.new(hash[:bgm][:name], hash[:bgm][:volume], hash[:bgm][:pitch])
+      # @type [RPG::AudioFile]
+      @bgs = RPG::AudioFile.new(hash[:bgs][:name], hash[:bgs][:volume], hash[:bgs][:pitch])
       # @type [Integer]
       @encounter_step = hash[:stepsAverage]
       # @type [Integer]
@@ -56,10 +56,10 @@ module Tiled2Rxdata
 
     # Update the map metadata according to studio info
     def update_map_meta
-      @data.bgm = RPG::AudioFile.new(@bgm, 100)
-      @data.autoplay_bgm = !@bgm.empty?
-      @data.bgs = RPG::AudioFile.new(@bgs, 100)
-      @data.autoplay_bgs = !@bgs.empty?
+      @data.bgm = @bgm
+      @data.autoplay_bgm = !@bgm.name.empty?
+      @data.bgs = @bgs
+      @data.autoplay_bgs = !@bgs.name.empty?
       @data.encounter_step = @encounter_step
       @data.width = @width
       @data.height = @height
