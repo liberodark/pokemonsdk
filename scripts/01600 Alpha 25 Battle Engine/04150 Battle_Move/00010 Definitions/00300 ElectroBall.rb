@@ -14,7 +14,7 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        ratio = target.spd / user.spd
+        ratio = target.spd / user.spd.to_f
         return BASE_POWERS.find { |(first)| first > ratio }&.last || 40
       end
     end
