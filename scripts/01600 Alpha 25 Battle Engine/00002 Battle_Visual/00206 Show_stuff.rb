@@ -1,5 +1,7 @@
 module Battle
   class Visual
+    ABILITY_SOUND_EFFECT = ["Audio/SE/In-Battle_Ability_Activate.mp3", 100, 100]
+    ITEM_SOUND_EFFECT    = ABILITY_SOUND_EFFECT
     # Show HP animations
     # @param targets [Array<PFM::PokemonBattler>]
     # @param hps [Array<Integer>]
@@ -45,6 +47,7 @@ module Battle
     # @param target [PFM::PokemonBattler]
     # @param [Boolean] no_go_out Set if the out animation should be not played automatically
     def show_ability(target, no_go_out = false)
+      Audio.se_play(*ABILITY_SOUND_EFFECT)
       ability_bar = @ability_bars[target.bank][target.position]
       item_bar = @item_bars[target.bank][target.position]
       return unless ability_bar
@@ -70,6 +73,7 @@ module Battle
     # Show the item user animation
     # @param target [PFM::PokemonBattler]
     def show_item(target)
+      Audio.se_play(*ITEM_SOUND_EFFECT)
       ability_bar = @ability_bars[target.bank][target.position]
       item_bar = @item_bars[target.bank][target.position]
       return unless item_bar
