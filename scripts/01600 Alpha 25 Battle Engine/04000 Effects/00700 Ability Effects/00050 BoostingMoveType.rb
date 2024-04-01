@@ -15,7 +15,7 @@ module Battle
         # @param move [Battle::Move]
         # @return [Float]
         def base_power_multiplier(user, target, move)
-          return 1 if user != self.target
+          return 1 if user != @target
           return 1 unless POWER_INCREASE_CONDITION[@db_symbol].call(user, target, move)
           return 1 if move.type != data_type(TYPE_CONDITION[@db_symbol]).id
 

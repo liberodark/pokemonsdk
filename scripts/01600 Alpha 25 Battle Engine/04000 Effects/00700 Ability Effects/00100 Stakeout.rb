@@ -8,7 +8,7 @@ module Battle
         # @param move [Battle::Move]
         # @return [Float]
         def base_power_multiplier(user, target, move)
-          return 1 if user != self.target
+          return 1 if user != @target
           return 1 if @target.turn_count < 1
 
           return target.switching? ? 2 : 1

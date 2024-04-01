@@ -8,7 +8,7 @@ module Battle
         # @param move [Battle::Move]
         # @return [Float]
         def base_power_multiplier(user, target, move)
-          return 1 if user != self.target
+          return 1 if user != @target
 
           return move.recoil? ? 1.2 : 1
         end

@@ -8,7 +8,7 @@ module Battle
         # @param move [Battle::Move] move
         # @return [Float, Integer] multiplier
         def sp_atk_multiplier(user, target, move)
-          return 1 if user != self.target || move.special? || user.turn_count >= 5
+          return 1 if user != @target || move.special? || user.turn_count >= 5
 
           return 0.5
         end

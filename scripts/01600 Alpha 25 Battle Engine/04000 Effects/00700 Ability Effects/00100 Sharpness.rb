@@ -1,7 +1,7 @@
 module Battle
   module Effects
     class Ability
-      class SandForce < Ability
+      class Sharpness < Ability
         # Get the base power multiplier of this move
         # @param user [PFM::PokemonBattler]
         # @param target [PFM::PokemonBattler]
@@ -9,13 +9,11 @@ module Battle
         # @return [Float]
         def base_power_multiplier(user, target, move)
           return 1 if user != @target
-          return 1 unless $env.sandstorm?
-          return 1.3 if move.type_steel? || move.type_rock? || move.type_ground?
 
-          return 1
+          return move.slicing_attack? ? 1.5 : 1
         end
       end
-      register(:sand_force, SandForce)
+      register(:sharpness, Sharpness)
     end
   end
 end
