@@ -16,7 +16,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         skill = each_data_move.reject { |i| CANNOT_BE_SELECTED_MOVES.include?(i.db_symbol) }.sample(random: @logic.generic_rng)
-        move = Battle::Move[skill.be_method].new(skill.id, 1, 1, @scene, user)
+        move = Battle::Move[skill.be_method].new(skill.id, 1, 1, @scene)
         def move.usage_message(user)
           @scene.visual.hide_team_info
           scene.display_message_and_wait(parse_text(18, 126, '[VAR MOVE(0000)]' => name))

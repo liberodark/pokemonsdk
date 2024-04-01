@@ -30,7 +30,7 @@ module Battle
 
         user.mimic_move = [self, mimic_move_index]
         move = actual_targets.first.move_history.last.move
-        user.moveset[mimic_move_index] = Move[move.be_method].new(move.id, 5, 5, scene, user)
+        user.moveset[mimic_move_index] = Move[move.be_method].new(move.id, 5, 5, scene)
         scene.display_message_and_wait(parse_text_with_pokemon(19, 688, user, PFM::Text::MOVE[1] => move.name))
       end
     end

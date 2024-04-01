@@ -32,17 +32,13 @@ module Battle
     # The original target of the move (to be used with Magic Bounce/Coat)
     # @return [Array<PFM::PokemonBattler>]
     attr_accessor :original_target
-    # Origine of the move (protected during the battle)
-    # @return [PFM::PokemonBattler]
-    attr_accessor :original_launcher
 
     # Create a new move
     # @param db_symbol [Symbol] db_symbol of the move in the database
     # @param pp [Integer] number of pp the move currently has
     # @param ppmax [Integer] maximum number of pp the move currently has
     # @param scene [Battle::Scene] current battle scene
-    # @param original_launcher [PFM::PokemonBattler]
-    def initialize(db_symbol, pp, ppmax, scene, original_launcher = nil)
+    def initialize(db_symbol, pp, ppmax, scene)
       data = data_move(db_symbol)
       @id = data.id
       @db_symbol = data.db_symbol
@@ -55,7 +51,6 @@ module Battle
       @original_target = []
       @scene = scene
       @logic = scene.logic
-      @original_launcher = original_launcher
       @reloading = false
     end
 

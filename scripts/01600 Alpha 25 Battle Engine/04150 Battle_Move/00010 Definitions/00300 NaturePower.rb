@@ -16,7 +16,7 @@ module Battle
         skill = data_move(element_by_location)
         log_data("nature power # becomes #{skill.db_symbol}")
 
-        move = Battle::Move[skill.be_method].new(skill.db_symbol, 1, 1, @scene, user)
+        move = Battle::Move[skill.be_method].new(skill.db_symbol, 1, 1, @scene)
         def move.usage_message(user)
           @scene.visual.hide_team_info
           scene.display_message_and_wait(parse_text(18, 127, '[VAR MOVE(0000)]' => name))

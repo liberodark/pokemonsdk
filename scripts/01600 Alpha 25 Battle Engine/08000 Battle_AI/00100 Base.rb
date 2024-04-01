@@ -121,7 +121,7 @@ module Battle
         moves = pokemon.moveset.reject { |move| move_unusable?(pokemon, move) }
         return moves if moves.any?
 
-        return [Battle::Move[:s_struggle].new(data_move(:struggle).id, 1, 1, @scene, pokemon)]
+        return [Battle::Move[:s_struggle].new(data_move(:struggle).id, 1, 1, @scene)]
       end
 
       # Function that check if the move is not usable

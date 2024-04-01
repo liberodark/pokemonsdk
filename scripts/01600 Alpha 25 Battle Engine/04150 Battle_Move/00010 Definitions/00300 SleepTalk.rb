@@ -28,7 +28,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         move = usable_moves(user).sample(random: @logic.generic_rng).dup
-        move = Battle::Move[move.be_method].new(move.id, move.ppmax, move.ppmax, @scene, user)
+        move = Battle::Move[move.be_method].new(move.id, move.ppmax, move.ppmax, @scene)
         def move.move_usable_by_user(user, targets)
           return true
         end

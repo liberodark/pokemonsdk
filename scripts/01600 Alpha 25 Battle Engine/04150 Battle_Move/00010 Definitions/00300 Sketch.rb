@@ -25,7 +25,7 @@ module Battle
         move_index = user.moveset.index(self)
         target_move = actual_targets.first.move_history.last.move
         new_skill = PFM::Skill.new(target_move.id)
-        new_move = Battle::Move[new_skill.symbol].new(new_skill.id, new_skill.pp, new_skill.ppmax, scene, user)
+        new_move = Battle::Move[new_skill.symbol].new(new_skill.id, new_skill.pp, new_skill.ppmax, scene)
         user.moveset[move_index] = new_move
         user.original.skills_set[move_index] = new_skill unless scene.battle_info.max_level
         scene.display_message_and_wait(parse_text_with_pokemon(19, 691, user, PFM::Text::MOVE[1] => new_move.name))
