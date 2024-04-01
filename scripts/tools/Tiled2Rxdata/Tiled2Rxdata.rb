@@ -64,6 +64,7 @@ module Tiled2Rxdata
     File.binwrite(ANIMATED_TILES_FILENAME, Marshal.dump(ANIMATED_COUNTS))
     Tile::BUFFER_IMAGES.each(&:dispose)
     Tile.send(:remove_const, :BUFFER_IMAGES)
+    $data_system_tags = load_data('Data/PSDK/SystemTags.rxdata') if $data_system_tags
   end
 
   # Build the animated counter cache to reduce the number of counter & potential desync between maps
