@@ -21,8 +21,6 @@ module Battle
     class Counter < CounterBase
       private
 
-
-      
       # Test if the attack fails
       # @param attacker [PFM::PokemonBattler] the last attacker
       # @param user [PFM::PokemonBattler] user of the move

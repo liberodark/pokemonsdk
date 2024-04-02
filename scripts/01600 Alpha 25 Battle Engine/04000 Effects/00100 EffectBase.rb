@@ -81,13 +81,13 @@ module Battle
       # @param battler [PFM::PokemonBattler]
       # @return [Boolean]
       def targetted?(battler)
-        false
+        return false
       end
 
       # Function called when a held item wants to perform its action
       # @return [Boolean] weither or not the item can't proceed (true will stop the item)
       def on_held_item_use_prevention
-        false
+        return false
       end
 
       # Function called after a battler proceed its two turn move's first turn
@@ -96,7 +96,7 @@ module Battle
       # @param skill [Battle::Move, nil]
       # @return [Boolean] weither or not the two turns move is executed in one turn
       def on_two_turn_shortcut(user, targets, skill)
-        false
+        return false
       end
 
       # Check if the user of this ability ignore the center of attention in the enemy bank
@@ -367,7 +367,7 @@ module Battle
         return nil
       end
 
-      # Function called when we try to check if the effect changes the definitive priority of the move
+      # Function called when we try to check if the Pokemon is immune to a move due to its effect
       # @param user [PFM::PokemonBattler]
       # @param target [PFM::PokemonBattler]
       # @param move [Battle::Move]
@@ -495,7 +495,7 @@ module Battle
 
       # Return the specific proceed_internal if the condition is fulfilled
       # @param user [PFM::PokemonBattler] user of the move
-      # @param targets [Array<PFM::PokemonBattler>] expected targets 
+      # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @param move [Battle::Move]
       def specific_proceed_internal(user, targets, move)
         return nil

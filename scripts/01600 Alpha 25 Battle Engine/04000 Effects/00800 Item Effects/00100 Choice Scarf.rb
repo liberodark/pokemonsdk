@@ -36,7 +36,7 @@ module Battle
 
         private
 
-        # Checks if the user can use the movement
+        # Checks if the user can use the move
         # @param user [PFM::PokemonBattler]
         # @param move [Battle::Move]
         # @return [Boolean]

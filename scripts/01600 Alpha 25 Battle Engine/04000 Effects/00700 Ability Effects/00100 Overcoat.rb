@@ -7,9 +7,7 @@ module Battle
       # @see https://bulbapedia.bulbagarden.net/wiki/Overcoat_(Ability)
       # @see https://www.pokepedia.fr/Envelocape
       class Overcoat < Ability
-        # Weather is managed in Sandstorm and Hail.
-
-        # Function called when we try to check if the effect changes the definitive priority of the move
+        # Function called when we try to check if the Pokemon is immune to a move due to its effect
         # @param user [PFM::PokemonBattler]
         # @param target [PFM::PokemonBattler]
         # @param move [Battle::Move]

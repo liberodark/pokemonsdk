@@ -2,7 +2,7 @@ module Battle
   module Effects
     class Ability
       class WonderGuard < Ability
-        # Function called when we try to check if the effect changes the definitive priority of the move
+        # Function called when we try to check if the Pokemon is immune to a move due to its effect
         # @param user [PFM::PokemonBattler]
         # @param target [PFM::PokemonBattler]
         # @param move [Battle::Move]

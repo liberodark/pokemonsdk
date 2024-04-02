@@ -81,7 +81,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       # @return [Effects::Encore]
       def create_effect(move, target, actual_targets)
-        Effects::Encore.new(logic, target, move, actual_targets)
+        return Effects::Encore.new(logic, target, move, actual_targets)
       end
     end
 
