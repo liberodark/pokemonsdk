@@ -377,7 +377,7 @@ module PFM
       return result
     end
 
-    # Tell if the Pokemon has an ability ignoring abilities
+    # Tell if the Pokemon uses a move ignoring abilities
     # @return [Boolean]
     def current_move_ignoring_ability?
       return $scene.logic.turn_actions.any? do |a|
