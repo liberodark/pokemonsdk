@@ -35,3 +35,56 @@ PFM::ItemDescriptor.define_on_creature_use(Studio::LevelIncreaseItem) do |item, 
     GamePlay.make_pokemon_evolve(creature, id, form, false) if id
   end
 end
+
+# EXP Candies
+# Should be changed for Studio in the future
+# https://github.com/PokemonWorkshop/PokemonStudio/issues/73
+PFM::ItemDescriptor.define_bag_use(:exp_candy_xs, true) do |item, scene|
+  GamePlay.open_party_menu_to_select_pokemon($actors)
+  if $game_variables[43] != -1
+    amount = 100
+    $game_system.map_interpreter.give_exp($game_variables[43], amount)
+  else
+    next :unused
+  end
+end
+
+PFM::ItemDescriptor.define_bag_use(:exp_candy_s, true) do |item, scene|
+  GamePlay.open_party_menu_to_select_pokemon($actors)
+  if $game_variables[43] != -1
+    amount = 800
+    $game_system.map_interpreter.give_exp($game_variables[43], amount)
+  else
+    next :unused
+  end
+end
+
+PFM::ItemDescriptor.define_bag_use(:exp_candy_m, true) do |item, scene|
+  GamePlay.open_party_menu_to_select_pokemon($actors)
+  if $game_variables[43] != -1
+    amount = 3000
+    $game_system.map_interpreter.give_exp($game_variables[43], amount)
+  else
+    next :unused
+  end
+end
+
+PFM::ItemDescriptor.define_bag_use(:exp_candy_l, true) do |item, scene|
+  GamePlay.open_party_menu_to_select_pokemon($actors)
+  if $game_variables[43] != -1
+    amount = 10000
+    $game_system.map_interpreter.give_exp($game_variables[43], amount)
+  else
+    next :unused
+  end
+end
+
+PFM::ItemDescriptor.define_bag_use(:exp_candy_xl, true) do |item, scene|
+  GamePlay.open_party_menu_to_select_pokemon($actors)
+  if $game_variables[43] != -1
+    amount = 30000
+    $game_system.map_interpreter.give_exp($game_variables[43], amount)
+  else
+    next :unused
+  end
+end
