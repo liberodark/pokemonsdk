@@ -363,5 +363,17 @@ module PFM
     def elv_toxtricity_low_key
       return !elv_toxtricity_amped
     end
+
+    # Check evolve condition for 99% of creatures
+    # @return [Boolean] if the condition is valid
+    def elv_99percent
+      return ((@code & 0xFFFF) % 100) <= 99
+    end
+
+    # Check evolve condition for 1% of creatures
+    # @return [Boolean] if the condition is valid
+    def elv_1percent
+      return !elv_99percent
+    end
   end
 end
