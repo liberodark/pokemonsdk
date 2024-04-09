@@ -5,13 +5,15 @@ module Battle
         rain_dance: :rain,
         sunny_day: :sunny,
         sandstorm: :sandstorm,
-        hail: :hail
+        hail: :hail,
+        snowscape: :snow
       }
       WEATHER_ITEMS = {
         rain_dance: :damp_rock,
         sunny_day: :heat_rock,
         sandstorm: :smooth_rock,
-        hail: :icy_rock
+        hail: :icy_rock,
+        snowscape: :icy_rock
       }
 
       private

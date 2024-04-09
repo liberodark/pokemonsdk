@@ -13,7 +13,8 @@ module Battle
         fog: 91,
         hardsun: 271,
         hardrain: 269,
-        strong_winds: 273
+        strong_winds: 273,
+        snow: 287
       }
 
       # Create a new Weather Change Handler

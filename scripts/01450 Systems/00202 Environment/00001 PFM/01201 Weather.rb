@@ -1,7 +1,7 @@
 module PFM
   class Environment
     # List of weather symbols
-    WEATHER_NAMES = %i[none rain sunny sandstorm hail fog hardsun hardrain strong_winds]
+    WEATHER_NAMES = %i[none rain sunny sandstorm hail fog hardsun hardrain strong_winds snow]
     # Apply a new weather to the current environment
     # @param id [Integer, Symbol] ID of the weather : 0 = None, 1 = Rain, 2 = Sun/Zenith, 3 = Darud Sandstorm, 4 = Hail, 5 = Foggy
     # @param duration [Integer, nil] the total duration of the weather (battle), nil = never stops
@@ -85,6 +85,12 @@ module PFM
       return current_weather_db_symbol == :hail
     end
 
+    # Is it snowing?
+    # @return [Boolean]
+    def snowing?
+      return current_weather_db_symbol == :snow
+    end
+
     # Is it foggy ?
     # @return [Boolean]
     def fog?
@@ -114,7 +120,7 @@ module PFM
     # @return [Array<Integer>]
     def weather_switches
       sw = Yuki::Sw
-      return [-1, sw::WT_Rain, sw::WT_Sunset, sw::WT_Sandstorm, sw::WT_Snow, sw::WT_Fog]
+      return [-1, sw::WT_Rain, sw::WT_Sunset, sw::WT_Sandstorm, sw::WT_Snow, sw::WT_Fog, sw::WT_Snow]
     end
   end
 end

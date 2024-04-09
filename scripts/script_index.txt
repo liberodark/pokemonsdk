@@ -901,6 +901,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effe
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effects/00100 Hardsun.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effects/00100 Rain.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effects/00100 Sandstorm.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effects/00100 Snow.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effects/00100 StrongWinds.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01100 Weather Effects/00100 Sunny.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/01200 Field Terrain Effects/00001 FieldTerrainBase.rb
