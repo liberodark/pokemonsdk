@@ -9,6 +9,8 @@ module GamePlay
     MOUSE_ACTION_SEL = %i[action_a_sel action_right_sel action_down_sel action_b_sel]
     # List of mouse action in blink mode
     MOUSE_ACTION_BLK = %i[action_b_blink action_b_blink action_b_blink action_b_blink]
+    # List of keys to check when trying to overwrite an input
+    KEYS_TO_CHECK = [:A, :B, :X, :Y, :UP, :DOWN, :RIGHT, :LEFT]
     # Create a new KeyBinding UI
     def initialize
       super
@@ -171,10 +173,29 @@ module GamePlay
         return if ch == 0
       end
       key_value = Sf::Keyboard.delocalize(key_value) if key_value >= 0
+      # Check if the key is already assigned to another option
+      conflicting_key = find_already_assigned_key(key_value)
+      # Message indicating key is already assigned
+      unless conflicting_key.nil?
+        $game_system.se_play($data_system.buzzer_se)
+        return display_message(parse_text(65, 0, PFM::Text::NUMB[1] => conflicting_key.to_s))
+      end
       Input::Keys[@ui.current_key][@ui.current_key_index] = key_value
       @ui.update
     ensure
       action_b_blink
+    end
+
+    # Check if the key is already assigned to another option
+    # @param key_value [Integer] the value of the key in Keyboard
+    def find_already_assigned_key(key_value)
+      return Input::Keys.each.filter_map do |key, bound_keys|
+        next if key == @ui.current_key || KEYS_TO_CHECK.none?(key)
+        next unless bound_keys.include?(key_value)
+
+        log_debug("Key '#{key_value}' is already assigned to '#{key}'")
+        next key
+      end.first
     end
 
     # Create the base ui
