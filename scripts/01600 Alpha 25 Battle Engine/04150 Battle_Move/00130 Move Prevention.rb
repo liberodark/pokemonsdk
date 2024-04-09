@@ -112,7 +112,7 @@ module Battle
     end == true
   end
   Move.register_move_disabled_check_hook('PSDK Move disable check: Effects') do |user, move|
-    next move.logic.each_effects(user) do |effect|
+    next move.logic.each_effects(*move.logic.all_alive_battlers) do |effect|
       effect_proc = effect.on_move_disabled_check(user, move)
       break effect_proc if effect_proc.is_a?(Proc)
     end

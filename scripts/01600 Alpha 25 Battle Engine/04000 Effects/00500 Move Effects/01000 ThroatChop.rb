@@ -4,7 +4,7 @@ module Battle
       # The Pokemon that launched the attack
       # @return [PFM::PokemonBattler]
       attr_reader :origin
-      
+
       # Create a new Throat Chop effect
       # @param logic [Battle::Logic]
       # @param target [PFM::PokemonBattler]
@@ -23,6 +23,7 @@ module Battle
       # @param move [Battle::Move]
       # @return [Proc, nil]
       def on_move_disabled_check(user, move)
+        return if user != @pokemon
         return unless move.sound_attack?
 
         return proc {
@@ -36,6 +37,7 @@ module Battle
       # @param move [Battle::Move]
       # @return [:prevent, nil] :prevent if the move cannot continue
       def on_move_prevention_user(user, targets, move)
+        return if user != @pokemon
         return unless move.sound_attack?
 
         move.scene.display_message_and_wait(parse_text_with_pokemon(59, 1860, user, PFM::Text::PKNICK[1] => user.name))

@@ -16,6 +16,8 @@ module Battle
       # @param move [Battle::Move]
       # @return [Proc, nil]
       def on_move_disabled_check(user, move)
+        return if user != @pokemon
+
         other_move_actions = @logic.turn_actions.select do |a|
           a.is_a?(Actions::Attack) && Actions::Attack.from(a).launcher == user
         end
