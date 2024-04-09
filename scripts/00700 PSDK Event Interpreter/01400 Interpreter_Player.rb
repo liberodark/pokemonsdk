@@ -171,6 +171,18 @@ class Interpreter
   end
   alias retreive_saved_party retrieve_saved_party
 
+  # Shows a character, a default name, and asks the player for their name
+  # @param default_name [String] the default name pre-filled in the name input screen
+  # @param character_filename [String] the character displayed in the window. Is looking in graphics/characters already.
+  # @param max_char [Integer] the maximum number of characters allowed.
+  # @author Invatorzen
+  # Example: name_player("Yuri", "npc_Biker")
+  def name_player(default_name, character_filename, max_char = 12, &block)
+    $scene.window_message_close(false) if $scene.class == Scene_Map
+    GamePlay.open_character_name_input(default_name, max_char, character_filename) { |name_input| $trainer.name = name_input.return_name }
+    @wait_count = 2
+  end
+
   # Switch from one player to another, in term of party, trainer, money, pokedex and appearance (all optional)
   # @param from_player_id [String] the specific name of the storage to save to.
   # @param to_player_id [String] the specific name of the storage to load from.
