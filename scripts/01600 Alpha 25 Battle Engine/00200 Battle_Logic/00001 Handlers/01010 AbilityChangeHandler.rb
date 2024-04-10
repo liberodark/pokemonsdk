@@ -22,6 +22,7 @@ module Battle
       # Case of a ability that fail
       ABILITY_BLOCKING_ABILITIES = {
         mummy: %i[mummy],
+        lingering_aroma: %i[lingering_aroma],
         wandering_spirit: %i[wandering_spirit],
         trace: %i[flower_gift forecast illusion imposter multitype stance_change trace zen_mode receiver power_of_alchemy],
         receiver: RECEIVER_CANT_COPY_ABILITIES,

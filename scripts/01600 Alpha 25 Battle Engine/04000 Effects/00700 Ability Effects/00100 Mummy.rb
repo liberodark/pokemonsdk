@@ -11,11 +11,11 @@ module Battle
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target
           return unless skill&.direct? && launcher && launcher.hp > 0 && !launcher.has_ability?(:long_reach)
-          return if launcher.ability_effect == :mummy
+          return if launcher.ability_effect == target.ability_effect
           return unless handler.logic.ability_change_handler.can_change_ability?(launcher, db_symbol)
 
           handler.scene.visual.show_ability(target)
-          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 405, launcher, PFM::Text::ABILITY[1] => target.ability_name))
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 405, launcher, PFM::Text::ABILITY[1] => target.ability_name)) # Needs Gen IX texts adaptation
           handler.logic.ability_change_handler.change_ability(launcher, db_symbol)
         end
 
@@ -30,6 +30,7 @@ module Battle
         end
       end
       register(:mummy, Mummy)
+      register(:lingering_aroma, Mummy)
     end
   end
 end
