@@ -111,10 +111,12 @@ module ScriptLoader
   # Load the PSDK scripts from the index
   def load_script_from_index
     lines = File.readlines(index_filename)
-    if File.exist?('.git')
+    if Dir.exist?('pokemonsdk')
       path = ENV['ALTERNATIVE_PATH'] || '.'
+      puts 'Scripts loaded from the project codebase'
     else
       path = ENV['ALTERNATIVE_PATH'] || ENV['PSDK_BINARY_PATH']&.tr('\\', '/') || '.'
+      puts 'Scripts loaded from the Studio codebase'
     end
     lines.each do |filename|
       require(File.join(path, filename.chomp))

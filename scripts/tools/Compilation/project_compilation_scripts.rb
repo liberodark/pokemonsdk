@@ -44,7 +44,7 @@ module ProjectCompilation
     end
 
     def psdk_script_path
-      env_lookup = File.exist?('.git') ? ['ALTERNATIVE_PATH'] : ['ALTERNATIVE_PATH', 'PSDK_BINARY_PATH']
+      env_lookup = Dir.exist?('pokemonsdk') ? ['ALTERNATIVE_PATH'] : ['ALTERNATIVE_PATH', 'PSDK_BINARY_PATH']
       return env_lookup.map { |name| ENV[name] }.compact.first&.tr('\\', '/') || '.'
     end
 
