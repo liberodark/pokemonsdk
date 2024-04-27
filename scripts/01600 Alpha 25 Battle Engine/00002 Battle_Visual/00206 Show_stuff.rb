@@ -1,6 +1,6 @@
 module Battle
   class Visual
-    ABILITY_SOUND_EFFECT = ["Audio/SE/In-Battle_Ability_Activate.mp3", 100, 100]
+    ABILITY_SOUND_EFFECT = ['Audio/SE/In-Battle_Ability_Activate', 100, 100]
     ITEM_SOUND_EFFECT    = ABILITY_SOUND_EFFECT
     # Show HP animations
     # @param targets [Array<PFM::PokemonBattler>]
@@ -229,7 +229,7 @@ module Battle
 
     # SE played when a Pokemon is K.O.
     def play_ko_se
-      Audio.se_play('Audio/SE/Down.wav', 100, 80)
+      Audio.se_play('Audio/SE/Down', 100, 80)
     end
 
     # SE played when the ball is sent

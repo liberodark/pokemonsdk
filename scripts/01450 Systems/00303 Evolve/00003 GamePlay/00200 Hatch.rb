@@ -34,7 +34,7 @@ module GamePlay
     # Max alpha of the Pokemon color
     MAX_POKEMON_ALPHA = 230
     # Name of the move file
-    EGG_MOVE_SE = 'audio/se/pokemove.wav'
+    EGG_MOVE_SE = 'audio/se/pokemove'
 
     include Math
 
