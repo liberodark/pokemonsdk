@@ -177,7 +177,7 @@ module Tiled2Rxdata
         data = ANIMATED_TILES[filename[3..].to_sym]
         return filename, nil unless source = data&.[](:assetSourceInTileset)
 
-        return File.join('Data/Tiled/Map', File.dirname(filename), source), data[:transparency]
+        return File.join('Data/Tiled/Maps', File.dirname(filename), source), data[:transparency]
       end
 
       # Get the tileset image from cache or load it to get it
