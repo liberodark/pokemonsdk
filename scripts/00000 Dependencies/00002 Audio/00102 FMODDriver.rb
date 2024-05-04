@@ -383,8 +383,9 @@ module Audio
     # @return [Boolean]
     def was_sound_previously_playing?(filename, old_filename, sound, channel, fade_out = false)
       return false unless sound
-      return true unless filename != old_filename
+      return true unless filename.downcase != old_filename.downcase
       return false unless channel && (channel.isPlaying rescue false)
+
       if fade_out && !@fading_sounds[sound]
         fade_time = fade_out == true ? FADE_IN_TIME : fade_out
         @was_playing_callback = proc { fade(fade_time, @fading_sounds[sound] = channel) }
