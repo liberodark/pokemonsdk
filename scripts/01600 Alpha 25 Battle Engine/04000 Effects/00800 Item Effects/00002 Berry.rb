@@ -7,7 +7,8 @@ module Battle
 
         # Function that executes the effect of the berry (for Pluck & Bug Bite)
         # @param force_heal [Boolean] tell if a healing berry should force the heal
-        def execute_berry_effect(force_heal: false)
+        # @param force_execution [Boolean] tell if the execution of the berry has to be forced
+        def execute_berry_effect(force_heal: false, force_execution: false)
           return nil
         end
 
@@ -35,8 +36,11 @@ module Battle
         end
 
         # Function that tests if berry cannot be consumed
+        # @param force_execution [Boolean] tell if the execution of the berry has to be forced
         # @return [Boolean]
-        def cannot_be_consumed?
+        def cannot_be_consumed?(force_execution = false)
+          return false if force_execution
+
           return @logic.foes_of(@target).any? { |foe| %i[unnerve as_one].include?(foe.battle_ability_db_symbol) && foe.alive? }
         end
       end

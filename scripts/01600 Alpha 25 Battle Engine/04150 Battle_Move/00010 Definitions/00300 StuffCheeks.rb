@@ -13,7 +13,7 @@ module Battle
 
         return true
       end
-      
+
       # Get the reason why the move is disabled
       # @param user [PFM::PokemonBattler] user of the move
       # @return [#call] Block that should be called when the move is disabled
@@ -32,7 +32,7 @@ module Battle
 
           if target.item_effect.is_a?(Effects::Item::Berry)
             # @type [Effects::Item::Berry]
-            target.item_effect.execute_berry_effect(force_heal: true)
+            target.item_effect.execute_berry_effect(force_heal: true, force_execution: true)
             if target.has_ability?(:cheek_pouch) && !target.effects.has?(:heal_block)
               @scene.visual.show_ability(target)
               @logic.damage_handler.heal(target, target.max_hp / 3)
@@ -40,7 +40,7 @@ module Battle
             scene.logic.stat_change_handler.stat_change_with_process(:dfe, 2, target, user, self)
 
           end
-          
+
           @logic.item_change_handler.change_item(:none, true, target, user, self)
         end
       end

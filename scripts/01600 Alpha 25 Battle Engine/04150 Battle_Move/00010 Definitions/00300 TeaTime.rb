@@ -23,7 +23,7 @@ module Battle
           if target.item_effect.is_a?(Effects::Item::Berry)
             # @type [Effects::Item::Berry]
             target_effect = Effects::Item.new(logic, target, target.item_effect.db_symbol)
-            target_effect.execute_berry_effect(force_heal: true)
+            target_effect.execute_berry_effect(force_heal: true, force_execution: true)
             if target.has_ability?(:cheek_pouch) && !target.effects.has?(:heal_block)
               @scene.visual.show_ability(target)
               @logic.damage_handler.heal(target, target.max_hp / 3)

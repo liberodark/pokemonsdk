@@ -20,11 +20,11 @@ module Battle
         return unless triggered?
         return unless battlers.include?(@pokemon)
         return if @pokemon.dead?
-        
+
         scene.visual.show_ability(@pokemon)
         scene.visual.wait_for_animation
         user_effect = Effects::Item.new(logic, @pokemon, @consumed_item)
-        user_effect.execute_berry_effect(force_heal: true)
+        user_effect.execute_berry_effect(force_heal: true, force_execution: true)
       end
 
       # If the effect can proc

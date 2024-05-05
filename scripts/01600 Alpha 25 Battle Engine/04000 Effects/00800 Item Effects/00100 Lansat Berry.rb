@@ -27,10 +27,11 @@ module Battle
 
         # Function that executes the effect of the berry (for Pluck & Bug Bite)
         # @param force_heal [Boolean] tell if a healing berry should force the heal
-        def execute_berry_effect(force_heal: false)
-          # Remove the following line if the berry should be executed only if the condition match
+        # @param force_execution [Boolean] tell if the execution of the berry has to be forced
+        def execute_berry_effect(force_heal: false, force_execution: false)
           define_singleton_method(:hp_rate_trigger) { 1 } if force_heal
-          process_effect(@target, nil, nil)
+
+          process_effect(@target, nil, nil, force_execution)
         end
 
         private
@@ -39,8 +40,10 @@ module Battle
         # @param target [PFM::PokemonBattler]
         # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
         # @param skill [Battle::Move, nil] Potential move used
-        def process_effect(target, launcher, skill)
-          return if cannot_be_consumed? || target.hp_rate > hp_rate_trigger || target.effects.has?(:lansat_berry)
+        # @param force_execution [Boolean] tell if the execution of the berry has to be forced
+        def process_effect(target, launcher, skill, force_execution = false)
+          return if target.dead? || target.hp_rate > hp_rate_trigger || target.effects.has?(:lansat_berry)
+          return if cannot_be_consumed?(force_execution)
 
           consume_berry(target, launcher, skill)
           effect = PokemonTiedEffectBase.new(@logic, target)
