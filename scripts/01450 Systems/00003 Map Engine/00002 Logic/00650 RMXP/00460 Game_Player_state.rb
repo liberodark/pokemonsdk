@@ -16,7 +16,8 @@ class Game_Player
     surfing: '_surf',
     swamp: '_swamp',
     swamp_running: '_swamp_run',
-    sinking: '_deep_swamp_sinking'
+    sinking: '_deep_swamp_sinking',
+    watering_berries: '_misc2'
   }
   # @return [Hash] List of movement speed, movement frequency according to the state
   STATE_MOVEMENT_INFO = {
@@ -302,6 +303,20 @@ class Game_Player
       return
     end
     update_4_step_animation_to_previous(-1)
+  end
+
+  # Enter in watering berries state
+  # @note Do not call this function while surfing
+  def enter_in_watering_berries_state
+    @state = :watering_berries
+    update_move_parameter(:walking)
+    update_appearance(@pattern)
+  end
+
+  # Leave the watering berries state
+  def leave_watering_berries_state
+    change_shadow_disabled_state(false)
+    return_to_previous_state
   end
 
   # Callback called when we only want the character to show it's 4 pattern (it'll lock the player, use return_to_previous_state to unlock)
