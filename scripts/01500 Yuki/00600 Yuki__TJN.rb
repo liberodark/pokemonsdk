@@ -108,6 +108,7 @@ module Yuki
     REGULAR_TRANSITION_TIME = 20
     @timer = 0
     @forced = false
+    @real_time_scheduler_update = false
     @current_tone_value = Tone.new(0, 0, 0, 0)
 
     module_function
@@ -174,9 +175,13 @@ module Yuki
       def update_time
         @timer = 0
         return if $game_switches[Sw::TJN_NoTime]
+
         update_tone if $game_switches[Sw::TJN_RealTime] ? update_real_time : update_virtual_time
+        return if $game_switches[Sw::TJN_RealTime] && !@real_time_scheduler_update
+
         # Trigger an on_update event for Yuki::TJN
         Scheduler.start(:on_update, self)
+        @real_time_scheduler_update = false
       end
 
       # Update the virtual time by adding 1 minute to the variable
@@ -210,7 +215,10 @@ module Yuki
         $game_variables[Var::TJN_WDay] = time.wday
         $game_variables[Var::TJN_MDay] = time.day
         $game_variables[Var::TJN_Month] = time.month
-        update_timed_events if last_min != time.min
+        if last_min != time.min
+          update_timed_events
+          @real_time_scheduler_update = true
+        end
         return should_update_tone_each_minute ? last_min != time.min : last_hour != time.hour
       end
 

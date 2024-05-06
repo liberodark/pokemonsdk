@@ -24,7 +24,7 @@ module Yuki
       data = find_berry_data(map_id)[event_id] = Array.new(8, 0)
       data[0] = data_item(berry_id).id
       data[1] = state
-      data[3] = berry_data.time_to_grow * 15
+      data[3] = (berry_data.time_to_grow * 15).to_i
       data[5] = data[3] - 1
     end
 
@@ -99,7 +99,7 @@ module Yuki
       data = @data[event_id]
       data[0] = berry_id
       data[1] = 0
-      data[3] = berry_data.time_to_grow * 15 # hours * 60 mins  / 4 steps
+      data[3] = (berry_data.time_to_grow * 15).to_i # hours * 60 mins  / 4 steps
       data[2] = data[3]
       data[4] = 0
       data[5] = data[3] - 1
