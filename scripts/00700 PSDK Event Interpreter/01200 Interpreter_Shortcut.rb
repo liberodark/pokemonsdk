@@ -165,7 +165,7 @@ class Interpreter
   def set_self_switch(value, self_switch, event_id = @event_id, map_id = @map_id)
     key = [map_id, event_id, self_switch] # Key to retrieve the local switch we want to modify
     $game_self_switches[key] = (value == true) # Modify the local switch to true or false only
-    $game_map.events[event_id].refresh if $game_map.map_id == map_id # We refresh the event if it's on the same map, to have it account the modification
+    $game_map.events[event_id]&.refresh if $game_map.map_id == map_id # We refresh the event if it's on the same map, to have it account the modification
   end
   alias set_ss set_self_switch # Creating an alias: we can call the method with set_ss or with set_self_switch (as you prefer)
 
