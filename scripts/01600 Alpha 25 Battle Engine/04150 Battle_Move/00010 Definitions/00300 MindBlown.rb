@@ -63,6 +63,9 @@ module Battle
         scene.visual.show_hp_animations([user], [-hp])
       end
     end
+
     Move.register(:s_mind_blown, MindBlown)
+    Move.register(:s_steel_beam, MindBlown)
+    Move.register(:s_chloroblast, MindBlown)
   end
 end
