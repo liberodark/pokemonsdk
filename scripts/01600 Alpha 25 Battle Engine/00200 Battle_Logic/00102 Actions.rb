@@ -31,12 +31,11 @@ module Battle
     def perform_next_action
       return false if @actions.empty? || !can_battle_continue?
 
-      # @type [Actions::Base]
-      action = @actions.pop
-      log_debug("Current action : #{action}")
+      @current_action = @actions.pop
+      log_debug("Current action : #{@current_action}")
       @scene.message_window.blocking = false
       PFM::Text.reset_variables # Prevent wrong pokemon name from being shown
-      action.execute
+      @current_action.execute
       execute_post_action_events
       battle_phase_switch_exp_check
       return true

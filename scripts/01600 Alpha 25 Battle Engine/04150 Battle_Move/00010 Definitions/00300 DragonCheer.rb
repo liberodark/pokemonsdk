@@ -1,7 +1,7 @@
 module Battle
   class Move
-    # class managing Focus Energy
-    class FocusEnergy < Move
+    # class managing Dragon Cheer
+    class DragonCheer < Move
       UNSTACKABLE_EFFECTS = %i[dragon_cheer focus_energy]
 
       # Function that tests if the user is able to use the move
@@ -11,7 +11,7 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-        return show_usage_failure(user) && false if targets.all? { |target| UNSTACKABLE_EFFECTS.any? { |e| target.effects.has?(e) } }
+        return show_usage_failure(user) && false if targets.none? || targets.all? { |target| UNSTACKABLE_EFFECTS.any? { |e| target.effects.has?(e) } }
 
         return true
       end
@@ -25,12 +25,12 @@ module Battle
         actual_targets.each do |target|
           next if UNSTACKABLE_EFFECTS.any? { |e| target.effects.has?(e) }
 
-          target.effects.add(Effects::FocusEnergy.new(@logic, target))
+          target.effects.add(Effects::DragonCheer.new(@logic, target))
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 1047, target))
         end
       end
     end
 
-    Move.register(:s_focus_energy, FocusEnergy)
+    Move.register(:s_dragon_cheer, DragonCheer)
   end
 end

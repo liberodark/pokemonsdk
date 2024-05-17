@@ -2,6 +2,11 @@ module Battle
   module Effects
     class Ability
       class Opportunist < Ability
+        COPIED_EFFECTS = {
+          focus_energy: {effect_class: Effects::FocusEnergy, text_id: 1047},
+          dragon_cheer: {effect_class: Effects::DragonCheer, text_id: 1047} # TODO Change to proper text
+        }
+
         # Create a new Opportunist effect
         # @param logic [Battle::Logic]
         # @param target [PFM::PokemonBattler]
@@ -32,6 +37,28 @@ module Battle
           @activated = true
           handler.scene.visual.show_ability(@target)
           handler.logic.stat_change_handler.stat_change_with_process(stat, power, @target)
+          @activated = false
+        end
+
+        # Function called at the end of an action
+        # @param logic [Battle::Logic] logic of the battle
+        # @param scene [Battle::Scene] battle scene
+        # @param battlers [Array<PFM::PokemonBattler>] all alive battlers
+        def on_post_action_event(logic, scene, battlers)
+          return unless battlers.include?(@target)
+          return if @target.dead?
+          return if COPIED_EFFECTS.keys.any? { |effect| @target.effects.has?(effect) }
+
+          # Makde sure the move is used by an opponent
+          return unless (move = logic.current_action&.move) && COPIED_EFFECTS.keys.include?(move.db_symbol)
+          return unless logic.foes_of(@target).include?(logic.current_action.launcher)
+          # Opportunist shall not trigger from an opponent's Opportunist
+          return if logic.current_action.launcher.has_ability?(:opportunist) && logic.current_action.launcher.ability_effect.activated?
+
+          @activated = true
+          scene.visual.show_ability(@target)
+          scene.display_message_and_wait(parse_text_with_pokemon(19, COPIED_EFFECTS[move.db_symbol][:text_id], @target))
+          @target.effects.add(COPIED_EFFECTS[move.db_symbol][:effect_class].new(logic, @target))
           @activated = false
         end
       end
