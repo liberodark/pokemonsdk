@@ -74,7 +74,9 @@ class Interpreter
       $game_variables[Yuki::Var::Allied_Trainer_ID] = 0
       set_self_switch(true, enable, @event_id) if n == 0
       $game_system.battle_bgm = original_battle_bgm
-    end
+    end    
+    Yuki::FollowMe.set_battle_entry
+    Yuki::FollowMe.save_follower_positions
   end
 
   # Start a trainer battle

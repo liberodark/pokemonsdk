@@ -192,6 +192,7 @@ module Yuki
     # Sets the position of each follower (Warp)
     # @param args [Array<Integer, Integer, Integer>] array of x, y, direction
     def set_positions(*args)
+      args = args.flatten(1) if args.any? { |arg| arg.is_a?(Array) }
       x = y = 0
       (args.size / 3).times do |i|
         next unless (v = @followers[i])
@@ -202,9 +203,21 @@ module Yuki
         c.moveto(x, y)
         c.direction = args[i * 3 + 2]
         c.update
-        c.particle_push
+        c.particle_push unless @was_fighting
         v.update
       end
+    end
+
+    # Positions followers in the correct place after battle
+    def reload_position_after_battle
+      return unless @was_fighting
+
+      set_positions(*$user_data[:follower_pos])
+    end
+
+    # Saves follower positions to user_data
+    def save_follower_positions
+      $user_data[:follower_pos] = @followers.map { |follower| [follower.character.x, follower.character.y, follower.character.direction] }
     end
 
     # Reset position of each follower to the player (entering in a building)
@@ -288,6 +301,7 @@ end
 Hooks.register(Spriteset_Map, :init_psdk_add, 'Yuki::FollowMe') { Yuki::FollowMe.init(@viewport1) }
 Hooks.register(Spriteset_Map, :init_player_begin, 'Yuki::FollowMe') do
   Yuki::FollowMe.update
+  Yuki::FollowMe.reload_position_after_battle
   Yuki::FollowMe.particle_push
 end
 Hooks.register(Spriteset_Map, :update_fps_balanced, 'Yuki::FollowMe') { Yuki::FollowMe.update }
