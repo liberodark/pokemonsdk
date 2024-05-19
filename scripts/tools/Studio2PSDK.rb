@@ -192,6 +192,7 @@ module Studio2PSDK
       obj.instance_variable_set(:@effect_chance, 100) unless obj.effect_chance
     end
     if obj.is_a?(Studio::Group)
+      obj.instance_variable_set(:@system_tag, obj.system_tag.downcase) if obj.system_tag.match?('Custom_')
       obj.instance_variable_set(:@tool, obj.system_tag) if obj.system_tag == :headbutt
     end
     return obj
