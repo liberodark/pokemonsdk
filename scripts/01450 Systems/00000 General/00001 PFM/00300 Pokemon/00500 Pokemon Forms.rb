@@ -18,6 +18,8 @@ module PFM
                      ground_memory rock_memory bug_memory ghost_memory steel_memory
                      __undef__ fire_memory water_memory grass_memory electric_memory
                      psychic_memory ice_memory dragon_memory dark_memory fairy_memory]
+    # List of items (in the form index order) that change the form of Ogerpon
+    OGERPONMASK = %i[__undef__ wellspring_mask hearthflame_mask cornerstone_mask]
     # Change the form of the Pokemon
     # @note If the form doesn't exist, the form is not changed
     # @param value [Integer] the new form index
@@ -266,5 +268,6 @@ module PFM
     FORM_CALIBRATE[:cramorant] = proc { |reason| @form = cramorant_form(reason) }
     FORM_CALIBRATE[:palafin] = proc { |reason| @form = reason == :hero ? 1 : 0 }
     FORM_CALIBRATE[:castform] = proc { |reason| @form = castform_form(reason) }
+    FORM_CALIBRATE[:ogerpon] = proc { @form = OGERPONMASK.index(item_db_symbol).to_i }
   end
 end

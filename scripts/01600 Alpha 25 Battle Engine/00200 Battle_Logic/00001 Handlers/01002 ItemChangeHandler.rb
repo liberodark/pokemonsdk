@@ -21,6 +21,7 @@ module Battle
         groudon: %i[red_orb],
         zacian: %i[rusted_sword],
         zamazenta: %i[rusted_shield],
+        ogerpon: %i[wellspring_mask hearthflame_mask cornerstone_mask],
 
         venusaur: %i[venusaurite], charizard: %i[charizardite_x charizardite_y], blatoise: %i[blastoisinite],
         alakazam: %i[alakazite], gengar: %i[gengarite], kangaskhan: %i[kangaskhanite], pinsir: %i[pinsirite],
