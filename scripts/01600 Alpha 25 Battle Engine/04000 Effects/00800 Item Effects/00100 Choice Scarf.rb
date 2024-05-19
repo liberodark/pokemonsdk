@@ -14,8 +14,7 @@ module Battle
         # @param move [Battle::Move]
         # @return [:prevent, nil] :prevent if the move cannot continue
         def on_move_prevention_user(user, targets, move)
-          return if move&.be_method == :s_struggle
-          return unless move_can_be_used?(user, move)
+          return if can_be_used?(user, move)
 
           move.show_usage_failure(user)
           return :prevent
@@ -26,7 +25,7 @@ module Battle
         # @param move [Battle::Move]
         # @return [Proc, nil]
         def on_move_disabled_check(user, move)
-          return unless move_can_be_used?(user, move)
+          return if can_be_used?(user, move)
 
           return proc {
             move.scene.visual.show_item(user)
@@ -40,15 +39,19 @@ module Battle
         # @param user [PFM::PokemonBattler]
         # @param move [Battle::Move]
         # @return [Boolean]
-        def move_can_be_used?(user, move)
-          return false unless user == @target && user.move_history.any?
+        def can_be_used?(user, move)
           last_move = user.move_history.reject { |move| move.db_symbol == :struggle }.last
-          return false if last_move.db_symbol == move.db_symbol
-          return false if last_move.turn < user.last_sent_turn
 
-          return true
+          return true if user != @target
+          return true if user.move_history.none?
+          return true if move.db_symbol == :struggle
+          return true if last_move.db_symbol == move.db_symbol
+          return true if last_move.turn < user.last_sent_turn
+
+          return false
         end
       end
+
       register(:choice_scarf, ChoiceScarf)
     end
   end
