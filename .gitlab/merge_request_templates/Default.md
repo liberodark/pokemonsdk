@@ -1,3 +1,10 @@
+Thank you for your contribution to the **PSDK** repo.
+
+Before submitting this Merge Request into the development branch, please make sure:
+- [ ] Your code runs clean without any errors or warnings
+- [ ] You are following the [Contributing guidelines](../development/CONTRIBUTING.md)
+- [ ] You tested your code to make sure it does what it is supposed to do
+
 ### MR Description
 - Description
 
