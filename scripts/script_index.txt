@@ -735,6 +735,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effe
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Magma Armor.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Marvel Scale.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Mega Launcher.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Mental Immunity.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Mimicry.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Mirror Armor.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Mold Breaker.rb

@@ -16,8 +16,7 @@ module Battle
 
       # Function called when the effect has been deleted from the effects handler
       def on_delete
-        message = parse_text_with_pokemon(19, 339, @pokemon)
-        @logic.scene.display_message_and_wait(message)
+        @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 339, @pokemon))
       end
 
       # Function called when we try to use a move as the user (returns :prevent if user fails)
@@ -28,13 +27,12 @@ module Battle
       def on_move_prevention_user(user, targets, move)
         return if user != @pokemon
         return unless targets.include?(@attracted_to)
-        return @logic.scene.visual.show_ability(user) && kill if user.has_ability?(:oblivious)
 
         move.scene.display_message_and_wait(parse_text_with_pokemon(19, 333, user, PFM::Text::PKNICK[1] => @attracted_to.given_name))
-        if bchance?(0.5)
-          move.scene.display_message_and_wait(parse_text_with_pokemon(19, 336, user))
-          return :prevent
-        end
+        return unless bchance?(0.5, move.logic)
+
+        move.scene.display_message_and_wait(parse_text_with_pokemon(19, 336, user))
+        return :prevent
       end
 
       # Get the name of the effect
