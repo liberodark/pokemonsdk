@@ -301,7 +301,8 @@ end
 Hooks.register(Spriteset_Map, :init_psdk_add, 'Yuki::FollowMe') { Yuki::FollowMe.init(@viewport1) }
 Hooks.register(Spriteset_Map, :init_player_begin, 'Yuki::FollowMe') do
   Yuki::FollowMe.update
-  Yuki::FollowMe.reload_position_after_battle
+  Yuki::FollowMe.reload_position_after_battle unless $user_data[:follower_pos].nil?
   Yuki::FollowMe.particle_push
+  $user_data[:follower_pos] = nil
 end
 Hooks.register(Spriteset_Map, :update_fps_balanced, 'Yuki::FollowMe') { Yuki::FollowMe.update }
