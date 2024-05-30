@@ -52,15 +52,18 @@ class Scene_Title < GamePlay::BaseCleanUpdate
   end
 
   # Update the mouse
-  def update_mouse(*)
+  # @param moved [Boolean]
+  def update_mouse(moved)
     return unless @title_controls
 
-    if @title_controls.index == 1 && @title_controls.play_bg.mouse_in?
-      play_cursor_se
-      @title_controls.index = 0
-    elsif @title_controls.index == 0 && @title_controls.credit_bg.mouse_in?
-      play_cursor_se
-      @title_controls.index = 1
+    if moved
+      if @title_controls.index == 1 && @title_controls.play_bg.mouse_in?
+        play_cursor_se
+        @title_controls.index = 0
+      elsif @title_controls.index == 0 && @title_controls.credit_bg.mouse_in?
+        play_cursor_se
+        @title_controls.index = 1
+      end
     elsif Mouse.trigger?(:LEFT)
       action_a if @title_controls.play_bg.mouse_in? || @title_controls.credit_bg.mouse_in?
     end
