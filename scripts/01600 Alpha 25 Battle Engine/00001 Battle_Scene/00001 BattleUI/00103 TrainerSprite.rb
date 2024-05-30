@@ -19,6 +19,8 @@ module BattleUI
     attr_reader :scene
     # Define the number of frames inside a back trainer
     BACK_FRAME_COUNT = 2
+    # Determines the number of frames for a backsprite automatically
+    DYNAMIC_BACKSPRITES = true
 
     # Create a new TrainerSprite
     # @param viewport [Viewport]
@@ -35,7 +37,10 @@ module BattleUI
       @position = position
       @battle_info = battle_info
       set_bitmap(battler, :battler)
-      src_rect.height = bitmap.height / BACK_FRAME_COUNT if @bank == 0
+      @dynamic_frame_count = bitmap.height / bitmap.width
+      if @bank == 0
+        src_rect.height = DYNAMIC_BACKSPRITES ? (bitmap.height / @dynamic_frame_count) : (bitmap.height / BACK_FRAME_COUNT)
+      end
       reset_position
     end
 
@@ -62,6 +67,18 @@ module BattleUI
     def show_previous_frame
       new_y = src_rect.y - src_rect.height
       src_rect.y = new_y if new_y >= 0
+    end
+
+    # Animation of player scrolling in and out at start of battle
+    def send_ball_animation
+      ya = Yuki::Animation
+      animation = ya.wait(0.1)
+      frames = DYNAMIC_BACKSPRITES ? @dynamic_frame_count : BACK_FRAME_COUNT
+      frames.times do
+        animation.play_before(ya.wait(0.1))
+        animation.play_before(ya.send_command_to(self, :show_next_frame))
+      end
+      return animation
     end
 
     private

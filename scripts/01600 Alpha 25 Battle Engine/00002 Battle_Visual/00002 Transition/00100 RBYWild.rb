@@ -118,14 +118,14 @@ module Battle
         def create_player_send_animation
           ya = Yuki::Animation
           animations = @actor_sprites.map do |sp|
-            next ya.move(1, sp, sp.x, sp.y, -sp.width, sp.y).parallel_play(
-              ya.wait(0.2).play_before(ya.send_command_to(sp, :show_next_frame)).root
-            )
+            next ya.move(1, sp, sp.x, sp.y, -sp.width, sp.y).parallel_play(sp.send_ball_animation)
           end
           animation = animations.pop
           animations.each { |anim| animation.parallel_add(anim) }
           actor_pokemon_sprites.each do |sp|
-            animation.play_before(ya.send_command_to(sp, :go_in))
+            throwed_anim = ya.wait(0.3)
+            throwed_anim.play_before(ya.send_command_to(sp, :go_in))
+            animation.parallel_add(throwed_anim)
           end
           animation.play_before(ya.wait(0.2))
           return animation

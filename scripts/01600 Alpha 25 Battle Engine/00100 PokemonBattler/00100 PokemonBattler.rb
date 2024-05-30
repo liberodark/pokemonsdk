@@ -609,6 +609,9 @@ module PFM
     def initialize_set_is_follower
       return @is_follower = false unless $actors.include?(original) && defined?(Yuki::FollowMe)
       return @is_follower = false unless Yuki::FollowMe.enabled
+      return @is_follower = false if $game_switches[Yuki::Sw::FollowMe_LetsGoMode] && $actors.count { |actor| actor == $storage.lets_go_follower } > 0 && $actors[$actors.index($storage.lets_go_follower)].hp == 0 # For disabled let's go followers
+      return @is_follower = true if $game_switches[Yuki::Sw::FollowMe_LetsGoMode] && $actors.count { |actor| actor == $storage.lets_go_follower } > 0 && $actors[$actors.index($storage.lets_go_follower)].hp > 0 && $actors[0] == $actors[$actors.index($storage.lets_go_follower)] # For sending out your let's go follower
+
 
       @is_follower = $actors.index(original).to_i < Yuki::FollowMe.pokemon_count
     end
