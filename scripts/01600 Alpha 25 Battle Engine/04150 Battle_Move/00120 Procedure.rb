@@ -303,6 +303,7 @@ module Battle
     # @param user [PFM::PokemonBattler] user of the move
     # @param targets [Array<PFM::PokemonBattler>] expected targets
     def play_animation(user, targets)
+      play_substitute_swap_animation(user)
       return unless $options.show_animation
 
       @scene.visual.set_info_state(:move_animation)
@@ -310,6 +311,15 @@ module Battle
       play_animation_internal(user, targets)
       @scene.visual.set_info_state(:move, targets + [user])
       @scene.visual.wait_for_animation
+    end
+
+    # Play the move animation when having substitute
+    # @param user [PFM::PokemonBattler] user of the move
+    def play_substitute_swap_animation(user)
+      return unless user.effects.has?(:substitute)
+      return if user.effects.has?(:out_of_reach_base)
+
+      user.effects.get(:substitute).play_substitute_animation(:from)
     end
 
     # Play the move animation (only without all the decoration)
@@ -342,7 +352,7 @@ module Battle
       @scene.display_message_and_wait(parse_text_with_pokemon(19, 378, user))
     end
 
-    # Function applying recoil damage to the user 
+    # Function applying recoil damage to the user
     # @note Only for Parental Bond !!
     # @param hp [Integer]
     # @param user [PFM::PokemonBattler]

@@ -7,7 +7,7 @@ module Battle
     attr_reader :messages
     # @return [Array<Actions::Base>] list of the current actions to proccess during the scene
     attr_reader :actions
-    # @return [Action::Base] action is about to be done / has just been done
+     # @return [Actions::Base] currently played action
     attr_reader :current_action
     # @return [Array<Actions::Base>] list of all actions that occurs within the current turn
     attr_accessor :turn_actions

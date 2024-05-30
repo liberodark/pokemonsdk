@@ -13,6 +13,12 @@ module Battle
       def initialize(logic, pokemon, move, exceptions, turncount = 2)
         super(logic, pokemon)
         initialize_out_of_reach(pokemon, move, exceptions, turncount)
+        logic.scene.visual.battler_sprite(pokemon.bank, pokemon.position).opacity = 0
+      end
+
+      # Function called when the effect has been deleted from the effects handler
+      def on_delete
+        return @logic.scene.visual.battler_sprite(@pokemon.bank, @pokemon.position).opacity = 255
       end
 
       # Get the name of the effect

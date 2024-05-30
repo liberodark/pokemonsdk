@@ -1,27 +1,30 @@
-#encoding: utf-8
+# encoding: utf-8
 
-#noyard
+# noyard
 module PSP
   module_function
+
   def make_sprite(viewport = nil)
     @main_sprite = ::RPG::Sprite.new(viewport)
   end
 
   def dispose_sprite
     return unless @main_sprite
+
     @main_sprite.dispose
     @main_sprite = nil
   end
 
-  def animation(src_sprite, id, reverse = false) # reverse = true if src_sprite = enemy
-    (sp = @main_sprite).x = src_sprite.x# * $zoom_factor
-    sp.y = src_sprite.y #* $zoom_factor
+  def animation(src_sprite, id, reverse = false)
+    (sp = @main_sprite).x = src_sprite.x
+    sp.y = src_sprite.y
     sp.z = src_sprite.z
     sp.ox = src_sprite.ox
     sp.oy = src_sprite.oy
     sp.bitmap = src_sprite.bitmap
-    sp.zoom_x = sp.zoom_y = src_sprite.zoom_x#$zoom_factor * src_sprite.zoom_x
+    sp.zoom_x = sp.zoom_y = src_sprite.zoom_x
     visible = src_sprite.visible
+    sp.opacity = src_sprite.opacity
     src_sprite.visible = false
     animation = $data_animations[id]
     if animation
@@ -50,8 +53,8 @@ module PSP
     animation(trg_sprite, id, reverse) if id
   end
 
-  MOVE_TO_ID_ANIMATION_TARGET = load_data("Data/PSP_MTAT.dat")
-  MOVE_TO_ID_ANIMATION_USER = load_data("Data/PSP_MTAU.dat")
+  MOVE_TO_ID_ANIMATION_TARGET = load_data('Data/PSP_MTAT.dat')
+  MOVE_TO_ID_ANIMATION_USER = load_data('Data/PSP_MTAU.dat')
 =begin
   MOVE_TO_ID_ANIMATION_TARGET = {
     468 => 470,

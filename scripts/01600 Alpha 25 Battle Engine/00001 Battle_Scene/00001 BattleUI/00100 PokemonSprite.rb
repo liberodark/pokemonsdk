@@ -8,6 +8,9 @@ module BattleUI
     # Tell if the sprite is currently selected
     # @return [Boolean]
     attr_accessor :selected
+    # Tell if the sprite is temporary showed while in the Substitute state
+    # @return [Boolean]
+    attr_accessor :temporary_substitute_overwrite
     # Get the Pokemon shown by the sprite
     # @return [PFM::PokemonBattler]
     attr_reader :pokemon
@@ -141,6 +144,41 @@ module BattleUI
       animation_handler[:in_out] = animation
     end
 
+    # Creates the switch to substitute animation
+    def switch_to_substitute_animation
+      base_x = self.x
+      bx = enemy? ? viewport.rect.width + width : -width
+      ya = Yuki::Animation
+      animation = ya.move(0.5, self, x, y, bx, y)
+      animation.play_before(ya.send_command_to(self, :switch_to_substitute_sprite))
+      animation.play_before(ya.move(0.5, self, bx, y, base_x, y))
+      animation.start
+      animation_handler[:to_substitute] = animation
+    end
+
+    # Creates the switch from substitute animation
+    def switch_from_substitute_animation
+      base_x = self.x
+      bx = enemy? ? viewport.rect.width + width : -width
+      ya = Yuki::Animation
+      animation = ya.move(0.5, self, x, y, bx, y)
+      animation.play_before(ya.send_command_to(self, :load_battler, true))
+      animation.play_before(ya.move(0.5, self, bx, y, base_x, y))
+      animation.start
+      animation_handler[:from_substitute] = animation
+    end
+
+    # Tell if the Pokemon represented by this sprite is under the effect of Substitute
+    # @return [Boolean]
+    def under_substitute_effect?
+      return pokemon&.effects.has?(:substitute)
+    end
+
+    # Directly switch the PokemonSprite appearance to the substitute appearance
+    def switch_to_substitute_sprite
+      set_bitmap(bank == 0 ? 'pokeback/substitute' : 'pokefront/substitute', :pokedex)
+    end
+
     private
 
     # Reset the battler position
@@ -180,8 +218,11 @@ module BattleUI
     end
 
     # Load the battler of the Pokemon
-    def load_battler
-      if @last_pokemon&.id != @pokemon.id || @last_pokemon&.form != @pokemon.form || @last_pokemon&.code != @pokemon.code
+    # @param forced [Boolean] if we force the loading of the battler (useful with Substitute cases)
+    def load_battler(forced = false)
+      return if under_substitute_effect? && !temporary_substitute_overwrite && !forced
+
+      if forced || @last_pokemon&.id != @pokemon.id || @last_pokemon&.form != @pokemon.form || @last_pokemon&.code != @pokemon.code
         bitmap.dispose if @gif
         remove_instance_variable(:@gif) if instance_variable_defined?(:@gif)
         gif = pokemon.bank != 0 ? pokemon.gif_face : pokemon.gif_back
@@ -241,6 +282,7 @@ module BattleUI
       ball_animation = enemy? ? enemy_ball_animation(poke_out) : actor_ball_animation(poke_out)
       animation.play_before(ball_animation)
       animation.play_before(ya.send_command_to(self, :cry))
+               .parallel_play(ya.wait(0.3))
 
       return animation
     end

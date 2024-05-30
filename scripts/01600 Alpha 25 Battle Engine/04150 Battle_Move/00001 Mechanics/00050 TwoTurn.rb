@@ -11,24 +11,33 @@ module Battle
         # Internal procedure of the move
         # @param user [PFM::PokemonBattler] user of the move
         # @param targets [Array<PFM::PokemonBattler>] expected targets
+        # @note If you are interrupted (see: interrupted?), we must reset @turn; otherwise,
+        #       we will proceed to phase 2 the next time we make a move in two turns.
         def proceed_internal(user, targets)
           # rubocop:disable Lint/LiteralAsCondition
-          # If you're interrupted (because the move isn't in the MOVES_PAUSED table), we must reset @turn otherwise we will do phase 2 next time
           @turn = nil unless user.effects.has?(&:force_next_move?)
 
           # Piece of proceed_internal_precheck(user, targets)
-          return user.add_move_to_history(self, targets) unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
+          unless move_usable_by_user(user, targets) || (on_move_failure(user, targets, :usable_by_user) && false)
+            kill_turn1_effects(user)
+            user.add_move_to_history(self, targets)
+            return nil
+          end
 
           usage_message(user)
 
           if targets.all?(&:dead?) && (on_move_failure(user, targets, :no_target) || true)
+            kill_turn1_effects(user)
+            scene.display_message_and_wait(parse_text(18, 106))
             user.add_move_to_history(self, targets)
-            return scene.display_message_and_wait(parse_text(18, 106))
+            return nil
           end
 
           if pp == 0 && !(user.effects.has?(&:force_next_move?) && !@forced_next_move_decrease_pp)
+            kill_turn1_effects(user)
+            (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp)
             user.add_move_to_history(self, targets)
-            return (scene.display_message_and_wait(parse_text(18, 85)) || true) && on_move_failure(user, targets, :pp) && nil
+            return nil
           end
 
           # End of Piece of proceed_internal_precheck
@@ -61,14 +70,21 @@ module Battle
         # @param targets [Array<PFM::PokemonBattler>] expected targets
         def execution_turn(user, targets)
           # rubocop:disable Lint/LiteralAsCondition
-          kill_turn1_effects(user)
           # Piece of proceed_internal_precheck(user, targets)
           # => proceed_move_accuracy will call display message if failure
-          return user.add_move_to_history(self, targets) unless !(actual_targets = proceed_move_accuracy(user, targets)).empty? || (on_move_failure(user, targets, :accuracy) && false)
+          unless !(actual_targets = proceed_move_accuracy(user, targets)).empty? || (on_move_failure(user, targets, :accuracy) && false)
+            kill_turn1_effects(user)
+            user.add_move_to_history(self, targets)
+            return nil
+          end
 
           user, actual_targets = proceed_battlers_remap(user, actual_targets)
           actual_targets = accuracy_immunity_test(user, actual_targets) # => Will call $scene.dislay_message for each accuracy fail
-          return user.add_move_to_history(self, actual_targets) if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
+          if actual_targets.none? && (on_move_failure(user, targets, :immunity) || true)
+            kill_turn1_effects(user)
+            user.add_move_to_history(self, actual_targets)
+            return nil
+          end
 
           # Piece of super proceed_internal(user, targets)
           post_accuracy_check_effects(user, actual_targets)
@@ -76,6 +92,7 @@ module Battle
           post_accuracy_check_move(user, actual_targets)
 
           play_animation(user, targets)
+          kill_turn1_effects(user)
 
           deal_damage(user, actual_targets) &&
             effect_working?(user, actual_targets) &&
@@ -140,7 +157,8 @@ module Battle
         # @param user [PFM::PokemonBattler]
         # @param targets [Array<PFM::PokemonBattler>] expected targets
         def play_animation_turn1(user, targets)
-          nil
+          play_substitute_swap_animation(user)
+          return unless $options.show_animation
         end
 
         # Return the stat changes for the user
