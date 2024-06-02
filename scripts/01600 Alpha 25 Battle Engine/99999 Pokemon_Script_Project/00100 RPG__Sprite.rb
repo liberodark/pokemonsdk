@@ -37,19 +37,7 @@ module RPG
         gl_FragColor = color * gl_Color;
       }
     EOSHADER
-    TARGET_SHADER = <<~EOSHADER
-      uniform vec4 color;
-      uniform sampler2D texture;
 
-      void main() {
-        vec4 frag = texture2D(texture, gl_TexCoord[0].xy);
-        // Tone&Color process
-        frag.rgb = mix(frag.rgb, color.rgb, color.a);
-        frag.a *= gl_Color.a;
-        // Result
-        gl_FragColor = frag;
-      }
-    EOSHADER
     @@_animations = []
     @@_reference_count = {}
     def initialize(viewport = nil)
@@ -114,7 +102,7 @@ module RPG
       dispose_animation
       @_animation = animation
       return if @_animation == nil
-      self.shader ||= Shader.new(TARGET_SHADER)
+      self.shader ||= Shader.create(:color_shader)
       self.shader.set_float_uniform('color', color)
       @_animation_hit = hit
       @_animation_duration = @_animation.frame_max

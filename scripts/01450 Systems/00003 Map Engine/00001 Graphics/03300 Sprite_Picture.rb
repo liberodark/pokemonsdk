@@ -4,22 +4,6 @@ class Sprite_Picture < ShaderedSprite
   # @return [Boolean]
   attr_accessor :gif_loop_disabled
 
-  # Shader of a Sprite Picture to allow color & tone processing over them
-  SPRITE_SHADER = <<-EOSHADER
-  uniform vec4 tone;
-  const vec3 lumaF = vec3(.299, .587, .114);
-  uniform sampler2D texture;
-  void main()
-  {
-    vec4 frag = texture2D(texture, gl_TexCoord[0].xy);
-    float luma = dot(frag.rgb, lumaF);
-    frag.rgb += tone.rgb;
-    frag.rgb = mix(frag.rgb, vec3(luma), tone.w);
-    frag.a *= gl_Color.a;
-    // Result
-    gl_FragColor = frag;
-  }
-  EOSHADER
   # Initialize a new Sprite_Picture
   # @param viewport [Viewport] the viewport where the sprite will be shown
   # @param picture [Game_Picture] the picture

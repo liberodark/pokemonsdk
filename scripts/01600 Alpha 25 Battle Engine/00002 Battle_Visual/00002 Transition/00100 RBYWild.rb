@@ -40,11 +40,10 @@ module Battle
 
         # Function that creates the enemy sprites
         def create_enemy_sprites
-          @shader = Shader.create(:color_shader)
-          @shader.set_float_uniform('color', [0, 0, 0, 1])
+          color = [0, 0, 0, 1]
           @enemy_sprites = enemy_pokemon_sprites
           @enemy_sprites.each do |sprite|
-            sprite.shader = @shader
+            sprite.shader.set_float_uniform('color', color)
             sprite.x -= DISPLACEMENT_X
           end
         end
@@ -107,7 +106,8 @@ module Battle
           @actor_sprites.each do |sp|
             animation.parallel_add(ya.move(0.8, sp, sp.x, sp.y, sp.x - DISPLACEMENT_X, sp.y))
           end
-          @enemy_sprites.each { |sp| animation.play_before(ya.send_command_to(sp, :shader=, nil)) }
+          color = [0, 0, 0, 0]
+          @enemy_sprites.each { |sp| animation.play_before(ya.send_command_to(sp.shader, :set_float_uniform, 'color', color)) }
           cries = @enemy_sprites.select { |sp| sp.respond_to?(:cry) }
           cries.each { |sp| animation.play_before(ya.send_command_to(sp, :cry)) }
           return animation

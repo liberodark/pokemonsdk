@@ -3,6 +3,7 @@ module BattleUI
   class PokemonSprite < ShaderedSprite
     include GoingInOut
     include MultiplePosition
+    include Shader::CreatureShaderLoader
     # Constant giving the deat Delta Y (you need to adjust that so your screen animation are OK when Pokemon are KO)
     DELTA_DEATH_Y = 32
     # Tell if the sprite is currently selected
@@ -233,6 +234,7 @@ module BattleUI
         else
           self.bitmap = pokemon.bank != 0 ? pokemon.battler_face : pokemon.battler_back
         end
+        load_shader(@pokemon)
       end
       @last_pokemon = @pokemon.clone
     end

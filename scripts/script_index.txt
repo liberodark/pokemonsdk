@@ -139,6 +139,7 @@ pokemonsdk/scripts/01450 Systems/00000 General/00100 UI Generics/00600 KeyShortc
 pokemonsdk/scripts/01450 Systems/00000 General/00100 UI Generics/00700 ThrowingBallSprite.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00100 UI Generics/00700 UserInput.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00100 UI Generics/00710 TextScroller.rb
+pokemonsdk/scripts/01450 Systems/00000 General/00100 UI Generics/02700 CreatureShader.rb
 pokemonsdk/scripts/01450 Systems/00000 General/00100 UI Generics/02800 BlurScreenshot.rb
 pokemonsdk/scripts/01450 Systems/00001 Title/00001 Configs.rb
 pokemonsdk/scripts/01450 Systems/00001 Title/00002 Scene_Title.rb

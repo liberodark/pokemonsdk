@@ -23,6 +23,7 @@ module PSP
     sp.oy = src_sprite.oy
     sp.bitmap = src_sprite.bitmap
     sp.zoom_x = sp.zoom_y = src_sprite.zoom_x
+    sp.shader = src_sprite.shader
     visible = src_sprite.visible
     sp.opacity = src_sprite.opacity
     src_sprite.visible = false
@@ -44,6 +45,7 @@ module PSP
     sp&.viewport&.color&.set(0, 0, 0, 0) # Fix flash
     src_sprite.visible = visible
     sp.bitmap = nil
+    sp.shader = nil
   end
 
   def move_animation(usr_sprite, trg_sprite, move_id, reverse = false)
