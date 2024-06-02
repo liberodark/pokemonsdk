@@ -175,8 +175,10 @@ module GamePlay
       key_value = Sf::Keyboard.delocalize(key_value) if key_value >= 0
       # Check if the key is already assigned to another option
       conflicting_key = find_already_assigned_key(key_value)
+      # Check if any joystick button is pressed
+      joystick_pressed = 0.upto(Sf::Joystick.button_count(Input.main_joy)).any? { |btn| Sf::Joystick.press?(Input.main_joy, btn) }
       # Message indicating key is already assigned
-      unless conflicting_key.nil?
+      unless conflicting_key.nil? || joystick_pressed
         $game_system.se_play($data_system.buzzer_se)
         return display_message(parse_text(65, 0, PFM::Text::NUMB[1] => conflicting_key.to_s))
       end

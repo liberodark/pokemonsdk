@@ -92,7 +92,7 @@ module UI
     end
     # KeyIndex that holds the value of the key value in the order of the texture
     KeyIndex = [
-      0, 1, 2, 3, 13, 15, 12, 14,
+      1, 2, 0, 3, 13, 15, 12, 14,
       8, 9, 4, 5, 6, 7, 10, 11
     ]
     # Find the key rect in the Sprite according to the input key requested
