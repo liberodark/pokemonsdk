@@ -9,7 +9,7 @@ module Battle
         # @return [Boolean] if the target is immune to the move
         def on_move_ability_immunity(user, target, move)
           return false unless @target == target
-          return false unless move.ohko?
+          return false unless move&.ohko?
 
           move.scene.visual.show_ability(target)
           return true
@@ -23,7 +23,9 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         # @return [:prevent, Integer, nil] :prevent if the damage cannot be applied, Integer if the hp variable should be updated
         def on_damage_prevention(handler, hp, target, launcher, skill)
-          return if target != @target || hp < target.hp || target.hp != target.max_hp || target == launcher
+          return if target != @target || target == launcher
+          return if target.hp > hp || target.hp != target.max_hp
+          return unless skill
           return unless launcher&.can_be_lowered_or_canceled?
 
           @show_message = true
@@ -44,6 +46,7 @@ module Battle
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 514, target))
         end
       end
+
       register(:sturdy, Sturdy)
     end
   end

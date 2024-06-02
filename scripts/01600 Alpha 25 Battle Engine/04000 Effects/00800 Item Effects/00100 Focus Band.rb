@@ -10,11 +10,14 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         # @return [:prevent, Integer, nil] :prevent if the damage cannot be applied, Integer if the hp variable should be updated
         def on_damage_prevention(handler, hp, target, launcher, skill)
-          return unless skill && target == @target
+          return unless target == @target
+          return unless hp >= target.hp && bchance?(0.1, handler.logic)
+          return unless launcher && skill
 
-          return target.hp - 1 if hp >= target.hp && bchance?(0.1, @logic)
+          return target.hp - 1
         end
       end
+
       register(:focus_band, FocusBand)
     end
   end

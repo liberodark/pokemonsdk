@@ -8,6 +8,9 @@ module Battle
       # Get the substitute max hp
       attr_reader :max_hp
 
+      # @return [Array<Symbol>]
+      CANT_IGNORE_SUBSTITUTE = %i[transform sky_drop]
+
       # Create a new Pokemon tied effect
       # @param logic [Battle::Logic]
       # @param pokemon [PFM::PokemonBattler]
@@ -54,9 +57,9 @@ module Battle
       # @param skill [Battle::Move, nil] Potential move used
       # @return [:prevent, Integer, nil] :prevent if the damage cannot be applied, Integer if the hp variable should be updated
       def on_damage_prevention(handler, hp, target, launcher, skill)
-        return if target != @pokemon || !skill
-        return if skill.authentic?
-        return if launcher&.has_ability?(:infiltrator) && !%i[transform sky_drop].include?(skill.db_symbol)
+        return if target != @pokemon
+        return if skill.nil? || skill.authentic?
+        return if launcher.nil? || launcher.has_ability?(:infiltrator) && CANT_IGNORE_SUBSTITUTE.none?(skill.db_symbol)
 
         return handler.prevent_change do
           @hp -= hp

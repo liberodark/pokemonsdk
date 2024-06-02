@@ -10,8 +10,9 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         # @return [:prevent, Integer, nil] :prevent if the damage cannot be applied, Integer if the hp variable should be updated
         def on_damage_prevention(handler, hp, target, launcher, skill)
-          return unless skill && target == @target
-          return if hp < target.hp || target.hp != target.max_hp
+          return unless target == @target
+          return if target.hp > hp || target.hp != target.max_hp
+          return unless launcher && skill
 
           @show_message = true
           return target.hp - 1
@@ -32,6 +33,7 @@ module Battle
           handler.logic.item_change_handler.change_item(:none, true, target)
         end
       end
+
       register(:focus_sash, FocusSash)
     end
   end

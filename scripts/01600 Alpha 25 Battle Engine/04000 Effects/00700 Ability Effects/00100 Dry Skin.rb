@@ -21,8 +21,9 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         # @return [:prevent, Integer, nil] :prevent if the damage cannot be applied, Integer if the hp variable should be updated
         def on_damage_prevention(handler, hp, target, launcher, skill)
-          return unless skill&.type_water? && target == self.target
-          return unless launcher.can_be_lowered_or_canceled?
+          return if target != @target
+          return unless skill&.type_water?
+          return unless launcher&.can_be_lowered_or_canceled?
 
           return handler.prevent_change do
             handler.scene.visual.show_ability(target)

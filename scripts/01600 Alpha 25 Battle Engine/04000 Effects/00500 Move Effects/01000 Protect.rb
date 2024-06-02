@@ -230,9 +230,9 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         # @return [:prevent, Integer, nil] :prevent if the damage cannot be applied, Integer if the hp variable should be updated
         def on_damage_prevention(handler, hp, target, launcher, skill)
-          return unless launcher && skill
+          return if target != @pokemon
           return if hp < target.hp
-          return if target != @pokemon || dead?
+          return unless launcher && skill
 
           @show_message = true
           return target.hp - 1

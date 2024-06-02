@@ -14,6 +14,7 @@ module Battle
         # @return [:prevent, Integer, nil] :prevent if the damage cannot be applied, Integer if the hp variable should be updated
         def on_damage_prevention(handler, hp, target, launcher, skill)
           return if target != @target
+          return unless skill
           return unless launcher&.can_be_lowered_or_canceled?
 
           allies = handler.logic.allies_of(target)
@@ -27,6 +28,7 @@ module Battle
           return nil
         end
       end
+
       register(:telepathy, Telepathy)
     end
   end

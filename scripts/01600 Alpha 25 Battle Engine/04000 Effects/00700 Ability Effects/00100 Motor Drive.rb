@@ -20,6 +20,7 @@ module Battle
           end
         end
       end
+
       register(:motor_drive, MotorDrive)
     end
   end

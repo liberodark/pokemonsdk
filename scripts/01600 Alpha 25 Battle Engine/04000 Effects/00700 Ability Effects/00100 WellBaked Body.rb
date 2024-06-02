@@ -21,6 +21,7 @@ module Battle
           end
         end
       end
+
       register(:well_baked_body, WellBakedBody)
     end
   end
