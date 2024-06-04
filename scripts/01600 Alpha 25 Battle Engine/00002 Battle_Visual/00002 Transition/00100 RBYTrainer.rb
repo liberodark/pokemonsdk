@@ -85,7 +85,7 @@ module Battle
             animation.parallel_add(ya.move(0.8, sp, sp.x, sp.y, sp.x - DISPLACEMENT_X, sp.y))
           end
           color = [0, 0, 0, 0]
-          @enemy_sprites.each { |sp| animation.play_before(ya.send_command_to(sp.shader, :set_float_uniform, 'color', color)) }
+          @enemy_sprites.select(&:shader).each { |sp| animation.play_before(ya.send_command_to(sp.shader, :set_float_uniform, 'color', color)) }
           cries = @enemy_sprites.select { |sp| sp.respond_to?(:cry) }
           cries.each { |sp| animation.play_before(ya.send_command_to(sp, :cry)) }
           return animation
