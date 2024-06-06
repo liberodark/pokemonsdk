@@ -117,7 +117,12 @@ module Battle
     end
 
     BattleEndHandler.register('PSDK reset weather to normal') do
-      $env.apply_weather(:none, 0) unless $game_switches[Yuki::Sw::MixWeather]
+      next if $game_switches[Yuki::Sw::MixWeather]
+
+      forced_weather = data_zone($env.current_zone).forced_weather
+      next unless forced_weather&.zero?
+
+      $env.apply_weather(:none, 0)
     end
 
     BattleEndHandler.register('PSDK trainer messages') do |handler|
