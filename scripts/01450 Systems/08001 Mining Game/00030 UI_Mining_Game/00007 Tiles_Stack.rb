@@ -2,6 +2,13 @@ module UI
   module MiningGame
     # Class that describes the Tiles_Stack object
     class Tiles_Stack < SpriteStack
+      # The length of the texture for each tile
+      # @return [Integer]
+      TEXTURE_LENGTH = 16
+      # The length of the texture for each tile
+      # @return [Integer]
+      TEXTURE_WIDTH = 16
+
       # @return [Array<UI::MiningGame::Tiles] the array containing all the Tiles sprite
       attr_accessor :tile_array
       # Create the Tiles_Stack
@@ -39,6 +46,18 @@ module UI
         return arr
       end
 
+      # Return the texture length
+      # @return [Integer]
+      def texture_length
+        return TEXTURE_LENGTH
+      end
+
+      # Return the texture width
+      # @return [Integer]
+      def texture_width
+        return TEXTURE_WIDTH
+      end
+
       private
 
       # Return the initial x coordinate of Tiles_Stack
@@ -51,18 +70,6 @@ module UI
       # @return [Integer]
       def initial_y
         return 32
-      end
-
-      # Return the texture length
-      # @return [Integer]
-      def texture_length
-        return 16
-      end
-
-      # Return the texture width
-      # @return [Integer]
-      def texture_width
-        return 16
       end
 
       # Return the filename of the image

@@ -9,6 +9,8 @@ module GamePlay
     NB_X_TILES = 16
     # The number of tiles per columns in the table
     NB_Y_TILES = 13
+    # The initial coordinates of the cursor used when in keyboard mode
+    INITIAL_CURSOR_COORDINATES = [NB_X_TILES / 2, NB_Y_TILES / 2]
     # IDs of the text displayed when playing for the first time
     FIRST_TIME_TEXT = [[9005, 6], [9005, 7], [9005, 8], [9005, 10], [9005, 11], [9005, 12]]
     # IDs of the text displayed when playing for the first time (dynamite mode)
@@ -37,13 +39,15 @@ module GamePlay
       @handler = grid_handler
       @handler ||= PFM::MiningGame::GridHandler.new(param.is_a?(Array) ? param : nil, param.is_a?(Integer) ? param : nil, NB_X_TILES, NB_Y_TILES)
       @current_tool = :pickaxe
+      @controller = :mouse
+      @last_tile_hit = INITIAL_CURSOR_COORDINATES.dup
       @arr_items_won = []
       # @type [Yuki::Animation::TimedAnimation]
       @animation = nil
       # @type [Yuki::Animation::TimedAnimation]
       @transition_animation = nil
-      # States are :mouse, :animation
-      @ui_state = :mouse
+      # States are :playing, :animation
+      @ui_state = :playing
       @mbf_type = :mining_game
       @saved_grid_debug = false
       Audio.bgm_play(music_filename)
@@ -52,16 +56,10 @@ module GamePlay
 
     private
 
-    # Method that execute the ping sound and might trigger the texts displayed the first time the player plays
-    def launch_ping_text
-      @transition_animation = nil
-      Audio.se_play(File.join(SE_PATH, 'ping'))
-      Graphics.wait(60)
-      ping_text
-      if PFM.game_state.mining_game.first_time
-        Graphics.wait(60)
-        first_time_text
-      end
+    # Save the current instance of the Mining Game in a file
+    def save_instance_for_debug
+      @saved_grid_debug = true
+      Yuki::EXC.mining_game_reproduction(@handler)
     end
   end
 end

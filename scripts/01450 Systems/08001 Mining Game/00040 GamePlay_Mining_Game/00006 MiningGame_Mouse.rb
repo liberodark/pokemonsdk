@@ -7,7 +7,7 @@ module GamePlay
     # @return [Boolean]
     def update_mouse(_moved)
       return false unless Mouse.moved || Mouse.trigger?(:left) # Safety preventing index conflict
-      return false unless @ui_state == :mouse
+      return false unless @ui_state == :playing
 
       @tiles_stack.tile_array.each_with_index do |line, index_y|
         line.each_with_index do |tile, index_x|
@@ -15,6 +15,8 @@ module GamePlay
 
           if Mouse.trigger?(:left)
             tile_click(index_x, index_y)
+            @last_tile_hit = [index_x, index_y]
+            change_controller_state(:mouse)
             return true
           end
         end
@@ -24,6 +26,7 @@ module GamePlay
 
         if Mouse.trigger?(:left)
           @current_tool = @tool_buttons.change_buttons_state(index)
+          change_controller_state(:mouse)
           return true
         end
       end

@@ -42,6 +42,14 @@ module UI
         return TOOL_FILENAME[index].to_sym
       end
 
+      # Cycle through the buttons with a keyboard input
+      # @return [Symbol] the symbol of the new tool to use
+      def cycle_through_buttons
+        @index += 1
+        @index = 0 if @index > (PFM.game_state.mining_game.dynamite_unlocked ? 2 : 1)
+        return change_buttons_state(@index)
+      end
+
       private
 
       # Initial coordinates of the SpriteStack

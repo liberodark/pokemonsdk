@@ -1,24 +1,5 @@
 module GamePlay
   class MiningGame
-    private
-
-    # Dull method, only here to check the win condition
-    # @return [Boolean] false if @running == false
-    def update_inputs
-      return save_instance_for_debug if Input::Keyboard.press?(Input::Keyboard::LControl) && !@saved_grid_debug
-      return false if @transition_animation && !@transition_animation.done?
-      return false if @running == false
-
-      check_win_lose_condition if @ui_state != :animation
-      return true
-    end
-
-    # Save the current instance of the Mining Game in a file
-    def save_instance_for_debug
-      @saved_grid_debug = true
-      Yuki::EXC.mining_game_reproduction(@handler)
-    end
-
     # Check if a diggable item has been revealed
     # @param item [PFM::MiningGame::Diggable]
     # @return [Boolean]
@@ -31,6 +12,18 @@ module GamePlay
           check = @tiles_stack.get_tile(item.x + index_x, item.y + index_y).state == 0 unless check
           next check
         end
+      end
+    end
+
+    # Method that execute the ping sound and might trigger the texts displayed the first time the player plays
+    def launch_ping_text
+      @transition_animation = nil
+      Audio.se_play(File.join(SE_PATH, 'ping'))
+      Graphics.wait(60)
+      ping_text
+      if PFM.game_state.mining_game.first_time
+        Graphics.wait(60)
+        first_time_text
       end
     end
 

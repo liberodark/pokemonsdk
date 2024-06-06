@@ -410,12 +410,14 @@ pokemonsdk/scripts/01450 Systems/08001 Mining Game/00030 UI_Mining_Game/00007 Ti
 pokemonsdk/scripts/01450 Systems/08001 Mining Game/00030 UI_Mining_Game/00008 Tool_Sprite.rb
 pokemonsdk/scripts/01450 Systems/08001 Mining Game/00030 UI_Mining_Game/00009 Tool_Buttons.rb
 pokemonsdk/scripts/01450 Systems/08001 Mining Game/00030 UI_Mining_Game/00010 Tool_Hit_Sprite.rb
+pokemonsdk/scripts/01450 Systems/08001 Mining Game/00030 UI_Mining_Game/00011 Keyboard_Cursor.rb
 pokemonsdk/scripts/01450 Systems/08001 Mining Game/00040 GamePlay_Mining_Game/00001 MiningGame_Initialize.rb
 pokemonsdk/scripts/01450 Systems/08001 Mining Game/00040 GamePlay_Mining_Game/00002 MiningGame_Graphics.rb
 pokemonsdk/scripts/01450 Systems/08001 Mining Game/00040 GamePlay_Mining_Game/00003 MiningGame_Actions.rb
 pokemonsdk/scripts/01450 Systems/08001 Mining Game/00040 GamePlay_Mining_Game/00004 MiningGame_Animations.rb
-pokemonsdk/scripts/01450 Systems/08001 Mining Game/00040 GamePlay_Mining_Game/00005 MiningGame_Logic.rb
+pokemonsdk/scripts/01450 Systems/08001 Mining Game/00040 GamePlay_Mining_Game/00005 MiningGame_Input.rb
 pokemonsdk/scripts/01450 Systems/08001 Mining Game/00040 GamePlay_Mining_Game/00006 MiningGame_Mouse.rb
+pokemonsdk/scripts/01450 Systems/08001 Mining Game/00040 GamePlay_Mining_Game/00007 MiningGame_Logic.rb
 pokemonsdk/scripts/01450 Systems/09000 GTS/09000 GTS.rb
 pokemonsdk/scripts/01450 Systems/09000 Games/00001 Slot Machines/00002 UI/00001 NumberDisplay.rb
 pokemonsdk/scripts/01450 Systems/09000 Games/00001 Slot Machines/00002 UI/00002 BandDisplay.rb

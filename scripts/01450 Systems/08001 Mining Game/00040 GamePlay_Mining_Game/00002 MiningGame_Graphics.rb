@@ -18,6 +18,7 @@ module GamePlay
       create_tool_hit_sprite
       create_iron_hit_sprite
       create_tool_sprite
+      create_keyboard_cursor
       create_transition_sprite
       start_transition_in_animation
       Graphics.sort_z
@@ -33,7 +34,7 @@ module GamePlay
       @animation.update
       @tool_sprite.update
       @tool_hit_sprite.update
-      @ui_state = :mouse if @animation.done?
+      @ui_state = :playing if @animation.done?
     end
 
     # Create the viewports
@@ -97,6 +98,11 @@ module GamePlay
       @iron_hit_sprite = Sprite.new(@viewport)
       @iron_hit_sprite.set_bitmap('mining_game/iron_hit', :interface)
                       .visible = false
+    end
+
+    # Create the keyboard cursor sprite
+    def create_keyboard_cursor
+      @keyboard_cursor = KeyboardCursor.new(@viewport, @last_tile_hit)
     end
   end
 end
