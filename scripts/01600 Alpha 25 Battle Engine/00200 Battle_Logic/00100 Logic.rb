@@ -6,7 +6,7 @@ module Battle
     # @return [Array<Array>] list of messages to send to an interpreter (AI/Scene)
     attr_reader :messages
     # @return [Array<Actions::Base>] list of the current actions to proccess during the scene
-    attr_reader :actions
+    attr_accessor :actions
      # @return [Actions::Base] currently played action
     attr_reader :current_action
     # @return [Array<Actions::Base>] list of all actions that occurs within the current turn

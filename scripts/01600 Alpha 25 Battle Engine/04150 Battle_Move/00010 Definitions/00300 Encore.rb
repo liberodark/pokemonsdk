@@ -47,6 +47,7 @@ module Battle
         last_move = target.move_history.last
         has_forced_effect = target.effects.has? { |e| e.force_next_move? && !e.dead? }
         return true if !last_move || has_forced_effect || move_disallowed?(last_move.db_symbol) || last_move.original_move.pp <= 0
+        return true if target.effects.has?(:shell_trap)
 
         return false
       end

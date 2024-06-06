@@ -613,6 +613,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Roost.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Safeguard.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 SaltCure.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 ShellTrap.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 SmackDown.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Snatch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Spikes.rb
@@ -953,7 +954,6 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Autotomize.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Avalanche.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 BatonPass.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 BeakBlast.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 BeatUp.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Belch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 BellyDrum.rb
@@ -1011,7 +1011,6 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 FlowerShield.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 FlyingPress.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 FocusEnergy.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 FocusPunch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 FollowMe.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 ForceSwitch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Foresight.rb
@@ -1102,6 +1101,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Poltergeist.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Powder.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 PowerTrick.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 PreAttackMoves.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Present.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Protect.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 PsychUp.rb

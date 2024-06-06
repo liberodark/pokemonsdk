@@ -404,7 +404,7 @@ module Battle
       return false
     end
 
-    # Is the move doing something before any other attack ?
+    # Is the move doing something before any other moves ?
     # @return [Boolean]
     def pre_attack?
       false
