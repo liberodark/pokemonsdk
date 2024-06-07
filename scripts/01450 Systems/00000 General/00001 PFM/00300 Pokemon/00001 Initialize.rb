@@ -52,12 +52,14 @@ module PFM
     end
 
     # Initialize the egg process of the Pokemon
-    def egg_init
+    # @param egg_how_obtained [Symbol] :reveived => When you received the egg (ex: Daycare), :found => When you found the egg (ex: On the map)
+    def egg_init(egg_how_obtained = :received)
       @egg_in = $env.master_zone
       @egg_at = Time.new.to_i
       @step_remaining = data.hatch_steps
       @item_holding = 0
       $quests.get_egg
+      @egg_how_obtained = egg_how_obtained
     end
 
     # Ends the egg process of the Pokemon

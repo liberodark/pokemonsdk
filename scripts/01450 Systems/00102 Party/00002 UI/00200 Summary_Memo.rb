@@ -9,7 +9,7 @@ module UI
       init_sprite
     end
 
-    # Set an object inivisible if the Pokemon is an egg
+    # Set an object invisible if the Pokemon is an egg
     # @param object [#visible=] the object that is invisible if the Pokemon is an egg
     def no_egg(object)
       @invisible_if_egg << object
@@ -27,7 +27,7 @@ module UI
       end
     end
 
-    # Change the visibility of the ui
+    # Change the visibility of the UI
     # @param value [Boolean] new visibility
     def visible=(value)
       super
@@ -83,6 +83,7 @@ module UI
         '[VAR LOCATION(0004)]' => pokemon.captured_zone_name,
         '[VAR 0105(0004)]' => pokemon.captured_zone_name
       }
+
       mem = pokemon.memo_text || []
       text = parse_text(mem[0] || 28, mem[1] || 25, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i, "\\1 \n\\2:")
       text.gsub!('Level', "\nLevel") if $options.language == 'en'
@@ -96,23 +97,22 @@ module UI
       time_egg = pokemon.egg_at ? Time.at(pokemon.egg_at) : Time.new
       hash = {
         '[VAR NUM2(0007)]' => time_egg.strftime('%d'),
+        '[VAR NUM2(0002)]' => time_egg.strftime('%d'),
         '[VAR NUM2(0006)]' => time_egg.strftime('%m'),
+        '[VAR NUM2(0001)]' => time_egg.strftime('%m'),
         '[VAR NUM2(0005)]' => time_egg.strftime('%y'),
+        '[VAR NUM2(0000)]' => time_egg.strftime('%y'),
         '[VAR LOCATION(0008)]' => pokemon.egg_zone_name,
         '[VAR 0105(0008)]' => pokemon.egg_zone_name,
         '[VAR NUM3(0003)]' => pokemon.captured_level.to_s,
         '[VAR LOCATION(0004)]' => pokemon.captured_zone_name,
         '[VAR 0105(0004)]' => pokemon.captured_zone_name
       }
-      if pokemon.step_remaining > 10_240
-        text = parse_text(28, 89, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
-      elsif pokemon.step_remaining > 2_560
-        text = parse_text(28, 88, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
-      elsif pokemon.step_remaining > 1_280
-        text = parse_text(28, 87, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
-      else
-        text = parse_text(28, 86, hash).gsub(/([0-9.]) ([a-z]+ *)\:/i) { "#{$1} \n#{$2}:" }
-      end
+
+      text = parse_text(28, egg_text_info(pokemon), hash).gsub(/([0-9.]) ([a-z]+ *):/i, "\\1 \n\\2:")
+      text << "\n"
+      text << parse_text(28, step_remaining_message(pokemon)).gsub(/([0-9.]) ([a-z]+ *):/i) { "#{$1} \n#{$2}:" }
+
       text.gsub!('Level', "\nLevel") if $options.language == 'en'
       @text_info.multiline_text = text # .gsub(/([^.]\.|\?|\!) /) { "#{$1} \n" }
     end
@@ -137,7 +137,7 @@ module UI
     end
 
     def create_text_info
-      add_text(13, 138, 294, 16, '')
+      add_text(13, 138, 320, 16, '')
     end
 
     def create_exp_bar
@@ -145,6 +145,31 @@ module UI
       # Define the data source of the EXP Bar
       bar.data_source = :exp_rate
       return bar
+    end
+
+    # Search for the right text based on the Pokémon's data
+    # @param pokemon [PFM::Pokemon]
+    # @return [Integer]
+    def egg_text_info(pokemon)
+      egg_how_obtained = pokemon.egg_how_obtained == :received ? 79 : 80
+      mysterious_pokemon = pokemon.data.hatch_steps >= 10_240 ? 2 : 0
+
+      return egg_how_obtained + mysterious_pokemon
+    end
+
+    # Search for the right text based on the number of remaining steps
+    # @param pokemon [PFM::Pokemon]
+    # @return [Integer]
+    def step_remaining_message(pokemon)
+      if pokemon.step_remaining > 10_240
+        return 87
+      elsif pokemon.step_remaining > 2_560
+        return 86
+      elsif pokemon.step_remaining > 1_280
+        return 85
+      else
+        return 84
+      end
     end
   end
 end

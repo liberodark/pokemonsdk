@@ -37,7 +37,7 @@ module UI
 
     # Update the background according to the selected state
     def update_background
-      if @data.dead?
+      if @data.hp <= 0
         @background.src_rect.y = TextureBackgroundY[@selected ? 3 : 2]
       else
         @background.src_rect.y = TextureBackgroundY[@selected ? 1 : 0]

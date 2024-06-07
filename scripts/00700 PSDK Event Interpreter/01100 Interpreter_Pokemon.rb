@@ -134,9 +134,10 @@ class Interpreter
 
   # Add an egg to the Party (or in the PC)
   # @param id [Integer, Hash, Symbol, PFM::Pokemon] the id of the Pokemon, its db_symbol, a hash describing it (see: #generate_from_hash), or the Pokemon itself
+  # @param egg_how_obtained [Symbol] :reveived => When you received the egg (ex: Daycare), :found => When you found the egg (ex: On the map)
   # @return [PFM::Pokemon, nil]
   # @author Nuri Yuri
-  def add_egg(id)
+  def add_egg(id, egg_how_obtained = :received)
     if id.is_a?(PFM::Pokemon)
       pokemon = id
     else
@@ -145,8 +146,10 @@ class Interpreter
 
       pokemon = id.is_a?(Hash) ? PFM::Pokemon.generate_from_hash(id) : PFM::Pokemon.new(id, 1)
     end
-    pokemon.egg_init
-    pokemon.memo_text = [28, 31]
+
+    text_id = egg_how_obtained == :received ? 31 : 29
+    pokemon.egg_init(egg_how_obtained)
+    pokemon.memo_text = [28, text_id]
     return add_pokemon(pokemon)
   end
   alias ajouter_oeuf add_egg

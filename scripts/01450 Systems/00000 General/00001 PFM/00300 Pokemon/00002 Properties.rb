@@ -36,6 +36,9 @@ module PFM
     # Time when the Egg has been obtained
     # @return [Integer]
     attr_accessor :egg_at
+    # How the egg was obtained
+    # @return [Symbol]
+    attr_reader :egg_how_obtained
     # ID of the original trainer
     # @return [Integer]
     attr_writer :trainer_id
