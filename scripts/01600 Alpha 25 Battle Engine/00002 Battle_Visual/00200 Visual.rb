@@ -114,7 +114,7 @@ module Battle
       # log_debug('Entring wait_for_animation') # uncomment for deep debug
       was_locked = @locking
       lock unless was_locked
-      scene_update_proc { update } until @animations.all?(&:done?) && @animatable.all?(&:done?)
+      scene_update_proc { } until @animations.all?(&:done?) && @animatable.all?(&:done?)
       unlock unless was_locked
       # log_debug('Leaving wait_for_animation') # uncomment for deep debug
     end

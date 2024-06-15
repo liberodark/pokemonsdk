@@ -251,8 +251,7 @@ module UI
     def initialize(viewport, auto_align = true)
       super(viewport, 2, 1)
       @auto_align = auto_align
-      @max_counter = 60
-      @counter = 0
+      @animation = nil
     end
 
     # Set the pokemon
@@ -263,30 +262,36 @@ module UI
         @nb_x = (bmp.width / bmp.height).clamp(1, Float::INFINITY)
         self.bitmap = bmp
         auto_align(bmp) if @auto_align
-        @counter = 0
-        @max_counter = max_counter(pokemon)
+        animate(pokemon)
       end
     end
 
     # Update the pokemon animation
     def update
-      @counter += 1
-      if @counter >= @max_counter
-        self.sx = (@sx + 1) % 2
-        @counter = 0
-      end
+      return unless @animation && visible
+      
+      @animation.update
     end
 
     private
 
-    # Find the max number of frame before switching the @sx value
-    # @param pokemon [PFM::Pokemon, nil]
-    def max_counter(pokemon)
-      return Float::INFINITY if pokemon.asleep? || pokemon.dead?
-      # Changes speed for Pokemon with status effects
-      return 20 + ((1 - pokemon.hp_rate) * 120).to_i if pokemon.status != 0
-      # Changes speed for Pokemon
-      return 10 + ((1 - pokemon.hp_rate) * 60).to_i
+    # Define the animation of the icon
+    # @param creature [PFM::Pokemon]
+    def animate(creature)
+      return @animation = nil if creature.asleep? || creature.dead? || @nb_x <= 1
+
+      duration = animation_step_duration(creature) * @nb_x
+      @animation = Yuki::Animation::TimedLoopAnimation.new(duration)
+      @animation.parallel_add(Yuki::Animation::DiscreetAnimation.new(duration, self, :sx=, 0, @nb_x - 1))
+      @animation.start
+    end
+
+    # Get the duration of 1 step change
+    # @param creature [PFM::Pokemon]
+    # @return [Float] duration of the step in seconds
+    def animation_step_duration(creature)
+      return (20 + ((1 - creature.hp_rate) * 120)).to_f / 60 if creature.status != 0
+      return (10 + ((1 - creature.hp_rate) * 60)).to_f / 60
     end
 
     # Align the sprite according to the bitmap properties
