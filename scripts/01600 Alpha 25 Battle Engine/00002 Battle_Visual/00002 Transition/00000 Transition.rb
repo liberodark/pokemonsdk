@@ -78,6 +78,20 @@ module Battle
           @animations.each(&:start)
         end
 
+        # Start the transition
+        def transition_battle_end
+          @animations.clear
+          main = Yuki::Animation.wait(0)
+          main.play_before(go_out_battlers)
+              .play_before(Yuki::Animation.send_command_to(@visual, :hide_info_bars, bank: 0))
+              .play_before(Yuki::Animation.send_command_to(@visual, :hide_info_bars, bank: 1))
+              .play_before(Yuki::Animation.send_command_to(@visual, :hide_team_info))
+              .play_before(show_enemy_sprite_battle_end)
+          @animations << main
+          main.play_before(Yuki::Animation.message_locked_animation)
+          @animations.each(&:start)
+        end
+
         # Function that starts the Enemy send animation
         def start_enemy_send_animation
           log_debug('start_enemy_send_animation')
@@ -160,6 +174,18 @@ module Battle
         # Function that create the animation of the player sending its Pokemon
         # @return [Yuki::Animation::TimedAnimation]
         def create_player_send_animation
+          return Yuki::Animation.wait(0)
+        end
+
+        # Function that create the animation of enemy sprite during the battle end
+        # @return [Yuki::Animation::TimedAnimation]
+        def show_enemy_sprite_battle_end
+          return Yuki::Animation.wait(0)
+        end
+
+        # Function that get out all battler sprites
+        # @return [Yuki::Animation::TimedAnimation]
+        def go_out_battlers
           return Yuki::Animation.wait(0)
         end
 

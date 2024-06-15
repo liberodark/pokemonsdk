@@ -25,6 +25,13 @@ module Battle
       @locking = true
     end
 
+    # Method that show the ennemy sprite transition during the battle end scene
+    def show_transition_battle_end
+      @animations << @transition
+      @transition.transition_battle_end
+      @locking = true
+    end
+
     # Function storing a battler sprite in the battler Hash
     # @param bank [Integer] bank where the battler should be
     # @param position [Integer, Symbol] Position of the battler

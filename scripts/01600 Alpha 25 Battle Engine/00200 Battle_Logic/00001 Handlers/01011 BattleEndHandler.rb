@@ -139,6 +139,7 @@ module Battle
         # Defeat message
         handler.scene.battle_info.defeat_texts.each_with_index do |text, i|
           if text
+            handler.scene.visual.show_transition_battle_end
             handler.scene.display_message_and_wait(text)
           #elsif ids[i] #@TEST
           #  handler.scene.display_message_and_wait(text_get(48, ids[i]))
@@ -155,12 +156,16 @@ module Battle
         # Victory message
         handler.scene.battle_info.victory_texts.each_with_index do |text, i|
           if text
+            handler.scene.visual.show_transition_battle_end
             handler.scene.display_message_and_wait(text)
           #elsif ids[i] #@TEST
           #  handler.scene.display_message_and_wait(text_get(47, ids[i]))
           end
         end
       end
+
+      handler.scene.message_window.blocking = false
+      handler.scene.visual.unlock
     end
 
     BattleEndHandler.register('PSDK wild victory') do |handler|

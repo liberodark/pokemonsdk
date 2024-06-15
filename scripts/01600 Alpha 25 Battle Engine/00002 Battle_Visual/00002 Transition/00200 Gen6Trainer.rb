@@ -51,12 +51,12 @@ module Battle
         end
 
         def create_battlers
-          filename1, filename2 = *determine_battler_filename(@scene.battle_info.battlers[1][0])
-          @battler = Sprite.new(@viewport).set_bitmap(filename1, :battler)
+          sprite_small_filename, sprite_big_filename = *determine_battler_filename(@scene.battle_info.battlers[1][0])
+          @battler = Sprite.new(@viewport).set_bitmap(sprite_small_filename, :battler)
           @battler.set_position(-@battler.width / 4, @viewport.rect.height)
           @battler.set_origin(@battler.width / 2, @battler.height)
           @battler.z = @background.z
-          @battler2 = Sprite.new(@viewport).set_bitmap(filename2, :battler)
+          @battler2 = Sprite.new(@viewport).set_bitmap(sprite_big_filename, :battler)
           @battler2.set_position(@viewport.rect.width / 2, @viewport.rect.height)
           @battler2.set_origin(@battler2.width / 2, @battler2.height)
           @battler2.z = @background.z
@@ -64,13 +64,26 @@ module Battle
           @actor_sprites = actor_sprites
         end
 
+        # @note We use the _big sprite
+        def create_battler_battle_end
+          # @type [String]
+          _sprite_small_filename, sprite_big_filename = *determine_battler_filename(@scene.battle_info.battlers[1][0])
+
+          # @type [Sprite]
+          @battler3 = Sprite.new(@viewport)
+          @battler3.set_bitmap(sprite_big_filename, :battler)
+          @battler3.set_position(@viewport.rect.width * 1.5, @viewport.rect.height)
+          @battler3.set_origin(@battler3.width / 2, @battler3.height)
+          @battler3.opacity = 0
+        end
+
         # Determine the right filenames for the transition sprites
         # @param filename [String]
         # @return [Array<String>]
         def determine_battler_filename(filename)
-          filename1 = filename.gsub('_big', '') + '_sma'
-          filename2 = filename.include?('_big') ? filename : filename + '_big'
-          return filename1, filename2
+          sprite_small_filename = filename.gsub('_big', '') + '_sma'
+          sprite_big_filename = filename.include?('_big') ? filename : filename + '_big'
+          return sprite_small_filename, sprite_big_filename
         end
 
         def create_shader
@@ -127,7 +140,7 @@ module Battle
           root.play_before(Yuki::Animation.send_command_to(Graphics, :freeze))
           root.play_before(Yuki::Animation.send_command_to(self, :hide_all_sprites))
           root.play_before(Yuki::Animation.send_command_to(Graphics, :transition))
-          # TODO add ball
+          # TODO: Add Ball
           enemy_pokemon_sprites.each do |sp|
             root.play_before(Yuki::Animation.send_command_to(sp, :go_in))
           end
@@ -152,13 +165,41 @@ module Battle
           return animation
         end
 
+        # Function that create the animation of enemy sprite during the battle end
+        # @return [Yuki::Animation::TimedAnimation]
+        def show_enemy_sprite_battle_end
+          create_battler_battle_end
+
+          root = Yuki::Animation.wait(0.3)
+          root.play_before(go = Yuki::Animation.move(0.4, @battler3, @battler3.x, @battler3.y, (@viewport.rect.width / 2) - 40, @battler3.y))
+          go.parallel_play(Yuki::Animation.opacity_change(0.4, @battler3, 0, 255))
+          root.play_before(Yuki::Animation.move(0.4, @battler3, (@viewport.rect.width / 2) - 40, @battler3.y, (@viewport.rect.width / 2), @battler3.y))
+
+          return root
+        end
+
         def hide_all_sprites
           @to_dispose.each do |sprite|
             sprite.visible = false if sprite.is_a?(Sprite)
           end
         end
+
+        # Function that get out all battler sprites
+        # @return [Yuki::Animation::TimedAnimation]
+        def go_out_battlers
+          # @type [Array<PokemonSprite>]
+          battler_sprites = actor_pokemon_sprites + enemy_pokemon_sprites
+
+          sprite_animations = Yuki::Animation.wait(0)
+          battler_sprites.each do |sprite|
+            sprite_animations.parallel_play(Yuki::Animation.send_command_to(sprite, :go_out))
+          end
+
+          return sprite_animations
+        end
       end
     end
+
     TRAINER_TRANSITIONS[0] = Transition::Gen6Trainer
     Visual.register_transition_resource(0, :artwork_full)
   end
