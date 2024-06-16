@@ -13,7 +13,7 @@ module Battle
       # Add all dead actors to switch request
       turn = $game_temp.battle_turn
       @switch_request.concat(
-        trainer_battlers.select { |battler| battler.last_battle_turn == turn && battler.dead? }.map { |battler| { who: battler } }
+        trainer_battlers.select { |battler| battler.dead? }.map { |battler| { who: battler } }
       )
       log_data("Number of switch request (enemy + actors) : #{@switch_request.size}")
       @switch_request.uniq! { |h| h[:who] }
