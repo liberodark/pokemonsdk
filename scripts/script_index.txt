@@ -492,9 +492,17 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transi
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00001 BattleStart.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00100 RBYTrainer.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00100 RBYWild.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00110 DPPGymLeader.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00200 Gen6Trainer.rb
-pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00300 Gen4Trainer.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00110 GSCWildExt.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00120 RSWildExt.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00140 DPPWildExt.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00144 DPPTrainer.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00145 DPPGymLeader.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00150 HGSSWildExt.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00151 HGSSWildCave.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00152 HGSSWildSea.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00154 HGSSTrainer.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00160 BWWildExt.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00002 Battle_Visual/00002 Transition/00174 XYTrainer.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00100 PokemonBattler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00200 Properties.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/00100 PokemonBattler/00300 Statistics.rb

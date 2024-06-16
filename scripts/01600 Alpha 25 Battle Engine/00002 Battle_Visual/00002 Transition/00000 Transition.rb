@@ -141,13 +141,13 @@ module Battle
           return animation
         end
 
-        # Function that create the fade out animation
+        # Function that creates the fade out animation
         # @return [Yuki::Animation::TimedAnimation]
         def create_fade_out_animation
           return Yuki::Animation.send_command_to(Graphics, :transition)
         end
 
-        # Function that create the sprite movement animation
+        # Function that creates the sprite movement animation
         # @return [Yuki::Animation::TimedAnimation]
         def create_sprite_move_animation
           return Yuki::Animation.wait(0)
@@ -159,19 +159,19 @@ module Battle
           return Yuki::Animation.wait(0)
         end
 
-        # Function that create the paralax animation
+        # Function that creates the paralax animation
         # @return [Yuki::Animation::TimedLoopAnimation]
         def create_paralax_animation
           return Yuki::Animation::TimedLoopAnimation.new(100)
         end
 
-        # Function that create the animation of the enemy sending its Pokemon
+        # Function that creates the animation of the enemy sending its Pokemon
         # @return [Yuki::Animation::TimedAnimation]
         def create_enemy_send_animation
           return Yuki::Animation.wait(0)
         end
 
-        # Function that create the animation of the player sending its Pokemon
+        # Function that creates the animation of the player sending its Pokemon
         # @return [Yuki::Animation::TimedAnimation]
         def create_player_send_animation
           return Yuki::Animation.wait(0)
@@ -187,6 +187,21 @@ module Battle
         # @return [Yuki::Animation::TimedAnimation]
         def go_out_battlers
           return Yuki::Animation.wait(0)
+        end
+
+        # Function that creates the flash animation before transition animation on battle
+        # @param time_to_process [Float] number of seconds (with generic time) to process the animation
+        # @param factor [Float]
+        # @return [Yuki::Animation::ScalarAnimation]
+        def create_flash_animation(time_to_process, factor)
+          flasher = proc do |x|
+            sin = Math.sin(x)
+            col = sin.ceil.clamp(0, 1) * 255
+            alpha = (sin.abs2.round(2) * 180).to_i
+            @viewport.color.set(col, col, col, alpha)
+          end
+
+          return Yuki::Animation.scalar(time_to_process, flasher, :call, 0, factor * Math::PI)
         end
 
         # Function that shows the message about Wild appearing / Trainer wanting to fight

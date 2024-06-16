@@ -1,0 +1,36 @@
+module Battle
+  class Visual
+    module Transition
+      # Wild transition of Gold/Silver games
+      class GoldWild < RBYWild
+        private
+
+        # Return the duration of pre_transtion cells
+        # @return [Float]
+        def pre_transition_cells_duration
+          return 1
+        end
+
+        # Return the pre_transtion sprite name
+        # @return [String]
+        def pre_transition_sprite_name
+          return 'rbj/crystal_wild_ext'
+        end
+      end
+
+      # Wild transition of Crystal game
+      class CrystalWild < GoldWild
+        private
+
+        # Return the pre_transtion sprite name
+        # @return [String]
+        def pre_transition_sprite_name
+          return 'rbj/gold_wild_ext'
+        end
+      end
+    end
+
+    WILD_TRANSITIONS[1] = Transition::GoldWild
+    WILD_TRANSITIONS[2] = Transition::CrystalWild
+  end
+end

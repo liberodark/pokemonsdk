@@ -1,8 +1,7 @@
 module Battle
   class Visual
     module Transition
-      # Trainer Transition of gen6
-      class Gen6Trainer < Base
+      class XYTrainer < Base
         # Unitary deltaX of the background
         DX = -Math.cos(-3 * Math::PI / 180)
         # Unitary deltaY of the background
@@ -64,7 +63,6 @@ module Battle
           @actor_sprites = actor_sprites
         end
 
-        # @note We use the _big sprite
         def create_battler_battle_end
           # @type [String]
           _sprite_small_filename, sprite_big_filename = *determine_battler_filename(@scene.battle_info.battlers[1][0])
@@ -198,9 +196,12 @@ module Battle
           return sprite_animations
         end
       end
+
+      class Gen6Trainer < XYTrainer
+      end
     end
 
-    TRAINER_TRANSITIONS[0] = Transition::Gen6Trainer
+    TRAINER_TRANSITIONS[0] = Transition::XYTrainer
     Visual.register_transition_resource(0, :artwork_full)
   end
 end

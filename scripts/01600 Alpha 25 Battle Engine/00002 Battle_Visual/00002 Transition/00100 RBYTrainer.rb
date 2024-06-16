@@ -12,7 +12,7 @@ module Battle
         # Return the pre_transtion sprite name
         # @return [String]
         def pre_transition_sprite_name
-          'rbj/trainer'
+          return 'rbj/trainer'
         end
 
         # Function that creates all the sprites
@@ -129,7 +129,15 @@ module Battle
     end
 
     TRAINER_TRANSITIONS[2] = Transition::RBYTrainer
+    TRAINER_TRANSITIONS[5] = Transition::RBYTrainer
+    TRAINER_TRANSITIONS[6] = Transition::RBYTrainer
+    TRAINER_TRANSITIONS[7] = Transition::RBYTrainer
+    TRAINER_TRANSITIONS[8] = Transition::RBYTrainer
     Visual.register_transition_resource(2, :sprite)
+    Visual.register_transition_resource(5, :sprite)
+    Visual.register_transition_resource(6, :sprite)
+    Visual.register_transition_resource(7, :sprite)
+    Visual.register_transition_resource(8, :sprite)
   end
 end
 

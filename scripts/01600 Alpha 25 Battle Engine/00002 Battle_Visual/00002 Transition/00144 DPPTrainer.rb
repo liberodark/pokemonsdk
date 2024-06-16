@@ -1,8 +1,7 @@
 module Battle
   class Visual
     module Transition
-      # Trainer Transition of gen6
-      class Gen4Trainer < RBYTrainer
+      class DPPTrainer < RBYTrainer
         private
 
         # Return the pre_transtion cells
@@ -33,14 +32,8 @@ module Battle
         # Function that creates the Yuki::Animation related to the pre transition
         # @return [Yuki::Animation::TimedAnimation]
         def create_pre_transition_animation
-          flasher = proc do |x|
-            sin = Math.sin(x)
-            col = 0
-            alpha = (sin.abs2.round(2) * 270).to_i
-            @viewport.color.set(col, col, col, alpha)
-          end
           ya = Yuki::Animation
-          animation = ya::ScalarAnimation.new(0.7, flasher, :call, 0, 2 * Math::PI)
+          animation = create_flash_animation(0.7, 2)
           animation.play_before(ya.send_command_to(@viewport.color, :set, 0, 0, 0, 0))
           animation.play_before(ya.send_command_to(@top_sprite, :visible=, true))
           animation.play_before(create_fadein_animation)
@@ -68,9 +61,12 @@ module Battle
           return animation
         end
       end
+
+      class Gen4Trainer < DPPTrainer
+      end
     end
 
-    TRAINER_TRANSITIONS[1] = Transition::Gen4Trainer
+    TRAINER_TRANSITIONS[1] = Transition::DPPTrainer
     Visual.register_transition_resource(1, :sprite)
   end
 end

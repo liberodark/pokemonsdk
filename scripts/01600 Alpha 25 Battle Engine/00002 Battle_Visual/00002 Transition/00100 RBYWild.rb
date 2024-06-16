@@ -14,10 +14,16 @@ module Battle
           return 10, 3
         end
 
+        # Return the duration of pre_transtion cells
+        # @return [Float]
+        def pre_transition_cells_duration
+          return 0.5
+        end
+
         # Return the pre_transtion sprite name
         # @return [String]
         def pre_transition_sprite_name
-          'rbj/pre_wild'
+          return 'rbj/pre_wild'
         end
 
         # Function that creates all the sprites
@@ -59,14 +65,8 @@ module Battle
         # Function that creates the Yuki::Animation related to the pre transition
         # @return [Yuki::Animation::TimedAnimation]
         def create_pre_transition_animation
-          flasher = proc do |x|
-            sin = Math.sin(x)
-            col = sin.ceil.clamp(0, 1) * 255
-            alpha = (sin.abs2.round(2) * 180).to_i
-            @viewport.color.set(col, col, col, alpha)
-          end
           ya = Yuki::Animation
-          animation = ya::ScalarAnimation.new(1.5, flasher, :call, 0, 6 * Math::PI)
+          animation = create_flash_animation(1.5, 6)
           animation.play_before(ya.send_command_to(@viewport.color, :set, 0, 0, 0, 0))
           animation.play_before(ya.send_command_to(@top_sprite, :visible=, true))
           animation.play_before(create_fadein_animation)
@@ -82,7 +82,7 @@ module Battle
           # We need to display all the cells in order so we will build an array from that
           cells = (@top_sprite.nb_x * @top_sprite.nb_y).times.map { |i| [i % @top_sprite.nb_x, i / @top_sprite.nb_x] }
           # We create the cell animation
-          return Yuki::Animation::SpriteSheetAnimation.new(0.5, @top_sprite, cells)
+          return Yuki::Animation::SpriteSheetAnimation.new(pre_transition_cells_duration, @top_sprite, cells)
         end
 
         # Function that create the fade out animation
@@ -133,8 +133,6 @@ module Battle
       end
     end
 
-    WILD_TRANSITIONS[2] = Transition::RBYWild
-    WILD_TRANSITIONS[1] = Transition::RBYWild
     WILD_TRANSITIONS[0] = Transition::RBYWild
   end
 end

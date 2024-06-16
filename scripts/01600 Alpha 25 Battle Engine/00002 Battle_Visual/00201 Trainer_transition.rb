@@ -86,7 +86,7 @@ module Battle
     # Show the debug transition
     def show_debug_transition
       2.times do |bank|
-        @scene.battle_info.battlers[bank].each_with_index do |battler, position|
+        @scene.battle_info.battlers[bank].each_with_index do |_, position|
           battler_sprite(bank, -position - 1)&.visible = false
         end
       end
@@ -103,6 +103,7 @@ module Battle
 
     # List of the resource type for each transition
     # @return [Hash{ Integer => Symbol }]
-    TRANSITION_RESOURCE_TYPE = []
+    TRANSITION_RESOURCE_TYPE = {}
+    TRANSITION_RESOURCE_TYPE.default = :sprite
   end
 end

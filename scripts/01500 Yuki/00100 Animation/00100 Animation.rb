@@ -9,7 +9,8 @@ module Yuki
       # Proc defining the UNICITY Time distortion (no distortion at all)
       UNICITY_DISTORTION: proc { |x| x },
       # Proc defining the SQUARE 0 to 1 to 0 distortion
-      SQUARE010_DISTORTION: proc { |x| 1 - (x * 2 - 1)**2 }
+      SQUARE010_DISTORTION: proc { |x| 1 - (x * 2 - 1)**2 },
+      SIN: proc { |x| Math.sin(2 * Math::PI * x) }
     }
     # Hash describing all the time sources
     TIME_SOURCES = {
