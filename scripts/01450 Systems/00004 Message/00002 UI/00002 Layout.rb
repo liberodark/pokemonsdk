@@ -87,6 +87,8 @@ module UI
         when :right
           y = viewport.rect.height - default_vertical_margin - height
           x = viewport.rect.height - x - width
+        else
+          x, y = *current_position
         end
         set_position(x, y)
       end
