@@ -18,7 +18,7 @@ module Battle
       # Get the name of the effect
       # @return [Symbol]
       def name
-        :force_next_move_base
+        return :force_next_move_base
       end
 
       # If the effect can proc
@@ -48,7 +48,7 @@ module Battle
       # Get the name of the effect
       # @return [Symbol]
       def name
-        :rollout
+        return :rollout
       end
     end
 
@@ -80,13 +80,13 @@ module Battle
       # Get the class of the action
       # @return [Class<Actions::Attack>]
       def action_class
-        Actions::Attack::Encore
+        return Actions::Attack::Encore
       end
 
       # Get the name of the effect
       # @return [Symbol]
       def name
-        :encore
+        return :encore
       end
     end
 
@@ -131,7 +131,7 @@ module Battle
       # Get the name of the effect
       # @return [Symbol]
       def name
-        :bide
+        return :bide
       end
     end
   end

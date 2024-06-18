@@ -69,6 +69,12 @@ module Battle
         return false
       end
 
+      # Tell if the effect make the pokemon preparing an attack
+      # @return [Boolean]
+      def preparing_attack?
+        return false
+      end
+
       # Check if the attack can hit the pokemon. Should be called after testing out_of_reach?
       # @param name [Symbol]
       # @return [Boolean]

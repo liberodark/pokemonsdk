@@ -582,6 +582,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Embargo.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Flinch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 FocusEnergy.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 FocusPunch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 ForceNextMove effects.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Foresight.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 FuryCutter.rb
@@ -595,6 +596,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 HelpingHand.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Imprison.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Ingrain.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Instruct.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 Ion Deluge.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 ItemBurnt.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00500 Move Effects/01000 ItemStolen.rb
@@ -1061,6 +1063,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definiti
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Imprison.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Incinerate.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Ingrain.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Instruct.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 Ion Deluge.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 IvyCudgel.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04150 Battle_Move/00010 Definitions/00300 JawLock.rb

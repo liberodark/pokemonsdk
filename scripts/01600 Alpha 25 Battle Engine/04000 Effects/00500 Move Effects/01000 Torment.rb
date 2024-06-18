@@ -43,6 +43,7 @@ module Battle
 
         return true if user != @pokemon
         return true if user.move_history.none?
+        return true if user.effects.has?(:instruct)
         return true if move.db_symbol == :struggle
         return true if last_move.db_symbol != move.db_symbol
         return true if last_move.turn < user.last_sent_turn

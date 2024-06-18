@@ -8,7 +8,9 @@ module Battle
       # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
-        if user.turn_count > 1
+        return unless super
+
+        if user.turn_count > 1 || user.effects.has?(:instruct)
           show_usage_failure(user)
           return false
         end

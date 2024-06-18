@@ -32,11 +32,16 @@ module Battle
         @pokemon.effects.delete_specific_dead_effect(:shell_trap)
       end
 
-
       # Get the name of the effect
       # @return [Symbol]
       def name
         return :shell_trap
+      end
+
+      # Tell if the effect make the pokemon preparing an attack
+      # @return [Boolean]
+      def preparing_attack?
+        return true
       end
     end
   end

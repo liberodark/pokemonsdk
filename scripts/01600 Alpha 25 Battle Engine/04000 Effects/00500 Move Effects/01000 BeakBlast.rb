@@ -43,6 +43,12 @@ module Battle
       def name
         return :beak_blast
       end
+
+      # Tell if the effect make the pokemon preparing an attack
+      # @return [Boolean]
+      def preparing_attack?
+        return true
+      end
     end
   end
 end

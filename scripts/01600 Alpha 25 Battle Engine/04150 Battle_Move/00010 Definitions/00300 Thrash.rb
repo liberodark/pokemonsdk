@@ -2,6 +2,12 @@ module Battle
   class Move
     # Thrash Move
     class Thrash < BasicWithSuccessfulEffect
+      # Tell if the move will take two or more turns
+      # @return [Boolean]
+      def multi_turn?
+        return true
+      end
+
       private
 
       # Event called if the move failed
@@ -46,6 +52,7 @@ module Battle
         return @logic.generic_rng.rand(2..3)
       end
     end
+
     Move.register(:s_thrash, Thrash)
     Move.register(:s_outrage, Thrash)
   end

@@ -2,6 +2,12 @@ module Battle
   class Move
     # Move that is used during 5 turn and get more powerfull until it gets interrupted
     class Rollout < BasicWithSuccessfulEffect
+      # Tell if the move will take two or more turns
+      # @return [Boolean]
+      def multi_turn?
+        return true
+      end
+
       # Get the real base power of the move (taking in account all parameter)
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
@@ -40,7 +46,7 @@ module Battle
       # Name of the effect
       # @return [Symbol]
       def effect_name
-        :rollout
+        return :rollout
       end
 
       # Create the effect
@@ -48,7 +54,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       # @return [Effects::EffectBase]
       def create_effect(user, actual_targets)
-        Effects::Rollout.new(logic, user, self, actual_targets, 5)
+        return Effects::Rollout.new(logic, user, self, actual_targets, 5)
       end
     end
 

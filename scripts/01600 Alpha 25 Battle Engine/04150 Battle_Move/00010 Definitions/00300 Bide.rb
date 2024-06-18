@@ -2,12 +2,18 @@ module Battle
   class Move
     # Bide Move
     class Bide < BasicWithSuccessfulEffect
+      # Tell if the move will take two or more turns
+      # @return [Boolean]
+      def multi_turn?
+        return true
+      end
+
       # Get the types of the move with 1st type being affected by effects
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Array<Integer>] list of types of the move
       def definitive_types(user, target)
-        [0]
+        return [0]
       end
 
       # Function that deals the damage to the pokemon

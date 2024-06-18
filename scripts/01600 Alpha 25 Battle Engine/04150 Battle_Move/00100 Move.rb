@@ -386,6 +386,12 @@ module Battle
       return data.is_authentic
     end
 
+    # Tell if the move is a move is a recharge move
+    # @return [Boolean]
+    def recharge?
+      return data.is_recharge
+    end
+
     # Tell if the move is an OHKO move
     # @return [Boolean]
     def ohko?
@@ -407,12 +413,18 @@ module Battle
     # Is the move doing something before any other moves ?
     # @return [Boolean]
     def pre_attack?
-      false
+      return false
     end
 
     # Tells if the move hits multiple times
     # @return [Boolean]
     def multi_hit?
+      return false
+    end
+
+    # Tell if the move will take two or more turns
+    # @return [Boolean]
+    def multi_turn?
       return false
     end
 

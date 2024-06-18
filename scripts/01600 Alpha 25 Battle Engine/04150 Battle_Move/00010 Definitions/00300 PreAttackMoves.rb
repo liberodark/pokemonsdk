@@ -82,6 +82,12 @@ module Battle
 
     # Implement the Focus Punch move
     class FocusPunch < PreAttackBase
+      # Class of the Effect given by this move
+      # @param user [PFM::PokemonBattler] user of the move
+      def pre_attack_effect(user)
+        return user.effects.add(Effects::FocusPunch.new(@logic, user))
+      end
+
       # Display the charging message
       # @param user [PFM::PokemonBattler] user of the move
       def pre_attack_message(user)
