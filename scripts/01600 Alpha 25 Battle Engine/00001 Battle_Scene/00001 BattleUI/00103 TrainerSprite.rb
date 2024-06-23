@@ -37,10 +37,9 @@ module BattleUI
       @position = position
       @battle_info = battle_info
       set_bitmap(battler, :battler)
-      @dynamic_frame_count = bitmap.height / bitmap.width
-      if @bank == 0
-        src_rect.height = DYNAMIC_BACKSPRITES ? (bitmap.height / @dynamic_frame_count) : (bitmap.height / BACK_FRAME_COUNT)
-      end
+      @dynamic_frame_count = DYNAMIC_BACKSPRITES ? bitmap.height / bitmap.width : BACK_FRAME_COUNT
+      @dynamic_frame_count = BACK_FRAME_COUNT if @dynamic_frame_count.zero?
+      src_rect.height = bitmap.height / @dynamic_frame_count if @bank == 0
       reset_position
     end
 
