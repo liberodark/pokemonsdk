@@ -462,4 +462,11 @@ class Interpreter
 
     Graphics.player_view_screenshot(filename, scale)
   end
+
+  # Sets a specific actors battle sprite to a specific one
+  # @param actor_id [Integer] the ID of the actor
+  # @param filename [String] the filename of the image in graphics/battlers
+  def set_actor_back(actor_id, filename)
+    $game_actors[actor_id].battler_name = filename
+  end
 end

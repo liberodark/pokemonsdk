@@ -183,6 +183,12 @@ class Interpreter
     @wait_count = 2
   end
 
+  # Sets the players battle sprite to a specific one
+  # @param filename [String] the filename of the image in graphics/battlers
+  def set_player_back(filename)
+    $game_actors[1].battler_name = filename
+  end
+
   # Switch from one player to another, in term of party, trainer, money, pokedex and appearance (all optional)
   # @param from_player_id [String] the specific name of the storage to save to.
   # @param to_player_id [String] the specific name of the storage to load from.

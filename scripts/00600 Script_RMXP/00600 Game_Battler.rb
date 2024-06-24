@@ -239,6 +239,12 @@ class Game_Actor < Game_Battler
     @name = name
   end
 
+  # Sets the battle graphic
+  # @param filename [String] the filename found in graphics/battlers
+  def battler_name=(filename)
+    @battler_name = filename
+  end
+
   # Update the graphics of the Game_Actor
   # @param character_name [String] name of the character in Graphics/Characters
   # @param character_hue [0] ignored by the cache
