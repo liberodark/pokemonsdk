@@ -282,8 +282,9 @@ module GamePlay
     # @param max_char [Integer]
     # @param character_filename [String, nil]
     # @yieldparam [NameInputMixin]
-    def open_character_name_input(default_name, max_char, character_filename, &block)
-      phrase = PFM.game_state.game_temp.name_actor_id == 1 ? text_get(43, 0) : nil
+    def open_character_name_input(default_name, max_char, character_filename, custom_message = nil, &block)
+      custom_message ||= [43, 0] if PFM.game_state.game_temp.name_actor_id == 1
+      phrase = custom_message && text_get(*custom_message)
       current_scene.call_scene(string_input_class, default_name, max_char, character_filename, phrase: phrase, &block)
     end
 

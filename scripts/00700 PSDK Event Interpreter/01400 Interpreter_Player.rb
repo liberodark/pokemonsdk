@@ -1,4 +1,10 @@
 class Interpreter
+  ACTION_STATES = [
+    "_cycle_roll", "_cycle_roll_to_wheel", "_cycle_stop", "_cycle_wheel", "_deep_swamp_sinking", "_fish", "_ladder",
+    "_misc2", "_pokecenter", "_run", "_shake", "_snow", "_snow_deep", "_snow_deep_misc", "_snow_misc", "_surf",
+    "_surf_fish", "_surf_hm", "_surf_vs", "_swamp", "_swamp_deep", "_swamp_run", "_walk"
+  ]
+
   # Save the bag somewhere and make it empty in the point of view of the player.
   # @param id_storage [String] the specific name of the storage, if nil sent to $storage.other_bag
   # @author Beef'
@@ -174,12 +180,18 @@ class Interpreter
   # Shows a character, a default name, and asks the player for their name
   # @param default_name [String] the default name pre-filled in the name input screen
   # @param character_filename [String] the character displayed in the window. Is looking in graphics/characters already.
+  # @param message [Array] the file ID and index of the line you want to display.
   # @param max_char [Integer] the maximum number of characters allowed.
+  # @param set_appearance [Boolean] if you want to set the player's gender & appearance to the filename.
   # @author Invatorzen
-  # Example: name_player("Yuri", "npc_Biker")
-  def name_player(default_name, character_filename, max_char = 12, &block)
+  # @note Example: name_player("Yuri", "player_m_walk") or name_player("Yuri", "player_m_walk", set_appearance: false)
+  def name_player(default_name, character_filename, max_char = 12, message: [43,0], set_appearance: true, &block)
     $scene.window_message_close(false) if $scene.class == Scene_Map
-    GamePlay.open_character_name_input(default_name, max_char, character_filename) { |name_input| $trainer.name = name_input.return_name }
+    GamePlay.open_character_name_input(default_name, max_char, character_filename, message) { |name_input| $trainer.name = name_input.return_name }
+    if set_appearance
+      character_filename = remove_action_state_suffix(character_filename)
+      $game_player.set_appearance_set(character_filename)
+    end
     @wait_count = 2
   end
 
@@ -255,5 +267,28 @@ class Interpreter
       switch_pokedex: switch_pokedex 
       )
     $game_variables[Yuki::Var::Current_Player_ID] = to_player_id
+  end
+
+  private
+
+  # Used to remove suffixes from filename and assign the gender
+  # @param filename [String] the filename being checked
+  # @return [String] the modified filename
+  def remove_action_state_suffix(filename)
+    if filename.match(/_(m|f|nb)(.*)$/)
+
+      # Match is really powerful!
+      gender = $1
+      state_suffix = $2
+
+      case gender
+      when 'm'
+        $trainer.define_gender(false)
+      when 'f'
+        $trainer.define_gender(true)
+      end
+      filename = filename.sub(/_(?:m|f|nb)#{state_suffix}$/, '')
+    end
+    return filename
   end
 end
