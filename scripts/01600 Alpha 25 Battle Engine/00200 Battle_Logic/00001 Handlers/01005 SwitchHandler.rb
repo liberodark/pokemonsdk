@@ -147,6 +147,19 @@ module Battle
       battler.ability_effect.on_switch_event(handler, battler, battler)
     end
 
+    SwitchHandler.register_switch_event_hook('PSDK switch: Commander Effect') do |handler, who, with|
+      next unless commander = handler.logic.all_alive_battlers.find do |battler|
+        battler.bank == with.bank &&
+        battler.has_ability?(:commander) &&
+        Battle::Effects::Ability::Commander::COMMANDERS.include?(battler.db_symbol) &&
+        Battle::Effects::Ability::Commander::COMMANDERS[battler.db_symbol][:ally] == with.db_symbol &&
+        !with.effects.has?(:commanded)
+      end
+
+      commander.ability_effect.on_switch_event(handler, who, with)
+      handler.pre_checked_effects << commander.ability_effect
+    end
+
     SwitchHandler.register_switch_event_hook('PSDK switch: Tablets of Ruin Effect') do |handler, who, with|
       if who != with && %i[tablets_of_ruin beads_of_ruin vessel_of_ruin sword_of_ruin].include?(who.battle_ability_db_symbol) && who.ability_effect.activated?
         who.ability_effect.on_switch_event(handler, who, with)

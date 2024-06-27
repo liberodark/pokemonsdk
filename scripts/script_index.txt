@@ -545,6 +545,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00004 Item.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00005 Switch.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00006 Flee.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00007 HighPriorityItem.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/03000 Actions/00008 NoAction.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00001 EffectsHandler.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00100 EffectBase.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00200 PokemonTiedEffectBase.rb
@@ -683,6 +684,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effe
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Clear Body.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Color Change.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Comatose.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Commander.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Compound Eyes.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Contrary.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Costar.rb
@@ -865,6 +867,7 @@ pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effe
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 Zen Mode.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00100 ZeroToHero.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00101 AsOne.rb
+pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00101 Commander Effects.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00101 Cud Chew Effect.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00700 Ability Effects/00101 TabletsOfRuin.rb
 pokemonsdk/scripts/01600 Alpha 25 Battle Engine/04000 Effects/00800 Item Effects/00001 ItemBase.rb

@@ -49,7 +49,7 @@ module Battle
         # Function that tells us if we should pause the move or not
         # @param user [PFM::PokemonBattler] user of the move
         def paused?(user)
-          return true if MOVES_PAUSED.include?(move.db_symbol) && (user.frozen? || user.asleep? || user.effects.has?(:flinch))
+          return true if move && MOVES_PAUSED.none?(move.db_symbol) && (user.frozen? || user.asleep? || user.effects.has?(:flinch))
 
           return false
         end
@@ -57,7 +57,7 @@ module Battle
         # Function that tells us if we should interrupt the move or not
         # @param user [PFM::PokemonBattler] user of the move
         def interrupted?(user)
-          return true if !MOVES_PAUSED.include?(move.db_symbol) && (user.frozen? || user.asleep? || user.effects.has?(:flinch))
+          return true if move && MOVES_PAUSED.none?(move.db_symbol) && (user.frozen? || user.asleep? || user.effects.has?(:flinch))
 
           return false
         end

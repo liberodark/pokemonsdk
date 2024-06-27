@@ -8,7 +8,7 @@ module Battle
         # @param with [PFM::PokemonBattler] Pokemon that is switched in
         def on_switch_event(handler, who, with)
           return unless with == @target
-          
+
           handler.scene.visual.show_ability(with)
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 442, with))
         end
