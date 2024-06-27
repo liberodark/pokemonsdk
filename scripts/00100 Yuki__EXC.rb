@@ -7,7 +7,7 @@ module Yuki
   # @author Nuri Yuri
   module EXC
     # Name of the current Game/Software
-    Software = 'Pokémon SDK'
+    Software = 'PSDK'
 
     module_function
 
@@ -78,7 +78,7 @@ module Yuki
     # @return [String] the fixed source name
     def fix_source_path(source_name)
       source = source_name.sub(File.expand_path('.'), nil.to_s).sub(File.expand_path(File.join(__FILE__, '../../..')), nil.to_s)
-      unless source.sub!(%r{/pokemonsdk/scripts/(.*)}, '\1 (PSDK)') || source.sub!(%r{/scripts/(.*)}, '\1 (user)')
+      unless source.sub!(%r{/.+sdk/scripts/(.*)}, '\1 (PSDK)') || source.sub!(%r{/scripts/(.*)}, '\1 (user)')
         source << (source.include?('/lib/') ? ' (ruby)' : ' (RMXP)')
       end
       return source

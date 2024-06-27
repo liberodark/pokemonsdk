@@ -205,7 +205,7 @@ module PFM
       def text_catch_pokemon_name(data)
         return data_creature(data).name if data.is_a?(Integer)
 
-        str = data[:id] ? data_creature(data[:id]).name.dup : 'Pokémon'
+        str = data[:id] ? data_creature(data[:id]).name.dup : 'Creature'
         str << format(ext_text(9000, 63), data_type(data[:type]).name) if data[:type]
         str << format(ext_text(9000, 64), text_get(8, data[:nature])) if data[:nature]
         if (id = data[:min_level])

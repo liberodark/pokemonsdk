@@ -9,7 +9,7 @@ class Interpreter
     return internal_add_pokemon_final(pokemon_or_id) if pokemon_or_id.is_a?(PFM::Pokemon)
     return internal_add_pokemon_check_level_shiny(pokemon_or_id, level, shiny, :add_pokemon) if pokemon_or_id.is_a?(Integer)
     return internal_add_pokemon_check_symbol(pokemon_or_id, level, shiny, :add_pokemon) if pokemon_or_id.is_a?(Symbol)
-    raise 'Argument Error : Pokémon ID cannot be string' if pokemon_or_id.is_a?(String)
+    raise 'Argument Error : Creature ID cannot be string' if pokemon_or_id.is_a?(String)
 
     nil
   end
@@ -26,7 +26,7 @@ class Interpreter
     return internal_store_pokemon_final(pokemon_or_id) if pokemon_or_id.is_a?(PFM::Pokemon)
     return internal_add_pokemon_check_level_shiny(pokemon_or_id, level, shiny, :store_pokemon) if pokemon_or_id.is_a?(Integer)
     return internal_add_pokemon_check_symbol(pokemon_or_id, level, shiny, :store_pokemon) if pokemon_or_id.is_a?(Symbol)
-    raise 'Argument Error : Pokémon ID cannot be string' if pokemon_or_id.is_a?(String)
+    raise 'Argument Error : Creature ID cannot be string' if pokemon_or_id.is_a?(String)
 
     nil
   end
@@ -40,9 +40,9 @@ class Interpreter
     pokemon_id = hash[:id]
     case pokemon_id
     when Integer
-      raise "Database Error : The Pokémon ##{pokemon_id} doesn't exists." if each_data_creature.none? { |creature| creature.id == pokemon_id }
+      raise "Database Error : The Creature ##{pokemon_id} doesn't exists." if each_data_creature.none? { |creature| creature.id == pokemon_id }
     when Symbol
-      raise "Database Error : The Pokémon with db_symbol #{pokemon_id} doesn't exists." if each_data_creature.none? { |creature| creature.db_symbol == pokemon_id }
+      raise "Database Error : The Creature with db_symbol #{pokemon_id} doesn't exists." if each_data_creature.none? { |creature| creature.db_symbol == pokemon_id }
     end
     return add_pokemon(PFM::Pokemon.generate_from_hash(hash))
   end
@@ -96,7 +96,7 @@ class Interpreter
   # @param tempo [Integer] the tempo/pitch of the cry
   def cry_pokemon(id, volume: 100, tempo: 100)
     creature = data_creature(id)
-    raise "Database Error : The Pokémon ##{id} doesn't exists." if creature.db_symbol == :__undef__
+    raise "Database Error : The Creature ##{id} doesn't exists." if creature.db_symbol == :__undef__
 
     Audio.se_play(format('Audio/SE/Cries/%03dCry', creature.id), volume, tempo)
   end
@@ -142,7 +142,7 @@ class Interpreter
       pokemon = id
     else
       creature = data_creature(id.is_a?(Hash) ? id[:id] : id)
-      raise "Database Error : The Pokémon ##{id} doesn't exists." if creature.db_symbol == :__undef__
+      raise "Database Error : The Creature ##{id} doesn't exists." if creature.db_symbol == :__undef__
 
       pokemon = id.is_a?(Hash) ? PFM::Pokemon.generate_from_hash(id) : PFM::Pokemon.new(id, 1)
     end
@@ -185,7 +185,7 @@ class Interpreter
   # Save some Pokemon of the team somewhere and remove them from the party
   # @param id_storage [String] the specific name of the storage, if nil sent to $storage.other_party
   # @param indexes [Array, Range] list of index in the team
-  # @param no_save [Boolean] if the Pokémon are not saved.
+  # @param no_save [Boolean] if the Creature are not saved.
   # @author Nuri Yuri
   def steal_pokemon(indexes, id_storage = nil, no_save = false)
     pokemons = []

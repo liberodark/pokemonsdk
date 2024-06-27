@@ -80,8 +80,6 @@ module PFM
     # @param no_shiny [Boolean] if the Pokemon have 0% chance to be shiny (override force_shiny)
     def primary_data_initialize(id, level, force_shiny, no_shiny)
       real_id = id.is_a?(Symbol) ? data_creature(id).id : id.to_i
-      log_error("Bad Pokémon ID (#{id}) - Ignore if you opened the Pokedex") if real_id == 0
-
       @id = real_id
       @db_symbol = data_creature(real_id).db_symbol
       code_initialize

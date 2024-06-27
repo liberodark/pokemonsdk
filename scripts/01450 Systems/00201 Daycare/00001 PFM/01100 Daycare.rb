@@ -110,7 +110,7 @@ module PFM
       daycare[:level][daycare[:pokemon].size] = pokemon.level
       daycare[:pokemon] << pokemon
       layable_check(daycare, daycare[:pokemon]) if daycare[:pokemon].size == 2
-      log_debug "==== Pension Infos ====\nRate : #{daycare[:rate]}%\nPokémon : #{text_get(0, daycare[:layable])}\n"
+      log_debug "==== Daycare Infos ====\nRate : #{daycare[:rate]}%\nCreature : #{text_get(0, daycare[:layable])}\n"
       return true
     end
 
@@ -167,7 +167,7 @@ module PFM
       daycare = @daycares[id]
       daycare[:egg] = nil
       layable_check(daycare, daycare[:pokemon])
-      log_debug "==== Pension Infos ====\nRate : #{daycare[:rate]}%\nPokémon : #{text_get(0, daycare[:layable])}\n"
+      log_debug "==== Daycare Infos ====\nRate : #{daycare[:rate]}%\nCreature : #{text_get(0, daycare[:layable])}\n"
       pokemon = PFM::Pokemon.new(daycare[:layable], 1)
       inherit(pokemon, daycare[:pokemon])
       pokemon.hp = pokemon.max_hp

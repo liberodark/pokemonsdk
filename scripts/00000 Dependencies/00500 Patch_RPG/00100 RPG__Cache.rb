@@ -137,7 +137,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@animation_cache)
       else
         @animation_cache = {}
-        @animation_data = Yuki::VD.new(PSDK_PATH + '/master/animation', :read)
+        @animation_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/animation' : PSDK_PATH + 'resources/animation', :read)
       end
     end
 
@@ -163,7 +163,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@autotile_cache)
       else
         @autotile_cache = {}
-        @autotile_data = Yuki::VD.new(PSDK_PATH + '/master/autotile', :read)
+        @autotile_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/autotile' : PSDK_PATH + 'resources/autotile', :read)
       end
     end
 
@@ -189,7 +189,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@ball_cache)
       else
         @ball_cache = {}
-        @ball_data = Yuki::VD.new(PSDK_PATH + '/master/ball', :read)
+        @ball_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/ball' : PSDK_PATH + 'resources/ball', :read)
       end
     end
 
@@ -215,7 +215,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@battleback_cache)
       else
         @battleback_cache = {}
-        @battleback_data = Yuki::VD.new(PSDK_PATH + '/master/battleback', :read)
+        @battleback_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/battleback' : PSDK_PATH + 'resources/battleback', :read)
       end
     end
 
@@ -241,7 +241,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@battler_cache)
       else
         @battler_cache = {}
-        @battler_data = Yuki::VD.new(PSDK_PATH + '/master/battler', :read)
+        @battler_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/battler' : PSDK_PATH + 'resources/battler', :read)
       end
     end
 
@@ -267,7 +267,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@character_cache)
       else
         @character_cache = {}
-        @character_data = Yuki::VD.new(PSDK_PATH + '/master/character', :read)
+        @character_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/character' : PSDK_PATH + 'resources/character', :read)
       end
     end
 
@@ -293,7 +293,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@fog_cache)
       else
         @fog_cache = {}
-        @fog_data = Yuki::VD.new(PSDK_PATH + '/master/fog', :read)
+        @fog_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/fog' : PSDK_PATH + 'resources/fog', :read)
       end
     end
 
@@ -319,7 +319,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@icon_cache)
       else
         @icon_cache = {}
-        @icon_data = Yuki::VD.new(PSDK_PATH + '/master/icon', :read)
+        @icon_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/icon' : PSDK_PATH + 'resources/icon', :read)
       end
     end
 
@@ -345,7 +345,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@interface_cache)
       else
         @interface_cache = {}
-        @interface_data = Yuki::VD.new(PSDK_PATH + '/master/interface', :read)
+        @interface_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/interface' : PSDK_PATH + 'resources/interface', :read)
       end
     end
 
@@ -386,7 +386,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@panorama_cache)
       else
         @panorama_cache = {}
-        @panorama_data = Yuki::VD.new(PSDK_PATH + '/master/panorama', :read)
+        @panorama_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/panorama' : PSDK_PATH + 'resources/panorama', :read)
       end
     end
 
@@ -412,7 +412,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@particle_cache)
       else
         @particle_cache = {}
-        @particle_data = Yuki::VD.new(PSDK_PATH + '/master/particle', :read)
+        @particle_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/particle' : PSDK_PATH + 'resources/particle', :read)
       end
     end
 
@@ -438,7 +438,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@pc_cache)
       else
         @pc_cache = {}
-        @pc_data = Yuki::VD.new(PSDK_PATH + '/master/pc', :read)
+        @pc_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/pc' : PSDK_PATH + 'resources/pc', :read)
       end
     end
 
@@ -464,7 +464,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@picture_cache)
       else
         @picture_cache = {}
-        @picture_data = Yuki::VD.new(PSDK_PATH + '/master/picture', :read)
+        @picture_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/picture' : PSDK_PATH + 'resources/picture', :read)
       end
     end
 
@@ -490,7 +490,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@pokedex_cache)
       else
         @pokedex_cache = {}
-        @pokedex_data = Yuki::VD.new(PSDK_PATH + '/master/pokedex', :read)
+        @pokedex_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/pokedex' : PSDK_PATH + 'resources/pokedex', :read)
       end
     end
 
@@ -516,7 +516,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@title_cache)
       else
         @title_cache = {}
-        @title_data = Yuki::VD.new(PSDK_PATH + '/master/title', :read)
+        @title_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/title' : PSDK_PATH + 'resources/title', :read)
       end
     end
 
@@ -542,7 +542,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@tileset_cache)
       else
         @tileset_cache = {}
-        @tileset_data = Yuki::VD.new(PSDK_PATH + '/master/tileset', :read)
+        @tileset_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/tileset' : PSDK_PATH + 'resources/tileset', :read)
       end
     end
 
@@ -575,7 +575,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@transition_cache)
       else
         @transition_cache = {}
-        @transition_data = Yuki::VD.new(PSDK_PATH + '/master/transition', :read)
+        @transition_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/transition' : PSDK_PATH + 'resources/transition', :read)
       end
     end
 
@@ -601,7 +601,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@windowskin_cache)
       else
         @windowskin_cache = {}
-        @windowskin_data = Yuki::VD.new(PSDK_PATH + '/master/windowskin', :read)
+        @windowskin_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/windowskin' : PSDK_PATH + 'resources/windowskin', :read)
       end
     end
 
@@ -627,7 +627,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@foot_print_cache)
       else
         @foot_print_cache = {}
-        @foot_print_data = Yuki::VD.new(PSDK_PATH + '/master/foot_print', :read)
+        @foot_print_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/foot_print' : PSDK_PATH + 'resources/foot_print', :read)
       end
     end
 
@@ -653,7 +653,7 @@ module RPG
         dispose_bitmaps_from_cache_tab(@b_icon_cache)
       else
         @b_icon_cache = {}
-        @b_icon_data = Yuki::VD.new(PSDK_PATH + '/master/b_icon', :read)
+        @b_icon_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/b_icon' : PSDK_PATH + 'resources/b_icon', :read)
       end
     end
 
@@ -680,8 +680,8 @@ module RPG
       else
         @poke_front_cache = Array.new(Pokedex_PokeFront_Path.size) { {} }
         @poke_front_data = [
-          Yuki::VD.new(PSDK_PATH + '/master/poke_front', :read),
-          Yuki::VD.new(PSDK_PATH + '/master/poke_front_s', :read)
+          Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/poke_front' : PSDK_PATH + 'resources/poke_front', :read),
+          Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/poke_front_s' : PSDK_PATH + 'resources/poke_front_s', :read)
         ]
       end
     end
@@ -710,8 +710,8 @@ module RPG
       else
         @poke_back_cache = Array.new(Pokedex_PokeBack_Path.size) { {} }
         @poke_back_data = [
-          Yuki::VD.new(PSDK_PATH + '/master/poke_back', :read),
-          Yuki::VD.new(PSDK_PATH + '/master/poke_back_s', :read)
+          Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/poke_back' : PSDK_PATH + 'resources/poke_back', :read),
+          Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/poke_back_s' : PSDK_PATH + 'resources/poke_back_s', :read)
         ]
       end
     end
@@ -741,7 +741,7 @@ module RPG
       def load_%<cache_name>s(flush_it = false)
         unless flush_it
           @%<cache_name>s_cache = {}
-          @%<cache_name>s_data = Yuki::VD.new(PSDK_PATH + '/master/%<cache_name>s', :read)
+          @%<cache_name>s_data = Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/%<cache_name>s' : PSDK_PATH + 'resources/%<cache_name>s', :read)
         else
           dispose_bitmaps_from_cache_tab(@%<cache_name>s_cache)
         end
@@ -784,8 +784,8 @@ module RPG
         unless flush_it
           @%<cache_name>s_cache = Array.new(%<cache_constant>s_Path.size) { {} }
           @%<cache_name>s_data = [
-            Yuki::VD.new(PSDK_PATH + '/master/%<cache_name>s', :read),
-            Yuki::VD.new(PSDK_PATH + '/master/%<cache_name>s_s', :read)]
+            Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/%<cache_name>s' : PSDK_PATH + 'resources/%<cache_name>s', :read),
+            Yuki::VD.new(PSDK_CONFIG.release? ? 'graphics/%<cache_name>s_s' : PSDK_PATH + 'resources/%<cache_name>s_s', :read)]
         else
           @%<cache_name>s_cache.each { |cache_tab| dispose_bitmaps_from_cache_tab(cache_tab) }
         end

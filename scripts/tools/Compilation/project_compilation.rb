@@ -43,6 +43,8 @@ module ProjectCompilation
   def collect_game_rb_scripts
     # Compile real Game.rb
     game_script = GAME_RB_SCRIPTS.collect { |filename| File.read("#{ScriptLoader::VSCODE_SCRIPT_PATH}/tools/#{filename}") }.join("\r\n\r\n")
+    # Fix psdk
+    game_script.gsub!('pokemonsdk', 'psdk')
     # Make the game not depending on a specific file for the PSDK version
     game_script.sub!('PSDK_VERSION = File.read("#{PSDK_PATH}/version.txt").to_i', "PSDK_VERSION = #{PSDK_VERSION}")
     return game_script
@@ -57,8 +59,8 @@ module ProjectCompilation
   end
 
   def make_graphic_resources
-    release_path = File.join(RELEASE_PATH, 'pokemonsdk', 'master')
-    psdk_path = File.join(PSDK_PATH, 'master')
+    release_path = File.join(RELEASE_PATH, 'graphics')
+    psdk_path = File.join(PSDK_PATH, 'resources')
     GRAPHICS_FILES.each do |cache_name, path|
       GraphicsBuilder.start("#{psdk_path}/#{cache_name}", "#{release_path}/#{cache_name}", path, NO_RECURSIVE_PATH.include?(cache_name))
     end
@@ -83,8 +85,8 @@ module ProjectCompilation
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'me'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'audio', 'particles'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'graphics', 'shaders'))
-    Dir.mkdir!(File.join(RELEASE_PATH, 'pokemonsdk', 'master'))
-    File.copy_stream("#{ScriptLoader::VSCODE_SCRIPT_PATH.split('/')[0..-2].join('/')}/version.txt", File.join(RELEASE_PATH, 'pokemonsdk/version.txt'))
+    Dir.mkdir!(File.join(RELEASE_PATH, 'psdk'))
+    File.copy_stream("#{ScriptLoader::VSCODE_SCRIPT_PATH.split('/')[0..-2].join('/')}/version.txt", File.join(RELEASE_PATH, 'psdk/version.txt'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'Fonts'))
     Dir.mkdir!(File.join(RELEASE_PATH, 'Saves'))
     return if PSDK_PLATFORM != :windows

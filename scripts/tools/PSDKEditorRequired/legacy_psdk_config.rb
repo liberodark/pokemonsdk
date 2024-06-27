@@ -134,7 +134,7 @@ module ScriptLoader
     # Function that fix the variables
     # @param save [Boolean] if the object should be saved
     def fix_variables(save)
-      @game_title = (@game_title || 'Pokémon SDK').to_s
+      @game_title = (@game_title || 'PSDK').to_s
       @game_version = (@game_version || 256).to_i
       @choosable_language_code ||= %w[en fr es]
       @choosable_language_texts ||= %w[English French Spanish]

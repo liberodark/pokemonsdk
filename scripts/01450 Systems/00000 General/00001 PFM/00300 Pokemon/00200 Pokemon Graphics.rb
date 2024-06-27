@@ -106,7 +106,7 @@ module PFM
       # @param id [Integer, Symbol] ID of the Pokemon
       # @return [String]
       def missing_resources_error(id)
-        log_error("Missing resources error: Your Pokémon #{data_creature(id).name} has no resources in its data.")
+        log_error("Missing resources error: Your Creature #{data_creature(id).name} has no resources in its data.")
         return '000'
       end
 

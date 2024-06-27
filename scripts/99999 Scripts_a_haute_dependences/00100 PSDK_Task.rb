@@ -105,7 +105,7 @@ module Scheduler
   add_proc(:on_scene_switch, GamePlay::Load, 'Correction of forms', 1000) do
     next unless $scene.is_a?(Scene_Map)
 
-    log_info('Correcting the form of a Pokémon')
+    log_info('Correcting the form of all creatures')
     block = proc { |pokemon| pokemon&.form_calibrate(:load) }
     $actors.each(&block)
     $storage.each_pokemon(&block)

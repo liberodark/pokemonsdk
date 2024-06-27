@@ -18,14 +18,14 @@ module ProjectCompilation
       case File.dirname(filename).split('/').first.downcase
       when '.'
         tag = 'RMXP'
-      when 'pokemonsdk'
+      when /.+sdk/
         tag = 'PSDK'
       when 'scripts'
         tag = 'USER'
       else
         tag = 'UNKNOWN'
       end
-      script_filename = "#{tag}/#{filename.sub(%r{(pokemonsdk/scripts|scripts)}i, '')}"
+      script_filename = "#{tag}/#{filename.sub(%r{([^/]+sdk/scripts|scripts)}i, '')}"
       return RubyVM::InstructionSequence.compile(script, script_filename, '.').to_binary
     end
 
