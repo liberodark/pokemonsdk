@@ -10,8 +10,8 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target
-          return unless skill&.type_fire?
-            
+          return unless skill&.type_fire? && launcher
+
           handler.scene.visual.show_ability(target)
           handler.scene.visual.wait_for_animation
           handler.logic.stat_change_handler.stat_change_with_process(:atk, 1, target)
@@ -47,6 +47,7 @@ module Battle
           logic.status_change_handler.status_change(:cure, @target)
         end
       end
+
       register(:thermal_exchange, ThermalExchange)
     end
   end

@@ -10,7 +10,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target
-          return unless expected_type?(skill) && stat_changeable?(handler, target)
+          return unless expected_type?(skill) && stat_changeable?(handler, target) && launcher
 
           handler.scene.visual.show_item(target)
           handler.logic.stat_change_handler.stat_change_with_process(stat_improved, 1, target)
@@ -29,7 +29,7 @@ module Battle
         # @param move [Battle::Move, nil] Potential move used
         # @return [Boolean]
         def expected_type?(move)
-          return move&.type_water?
+          return move&.type_water? || false
         end
 
         # Check if the change of stats is possible
@@ -55,7 +55,7 @@ module Battle
         # @param move [Battle::Move, nil] Potential move used
         # @return [Boolean]
         def expected_type?(move)
-          return move&.type_ice?
+          return move&.type_ice? || false
         end
       end
 
@@ -82,7 +82,7 @@ module Battle
         # @param move [Battle::Move, nil] Potential move used
         # @return [Boolean]
         def expected_type?(move)
-          return move&.type_electric?
+          return move&.type_electric? || false
         end
       end
 

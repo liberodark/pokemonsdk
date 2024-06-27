@@ -16,6 +16,7 @@ module Battle
           handler.logic.status_change_handler.status_change_with_process(:flinch, target, launcher, skill)
         end
       end
+
       register(:stench, Stench)
     end
   end

@@ -26,6 +26,7 @@ module Battle
           Effects::PerishSong.new(@logic, target, 4)
         end
       end
+
       register(:perish_body, PerishBody)
     end
   end

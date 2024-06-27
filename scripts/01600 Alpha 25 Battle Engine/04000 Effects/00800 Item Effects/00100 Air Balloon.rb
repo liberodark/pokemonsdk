@@ -21,7 +21,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target
-          return unless skill
+          return unless launcher && skill
           return unless target.hold_item?(:air_balloon)
 
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 411, target))
@@ -29,6 +29,7 @@ module Battle
         end
         alias on_post_damage_death on_post_damage
       end
+
       register(:air_balloon, AirBalloon)
     end
   end

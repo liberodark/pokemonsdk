@@ -10,7 +10,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target
-          return unless skill
+          return unless launcher && skill
 
           weather_handler = handler.logic.weather_change_handler
           return unless weather_handler.weather_appliable?(:sandstorm)
@@ -21,6 +21,7 @@ module Battle
           handler.scene.visual.show_rmxp_animation(target, 494)
         end
       end
+
       register(:sand_spit, SandSpit)
     end
   end

@@ -14,10 +14,21 @@ module Battle
 
           if handler.logic.stat_change_handler.stat_decreasable?(:spd, launcher)
             handler.scene.visual.show_ability(target)
-            handler.logic.stat_change_handler.stat_change_with_process(:spd, -1, launcher, launcher.has_ability?(:mirror_armor) ? target : nil)
+            handler.logic.stat_change_handler.stat_change_with_process(:spd, -1, launcher, handle_mirror_armor_effect(launcher, target))
           end
         end
+
+        private
+
+        # Handle the mirror armor effect (special case)
+        # @param target [PFM::PokemonBattler]
+        # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @return [PFM::PokemonBattler, nil]
+        def handle_mirror_armor_effect(launcher, target)
+          return launcher.has_ability?(:mirror_armor) ? target : nil
+        end
       end
+
       register(:gooey, Gooey)
       register(:tangling_hair, Gooey)
     end

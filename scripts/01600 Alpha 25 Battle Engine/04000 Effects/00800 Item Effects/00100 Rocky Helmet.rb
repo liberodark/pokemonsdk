@@ -9,15 +9,15 @@ module Battle
         # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
-          return if target != @target
-          return if launcher&.dead?
-          return unless skill&.direct? && launcher != target && !launcher.has_ability?(:long_reach)
+          return if target != @target || launcher == target
+          return unless skill&.direct? && launcher&.alive? && !launcher.has_ability?(:long_reach)
 
           handler.scene.visual.show_item(target)
           handler.logic.damage_handler.damage_change((launcher.max_hp / 6).clamp(1, Float::INFINITY), launcher)
         end
         alias on_post_damage_death on_post_damage
       end
+
       register(:rocky_helmet, RockyHelmet)
     end
   end

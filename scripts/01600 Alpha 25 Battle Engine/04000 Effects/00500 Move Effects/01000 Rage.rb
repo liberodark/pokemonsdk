@@ -10,6 +10,7 @@ module Battle
       # @param skill [Battle::Move, nil] Potential move used
       def on_post_damage(handler, hp, target, launcher, skill)
         return if target != @pokemon
+        return unless launcher && skill
 
         if target.successful_move_history.last.move.be_method == :s_rage
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 532, target))

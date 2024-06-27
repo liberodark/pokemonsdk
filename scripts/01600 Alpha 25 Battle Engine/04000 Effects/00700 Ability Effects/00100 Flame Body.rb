@@ -16,6 +16,7 @@ module Battle
           handler.logic.status_change_handler.status_change_with_process(:burn, launcher, target)
         end
       end
+
       register(:flame_body, FlameBody)
     end
   end

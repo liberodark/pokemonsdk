@@ -83,6 +83,7 @@ module Battle
           return 19, 1063
         end
       end
+
       register(:magician, Magician)
     end
   end

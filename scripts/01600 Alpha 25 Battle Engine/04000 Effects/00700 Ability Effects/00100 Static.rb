@@ -16,6 +16,7 @@ module Battle
           handler.logic.status_change_handler.status_change_with_process(:paralysis, launcher, target)
         end
       end
+
       register(:static, Static)
     end
   end

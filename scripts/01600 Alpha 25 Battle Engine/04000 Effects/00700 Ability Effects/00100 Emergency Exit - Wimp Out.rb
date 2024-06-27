@@ -22,8 +22,8 @@ module Battle
           return if target.ability_used
           return if target.hp_rate > 0.5 || target.effects.has?(&:out_of_reach?)
           return if skill_prevention?(hp, skill) || item_prevention?(target)
-          return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated? 
-          return if handler.logic.switch_request.any? { |request| request[:who] == target }     
+          return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated?
+          return if handler.logic.switch_request.any? { |request| request[:who] == target }
 
           @damage_dealt = 0
           if @logic.battle_info.trainer_battle?
@@ -32,10 +32,10 @@ module Battle
             target.ability_used = true
             handler.scene.visual.show_ability(target)
             handler.scene.visual.wait_for_animation
-            
+
             @logic.actions.reject! { |a| a.is_a?(Actions::Attack) && a.launcher == target }
             handler.logic.switch_request << { who: target }
-          else          
+          else
             handler.scene.visual.show_ability(target)
             @battler_s = handler.scene.visual.battler_sprite(target.bank, target.position)
             @battler_s.flee_animation
@@ -54,7 +54,7 @@ module Battle
           return true if skill.force_switch? || skill.be_method == :s_sky_drop
 
           @damage_dealt += hp
-          
+
           return true if skill.is_a?(Battle::Move::Basic::MultiHit) && !skill.last_hit?
           return false if (target.hp + @damage_dealt) > target.max_hp / 2
         end

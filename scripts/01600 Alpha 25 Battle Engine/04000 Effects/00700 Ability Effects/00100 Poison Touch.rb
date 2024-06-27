@@ -17,6 +17,7 @@ module Battle
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 472, target))
         end
       end
+
       register(:poison_touch, PoisonTouch)
     end
   end

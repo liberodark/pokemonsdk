@@ -59,6 +59,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return unless @post_damage_activation
+          return unless launcher && skill
           return unless valid_target?(handler, @ally, skill)
 
           @post_damage_activation = false

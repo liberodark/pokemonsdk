@@ -10,6 +10,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target || target.hp_rate > 0.5
+          return unless launcher && skill
           return unless (target.hp + hp) > (target.max_hp / 2)
           return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated?
 
@@ -19,6 +20,7 @@ module Battle
           end
         end
       end
+
       register(:berserk, Berserk)
     end
   end

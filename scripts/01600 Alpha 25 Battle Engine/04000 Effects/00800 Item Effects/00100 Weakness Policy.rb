@@ -10,7 +10,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target
-          return unless skill&.super_effective?
+          return unless skill&.super_effective? && launcher
 
           handler.scene.visual.show_item(target)
           handler.logic.stat_change_handler.stat_change_with_process(:atk, 2, target)
@@ -18,6 +18,7 @@ module Battle
           handler.logic.item_change_handler.change_item(:none, true, target)
         end
       end
+
       register(:weakness_policy, WeaknessPolicy)
     end
   end

@@ -9,15 +9,16 @@ module Battle
         # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
-          return if launcher != @target
-          return unless skill && hp >= 8 && launcher != target
+          return if launcher != @target || launcher == target
           return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated?
+          return unless skill && hp >= 8
 
           handler.scene.visual.show_item(launcher)
           handler.logic.damage_handler.heal(launcher, hp / 8)
         end
         alias on_post_damage_death on_post_damage
       end
+
       register(:shell_bell, ShellBell)
     end
   end

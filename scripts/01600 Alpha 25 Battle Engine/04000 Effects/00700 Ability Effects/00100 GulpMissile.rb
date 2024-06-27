@@ -14,8 +14,8 @@ module Battle
         # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
-          catch_prey(handler, hp, target, launcher, skill) if launcher == @target
-          spit_out_prey(handler, hp, target, launcher, skill) if target == @target
+          catch_prey(handler, hp, target, launcher, skill) if launcher == @target && launcher != target
+          spit_out_prey(handler, hp, target, launcher, skill) if target == @target && target != launcher
         end
 
         private
@@ -48,7 +48,7 @@ module Battle
 
           case @target.form
           when 1
-            handler.logic.stat_change_handler.stat_change_with_process(:dfe, -1, launcher, launcher.has_ability?(:mirror_armor) ? target : nil)
+            handler.logic.stat_change_handler.stat_change_with_process(:dfe, -1, launcher, handle_mirror_armor_effect(launcher, target))
           else
             handler.logic.status_change_handler.status_change_with_process(:paralysis, launcher, target)
           end
@@ -56,7 +56,16 @@ module Battle
           @target.form_calibrate(BASE_FORM)
           handler.scene.visual.show_switch_form_animation(@target)
         end
+
+        # Handle the mirror armor effect (special case)
+        # @param target [PFM::PokemonBattler]
+        # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @return [PFM::PokemonBattler, nil]
+        def handle_mirror_armor_effect(launcher, target)
+          return launcher.has_ability?(:mirror_armor) ? target : nil
+        end
       end
+
       register(:gulp_missile, GulpMissile)
     end
   end

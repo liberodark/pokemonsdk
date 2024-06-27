@@ -16,6 +16,7 @@ module Battle
           handler.logic.status_change_handler.status_change_with_process(:poison, launcher, target)
         end
       end
+
       register(:poison_point, PoisonPoint)
     end
   end

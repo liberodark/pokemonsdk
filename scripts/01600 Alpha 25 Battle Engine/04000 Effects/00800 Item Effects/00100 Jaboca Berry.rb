@@ -9,8 +9,7 @@ module Battle
         # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
-          return if target != @target
-          return unless trigger?(skill) && launcher
+          return if target != @target || launcher == @target
 
           process_effect(target, launcher, skill)
         end
@@ -34,7 +33,7 @@ module Battle
           return if cannot_be_consumed?(force_execution)
 
           consume_berry(target, launcher, skill)
-          return unless launcher && skill
+          return unless launcher && trigger?(skill)
 
           @logic.damage_handler.damage_change((launcher.max_hp / 8).clamp(1, Float::INFINITY), launcher)
           @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 402, launcher))
@@ -44,7 +43,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         # @return [Boolean]
         def trigger?(skill)
-          skill&.physical?
+          return skill&.physical? || false
         end
       end
 
@@ -53,9 +52,10 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         # @return [Boolean]
         def trigger?(skill)
-          skill&.special?
+          return skill&.special? || false
         end
       end
+
       register(:jaboca_berry, JabocaBerry)
       register(:rowap_berry, RowapBerry)
     end

@@ -10,6 +10,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target
+          return unless launcher && skill
 
           process_effect(target, launcher, skill)
         end
@@ -55,6 +56,7 @@ module Battle
           return (@target.max_hp / 4).clamp(1, Float::INFINITY)
         end
       end
+
       register(:enigma_berry, EnigmaBerry)
     end
   end

@@ -10,13 +10,14 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target
-          return unless skill&.physical?
+          return unless skill&.physical? && launcher
 
           handler.scene.visual.show_ability(target)
           handler.logic.stat_change_handler.stat_change_with_process(:dfe, -1, target)
           handler.logic.stat_change_handler.stat_change_with_process(:spd, 1, target)
         end
       end
+
       register(:weak_armor, WeakArmor)
     end
   end

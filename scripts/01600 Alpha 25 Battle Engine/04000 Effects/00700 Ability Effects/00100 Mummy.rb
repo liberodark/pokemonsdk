@@ -18,17 +18,9 @@ module Battle
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 405, launcher, PFM::Text::ABILITY[1] => target.ability_name)) # Needs Gen IX texts adaptation
           handler.logic.ability_change_handler.change_ability(launcher, db_symbol)
         end
-
-        # Function called after damages were applied (post_damage, when target is still alive)
-        # @param handler [Battle::Logic::DamageHandler]
-        # @param hp [Integer] number of hp (damage) dealt
-        # @param target [PFM::PokemonBattler]
-        # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
-        # @param skill [Battle::Move, nil] Potential move used
-        def on_post_damage_death(handler, hp, target, launcher, skill)
-          on_post_damage(handler, hp, target, launcher, skill)
-        end
+        alias on_post_damage_death on_post_damage
       end
+
       register(:mummy, Mummy)
       register(:lingering_aroma, Mummy)
     end

@@ -20,6 +20,7 @@ module Battle
           handler.logic.ability_change_handler.change_ability(target, PFM::Text::ABILITY[1] => target.ability_name)
         end
       end
+
       register(:wandering_spirit, WanderingSpirit)
     end
   end

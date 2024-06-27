@@ -9,8 +9,8 @@ module Battle
         # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
-          return if target != @target
-          return unless skill && launcher != target && handler.logic.can_battler_be_replaced?(launcher)
+          return if target != @target || launcher == target
+          return unless skill && launcher && handler.logic.can_battler_be_replaced?(launcher)
           return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated?
           return if handler.logic.switch_request.any? { |request| request[:who] == launcher }
 
@@ -20,6 +20,7 @@ module Battle
           target.item_holding = target.battle_item = 0
         end
       end
+
       register(:red_card, RedCard)
     end
   end

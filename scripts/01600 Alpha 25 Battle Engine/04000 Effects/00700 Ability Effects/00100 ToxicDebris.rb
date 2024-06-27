@@ -10,7 +10,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == @target
-          return unless skill&.physical?
+          return unless skill&.physical? && launcher
 
           # @type [Effects::ToxicSpikes]
           effect = @logic.bank_effects[launcher.bank]&.get(:toxic_spikes)
@@ -24,6 +24,7 @@ module Battle
           handler.scene.display_message_and_wait(parse_text(18, launcher.bank == 0 ? 158 : 159))
         end
       end
+
       register(:toxic_debris, ToxicDebris)
     end
   end

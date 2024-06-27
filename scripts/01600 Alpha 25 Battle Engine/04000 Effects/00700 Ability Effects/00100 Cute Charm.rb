@@ -18,6 +18,7 @@ module Battle
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 327, launcher))
         end
       end
+
       register(:cute_charm, CuteCharm)
     end
   end

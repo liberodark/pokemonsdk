@@ -10,8 +10,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target
-          return unless trigger?(skill) && launcher
-          return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated
+          return if launcher.nil? || launcher.has_ability?(:sheer_force) && launcher.ability_effect.activated
 
           process_effect(target, launcher, skill)
         end
@@ -35,7 +34,7 @@ module Battle
           return if cannot_be_consumed?(force_execution)
 
           consume_berry(target, launcher, skill)
-          return unless launcher && skill
+          return unless launcher && trigger?(skill)
 
           power = target.has_ability?(:ripen) ? 2 : 1
           @logic.stat_change_handler.stat_change_with_process(stat_increased, power, target, launcher, skill)
@@ -51,7 +50,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         # @return [Boolean]
         def trigger?(skill)
-          skill&.physical?
+          return skill&.physical? || false
         end
       end
 
@@ -66,9 +65,10 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         # @return [Boolean]
         def trigger?(skill)
-          skill&.special?
+          return skill&.special? || false
         end
       end
+
       register(:kee_berry, KeeBerry)
       register(:maranga_berry, MarangaBerry)
     end

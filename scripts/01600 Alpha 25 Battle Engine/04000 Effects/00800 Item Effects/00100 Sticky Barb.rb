@@ -32,6 +32,7 @@ module Battle
           logic.damage_handler.damage_change((@target.max_hp / 8).clamp(1, Float::INFINITY), @target)
         end
       end
+
       register(:sticky_barb, StickyBarb)
     end
   end

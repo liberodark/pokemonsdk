@@ -20,10 +20,11 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target
+          return unless launcher && skill
 
           @activated = true
           handler.scene.visual.show_ability(target)
-          #TODO: Add the corresponding text
+          # TODO: Add the corresponding text
         end
         alias on_post_damage_death on_post_damage
 
@@ -40,6 +41,7 @@ module Battle
           return 1.5
         end
       end
+
       register(:electromorphosis, Electromorphosis)
     end
   end
