@@ -192,7 +192,7 @@ module Battle
         @classes[bank] ||= []
         @classes[bank] << klass if klass
         @battlers[bank] ||= []
-        @battlers[bank] << determine_battler(battler) if battler
+        @battlers[bank] << determine_battler(battler, bank) if battler
         @bags[bank] ||= []
         @bags[bank] << (bag || PFM::Bag.new)
         @base_moneys[bank] ||= []
@@ -208,8 +208,9 @@ module Battle
       # Determine the battler that should be sent back
       # @param resources [String, Studio::Trainer::Resources] direct filepath of the battler, or the resource class
       # @return [String]
-      def determine_battler(resources)
+      def determine_battler(resources, bank)
         return resources if resources.is_a?(String)
+        return resources.send(:sprite) if bank == 0
 
         resource_type = Visual::TRANSITION_RESOURCE_TYPE[$game_variables[Yuki::Var::TrainerTransitionType]]
         return resources.send(resource_type)
