@@ -147,36 +147,45 @@ module BattleUI
 
     # Creates the switch to substitute animation
     def switch_to_substitute_animation
-      base_x = self.x
+      base_x = x
       bx = enemy? ? viewport.rect.width + width : -width
       ya = Yuki::Animation
-      animation = ya.move(0.5, self, x, y, bx, y)
+      animation = ya.move(substitute_animations_speed, self, x, y, bx, y)
       animation.play_before(ya.send_command_to(self, :switch_to_substitute_sprite))
-      animation.play_before(ya.move(0.5, self, bx, y, base_x, y))
+      animation.play_before(ya.send_command_to(self, :reset_position))
+      animation.play_before(ya.move(substitute_animations_speed, self, bx, y, base_x, y))
       animation.start
       animation_handler[:to_substitute] = animation
     end
 
     # Creates the switch from substitute animation
     def switch_from_substitute_animation
-      base_x = self.x
+      base_x = x
       bx = enemy? ? viewport.rect.width + width : -width
       ya = Yuki::Animation
-      animation = ya.move(0.5, self, x, y, bx, y)
+      animation = ya.move(substitute_animations_speed, self, x, y, bx, y)
       animation.play_before(ya.send_command_to(self, :load_battler, true))
-      animation.play_before(ya.move(0.5, self, bx, y, base_x, y))
+      animation.play_before(ya.send_command_to(self, :reset_position))
+      animation.play_before(ya.move(substitute_animations_speed, self, bx, y, base_x, y))
       animation.start
       animation_handler[:from_substitute] = animation
+    end
+
+    # Return the Substitute animations speed
+    # @return [Float]
+    def substitute_animations_speed
+      return 0.2
     end
 
     # Tell if the Pokemon represented by this sprite is under the effect of Substitute
     # @return [Boolean]
     def under_substitute_effect?
-      return pokemon&.effects.has?(:substitute)
+      return pokemon&.effects&.has?(:substitute)
     end
 
     # Directly switch the PokemonSprite appearance to the substitute appearance
     def switch_to_substitute_sprite
+      remove_instance_variable(:@gif) if instance_variable_defined?(:@gif)
       set_bitmap(bank == 0 ? 'pokeback/substitute' : 'pokefront/substitute', :pokedex)
     end
 
