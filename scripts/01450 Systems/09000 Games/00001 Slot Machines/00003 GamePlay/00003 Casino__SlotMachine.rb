@@ -123,21 +123,25 @@ module GamePlay
       # @return [Integer, :replay]
       def calculate_payout
         rows = all_rows
-        rows.each do |row|
+        full_payout = rows.map do |row|
           val = row.first
           if row.all? { |value| value == val }
             payout = PAYOUT_VALUES[val]
-            return payout if payout
-            return :replay if val == 0
+            next payout if payout
+            next :replay if val == 0
           end
+        end.compact
+        max_payout = full_payout.select { |v| v.is_a?(Integer) }.max
+        return max_payout if max_payout
+        return :replay if full_payout.include?(:replay)
+        
+        partial_payout = rows.map do |row|
+          next 2 if row.count(5) == 1 # v6 (cherry)
+          next 4 if row.count(5) == 2 # v6 (2 cherry)
+          next 90 if row.count(2) == 2 && row.count(6) == 1 # ?7 ?7 !7
+          next 90 if row.count(2) == 1 && row.count(6) == 2 # !7 !7 ?7
         end
-        rows.each do |row|
-          return 2 if row.count(5) == 1 # v6 (cherry)
-          return 4 if row.count(5) == 2 # v6 (2 cherry)
-          return 90 if row.count(2) == 2 && row.count(6) == 1 # ?7 ?7 !7
-          return 90 if row.count(2) == 1 && row.count(6) == 2 # !7 !7 ?7
-        end
-        return 0
+        return partial_payout.compact.max || 0
       end
 
       # Function that returns the row depending on the payout
