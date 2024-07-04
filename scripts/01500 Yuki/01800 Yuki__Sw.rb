@@ -111,7 +111,7 @@ module Yuki
     # If the player can run
     EV_CanRun = 53
     # If the player automatically turn on himself when walking on Rapid SystemTag
-    EV_TurnRapids = 54 #Indique si le joueur tourne dans les rapides
+    EV_TurnRapids = 54
     # If the player triggered flash
     EV_Flash = 55
     # Weather is rain
@@ -129,7 +129,6 @@ module Yuki
     Env_Detection = 75
     # Tells if the player can't currently leave the bike (useful for Cycling Road)
     CantLeaveBike = 76
-
     # Enable/disable if pokemon die from poison in overworld
     OW_Poison = 77
 

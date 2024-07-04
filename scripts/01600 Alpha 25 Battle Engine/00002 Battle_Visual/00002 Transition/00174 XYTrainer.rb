@@ -50,37 +50,37 @@ module Battle
         end
 
         def create_battlers
-          sprite_small_filename, sprite_big_filename = *determine_battler_filename(@scene.battle_info.battlers[1][0])
-          @battler = Sprite.new(@viewport).set_bitmap(sprite_small_filename, :battler)
-          @battler.set_position(-@battler.width / 4, @viewport.rect.height)
-          @battler.set_origin(@battler.width / 2, @battler.height)
-          @battler.z = @background.z
-          @battler2 = Sprite.new(@viewport).set_bitmap(sprite_big_filename, :battler)
-          @battler2.set_position(@viewport.rect.width / 2, @viewport.rect.height)
-          @battler2.set_origin(@battler2.width / 2, @battler2.height)
-          @battler2.z = @background.z
-          @battler2.opacity = 0
+          @sprites = []
+
+          positions = calculate_positions
+          positions.each_with_index do |pos_x, index|
+            sprite_small_filename, sprite_big_filename = *determine_battler_filename(@scene.battle_info.battlers[1][index])
+
+            small_sprite = Sprite.new(@viewport)
+            small_sprite.set_bitmap(sprite_small_filename, :battler)
+            small_sprite.set_position(-small_sprite.width / 4, @viewport.rect.height)
+            small_sprite.set_origin(small_sprite.width / 2, small_sprite.height)
+            small_sprite.z = @background.z
+
+            big_sprite = Sprite.new(@viewport)
+            big_sprite.set_bitmap(sprite_big_filename, :battler)
+            big_sprite.set_position(pos_x, @viewport.rect.height)
+            big_sprite.set_origin(big_sprite.width / 2, big_sprite.height)
+            big_sprite.z = @background.z
+            big_sprite.opacity = 0
+
+            @sprites << [small_sprite, big_sprite]
+          end
+
           @actor_sprites = actor_sprites
-        end
-
-        def create_battler_battle_end
-          # @type [String]
-          _sprite_small_filename, sprite_big_filename = *determine_battler_filename(@scene.battle_info.battlers[1][0])
-
-          # @type [Sprite]
-          @battler3 = Sprite.new(@viewport)
-          @battler3.set_bitmap(sprite_big_filename, :battler)
-          @battler3.set_position(@viewport.rect.width * 1.5, @viewport.rect.height)
-          @battler3.set_origin(@battler3.width / 2, @battler3.height)
-          @battler3.opacity = 0
         end
 
         # Determine the right filenames for the transition sprites
         # @param filename [String]
         # @return [Array<String>]
         def determine_battler_filename(filename)
-          sprite_small_filename = filename.gsub('_big', '') + '_sma'
-          sprite_big_filename = filename.include?('_big') ? filename : filename + '_big'
+          sprite_small_filename = "#{filename.gsub('_big', '')}_sma"
+          sprite_big_filename = filename.include?('_big') ? filename : "#{filename}_big"
           return sprite_small_filename, sprite_big_filename
         end
 
@@ -123,18 +123,54 @@ module Battle
         end
 
         def create_sprite_move_animation
-          root = Yuki::Animation.move(0.6, @battler, @battler.x, @battler.y, @viewport.rect.width / 2, @battler.y)
-          root.play_before(Yuki::Animation.wait(0.3))
-          root.play_before(fade = Yuki::Animation.opacity_change(0.4, @battler, 255, 0))
-          fade.parallel_play(Yuki::Animation.opacity_change(0.4, @battler2, 0, 255))
+          root = Yuki::Animation.wait(0)
+          parallel = nil
+
+          positions = calculate_positions
+          @sprites.each_with_index do |sprite, index|
+            small_sprite, big_sprite = sprite
+            end_x = positions[index]
+
+            move_animation = Yuki::Animation.move(0.6, small_sprite, small_sprite.x, small_sprite.y, end_x, small_sprite.y)
+            fade_animation = Yuki::Animation.opacity_change(0.4, small_sprite, 255, 0)
+            fade_animation.parallel_play(Yuki::Animation.opacity_change(0.4, big_sprite, 0, 255))
+
+            if index == 0
+              root.play_before(parallel = move_animation)
+              root.play_before(Yuki::Animation.wait(0.3))
+              root.play_before(fade_animation)
+            else
+              parallel.parallel_play(move_animation)
+              parallel.play_before(fade_animation)
+            end
+          end
+
           return root
         end
 
         def create_enemy_send_animation
           enemy_sprites.each { |sp| sp.visible = false }
-          root = Yuki::Animation.move(0.4, @battler2, @battler2.x, @battler2.y, @battler2.x - 40, @battler2.y)
-          root.play_before(go = Yuki::Animation.move(0.4, @battler2, @battler2.x - 40, @battler2.y, @viewport.rect.width * 1.5, @battler2.y))
-          go.parallel_play(Yuki::Animation.opacity_change(0.4, @battler2, 255, 0))
+          root = Yuki::Animation.wait(0)
+          parallel = nil
+
+          positions = calculate_positions
+          @sprites.each_with_index do |sprite, index|
+            _, big_sprite = sprite
+            pos_x = positions[index] - 40
+
+            move_animation = Yuki::Animation.move(0.6, big_sprite, big_sprite.x, big_sprite.y, pos_x, big_sprite.y)
+            go_out_animation = Yuki::Animation.move(0.4, big_sprite, pos_x, big_sprite.y, @viewport.rect.width * 1.5, big_sprite.y)
+            go_out_animation.parallel_play(Yuki::Animation.opacity_change(0.4, big_sprite, 255, 0))
+
+            if index == 0
+              root.play_before(parallel = move_animation)
+              root.play_before(go_out_animation)
+            else
+              parallel.parallel_play(move_animation)
+              parallel.play_before(go_out_animation)
+            end
+          end
+
           root.play_before(Yuki::Animation.send_command_to(Graphics, :freeze))
           root.play_before(Yuki::Animation.send_command_to(self, :hide_all_sprites))
           root.play_before(Yuki::Animation.send_command_to(Graphics, :transition))
@@ -166,19 +202,41 @@ module Battle
         # Function that create the animation of enemy sprite during the battle end
         # @return [Yuki::Animation::TimedAnimation]
         def show_enemy_sprite_battle_end
-          create_battler_battle_end
-
           root = Yuki::Animation.wait(0.3)
-          root.play_before(go = Yuki::Animation.move(0.4, @battler3, @battler3.x, @battler3.y, (@viewport.rect.width / 2) - 40, @battler3.y))
-          go.parallel_play(Yuki::Animation.opacity_change(0.4, @battler3, 0, 255))
-          root.play_before(Yuki::Animation.move(0.4, @battler3, (@viewport.rect.width / 2) - 40, @battler3.y, (@viewport.rect.width / 2), @battler3.y))
+
+          positions = calculate_positions
+          @sprites.each_with_index do |sprite, index|
+            _, big_sprite = sprite
+            pos_x = positions[index]
+
+            root.play_before(go_in = Yuki::Animation.move(0.4, big_sprite, big_sprite.x, big_sprite.y, pos_x - 40, big_sprite.y))
+            go_in.parallel_play(Yuki::Animation.opacity_change(0.4, big_sprite, 0, 255))
+            root.play_before(Yuki::Animation.move(0.4, big_sprite, pos_x - 40, big_sprite.y, pos_x, big_sprite.y))
+          end
 
           return root
         end
 
-        def hide_all_sprites
-          @to_dispose.each do |sprite|
-            sprite.visible = false if sprite.is_a?(Sprite)
+        # Function to calculate positions based on number of sprites
+        # @param trainer_is_couple [Boolean]
+        # @param vs_type [Array<Integer>]
+        # @param width [Integer]
+        # @return [Array<Integer>]
+        def calculate_positions
+          position_count = @scene.logic.battle_info.trainer_is_couple ? 1 : $game_temp.vs_type
+          width = @viewport.rect.width
+
+          case position_count
+          when 1
+            return [width / 2]
+          when 2
+            spacing = width / 3
+            return [spacing, 2 * spacing]
+          when 3
+            spacing = width / 4
+            return [spacing, 2 * spacing, 3 * spacing]
+          else
+            return []
           end
         end
 
@@ -194,6 +252,12 @@ module Battle
           end
 
           return sprite_animations
+        end
+
+        def hide_all_sprites
+          @to_dispose.each do |sprite|
+            sprite.visible = false if sprite.is_a?(Sprite)
+          end
         end
       end
 

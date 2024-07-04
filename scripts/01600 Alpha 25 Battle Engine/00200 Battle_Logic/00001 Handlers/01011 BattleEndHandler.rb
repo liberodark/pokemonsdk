@@ -132,35 +132,34 @@ module Battle
       $game_temp.vs_type.times.map do |i|
         next handler.scene.visual.battler_sprite(1, -i - 1)
       end.compact.each(&:go_in)
-      ids = [$game_variables[Yuki::Var::Trainer_Battle_ID], $game_variables[Yuki::Var::Second_Trainer_ID]].select { |i| i > 0 }
+
       if handler.logic.battle_result == 0
         handler.logic.battle_phase_exp
-        Audio.bgm_play(*handler.scene.battle_info.defeat_bgm)
-        # Defeat message
-        handler.scene.battle_info.defeat_texts.each_with_index do |text, i|
-          if text
-            handler.scene.visual.show_transition_battle_end
-            handler.scene.display_message_and_wait(text)
-          #elsif ids[i] #@TEST
-          #  handler.scene.display_message_and_wait(text_get(48, ids[i]))
-          end
+        defeat_bgm = handler.scene.battle_info.defeat_bgm
+        Audio.bgm_play(*defeat_bgm) if defeat_bgm
+        handler.scene.visual.show_transition_battle_end
+        # Trainer defeat message
+        handler.scene.battle_info.defeat_texts.each do |text|
+          next unless text
+
+          handler.scene.display_message_and_wait(text)
         end
+
         # Add money
-        if (v = handler.scene.battle_info.total_money(handler.logic)) > 0
-          PFM.game_state.add_money(v)
-          handler.scene.display_message_and_wait(parse_text(18, 60, PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => v.to_s))
-        end
+        money = handler.scene.battle_info.total_money(handler.logic)
+        next unless money > 0
+
+        PFM.game_state.add_money(money)
+        handler.scene.display_message_and_wait(parse_text(18, 60, PFM::Text::TRNAME[0] => $trainer.name, PFM::Text::NUMXR => money.to_s))
       else
         victory_bgm = handler.scene.battle_info.victory_bgm
         Audio.bgm_play(*victory_bgm) if victory_bgm
-        # Victory message
-        handler.scene.battle_info.victory_texts.each_with_index do |text, i|
-          if text
-            handler.scene.visual.show_transition_battle_end
-            handler.scene.display_message_and_wait(text)
-          #elsif ids[i] #@TEST
-          #  handler.scene.display_message_and_wait(text_get(47, ids[i]))
-          end
+        handler.scene.visual.show_transition_battle_end
+        # Trainer victory message
+        handler.scene.battle_info.victory_texts.each do |text|
+          next unless text
+
+          handler.scene.display_message_and_wait(text)
         end
       end
 
