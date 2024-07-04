@@ -46,6 +46,8 @@ class Shader < LiteRGSS::Shader
   SHADER_UNIFORM_ADD = /#version[^\n]+\n/
   # List of registered shaders
   @registered_shaders = {}
+  # List of pre-registered shaders
+  @pre_registered_shaders = {}
 
   class << self
     # Register a new shader by it's name
@@ -56,20 +58,47 @@ class Shader < LiteRGSS::Shader
     # @param color_process [Boolean] if the function should add color_process to the shader
     # @param alpha_process [Boolean] if the function should add alpha_process to the shader
     def register(name_sym, frag_file, vert_file = nil, tone_process: false, color_process: false, alpha_process: false)
-      frag = load_shader_file(frag_file)
-      vert = vert_file && load_shader_file(vert_file)
-      frag = add_frag_color(frag) if color_process
-      frag = add_frag_tone(frag) if tone_process
-      frag = add_frag_alpha(frag) if alpha_process
-
-      @registered_shaders[name_sym] = [vert, frag].compact
+      @pre_registered_shaders[name_sym] = [frag_file, vert_file, color_process, tone_process, alpha_process]
     end
 
     # Function that creates a shader by its name
     # @param name_sym [Symbol] name of the shader
     # @return [Shader]
     def create(name_sym)
-      Shader.new(*@registered_shaders[name_sym])
+      Shader.new(*load_shader_params(name_sym))
+    end
+
+    # Function that loads the shader params by its name
+    # @param name_sym [Symbol] name of the shader
+    # @return [Array<String>]
+    def load_shader_params(name_sym)
+      return @registered_shaders[name_sym] if @registered_shaders.has_key?(name_sym)
+
+      if @pre_registered_shaders.has_key?(name_sym)
+        return load_shader_params_from_pre_registered_shader(name_sym)
+      end
+
+      log_error("Failed to load #{name_sym} shader. It is not registered!")
+      return [DEFAULT_SHADER]
+    end
+
+    # Function that loads the shader params by its name from pre-registered shaders
+    # @param name_sym [Symbol] name of the shader
+    # @return [Array<String>]
+    def load_shader_params_from_pre_registered_shader(name_sym)
+      log_info("Loading #{name_sym} shader")
+
+      frag_file, vert_file, color_process, tone_process, alpha_process = @pre_registered_shaders[name_sym]
+      frag = load_shader_file(frag_file)
+      vert = vert_file && load_shader_file(vert_file, true)
+      frag = add_frag_color(frag) if color_process
+      frag = add_frag_tone(frag) if tone_process
+      frag = add_frag_alpha(frag) if alpha_process
+      params = [vert, frag].compact
+      @registered_shaders[name_sym] = params
+      @pre_registered_shaders.delete(name_sym)
+
+      return params
     end
 
     # Load a shader data from a file
@@ -89,12 +118,26 @@ The game will sleep 10 seconds to make sure you see this message')
 
     # Function that loads the shader file
     # @param filecontent_or_name [String]
-    # @return [String]
-    def load_shader_file(filecontent_or_name)
-      contents = filecontent_or_name.include?(SHADER_CONTENT_DETECTION) ? filecontent_or_name : File.read(filecontent_or_name)
+    # @param is_vertex [Boolean] is set to true, returns nil when file does not exists
+    # @return [String, nil]
+    def load_shader_file(filecontent_or_name, is_vertex = false)
+      contents = filecontent_or_name if filecontent_or_name.include?(SHADER_CONTENT_DETECTION)
+      contents ||= load_shader_from_file(filecontent_or_name, is_vertex)
+      return contents unless contents
       return SHADER_VERSION + contents unless contents.include?(SHADER_VERSION_DETECTION)
 
       return contents
+    end
+
+    # Function that auto-loads the content of a shader from file
+    # @param filename [String]
+    # @param is_vertex [Boolean] is set to true, returns nil when file does not exists
+    # @return [String, nil]
+    def load_shader_from_file(filename, is_vertex)
+      return File.read(filename) if File.exist?(filename)
+
+      log_error("Failed to load #{filename} shader")
+      return is_vertex ? nil : DEFAULT_SHADER
     end
 
     # Function that adds the color processing to shader
@@ -119,23 +162,19 @@ The game will sleep 10 seconds to make sure you see this message')
     end
   end
 
-  safe_code('Default shader loading') do
-    Graphics.on_start do
-      background_color_shader = DEFAULT_SHADER.sub(SHADER_FRAG_FEATURE_ADD, "\n  frag.a = max(frag.a, color.a);\\0")
-      register(:map_shader, background_color_shader, tone_process: true, color_process: true)
-      register(:tone_shader, DEFAULT_SHADER, tone_process: true, alpha_process: true)
-      register(:color_shader, DEFAULT_SHADER, color_process: true, alpha_process: true)
-      register(:color_shader_with_background, background_color_shader, color_process: true, alpha_process: true)
-      register(:full_shader, DEFAULT_SHADER, tone_process: true, color_process: true, alpha_process: true)
-      register(:yuki_circular, 'graphics/shaders/yuki_transition_circular.txt')
-      register(:yuki_directed, 'graphics/shaders/yuki_transition_directed.txt')
-      register(:yuki_weird, 'graphics/shaders/yuki_transition_weird.txt')
-      register(:blur, 'graphics/shaders/blur.txt')
-      register(:battle_shadow, 'graphics/shaders/battle_shadow.frag', 'graphics/shaders/battle_shadow.vert')
-      register(:battle_backout, 'graphics/shaders/battle_backout.frag')
-      register(:graphics_transition, Graphics::TRANSITION_FRAG_SHADER)
-      register(:graphics_transition_static, Graphics::STATIC_TRANSITION_FRAG_SHADER)
-      register(:fake_3d, 'graphics/shaders/fake_3d.frag', 'graphics/shaders/fake_3d.vert') if Fake3D::ENABLED
-    end
-  end
+  background_color_shader = DEFAULT_SHADER.sub(SHADER_FRAG_FEATURE_ADD, "\n  frag.a = max(frag.a, color.a);\\0")
+  register(:map_shader, background_color_shader, tone_process: true, color_process: true)
+  register(:tone_shader, DEFAULT_SHADER, tone_process: true, alpha_process: true)
+  register(:color_shader, DEFAULT_SHADER, color_process: true, alpha_process: true)
+  register(:color_shader_with_background, background_color_shader, color_process: true, alpha_process: true)
+  register(:full_shader, DEFAULT_SHADER, tone_process: true, color_process: true, alpha_process: true)
+  register(:yuki_circular, 'graphics/shaders/yuki_transition_circular.txt')
+  register(:yuki_directed, 'graphics/shaders/yuki_transition_directed.txt')
+  register(:yuki_weird, 'graphics/shaders/yuki_transition_weird.txt')
+  register(:blur, 'graphics/shaders/blur.txt')
+  register(:battle_shadow, 'graphics/shaders/battle_shadow.frag', 'graphics/shaders/battle_shadow.vert')
+  register(:battle_backout, 'graphics/shaders/battle_backout.frag')
+  register(:graphics_transition, Graphics::TRANSITION_FRAG_SHADER)
+  register(:graphics_transition_static, Graphics::STATIC_TRANSITION_FRAG_SHADER)
+  register(:fake_3d, 'graphics/shaders/fake_3d.frag', 'graphics/shaders/fake_3d.vert')
 end
