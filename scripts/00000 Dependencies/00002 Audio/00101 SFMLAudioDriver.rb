@@ -49,7 +49,7 @@ module Audio
       buffer.load_from_memory(memory)
       c.set_buffer(buffer)
       c.set_pitch(pitch / 100.0)
-      c.set_volume(volume / 100.0)
+      c.set_volume(volume)
       c.play
     end
 
@@ -68,7 +68,7 @@ module Audio
       auto_loop(c, memory)
       c.set_loop(true)
       c.set_pitch(pitch / 100.0)
-      c.set_volume(volume / 100.0)
+      c.set_volume(volume)
       c.play
       c.pause if @mute_settings[channel]
     end
@@ -108,7 +108,7 @@ module Audio
       c = @channels[channel]
       return if !c || c.stopped?
 
-      c.set_volume(volume / 100.0)
+      c.set_volume(volume)
     end
 
     # Get a channel audio position
@@ -191,7 +191,7 @@ module Audio
       c = @channels[channel]
       current_duration = Graphics.current_time - start_time
       if c && !c.stopped? && current_duration < duration
-        sound.set_volume(volume * (1 - current_duration / duration))
+        c.set_volume(volume * (1 - current_duration / duration))
       else
         @fade_settings.delete(channel)
         stop_channel(channel)
@@ -214,11 +214,11 @@ module Audio
     # @return [SFMLAudio::Sound]
     def get_se_sound(filename)
       sound = SFMLAudio::Sound.new
-      if file_name.downcase.include?('/cries/')
+      if filename.downcase.include?('/cries/')
         @cries_stack << sound
         @cries_stack.shift.stop if @cries_stack.size > 5
       else
-        @se_sounds[file_name] = sound
+        @se_sounds[filename] = sound
       end
       return sound
     end
