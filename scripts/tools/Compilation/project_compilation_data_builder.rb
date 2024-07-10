@@ -65,7 +65,7 @@ module ProjectCompilation
 
     def compile_battle_event
       Dir['Data/Events/Battle/*.rb'].each do |filename|
-        id = filename.match(%r"([0-9]{5})[^/]*\.rb")&.[](1)
+        id = filename.match(%r"([0-9]{3,5})[^/]*\.rb")&.[](1)
         next unless id
 
         puts "Building battle event: #{filename}"

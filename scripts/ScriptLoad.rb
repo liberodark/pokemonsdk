@@ -41,6 +41,8 @@ module ScriptLoader
     # Load Project Scripts
     load_vscode_scripts(PROJECT_SCRIPT_PATH) if index_filename == SCRIPT_INDEX_PATH
     save_packed_scripts if @should_build_script
+    # Autoload debug module to help people
+    ScriptLoader.load_tool('Debugger')
     if PARGV[:mon]
       require_relative 'ScriptMonitor'
       @monitor = ScriptMonitor.new
@@ -87,7 +89,7 @@ module ScriptLoader
   # @note Scripts has to be named "$$$$$ scriptname.rb" where $ are digit
   def load_scripts(path, file = nil)
     Dir[File.join(path, '*.rb')].sort.each do |filename|
-      next unless File.basename(filename) =~ /^[0-9]{5}[ _].*/
+      next unless File.basename(filename) =~ /^[0-9]{3,5}[ _].*/
 
       require(filename)
       pack_script(filename) if @should_build_script

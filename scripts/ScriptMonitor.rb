@@ -1,7 +1,7 @@
 module ScriptLoader
   class ScriptMonitor
     def initialize
-      @script_to_monitor = $LOADED_FEATURES.select { |f| f.match?(/\/scripts\/[0-9]{5}/) }
+      @script_to_monitor = $LOADED_FEATURES.select { |f| f.match?(/\/scripts\/[0-9]+/) }
       load_last_mtimes
       start_monitoring
     end

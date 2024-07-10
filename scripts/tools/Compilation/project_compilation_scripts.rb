@@ -1,14 +1,6 @@
 module ProjectCompilation
   class ScriptCollector
-    EXCLUDED_SCRIPTS = [
-      'pokemonsdk/scripts/01500 Yuki/01200 Yuki__WorldMapEditor.rb',
-      'pokemonsdk/scripts/01500 Yuki/02400 Yuki_Debug.rb',
-      'pokemonsdk/scripts/01500 Yuki/02401 Yuki__Debug MainUI.rb',
-      'pokemonsdk/scripts/01500 Yuki/02402 Debug_SystemTags.rb',
-      'pokemonsdk/scripts/01500 Yuki/02403 Debug_Groups.rb',
-      'pokemonsdk/scripts/00700 Ajout_PSDK/00200 Tester.rb',
-      'pokemonsdk/scripts/00700 Ajout_PSDK/01700 Debugger.rb'
-    ]
+    EXCLUDED_SCRIPTS = []
     VD_SCRIPT = 'Yuki__VD.rb'
 
     # @param script_class [Class<Script>]
@@ -85,7 +77,7 @@ module ProjectCompilation
     def folder_script_filenames(path)
       return Dir[File.join(path, '*.rb')].sort.filter_map do |filename|
         basename = File.basename(filename)
-        next unless basename =~ /^[0-9]{5}[ _].*/
+        next unless basename =~ /^[0-9]{3,5}[ _].*/
 
         next basename
       end
