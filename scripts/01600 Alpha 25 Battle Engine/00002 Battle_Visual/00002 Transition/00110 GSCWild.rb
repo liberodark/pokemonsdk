@@ -14,18 +14,18 @@ module Battle
         # Return the pre_transtion sprite name
         # @return [String]
         def pre_transition_sprite_name
-          return 'rbj/crystal_wild_ext'
+          return 'spritesheets/gold_wild'
         end
       end
 
       # Wild transition of Crystal game
-      class CrystalWild < GoldWild
+      class CrystalWild < RBYWild
         private
 
         # Return the pre_transtion sprite name
         # @return [String]
         def pre_transition_sprite_name
-          return 'rbj/gold_wild_ext'
+          return 'spritesheets/crystal_wild'
         end
       end
     end

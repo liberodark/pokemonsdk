@@ -1,8 +1,8 @@
 module Battle
   class Visual
     module Transition
-      # Wild transition of HeartGold/SoulSilver games
-      class HGSSWild < RBYWild
+      # Wild Cave transition of HeartGold/SoulSilver games
+      class HGSSCaveWild < RBYWild
         private
 
         # Return the duration of pre_transtion cells
@@ -14,11 +14,11 @@ module Battle
         # Return the pre_transtion sprite name
         # @return [String]
         def pre_transition_sprite_name
-          return '4g/hgss_wild_ext'
+          return 'spritesheets/heartgold_soulsilver_cave_wild'
         end
       end
     end
 
-    WILD_TRANSITIONS[5] = Transition::HGSSWild
+    WILD_TRANSITIONS[6] = Transition::HGSSCaveWild
   end
 end

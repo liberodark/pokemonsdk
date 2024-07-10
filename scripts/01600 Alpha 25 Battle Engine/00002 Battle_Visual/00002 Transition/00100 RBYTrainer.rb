@@ -12,7 +12,7 @@ module Battle
         # Return the pre_transtion sprite name
         # @return [String]
         def pre_transition_sprite_name
-          return 'rbj/trainer'
+          return 'shaders/rby_trainer'
         end
 
         # Function that creates all the sprites
@@ -31,7 +31,8 @@ module Battle
           @top_sprite.set_bitmap(pre_transition_sprite_name, :transition)
           @top_sprite.zoom = @viewport.rect.width / @top_sprite.width.to_f
           @top_sprite.y = (@viewport.rect.height - @top_sprite.height * @top_sprite.zoom_y) / 2
-          @top_sprite.shader = Shader.create(:rby_trainer)
+          @top_sprite.shader = setup_shader(shader_name)
+          @to_dispose << @screenshot_sprite << @top_sprite
         end
 
         # Function that creates the enemy sprites
@@ -53,14 +54,19 @@ module Battle
         # Function that creates the Yuki::Animation related to the pre transition
         # @return [Yuki::Animation::TimedAnimation]
         def create_pre_transition_animation
-          transitioner = proc { |t| @top_sprite.shader.set_float_uniform('t', t) }
-          ya = Yuki::Animation
-          animation = ya::ScalarAnimation.new(2.75, transitioner, :call, 0, 1)
-          animation.play_before(ya.send_command_to(@viewport.color, :set, 0, 0, 0, 255))
-          animation.play_before(ya.send_command_to(@top_sprite, :dispose))
-          animation.play_before(ya.send_command_to(@screenshot_sprite, :dispose))
-          animation.play_before(ya.wait(0.25))
+          animation = Yuki::Animation.send_command_to(@viewport.color, :set, 0, 0, 0, 0)
+          animation.play_before(create_fade_in_animation)
+          animation.play_before(Yuki::Animation.send_command_to(@viewport.color, :set, 0, 0, 0, 255))
+          animation.play_before(Yuki::Animation.send_command_to(self, :dispose))
+          animation.play_before(Yuki::Animation.wait(0.25))
           return animation
+        end
+
+        # Function that creates the fade in animation
+        # @return [Yuki::Animation::TimedAnimation]
+        def create_fade_in_animation
+          transitioner = proc { |t| @top_sprite.shader.set_float_uniform('t', t) }
+          return Yuki::Animation.scalar(2.75, transitioner, :call, 0, 1)
         end
 
         # Function that create the fade out animation
@@ -125,22 +131,23 @@ module Battle
           end
           return animation
         end
+
+        # Return the shader name
+        # @return [Symbol]
+        def shader_name
+          return :rby_trainer
+        end
+
+        # Set up the shader
+        # @param name [Symbol] name of the shader
+        # @return [Shader]
+        def setup_shader(name)
+          return Shader.create(name)
+        end
       end
     end
 
     TRAINER_TRANSITIONS[2] = Transition::RBYTrainer
-    TRAINER_TRANSITIONS[5] = Transition::RBYTrainer
-    TRAINER_TRANSITIONS[6] = Transition::RBYTrainer
-    TRAINER_TRANSITIONS[7] = Transition::RBYTrainer
-    TRAINER_TRANSITIONS[8] = Transition::RBYTrainer
-    Visual.register_transition_resource(2, :sprite)
-    Visual.register_transition_resource(5, :sprite)
-    Visual.register_transition_resource(6, :sprite)
-    Visual.register_transition_resource(7, :sprite)
-    Visual.register_transition_resource(8, :sprite)
+    TRAINER_TRANSITIONS.default = Transition::RBYTrainer
   end
-end
-
-Graphics.on_start do
-  Shader.register(:rby_trainer, 'graphics/shaders/rbytrainer.frag')
 end

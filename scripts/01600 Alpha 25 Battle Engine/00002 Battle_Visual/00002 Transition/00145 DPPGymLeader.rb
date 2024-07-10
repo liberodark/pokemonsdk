@@ -1,7 +1,7 @@
 module Battle
   class Visual
     module Transition
-      # Trainer transition of DPP Gym Leader
+      # Gym Leader transition of Diamant/Perle/Platine
       class DPPGymLeader < RBYTrainer
         # Start x coordinate of the bar
         BAR_START_X = 320

@@ -1,11 +1,12 @@
 module Battle
   class Visual
     module Transition
+      # Trainer transition of Heartgold/Soulsilver games
       class HGSSTrainer < DPPTrainer
         # Return the pre_transtion sprite name
         # @return [String]
         def pre_transition_sprite_name
-          return '4g/hgss_trainer_1', '4g/hgss_trainer_2'
+          return 'spritesheets/heartgold_soulsilver_trainer_01', 'spritesheets/heartgold_soulsilver_trainer_02'
         end
       end
     end

@@ -23,7 +23,7 @@ module Battle
         # Return the pre_transtion sprite name
         # @return [String]
         def pre_transition_sprite_name
-          return 'rbj/pre_wild'
+          return 'spritesheets/rby_wild'
         end
 
         # Function that creates all the sprites
@@ -42,6 +42,7 @@ module Battle
           @top_sprite.zoom = @viewport.rect.width / @top_sprite.width.to_f
           @top_sprite.y = (@viewport.rect.height - @top_sprite.height * @top_sprite.zoom_y) / 2
           @top_sprite.visible = false
+          @to_dispose << @screenshot_sprite << @top_sprite
         end
 
         # Function that creates the enemy sprites
@@ -65,24 +66,25 @@ module Battle
         # Function that creates the Yuki::Animation related to the pre transition
         # @return [Yuki::Animation::TimedAnimation]
         def create_pre_transition_animation
-          ya = Yuki::Animation
           animation = create_flash_animation(1.5, 6)
-          animation.play_before(ya.send_command_to(@viewport.color, :set, 0, 0, 0, 0))
-          animation.play_before(ya.send_command_to(@top_sprite, :visible=, true))
-          animation.play_before(create_fadein_animation)
-          animation.play_before(ya.send_command_to(@viewport.color, :set, 0, 0, 0, 255))
-          animation.play_before(ya.send_command_to(@top_sprite, :dispose))
-          animation.play_before(ya.send_command_to(@screenshot_sprite, :dispose))
-          animation.play_before(ya.wait(0.25))
+          animation.play_before(Yuki::Animation.send_command_to(@viewport.color, :set, 0, 0, 0, 0))
+          animation.play_before(create_fade_in_animation)
+          animation.play_before(Yuki::Animation.send_command_to(@viewport.color, :set, 0, 0, 0, 255))
+          animation.play_before(Yuki::Animation.send_command_to(self, :dispose))
+          animation.play_before(Yuki::Animation.wait(0.25))
           return animation
         end
 
         # Function that creates the fade in animation
-        def create_fadein_animation
+        # @return [Yuki::Animation::TimedAnimation]
+        def create_fade_in_animation
           # We need to display all the cells in order so we will build an array from that
           cells = (@top_sprite.nb_x * @top_sprite.nb_y).times.map { |i| [i % @top_sprite.nb_x, i / @top_sprite.nb_x] }
-          # We create the cell animation
-          return Yuki::Animation::SpriteSheetAnimation.new(pre_transition_cells_duration, @top_sprite, cells)
+
+          animation = Yuki::Animation.send_command_to(@top_sprite, :visible=, true)
+          animation.play_before(Yuki::Animation::SpriteSheetAnimation.new(pre_transition_cells_duration, @top_sprite, cells))
+
+          return animation
         end
 
         # Function that create the fade out animation
@@ -130,9 +132,17 @@ module Battle
           animation.play_before(ya.wait(0.2))
           return animation
         end
+
+        # Set up the shader
+        # @param name [Symbol] name of the shader
+        # @return [Shader]
+        def setup_shader(name)
+          return Shader.create(name)
+        end
       end
     end
 
     WILD_TRANSITIONS[0] = Transition::RBYWild
+    WILD_TRANSITIONS.default = Transition::RBYWild
   end
 end

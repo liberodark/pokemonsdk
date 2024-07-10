@@ -2,22 +2,20 @@ module Battle
   class Visual
     module Transition
       # Wild Sea transition of Black/White games
-      class BWWildExt < RBYWild
+      class BWWild < RBYWild
         # Function that creates the top sprite
         def create_top_sprite
-          @screenshot_sprite.shader = setup_shader
+          @screenshot_sprite.shader = setup_shader(shader_name)
           @to_dispose << @screenshot_sprite
         end
 
-        # Function that creates the Yuki::Animation related to the pre transition
+        # Function that creates the fade in animation
         # @return [Yuki::Animation::TimedAnimation]
-        def create_pre_transition_animation
-          root = create_flash_animation(1.5, 6)
-          root.play_before(Yuki::Animation.send_command_to(@screenshot_sprite, :set_origin, @screenshot_sprite.width / 2, @screenshot_sprite.height / 2))
+        def create_fade_in_animation
+          root = Yuki::Animation.send_command_to(@screenshot_sprite, :set_origin, @screenshot_sprite.width / 2, @screenshot_sprite.height / 2)
           root.play_before(Yuki::Animation.send_command_to(@screenshot_sprite, :set_position, @viewport.rect.width / 2, @viewport.rect.height / 2))
           root.play_before(create_shader_animation)
           root.play_before(create_zoom_animation)
-          root.play_before(Yuki::Animation.send_command_to(self, :dispose))
 
           return root
         end
@@ -41,29 +39,17 @@ module Battle
         # Create a zoom animation on the player
         # @return [Yuki::Animation::TimedAnimation]
         def create_zoom_animation
-          root = Yuki::Animation.wait(0)
-          root.play_before(Yuki::Animation.scalar(0.4, @screenshot_sprite, :zoom=, 1, 3))
-
-          return root
+          return Yuki::Animation.scalar(0.4, @screenshot_sprite, :zoom=, 1, 3)
         end
 
-        # Set up the shader
-        # @return [Shader]
-        def setup_shader
-          shader = Shader.create(:weird)
-          shader.set_float_uniform('radius', 0)
-          shader.set_float_uniform('alpha', 1)
-          shader.set_float_uniform('tau', 0.5)
-
-          return shader
+        # Return the shader name
+        # @return [Symbol]
+        def shader_name
+          return :yuki_weird
         end
       end
     end
 
-    WILD_TRANSITIONS[8] = Transition::BWWildExt
+    WILD_TRANSITIONS[8] = Transition::BWWild
   end
-end
-
-Graphics.on_start do
-  Shader.register(:weird, 'graphics/shaders/yuki_transition_weird.txt')
 end

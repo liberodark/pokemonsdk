@@ -2,12 +2,12 @@ module Battle
   class Visual
     module Transition
       # Wild Sea transition of HeartGold/SoulSilver games
-      class HGSSWildSea < RBYWild
+      class HGSSSeaWild < RBYWild
         # A hash mapping symbolic names to sprite paths
         # @type [Hash{Symbol => String}]
         SPRITE_NAMES = {
-          first: '4g/hgss_wild_sea_1',
-          second: '4g/hgss_wild_sea_2',
+          first: 'assets/heartgold_soulsilver_sea_wild_01',
+          second: 'assets/heartgold_soulsilver_sea_wild_02',
           third: 'black_screen'
         }
 
@@ -42,16 +42,14 @@ module Battle
           @viewport.sort_z
         end
 
-        # Function that creates the Yuki::Animation related to the pre transition
+        # Function that creates the fade in animation
         # @return [Yuki::Animation::TimedAnimation]
-        def create_pre_transition_animation
-          root = create_flash_animation(1, 6)
-          root.play_before(Yuki::Animation.send_command_to(@screenshot_sprite, :shader=, setup_shader))
+        def create_fade_in_animation
+          root = Yuki::Animation.send_command_to(@screenshot_sprite, :shader=, setup_shader(shader_name))
           root.play_before(start_shader_animation)
               .parallel_play(start_bubble_animation)
               .parallel_play(start_wave_animation)
               .parallel_play(start_black_animation)
-          root.play_before(Yuki::Animation.send_command_to(self, :dispose))
 
           return root
         end
@@ -98,21 +96,14 @@ module Battle
           return root
         end
 
-        # Set up the shader
-        # @return [Shader]
-        def setup_shader
-          shader = Shader.create(:sinusoidal)
-          shader.set_float_uniform('time', 0)
-
-          return shader
+        # Return the shader name
+        # @return [Symbol]
+        def shader_name
+          return :sinusoidal
         end
       end
     end
 
-    WILD_TRANSITIONS[7] = Transition::HGSSWildSea
+    WILD_TRANSITIONS[7] = Transition::HGSSSeaWild
   end
-end
-
-Graphics.on_start do
-  Shader.register(:sinusoidal, 'graphics/shaders/hgss_wild_sea.frag')
 end

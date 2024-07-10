@@ -80,30 +80,6 @@ module Yuki
       dispose_sprites(sp1)
     end
 
-    # Display a weird transition (for battle)
-    # @param nb_frame [Integer] the number of frame used for the transition
-    # @param radius [Float] the radius (in texture uv) of the transition effect
-    # @param max_alpha [Float] the maxium alpha value for the transition effect
-    # @param min_tau [Float] the minimum tau value of the transition effect
-    # @param delta_tau [Float] the derivative of tau between the begining and the end of the transition
-    def weird_transition(nb_frame = 60, radius = 0.25, max_alpha = 0.5, min_tau = 0.07, delta_tau = 0.07, bitmap: nil)
-      sp = ShaderedSprite.new($scene.viewport || Graphics.window)
-      sp.bitmap = bitmap || $scene.snap_to_bitmap
-      sp.zoom = Graphics.width / sp.bitmap.width.to_f
-      sp.shader = shader = Shader.create(:yuki_weird)
-      sp.set_origin(sp.bitmap.width / 2, sp.bitmap.height / 2)
-      sp.set_position(Graphics.width / 2, Graphics.height / 2)
-      shader.set_float_uniform('radius', radius)
-      0.step(nb_frame) do |i|
-        yield(i, sp) if block_given?
-        shader.set_float_uniform('alpha', max_alpha * i / nb_frame)
-        shader.set_float_uniform('tau', min_tau + (delta_tau * i / nb_frame))
-        update_graphics_60_fps
-      end
-      sp.shader = shader = nil
-      bitmap ? sp.dispose : dispose_sprites(sp)
-    end
-
     # Display a BW in->out Transition
     # @param transition_sprite [Sprite] a screenshot sprite
     def bw_zoom(transition_sprite)

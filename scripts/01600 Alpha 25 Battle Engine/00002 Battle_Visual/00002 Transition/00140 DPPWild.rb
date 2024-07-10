@@ -2,8 +2,8 @@ module Battle
   class Visual
     module Transition
       # Wild transition of Diamant/Perle/Platine games
-      class DPPWildExt < RSWildExt
-        # The name of the shader
+      class DPPWild < RSWild
+        # Return the shader name
         # @return [Symbol]
         def shader_name
           return :dpp_sprite_side
@@ -11,10 +11,6 @@ module Battle
       end
     end
 
-    WILD_TRANSITIONS[4] = Transition::DPPWildExt
+    WILD_TRANSITIONS[4] = Transition::DPPWild
   end
-end
-
-Graphics.on_start do
-  Shader.register(:dpp_sprite_side, 'graphics/shaders/dpp_wild_ext_side.frag')
 end

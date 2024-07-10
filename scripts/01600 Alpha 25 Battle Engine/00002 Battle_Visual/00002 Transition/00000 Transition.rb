@@ -141,6 +141,12 @@ module Battle
           return animation
         end
 
+        # Function that creates the fade in animation
+        # @return [Yuki::Animation::TimedAnimation]
+        def create_fade_in_animation
+          return Yuki::Animation.wait(0)
+        end
+
         # Function that creates the fade out animation
         # @return [Yuki::Animation::TimedAnimation]
         def create_fade_out_animation

@@ -1,6 +1,7 @@
 module Battle
   class Visual
     module Transition
+      # Trainer transition of X/Y games
       class XYTrainer < Base
         # Unitary deltaX of the background
         DX = -Math.cos(-3 * Math::PI / 180)
