@@ -3,6 +3,7 @@
 # You should have run `ruby make_release.rb` before
 RELEASE_FOLDER = '.release'
 $dry_run = ARGV.include?('dry')
+Dir.chdir('..')
 
 def mkdir!(path)
   return if Dir.exist?(path)

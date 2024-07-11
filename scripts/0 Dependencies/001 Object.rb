@@ -196,11 +196,5 @@ class Object
     VALIDATE_PARAM_ERROR
   end
 
-  # Is the game in debug ?
-  # @return [Boolean]
-  def debug?
-    PSDK_CONFIG.debug?
-  end
-
   $DEBUG = false
 end

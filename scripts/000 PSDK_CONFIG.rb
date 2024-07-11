@@ -118,3 +118,13 @@ module ScriptLoader
 end
 # Constant containing all the PSDK Config
 PSDK_CONFIG = ScriptLoader::PSDKConfig.allocate
+
+class Object
+  private
+
+  # Is the game in debug ?
+  # @return [Boolean]
+  def debug?
+    PSDK_CONFIG.debug?
+  end
+end

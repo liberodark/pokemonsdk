@@ -1,4 +1,4 @@
-data = File.read('scripts/LiteRGSS.rb')
+data = File.read('../scripts/LiteRGSS.rb')
 data.gsub!(/\r\n +/, "\r\n")
 data.gsub!('# @!attribute [rw] ', 'attr_accessor :')
 data.gsub!('# @!attribute [r] ', 'attr_reader :')

@@ -1,3 +1,4 @@
+Dir.chdir('..')
 require 'uri'
 require 'zlib'
 
