@@ -23,7 +23,7 @@ PSDK_PATH =
 
 $LOAD_PATH << './plugins' unless $LOAD_PATH.include?('./plugins')
 
-ENV['SSL_CERT_FILE'] ||= './lib/cert.pem' if $0 == 'Game.rb' # Launched from PSDK
+ENV['SSL_CERT_FILE'] ||= File.join(PSDK_LIB_PATH, 'cert.pem')
 
 # Constant giving the current PSDK version
 PSDK_VERSION = File.read("#{PSDK_PATH}/version.txt").to_i
