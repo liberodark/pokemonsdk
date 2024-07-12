@@ -29,7 +29,10 @@ module Battle
       # Test if the user has used all the other moves
       # @param user [PFM::PokemonBattler]
       def all_other_move_used?(user)
-        return user.moveset.each { |move| move.pp == 0 && move.db_symbol != :last_resort }
+        moves = user.moveset.reject { |move| move == self }
+        used_moves = user.move_history.map(&:original_move).uniq
+
+        return (moves - used_moves).size <= 0
       end
     end
     Move.register(:s_last_resort, LastResort)
