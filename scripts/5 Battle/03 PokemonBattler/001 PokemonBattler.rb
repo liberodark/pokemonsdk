@@ -402,7 +402,6 @@ module PFM
     # Copy all the properties back to the original pokemon
     def copy_properties_back_to_original
       return if @scene.battle_info.max_level
-      return if Storage::HEAL_AND_CURE_POKEMON && @scene.battle_info.caught_pokemon == self && !$actors.include?(self.original)
 
       @battle_properties.clear
       self.transform = nil

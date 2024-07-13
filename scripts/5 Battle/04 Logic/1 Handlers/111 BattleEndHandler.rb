@@ -8,11 +8,12 @@ module Battle
       def process
         @scene.message_window.blocking = true
         players_pokemon = @logic.all_battlers.select(&:from_party?)
-        players_pokemon.concat($actors.map {|pkmn| PFM::PokemonBattler.new(pkmn,$scene) }) if players_pokemon.empty?
+        players_pokemon.concat($actors.map { |creature| PFM::PokemonBattler.new(creature, $scene) }) if players_pokemon.empty?
         $game_temp.battle_can_lose = false if PFM.game_state.nuzlocke.enabled? && !$game_switches[Yuki::Sw::BT_AUTHORIZE_DEFEAT_NUZLOCKE]
         exec_hooks(BattleEndHandler, :battle_end, binding)
         exec_hooks(BattleEndHandler, :battle_end_no_defeat, binding) if @logic.battle_result != 2
-        @logic.all_battlers(&:copy_properties_back_to_original)
+        battlers = @logic.all_battlers.reject { |creature| creature == @scene.battle_info.caught_pokemon }
+        battlers.each(&:copy_properties_back_to_original)
         exec_hooks(BattleEndHandler, :battle_end_nuzlocke, binding) if PFM.game_state.nuzlocke.enabled?
         unless $scene.is_a?(Yuki::SoftReset) || $scene.is_a?(Scene_Title)
           $game_system.bgm_play($game_system.playing_bgm)

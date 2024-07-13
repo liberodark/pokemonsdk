@@ -26,11 +26,10 @@ module Battle
             else
               @logic.item_change_handler.change_item(:none, true, target, user, self)
             end
-
           else # wild battle
             overwrite = user.from_party? && !target.from_party?
             @logic.item_change_handler.change_item(target_item, overwrite, user, user, self)
-            @logic.item_change_handler.change_item(:none, false, target, user, self)
+            @logic.item_change_handler.change_item(:none, overwrite, target, user, self)
           end
         end
       end
