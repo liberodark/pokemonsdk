@@ -123,9 +123,17 @@ module PFM
     def get_order(socket)
       return [] if @locked
       return @shortcut if socket == :favorites
-      return process_battle_order(socket) if socket.is_a?(Symbol) # TODO
+      return process_battle_order(socket) if $game_temp.in_battle
 
       return (@orders[socket] ||= [])
+    end
+
+    # Get the order of the items in battle. Only the usable ones get displayed.
+    # @param socket [Integer, Symbol] ID of the socket
+    # @return [Array]
+    def process_battle_order(socket)
+      item_list = (@orders[socket] ||= []).select { |item| data_item(item).is_battle_usable }
+      return item_list
     end
 
     # Reset the order of items in a socket

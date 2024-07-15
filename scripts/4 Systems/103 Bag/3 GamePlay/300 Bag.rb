@@ -25,7 +25,7 @@ module GamePlay
     # List of pocket index the player can see according to the modes
     POCKETS_PER_MODE = {
       menu: [1, 2, 6, 3, 5, 4, 8],
-      battle: [2, 6, 4],
+      battle: [1, 2, 6, 4],
       berry: [4],
       hold: [1, 2, 6, 4],
       shop: [1, 2, 6, 3, 4]
