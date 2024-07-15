@@ -40,7 +40,7 @@ module PFM
       # @option hash [Integer] :rareness Rareness of the Pokemon (0 = not catchable, 255 = always catchable)
       # @option hash [Integer] :loyalty Happiness of the Pokemon
       # @option hash [Array<Integer, Symbol>] :moves Current Moves of the Pokemon (0 = default)
-      # @option hash [Array(Integer, Integer)] :memo_text Text used for the memo ([file_id, text_id])
+      # @option hash [Array(Integer, Integer)] :memo_text Text used for the memo ([file_id, text_id]) (file_id = csv - 100000; 103.csv = -99897; etc.)
       # @option hash [String] :trainer_name Name of the trainer that caught / got the Pokemon
       # @option hash [Integer] :trainer_id ID of the trainer that caught / got the Pokemon
       # @return [PFM::Pokemon]

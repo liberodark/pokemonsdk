@@ -2,7 +2,7 @@
 
 ## Fork PSDK
 
-* Go to the [PSDK Repo](https://gitlab.com/NuriYuri/pokemonsdk)
+* Go to the [PSDK Repo](https://gitlab.com/pokemonsdk/pokemonsdk)
 * Click on the fork button
 * In your fork
     * Click on the Settings -> Repository button
@@ -44,7 +44,7 @@ When you'll merge with the official development branch it'll close the issue.
 
 ## Before merging to development
 
-First thing to know. You **should not** merge your change to the `development` branch. You **have to make a merge request** from your feature/bugfix branch to the **official** (`NuriYuri/pokemonsdk`) development branch.
+First thing to know. You **should not** merge your change to the `development` branch. You **have to make a merge request** from your feature/bugfix branch to the **official** (`pokemonsdk/pokemonsdk`) development branch.
 
 Second thing : You have to test your feature or your bugfix. 
 
@@ -63,7 +63,7 @@ Third thing : You have to be up to date
     * Select your project
     * Select the branch you want to merge with PSDK `development`
 * In `Target branch`
-    * Select the project `NuriYuri/pokemonsdk`
+    * Select the project `pokemonsdk/pokemonsdk`
     * Select the branch `development`
 * Click on the `Compare branches and continue` button
 
