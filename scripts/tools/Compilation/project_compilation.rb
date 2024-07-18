@@ -24,14 +24,21 @@ module ProjectCompilation
   module_function
 
   def start
-    make_release_path
+    make_release_path    
+    puts "Progress: Start script compilation"
     start_script_compilation
     make_game_rb
+    puts "Progress: Make graphics resources"
     make_graphic_resources unless ARGV.include?('skip_graphics')
+    puts "Progress: Make data"
     make_data unless ARGV.include?('skip_data')
+    puts "Progress: Copy lib"
     copy_lib unless ARGV.include?('skip_lib')
+    puts "Progress: Copy audio"
     copy_audio unless ARGV.include?('skip_audio')
+    puts "Progress: Copy binaries"
     copy_binaries unless ARGV.include?('skip_binary')
+    puts "Compilation done!"
   end
 
   def start_script_compilation
@@ -116,7 +123,7 @@ module ProjectCompilation
     puts 'Copying Audios (add skip_audio to argument to skip this part)'
     Dir['audio/**/*'].each do |filename|
       next if File.directory?(filename)
-      IO.copy_stream(filename, File.join(RELEASE_PATH, filename).downcase)
+      IO.copy_stream(filename, File.join(RELEASE_PATH, filename.downcase))
     end
   end
 
