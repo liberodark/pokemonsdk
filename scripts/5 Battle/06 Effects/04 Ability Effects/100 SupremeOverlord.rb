@@ -18,7 +18,7 @@ module Battle
         def on_switch_event(handler, who, with)
           return if with != @target
           return if handler.logic.trainer_battlers.all?(&:alive?)
-          
+
           handler.logic.trainer_battlers.each { |battler| @multiplier += battler.ko_count }
           @multiplier = @multiplier.clamp(0, 5)
           @multiplier = (@multiplier / 10.0).truncate(1)
@@ -26,7 +26,7 @@ module Battle
 
           handler.scene.visual.show_ability(with)
           handler.scene.visual.wait_for_animation
-          #TODO: Add the corresponding text
+          # TODO: Add the corresponding text
         end
 
         # Give the move base power mutiplier
@@ -40,6 +40,7 @@ module Battle
           return super + @multiplier
         end
       end
+
       register(:supreme_overlord, SupremeOverlord)
     end
   end

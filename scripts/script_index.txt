@@ -1074,6 +1074,7 @@ pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 KnockOff.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 LaserFocus.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 LashOut.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 LastResort.rb
+pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 LastRespects.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 LeechSeed.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 LifeDew.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 LightScreen Reflect.rb
