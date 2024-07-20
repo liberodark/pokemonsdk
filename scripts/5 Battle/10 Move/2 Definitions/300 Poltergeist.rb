@@ -11,26 +11,21 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-
-        if targets.empty? || targets.all?(:dead?) || targets.first.battle_ability_db_symbol == :__undef__
-          show_usage_failure(user)
-          return false
-        end
+        return show_usage_failure(user) && false if targets.none? { |target| target.hold_item?(target.battle_item_db_symbol) }
 
         return true
       end
 
-=begin
-      # Function that deals the effect to the pokemon
+      # Function which permit things to happen before the move's animation
       # @param user [PFM::PokemonBattler] user of the move
-      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
-      def deal_effect(user, actual_targets)
+      # @param actual_targets [Array<PFM::PokemonBattler>] expected targets
+      def post_accuracy_check_move(user, actual_targets)
         actual_targets.each do |target|
-          # TODO: Add the "[target] is about to be attacked by its [item]!" message
+          @scene.display_message_and_wait(parse_text_with_pokemon(66, 1470, target, PFM::Text::ITEM2[1] => data_item(target.battle_item_db_symbol).name))
         end
       end
-=end
     end
+
     Move.register(:s_poltergeist, Poltergeist)
   end
 end
