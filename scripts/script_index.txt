@@ -744,7 +744,6 @@ pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Iron Fist.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Justified.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Keen Eye.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Leaf Guard.rb
-pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Levitate.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Libero - Protean.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Lightning Rod - Storm Drain.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Limber.rb
@@ -801,7 +800,6 @@ pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Sand Rush.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Sand Spit.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 SandVeil.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Sap Sipper.rb
-pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Scrappy.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 ScreenCleaner.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 SeedSower.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 SereneGrace.rb

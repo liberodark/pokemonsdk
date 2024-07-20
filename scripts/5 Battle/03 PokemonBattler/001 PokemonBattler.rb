@@ -365,13 +365,13 @@ module PFM
     # Tell if the Pokémon has a ability ignoring ability
     # @return [Boolean]
     def current_ability_ignoring_ability?
-      return true if ABILITIES_IGNORING_ABILITIES.include?(self.battle_ability_db_symbol)
+      return true if ABILITIES_IGNORING_ABILITIES.include?(battle_ability_db_symbol)
 
       result = $scene.logic.turn_actions.any? do |a|
         a.is_a?(Battle::Actions::Attack) &&
-        Battle::Actions::Attack.from(a).launcher == self &&
-        self.has_ability?(:mycelium_might) &&
-        Battle::Actions::Attack.from(a).move.status?
+          Battle::Actions::Attack.from(a).launcher == self &&
+          has_ability?(:mycelium_might) &&
+          Battle::Actions::Attack.from(a).move.status?
       end
 
       return result

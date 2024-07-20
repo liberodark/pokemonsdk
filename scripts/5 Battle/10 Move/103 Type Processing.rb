@@ -126,17 +126,26 @@ module Battle
       next nil
     end
 
-    Move.register_single_type_multiplier_overwrite_hook('PSDK Force Flying') do |target, _, type|
+    Move.register_single_type_multiplier_overwrite_hook('PSDK Force Flying') do |target, _, type, move|
       next if target.grounded? || type != data_type(:ground).id
+      next unless move&.user&.can_be_lowered_or_canceled?(!target.type_flying? && target.has_ability?(:levitate))
 
       next 0
     end
 
     Move.register_single_type_multiplier_overwrite_hook('PSDK Force Grounded') do |target, target_type, type|
       next unless target.grounded? || type == data_type(:ground).id
-      next 1 if target_type == data_type(:flying).id
+      next unless target_type == data_type(:flying).id
 
-      next data_type(type).hit(data_type(target_type).db_symbol)
+      next 1
+    end
+
+    Move.register_single_type_multiplier_overwrite_hook('PSDK Ability: Scrappy Effect') do |_, target_type, type, move|
+      next if target_type != data_type(:ghost).id
+      next unless %i[normal fighting].include?(data_type(type).db_symbol)
+      next unless move&.user&.has_ability?(:scrappy)
+
+      next 1
     end
   end
 end

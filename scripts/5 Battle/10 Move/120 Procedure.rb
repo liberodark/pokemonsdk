@@ -29,6 +29,7 @@ module Battle
     def proceed(user, target_bank, target_position)
       return if user.hp <= 0
 
+      @user = user
       @damage_dealt = 0
       possible_targets = battler_targets(user, logic).select { |target| target&.alive? }
       possible_targets.sort_by(&:spd)
@@ -219,7 +220,6 @@ module Battle
       return true if powder? && target.type_grass? && user != target
       return true if user != target && ability_immunity?(user, target)
       return false if status?
-      return false if levitate_vs_moldbreaker?(user, target)
 
       types = definitive_types(user, target)
       @effectiveness = -1
@@ -238,18 +238,6 @@ module Battle
       end
 
       return false
-    end
-
-    # Levitate and mold breaker functionality
-    # @param user [PFM::PokemonBattler]
-    # @param target [PFM::PokemonBattler]
-    # @return [Boolean]
-    def levitate_vs_moldbreaker?(user, target)
-      return false if user == target
-      return false unless user.ability_effect.db_symbol == :mold_breaker
-      return false unless target.ability_effect.db_symbol == :levitate
-
-      return true
     end
 
     # Test if the target has an immunity to the Prankster ability due to its type

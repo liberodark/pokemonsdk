@@ -32,6 +32,9 @@ module Battle
     # The original target of the move (to be used with Magic Bounce/Coat)
     # @return [Array<PFM::PokemonBattler>]
     attr_accessor :original_target
+    # Get the user of the move
+    # @return [PFM::PokemonBattler, nil]
+    attr_reader :user
 
     # Create a new move
     # @param db_symbol [Symbol] db_symbol of the move in the database
@@ -52,6 +55,7 @@ module Battle
       @scene = scene
       @logic = scene.logic
       @reloading = false
+      @user = nil
     end
 
     # Format move for logging purpose
