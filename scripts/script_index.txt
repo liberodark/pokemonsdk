@@ -1104,6 +1104,7 @@ pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Nightmare.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 NoRetreat.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 OHKO.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Octolock.rb
+pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 OrderUp.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 PainSplit.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 PartingShot.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 PayBack.rb
