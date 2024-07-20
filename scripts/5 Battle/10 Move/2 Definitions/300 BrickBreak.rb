@@ -5,6 +5,7 @@ module Battle
       private
 
       WALLS = %i[light_screen reflect aurora_veil]
+
       # Function that deals the effect to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
@@ -26,6 +27,32 @@ module Battle
         end
       end
     end
+
+    class RagingBull < BrickBreak
+      # @return [Array<Symbol]
+      RAGING_BULL_USERS = %i[tauros]
+
+      # Get the types of the move with 1st type being affected by effects
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @return [Array<Integer>] list of types of the move
+      def definitive_types(user, target)
+        return [type] unless RAGING_BULL_USERS.include?(user.db_symbol)
+
+        case user.form
+        when 1
+          return [data_type(:fighting).id]
+        when 2
+          return [data_type(:fire).id]
+        when 3
+          return [data_type(:water).id]
+        else
+          return [type]
+        end
+      end
+    end
+
     Move.register(:s_brick_break, BrickBreak)
+    Move.register(:s_raging_bull, RagingBull)
   end
 end
