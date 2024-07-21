@@ -6,7 +6,7 @@ module Battle
         CAN_BE_METHODS = {
           poison: :can_be_poisoned?,
           sleep: :can_be_asleep?,
-          paralysis: :can_be_paralysed?
+          paralysis: :can_be_paralyzed?
         }
 
         # Function called after damages were applied (post_damage, when target is still alive)
