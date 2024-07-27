@@ -128,7 +128,13 @@ module Battle
 
     Move.register_single_type_multiplier_overwrite_hook('PSDK Force Flying') do |target, _, type, move|
       next if target.grounded? || type != data_type(:ground).id
-      next unless move&.user&.can_be_lowered_or_canceled?(!target.type_flying? && target.has_ability?(:levitate))
+
+      # Flying Effects activated ?
+      is_flying_type = target.type_flying?
+      is_flying_item = target.hold_item?(:air_balloon)
+      is_flying_ability = target.has_ability?(:levitate) && move&.user&.can_be_lowered_or_canceled? # Special Interaction with Mold Breaker effect
+      is_flying_effects = target.effects.has? { |effect| %i[magnet_rise telekinesis].include?(effect.name) }
+      next unless is_flying_type || is_flying_item || is_flying_ability || is_flying_effects
 
       next 0
     end
