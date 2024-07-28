@@ -16,11 +16,12 @@ module Graphics
 
     # Create the Command thread
     def create_command_thread
+      require 'readline' if PSDK_PLATFORM == :macos
+
       Thread.new do
         loop do
           log_info('Type help to get a list of the commands you can use.')
-          print 'Command: '
-          @__cmd_to_eval = STDIN.gets.chomp
+          @__cmd_to_eval = read_command_from_terminal
           sleep
         rescue StandardError
           @cmd_thread = nil
@@ -28,6 +29,20 @@ module Graphics
           break
         end
       end
+    end
+
+    def read_command_from_terminal
+      if PSDK_PLATFORM != :macos
+        print 'Command: '
+        return STDIN.gets.chomp
+      end
+
+      line = Readline::readline('Command: ')
+      return '' unless line
+
+      line.strip!
+      Readline::HISTORY.push(line) if line != 'help'
+      return line
     end
 
     # Eval a command from the console
