@@ -171,8 +171,8 @@ module Battle
       # @param enemy [PFM::PokemonBattler]
       def distribute_ev_to(evable, enemy)
         log_debug("# distribute_ev_to([#{evable.join(', ')}], #{enemy}")
-        evable.map(&:original).each do |receiver| # <= Pokemon will receive EV only at end of battle
-          receiver.add_bonus(enemy.battle_list)
+        evable.each do |receiver| # <= Pokemon will receive EV only at end of battle
+          receiver.original.add_bonus(enemy.battle_list)
           exec_hooks(ExpHandler, :power_ev_bonus, binding)
         end
       end
@@ -180,7 +180,7 @@ module Battle
       class << self
         # Register a hook allowing a pokemon to receive a power_ev bonus
         # @param reason [String] reason of the power_ev_bonus call
-        # @yieldparam receiver [PFM::Pokemon] pokemon receiving the bonus
+        # @yieldparam receiver [PFM::PokemonBattler] pokemon receiving the bonus
         # @yieldparam enemy [PFM::PokemonBattler] pokemon causing the bonus to be distributed
         # @yieldparam handler [ExpHandler] exp handler managing everything
         def register_power_ev_bonus(reason)
@@ -195,39 +195,39 @@ module Battle
       end
 
       register_power_ev_bonus('Power band') do |receiver|
-        next unless receiver.item_db_symbol == :power_band
+        next unless receiver.battle_item_db_symbol == :power_band
 
-        receiver.add_ev_dfs(4, receiver.total_ev)
+        receiver.original.add_ev_dfs(4, receiver.original.total_ev)
       end
 
       register_power_ev_bonus('Power belt') do |receiver|
-        next unless receiver.item_db_symbol == :power_belt
+        next unless receiver.battle_item_db_symbol == :power_belt
 
-        receiver.add_ev_dfe(4, receiver.total_ev)
+        receiver.original.add_ev_dfe(4, receiver.original.total_ev)
       end
 
       register_power_ev_bonus('Power anklet') do |receiver|
-        next unless receiver.item_db_symbol == :power_anklet
+        next unless receiver.battle_item_db_symbol == :power_anklet
 
-        receiver.add_ev_spd(4, receiver.total_ev)
+        receiver.original.add_ev_spd(4, receiver.original.total_ev)
       end
 
       register_power_ev_bonus('Power lens') do |receiver|
-        next unless receiver.item_db_symbol == :power_lens
+        next unless receiver.battle_item_db_symbol == :power_lens
 
-        receiver.add_ev_ats(4, receiver.total_ev)
+        receiver.original.add_ev_ats(4, receiver.original.total_ev)
       end
 
       register_power_ev_bonus('Power weight') do |receiver|
-        next unless receiver.item_db_symbol == :power_weight
+        next unless receiver.battle_item_db_symbol == :power_weight
 
-        receiver.add_ev_hp(4, receiver.total_ev)
+        receiver.original.add_ev_hp(4, receiver.original.total_ev)
       end
 
       register_power_ev_bonus('Power bracer') do |receiver|
-        next unless receiver.item_db_symbol == :power_bracer
+        next unless receiver.battle_item_db_symbol == :power_bracer
 
-        receiver.add_ev_atk(4, receiver.total_ev)
+        receiver.original.add_ev_atk(4, receiver.original.total_ev)
       end
     end
   end

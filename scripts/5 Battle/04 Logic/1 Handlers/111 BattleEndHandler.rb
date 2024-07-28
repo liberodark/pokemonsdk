@@ -204,54 +204,6 @@ module Battle
       end
     end
 
-    BattleEndHandler.register_no_defeat('PSDK power band') do |_, players_pokemon|
-      players_pokemon.each do |pokemon|
-        next unless pokemon.original.item_db_symbol == :power_band
-
-        pokemon.add_ev_dfs(4, pokemon.original.total_ev)
-      end
-    end
-
-    BattleEndHandler.register_no_defeat('PSDK power belt') do |_, players_pokemon|
-      players_pokemon.each do |pokemon|
-        next unless pokemon.original.item_db_symbol == :power_belt
-
-        pokemon.add_ev_dfe(4, pokemon.original.total_ev)
-      end
-    end
-
-    BattleEndHandler.register_no_defeat('PSDK power anklet') do |_, players_pokemon|
-      players_pokemon.each do |pokemon|
-        next unless pokemon.original.item_db_symbol == :power_anklet
-
-        pokemon.add_ev_spd(4, pokemon.original.total_ev)
-      end
-    end
-
-    BattleEndHandler.register_no_defeat('PSDK power lens') do |_, players_pokemon|
-      players_pokemon.each do |pokemon|
-        next unless pokemon.original.item_db_symbol == :power_lens
-
-        pokemon.add_ev_ats(4, pokemon.original.total_ev)
-      end
-    end
-
-    BattleEndHandler.register_no_defeat('PSDK power weight') do |_, players_pokemon|
-      players_pokemon.each do |pokemon|
-        next unless pokemon.original.item_db_symbol == :power_weight
-
-        pokemon.add_ev_hp(4, pokemon.original.total_ev)
-      end
-    end
-
-    BattleEndHandler.register_no_defeat('PSDK power bracer') do |_, players_pokemon|
-      players_pokemon.each do |pokemon|
-        next unless pokemon.original.item_db_symbol == :power_bracer
-
-        pokemon.add_ev_atk(4, pokemon.original.total_ev)
-      end
-    end
-
     BattleEndHandler.register('PSDK form calibration') do |_, players_pokemon|
       players_pokemon.each(&:unmega_evolve)
       players_pokemon.each(&:form_calibrate)
