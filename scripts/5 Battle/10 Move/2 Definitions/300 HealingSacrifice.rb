@@ -24,7 +24,7 @@ module Battle
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
           add_effect(target)
-          @scene.visual.show_hp_animations([target], [-target.hp])
+          logic.damage_handler.damage_change(target.hp, target)
           @logic.switch_request << { who: target }
         end
       end

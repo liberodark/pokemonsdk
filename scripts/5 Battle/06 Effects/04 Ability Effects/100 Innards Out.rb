@@ -37,7 +37,7 @@ module Battle
 
           hp_remains = @hp_remains
           handler.scene.visual.show_ability(target)
-          handler.scene.visual.show_hp_animations([launcher], [-hp_remains])
+          handler.logic.damage_handler.damage_change(hp_remains, launcher)
         end
       end
 

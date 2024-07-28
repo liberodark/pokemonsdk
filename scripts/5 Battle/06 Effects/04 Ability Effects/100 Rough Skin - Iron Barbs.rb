@@ -14,7 +14,7 @@ module Battle
 
           damages = (launcher.max_hp >= 8 ? launcher.max_hp / 8 : 1).clamp(1, Float::INFINITY)
           handler.scene.visual.show_ability(target)
-          handler.scene.visual.show_hp_animations([launcher], [-damages])
+          handler.logic.damage_handler.damage_change(damages, launcher)
           text = parse_text_with_pokemon(19, 430, launcher, PFM::Text::PKNICK[0] => launcher.given_name)
           handler.scene.display_message_and_wait(text)
         end

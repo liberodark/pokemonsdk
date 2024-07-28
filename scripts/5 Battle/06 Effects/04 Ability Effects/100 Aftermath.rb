@@ -15,7 +15,7 @@ module Battle
 
           damages = (launcher.max_hp / 4).clamp(1, Float::INFINITY)
           handler.scene.visual.show_ability(target)
-          handler.scene.visual.show_hp_animations([launcher], [-damages])
+          handler.logic.damage_handler.damage_change(damages, launcher)
         end
       end
       register(:aftermath, Aftermath)

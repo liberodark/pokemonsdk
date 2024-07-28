@@ -7,7 +7,7 @@ module Battle
       # @param targets [Array<PFM::PokemonBattler>] expected targets
       # @param reason [Symbol] why the move failed: :usable_by_user, :accuracy, :immunity, :pp
       def on_move_failure(user, targets, reason)
-        return if [:usable_by_user, :pp].include?(reason)
+        return if %i[usable_by_user pp].include?(reason)
 
         return crash_procedure(user)
       end
@@ -16,7 +16,7 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       def crash_procedure(user)
         hp = user.max_hp / 2
-        scene.visual.show_hp_animations([user], [-hp])
+        logic.damage_handler.damage_change(hp, user)
         scene.display_message_and_wait(parse_text_with_pokemon(19, 908, user))
       end
     end

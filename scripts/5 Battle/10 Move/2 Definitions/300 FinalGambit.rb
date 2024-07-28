@@ -6,7 +6,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         hp_dealt = user.hp
-        scene.visual.show_hp_animations([user], [-hp_dealt])
+        logic.damage_handler.damage_change(hp_dealt, user)
         actual_targets.each do |target|
           scene.logic.damage_handler.damage_change_with_process(hp_dealt, target, user, self)
         end

@@ -38,7 +38,7 @@ module Battle
           next if user.hp_rate <= (1.0 / factor)
 
           hp = (user.max_hp / factor).floor
-          scene.visual.show_hp_animations([user], [-hp])
+          logic.damage_handler.damage_change(hp, user)
           user.effects.add(Effects::Substitute.new(logic, user))
           scene.display_message_and_wait(parse_text_with_pokemon(19, 785, user))
         end

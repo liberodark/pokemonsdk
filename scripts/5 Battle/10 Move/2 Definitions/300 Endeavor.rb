@@ -33,7 +33,7 @@ module Battle
           next unless target.hp > user.hp
 
           hp = target.hp - user.hp
-          @scene.visual.show_hp_animations([target], [-hp])
+          logic.damage_handler.damage_change(hp, target)
         end
       end
     end

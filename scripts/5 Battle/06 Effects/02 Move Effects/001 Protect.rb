@@ -74,9 +74,9 @@ module Battle
         # @param target [PFM::PokemonBattler] expected target
         # @param move [Battle::Move]
         def play_protect_effect(user, target, move)
-          hp = user.hp / 8
+          hp = (user.hp / 8).clamp(1, Float::INFINITY)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          move.scene.visual.show_hp_animations([user], [-hp]) if move.direct? && !user.has_ability?(:long_reach)
+          move.logic.damage_handler.damage_change(hp, user) if move.direct? && !user.has_ability?(:long_reach)
         end
       end
       Protect.register(:spiky_shield, SpikyShield)

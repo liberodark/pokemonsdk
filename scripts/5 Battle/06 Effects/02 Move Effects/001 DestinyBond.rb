@@ -29,7 +29,7 @@ module Battle
         return if handler.logic.allies_of(target).include?(launcher) # It says the opponent so an allie might kill the target
 
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 629, target))
-        handler.scene.visual.show_hp_animations([launcher], [-launcher.hp])
+        handler.logic.damage_handler.damage_change(launcher.hp, launcher)
       end
 
       def name

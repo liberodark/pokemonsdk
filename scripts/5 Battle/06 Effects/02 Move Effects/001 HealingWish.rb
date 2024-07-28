@@ -14,8 +14,8 @@ module Battle
       # @param with [PFM::PokemonBattler] Pokemon that is switched in
       def on_switch_event(handler, who, with)
         handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 697, with))
-        handler.scene.visual.show_hp_animations([with], [with.max_hp])
-        handler.logic.status_change_handler.status_change_with_process(:cure, with)
+        handler.logic.damage_handler.heal(with, with.max_hp)
+        handler.logic.status_change_handler.status_change_with_process(:cure, with) if with.status?
       end
     end
   end

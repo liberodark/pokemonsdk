@@ -60,7 +60,7 @@ module Battle
         return if user.has_ability?(:wonder_guard)
 
         hp = user.max_hp / 2
-        scene.visual.show_hp_animations([user], [-hp])
+        logic.damage_handler.damage_change(hp, user)
       end
     end
 
