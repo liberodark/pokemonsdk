@@ -835,6 +835,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 TabletsOfRuin.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Tangled Feet.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Technician.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Telepathy.rb
+pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 TeraShell.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 ThermalExchange.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Thick Fat.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Tinted Lens.rb
