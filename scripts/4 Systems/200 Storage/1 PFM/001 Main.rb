@@ -149,8 +149,7 @@ module PFM
       @boxes[@current_box].content[index] = pokemon
       return unless HEAL_AND_CURE_POKEMON
 
-      pokemon.cure
-      pokemon.hp = pokemon.max_hp
+      pokemon.fully_heal
     end
 
     # Return the amount of box in the storage

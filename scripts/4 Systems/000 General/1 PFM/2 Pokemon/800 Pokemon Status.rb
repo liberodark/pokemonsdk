@@ -24,6 +24,17 @@ module PFM
       @status_count = 0
     end
 
+    # Heal the pokemon when it is captured with a Heal Ball
+    def fully_heal
+      cure
+      self.hp = max_hp
+      skills_set.each do |skill|
+        next unless skill
+
+        skill.pp = skill.ppmax
+      end
+    end
+
     # Is the Pokemon poisoned?
     # @return [Boolean]
     def poisoned?

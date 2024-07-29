@@ -177,6 +177,7 @@ module Battle
       update_pokedex_related_infos(pkmn)
       rename_sequence(pkmn) if $options.catch_rename
       pkmn.loyalty = battler.loyalty = 200 if ball&.db_symbol == :friend_ball
+      battler.fully_heal if ball&.db_symbol == :heal_ball
       battler.copy_properties_back_to_original
       $game_system.map_interpreter.add_pokemon(pkmn)
       # Stocked
