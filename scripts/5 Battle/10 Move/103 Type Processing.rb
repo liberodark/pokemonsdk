@@ -149,7 +149,7 @@ module Battle
     Move.register_single_type_multiplier_overwrite_hook('PSDK Ability: Scrappy Effect') do |_, target_type, type, move|
       next if target_type != data_type(:ghost).id
       next unless %i[normal fighting].include?(data_type(type).db_symbol)
-      next unless move&.user&.has_ability?(:scrappy)
+      next unless %i[scrappy mind_s_eye].include?(move&.user&.battle_ability_db_symbol)
 
       next 1
     end
