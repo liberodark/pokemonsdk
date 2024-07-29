@@ -726,6 +726,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 HadronEngine.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Harvest.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Healer.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Heatproof.rb
+pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Hospitality.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Hunger Switch.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Hustle.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Hydration.rb
