@@ -111,6 +111,15 @@ module Battle
         return false
       end
 
+      # Apply the common effects of the item with Fling move effect
+      # @param scene [Battle::Scene] battle scene
+      # @param target [PFM::PokemonBattler]
+      # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+      # @param skill [Battle::Move, nil] Potential move used
+      def apply_common_effects_with_fling(scene, target, launcher, skill)
+        nil && scene && target && launcher && skill
+      end
+
       # Function called when a stat_increase_prevention is checked
       # @param handler [Battle::Logic::StatChangeHandler] handler use to test prevention
       # @param stat [Symbol] :atk, :dfe, :spd, :ats, :dfs, :acc, :eva

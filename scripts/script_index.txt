@@ -900,12 +900,14 @@ pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Lax Incense.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Leftovers.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Leppa Berry.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Life Orb.rb
+pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 LightBall.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Lum Berry.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Luminous Moss - Snowball.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 MentalHerb.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Metronome.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Micle Berry.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Persim Berry.rb
+pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 PoisonBarb.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 PowerHerb.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Quick Powder.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Red Card.rb

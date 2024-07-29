@@ -43,6 +43,7 @@ module Battle
           return unless consume_item?
           return if battler.has_ability?(:parental_bond) && battler.ability_effect.number_of_attacks - battler.ability_effect.attack_number == 1
 
+          @thrown_item_effect = battler.item_effect
           @logic.item_change_handler.change_item(:none, true, battler, battler, self)
         end
 
@@ -50,7 +51,7 @@ module Battle
         # @return [Boolean]
         def consume_item?
           log_error("#{__method__} should be overwritten by #{self.class}")
-          false
+          return false
         end
 
         # Test if the held item is valid

@@ -35,6 +35,9 @@ module Battle
     # Get the user of the move
     # @return [PFM::PokemonBattler, nil]
     attr_reader :user
+    # Get the item effect of the thrown item (to be used with Fling)
+    # @return [Battle::Effects::Item, nil]
+    attr_reader :thrown_item_effect
 
     # Create a new move
     # @param db_symbol [Symbol] db_symbol of the move in the database
@@ -56,6 +59,7 @@ module Battle
       @logic = scene.logic
       @reloading = false
       @user = nil
+      @thrown_item_effect = nil
     end
 
     # Format move for logging purpose

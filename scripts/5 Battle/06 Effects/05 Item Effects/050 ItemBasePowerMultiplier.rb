@@ -34,13 +34,13 @@ module Battle
             MULTIPLIERS[db_symbol] = multiplier if multiplier
           end
         end
-        #Incenses
+        # Incenses
         register(:sea_incense) { |_, _, move| move.type_water? }
         register(:odd_incense) { |_, _, move| move.type_psychic? }
         register(:rock_incense) { |_, _, move| move.type_rock? }
         register(:wave_incense) { |_, _, move| move.type_water? }
         register(:rose_incense) { |_, _, move| move.type_grass? }
-        #Enhancing items        
+        # Enhancing items
         register(:silk_scarf) { |_, _, move| move.type_normal? }
         register(:charcoal) { |_, _, move| move.type_fire? }
         register(:mystic_water) { |_, _, move| move.type_water? }
@@ -49,7 +49,6 @@ module Battle
         register(:never_melt_ice) { |_, _, move| move.type_ice? }
         register(:black_belt) { |_, _, move| move.type_fighting? }
         register(:sharp_beak) { |_, _, move| move.type_flying? }
-        register(:poison_barb) { |_, _, move| move.type_poison? }
         register(:soft_sand) { |_, _, move| move.type_ground? }
         register(:twisted_spoon) { |_, _, move| move.type_psychic? }
         register(:silver_powder) { |_, _, move| move.type_bug? }
@@ -60,7 +59,7 @@ module Battle
         register(:metal_coat) { |_, _, move| move.type_steel? }
         register(:muscle_band, 1.1) { |_, _, move| move.physical? }
         register(:wise_glasses, 1.1) { |_, _, move| move.special? }
-        #Plates
+        # Plates
         register(:flame_plate) { |_, _, move| move.type_fire? }
         register(:splash_plate) { |_, _, move| move.type_water? }
         register(:zap_plate) { |_, _, move| move.type_electric? }
@@ -78,13 +77,12 @@ module Battle
         register(:dread_plate) { |_, _, move| move.type_dark? }
         register(:iron_plate) { |_, _, move| move.type_steel? }
         register(:pixie_plate) { |_, _, move| move.type_fairy? }
-        #Pokémon-specific type-enhancing items
+        # Pokémon-specific type-enhancing items
         register(:adamant_orb) { |user, _, move| user.db_symbol == :dialga && (move.type_dragon? || move.type_steel?) }
         register(:lustrous_orb) { |user, _, move| user.db_symbol == :palkia && (move.type_dragon? || move.type_water?) }
         register(:griseous_orb) { |user, _, move| user.db_symbol == :giratina && (move.type_dragon? || move.type_ghost?) }
         register(:soul_dew) { |user, _, move| user.db_symbol == :latias && (move.type_dragon? || move.type_psychic?) }
         register(:soul_dew) { |user, _, move| user.db_symbol == :latios && (move.type_dragon? || move.type_psychic?) }
-        
       end
     end
   end
