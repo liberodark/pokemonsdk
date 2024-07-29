@@ -669,6 +669,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Analytic.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Anger Point.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Anger Shell.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Anticipation.rb
+pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 ApplyStatusToMoveTarget.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Armor Tail.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Auras.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Bad Dreams.rb
@@ -775,7 +776,6 @@ pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Perish Body.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Pickpocket - Magician.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Plus - Minus.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Poison Point.rb
-pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Poison Touch.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Power Construct.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Power of Alchemy - Receiver.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 PowerSpot.rb
