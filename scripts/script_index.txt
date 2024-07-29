@@ -825,6 +825,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Steely Spirit.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Stench.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Strong Jaw.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Sturdy.rb
+pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Supersweet Syrup.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 SupremeOverlord.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Surge Surfer.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Sweet Veil.rb
