@@ -269,5 +269,6 @@ module PFM
     FORM_CALIBRATE[:palafin] = proc { |reason| @form = reason == :hero ? 1 : 0 }
     FORM_CALIBRATE[:castform] = proc { |reason| @form = castform_form(reason) }
     FORM_CALIBRATE[:ogerpon] = proc { @form = OGERPONMASK.index(item_db_symbol).to_i }
+    FORM_CALIBRATE[:terapagos] = proc { |reason| @form = reason == :battle ? 1 : 0 }
   end
 end
