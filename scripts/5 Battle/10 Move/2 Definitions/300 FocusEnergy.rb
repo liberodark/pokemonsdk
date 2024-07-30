@@ -1,8 +1,8 @@
 module Battle
   class Move
-    # class managing Focus Energy
+    # Class managing Focus Energy move
     class FocusEnergy < Move
-      UNSTACKABLE_EFFECTS = %i[dragon_cheer focus_energy]
+      UNSTACKABLE_EFFECTS = %i[dragon_cheer focus_energy triple_arrows]
 
       # Function that tests if the user is able to use the move
       # @param user [PFM::PokemonBattler] user of the move

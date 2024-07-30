@@ -1,6 +1,6 @@
 module Battle
   module Effects
-    # Implement the Focus Energy effect
+    # Class managing Focus Energy move effect
     class FocusEnergy < PokemonTiedEffectBase
       # Get the name of the effect
       # @return [Symbol]

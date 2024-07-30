@@ -643,6 +643,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/02 Move Effects/001 Torment.rb
 pokemonsdk/scripts/5 Battle/06 Effects/02 Move Effects/001 ToxicSpikes.rb
 pokemonsdk/scripts/5 Battle/06 Effects/02 Move Effects/001 Transform.rb
 pokemonsdk/scripts/5 Battle/06 Effects/02 Move Effects/001 TrickRoom.rb
+pokemonsdk/scripts/5 Battle/06 Effects/02 Move Effects/001 Triple Arrows.rb
 pokemonsdk/scripts/5 Battle/06 Effects/02 Move Effects/001 UpRoar.rb
 pokemonsdk/scripts/5 Battle/06 Effects/02 Move Effects/001 Wish.rb
 pokemonsdk/scripts/5 Battle/06 Effects/02 Move Effects/001 WonderRoom.rb
@@ -1214,6 +1215,7 @@ pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Toxic_Spikes.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Transform.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 TriAttack.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 TrickRoom.rb
+pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 TripleArrows.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 TrumpCard.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 UTurn.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 UpRoar.rb

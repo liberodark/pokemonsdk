@@ -1,6 +1,6 @@
 module Battle
   module Effects
-    # Implement the Dragon Cheer effect
+    # Class managing Dragon Cheer move effect
     class DragonCheer < PokemonTiedEffectBase
       # Get the name of the effect
       # @return [Symbol]
