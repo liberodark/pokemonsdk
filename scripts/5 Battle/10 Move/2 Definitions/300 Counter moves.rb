@@ -1,6 +1,6 @@
 module Battle
   class Move
-    # Base class for counter moves
+    # Base class for counter moves, deals damage equal to 1.5/2x opponent's move.
     class CounterBase < Basic
       include Mechanics::Counter
 
@@ -17,7 +17,7 @@ module Battle
       end
     end
 
-    # When hit by a Physical Attack, user strikes back with 2x power.
+    # Class managing Counter move
     class Counter < CounterBase
       private
 
@@ -34,7 +34,7 @@ module Battle
       end
     end
 
-    # When hit by a Special Attack, user strikes back with 2x power.
+    # Class managing Mirror Coat move
     class MirrorCoat < CounterBase
       private
 
@@ -51,7 +51,7 @@ module Battle
       end
     end
 
-    # Deals damage equal to 1.5x opponent's attack.
+    # Class managing Metal Burst / Comeuppance moves
     class MetalBurst < CounterBase
       private
 
@@ -60,10 +60,7 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @return [Boolean] does the attack fails ?
       def counter_fails?(attacker, user, targets)
-        return true if counter_fails_common?(attacker, user)
-        return true unless attacker.successful_move_history&.last&.move&.status?
-
-        return false
+        return counter_fails_common?(attacker, user)
       end
 
       # Damage multiplier if the effect proc
