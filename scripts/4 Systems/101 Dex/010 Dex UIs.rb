@@ -166,9 +166,6 @@ module UI
 
   # Dex sprite that show the Pokemon location
   class DexWinMap < SpriteStack
-    # Filename of the World Map Icon
-    MAP_ICON = data_item(:town_map).icon
-
     # Create a new dex win sprite
     def initialize(viewport, display_controls = true)
       # Create the sprite stack at coordinate 0, 0 using the RPG::Cache.pokedex as image source
@@ -183,7 +180,7 @@ module UI
       if pokemon == :map
         @pkm_icon.visible = false
         @item_icon.visible = true
-        @item_icon.set_bitmap(MAP_ICON, :icon)
+        @item_icon.set_bitmap(map_icon, :icon)
       elsif pokemon.is_a? PFM::Pokemon
         @pkm_icon.visible = true
         @item_icon.visible = false
@@ -208,6 +205,12 @@ module UI
     end
 
     private
+
+    # Get the icon of the map
+    # @return [String]
+    def map_icon
+      return data_item(:town_map).icon
+    end
 
     def create_sprites(display_controls)
       @pkm_icon  = add_sprite(28, 123, NO_INITIAL_IMAGE, type: PokemonIconSprite)
