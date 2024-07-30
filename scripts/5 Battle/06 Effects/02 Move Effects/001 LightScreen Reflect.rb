@@ -1,6 +1,6 @@
 module Battle
   module Effects
-    # Effect describing LightScreen
+    # Class managing Light Screen move effect
     class LightScreen < PositionTiedEffectBase
       # Create a new Pokemon tied effect
       # @param logic [Battle::Logic] logic used to get all the handler in order to allow the effect to work
@@ -27,7 +27,7 @@ module Battle
       # Get the name of the effect
       # @return [Symbol]
       def name
-        :light_screen
+        return :light_screen
       end
 
       # Function called when the effect has been deleted from the effects handler
@@ -44,7 +44,7 @@ module Battle
       end
     end
 
-    # Effect describing Reflect
+    # Class managing Reflect move effect
     class Reflect < LightScreen
       # Give the move mod1 mutiplier (before the +2 in the formula)
       # @param user [PFM::PokemonBattler] user of the move
@@ -53,6 +53,7 @@ module Battle
       # @return [Float, Integer] multiplier
       def mod1_multiplier(user, target, move)
         return 1 if @bank != target.bank || move.critical_hit? || user.has_ability?(:infiltrator)
+        return 1 unless move.physical?
 
         return $game_temp.vs_type == 2 ? (2 / 3.0) : 0.5
       end
@@ -60,7 +61,7 @@ module Battle
       # Get the name of the effect
       # @return [Symbol]
       def name
-        :reflect
+        return :reflect
       end
 
       private
@@ -72,7 +73,7 @@ module Battle
       end
     end
 
-    # Effect describing Aurora Veil
+    # Class managing Aurora Veil move effect
     class AuroraVeil < LightScreen
       # Give the move mod1 mutiplier (before the +2 in the formula)
       # @param user [PFM::PokemonBattler] user of the move
@@ -88,7 +89,7 @@ module Battle
       # Get the name of the effect
       # @return [Symbol]
       def name
-        :aurora_veil
+        return :aurora_veil
       end
 
       private

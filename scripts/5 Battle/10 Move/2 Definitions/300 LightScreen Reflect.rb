@@ -1,6 +1,6 @@
 module Battle
   class Move
-    # Move that adds a field on the bank protecting from physicial or special moves
+    # Class managing Light Screen / Aurora Veil / Reflect moves
     class Reflect < Move
       # Function that tests if the user is able to use the move
       # @param user [PFM::PokemonBattler] user of the move
