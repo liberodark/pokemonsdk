@@ -8,9 +8,9 @@ module Battle
         # @param move [Battle::Move] move
         # @return [Float, Integer] multiplier
         def mod1_multiplier(user, target, move)
-          return 1 if user != @target
+          return 1 if user != @target || user.has_ability?(:guts)
           return 1 unless move.physical?
-          return 1 if user.has_ability?(:guts)
+          return 1 if move.be_method == :s_facade
 
           return 0.5
         end

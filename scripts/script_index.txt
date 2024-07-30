@@ -1013,7 +1013,6 @@ pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Embargo.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Encore.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Endeavor.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Eruption.rb
-pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Facade.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 FakeOut.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 FalseSwipe.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Fangs.rb
@@ -1174,6 +1173,7 @@ pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Spite.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Splash.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Stages split moves.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Stages swap moves.rb
+pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 StatusBoostedMove.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 StealthRock.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 StickyWeb.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Stockpile.rb
