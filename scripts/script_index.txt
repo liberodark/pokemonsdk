@@ -89,6 +89,7 @@ pokemonsdk/scripts/3 Studio/2 Data/0 Item/001 TechItem.rb
 pokemonsdk/scripts/3 Studio/2 Data/0 Item/002 BallItem.rb
 pokemonsdk/scripts/3 Studio/2 Data/0 Item/003 HealingItem.rb
 pokemonsdk/scripts/3 Studio/2 Data/0 Item/300 ConstantHealItem.rb
+pokemonsdk/scripts/3 Studio/2 Data/0 Item/300 ExpGiveItem.rb
 pokemonsdk/scripts/3 Studio/2 Data/0 Item/300 LevelIncreaseItem.rb
 pokemonsdk/scripts/3 Studio/2 Data/0 Item/300 PPHealItem.rb
 pokemonsdk/scripts/3 Studio/2 Data/0 Item/300 PPIncreaseItem.rb
