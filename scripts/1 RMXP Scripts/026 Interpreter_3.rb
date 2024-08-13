@@ -197,13 +197,14 @@ class Interpreter_RMXP
     return command_skip
   end
 
+  include EvalKiller if defined?(EvalKiller)
+
   # Function that execute a script for the conditions
   # @param script [String]
   def eval_condition_script(script)
     last_eval = Yuki::EXC.get_eval_script
-    script = script.force_encoding('UTF-8')
     Yuki::EXC.set_eval_script(script)
-    result = eval(script) ? true : false
+    result = send(resolve_method_symbol(Interpreter, script)) ? true : false
     return result
   rescue StandardError => e
     Yuki::EXC.run(e)

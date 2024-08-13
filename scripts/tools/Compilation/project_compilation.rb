@@ -17,6 +17,7 @@ module ProjectCompilation
     GameLoader/32_console_compiled.rb
     GameLoader/41_load_data_compiled.rb
     GameLoader/Z_main.rb
+    GameLoader/z_eval_killer.rb
     GameLoader/51_load_game_compiled.rb
     GameLoader/60_start_game.rb
   ]

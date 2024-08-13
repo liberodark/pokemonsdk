@@ -404,13 +404,14 @@ class Game_Character
     @move_route_index += 1
   end
 
+  include EvalKiller if defined?(EvalKiller)
+
   # Function that execute a script
   # @param script [String]
   def eval_script(script)
     last_eval = Yuki::EXC.get_eval_script
-    script = script.force_encoding('UTF-8').gsub(/\n([(,])/, "\\1\n")
     Yuki::EXC.set_eval_script(script)
-    eval(script)
+    send(resolve_method_symbol(Game_Character, script))
   rescue StandardError => e
     Yuki::EXC.run(e)
   ensure
