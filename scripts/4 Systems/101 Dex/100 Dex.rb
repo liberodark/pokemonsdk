@@ -106,7 +106,7 @@ module GamePlay
       @pokemon_worldmap.on_next_worldmap if @state == 2
       return if @state > 1
       return $game_system.se_play($data_system.buzzer_se) if @state == 0
-      $game_system.cry_play(@pokemon.id) if @state == 1
+      $game_system.cry_play(@pokemon.id, form: @pokemon.form) if @state == 1
     end
 
     # Change the state of the Interface
@@ -186,7 +186,7 @@ module GamePlay
     # Generate the Pokemon Object
     def generate_pokemon_object
       @pokemon = @pkmn ||= PFM::Pokemon.generate_from_hash(id: @selected_pokemons[@index].to_i, level: 1, no_shiny: true)
-      [@pokemonlist, @pokemon].each do |creature| 
+      [@pokemonlist, @pokemon].each do |creature|
         creature.instance_eval do
           # Return the formated name for Pokedex
           # @return [String]

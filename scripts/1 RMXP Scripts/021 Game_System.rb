@@ -29,8 +29,18 @@ class Game_System
   end
   # play the cry of a Pokémon
   # @param id [Integer] the id of the Pokémon in the database
-  def cry_play(id)
-    Audio.cry_play(sprintf("Audio/SE/Cries/%03dCry", id.to_i))
+  # @param form [Integer] the id of the form of the Pokemon
+  def cry_play(id, form: 0)
+    creature_data = data_creature(id)
+    raise "Database Error: The Creature ##{id} doesn't exist." if creature_data.db_symbol == :__undef__
+
+    creature = creature_data.forms.find { |creature_form| creature_form.form == form }
+    if creature.nil?
+      log_error("Database Error: The Form ##{form} of the Creature ##{id} doesn't exist.")
+      creature = creature_data.forms.find { |creature_form| creature_form.form == 0 }
+    end
+
+    Audio.cry_play("audio/se/cries/#{creature&.resources.cry}")
   end
   # Plays a BGM
   # @param bgm [RPG::AudioFile] a descriptor of the BGM
@@ -177,4 +187,3 @@ class Game_System
     end
   end
 end
-

@@ -94,12 +94,20 @@ class Interpreter
   # @param id [Integer, Symbol] the id of the Pokemon in the database
   # @param volume [Integer] the volume of the cry
   # @param tempo [Integer] the tempo/pitch of the cry
-  def cry_pokemon(id, volume: 100, tempo: 100)
-    creature = data_creature(id)
-    raise "Database Error : The Creature ##{id} doesn't exists." if creature.db_symbol == :__undef__
+  # @param form [Integer] the id of the form of the Pokemon
+  def cry_pokemon(id, volume: 100, tempo: 100, form: 0)
+    creature_data = data_creature(id)
+    raise "Database Error: The Creature ##{id} doesn't exist." if creature_data.db_symbol == :__undef__
 
-    Audio.se_play(format('Audio/SE/Cries/%03dCry', creature.id), volume, tempo)
+    creature = creature_data.forms.find { |creature_form| creature_form.form == form }
+    if creature.nil?
+      log_error("Database Error: The Form ##{form} of the Creature ##{id} doesn't exist.")
+      creature = creature_data.forms.find { |creature_form| creature_form.form == 0 }
+    end
+
+    Audio.se_play("audio/se/cries/#{creature&.resources.cry}", volume, tempo)
   end
+
 
   # Show the rename interface of a Pokemon
   # @param index_or_pokemon [Integer, PFM::Pokemon] the Pokemon or the index of the Pokemon in the party (0~5)

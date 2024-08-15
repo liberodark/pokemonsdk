@@ -79,7 +79,7 @@ module GamePlay
 
     def evolution_first_step
       Audio.bgm_play(EVOLVE_MUSIC)
-      $game_system.cry_play(@pokemon.id)
+      $game_system.cry_play(@pokemon.id, form: @pokemon.form)
       @message_window.auto_skip = true
       @message_window.stay_visible = true
       display_message(parse_text(31, 0, ::PFM::Text::PKNICK[0] => @pokemon.given_name))
@@ -88,7 +88,7 @@ module GamePlay
     def evolution_last_step
       @message_window.stay_visible = false
       Audio.bgm_play(EVOLVED_MUSIC)
-      $game_system.cry_play(@clone.id)
+      $game_system.cry_play(@clone.id, form: @clone.form)
       display_message(parse_text(31, 2, ::PFM::Text::PKNICK[0] => @pokemon.given_name,
                                         ::PFM::Text::PKNAME[1] => @clone.name))
     end
