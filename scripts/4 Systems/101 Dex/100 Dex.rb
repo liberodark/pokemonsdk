@@ -39,7 +39,7 @@ module GamePlay
       return false if @page_id
 
       if @state == 0 # Liste
-        max_index = @selected_pokemons.size - 1
+        max_index = @selected_creatures.size - 1
         if index_changed(:@index, :UP, :DOWN, max_index)
           update_index
         elsif index_changed!(:@index, :LEFT, :RIGHT, max_index)
@@ -51,7 +51,7 @@ module GamePlay
           update_index
         end
       elsif @state == 1 # Description
-        max_index = @selected_pokemons.size - 1
+        max_index = @selected_creatures.size - 1
         update_index_descr if index_changed(:@index, :UP, :DOWN, max_index)
       elsif @state == 2
         @pokemon_worldmap.update
@@ -68,15 +68,22 @@ module GamePlay
 
     # Update the index when changed
     def update_index
-      @pokemon.id = @selected_pokemons[@index]
+      update_current_creature
       @pokeface.data = @pokemon
       update_list(true)
     end
 
     def update_index_descr
-      @pokemon.id = @selected_pokemons[@index]
+      update_current_creature
       @pokeface.data = @pokemon
       change_state(1)
+    end
+
+    # Update the current creature
+    def update_current_creature
+      creature = @selected_creatures[@index]
+      @pokemon.id = creature.db_symbol
+      @pokemon.form = creature.form
     end
 
     # Action triggered when A is pressed
@@ -137,15 +144,16 @@ module GamePlay
     # @param visible [Boolean]
     def update_list(visible)
       @scrollbar.visible = @scrollbut.visible = visible
-      @scrollbut.y = 41 + 150 * @index / (@selected_pokemons.size - 1) if @selected_pokemons.size > 1
+      @scrollbut.y = 41 + 150 * @index / (@selected_creatures.size - 1) if @selected_creatures.size > 1
       base_index = calc_base_index
       @list.each_with_index do |el, i|
         next unless (el.visible = visible)
         pos = base_index + i
-        id = @selected_pokemons[pos]
-        next(el.visible = false) unless id && pos >= 0
+        creature = @selected_creatures[pos]
+        next(el.visible = false) unless creature && pos >= 0
         @arrow.y = el.y + 11 if (el.selected = (pos == @index))
-        @pokemonlist.id = id
+        @pokemonlist.id = creature.db_symbol
+        @pokemonlist.form = creature.form
         el.data = @pokemonlist
       end
     end
@@ -153,7 +161,7 @@ module GamePlay
     # Calculate the base index of the list
     # @return [Integer]
     def calc_base_index
-      return -1 if @selected_pokemons.size < 5
+      return -1 if @selected_creatures.size < 5
       if @index >= 2
         return @index - 2
       elsif @index < 2
@@ -167,17 +175,20 @@ module GamePlay
       dex = $pokedex
       dex_data = data_dex(dex.variant)
       creatures = dex_data.creatures
-      @selected_pokemons = creatures.select { |creature| dex.creature_seen?(creature.db_symbol) }
-      @selected_pokemons.map! { |creature| data_creature(creature.db_symbol).id }
-      @selected_pokemons << 0 if @selected_pokemons.empty?
+      @selected_creatures = creatures.select { |creature| dex.form_seen(creature.db_symbol)[creature.form] == 1 }
+      if @selected_creatures.empty?
+        raise 'Attempt to open a Dex with no creatures' if creatures.empty?
+        @selected_creatures << creatures[0]
+      end
       # Index ajustment
       if page_id
-        @index = @selected_pokemons.index(page_id)
+        db_symbol = data_creature(page_id).db_symbol
+        @index = @selected_creatures.find_index { |creature| creature.db_symbol == db_symbol }
         unless @index
-          @selected_pokemons << page_id
-          @index = @selected_pokemons.size - 1
+          @index = @selected_creatures.size
+          selected = creatures.find { |creature| creature.db_symbol == db_symbol }
+          @selected_creatures << (selected || Studio::Dex::CreatureInfo.new(db_symbol, 0))
         end
-        # @index -= 1
       else
         @index = 0
       end
@@ -185,7 +196,8 @@ module GamePlay
 
     # Generate the Pokemon Object
     def generate_pokemon_object
-      @pokemon = @pkmn ||= PFM::Pokemon.generate_from_hash(id: @selected_pokemons[@index].to_i, level: 1, no_shiny: true)
+      current = @selected_creatures[@index]
+      @pokemon = @pkmn ||= PFM::Pokemon.generate_from_hash(id: current.db_symbol, level: 1, no_shiny: true, form: current.form)
       [@pokemonlist, @pokemon].each do |creature|
         creature.instance_eval do
           # Return the formated name for Pokedex

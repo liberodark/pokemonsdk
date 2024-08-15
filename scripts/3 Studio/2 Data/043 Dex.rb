@@ -36,6 +36,14 @@ module Studio
       # Get the form of the creature
       # @return [Integer]
       attr_reader :form
+
+      # Create a new CreatureInfo
+      # @param db_symbol [Symbol]
+      # @param form [Integer]
+      def initialize(db_symbol, form)
+        @db_symbol = db_symbol
+        @form = form
+      end
     end
   end
 end

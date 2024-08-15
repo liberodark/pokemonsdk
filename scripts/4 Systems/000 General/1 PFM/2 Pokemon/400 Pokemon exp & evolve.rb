@@ -280,7 +280,7 @@ module PFM
     def id=(new_id)
       @character = nil
       if new_id && (req = data_creature(new_id)).id != 0 && (forms = req.forms)
-        @id = new_id
+        @id = req.id
         @db_symbol = forms.first.db_symbol
         @form = 0 if forms.none? { |creature_form| creature_form.form == @form }
         @form = form_generation(-1) if @form == 0
