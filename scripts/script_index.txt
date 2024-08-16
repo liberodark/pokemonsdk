@@ -783,6 +783,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Perish Body.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Pickpocket - Magician.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Plus - Minus.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Poison Point.rb
+pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Poison Puppeteer.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Power Construct.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Power of Alchemy - Receiver.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 PowerSpot.rb
