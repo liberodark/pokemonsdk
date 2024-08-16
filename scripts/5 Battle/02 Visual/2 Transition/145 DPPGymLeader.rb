@@ -34,7 +34,8 @@ module Battle
         end
 
         # Get the resource name according to the current state of the player and requested prefix
-        # @return [String]
+        # @param prefix [String] The prefix to use for the resource name
+        # @return [String] The determined resource name
         def resource_name(prefix)
           resource_filename = @scene.battle_info.find_background_name_to_display(prefix) do |filename|
             next RPG::Cache.battleback_exist?(filename)
@@ -46,101 +47,129 @@ module Battle
           return resource_filename
         end
 
+        # Function that creates all the sprites
+        def create_all_sprites
+          super
+          create_vs_full_sprite
+          create_vs_zoom_sprite
+          create_mugshot_sprite
+          Graphics.sort_z
+        end
+
         # Function that creates the top sprite
         def create_top_sprite
           @bar = Sprite.new(@viewport)
           @bar.load(resource_name('vs_bar/bar_dpp'), :battleback)
           @bar.set_position(BAR_START_X, BAR_Y)
+
+          @to_dispose << @screenshot_sprite << @bar
         end
 
-        # Function that creates the vs sprites
-        def create_vs_sprites
-          @vs_full = Sprite.new(@viewport).load('vs_bar/vs_white', :battleback).set_origin_div(2, 2).set_position(VS_X, BAR_Y + VS_OFFSET_Y)
-          @vs_border = Sprite.new(@viewport).load('vs_bar/vs_green', :battleback).set_origin_div(2, 2).set_position(VS_X, BAR_Y + VS_OFFSET_Y)
-          @vs_woop_woop = Sprite.new(@viewport).load('vs_bar/vs_green', :battleback).set_origin_div(2, 2).set_position(VS_X, BAR_Y + VS_OFFSET_Y)
-          @vs_full.visible = @vs_border.visible = @vs_woop_woop.visible = false
+        # Create VS sprite
+        # @param bitmap [String] the bitmap filename
+        # @param position [Array<Integer>] the x and y coordinates to set the sprite position
+        # @return [LiteRGSS::Sprite] The created sprite
+        def create_vs_sprite(bitmap, position, zoom)
+          sprite = Sprite.new(@viewport)
+          sprite.load(bitmap, :battleback)
+          sprite.set_origin_div(2, 2)
+          sprite.set_position(*position)
+          sprite.zoom = zoom
+          sprite.visible = false
+
+          return sprite
+        end
+
+        # Create the full VS sprite
+        def create_vs_full_sprite
+          @vs_full = create_vs_sprite('vs_bar/vs_white', [VS_X, BAR_Y + VS_OFFSET_Y], 1)
+          @to_dispose << @vs_full
+        end
+
+        # Create the VS zoom sprite
+        def create_vs_zoom_sprite
+          @vs_zoom = create_vs_sprite('vs_bar/vs_white', [VS_X, BAR_Y + VS_OFFSET_Y], 1)
+          @to_dispose << @vs_zoom
         end
 
         # Function that creates the mugshot of the trainer
         def create_mugshot_sprite
-          @mugshot = Sprite.new(@viewport).load(resource_name('vs_bar/mugshot'), :battleback).set_position(BAR_START_X, BAR_Y)
+          # @type [Sprite]
+          @mugshot = Sprite.new(@viewport)
+          @mugshot.load(resource_name('vs_bar/mugshot'), :battleback)
+          @mugshot.set_position(BAR_START_X, BAR_Y)
           @mugshot.shader = Shader.create(:color_shader)
           @mugshot.shader.set_float_uniform('color', [0, 0, 0, 0.8])
           @mugshot_text = Text.new(0, @viewport, -1, BAR_Y + TEXT_OFFSET_Y, 0, 16, trainer_name, 2, nil, 10)
-        end
 
-        def dispose_all_pre_transition_sprites
-          @screenshot_sprite.dispose
-          @bar.dispose
-          @vs_full.dispose
-          @vs_border.dispose
-          @vs_woop_woop.dispose
-          @mugshot.dispose
-          @mugshot_text.dispose
-          @viewport.color.set(0, 0, 0, 255)
-        end
-
-        # Function that creates all the sprites
-        def create_all_sprites
-          super
-          create_vs_sprites
-          create_mugshot_sprite
-          Graphics.sort_z
+          @to_dispose << @mugshot << @mugshot_text
         end
 
         # Function that creates the Yuki::Animation related to the pre transition
-        # @return [Yuki::Animation::TimedAnimation]
+        # @return [Yuki::Animation::TimedAnimation] The created animation
         def create_pre_transition_animation
-          ya = Yuki::Animation
-          anim = ya.move(0.25, @bar, BAR_START_X, BAR_Y, 0, BAR_Y)
-          anim.play_before(create_parallel_loop(ya))
-          anim.play_before(ya.send_command_to(self, :dispose_all_pre_transition_sprites))
-          return anim
+          animation = Yuki::Animation.send_command_to(@viewport.color, :set, 0, 0, 0, 0)
+          animation.play_before(Yuki::Animation.move(0.25, @bar, BAR_START_X, BAR_Y, 0, BAR_Y))
+          animation.play_before(create_fade_in_animation)
+          animation.play_before(Yuki::Animation.send_command_to(@viewport.color, :set, 0, 0, 0, 255))
+          animation.play_before(Yuki::Animation.send_command_to(self, :dispose))
+
+          return animation
         end
 
-        # @param [Module<Yuki::Animation>] ya
-        def create_parallel_loop(ya)
-          return ya.wait(4)
-            .parallel_play(create_bar_loop_animation(ya))
-            .parallel_play(create_screenshot_shadow_animation(ya))
-            .parallel_play(create_vs_woop_woop_animation(ya))
-            .parallel_play(create_pre_transition_fade_out_animation(ya))
+        # Function that creates the fade in animation
+        # @return [Yuki::Animation::TimedAnimation] The created animation
+        def create_fade_in_animation
+          animation = Yuki::Animation.wait(4)
+          animation.parallel_play(create_bar_loop_animation)
+          animation.parallel_play(create_screenshot_shadow_animation)
+          animation.parallel_play(create_vs_zoom_animation)
+          animation.parallel_play(create_pre_transition_fade_out_animation)
+
+          return animation
         end
 
-        # @param [Module<Yuki::Animation>] ya
-        def create_vs_woop_woop_animation(ya)
-          vs_woop_woop_anim = ya.wait(0.5)
-          vs_woop_woop_anim.play_before(ya.send_command_to(self, :show_vs))
-          vs_woop_woop_anim.play_before(ya.scalar(0.15, @vs_woop_woop, :zoom=, 2, 1))
-          vs_woop_woop_anim.play_before(ya.scalar(0.15, @vs_woop_woop, :zoom=, 2, 1))
-          vs_woop_woop_anim.play_before(ya.scalar(0.15, @vs_woop_woop, :zoom=, 2, 1))
-          vs_woop_woop_anim.play_before(ya.send_command_to(@vs_full, :visible=, true))
-          vs_woop_woop_anim.play_before(ya.move(0.4, @mugshot, BAR_START_X, BAR_Y, MUGSHOT_PRE_FINAL_X, BAR_Y))
-          vs_woop_woop_anim.play_before(ya.move(0.15, @mugshot, MUGSHOT_PRE_FINAL_X, BAR_Y, MUGSHOT_FINAL_X, BAR_Y))
-          vs_woop_woop_anim.play_before(ya.move_discreet(0.35, @mugshot_text, 0, @mugshot_text.y, MUGSHOT_PRE_FINAL_X, @mugshot_text.y))
-          return vs_woop_woop_anim
+        # @return [Yuki::Animation::TimedAnimation] The created animation
+        def create_vs_zoom_animation
+          animation = Yuki::Animation.wait(0.5)
+          animation.play_before(Yuki::Animation.send_command_to(@vs_zoom, :visible=, true))
+          animation.play_before(Yuki::Animation.scalar(0.15, @vs_zoom, :zoom=, 2, 1))
+          animation.play_before(Yuki::Animation.scalar(0.15, @vs_zoom, :zoom=, 2, 1))
+          animation.play_before(Yuki::Animation.scalar(0.15, @vs_zoom, :zoom=, 2, 1))
+          animation.play_before(Yuki::Animation.send_command_to(@vs_zoom, :visible=, false))
+          animation.play_before(Yuki::Animation.send_command_to(@vs_full, :visible=, true))
+          animation.play_before(Yuki::Animation.move(0.4, @mugshot, BAR_START_X, BAR_Y, MUGSHOT_PRE_FINAL_X, BAR_Y))
+          animation.play_before(Yuki::Animation.move(0.15, @mugshot, MUGSHOT_PRE_FINAL_X, BAR_Y, MUGSHOT_FINAL_X, BAR_Y))
+          animation.play_before(Yuki::Animation.move_discreet(0.35, @mugshot_text, 0, @mugshot_text.y, MUGSHOT_PRE_FINAL_X, @mugshot_text.y))
+
+          return animation
         end
 
-        # @param [Module<Yuki::Animation>] ya
-        def create_pre_transition_fade_out_animation(ya)
+        # @return [Yuki::Animation::TimedAnimation] The created animation
+        def create_pre_transition_fade_out_animation
           transitioner = proc { |t| @viewport.shader.set_float_uniform('color', [1, 1, 1, t]) }
-          fade_out = ya.wait(3.25)
-          fade_out.play_before(ya.scalar(0.5, transitioner, :call, 0, 1))
-          return fade_out
+
+          animation = Yuki::Animation.wait(3.25)
+          animation.play_before(Yuki::Animation.scalar(0.5, transitioner, :call, 0, 1))
+
+          return animation
         end
 
-        # @param [Module<Yuki::Animation>] ya
-        def create_screenshot_shadow_animation(ya)
-          shadow_anim = ya.wait(1.5)
-          shadow_anim.play_before(ya.send_command_to(self, :make_screenshot_shadow))
-          return shadow_anim
+        # Create the bar movement loop
+        # @return [Yuki::Animation::TimedAnimation] The created animation
+        def create_bar_loop_animation
+          animation = Yuki::Animation.timed_loop_animation(0.25)
+          movement = Yuki::Animation.move(0.25, @bar, 0, BAR_Y, -256, BAR_Y)
+
+          return animation.parallel_play(movement)
         end
 
-        # @param [Module<Yuki::Animation>] ya
-        def create_bar_loop_animation(ya)
-          anim = ya.timed_loop_animation(0.25)
-          movement = ya.move(0.25, @bar, 0, BAR_Y, -256, BAR_Y)
-          return anim.parallel_play(movement)
+        # @return [Yuki::Animation::TimedAnimation] The created animation
+        def create_screenshot_shadow_animation
+          animation = Yuki::Animation.wait(1.5)
+          animation.play_before(Yuki::Animation.send_command_to(self, :make_screenshot_shadow))
+
+          return animation
         end
 
         def make_screenshot_shadow
@@ -148,10 +177,6 @@ module Battle
           @screenshot_sprite.shader.set_float_uniform('color', [0, 0, 0, 0.5])
           @mugshot.shader.set_float_uniform('color', [0, 0, 0, 0.0])
           @viewport.flash(Color.new(255, 255, 255), 20)
-        end
-
-        def show_vs
-          @vs_border.visible = @vs_woop_woop.visible = true
         end
       end
     end

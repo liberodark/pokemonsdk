@@ -28,7 +28,7 @@ module Battle
         def create_top_sprite
           @top_sprite = ShaderedSprite.new(@viewport)
           @top_sprite.z = @screenshot_sprite.z * 2
-          @top_sprite.set_bitmap(pre_transition_sprite_name, :transition)
+          @top_sprite.load(pre_transition_sprite_name, :transition)
           @top_sprite.zoom = @viewport.rect.width / @top_sprite.width.to_f
           @top_sprite.y = (@viewport.rect.height - @top_sprite.height * @top_sprite.zoom_y) / 2
           @top_sprite.shader = setup_shader(shader_name)

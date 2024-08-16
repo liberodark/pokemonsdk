@@ -182,4 +182,5 @@ The game will sleep 10 seconds to make sure you see this message')
   register(:black_to_white, 'graphics/shaders/black_to_white.frag')
   register(:dpp_sprite_side, 'graphics/shaders/dpp_wild_ext_side.frag')
   register(:sinusoidal, 'graphics/shaders/hgss_wild_sea.frag')
+  register(:bw_wild_sea, 'graphics/shaders/bw_wild_sea.frag')
 end

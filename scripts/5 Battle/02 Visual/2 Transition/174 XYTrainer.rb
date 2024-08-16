@@ -24,14 +24,14 @@ module Battle
         def create_background
           @background = Sprite.new(@viewport).set_origin(@viewport.rect.width, @viewport.rect.height)
           @background.set_position(@viewport.rect.width / 2, @viewport.rect.height / 2)
-          @background.set_bitmap('battle_bg', :transition)
+          @background.load('battle_bg', :transition)
           @background.angle = -3
           @background.z = @screenshot_sprite.z - 1
           @to_dispose << @background
         end
 
         def create_degrade
-          @degrade = Sprite.new(@viewport).set_origin(0, 90).set_position(0, 90).set_bitmap('battle_deg', :transition)
+          @degrade = Sprite.new(@viewport).set_origin(0, 90).set_position(0, 90).load('battle_deg', :transition)
           @degrade.zoom_y = 0.10
           @degrade.opacity = 255 * @degrade.zoom_y
           @degrade.z = @background.z
@@ -39,13 +39,13 @@ module Battle
         end
 
         def create_halos
-          @halo1 = Sprite.new(@viewport).set_bitmap('battle_halo1', :transition)
+          @halo1 = Sprite.new(@viewport).load('battle_halo1', :transition)
           @halo1.z = @background.z
           @to_dispose << @halo1
-          @halo2 = Sprite.new(@viewport).set_origin(-640, 0).set_bitmap('battle_halo2', :transition)
+          @halo2 = Sprite.new(@viewport).set_origin(-640, 0).load('battle_halo2', :transition)
           @halo2.z = @background.z
           @to_dispose << @halo2
-          @halo3 = Sprite.new(@viewport).set_origin(-640, 0).set_position(640, 0).set_bitmap('battle_halo2', :transition)
+          @halo3 = Sprite.new(@viewport).set_origin(-640, 0).set_position(640, 0).load('battle_halo2', :transition)
           @halo3.z = @background.z
           @to_dispose << @halo3
         end
@@ -58,13 +58,13 @@ module Battle
             sprite_small_filename, sprite_big_filename = *determine_battler_filename(@scene.battle_info.battlers[1][index])
 
             small_sprite = Sprite.new(@viewport)
-            small_sprite.set_bitmap(sprite_small_filename, :battler)
+            small_sprite.load(sprite_small_filename, :battler)
             small_sprite.set_position(-small_sprite.width / 4, @viewport.rect.height)
             small_sprite.set_origin(small_sprite.width / 2, small_sprite.height)
             small_sprite.z = @background.z
 
             big_sprite = Sprite.new(@viewport)
-            big_sprite.set_bitmap(sprite_big_filename, :battler)
+            big_sprite.load(sprite_big_filename, :battler)
             big_sprite.set_position(pos_x, @viewport.rect.height)
             big_sprite.set_origin(big_sprite.width / 2, big_sprite.height)
             big_sprite.z = @background.z

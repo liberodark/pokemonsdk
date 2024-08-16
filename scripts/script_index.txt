@@ -493,15 +493,20 @@ pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/121 RSCave.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/124 RSTrainer.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/140 DPPWild.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/141 DPPCave.rb
+pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/142 DPPSea.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/144 DPPTrainer.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/145 DPPGymLeader.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/150 HGSSWild.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/151 HGSSCave.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/152 HGSSSea.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/154 HGSSTrainer.rb
+pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/155 HGSSGymLeader.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/160 BWWild.rb
+pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/162 BWSea.rb
+pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/164 BWTrainer.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/174 XYTrainer.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/300 BattleFrontier.rb
+pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/300 Red.rb
 pokemonsdk/scripts/5 Battle/03 PokemonBattler/001 PokemonBattler.rb
 pokemonsdk/scripts/5 Battle/03 PokemonBattler/002 Properties.rb
 pokemonsdk/scripts/5 Battle/03 PokemonBattler/003 Statistics.rb

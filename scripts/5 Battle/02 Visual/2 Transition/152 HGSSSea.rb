@@ -25,7 +25,7 @@ module Battle
         def create_sprite(sprite_name, z_factor, y_offset = 0)
           sprite = Sprite.new(@viewport)
           sprite.z = @screenshot_sprite.z * z_factor
-          sprite.set_bitmap(pre_transition_sprite_name(sprite_name), :transition)
+          sprite.load(pre_transition_sprite_name(sprite_name), :transition)
           sprite.zoom = @viewport.rect.width / sprite.width.to_f
           sprite.y = @viewport.rect.height + y_offset
           sprite.visible = false

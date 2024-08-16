@@ -16,7 +16,7 @@ module Battle
           @screenshot_sprite_right.z = @screenshot_sprite.z * 2
 
           @black_screen = Sprite.new(@viewport)
-          @black_screen.set_bitmap(pre_transition_sprite_name, :transition)
+          @black_screen.load(pre_transition_sprite_name, :transition)
           @black_screen.z = @screenshot_sprite.z * 0.5
 
           @to_dispose << @screenshot_sprite << @screenshot_sprite_right << @black_screen

@@ -21,7 +21,7 @@ module Battle
         def create_top_sprite
           @top_sprite = SpriteSheet.new(@viewport, *pre_transition_cells)
           @top_sprite.z = @screenshot_sprite.z * 2
-          @top_sprite.set_bitmap(pre_transition_sprite_name[0], :transition)
+          @top_sprite.load(pre_transition_sprite_name[0], :transition)
           @top_sprite.zoom = @viewport.rect.width / @top_sprite.width.to_f
           @top_sprite.ox = @top_sprite.width / 2
           @top_sprite.oy = @top_sprite.height / 2
@@ -53,7 +53,7 @@ module Battle
           animation = Yuki::Animation.scalar(0.4, @top_sprite, :zoom=, 0.2, @viewport.rect.width / @top_sprite.width.to_f)
           animation.parallel_play(Yuki::Animation.scalar(0.4, @top_sprite, :angle=, 90, -360))
           animation.play_before(Yuki::Animation::SpriteSheetAnimation.new(0.2, @top_sprite, cells))
-          animation.play_before(Yuki::Animation.send_command_to(@top_sprite, :set_bitmap, pre_transition_sprite_name[1], :transition))
+          animation.play_before(Yuki::Animation.send_command_to(@top_sprite, :load, pre_transition_sprite_name[1], :transition))
           animation.play_before(Yuki::Animation::SpriteSheetAnimation.new(0.2, @top_sprite, cells))
           animation.play_before(Yuki::Animation.send_command_to(@top_sprite, :dispose))
           # Prevent frame skipping between both SpriteSheet
