@@ -17,7 +17,7 @@ begin
   require 'json'
   require 'yaml'
   module YAML
-    unless method_defined?(:unsafe_load)
+    unless respond_to?(:unsafe_load)
       module_function
       def unsafe_load(*args)
         load(*args)
