@@ -230,7 +230,8 @@ pokemonsdk/scripts/4 Systems/005 Animation/104 MoveAnimationHelper.rb
 pokemonsdk/scripts/4 Systems/005 Animation/105 SignalWaiter.rb
 pokemonsdk/scripts/4 Systems/100 Menu/099 MenuMixin.rb
 pokemonsdk/scripts/4 Systems/100 Menu/100 Menu.rb
-pokemonsdk/scripts/4 Systems/100 Menu/300 MenuButton.rb
+pokemonsdk/scripts/4 Systems/100 Menu/300 MenuButtonBase.rb
+pokemonsdk/scripts/4 Systems/100 Menu/301 GirlBagMenuButton.rb
 pokemonsdk/scripts/4 Systems/101 Dex/001 Pokedex.rb
 pokemonsdk/scripts/4 Systems/101 Dex/010 Dex UIs.rb
 pokemonsdk/scripts/4 Systems/101 Dex/100 Dex.rb
