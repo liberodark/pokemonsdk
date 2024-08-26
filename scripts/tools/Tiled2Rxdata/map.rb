@@ -15,9 +15,9 @@ module Tiled2Rxdata
       # @type [Integer]
       @height = hash[:tileMetadata][:height]
       # @type [RPG::AudioFile]
-      @bgm = RPG::AudioFile.new(hash[:bgm][:name], hash[:bgm][:volume], hash[:bgm][:pitch])
+      @bgm = RPG::AudioFile.new(File.basename(hash[:bgm][:name], '.*'), hash[:bgm][:volume], hash[:bgm][:pitch])
       # @type [RPG::AudioFile]
-      @bgs = RPG::AudioFile.new(hash[:bgs][:name], hash[:bgs][:volume], hash[:bgs][:pitch])
+      @bgs = RPG::AudioFile.new(File.basename(hash[:bgs][:name], '.*'), hash[:bgs][:volume], hash[:bgs][:pitch])
       # @type [Integer]
       @encounter_step = hash[:stepsAverage]
       # @type [Integer]
