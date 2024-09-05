@@ -15,7 +15,7 @@ module Battle
           return false
         end
 
-        if user.effects.has?(:substitute) || logic.battler_attacks_last?(user)
+        if logic.battler_attacks_last?(user)
           show_usage_failure(user)
           return false
         end
