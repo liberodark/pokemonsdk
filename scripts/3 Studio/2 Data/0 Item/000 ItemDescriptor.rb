@@ -326,7 +326,7 @@ module PFM
       next false if creature.db_symbol == :rockruff && creature.ability_db_symbol == :own_tempo
       next false if creature.data.abilities[0] == creature.data.abilities[1]
       next false if creature.ability_db_symbol == creature.data.abilities.last
-    
+
       next true
     end
 
