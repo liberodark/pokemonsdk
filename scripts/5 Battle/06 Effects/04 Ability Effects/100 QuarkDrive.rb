@@ -2,6 +2,14 @@ module Battle
   module Effects
     class Ability
       class QuarkDrive < Ability
+        TEXTS_IDS = {
+          atk: 1702,
+          dfe: 1706,
+          ats: 1710,
+          dfs: 1714,
+          spd: 1718
+        }
+
         # Create a new FlowerGift effect
         # @param logic [Battle::Logic]
         # @param target [PFM::PokemonBattler]
@@ -35,36 +43,42 @@ module Battle
           play_ability_effect(handler, with, :item) if @target.hold_item?(:booster_energy)
         end
 
-        # Give the atk modifier over given to the Pokemon with this effect
+        # Give the move [Spe]atk mutiplier
+        # @param user [PFM::PokemonBattler] user of the move
+        # @param target [PFM::PokemonBattler] target of the move
+        # @param move [Battle::Move] move
         # @return [Float, Integer] multiplier
-        def atk_modifier
-          return super unless @highest_stat == :atk
+        def sp_atk_multiplier(user, target, move)
+          return 1 unless @highest_stat
+          return 1 if user != @target
 
-          return 1.3
+          return case @highest_stat
+                 when :atk
+                   move.physical? ? 1.3 : 1
+                 when :ats
+                   move.special? ? 1.3 : 1
+                 else
+                   1
+                 end
         end
 
-        # Give the dfe modifier over given to the Pokemon with this effect
+        # Give the move [Spe]def mutiplier
+        # @param user [PFM::PokemonBattler] user of the move
+        # @param target [PFM::PokemonBattler] target of the move
+        # @param move [Battle::Move] move
         # @return [Float, Integer] multiplier
-        def dfe_modifier
-          return super unless @highest_stat == :dfe
+        def sp_def_multiplier(user, target, move)
+          return 1 unless @highest_stat
+          return 1 if target != @target
 
-          return 1.3
-        end
-
-        # Give the ats modifier over given to the Pokemon with this effect
-        # @return [Float, Integer] multiplier
-        def ats_modifier
-          return super unless @highest_stat == :ats
-
-          return 1.3
-        end
-
-        # Give the dfs modifier over given to the Pokemon with this effect
-        # @return [Float, Integer] multiplier
-        def dfs_modifier
-          return super unless @highest_stat == :dfs
-
-          return 1.3
+          return case @highest_stat
+                 when :dfe
+                   move.physical? ? 1.3 : 1
+                 when :dfs
+                   move.special? ? 1.3 : 1
+                 else
+                   1
+                 end
         end
 
         # Give the speed modifier over given to the Pokemon with this effect
@@ -83,7 +97,7 @@ module Battle
         # @param reason [Symbol] the reason of the proc
         def play_ability_effect(handler, pokemon, reason)
           case reason
-          when :env 
+          when :env
             handler.scene.visual.show_ability(pokemon)
             handler.scene.visual.wait_for_animation
           when :item
@@ -93,7 +107,8 @@ module Battle
           end
 
           @highest_stat = highest_stat_boosted
-          #TODO: Add the corresponding text
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(66, 1638, pokemon))
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(66, TEXTS_IDS[@highest_stat], pokemon))
         end
 
         # Function called to increase the pokemon's highest stat
