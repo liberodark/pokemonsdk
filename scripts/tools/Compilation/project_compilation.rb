@@ -25,7 +25,8 @@ module ProjectCompilation
   module_function
 
   def start
-    make_release_path    
+    build_psdk_dat
+    make_release_path
     puts "Progress: Start script compilation"
     start_script_compilation
     make_game_rb
@@ -40,6 +41,14 @@ module ProjectCompilation
     puts "Progress: Copy binaries"
     copy_binaries unless ARGV.include?('skip_binary')
     puts "Compilation done!"
+  end
+
+  def build_psdk_dat
+    return if File.exist?('Data/Studio/psdk.dat')
+
+    ScriptLoader.load_tool('Studio2PSDK')
+    Studio2PSDK.try_convert
+    Studio2PSDK.cleanup
   end
 
   def start_script_compilation
@@ -224,3 +233,5 @@ end
 rgss_main {}
 
 ProjectCompilation.start
+$stdout.flush
+Process.exit!(0)
