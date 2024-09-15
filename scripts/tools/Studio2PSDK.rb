@@ -397,6 +397,7 @@ module Studio
       # @param hash [Hash]
       def try_create(hash)
         return unless (form = hash['form']).is_a?(Integer)
+        return unless (form_text_id = hash['formTextId']).is_a?(Hash)
         return unless (height = hash['height'])
         return unless (weight = hash['weight'])
         return unless (type1 = hash['type1']).is_a?(String)
@@ -431,6 +432,7 @@ module Studio
 
         obj = allocate
         obj.instance_variable_set(:@form, form)
+        obj.instance_variable_set(:@form_text_id, Studio::CreatureForm::FormTextId.new(form_text_id))
         obj.instance_variable_set(:@height, height)
         obj.instance_variable_set(:@weight, weight)
         obj.instance_variable_set(:@type1, type1.to_sym)
@@ -502,6 +504,13 @@ module Studio
         @character_shiny_f = hash['characterShinyF']
         @cry = hash['cry']
         @has_female = hash['hasFemale']
+      end
+    end
+
+    class FormTextId
+      def initialize(hash)
+        @name = hash['name']
+        @description = hash['description']
       end
     end
   end

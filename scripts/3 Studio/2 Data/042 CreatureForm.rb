@@ -7,6 +7,10 @@ module Studio
     # @return [Integer]
     attr_reader :form
 
+    # Current form text ID
+    # @return [FormTextId]
+    attr_reader :form_text_id
+
     # Height of the form
     # @return [Float]
     attr_reader :height
@@ -130,6 +134,21 @@ module Studio
     # Resources of the creature
     # @return [Resources]
     attr_reader :resources
+    
+    # Get the creature form name
+    # @return [string]
+    def form_name
+      return text_get(67, @form_text_id.name)
+    end
+
+    # Get the creature form description
+    # @return [string]
+    def form_description
+      return description if @form == 0
+
+      return text_get(68, @form_text_id.description)
+    end
+    alias form_descr form_description
 
     # Data class describing an evolution
     class Evolution
@@ -242,6 +261,16 @@ module Studio
       # Test if the females resources can be used
       # @return [Boolean]
       attr_reader :has_female
+    end
+  
+    class FormTextId
+      # ID of the form name
+      # @return [Integer]
+      attr_reader :name
+  
+      # ID of the form description 
+      # @return [Integer]
+      attr_reader :description
     end
   end
 
