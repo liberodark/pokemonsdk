@@ -23,8 +23,9 @@ module Battle
         return if move_exceptions.include?(skill&.db_symbol)
         return if target.effects.has?(:drowsiness)
 
-        @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, status_prevention_message_id, target))
-        return :prevent
+        return handler.prevent_change do
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, status_prevention_message_id, target))
+        end
       end
 
       private
