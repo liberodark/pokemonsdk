@@ -28,7 +28,7 @@ module Battle
           end
         end
 
-        unless bchance?(2**-consecutive_uses.size)
+        unless bchance?(3**-(consecutive_uses.size).clamp(0, 6))
           show_usage_failure(user)
           return false
         end
