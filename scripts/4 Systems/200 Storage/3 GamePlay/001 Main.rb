@@ -51,6 +51,7 @@ module GamePlay
       create_viewport
       create_base_ui
       create_composition
+      Graphics.sort_z
     end
 
     def create_composition
