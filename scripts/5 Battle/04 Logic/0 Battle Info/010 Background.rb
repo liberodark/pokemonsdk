@@ -31,7 +31,8 @@ module Battle
       def background_name_suggestions(prefix)
         return [
           *background_name_suggestions_for("#{prefix}#{@background_name}"),
-          *background_name_suggestions_for("#{prefix}#{system_tag_background_name}")
+          *background_name_suggestions_for("#{prefix}#{system_tag_background_name}"),
+          *background_name_suggestions_for("#{prefix}")
         ].uniq
       end
 
