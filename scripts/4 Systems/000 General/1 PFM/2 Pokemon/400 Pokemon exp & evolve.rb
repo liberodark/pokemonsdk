@@ -234,7 +234,7 @@ module PFM
     def evolve(id, form)
       old_evolution_db_symbol = db_symbol
       old_evolution_form = self.form
-      hp_diff = self.max_hp - self.hp
+      hp_diff = max_hp - hp
       self.id = id
       if form
         self.form = form
@@ -256,23 +256,26 @@ module PFM
       $pokedex.mark_captured(self.id)
       $pokedex.increase_creature_caught_count(self.id)
       # Refresh hp
-      self.hp = (self.max_hp - hp_diff) if self.hp > 0
+      self.hp = (max_hp - hp_diff) if hp > 0
       exec_hooks(PFM::Pokemon, :evolution, binding)
     end
 
     # Add Shedinja evolution
     Hooks.register(PFM::Pokemon, :evolution, 'Shedinja Evolution') do
-      next unless id == 291 && $actors.size < 6 && $bag.contain_item?(4)
+      next unless db_symbol == :ninjask && !PFM.game_state.full? && $bag.contain_item?(:poke_ball)
 
-      # @type [PFM::Pokemon]
-      munja = dup
-      munja.id = 292
-      munja.hp = munja.max_hp
-      munja.item_holding = 0
-      $actors << munja
-      $bag.remove_item(4, 1)
-      $pokedex.mark_seen(292, forced: true)
-      $pokedex.mark_captured(292)
+      shedinja = Pokemon.new(:shedinja, level, shiny?, !shiny?, 0, {
+                               stats: [iv_hp, iv_atk, iv_dfe, iv_ats, iv_dfs, iv_spd],
+                               bonus: [ev_hp, ev_atk, ev_dfe, ev_ats, ev_dfs, ev_spd],
+                               trainer_name: trainer_name, trainer_id: trainer_id,
+                               captured_in: captured_in, captured_at: captured_at, captured_level: captured_level,
+                               egg_in: egg_in, egg_at: egg_at,
+                               moves: skills_set.map(&:id)
+                             })
+      $actors << shedinja
+      $bag.remove_item(:poke_ball, 1)
+      $pokedex.mark_seen(:shedinja, forced: true)
+      $pokedex.mark_captured(:shedinja)
     end
 
     # Change the id of the Pokemon
