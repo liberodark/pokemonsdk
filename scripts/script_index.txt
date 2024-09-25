@@ -894,6 +894,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/050 StatusBerry.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/050 TerrainSeeds.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/050 TypeResistingBerry.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Air Balloon.rb
+pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Berserk Gene.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Black Sludge.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Choice Scarf.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Eject Button.rb
