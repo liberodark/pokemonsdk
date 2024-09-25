@@ -12,6 +12,7 @@ module Battle
           return if launcher != @target || launcher == target
           return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated?
           return unless skill && hp >= 8
+          return if launcher.hp == launcher.max_hp
 
           handler.scene.visual.show_item(launcher)
           handler.logic.damage_handler.heal(launcher, hp / 8)
