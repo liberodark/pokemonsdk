@@ -223,7 +223,45 @@ module PFM
       end
     end
 
-    # Check the signals and display them
+    # Tell the quest it has been seen by the player
+    # @param quest_id [Integer/Symbol] ID or db_symbol of the quest in the database
+    # @return [Boolean] if the quest wasn't already seen by the player
+    def seen_by_player(quest_id)
+      return false unless (quest = active_quest(quest_id))
+      return false unless quest.data_get(:was_seen, false)
+
+      quest.checked_by_player
+      return true
+    end
+
+    # Checks if a quest is new
+    #
+    # @param quest_id [Integer/Symbol] ID or db_symbol of the quest in the database
+    # @return [Boolean] true if the quest has not been seen, false otherwise
+    def new?(quest_id)
+      return false unless (quest = active_quest(quest_id))
+
+      return !quest.data_get(:was_seen, true)
+    end
+
+    # Completes a custom objective for a given quest.
+    #
+    # @param quest_id [Integer/Symbol] The ID or db_symbol of the quest in the database.
+    # @param objective_nb [Integer] The number of the objective to complete.
+    #
+    # @return [Boolean] True if the objective was completed successfully, false otherwise.
+    def complete_custom_objective(quest_id, objective_nb)
+      return false unless (quest = active_quest(quest_id))
+      return false unless quest.custom_objective?(:objective_custom, objective_nb)
+      return false unless !quest.data_get(:custom_objv_done, objective_nb, false)
+
+      quest.data_set(:custom_objv_done, objective_nb, true)
+      check_quest(quest_id)
+      return true
+    end
+
+    # Checks if there are any quests that have started or finished.
+    # If there are, it displays the quest information and updates the quest status.
     def check_up_signal
       return unless $scene.is_a?(Scene_Map)
 

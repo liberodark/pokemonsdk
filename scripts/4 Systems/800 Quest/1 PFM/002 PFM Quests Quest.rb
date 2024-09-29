@@ -53,6 +53,25 @@ module PFM
         return false
       end
 
+      # Test if a quest has a specific custom objective.
+      #
+      # @param objective_method_name [Symbol] The name of the method to call to validate the objective.
+      # @param objective_nb [Integer] The number of the objective to test.
+      #
+      # @return [Boolean] True if the quest has the custom objective, false otherwise.
+      def custom_objective?(objective_method_name, objective_nb)
+        quest = data_quest(quest_id)
+        objective_visibility = data_get(:goals_visibility, nil.to_a)
+        quest.objectives.each_with_index do |objective, index|
+          next if objective.hidden_by_default && !objective_visibility[index]
+          next unless objective.objective_method_name == objective_method_name
+          next unless objective.objective_method_args[1] == objective_nb
+
+          return true
+        end
+        return false
+      end
+
       # Distribute the earning of the quest
       def distribute_earnings
         data = data_quest(@quest_id)
@@ -69,6 +88,11 @@ module PFM
         return data.objectives.all? do |objective|
           send(objective.objective_method_name, *objective.objective_method_args)
         end
+      end
+
+      # Marks the quest as seen
+      def checked_by_player
+        data_set(:was_seen, true)
       end
 
       # Get the list of objective texts with their validation state
@@ -345,6 +369,22 @@ module PFM
       # @param data [Integer, Symbol, Hash] data of the egg to give
       def text_earn_egg(data)
         return format('1 %<egg>s', egg: text_file_get(0)[0])
+      end
+
+      # Returns the custom objective status for the given index.
+      #
+      # @param _text [Array<Number, Number>] (unused) The FileId and TextId of the custom objective.
+      # @param index [Integer] The index of the custom objective.
+      # @return [Boolean] The status of the custom objective.
+      def objective_custom(_text, index)
+        return data_get(:custom_objv_done, index, false)
+      end
+
+      # Custom objective text
+      # @param text [Array<Number, Number>] The FileId and TextId of the custom objective.
+      # @return [String] The text of the custom objective.
+      def text_custom(text, _index)
+        return ext_text(*text)
       end
     end
   end
