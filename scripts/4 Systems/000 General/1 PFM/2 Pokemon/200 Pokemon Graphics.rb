@@ -63,6 +63,9 @@ module PFM
       # @param egg [Boolean] egg state of the Pokemon
       # @return [String, nil]
       def front_gif_filename(id, form, female, shiny, egg)
+        format_arg = { id: id, form: form, name: data_creature(id).db_symbol }
+        return (correct_filename_from(EGG_FILENAMES, format_arg, RPG::Cache.method(:poke_front_exist?)) || EGG_FILENAMES.last) + '.gif' if egg
+
         hue = shiny ? 1 : 0
         cache_exist = proc { |filename| RPG::Cache.poke_front_exist?(filename, hue) }
         filename = front_filename(id, form, female, shiny, egg) + '.gif'
@@ -189,10 +192,9 @@ module PFM
     # Return the GifReader face of the Pokemon
     # @return [::Yuki::GifReader, nil]
     def gif_face
-      return nil unless @step_remaining
-
-      filename = Pokemon.front_gif_filename(@id, @form, female?, shiny?, false)
-      return filename && Yuki::GifReader.new(RPG::Cache.poke_front(filename, shiny? ? 1 : 0), true)
+      filename = Pokemon.front_gif_filename(@id, @form, female?, shiny?, egg?)
+      return nil unless filename && RPG::Cache.method(:poke_front_exist?).call(filename) 
+      return Yuki::GifReader.new(RPG::Cache.poke_front(filename, shiny? ? 1 : 0), true)
     end
 
     # Return the GifReader back of the Pokemon
