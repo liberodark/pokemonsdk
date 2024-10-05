@@ -287,6 +287,22 @@ module Battle
       effects.each(&:give_back_item)
     end
 
+    BattleEndHandler.register("Evolve Farfetch'd-G into Sirftech'd") do |handler, players_pokemon|
+      players_pokemon.each do |pokemon|
+        next unless pokemon.original.db_symbol == :farfetch_d && pokemon.original.form == 1
+
+        # Make sure original gets the value before the BEH evolve check (which is before back_properties)
+        # Reset the evolve var if we haven't reached 3 critical hits
+        if (pokemon.evolve_var || 0) >= 3
+          pokemon.original.evolve_var = pokemon.evolve_var
+          handler.logic.evolve_request << pokemon
+        else
+          pokemon.original.evolve_var = 0
+          pokemon.evolve_var = 0
+        end
+      end
+    end
+
     BattleEndHandler.register_nuzlocke('PSDK Nuzlocke') do |handler|
       PFM.game_state.nuzlocke.clear_dead_pokemon
       handler.logic.all_battlers do |battler|

@@ -48,7 +48,7 @@ module PFM
       raw_dfs = (dfs_basis * dfs_modifier).floor
       return @scene.logic.each_effects(self).reduce(raw_dfs) do |product, e|
         (product * e.dfs_modifier).floor
-      end    
+      end
     end
 
     # Return the atk modifier

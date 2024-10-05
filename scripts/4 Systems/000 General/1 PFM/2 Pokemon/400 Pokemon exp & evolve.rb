@@ -378,5 +378,11 @@ module PFM
     def elv_1percent
       return !elv_99percent
     end
+
+    # Check evolve condition to evolve in Farfetch'd-G into Sirftech'd
+    # @return [Boolean] if the condition is valid
+    def elv_sirfetchd
+      return (@evolve_var || 0) >= 3
+    end
   end
 end

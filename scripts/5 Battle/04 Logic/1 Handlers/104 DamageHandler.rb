@@ -117,7 +117,7 @@ module Battle
         end
         exec_hooks(DamageHandler, :post_damage, binding) if target.hp > 0
         if target.hp <= 0
-          exec_hooks(DamageHandler, :post_damage_death, binding) 
+          exec_hooks(DamageHandler, :post_damage_death, binding)
           target.ko_count += 1
         end
         target.add_damage_to_history(hp, launcher, skill, target.hp <= 0)
@@ -266,6 +266,22 @@ module Battle
       next unless target.original.ability_db_symbol == :illusion && target.illusion
 
       target.illusion = nil
+    end
+
+    # Critical hit count for Galarian Farfetch'd's evolution
+    DamageHandler.register_post_damage_hook('PSDK post damage: ElvFarfetchD') do |_handler, _hp, _target, launcher, skill|
+      next if launcher.nil?
+      next unless launcher.db_symbol == :farfetch_d && launcher.form == 1
+
+      launcher.evolve_var = 0 if launcher.evolve_var.nil?
+      launcher.evolve_var += 1 if skill.critical_hit?
+    end
+    DamageHandler.register_post_damage_death_hook('PSDK post damage: ElvFarfetchD') do |_handler, _hp, _target, launcher, skill|
+      next if launcher.nil?
+      next unless launcher.db_symbol == :farfetch_d && launcher.form == 1
+
+      launcher.evolve_var = 0 if launcher.evolve_var.nil?
+      launcher.evolve_var += 1 if skill.critical_hit?
     end
   end
 end

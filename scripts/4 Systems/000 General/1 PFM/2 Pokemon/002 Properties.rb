@@ -144,6 +144,9 @@ module PFM
     # Internal status counter that helps some status to terminate or worsen
     # @return [Integer]
     attr_accessor :status_count
+    # Variable responsible of holding the value used for various evolution methods
+    # @return [Integer, nil]
+    attr_accessor :evolve_var
 
     # ========================
     # Battle Related Modifier
