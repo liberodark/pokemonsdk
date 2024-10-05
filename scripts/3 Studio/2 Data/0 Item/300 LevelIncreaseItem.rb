@@ -18,8 +18,16 @@ PFM::ItemDescriptor.define_on_creature_usability(Studio::LevelIncreaseItem) do |
 end
 
 PFM::ItemDescriptor.define_on_creature_use(Studio::LevelIncreaseItem) do |item, creature, scene|
-  creature.loyalty -= Studio::HealingItem.from(item).loyalty_malus
-  Studio::LevelIncreaseItem.from(item).level_count.times do
+  max_amount = ((creature.max_level - creature.level) / Studio::LevelIncreaseItem.from(item).level_count).clamp(1, Float::INFINITY)
+  $game_temp.num_input_variable_id = Yuki::Var::EnteredNumber
+  $game_temp.num_input_digits_max = $bag.item_quantity(item.db_symbol).to_s.size
+  $game_temp.num_input_start = [$bag.item_quantity(item.db_symbol), max_amount].min
+  PFM::Text.set_item_name(item.exact_name)
+  scene.display_message(parse_text(22, 198))
+
+  level_amount = $game_variables[Yuki::Var::EnteredNumber] * Studio::LevelIncreaseItem.from(item).level_count
+  creature.loyalty -= Studio::HealingItem.from(item).loyalty_malus * $game_variables[Yuki::Var::EnteredNumber]
+  level_amount.times do
     if creature.level_up
       list = creature.level_up_stat_refresh
       Audio.me_play(PFM::ItemDescriptor::LVL_SOUND)
@@ -34,57 +42,6 @@ PFM::ItemDescriptor.define_on_creature_use(Studio::LevelIncreaseItem) do |item, 
     id, form = creature.evolve_check(:level_up)
     GamePlay.make_pokemon_evolve(creature, id, form, false) if id
   end
-end
-
-# EXP Candies
-# Should be changed for Studio in the future
-# https://github.com/PokemonWorkshop/PokemonStudio/issues/73
-PFM::ItemDescriptor.define_bag_use(:exp_candy_xs, true) do |item, scene|
-  GamePlay.open_party_menu_to_select_pokemon($actors)
-  if $game_variables[43] != -1
-    amount = 100
-    $game_system.map_interpreter.give_exp($game_variables[43], amount)
-  else
-    next :unused
-  end
-end
-
-PFM::ItemDescriptor.define_bag_use(:exp_candy_s, true) do |item, scene|
-  GamePlay.open_party_menu_to_select_pokemon($actors)
-  if $game_variables[43] != -1
-    amount = 800
-    $game_system.map_interpreter.give_exp($game_variables[43], amount)
-  else
-    next :unused
-  end
-end
-
-PFM::ItemDescriptor.define_bag_use(:exp_candy_m, true) do |item, scene|
-  GamePlay.open_party_menu_to_select_pokemon($actors)
-  if $game_variables[43] != -1
-    amount = 3000
-    $game_system.map_interpreter.give_exp($game_variables[43], amount)
-  else
-    next :unused
-  end
-end
-
-PFM::ItemDescriptor.define_bag_use(:exp_candy_l, true) do |item, scene|
-  GamePlay.open_party_menu_to_select_pokemon($actors)
-  if $game_variables[43] != -1
-    amount = 10000
-    $game_system.map_interpreter.give_exp($game_variables[43], amount)
-  else
-    next :unused
-  end
-end
-
-PFM::ItemDescriptor.define_bag_use(:exp_candy_xl, true) do |item, scene|
-  GamePlay.open_party_menu_to_select_pokemon($actors)
-  if $game_variables[43] != -1
-    amount = 30000
-    $game_system.map_interpreter.give_exp($game_variables[43], amount)
-  else
-    next :unused
-  end
+  $bag.remove_item(item.db_symbol, $game_variables[Yuki::Var::EnteredNumber] - 1)
+  PFM::Text.reset_variables
 end
