@@ -18,12 +18,23 @@ module Battle
       # @param move [Battle::Move]
       # @return [Boolean] if the target is evading the move
       def on_move_prevention_target(user, target, move)
-        return false if target != @pokemon
-        return false unless move.blocked_by?(target, @move.db_symbol)
-        return false if user.has_ability?(:unseen_fist) && move.direct?
+        return false if goes_through_protect?(user, target, move)
 
         play_protect_effect(user, target, move)
         return true
+      end
+
+      # Function called when we try to check if the move goes through protect
+      # @param user [PFM::PokemonBattler]
+      # @param target [PFM::PokemonBattler] expected target
+      # @param move [Battle::Move]
+      # @return [Boolean] if the move goes through protect
+      def goes_through_protect?(user, target, move)
+        return true if target != @pokemon
+        return true unless move.blocked_by?(target, @move.db_symbol)
+        return true if user.has_ability?(:unseen_fist) && move.direct?
+
+        return false
       end
 
       # Get the name of the effect
@@ -83,13 +94,13 @@ module Battle
 
       # Implement the King's Shield effect
       class KingsShield < Protect
-        # Function called when we try to check if the target evades the move
+        # Function called when we try to check if the move goes through protect
         # @param user [PFM::PokemonBattler]
         # @param target [PFM::PokemonBattler] expected target
         # @param move [Battle::Move]
-        # @return [Boolean] if the target is evading the move
-        def on_move_prevention_target(user, target, move)
-          return false if move.status?
+        # @return [Boolean] if the move goes through protect
+        def goes_through_protect?(user, target, move)
+          return true if move.status?
 
           return super
         end
@@ -109,18 +120,15 @@ module Battle
 
       # Implement the Silk Trap effect
       class SilkTrap < Protect
-        # Function called when we try to check if the target evades the move
+        # Function called when we try to check if the move goes through protect
         # @param user [PFM::PokemonBattler]
         # @param target [PFM::PokemonBattler] expected target
         # @param move [Battle::Move]
-        # @return [Boolean] if the target is evading the move
-        def on_move_prevention_target(user, target, move)
-          return false if target != @pokemon
-          return false unless move.blocked_by?(target, @move.db_symbol) && !move.status?
-          return false if user.has_ability?(:unseen_fist) && move.direct?
+        # @return [Boolean] if the move goes through protect
+        def goes_through_protect?(user, target, move)
+          return true if move.status?
 
-          play_protect_effect(user, target, move)
-          return true
+          return super
         end
 
         private
@@ -138,7 +146,42 @@ module Battle
 
       # Implement the Obstruct effect
       class Obstruct < SilkTrap
+        # Function called when we try to check if the Pokemon is immune to a move due to its effect
+        # @param user [PFM::PokemonBattler]
+        # @param target [PFM::PokemonBattler]
+        # @param move [Battle::Move]
+        # @return [Boolean] if the target is immune to the move
+        def on_move_ability_immunity(user, target, move)
+          return false if goes_through_protect?(user, target, move)
+          return false unless move&.direct? && !user.has_ability?(:long_reach)
+          return false unless immune?(user, target, move)
+
+          play_protect_effect(user, target, move)
+
+          return true
+        end
+
         private
+
+        # Function called when we try to check if the Pokemon is immune to a move's types
+        # @param user [PFM::PokemonBattler]
+        # @param target [PFM::PokemonBattler] expected target
+        # @param move [Battle::Move]
+        # @return [Boolean] if the target is immune to a move's types
+        def immune?(user, target, move)
+          move_types = move.definitive_types(user, target)
+
+          target_types = []
+          target_types << target.type1 << target.type2 << target.type3
+
+          result = move_types.any? do |move_type|
+            target_types.any? do |target_type|
+              data_type(move_type).hit(data_type(target_type).db_symbol) == 0
+            end
+          end
+
+          return result
+        end
 
         # Function responsive of playing the protect effect if protect got triggered (inc. message)
         # @param user [PFM::PokemonBattler]
@@ -146,7 +189,16 @@ module Battle
         # @param move [Battle::Move]
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          move.scene.logic.stat_change_handler.stat_change_with_process(:dfe, -2, user, user.has_ability?(:mirror_armor) ? target : nil) if move.direct? && (move.db_symbol != :sucker_punch || !user.has_ability?(:long_reach))
+          return unless move.direct? && !user.has_ability?(:long_reach)
+          move.scene.logic.stat_change_handler.stat_change_with_process(:dfe, -2, user, handle_mirror_armor_effect(user, target))
+        end
+
+        # Handle the mirror armor effect (special case)
+        # @param target [PFM::PokemonBattler]
+        # @param user [PFM::PokemonBattler, nil] Potential launcher of a move
+        # @return [PFM::PokemonBattler, nil]
+        def handle_mirror_armor_effect(user, target)
+          return user.has_ability?(:mirror_armor) ? target : nil
         end
       end
       Protect.register(:obstruct, Obstruct)
@@ -169,13 +221,13 @@ module Battle
 
       # Implement the Burning Bulwark effect
       class BurningBulwark < Protect
-        # Function called when we try to check if the target evades the move
+        # Function called when we try to check if the move goes through protect
         # @param user [PFM::PokemonBattler]
         # @param target [PFM::PokemonBattler] expected target
         # @param move [Battle::Move]
-        # @return [Boolean] if the target is evading the move
-        def on_move_prevention_target(user, target, move)
-          return false if move.status?
+        # @return [Boolean] if the move goes through protect
+        def goes_through_protect?(user, target, move)
+          return true if move.status?
 
           return super
         end
@@ -208,13 +260,13 @@ module Battle
           return true
         end
 
-        # Function called when we try to check if the target evades the move
+        # Function called when we try to check if the move goes through protect
         # @param user [PFM::PokemonBattler]
         # @param target [PFM::PokemonBattler] expected target
         # @param move [Battle::Move]
-        # @return [Boolean] if the target is evading the move
-        def on_move_prevention_target(user, target, move)
-          return false if move.status?
+        # @return [Boolean] if the move goes through protect
+        def goes_through_protect?(user, target, move)
+          return true if move.status?
 
           return super
         end
