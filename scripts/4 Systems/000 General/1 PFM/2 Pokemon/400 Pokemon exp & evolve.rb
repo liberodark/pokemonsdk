@@ -384,5 +384,10 @@ module PFM
     def elv_sirfetchd
       return (@evolve_var || 0) >= 3
     end
+
+    # Check evolve condition for Primeape into Annihilape
+    def elv_annihilape
+      return (@evolve_var || 0) >= 20
+    end
   end
 end

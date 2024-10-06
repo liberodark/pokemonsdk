@@ -424,5 +424,18 @@ module PFM
     def ribbon_got?(id)
       return @ribbons.include?(id)
     end
+
+    # Method responsible of increasing the evolve_var by a given amount.
+    # @param amount [Integer, nil] by how much the evolve_var attribute is increased
+    def increase_evolve_var(amount = 1)
+      @evolve_var ||= 0
+      @evolve_var += amount
+    end
+
+    # Method resetting the evolve var to a given value.
+    # @param value [Integer, nil]
+    def reset_evolve_var(value = 0)
+      @evolve_var = value
+    end
   end
 end

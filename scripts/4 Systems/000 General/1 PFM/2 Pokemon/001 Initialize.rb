@@ -101,6 +101,7 @@ module PFM
       @position = 0
       @battle_turns = 0
       @mega_evolved = false
+      @evolve_var = 0
     end
 
     # Code generation in order to get a shiny

@@ -273,15 +273,27 @@ module Battle
       next if launcher.nil?
       next unless launcher.db_symbol == :farfetch_d && launcher.form == 1
 
-      launcher.evolve_var = 0 if launcher.evolve_var.nil?
-      launcher.evolve_var += 1 if skill.critical_hit?
+      launcher.increase_evolve_var if skill.critical_hit?
     end
     DamageHandler.register_post_damage_death_hook('PSDK post damage: ElvFarfetchD') do |_handler, _hp, _target, launcher, skill|
       next if launcher.nil?
       next unless launcher.db_symbol == :farfetch_d && launcher.form == 1
 
-      launcher.evolve_var = 0 if launcher.evolve_var.nil?
-      launcher.evolve_var += 1 if skill.critical_hit?
+      launcher.increase_evolve_var if skill.critical_hit?
+    end
+
+    # Rage Fist usage count for Primeape's evolution into Annihilape
+    DamageHandler.register_post_damage_hook('PSDK post damage: Rage Fist count') do |_handler, _hp, _target, launcher, skill|
+      next if launcher.nil?
+      next unless launcher.db_symbol == :primeape
+
+      launcher.increase_evolve_var if skill.db_symbol == :rage_fist
+    end
+    DamageHandler.register_post_damage_death_hook('PSDK post damage: Rage Fist count') do |_handler, _hp, _target, launcher, skill|
+      next if launcher.nil?
+      next unless launcher.db_symbol == :primeape
+
+      launcher.increase_evolve_var if skill.db_symbol == :rage_fist
     end
   end
 end

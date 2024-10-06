@@ -297,9 +297,19 @@ module Battle
           pokemon.original.evolve_var = pokemon.evolve_var
           handler.logic.evolve_request << pokemon
         else
-          pokemon.original.evolve_var = 0
-          pokemon.evolve_var = 0
+          pokemon.original.reset_evolve_var
+          pokemon.reset_evolve_var
         end
+      end
+    end
+
+    BattleEndHandler.register('Evolve Primeape into Annihilape') do |handler, players_pokemon|
+      players_pokemon.each do |pokemon|
+        next unless pokemon.original.db_symbol == :primeape
+
+        # Make sure original gets the value before the BEH evolve check (which is before back_properties)
+        pokemon.original.evolve_var = pokemon.evolve_var || 0
+        handler.logic.evolve_request << pokemon
       end
     end
 
