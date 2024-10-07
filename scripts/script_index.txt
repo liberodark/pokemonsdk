@@ -710,6 +710,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Download.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Dry Skin.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Effect Spore.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Electromorphosis.rb
+pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Embody Aspect.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Emergency Exit - Wimp Out.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Flame Body.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Flare Boost.rb
