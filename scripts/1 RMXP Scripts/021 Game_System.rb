@@ -39,8 +39,10 @@ class Game_System
       log_error("Database Error: The Form ##{form} of the Creature ##{id} doesn't exist.")
       creature = creature_data.forms.find { |creature_form| creature_form.form == 0 }
     end
+    cry = creature&.resources&.cry
+    return log_error("The creature ':#{creature.db_symbol}' has no assigned cry.") && nil if cry.nil? || cry.empty? || !File.exist?("Audio/SE/Cries/#{cry}")
 
-    Audio.cry_play("audio/se/cries/#{creature&.resources.cry}")
+    Audio.cry_play("audio/se/cries/#{cry}")
   end
   # Plays a BGM
   # @param bgm [RPG::AudioFile] a descriptor of the BGM
