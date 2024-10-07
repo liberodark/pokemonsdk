@@ -83,6 +83,50 @@ module Battle
       end
     end
 
+    # Doodle move
+    class Doodle < AbilityChanging
+      # Function that tests if the user is able to use the move
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param targets [Array<PFM::PokemonBattler>] expected targets
+      # @note Thing that prevents the move from being used should be defined by :move_prevention_user Hook
+      # @return [Boolean] if the procedure can continue
+      def move_usable_by_user(user, targets)
+        return false unless super
+
+        can_change_ability = targets.all? do |target|
+          @logic.alive_battlers(user.bank).any? do |ally|
+            @logic.ability_change_handler.can_change_ability?(ally, ability_symbol(user, target), user, self) &&
+            ally.ability_db_symbol != ability_symbol(user, target)
+          end
+        end
+
+        unless can_change_ability
+          show_usage_failure(user)
+          return false
+        end
+
+        return true
+      end
+
+      # Function that deals the effect to the pokemon
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
+      def deal_effect(user, actual_targets)
+        actual_targets.each do |target|
+          @logic.alive_battlers(user.bank).each do |ally|
+            next unless @logic.ability_change_handler.can_change_ability?(ally, ability_symbol(user, target), user, self)
+            next if ally.ability_db_symbol == ability_symbol(user, target)
+
+            @scene.visual.show_ability(ally)
+            @scene.visual.wait_for_animation
+            @logic.ability_change_handler.change_ability(ally, ability_symbol(user, target), user, self)
+            @scene.visual.show_ability(ally)
+            @scene.display_message_and_wait(parse_text_with_pokemon(19, 405, ally, PFM::Text::ABILITY[1] => ally.ability_name))
+          end
+        end
+      end
+    end
+
     # Simple Beam move
     class SimpleBeam < Entrainment
       # Function that returns the ability which will assigned to the target
@@ -142,6 +186,7 @@ module Battle
     end
 
     Move.register(:s_entrainment, Entrainment)
+    Move.register(:s_doodle, Doodle)
     Move.register(:s_simple_beam, SimpleBeam)
     Move.register(:s_skill_swap, AbilitySwap)
     Move.register(:s_role_play, AbilityChanging)
