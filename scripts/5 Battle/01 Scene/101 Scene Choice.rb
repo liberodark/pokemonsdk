@@ -150,6 +150,9 @@ module Battle
     def special_item_choice_action(item_wrapper)
       case item_wrapper.item
       when Studio::FleeingItem
+        @message_window.wait_input = true
+        display_message_and_wait(parse_text(53, 110, PFM::Text::ITEM2[1] => item_wrapper.item.name))
+        display_message_and_wait(parse_text(18, 75))
         @logic.battle_result = 1
         @next_update = :battle_end
       when Studio::BallItem

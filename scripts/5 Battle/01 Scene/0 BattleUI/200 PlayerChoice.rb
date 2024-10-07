@@ -259,6 +259,13 @@ module BattleUI
           $game_system.se_play($data_system.buzzer_se)
           return
         end
+        item_wrapper = PFM::ItemDescriptor.actions(item.id)
+        if item_wrapper.chen && item_wrapper.item.is_a?(Studio::FleeingItem)
+          $game_system.se_play($data_system.buzzer_se)
+          @scene.message_window.wait_input = true
+          @scene.display_message(parse_text(22, 43))
+          return
+        end
         $game_system.se_play($data_system.decision_se)
         @choice.use_item(item)
         @item_info.hide

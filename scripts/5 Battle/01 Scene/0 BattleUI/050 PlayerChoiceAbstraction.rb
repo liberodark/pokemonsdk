@@ -39,7 +39,7 @@ module BattleUI
       @result = :action
       user = scene.logic.battler(0, scene.player_actions.size)
       item_wrapper.bind(scene, user)
-      $bag.remove_item(item_wrapper.item.db_symbol, 1) if item_wrapper.item.is_limited && item_wrapper.item.is_a?(Studio::BallItem)
+      $bag.remove_item(item_wrapper.item.db_symbol, 1) if item_wrapper.item.is_limited && [Studio::BallItem, Studio::FleeingItem].any? { |i| item_wrapper.item.is_a?(i) }
       @action = Battle::Actions::Item.new(scene, item_wrapper, $bag, user)
     end
 
