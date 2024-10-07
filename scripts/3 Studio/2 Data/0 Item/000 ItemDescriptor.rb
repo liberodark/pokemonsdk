@@ -18,8 +18,8 @@ module PFM
   #
   # @author Nuri Yuri
   module ItemDescriptor
-    # Sound played when a Pokemon levels up
-    LVL_SOUND = 'audio/me/rosa_levelup'
+    # Sound played when a Pokemon levels up and when an item is used
+    LVL_SOUND = ['audio/me/rosa_levelup', 100, 100]
     # Proc executed when there's no condition (returns true)
     NO_CONDITION = proc { true }
     # Common event condition procs to call before calling event (common_event_id => proc { conditions })
@@ -320,7 +320,7 @@ module PFM
 
     # Specific case ability_capsule
     define_chen_prevention(:ability_capsule) { $game_temp.in_battle }
-    define_on_creature_usability(:ability_capsule) do |item, creature|
+    define_on_creature_usability(:ability_capsule) do |_item, creature|
       next false if creature.egg?
       next false if %i[zygarde greninja].include?(creature.db_symbol)
       next false if creature.db_symbol == :rockruff && creature.ability_db_symbol == :own_tempo
@@ -330,9 +330,25 @@ module PFM
       next true
     end
 
-    define_on_creature_use(:ability_capsule) do |item, creature, scene|
+    define_on_creature_use(:ability_capsule) do |_item, creature, scene|
       creature.ability_index = creature.ability_index.zero? ? 1 : 0
       creature.update_ability
+      Audio.me_play(*LVL_SOUND)
+      $scene.display_message_and_wait(parse_text_with_pokemon(19, 405, creature, PFM::Text::ABILITY[1] => creature.ability_name))
+    end
+
+    # Specific case ability_patch
+    define_chen_prevention(:ability_patch) { $game_temp.in_battle }
+    define_on_creature_usability(:ability_patch) do |_item, creature|
+      next false if creature.egg?
+      abilities = creature.data.abilities
+      next false if abilities[0..1].all? { |ability| ability == abilities[2] }
+      next true
+    end
+    define_on_creature_use(:ability_patch) do |_item, creature, scene|
+      creature.ability_index = creature.ability_db_symbol == creature.data.abilities.last ? 0 : 2
+      creature.update_ability
+      Audio.me_play(*LVL_SOUND)
       $scene.display_message_and_wait(parse_text_with_pokemon(19, 405, creature, PFM::Text::ABILITY[1] => creature.ability_name))
     end
 
