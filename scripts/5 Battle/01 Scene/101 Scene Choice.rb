@@ -199,8 +199,8 @@ module Battle
     # Pokemon related Pokedex update
     # @param pkmn [PFM::Pokemon] pokemon that was just caught
     def update_pokedex_related_infos(pkmn)
-      unless $pokedex.creature_caught?(pkmn.id)
-        $pokedex.mark_captured(pkmn.id)
+      unless $pokedex.creature_caught?(pkmn.id, pkmn.form)
+        $pokedex.mark_captured(pkmn.id, pkmn.form)
         if $pokedex.enabled?
           display_message_and_wait(parse_text(18, 68, PKNAME[0] => pkmn.name))
           GamePlay.open_dex_to_show_pokemon(pkmn)

@@ -93,7 +93,7 @@ module GTS
   # @param id [Integer] online ID
   def finish_trade(my_pokemon, new_poke, searching, choice = nil, id = nil)
     $pokedex.mark_seen(new_poke.id, new_poke.form)
-    $pokedex.mark_captured(new_poke.id)
+    $pokedex.mark_captured(new_poke.id, new_poke.form)
 =begin TODO
     pbFadeOutInWithMusic(99999){
       evo = PokemonTradeScene.new

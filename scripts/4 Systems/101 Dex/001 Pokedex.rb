@@ -35,6 +35,8 @@ module PFM
       @game_state = game_state
       @variant = :regional
       @seen_variants = [@variant]
+      @has_caught_and_forms = Hash.new(0)
+      @unseen_visible = false
     end
 
     # Convert the dex to .26 format
@@ -52,7 +54,8 @@ module PFM
         @has_seen_and_forms.size,
         @has_captured.size,
         @nb_fought.size,
-        @nb_captured.size
+        @nb_captured.size,
+        @has_caught_and_forms
       ].max.times.map { |i| data_creature(i).db_symbol }
 
       has_seen_and_forms = @has_seen_and_forms.map.with_index { |v, i| !v || v == 0 ? nil : [all_db_symbols[i], v] }.compact.to_h
@@ -67,6 +70,17 @@ module PFM
       @nb_fought.merge!(nb_fought)
       @nb_captured = Hash.new(0)
       @nb_captured.merge!(nb_captured)
+    end
+
+    # Create a Hash for form caught
+    def set_form_caught
+      return unless @has_caught_and_forms.nil?
+
+      @has_caught_and_forms = Hash.new(0)
+      @has_captured.each do |symbol|
+        @has_caught_and_forms[symbol] ||= 0
+        @has_caught_and_forms[symbol] |= (1 << 0)
+      end
     end
 
     # Enable the Pokedex
@@ -226,26 +240,34 @@ module PFM
 
     # Mark a Creature as captured
     # @param db_symbol [Symbol] db_symbol of the Creature in the database
-    def mark_captured(db_symbol)
+    # @param form [Integer] the specific form of the Creature
+    def mark_captured(db_symbol, form = 0)
       db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
       return if db_symbol == :__undef__
       return unless creature_unlocked?(db_symbol)
 
       unless @has_captured.include?(db_symbol)
         @has_captured << db_symbol
+        @has_caught_and_forms[db_symbol] = (1 << form)
         @captured += 1
       end
+      @has_caught_and_forms[db_symbol] |= (1 << form)
       @game_state.game_variables[Yuki::Var::Pokedex_Catch] = @captured
     end
 
     # Unmark a Creature as captured
     # @param db_symbol [Symbol] db_symbol of the Creature in the database
-    def unmark_captured(db_symbol)
+    def unmark_captured(db_symbol, form = false)
       db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
       return if db_symbol == :__undef__
 
       if @has_captured.include?(db_symbol)
         @has_captured.delete(db_symbol)
+        if form
+          @has_caught_and_forms[db_symbol] &= ~(1 << form)
+        else
+          @has_caught_and_forms.delete(db_symbol)
+        end
         @captured -= 1
       end
       @game_state.game_variables[Yuki::Var::Pokedex_Catch] = @captured
@@ -254,9 +276,11 @@ module PFM
     # Has the player seen a Creature
     # @param db_symbol [Symbol] db_symbol of the Creature in the database
     # @return [Boolean]
-    def creature_seen?(db_symbol)
+    def creature_seen?(db_symbol, form = false)
       db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
       return false if db_symbol == :__undef__
+
+      return (@has_seen_and_forms[db_symbol] & (1 << form)) != 0 if form
 
       return @has_seen_and_forms[db_symbol] != 0
     end
@@ -265,10 +289,13 @@ module PFM
 
     # Has the player caught this Creature
     # @param db_symbol [Symbol] db_symbol of the Creature in the database
+    # @param form [Integer] the specific form of the Creature
     # @return [Boolean]
-    def creature_caught?(db_symbol)
+    def creature_caught?(db_symbol, form = false)
       db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
       return false if db_symbol == :__undef__
+
+      return (@has_caught_and_forms[db_symbol] & (1 << form)) != 0 if form
 
       return @has_captured.include?(db_symbol)
     end
@@ -277,7 +304,7 @@ module PFM
 
     # Get the seen forms informations of a Creature
     # @param db_symbol [Symbol] db_symbol of the Creature in the database
-    # @return [Integer] An interger where int[form] == 1 mean the form has been seen
+    # @return [Integer] An integer where int[form] == 1 mean the form has been seen
     def form_seen(db_symbol)
       db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
       return 0 if db_symbol == :__undef__
@@ -285,6 +312,16 @@ module PFM
       return @has_seen_and_forms[db_symbol]
     end
     alias get_forms form_seen
+
+    # Get the caught forms informations of a Creature
+    # @param db_symbol [Symbol] db_symbol of the Creature in the database
+    # @return [Integer] An integer where int[form] == 1 mean the form has been caught
+    def form_caught(db_symbol)
+      db_symbol = data_creature(db_symbol).db_symbol if db_symbol.is_a?(Integer)
+      return 0 if db_symbol == :__undef__
+
+      return @has_caught_and_forms[db_symbol]
+    end
 
     # Tell if the creature is unlocked in the current dex state
     # @param db_symbol [Symbol]
@@ -298,8 +335,9 @@ module PFM
     # Calibrate the Pokedex information (seen/captured)
     def calibrate
       @has_seen_and_forms.delete_if { |_, v| v == 0 }
+      @has_caught_and_forms.delete_if { |_, v| v == 0 }
       @seen = @has_seen_and_forms.size
-      @captured = @has_captured.size
+      @captured = @has_caught_and_forms.size
       @game_state.game_variables[Yuki::Var::Pokedex_Catch] = @captured
       @game_state.game_variables[Yuki::Var::Pokedex_Seen] = @seen
     end
@@ -347,6 +385,7 @@ module PFM
       $pokedex = @pokedex
       @pokedex.game_state = self
       @pokedex.convert_to_dot26 if trainer.current_version < 6656
+      @pokedex.set_form_caught
     end
   end
 end

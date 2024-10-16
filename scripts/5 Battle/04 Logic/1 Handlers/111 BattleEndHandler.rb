@@ -228,7 +228,7 @@ module Battle
 
         GamePlay.make_pokemon_evolve(original, id, form)
         $pokedex.mark_seen(original.id, original.form, forced: true)
-        $pokedex.mark_captured(original.id)
+        $pokedex.mark_captured(original.id, original.form)
         $quests.see_pokemon(original.db_symbol)
         $quests.catch_pokemon(original)
         pokemon.id = original.id

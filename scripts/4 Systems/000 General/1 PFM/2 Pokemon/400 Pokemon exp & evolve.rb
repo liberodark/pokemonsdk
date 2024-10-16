@@ -253,7 +253,7 @@ module PFM
       check_skill_and_learn(false, 0)
       # Pokedex register (self is used to be sure we get the right information)
       $pokedex.mark_seen(self.id, self.form, forced: true)
-      $pokedex.mark_captured(self.id)
+      $pokedex.mark_captured(self.id, self.form)
       $pokedex.increase_creature_caught_count(self.id)
       # Refresh hp
       self.hp = (max_hp - hp_diff) if hp > 0

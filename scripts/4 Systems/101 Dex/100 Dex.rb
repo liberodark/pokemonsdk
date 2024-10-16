@@ -24,6 +24,8 @@ module GamePlay
       @pkmn = page_id.is_a?(PFM::Pokemon) ? page_id.dup : nil
       # Generation of the Pokemon we can see (& adjust page id)
       generate_selected_pokemon_array(page_id)
+      # Tell if the all the dex is shown or not
+      @unseen_visible = false
       # Generation of the Pokemon object used to show the Pokemon info
       generate_pokemon_object
       # We reset the mousewell to prevent issue with scrolling
@@ -83,7 +85,7 @@ module GamePlay
     def update_current_creature
       creature = @selected_creatures[@index]
       @pokemon.id = creature.db_symbol
-      @pokemon.form = creature.form
+      @pokemon.form = $pokedex.national? ? first_or_prefered_form($pokedex.form_seen(@pokemon.db_symbol), creature.form) : creature.form
     end
 
     # Action triggered when A is pressed
@@ -105,16 +107,34 @@ module GamePlay
       return $game_system.se_play($data_system.buzzer_se) if @page_id
       @pokemon_worldmap.on_toggle_zoom if @state == 2
       return if @state > 1
-      return $game_system.se_play($data_system.buzzer_se) # Non programme
+      return change_creature_form if @state == 1 && $pokedex.national?
     end
 
     # Action triggered when Y is pressed
     def action_Y
       @pokemon_worldmap.on_next_worldmap if @state == 2
       return if @state > 1
-      return $game_system.se_play($data_system.buzzer_se) if @state == 0
+      if @state == 0
+        mode_switch
+        @pokemonlist = PFM::Pokemon.new(data_dex($pokedex.variant).creatures.first&.db_symbol || 1, 1)
+        update_list(true)
+      end
       $game_system.cry_play(@pokemon.id, form: @pokemon.form) if @state == 1
     end
+
+    # Switch the mode of the Pokédex
+    def mode_switch
+      dex = $pokedex
+      dex_data = data_dex(dex.variant)
+      creatures = dex_data.creatures
+      @selected_creatures = dex_list(creatures, @unseen_visible)
+      symbol = @pokemon.db_symbol
+      @index = @selected_creatures.size - 1 if @index > @selected_creatures.size
+      @index = @selected_creatures.find_index { |creature| creature.db_symbol == symbol } || @index
+      update_index
+      @unseen_visible = !@unseen_visible
+    end
+
 
     # Change the state of the Interface
     # @param state [Integer] the id of the state
@@ -122,6 +142,7 @@ module GamePlay
       @state = state
       @base_ui.mode = state
       @frame.set_bitmap(state == 1 ? 'frameinfos' : 'frame', :pokedex)
+      update_current_creature if @state == 0 # reset the Pokeface to the correct form
       @pokeface.data = @pokemon if (@pokeface.visible = state != 2)
       # In show pokemon info mode, those sprites doesn't exist
       if @arrow
@@ -131,13 +152,46 @@ module GamePlay
       end
       @pokemon_info.visible = @pokemon_descr.visible = state == 1
       if @pokemon_descr.visible
-        if $pokedex.creature_caught?(@pokemon.id)
-          @pokemon_descr.multiline_text = data_creature(@pokemon.db_symbol).descr
+        if $pokedex.creature_caught?(@pokemon.id, @pokemon.form)
+          @pokemon_descr.multiline_text = data_creature_form(@pokemon.db_symbol, @pokemon.form).form_description
         else
           @pokemon_descr.multiline_text = ''
         end
         @pokemon_info.data = @pokemon
       end
+    end
+
+    # Change the form displayed
+    def change_creature_form
+      next_form = find_next_seen_form(@pokemon.form)
+
+      if @pokemon.form >= 30 || next_form.nil? # Avoid to display Mega Evolutions as seen forms
+        @pokemon.form = first_or_prefered_form($pokedex.form_seen(@pokemon.db_symbol))
+      else
+        @pokemon.form = next_form
+      end
+
+      @pokeface.data = @pokemon
+      change_state(1)
+    end
+
+    # Find the next seen form after the current one
+    def find_next_seen_form(current_form)
+      seen_forms = $pokedex.form_seen(@pokemon.db_symbol)
+      next_form = (current_form + 1).upto(Math::log2(seen_forms)).find { |form| seen_forms[form] == 1 }
+      return next_form && next_form <= 30 ? next_form : nil
+    end
+
+
+    # Retrieve the first form seen for a Pokemon, if a form is specified return in priority the form specified
+    # @param data [Array] Array corresponding to the form seen or captured
+    # @param form [Integer] if a specific form want to be prioritized
+    # @return [Integer] first form seen
+    def first_or_prefered_form(data, form = nil)
+      return 0 if data == 0
+      return form if !form.nil? && data[form] == 1
+      max = Math::log2(data)
+      return 0.upto(max).find { |i| data[i] == 1 }
     end
 
     # Update the button list
@@ -153,7 +207,7 @@ module GamePlay
         next(el.visible = false) unless creature && pos >= 0
         @arrow.y = el.y + 11 if (el.selected = (pos == @index))
         @pokemonlist.id = creature.db_symbol
-        @pokemonlist.form = creature.form
+        @pokemonlist.form = $pokedex.national? ? first_or_prefered_form($pokedex.form_seen(creature.db_symbol), creature.form) : creature.form
         el.data = @pokemonlist
       end
     end
@@ -169,13 +223,27 @@ module GamePlay
       end
     end
 
+    # Return the list according to the variant and the mode of the Pokédex
+    # @param dex [Array<Studio::Dex::CreatureInfo>]
+    # @param unseen [boolean] display of the not seen creatures or not
+    def dex_list(dex, unseen = true)
+      return dex unless unseen
+      if $pokedex.national?
+        return dex.select { |creature| $pokedex.creature_seen?(creature.db_symbol)}
+      else
+        return dex.select { |creature| $pokedex.form_seen(creature.db_symbol)[creature.form] == 1 }
+      end
+    end
+
+
     # Generate the selected_pokemon array
     # @param page_id [Integer, false] see initialize
     def generate_selected_pokemon_array(page_id)
       dex = $pokedex
       dex_data = data_dex(dex.variant)
       creatures = dex_data.creatures
-      @selected_creatures = creatures.select { |creature| dex.form_seen(creature.db_symbol)[creature.form] == 1 }
+      # If the pokedex national is enable display all the form of the mon
+      @selected_creatures = dex_list(creatures)
       if @selected_creatures.empty?
         raise 'Attempt to open a Dex with no creatures' if creatures.empty?
         @selected_creatures << creatures[0]
@@ -198,6 +266,7 @@ module GamePlay
     def generate_pokemon_object
       current = @selected_creatures[@index]
       @pokemon = @pkmn ||= PFM::Pokemon.generate_from_hash(id: current.db_symbol, level: 1, no_shiny: true, form: current.form)
+      @pokemon.form = first_or_prefered_form($pokedex.form_seen(current.db_symbol), current.form)
       [@pokemonlist, @pokemon].each do |creature|
         creature.instance_eval do
           # Return the formated name for Pokedex

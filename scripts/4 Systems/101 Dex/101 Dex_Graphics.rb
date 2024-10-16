@@ -83,7 +83,7 @@ module GamePlay
     # Create the info ui
     def create_info
       @pokemon_info = DexWinInfo.new(@viewport)
-      @pokemon_descr = @stack.add_text(11, 153, 298, 16, nil.to_s, color: 10)
+      @pokemon_descr = @stack.add_text(11, 151, 298, 16, nil.to_s, color: 10)
     end
 
     # Create the worldmap ui
@@ -98,9 +98,9 @@ module GamePlay
       return [[nil, nil, nil, ext_text(9000, 9)]] * 3 if @page_id
 
       return [
-        [ext_text(9000, 6), ext_text(9000, 7), ext_text(9000, 8), ext_text(9000, 9)],
-        [ext_text(9000, 10), ext_text(9000, 11), ext_text(9000, 12), ext_text(9000, 13)],
-        [ext_text(9000, 6), ext_text(9000, 7), ext_text(9000, 8), ext_text(9000, 9)]
+        [ext_text(9000, 6), nil, ext_text(9000, 8), ext_text(9000, 9)],
+        [ext_text(9000, 10), $pokedex.national? ? ext_text(9000, 11) : nil, ext_text(9000, 12), ext_text(9000, 13)],
+        [ext_text(9000, 6), nil, ext_text(9000, 8), ext_text(9000, 9)]
       ]
     end
   end

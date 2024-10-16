@@ -188,7 +188,7 @@ module BattleUI
       # Set the Pokemon Data
       # @param pokemon [PFM::Pokemon]
       def data=(pokemon)
-        self.visible = pokemon.bank != 0 && $pokedex.creature_caught?(pokemon.id)
+        self.visible = pokemon.bank != 0 && $pokedex.creature_caught?(pokemon.id, pkmn.form)
       end
     end
 

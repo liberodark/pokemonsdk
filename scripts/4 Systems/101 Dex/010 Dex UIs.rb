@@ -3,8 +3,8 @@ module UI
   class DexWinSprite < SpriteStack
     # Create a new dex win sprite
     def initialize(viewport)
-      # Create the sprite stack at coordinate 3, 11 using the RPG::Cache.pokedex as image source
-      super(viewport, 3, 11, default_cache: :pokedex)
+      # Create the sprite stack at coordinate 3, 9 using the RPG::Cache.pokedex as image source
+      super(viewport, 3, 9, default_cache: :pokedex)
 
       create_sprites
     end
@@ -12,6 +12,11 @@ module UI
     # Update the graphics
     def update_graphics
       @sprite.update
+    end
+
+    def data=(pokemon)
+      super
+      update_info_visibility(pokemon)
     end
 
     private
@@ -22,8 +27,16 @@ module UI
       # Show the Battler face of the Pokemon (Warning: PokemonFaceSprite use the bottom center as sprite origin)
       @sprite = add_sprite(60, 124, NO_INITIAL_IMAGE, type: PokemonFaceSprite)
       # Show the name of the Pokemon in bold upper-case
-      pokemon_name = add_text(3, 6, 116, 19, :name_upper, 1, type: SymText, color: 10)
-      pokemon_name.bold = true
+      @pokemon_name = add_text(3, 6, 116, 19, :name_upper, 1, type: SymText, color: 10)
+      @pokemon_name.bold = true
+    end
+
+    # Define if the Pokemon is displayed by the UI
+    # @param creature [PFM::Pokemon]
+    def update_info_visibility(creature)
+      is_seen = creature && $pokedex.creature_seen?(creature.id, creature.form)
+      @sprite.visible = is_seen
+      @pokemon_name.visible = is_seen
     end
   end
 
@@ -65,8 +78,8 @@ module UI
     VISIBLE_SPRITES = 1..7
     # Create a new dex win sprite
     def initialize(viewport)
-      # Create the sprite stack at coordinate 131, 37 using the RPG::Cache.pokedex as image source
-      super(viewport, 131, 37, default_cache: :pokedex)
+      # Create the sprite stack at coordinate 131, 35 using the RPG::Cache.pokedex as image source
+      super(viewport, 131, 35, default_cache: :pokedex)
 
       create_sprites
     end
@@ -76,16 +89,18 @@ module UI
     def data=(pokemon)
       super(pokemon)
       update_capture_visibility(pokemon)
+      @pokename.text = data_creature_form(pokemon.id, pokemon.form).form_name
     end
 
     private
 
     # Show / hide the sprites according to the captured state of the Pokemon
     def update_capture_visibility(creature)
-      is_captured = creature && $pokedex.creature_caught?(creature.id)
+      is_captured = creature && $pokedex.creature_caught?(creature.id, creature.form)
       VISIBLE_SPRITES.each do |i|
         @stack[i].visible = is_captured
       end
+      @pokename.visible = $pokedex.creature_seen?(creature.id, creature.form)
     end
 
     def create_sprites
@@ -94,7 +109,7 @@ module UI
       # Show the "caught" indicator
       add_sprite(8, 4, 'Catch')
       # Show the Pokedex Name of the Pokemon
-      add_text(29, 4, 116, 16, :pokedex_name, type: SymText, color: 10)
+      @pokename = add_text(29, 4, 116, 16, nil.to_s, color: 10)
       # Show the Specie of the Pokemon
       add_text(9, 27, 116, 16, :pokedex_species, type: SymText)
       # Show the weight (formated) of the Pokemon
@@ -125,7 +140,7 @@ module UI
     # @param pokemon [PFM::Pokemon] the Pokemon shown by the button
     def data=(pokemon)
       super(pokemon)
-      update_catch_icon_visibility
+      update_catch_icon_visibility(pokemon)
     end
 
     # Tell the button if it's selected or not : change the obfuscator visibility & x position
@@ -143,11 +158,11 @@ module UI
       # Show the caught indicator
       @catch_icon = add_sprite(119, 9, 'Catch')
       # Show the Pokemon Icon Sprite
-      add_sprite(17, 15, NO_INITIAL_IMAGE, type: PokemonIconSprite)
+      @pokeicon = add_sprite(17, 15, NO_INITIAL_IMAGE, type: PokemonIconSprite)
       # Show the Pokemon formated ID
       add_text(35, 1, 116, 16, :id_text3, type: SymText, color: 10)
       # Show the Pokemon name
-      add_text(35, 16, 116, 16, :name, type: SymText, color: 10)
+      @pokename = add_text(35, 16, 116, 16, :name, type: SymText, color: 10)
       # Show the obfuscator in forground when the Pokemon button is not
       @obfuscator = add_foreground('But_ListShadow')
     end
@@ -159,8 +174,13 @@ module UI
     end
 
     # Change the catch visibility to the captured state of the Pokemon
-    def update_catch_icon_visibility
-      @catch_icon.visible = $pokedex.creature_caught?(data&.id || 0)
+    def update_catch_icon_visibility(pokemon)
+      return if pokemon.nil?
+      pkmn_symbol = pokemon.db_symbol
+      pkmn_form = pokemon.form
+      @catch_icon.visible = $pokedex.creature_caught?(pkmn_symbol, pkmn_form)
+      @pokeicon.visible = $pokedex.creature_seen?(pkmn_symbol, pkmn_form)
+      @pokename.visible = $pokedex.creature_seen?(pkmn_symbol, pkmn_form)
     end
   end
 

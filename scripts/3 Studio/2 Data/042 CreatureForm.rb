@@ -134,10 +134,11 @@ module Studio
     # Resources of the creature
     # @return [Resources]
     attr_reader :resources
-    
+
     # Get the creature form name
     # @return [string]
     def form_name
+      raise 'Regenerate psdk.dat file due to missing data' unless @form_text_id
       return text_get(67, @form_text_id.name)
     end
 
@@ -146,6 +147,7 @@ module Studio
     def form_description
       return description if @form == 0
 
+      raise 'Regenerate psdk.dat file due to missing data' unless @form_text_id
       return text_get(68, @form_text_id.description)
     end
     alias form_descr form_description
@@ -262,13 +264,13 @@ module Studio
       # @return [Boolean]
       attr_reader :has_female
     end
-  
+
     class FormTextId
       # ID of the form name
       # @return [Integer]
       attr_reader :name
-  
-      # ID of the form description 
+
+      # ID of the form description
       # @return [Integer]
       attr_reader :description
     end

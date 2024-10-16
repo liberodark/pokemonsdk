@@ -92,8 +92,8 @@ class Interpreter
     return nil unless saved_pokedex.is_a? PFM::Pokedex
     each_data_creature.each do |pkmn|
       pkmn_db_symbol = pkmn.db_symbol
-      $pokedex.mark_seen(pkmn_db_symbol) if saved_pokedex.creature_seen?(pkmn_db_symbol)
-      $pokedex.mark_captured(pkmn_db_symbol) if saved_pokedex.creature_caught?(pkmn_db_symbol)
+      $pokedex.mark_seen(pkmn_db_symbol, pkmn.form) if saved_pokedex.creature_seen?(pkmn_db_symbol, pkmn.form)
+      $pokedex.mark_captured(pkmn_db_symbol, pkmn.form) if saved_pokedex.creature_caught?(pkmn_db_symbol, pkmn.form)
     end
     $storage.remove_instance_variable(var_id) if id_storage && empty_pokedex
   end
@@ -107,8 +107,8 @@ class Interpreter
     PFM.game_state.money = 0
     $storage.instance_variable_set(var_id, money)
   end
-  
-  # Retrieve the saved money 
+
+  # Retrieve the saved money
   # @param id_storage [String] the specific name of the storage, if nil sent to $storage.other_money
   # @author Beef'
   def retrieve_saved_money(id_storage = nil)

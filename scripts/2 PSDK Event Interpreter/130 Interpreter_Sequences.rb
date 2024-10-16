@@ -149,7 +149,7 @@ class Interpreter
     actor = $actors[index]
     $actors[index] = pokemon
     $pokedex.mark_seen(pokemon.db_symbol, pokemon.form, forced: true)
-    $pokedex.mark_captured(pokemon.db_symbol)
+    $pokedex.mark_captured(pokemon.db_symbol, pokemon.form)
     # TODO: Trade animation taking actor, pokemon (including messages)
     message("#{actor.given_name} is being traded with #{pokemon.name}!")
     id, form = pokemon.evolve_check(:trade, actor) || pokemon.evolve_check(:tradeWith, actor)

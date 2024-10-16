@@ -88,7 +88,7 @@ module GamePlay
         Audio.bgm_stop
         $game_system.bgm_restore2
         $pokedex.mark_seen(@pokemon.id, @pokemon.form, forced: true)
-        $pokedex.mark_captured(@pokemon.id)
+        $pokedex.mark_captured(@pokemon.id, @pokemon.form)
         $pokedex.increase_creature_fought(@pokemon.id)
         $pokedex.increase_creature_caught_count(@pokemon.id)
         @pokemon.loyalty = 120

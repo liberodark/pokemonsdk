@@ -66,7 +66,7 @@ module PFM
     def add_pokemon(pkmn)
       unless pkmn.egg?
         @pokedex.mark_seen(pkmn.id, pkmn.form, forced: true)
-        @pokedex.mark_captured(pkmn.id)
+        @pokedex.mark_captured(pkmn.id, pkmn.form)
         @pokedex.increase_creature_fought(pkmn.id)
         @pokedex.increase_creature_caught_count(pkmn.id)
       end
