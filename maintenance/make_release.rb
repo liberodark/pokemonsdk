@@ -11,7 +11,6 @@ def documentation_with_method_body(filename, destination_filename)
   end
 end
 
-
 # Combine all the modules in a script together while erasing method bodies to only have documentation
 # @param filename [String] filename of the file holding the modules to combine
 # @param destination_filename [String] destination filename for the result
@@ -59,6 +58,7 @@ SCRIPT_GROUPS = [
   '4 Systems/301 MoveTeaching/',
   '4 Systems/302 MoveReminder/',
   '4 Systems/303 Evolve/',
+  '4 Systems/304 HMBarScene/',
   '4 Systems/400 RSE Clock/',
   '4 Systems/800 Quest/',
   '4 Systems/801 Mining Game/',
@@ -121,19 +121,19 @@ def move_documentation_files
   end
   # Write yard configuration
   File.write(File.join(RELEASE_FOLDER, '.yardopts'), <<~YARDOPTS)
-  --hide-void-return
-  --default-return ''
-  --title "Pokemon SDK"
-  --exclude "scripts/*.rb"
-  --readme README.md
-  --output-dir yard-docs
-  --no-private docs/*.rb
-  --no-private docs/**/*.rb
-  --plugin junk
-  LiteRGSS.rb.yard.rb
-  docs/*.rb
+    --hide-void-return
+    --default-return ''
+    --title "Pokemon SDK"
+    --exclude "scripts/*.rb"
+    --readme README.md
+    --output-dir yard-docs
+    --no-private docs/*.rb
+    --no-private docs/**/*.rb
+    --plugin junk
+    LiteRGSS.rb.yard.rb
+    docs/*.rb
 
-  - "#{files_to_doc.join('" "')}"
+    - "#{files_to_doc.join('" "')}"
   YARDOPTS
 end
 
