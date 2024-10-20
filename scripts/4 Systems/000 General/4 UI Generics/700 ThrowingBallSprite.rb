@@ -67,6 +67,7 @@ module UI
     # Get the ball offset y in order to make it look like being in trainer's hand
     # @return [Integer]
     def trainer_offset_y
+      return -80 if Battle::BATTLE_CAMERA_3D
       return 40
     end
 

@@ -91,7 +91,7 @@ module BattleUI
 
     # Return the basic z position of the battler
     def basic_z_position
-      z = @bank == 0 ? 501 : 1
+      z = @bank == 0 ? 501 : 101
       z += @position
       return z
     end

@@ -18,8 +18,8 @@ pokemonsdk/scripts/0 Dependencies/1 LiteRGSS2/001 Mouse.rb
 pokemonsdk/scripts/0 Dependencies/1 LiteRGSS2/002 Viewport.rb
 pokemonsdk/scripts/0 Dependencies/1 LiteRGSS2/003 Drawable.rb
 pokemonsdk/scripts/0 Dependencies/1 LiteRGSS2/009 Fonts.rb
+pokemonsdk/scripts/0 Dependencies/1 LiteRGSS2/010 Fake3D.rb
 pokemonsdk/scripts/0 Dependencies/1 LiteRGSS2/011 Shader.rb
-pokemonsdk/scripts/0 Dependencies/1 LiteRGSS2/012 Fake3D.rb
 pokemonsdk/scripts/0 Dependencies/1 LiteRGSS2/300 Text Util Constants.rb
 pokemonsdk/scripts/0 Dependencies/1 LiteRGSS2/400 Text multiline_text.rb
 pokemonsdk/scripts/0 Dependencies/1 LiteRGSS2/580 XXX_simple_mouse_in_.rb
@@ -477,6 +477,10 @@ pokemonsdk/scripts/5 Battle/01 Scene/0 BattleUI/200 PlayerChoice.rb
 pokemonsdk/scripts/5 Battle/01 Scene/0 BattleUI/300 SkillChoice.rb
 pokemonsdk/scripts/5 Battle/01 Scene/0 BattleUI/400 TargetSelection.rb
 pokemonsdk/scripts/5 Battle/01 Scene/0 BattleUI/500 ExpDistribution.rb
+pokemonsdk/scripts/5 Battle/01 Scene/0 BattleUI/600 BattleBack3D.rb
+pokemonsdk/scripts/5 Battle/01 Scene/0 BattleUI/601 PokemonSprite3D.rb
+pokemonsdk/scripts/5 Battle/01 Scene/0 BattleUI/602 TrainerSprite3D.rb
+pokemonsdk/scripts/5 Battle/01 Scene/0 BattleUI/700 BattleBackForest3D.rb
 pokemonsdk/scripts/5 Battle/02 Visual/200 Visual.rb
 pokemonsdk/scripts/5 Battle/02 Visual/201 Trainer_transition.rb
 pokemonsdk/scripts/5 Battle/02 Visual/202 Show_player_choice.rb
@@ -484,6 +488,9 @@ pokemonsdk/scripts/5 Battle/02 Visual/203 Show_skill_or_target_choice.rb
 pokemonsdk/scripts/5 Battle/02 Visual/204 Show_item_or_pokemon_choice.rb
 pokemonsdk/scripts/5 Battle/02 Visual/205 Info_Bars.rb
 pokemonsdk/scripts/5 Battle/02 Visual/206 Show_stuff.rb
+pokemonsdk/scripts/5 Battle/02 Visual/300 Visual3D.rb
+pokemonsdk/scripts/5 Battle/02 Visual/301 Camera_Positionner.rb
+pokemonsdk/scripts/5 Battle/02 Visual/400 Camera_movement.rb
 pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/100 IdlePokemonAnimation.rb
 pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/101 HPAnimation.rb
 pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/102 FakeHPAnimation.rb

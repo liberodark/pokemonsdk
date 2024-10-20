@@ -33,8 +33,7 @@ module BattleUI
     # @param scene [Battle::Scene]
     def initialize(viewport, scene)
       super(viewport)
-      @shadow = ShaderedSprite.new(viewport)
-      @shadow.shader = Shader.create(:battle_shadow)
+      create_shadow
       @animation_handler = Yuki::Animation::Handler.new
       @bank = 0
       @position = 0
@@ -191,6 +190,11 @@ module BattleUI
 
     private
 
+    def create_shadow
+      @shadow = ShaderedSprite.new(viewport)
+      @shadow.shader = Shader.create(:battle_shadow)
+    end
+
     # Reset the battler position
     def reset_position
       set_position(*sprite_position)
@@ -200,7 +204,7 @@ module BattleUI
 
     # Return the basic z position of the battler
     def basic_z_position
-      z = @pokemon.bank == 0 ? 501 : 1
+      z = @pokemon.bank == 0 ? 501 : 101
       z += @pokemon.position
       return z
     end

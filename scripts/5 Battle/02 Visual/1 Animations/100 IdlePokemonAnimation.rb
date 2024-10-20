@@ -57,6 +57,7 @@ module Battle
       # Function that moves the pokemon using the relative offset specified by 
       def move_pokemon(index)
         return if @pokemon.out?
+        return if BATTLE_CAMERA_3D
 
         @pokemon.y = @pokemon_origin.last + OFFSET_SPRITE[index]
       end

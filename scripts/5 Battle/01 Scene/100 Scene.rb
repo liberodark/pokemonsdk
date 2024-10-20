@@ -116,6 +116,8 @@ module Battle
     # Create a new visual
     # @return [Battle::Visual]
     def create_visual
+      return Battle::Visual3D.new(self) if Battle::BATTLE_CAMERA_3D
+
       return Battle::Visual.new(self)
     end
 

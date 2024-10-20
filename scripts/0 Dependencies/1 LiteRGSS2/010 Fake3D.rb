@@ -1,8 +1,5 @@
 # Module holding the core logic for Fake3D
 module Fake3D
-  # Constant to set to true if you intent on using Fake3D in your project
-  ENABLED = false
-
   # Module to prepend to one of your Sprite class to make them Fake3D able
   module Sprite3D
     def initialize(viewport)
