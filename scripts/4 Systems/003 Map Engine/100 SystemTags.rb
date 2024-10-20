@@ -113,6 +113,8 @@ module GameData
     RocketRR = gen 7, 6
     # Defines a tile that force the character to be stopped when sliding on it
     StopSlide = gen 1, 2
+    # Defines a RockClimb
+    RClimb = gen 6, 7
 
     # Gives the db_symbol of the system tag
     # @param system_tag [Integer]

@@ -20,7 +20,9 @@ class Game_Character
     TSnow => :particle_push_snow,
     TPond => :particle_push_pond,
     TWetSand => :particle_push_wetsand,
-    Puddle => :particle_push_puddle
+    Puddle => :particle_push_puddle,
+    WaterFall => :particle_push_waterfall,
+    Whirlpool => :particle_push_whirlpool
   }
 
   # Push a particle to the particle stack if possible
@@ -72,5 +74,24 @@ class Game_Character
   # Push a pond particle
   def particle_push_puddle
     Yuki::Particles.add_particle(self, :puddle)
+  end
+
+  # Push a RockClimb particle
+  def particle_push_rockclimb
+    Yuki::Particles.add_particle(self, :rock_climb)
+  end
+
+  # Push Waterfall Particle
+  def particle_push_waterfall
+    Yuki::Particles.add_particle(self, :waterfall)
+  end
+  
+  # Constant telling the Whirlpool particle name to push (according to the direction)
+  WHIRLPOOL_PARTICLE_NAME = {2 => :whirlpool_d, 4 => :whirlpool_l, 6 => :whirlpool_r, 8 => :whirlpool_u}
+
+  # Push Whirlpool Particle
+  def particle_push_whirlpool
+    particle = WHIRLPOOL_PARTICLE_NAME[@direction]
+    Yuki::Particles.add_particle(self, particle)
   end
 end

@@ -398,5 +398,13 @@ module GamePlay
     def open_quest_ui(quests = PFM.game_state.quests)
       current_scene.call_scene(quest_ui_class, quests)
     end
+
+    # Get the HMBarScene scene
+    # @return [Class<HMBarScene>]
+    attr_accessor :hm_bar_scene_class
+
+    def open_hm_bar_scene(reason, scene_to_update = nil)
+      current_scene.call_scene(hm_bar_scene_class, reason, scene_to_update)
+    end
   end
 end

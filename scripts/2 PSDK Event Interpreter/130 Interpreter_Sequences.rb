@@ -156,6 +156,13 @@ class Interpreter
     GamePlay.make_pokemon_evolve(pokemon, id, form, true) if id
   end
 
+  # Triggers the HM Bar Animation
+  # @param reason [Symbol] the db_symbol of the HM used
+  def hm_bar_animation_on_map(reason)
+    scene = $scene.is_a?(Scene_Map) ? $scene.spriteset : nil
+    GamePlay.open_hm_bar_scene(reason, scene)
+  end
+
   private
 
   def move_player_and_update_graphics

@@ -390,6 +390,9 @@ pokemonsdk/scripts/4 Systems/302 MoveReminder/600 MoveReminder.rb
 pokemonsdk/scripts/4 Systems/303 Evolve/001 EvolveMixin.rb
 pokemonsdk/scripts/4 Systems/303 Evolve/100 Evolve.rb
 pokemonsdk/scripts/4 Systems/303 Evolve/200 Hatch.rb
+pokemonsdk/scripts/4 Systems/304 HMBarScene/2 UI/001 HMBarAnimation.rb
+pokemonsdk/scripts/4 Systems/304 HMBarScene/3 GamePlay/001 Initialize.rb
+pokemonsdk/scripts/4 Systems/304 HMBarScene/3 GamePlay/002 Graphics.rb
 pokemonsdk/scripts/4 Systems/400 RSE Clock/001 RSEClockLogic.rb
 pokemonsdk/scripts/4 Systems/400 RSE Clock/002 RSEClockUI.rb
 pokemonsdk/scripts/4 Systems/400 RSE Clock/003 RSEClockQuestions.rb

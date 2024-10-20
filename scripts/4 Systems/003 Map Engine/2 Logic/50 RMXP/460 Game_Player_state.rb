@@ -11,6 +11,8 @@ class Game_Player
     using_skill: '_pokecenter',
     giving_pokemon: '_pokecenter',
     taking_pokemon: '_pokecenter',
+    climbing_down: '_rockclimb_down',
+    climbing_up: '_rockclimb_up',
     running: '_run',
     walking: '_walk',
     surfing: '_surf',
@@ -25,6 +27,8 @@ class Game_Player
     running: [4, 4],
     wheeling: [4, 4],
     cycling: [5, 4],
+    climbing_down: [5, 4],
+    climbing_up: [5, 4],
     surfing: [4, 4]
   }
   # @return [Symbol, nil] the update_callback
@@ -303,6 +307,26 @@ class Game_Player
       return
     end
     update_4_step_animation_to_previous(-1)
+  end
+
+  # Enter in climbing up state
+  def enter_in_climbing_up_state
+    @state = :climbing_up
+    update_move_parameter(:climbing_up)
+    update_appearance(@pattern)
+  end
+  
+  # Enter in climbing up state
+  def enter_in_climbing_down_state
+    @state = :climbing_down
+    update_move_parameter(:climbing_down)
+    update_appearance(@pattern)
+  end
+  
+  # Leave the climbing up state
+  def leave_climbing_state
+    change_shadow_disabled_state(false)
+    return_to_previous_state
   end
 
   # Enter in watering berries state
