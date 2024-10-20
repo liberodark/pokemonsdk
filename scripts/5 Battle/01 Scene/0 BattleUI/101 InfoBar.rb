@@ -24,6 +24,7 @@ module BattleUI
     # Get the scene linked to this object
     # @return [Battle::Scene]
     attr_reader :scene
+
     # Create a new InfoBar
     # @param viewport [Viewport]
     # @param scene [Battle::Scene]
@@ -166,6 +167,7 @@ module BattleUI
 
     def create_star
       return push(119, -4, 'shiny') if enemy?
+
       return push(6, 10, 'shiny')
     end
 
@@ -188,7 +190,7 @@ module BattleUI
       # Set the Pokemon Data
       # @param pokemon [PFM::Pokemon]
       def data=(pokemon)
-        self.visible = pokemon.bank != 0 && $pokedex.creature_caught?(pokemon.id, pkmn.form)
+        self.visible = pokemon.bank != 0 && $pokedex.creature_caught?(pokemon.id, pokemon.form)
       end
     end
 
