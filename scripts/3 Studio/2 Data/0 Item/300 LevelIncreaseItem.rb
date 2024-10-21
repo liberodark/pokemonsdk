@@ -30,7 +30,7 @@ PFM::ItemDescriptor.define_on_creature_use(Studio::LevelIncreaseItem) do |item, 
   level_amount.times do
     if creature.level_up
       list = creature.level_up_stat_refresh
-      Audio.me_play(PFM::ItemDescriptor::LVL_SOUND)
+      Audio.me_play(*PFM::ItemDescriptor::LVL_SOUND)
       message = parse_text(22, 128, PFM::Text::PKNICK[0] => creature.given_name, PFM::Text::NUM3[1] => creature.level.to_s)
       scene.display_message_and_wait(message)
       creature.level_up_window_call(list[0], list[1], 40_005)

@@ -410,7 +410,7 @@ class Interpreter
       exp_to_next_lvl = pokemon.exp_lvl - pokemon.exp
       if pokemon.exp >= pokemon.exp_lvl
         pokemon.level_up_stat_refresh
-        Audio.me_play(PFM::ItemDescriptor::LVL_SOUND)
+        Audio.me_play(*PFM::ItemDescriptor::LVL_SOUND)
         PFM::Text.set_num3(pokemon.level.to_s, 1)
         message(parse_text(18, 62, '[VAR 010C(0000)]' => pokemon.given_name))
         PFM::Text.reset_variables
@@ -438,7 +438,7 @@ class Interpreter
       break if $actors[index].level >= $pokemon_party.level_max_limit
 
       $actors[index].level_up_stat_refresh
-      Audio.me_play(PFM::ItemDescriptor::LVL_SOUND)
+      Audio.me_play(*PFM::ItemDescriptor::LVL_SOUND)
       PFM::Text.set_num3($actors[index].level.to_s, 1)
       message(parse_text(18, 62, '[VAR 010C(0000)]' => $actors[index].given_name))
       PFM::Text.reset_variables
