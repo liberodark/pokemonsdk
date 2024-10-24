@@ -69,7 +69,6 @@ class Game_SelfVariables
 end
 
 class Interpreter < Interpreter_RMXP
-  # @note Details here : https://pokemonworkshop.com/forum/index.php?topic=3770.msg109814#msg109814
   # @overload get_local_variable(id_var)
   #   Get a local variable
   #   @param id_var [Symbol] the id of the variable

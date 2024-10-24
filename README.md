@@ -31,7 +31,7 @@ Contrary to `PSP` or `Essentials`, `PSDK` doesn't use the RGSS. We wrote a graph
 * Sound : [FMOD](http://www.fmod.org/) (Support: Midi, WMA, MP3, OGG, MOD, WAVE)
 * Map Editor
     * `RMXP`
-    * [Tiled](https://pokemonworkshop.fr/forum/index.php?topic=4617.0)
+    * [Tiled](https://www.mapeditor.org/)
 * Event Editor
     * `RMXP`
 * Database Editor
