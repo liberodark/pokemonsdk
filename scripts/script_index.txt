@@ -859,6 +859,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Technician.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Telepathy.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Tera Shift.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 TeraShell.rb
+pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Teraform Zero.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 ThermalExchange.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Thick Fat.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Tinted Lens.rb
