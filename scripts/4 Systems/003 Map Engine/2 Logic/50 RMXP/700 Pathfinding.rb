@@ -310,6 +310,10 @@ module Pathfinding
     # @param is_first_update [Boolean] indicate if it's the first update of the frame
     # @return [Integer]
     def update(operation_counter, is_first_update)
+      if @target.reached?(@character.x, @character.y, 0)
+        @character.stop_path
+        return 0
+      end
       @need_update ||= is_first_update # Need update forced to true if it's the first update
       case @state
       when :search then return update_search(operation_counter)
