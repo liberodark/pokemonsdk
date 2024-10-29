@@ -94,6 +94,9 @@ module GamePlay
     # If the current scene is still running
     # @return [Boolean]
     attr_accessor :running
+    # Get the scene clock
+    # @return [Clock]
+    attr_reader :clock
 
     # rubocop: disable Style/OptionalBooleanParameter
     # Create a new GamePlay scene
@@ -101,6 +104,7 @@ module GamePlay
     # @param message_z [Integer] the z superiority of the message
     # @param message_viewport_args [Array] if empty : [:main, message_z] will be used.
     def initialize(no_message = false, message_z = 20_000, *message_viewport_args)
+      @clock = Clock.new
       # List of object to dispose in #dispose
       @object_to_dispose = []
       # Force the message window of the map to be closed
@@ -181,6 +185,7 @@ module GamePlay
     # @return [Boolean] if this scene can still run
     def call_scene(name, *args, fade_out_params: nil, fade_in_params: nil, **kwarg, &result_process)
       fade_out(*(fade_out_params || [@cfo_type || DEFAULT_TRANSITION, @cfo_param || DEFAULT_TRANSITION_PARAMETER]))
+      @clock.freeze
       # Make the current scene invisible
       self.visible = false
       result_process ||= @__result_process
@@ -188,6 +193,7 @@ module GamePlay
       # @type [GamePlay::Base]
       scene = name.new(*args, **kwarg)
       scene.main { Scheduler.start(:on_scene_switch, self.class) }
+      @clock.unfreeze
       # Call the result process if any
       result_process&.call(scene)
       # If the scene has changed we stop this one
@@ -334,6 +340,7 @@ module GamePlay
     # @param type [Symbol] type of transition
     # @param parameters [Integer, Array] parameters of the transition
     def fade_out(type, parameters)
+      @clock.freeze
       case type
       when :transition
         Graphics.freeze
@@ -344,12 +351,14 @@ module GamePlay
           Graphics.update
         end
       end
+      @clock.unfreeze
     end
 
     # Process the fade in process
     # @param type [Symbol] type of transition
     # @param parameters [Integer, Array] parameters of the transition
     def fade_in(type, parameters)
+      @clock.freeze
       Scheduler.start(:on_transition, self.class) if type != :transition # Done in Graphics.transition
       case type
       when :transition
@@ -361,6 +370,7 @@ module GamePlay
           Graphics.update
         end
       end
+      @clock.unfreeze
     end
 
     # Define the transition info when the scene start

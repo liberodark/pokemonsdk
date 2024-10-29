@@ -222,6 +222,7 @@ pokemonsdk/scripts/4 Systems/004 Message/2 UI/007 Markers.rb
 pokemonsdk/scripts/4 Systems/004 Message/2 UI/010 WaitUserInput.rb
 pokemonsdk/scripts/4 Systems/004 Message/2 UI/100 Window.rb
 pokemonsdk/scripts/4 Systems/004 Message/3 GamePlay/001 DisplayMessage.rb
+pokemonsdk/scripts/4 Systems/005 Animation/001 Clock.rb
 pokemonsdk/scripts/4 Systems/005 Animation/100 Animation.rb
 pokemonsdk/scripts/4 Systems/005 Animation/101 Commands.rb
 pokemonsdk/scripts/4 Systems/005 Animation/102 MessageLocked.rb

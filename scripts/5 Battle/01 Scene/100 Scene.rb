@@ -2,6 +2,13 @@
 module Battle
   # Base classe of all the battle scene
   class Scene < GamePlay::Base
+    # Tell if speed up is allowed in battle
+    SPEED_UP_ALLOWED = true
+    # Input key used for speed up
+    SPEED_UP_KEY = :HOME
+    # Speed up factor
+    SPEED_UP_FACTOR = 4
+
     include Hooks
     # @return [Battle::Visual]
     attr_reader :visual
@@ -65,6 +72,7 @@ module Battle
 
     # Update the scene
     def update
+      update_speed_up if SPEED_UP_ALLOWED
       # Update the visuals
       @visual.update
       # Prevent update if a message is showing
@@ -106,6 +114,15 @@ module Battle
     end
 
     private
+
+    # Update the speed up
+    def update_speed_up
+      if Input.press?(SPEED_UP_KEY)
+        @clock.speed_factor = SPEED_UP_FACTOR
+      elsif @clock.speed_factor != 1
+        @clock.speed_factor = 1
+      end
+    end
 
     # Create a new logic object
     # @return [Battle::Logic]

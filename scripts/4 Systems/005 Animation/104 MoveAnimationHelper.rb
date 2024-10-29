@@ -13,7 +13,7 @@ module Yuki
       # convert it to another number (between 0 & 1) in order to distord time
       # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
       def initialize(time_to_process, on, a, b, distortion: :UNICITY_DISTORTION,
-                     time_source: :GENERIC_TIME_SOURCE)
+                     time_source: :SCENE_TIME_SOURCE)
         super(time_to_process, on, :x=, 0, 1, distortion: distortion, time_source: time_source)
         @origin_sprite = a
         @destination_sprite = b
@@ -52,8 +52,8 @@ module Yuki
     # convert it to another number (between 0 & 1) in order to distord time
     # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
     # @return [MoveSpritePosition]
-    def move_sprite_position(time_to_process, on, a, b, distortion: :UNICITY_DISTORTION, time_source: :GENERIC_TIME_SOURCE)
-      MoveSpritePosition.new(time_to_process, on, a, b, distortion: :UNICITY_DISTORTION, time_source: :GENERIC_TIME_SOURCE)
+    def move_sprite_position(time_to_process, on, a, b, distortion: :UNICITY_DISTORTION, time_source: :SCENE_TIME_SOURCE)
+      MoveSpritePosition.new(time_to_process, on, a, b, distortion: :UNICITY_DISTORTION, time_source: :SCENE_TIME_SOURCE)
     end
 
     # Create a new TimedLoopAnimation
@@ -61,7 +61,7 @@ module Yuki
     # @param distortion [#call, Symbol] callable taking one paramater (between 0 & 1) and
     # convert it to another number (between 0 & 1) in order to distord time
     # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
-    def timed_loop_animation(time_to_process, distortion = :UNICITY_DISTORTION, time_source = :GENERIC_TIME_SOURCE)
+    def timed_loop_animation(time_to_process, distortion = :UNICITY_DISTORTION, time_source = :SCENE_TIME_SOURCE)
       TimedLoopAnimation.new(time_to_process, distortion, time_source)
     end
 

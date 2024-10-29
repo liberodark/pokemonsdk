@@ -15,7 +15,8 @@ module Yuki
     # Hash describing all the time sources
     TIME_SOURCES = {
       # Generic time source (callable object that gives the current time)
-      GENERIC_TIME_SOURCE: Graphics.method(:current_time) # Time.method(:now)
+      GENERIC_TIME_SOURCE: Graphics.method(:current_time), # Time.method(:now)
+      SCENE_TIME_SOURCE: proc { $scene.respond_to?(:clock) ? $scene.clock.elapsed_time : Clock.main.elapsed_time }
     }
     # Default object resolver (make the game crash)
     DEFAULT_RESOLVER = proc { |x| raise "Couldn't resolve object :#{x}" }
@@ -25,7 +26,7 @@ module Yuki
     # Create a "wait" animation
     # @param during [Float] number of seconds (with generic time) to process the animation
     # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
-    def wait(during, time_source: :GENERIC_TIME_SOURCE)
+    def wait(during, time_source: :SCENE_TIME_SOURCE)
       TimedAnimation.new(during, :UNICITY_DISTORTION, time_source)
     end
 
@@ -59,7 +60,7 @@ module Yuki
       # @param distortion [#call, Symbol] callable taking one paramater (between 0 & 1) and
       #   convert it to another number (between 0 & 1) in order to distord time
       # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
-      def initialize(time_to_process, distortion = :UNICITY_DISTORTION, time_source = :GENERIC_TIME_SOURCE)
+      def initialize(time_to_process, distortion = :UNICITY_DISTORTION, time_source = :SCENE_TIME_SOURCE)
         @time_to_process = time_to_process.to_f
         @distortion_param = distortion
         @time_source_param = time_source
@@ -236,7 +237,7 @@ module Yuki
     # @param distortion [#call, Symbol] callable taking one paramater (between 0 & 1) and
     # convert it to another number (between 0 & 1) in order to distord time
     # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
-    def rotation(during, on, angle_start, angle_end, distortion: :UNICITY_DISTORTION, time_source: :GENERIC_TIME_SOURCE)
+    def rotation(during, on, angle_start, angle_end, distortion: :UNICITY_DISTORTION, time_source: :SCENE_TIME_SOURCE)
       ScalarAnimation.new(during, on, :angle=, angle_start, angle_end, distortion: distortion, time_source: time_source)
     end
 
@@ -249,7 +250,7 @@ module Yuki
     # convert it to another number (between 0 & 1) in order to distord time
     # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
     def opacity_change(during, on, opacity_start, opacity_end, distortion: :UNICITY_DISTORTION,
-                       time_source: :GENERIC_TIME_SOURCE)
+                       time_source: :SCENE_TIME_SOURCE)
       ScalarAnimation.new(during, on, :opacity=, opacity_start, opacity_end,
                           distortion: distortion, time_source: time_source)
     end
@@ -263,7 +264,7 @@ module Yuki
     # @param distortion [#call, Symbol] callable taking one paramater (between 0 & 1) and
     # convert it to another number (between 0 & 1) in order to distord time
     # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
-    def scalar(time_to_process, on, property, a, b, distortion: :UNICITY_DISTORTION, time_source: :GENERIC_TIME_SOURCE)
+    def scalar(time_to_process, on, property, a, b, distortion: :UNICITY_DISTORTION, time_source: :SCENE_TIME_SOURCE)
       return ScalarAnimation.new(time_to_process, on, property, a, b, distortion: distortion, time_source: time_source)
     end
 
@@ -279,7 +280,7 @@ module Yuki
       # convert it to another number (between 0 & 1) in order to distord time
       # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
       def initialize(time_to_process, on, property, a, b, distortion: :UNICITY_DISTORTION,
-                     time_source: :GENERIC_TIME_SOURCE)
+                     time_source: :SCENE_TIME_SOURCE)
         super(time_to_process, distortion, time_source)
         @origin_param = a
         @end_param = b
@@ -318,7 +319,7 @@ module Yuki
       # convert it to another number (between 0 & 1) in order to distord time
       # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
       def initialize(time_to_process, on, property_get, property_set, a, b, distortion: :UNICITY_DISTORTION,
-                     time_source: :GENERIC_TIME_SOURCE)
+                     time_source: :SCENE_TIME_SOURCE)
         super(time_to_process, on, property_set, a, b, distortion: distortion, time_source: time_source)
         @property_get = property_get
       end
@@ -335,7 +336,7 @@ module Yuki
 
     # Create a new ScalarOffsetAnimation
     # @return [ScalarOffsetAnimation]
-    def scalar_offset(time_to_process, on, property_get, property_set, a, b, distortion: :UNICITY_DISTORTION, time_source: :GENERIC_TIME_SOURCE)
+    def scalar_offset(time_to_process, on, property_get, property_set, a, b, distortion: :UNICITY_DISTORTION, time_source: :SCENE_TIME_SOURCE)
       return ScalarOffsetAnimation.new(time_to_process, on, property_get, property_set, a, b, distortion: distortion, time_source: time_source)
     end
 
@@ -350,7 +351,7 @@ module Yuki
     # convert it to another number (between 0 & 1) in order to distord time
     # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
     def move(during, on, start_x, start_y, end_x, end_y, distortion: :UNICITY_DISTORTION,
-             time_source: :GENERIC_TIME_SOURCE)
+             time_source: :SCENE_TIME_SOURCE)
       Dim2Animation.new(during, on, :set_position, start_x, start_y, end_x, end_y,
                         distortion: distortion, time_source: time_source)
     end
@@ -366,7 +367,7 @@ module Yuki
     # convert it to another number (between 0 & 1) in order to distord time
     # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
     def move_discreet(during, on, start_x, start_y, end_x, end_y, distortion: :UNICITY_DISTORTION,
-                      time_source: :GENERIC_TIME_SOURCE)
+                      time_source: :SCENE_TIME_SOURCE)
       Dim2AnimationDiscreet.new(during, on, :set_position, start_x, start_y, end_x, end_y,
                                 distortion: distortion, time_source: time_source)
     end
@@ -382,7 +383,7 @@ module Yuki
     # convert it to another number (between 0 & 1) in order to distord time
     # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
     def shift(during, on, start_x, start_y, end_x, end_y, distortion: :UNICITY_DISTORTION,
-              time_source: :GENERIC_TIME_SOURCE)
+              time_source: :SCENE_TIME_SOURCE)
       Dim2Animation.new(during, on, :set_origin, start_x, start_y, end_x, end_y,
                         distortion: distortion, time_source: time_source)
     end
@@ -401,7 +402,7 @@ module Yuki
       # convert it to another number (between 0 & 1) in order to distord time
       # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
       def initialize(time_to_process, on, property, a_x, a_y, b_x, b_y, distortion: :UNICITY_DISTORTION,
-                     time_source: :GENERIC_TIME_SOURCE)
+                     time_source: :SCENE_TIME_SOURCE)
         super(time_to_process, distortion, time_source)
         @origin_x_param = a_x
         @origin_y_param = a_y
@@ -441,7 +442,7 @@ module Yuki
     # convert it to another number (between 0 & 1) in order to distord time
     # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
     def cell_x_change(during, on, cell_start, cell_end, width, distortion: :UNICITY_DISTORTION,
-                      time_source: :GENERIC_TIME_SOURCE)
+                      time_source: :SCENE_TIME_SOURCE)
       DiscreetAnimation.new(during, on, :x=, cell_start, cell_end, width,
                             distortion: distortion, time_source: time_source)
     end
@@ -456,7 +457,7 @@ module Yuki
     # convert it to another number (between 0 & 1) in order to distord time
     # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
     def cell_y_change(during, on, cell_start, cell_end, width, distortion: :UNICITY_DISTORTION,
-                      time_source: :GENERIC_TIME_SOURCE)
+                      time_source: :SCENE_TIME_SOURCE)
       DiscreetAnimation.new(during, on, :y=, cell_start, cell_end, width,
                             distortion: distortion, time_source: time_source)
     end
@@ -474,7 +475,7 @@ module Yuki
       # convert it to another number (between 0 & 1) in order to distord time
       # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
       def initialize(time_to_process, on, property, a, b, factor = 1, distortion: :UNICITY_DISTORTION,
-                     time_source: :GENERIC_TIME_SOURCE)
+                     time_source: :SCENE_TIME_SOURCE)
         super(time_to_process, distortion, time_source)
         @origin_param = a
         @end_param = b
@@ -519,7 +520,7 @@ module Yuki
       # convert it to another number (between 0 & 1) in order to distord time
       # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
       def initialize(time_to_process, on, property, a_x, a_y, b_x, b_y, distortion: :UNICITY_DISTORTION,
-                     time_source: :GENERIC_TIME_SOURCE)
+                     time_source: :SCENE_TIME_SOURCE)
         super(time_to_process, distortion, time_source)
         @origin_x_param = a_x
         @origin_y_param = a_y
@@ -560,7 +561,7 @@ module Yuki
       # convert it to another number (between 0 & 1) in order to distord time
       # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
       def initialize(time_to_process, on, cells, rounding = :round, distortion: :UNICITY_DISTORTION,
-                     time_source: :GENERIC_TIME_SOURCE)
+                     time_source: :SCENE_TIME_SOURCE)
         super(time_to_process, distortion, time_source)
         @cells_param = cells
         @on_param = on
