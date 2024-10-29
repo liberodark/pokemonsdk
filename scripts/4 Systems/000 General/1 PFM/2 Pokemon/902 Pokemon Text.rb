@@ -12,6 +12,18 @@ module PFM
       return Studio::Text.get(0,@step_remaining==0 ? @id : 0).upcase
     end
 
+    # Return the Pokemon form name in the Pokedex
+    # @return [String]
+    def form_name
+      return data_creature_form(db_symbol, @form).form_name
+    end
+
+    # Return the Pokemon form name upcase in the Pokedex
+    # @return [String]
+    def form_name_upper
+      return data_creature_form(db_symbol, @form).form_name.upcase
+    end
+
     # Return the given name of the Pokemon (Pokedex name if no given name)
     # @return [String]
     def given_name

@@ -179,7 +179,7 @@ module GamePlay
     def find_next_seen_form(current_form)
       seen_forms = $pokedex.form_seen(@pokemon.db_symbol)
       next_form = (current_form + 1).upto(Math::log2(seen_forms)).find { |form| seen_forms[form] == 1 }
-      return next_form && next_form <= 30 ? next_form : nil
+      return next_form && next_form < 30 ? next_form : nil
     end
 
 
@@ -250,12 +250,13 @@ module GamePlay
       end
       # Index ajustment
       if page_id
-        db_symbol = data_creature(page_id).db_symbol
-        @index = @selected_creatures.find_index { |creature| creature.db_symbol == db_symbol }
+        db_symbol = page_id.is_a?(PFM::Pokemon) ? page_id.db_symbol : data_creature(page_id).db_symbol
+        form = page_id.is_a?(PFM::Pokemon) ? page_id.form : 0
+        @index = @selected_creatures.find_index { |creature| creature.db_symbol == db_symbol && creature.form == form }
         unless @index
           @index = @selected_creatures.size
           selected = creatures.find { |creature| creature.db_symbol == db_symbol }
-          @selected_creatures << (selected || Studio::Dex::CreatureInfo.new(db_symbol, 0))
+          @selected_creatures << (selected || Studio::Dex::CreatureInfo.new(db_symbol, form))
         end
       else
         @index = 0

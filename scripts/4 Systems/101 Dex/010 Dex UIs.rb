@@ -34,7 +34,7 @@ module UI
     # Define if the Pokemon is displayed by the UI
     # @param creature [PFM::Pokemon]
     def update_info_visibility(creature)
-      is_seen = creature && $pokedex.creature_seen?(creature.id, creature.form)
+      is_seen = creature && ($pokedex.creature_seen?(creature.id, creature.form) || $pokedex.creature_caught?(creature.id, creature.form))
       @sprite.visible = is_seen
       @pokemon_name.visible = is_seen
     end
@@ -89,7 +89,6 @@ module UI
     def data=(pokemon)
       super(pokemon)
       update_capture_visibility(pokemon)
-      @pokename.text = data_creature_form(pokemon.id, pokemon.form).form_name
     end
 
     private
@@ -100,7 +99,6 @@ module UI
       VISIBLE_SPRITES.each do |i|
         @stack[i].visible = is_captured
       end
-      @pokename.visible = $pokedex.creature_seen?(creature.id, creature.form)
     end
 
     def create_sprites
@@ -109,7 +107,7 @@ module UI
       # Show the "caught" indicator
       add_sprite(8, 4, 'Catch')
       # Show the Pokedex Name of the Pokemon
-      @pokename = add_text(29, 4, 116, 16, nil.to_s, color: 10)
+      add_text(29, 4, 116, 16, $options.language == 'fr' ? :form_name : :form_name_upper, type: SymText, color: 10)
       # Show the Specie of the Pokemon
       add_text(9, 27, 116, 16, :pokedex_species, type: SymText)
       # Show the weight (formated) of the Pokemon
@@ -180,7 +178,6 @@ module UI
       pkmn_form = pokemon.form
       @catch_icon.visible = $pokedex.creature_caught?(pkmn_symbol, pkmn_form)
       @pokeicon.visible = $pokedex.creature_seen?(pkmn_symbol, pkmn_form)
-      @pokename.visible = $pokedex.creature_seen?(pkmn_symbol, pkmn_form)
     end
   end
 
