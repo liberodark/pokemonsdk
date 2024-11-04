@@ -10,6 +10,9 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
 
+        target_bank = user.bank == 1 ? 0 : 1
+        return show_usage_failure(user) && false if @logic.bank_effects[target_bank]&.get(:toxic_spikes)&.max_power?
+
         return true
       end
 

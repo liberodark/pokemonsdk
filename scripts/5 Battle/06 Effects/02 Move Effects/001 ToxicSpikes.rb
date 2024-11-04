@@ -29,6 +29,12 @@ module Battle
         @power += 1
       end
 
+      # Tell if the toxic spikes are at max power
+      # @return [Boolean]
+      def max_power?
+        return @power >= 2
+      end
+
       # Function called when the effect has been deleted from the effects handler
       def on_delete
         @logic.scene.display_message_and_wait(parse_text(18, @bank == 0 ? 160 : 161))
