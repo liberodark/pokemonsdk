@@ -152,7 +152,7 @@ module GamePlay
     # Initialize the win_text according to the mode
     def init_win_text
       case @mode
-      when :map, :battle, :absofusion, :separate
+      when :map, :battle, :absofusion, :separate, :revival_blessing
         return @base_ui.show_win_text(text_get(23, 17))
       when :hold
         return @base_ui.show_win_text(text_get(23, 23))

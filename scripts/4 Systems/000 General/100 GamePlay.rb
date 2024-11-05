@@ -184,6 +184,13 @@ module GamePlay
       current_scene.call_scene(party_menu_class, party, :separate, pokemon_db_symbol)
     end
 
+    # Open the party menu to revive Pokemons
+    # @param party [Array<PFM::Pokemon>] party that contains the Pokemon to revive
+    # @yieldparam party_menu_scene [PartyMenuMixin]
+    def open_party_menu_to_revive_pokemon(party, &block)
+      current_scene.call_scene(party_menu_class, party, :revival_blessing, &block)
+    end
+
     # Get the Summary scene
     # @return [Class<Summary>]
     attr_accessor :summary_class

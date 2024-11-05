@@ -10,7 +10,8 @@ module GamePlay
       hold: :show_hold_mode_choice,
       select: :show_select_mode_choice,
       absofusion: :process_absofusion_mode,
-      separate: :process_separate_mode
+      separate: :process_separate_mode,
+      revival_blessing: :show_revival_menu_choice
     }
     # Show the proper choice
     def show_choice
@@ -488,6 +489,37 @@ module GamePlay
       create_team_buttons
       display_message(parse_text(22, 157, ::PFM::Text::PKNAME[0] => pokemon.given_name))
       @running = false
+    end
+
+    # Process the separation when the party is in mode :show_revival_menu_choice
+    def show_revival_menu_choice
+      # @type [PFM::Pokemon]
+      pokemon = @party[@index]
+      if pokemon.alive? || pokemon.egg?
+        display_message(text_get(22, 108))
+      else
+        pokemon.hp = pokemon.max_hp / 2
+        display_message_and_wait(parse_text_with_pokemon(66, 1590, pokemon))
+        @running = false
+      end
+    end
+
+    # Function that detect no_leave and forbit the B action to process
+    # @return [Boolean] true = no leave, false = process normally
+    def no_leave_B
+      if @no_leave
+        return false if @choice_object
+        return false if @intern_mode != :normal
+        $game_system.se_play($data_system.buzzer_se)
+        return true
+      end
+
+      if @mode == :revival_blessing
+        display_message_and_wait(parse_text(20, 22))
+        return true
+      end
+
+      return false
     end
   end
 end

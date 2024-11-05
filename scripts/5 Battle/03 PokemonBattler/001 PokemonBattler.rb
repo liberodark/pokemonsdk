@@ -193,11 +193,13 @@ module PFM
     end
     alias inspect to_s
 
+    # Return if the Pokemon is in the player's original team
+    # @ Return [Boolean]
     def from_party?
       $actors.include?(@original)
     end
 
-    # Return if the Pokemon is in the player current team
+    # Return if the Pokemon is in the player's current team
     # @ Return [Boolean]
     def from_player_party?
       @party_id == 0 && @bank == 0

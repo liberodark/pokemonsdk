@@ -1168,6 +1168,7 @@ pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Retaliate.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Return.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 RevelationDance.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Revenge.rb
+pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 RevivalBlessing.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Rollout.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Roost.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Rototiller.rb
