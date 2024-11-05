@@ -105,10 +105,11 @@ module Battle
       end
 
       add_ball_rate_calculation(:love_ball) do |target, pkm_ally|
-        if target.id == pkm_ally.id
-          next target.rareness * 8 if (target.gender != pkm_ally.gender) && [target.gender, pkm_ally.gender].none? { |pkm| pkm.gender == 0 }
-        end
-        next target.rareness
+        next target.rareness if target.id != pkm_ally.id
+        next target.rareness if target.gender == pkm_ally.gender
+        next target.rareness if target.genderless? || pkm_ally.genderless?
+
+        next target.rareness * 8
       end
 
       add_ball_rate_calculation(:lure_ball) do |target, _pkm_ally|
