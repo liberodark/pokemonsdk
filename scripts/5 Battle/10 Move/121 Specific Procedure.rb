@@ -87,8 +87,7 @@ module Battle
     # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
     def deal_effect_sheer_force(user, actual_targets)
       return false unless user.has_ability?(:sheer_force)
-      return false unless user.ability_effect.excluded_db_symbol.include?(db_symbol)
-      return false unless user.ability_effect.excluded_methods.include?(be_method)
+      return false if !user.ability_effect.excluded_db_symbol.include?(db_symbol) && !user.ability_effect.excluded_methods.include?(be_method)
 
       return deal_effect(user, actual_targets)
     end

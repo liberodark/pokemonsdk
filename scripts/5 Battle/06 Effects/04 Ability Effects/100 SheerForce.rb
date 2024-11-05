@@ -27,7 +27,7 @@ module Battle
 
         # List of the be_method of the moves for which their effect is not disabled by Sheer Force
         # @return [Array<Symbol>]
-        EXCLUDED_METHODS = %i[s_bind s_reload]
+        EXCLUDED_METHODS = %i[s_bind s_reload s_u_turn s_dragon_tail]
 
         # Return the constant listing the be_method of the moves for which their effect is not disabled by Sheer Force
         # @return [Array<Symbol>]
@@ -56,12 +56,17 @@ module Battle
           return :sheer_force
         end
 
-        # Check if a move must have his effect ignored
+        # Check if a move must have its effect ignored
         # @param move [Battle::Move]
         # @return [Boolean]
         def excluded?(move)
           return false if EXCLUDED_DB_SYMBOLS.include?(move.db_symbol) || EXCLUDED_METHODS.include?(move.be_method)
-          return true if move.status? || (move.battle_stage_mod.none? && move.status_effects.none? && move.method("deal_effect").owner == Battle::Move)
+
+          return true if move.status? || (
+            move.battle_stage_mod.none? &&
+            move.status_effects.none? &&
+            move.method("deal_effect").owner == Battle::Move
+          )
 
           return false
         end
