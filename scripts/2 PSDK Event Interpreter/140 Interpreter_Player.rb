@@ -10,7 +10,7 @@ class Interpreter
   # @author Beef'
   def empty_and_save_bag(id_storage = nil)
     var_id = id_storage ? "@_str_bag_#{id_storage}".to_sym : :@other_bag
-    bag = Marshal.load(Marshal.dump($bag))
+    bag = $bag.dup
     $bag = PFM.game_state.bag = PFM::Bag.new
     $storage.instance_variable_set(var_id, bag)
   end
@@ -45,7 +45,7 @@ class Interpreter
   # @author Beef'
   def empty_and_save_trainer(id_storage = nil)
     var_id = id_storage ? "@_str_trainer_#{id_storage}".to_sym : :@other_trainer
-    trainer = Marshal.load(Marshal.dump($trainer))
+    trainer = $trainer.dup
     $trainer = PFM.game_state.trainer = PFM::Trainer.new
     $storage.instance_variable_set(var_id, trainer)
   end
@@ -67,7 +67,7 @@ class Interpreter
   # @author Beef'
   def empty_and_save_pokedex(id_storage = nil)
     var_id = id_storage ? "@_str_pokedex_#{id_storage}".to_sym : :@other_pokedex
-    pokedex = Marshal.load(Marshal.dump($pokedex))
+    pokedex = $pokedex.dup
     $pokedex = PFM.game_state.pokedex = PFM::Pokedex.new
     $storage.instance_variable_set(var_id, pokedex)
   end
@@ -103,7 +103,7 @@ class Interpreter
   # @author Beef'
   def empty_and_save_money(id_storage = nil)
     var_id = id_storage ? "@_str_money_#{id_storage}".to_sym : :@other_money
-    money = Marshal.load(Marshal.dump(PFM.game_state.money))
+    money = PFM.game_state.money.dup
     PFM.game_state.money = 0
     $storage.instance_variable_set(var_id, money)
   end
@@ -135,7 +135,7 @@ class Interpreter
   # @author Beef'
   def empty_and_save_appearance(id_storage = nil) 
     var_id = id_storage ? "@_str_appearance_#{id_storage}".to_sym : :@other_appearance
-    charset_base = Marshal.load(Marshal.dump($game_player.charset_base))
+    charset_base = $game_player.charset_base.dup
     $game_player.set_appearance_set(nil.to_s)
     $storage.instance_variable_set(var_id, charset_base)
   end
@@ -157,7 +157,7 @@ class Interpreter
   def empty_and_save_party(id_storage = nil)
     var_id = id_storage ? "@_str_#{id_storage}".to_sym : :@other_party
     $actors.compact!
-    party = Marshal.load(Marshal.dump($actors))
+    party = $actors.dup
     $actors.clear
     $storage.instance_variable_set(var_id, party)
   end
@@ -247,12 +247,12 @@ class Interpreter
   # @author Beef'
   def switch_player_safe(
     to_player_id,
-    switch_bag: true, 
+    switch_bag: true,
     switch_party: true, 
-    switch_trainer: true, 
+    switch_trainer: true,
     switch_appearance: true,
     switch_money: true, 
-    switch_pokedex: true 
+    switch_pokedex: true
     )
     from_player_id = $game_variables[Yuki::Var::Current_Player_ID]
     return nil if to_player_id == from_player_id
