@@ -62,8 +62,6 @@ pokemonsdk/scripts/2 PSDK Event Interpreter/140 Interpreter_Player.rb
 pokemonsdk/scripts/2 PSDK Event Interpreter/150 Interpreter_Time.rb
 pokemonsdk/scripts/3 Studio/001 Accessors.rb
 pokemonsdk/scripts/3 Studio/400 Text.rb
-pokemonsdk/scripts/3 Studio/1 Configs/001 Natures.rb
-pokemonsdk/scripts/3 Studio/1 Configs/002 Flavors.rb
 pokemonsdk/scripts/3 Studio/1 Configs/003 States.rb
 pokemonsdk/scripts/3 Studio/1 Configs/004 Stats.rb
 pokemonsdk/scripts/3 Studio/1 Configs/005 Window.rb
@@ -74,6 +72,7 @@ pokemonsdk/scripts/3 Studio/2 Data/031 Move.rb
 pokemonsdk/scripts/3 Studio/2 Data/041 Creature.rb
 pokemonsdk/scripts/3 Studio/2 Data/042 CreatureForm.rb
 pokemonsdk/scripts/3 Studio/2 Data/043 Dex.rb
+pokemonsdk/scripts/3 Studio/2 Data/044 Nature.rb
 pokemonsdk/scripts/3 Studio/2 Data/051 Quest.rb
 pokemonsdk/scripts/3 Studio/2 Data/061 Trainer.rb
 pokemonsdk/scripts/3 Studio/2 Data/071 Type.rb

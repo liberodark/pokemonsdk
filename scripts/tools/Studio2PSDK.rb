@@ -515,6 +515,20 @@ module Studio
     end
   end
 
+  class Nature
+    class << self
+      def try_create(hash)
+        return unless (stats = hash['stats'].is_a?(Hash))
+        return unless (flavors = hash['flavors'].is_a?(Hash))
+
+        obj = allocate
+        obj.instance_variable_set(:@stats, stats)
+        obj.instance_variable_set(:@flavors, flavors)
+        return obj
+      end
+    end
+  end
+
   class Trainer
     class Resources
       class << self

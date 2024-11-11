@@ -48,8 +48,9 @@ module PFM
     # Return the text of the nature
     # @return [String]
     def nature_text
-      return text_get(8, nature.first)
+      return data_nature(nature_db_symbol).name
     end
+    alias nature_name nature_text
 
     # Return the name of the zone where the Pokemon has been caught
     # @return [String]

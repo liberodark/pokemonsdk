@@ -21,9 +21,10 @@ module UI
 
     private
 
+    # Fix the nature text with colors and the right nature name
     # @param creature [PFM::Pokemon]
     def fix_nature_texts(creature)
-      @nature_text.text = PFM::Text.parse(28, creature.nature_id)
+      @nature_text.text = replace_nature_name_in_nature_texts(creature)
       # Load the stat color according to the nature
       nature = creature.nature.partition.with_index { |_, i| i != 3 }.flatten(1)
       1.upto(5) do |i|
@@ -31,6 +32,20 @@ module UI
         color = 0 if nature[i] == 100
         @stat_name_texts[i - 1].load_color(color)
       end
+    end
+
+    # Replace the nature in the nature text to the one of the creature
+    # This method exists to ensure compatibility with the current PSDK texts,
+    # as natures' ID can now go higher than 24, which can cause the use of an unauthorized text from CSV 100028
+    # @return [String]
+    def replace_nature_name_in_nature_texts(creature)
+      text = Studio::Text.get(28, 0).clone
+      return '' unless text.match?(/\[VAR COLOR\(0002\)\]([A-Za-z0-9]*)\[VAR COLOR\(0000\)\]/)
+
+      text.match(/\[VAR COLOR\(0002\)\]([A-Za-z0-9]*)\[VAR COLOR\(0000\)\]/)
+      text.gsub!($1, creature.nature_name)
+      text = PFM::Text.parse_additional_variables(text, nil)
+      return text
     end
 
     def init_sprite

@@ -97,6 +97,16 @@ module PFM
       text_id += ($game_temp.trainer_battle ? 2 : 1) if enemy_pokemon?(pokemon)
       # Get text
       text = Studio::Text.get(file_id, text_id).clone
+      text = parse_additional_variables(text, pokemon, additionnal_var)
+      return text
+    end
+
+    # Parse the additional variables from the CSV text
+    # @param text [String] the CSV text to parse
+    # @param pokemon [PFM::Pokemon] pokemon that will introduce an offset on text_id (its name is also used)
+    # @param additional_variables [nil, Hash{String => String}] additional remplacements in the text
+    # @return [Text]
+    def parse_additional_variables(text, pokemon, additionnal_var = nil)
       # Parse all the variables
       additionnal_var&.each { |expr, value| text.gsub!(expr, value || '<nil>') }
       @variables.each { |expr, value| text.gsub!(expr, value) }
@@ -302,8 +312,10 @@ module PFM
     def get_key_name(name)
       key_id = GameKeys[name.downcase]
       return GameKeys[0] unless key_id
+
       key_value = Input::Keys[key_id][0]
       return "J#{-(key_value + 1) / 32 + 1}K#{(-key_value - 1) % 32}" if key_value < 0
+
       key_value = Sf::Keyboard.localize(key_value)
       keybd = Input::Keyboard
       keybd.constants.each do |key_name|

@@ -75,6 +75,22 @@ class Object
     __game_data[:creatures__id].each(&block)
   end
 
+  # Get a nature
+  # @param db_symbol [Symbol] db_symbol of the nature
+  # @return [Studio::Nature]
+  def data_nature(db_symbol)
+    return __game_data_by_id(:natures__id, :natures, db_symbol) if db_symbol.is_a?(Integer)
+
+    return __game_data.dig(:natures, db_symbol) || __game_data.dig(:natures, :__undef__)
+  end
+
+  # Iterate through all the natures
+  # @yieldparam move [Studio::Nature]
+  # @return [Enumerator<Studio::Nature>]
+  def each_data_nature(&block)
+    __game_data[:natures__id].each(&block)
+  end
+
   # Get a quest
   # @param db_symbol [Symbol] db_symbol of the quest
   # @return [Studio::Quest]

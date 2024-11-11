@@ -359,7 +359,7 @@ module PFM
     # return [Boolean] if the condition is valid
     def elv_toxtricity_amped
       natures_toxtricity = %i[hardy brave adamant naughty docile impish lax hasty jolly naive rash sassy quirky]
-      return natures_toxtricity.include?(Configs.natures.db_symbol_to_id.key(nature_id))
+      return natures_toxtricity.include?(data_nature(nature_id).db_symbol)
     end
 
     # Check evolve condition when not in Toxtricity-amped (Salarsen-aigüe)

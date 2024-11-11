@@ -5,7 +5,7 @@ module PFM
     def flavor_liked?(flavor)
       return false if no_preferences?
 
-      return Configs.flavors.nature_liking_flavor[flavor].include?(nature_id)
+      return data_nature(nature_db_symbol).liked_flavor == flavor
     end
 
     # Tell if the Creature dislikes flavor
@@ -13,12 +13,15 @@ module PFM
     def flavor_disliked?(flavor)
       return false if no_preferences?
 
-      return Configs.flavors.nature_disliking_flavor[flavor].include?(nature_id)
+      return data_nature(nature_db_symbol).disliked_flavor == flavor
     end
 
     # Check if the Creature has a nature with no preferences
     def no_preferences?
-      return Configs.flavors.nature_with_no_preferences.include?(nature_id)
+      nature = data_nature(nature_db_symbol)
+      return true if nature.liked_flavor == :none && nature.disliked_flavor == :none
+
+      return false
     end
   end
 end

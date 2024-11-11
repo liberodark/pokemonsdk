@@ -16,8 +16,6 @@ module ProjectCompilation
     end
 
     def ensure_config_is_built
-      Configs.natures
-      Configs.flavors
       Configs.states
       Configs.stats
       Configs.window
@@ -41,6 +39,7 @@ module ProjectCompilation
       vd = Yuki::VD.new(vd_filename, :write)
       files.each do |filename|
         next unless File.exist?(filename)
+
         puts filename
         basename = filename.start_with?('Data/Buildings/') ? filename.gsub('Data/Buildings/', 'buildings_') : File.basename(filename)
         vd.write_data(basename.downcase, File.binread(filename))
@@ -50,6 +49,7 @@ module ProjectCompilation
 
     def get_data_files
       return @map_files, @data_files if @map_files && @data_files
+
       data_files = Dir['Data/*.*'] + Dir['Data/Buildings/*.rxdata'] + Dir['Data/configs/**/*.rxdata']
       data_files.delete('Data/Scripts.rxdata')
       data_files.delete('Data/PSDK_BOOT.rxdata')

@@ -161,8 +161,8 @@ module PFM
       self.rareness = opts[:rareness]
       ev_data_initialize(opts)
       iv_data_initialize(opts)
-      nature_opts = opts[:nature].is_a?(Symbol) ? Configs.natures.db_symbol_to_id[opts[:nature]] : opts[:nature]
-      @nature = (nature_opts || (@code >> 16)) % Configs.natures.data.size
+      nature_opts = opts[:nature].is_a?(Symbol) ? data_nature(opts[:nature]).id : opts[:nature]
+      @nature = (nature_opts || (@code >> 16)) % each_data_nature.size
       self.hp = max_hp
     end
 

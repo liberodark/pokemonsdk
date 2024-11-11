@@ -7,6 +7,7 @@ module UI
     attr_accessor :mode
     # @return [Array<PFM::Skill>] list of learnable moves
     attr_reader :learnable_skills
+
     # Create a new Summary_Remind UI for the summary
     # @param viewport [Viewport]
     # @param pokemon [PFM::Pokemon] Pokemon that should relearn some skills
@@ -57,9 +58,10 @@ module UI
       @gender.ox = 88 - @name.real_width
     end
 
+    # Fix the nature text with colors and the right nature name
     # @param creature [PFM::Pokemon]
     def fix_nature_texts(creature)
-      @nature_text.text = PFM::Text.parse(28, creature.nature_id)
+      @nature_text.text = replace_nature_name_in_nature_texts(creature)
       # Load the stat color according to the nature
       nature = creature.nature.partition.with_index { |_, i| i != 3 }.flatten(1)
       1.upto(5) do |i|
@@ -67,6 +69,17 @@ module UI
         color = 0 if nature[i] == 100
         @stat_name_texts[i - 1].load_color(color)
       end
+    end
+
+    # Replace the nature in the nature text to the one of the creature
+    # This method exists to ensure compatibility with the current PSDK texts,
+    # as natures' ID can now go higher than 24, which can cause the use of an unauthorized text from CSV 100028
+    # @return [String]
+    def replace_nature_name_in_nature_texts(creature)
+      text = PFM::Text.parse(28, 0)
+      return '' unless text.match?(/\[VAR COLOR\(0002\)\]([A-Za-z0-9]*)\[VAR COLOR\(0000\)\]/)
+
+      return text.gsub(Regexp.last_match[1], creature.nature_name)
     end
 
     def init_sprite
@@ -150,6 +163,7 @@ module UI
     # @param max_index [Integer] last possible index
     def fix_offset_index(index, max_index)
       return if max_index < MAX_MOVES
+
       last_offset_index = @offset_index
       mid_index = MAX_MOVES / 2
       if index > mid_index

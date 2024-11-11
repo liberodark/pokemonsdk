@@ -324,13 +324,19 @@ module PFM
     # Return the nature data of the Pokemon
     # @return [Array<Integer>] [text_id, atk%, dfe%, spd%, ats%, dfs%]
     def nature
-      return Configs.natures[nature_id]
+      return data_nature(nature_db_symbol).to_a
     end
 
     # Return the nature id of the Pokemon
     # @return [Integer]
     def nature_id
       return @nature
+    end
+
+    # Return the nature db_symbol of the Pokemon
+    # @return [Symbol]
+    def nature_db_symbol
+      return data_nature(nature_id).db_symbol
     end
 
     # Return the Pokemon rareness
