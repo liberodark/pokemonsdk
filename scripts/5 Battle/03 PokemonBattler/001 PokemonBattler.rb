@@ -176,7 +176,7 @@ module PFM
       @consumed_item = :__undef__
       @ko_count = 0
       self.hp = hp_rate > 0 ? (max_hp * hp_rate).to_i.clamp(1, max_hp) : 0
-      initialize_set_is_follower
+      $game_switches[Yuki::Sw::FollowMe_LetsGoMode] ? initialize_letsgo_set_is_follower : initialize_set_is_follower
     end
 
     # Is the Pokemon able to fight ?
@@ -610,11 +610,18 @@ module PFM
     def initialize_set_is_follower
       return @is_follower = false unless $actors.include?(original) && defined?(Yuki::FollowMe)
       return @is_follower = false unless Yuki::FollowMe.enabled
-      return @is_follower = false if $game_switches[Yuki::Sw::FollowMe_LetsGoMode] && $actors.count { |actor| actor == $storage.lets_go_follower } > 0 && $actors[$actors.index($storage.lets_go_follower)].hp == 0 # For disabled let's go followers
-      return @is_follower = true if $game_switches[Yuki::Sw::FollowMe_LetsGoMode] && $actors.count { |actor| actor == $storage.lets_go_follower } > 0 && $actors[$actors.index($storage.lets_go_follower)].hp > 0 && $actors[0] == $actors[$actors.index($storage.lets_go_follower)] # For sending out your let's go follower
-
-
+      
       @is_follower = $actors.index(original).to_i < Yuki::FollowMe.pokemon_count
+    end
+
+    # Function that sets the is_follower variable for LetsGo FollowMe (for animation purpose)
+    def initialize_letsgo_set_is_follower
+      return @is_follower = false unless $actors.include?(original) && defined?(Yuki::FollowMe)
+      return @is_follower = false unless Yuki::FollowMe.enabled
+      return @is_follower = false unless $actors.count { |actor| actor == $storage.lets_go_follower } > 0 # Confirms you have at least 1 follower
+      return @is_follower = false unless $actors.index($storage.lets_go_follower) == $actors.find_index { |actor| actor.hp > 0 } # For checking the first mon in party that's healthy
+
+      @is_follower = true
     end
   end
 end
