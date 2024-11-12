@@ -19,13 +19,24 @@ module Battle
       def move_usable_by_user(user, targets)
         return false unless super
         return true unless be_method == :s_roar
-
-        if targets.all? { |target| target.effects.has?(:crafty_shield) || target.has_ability?(:guard_dog) }
-          show_usage_failure(user)
-          return false
-        end
+        return show_usage_failure(user) && false unless can_be_used?(user, targets)
+        
         return true
       end
+
+      # Check if the move will fail when used
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param targets [Array<PFM::PokemonBattler>] expected targets
+      # @return [Boolean] if the procedure can continue      
+      def can_be_used?(user, targets)
+        if targets.all? { |target| target.effects.has?(:crafty_shield) || target.has_ability?(:guard_dog) }
+          return false
+        end
+        return false if @logic.battle_info.trainer_battle? && targets.none? { |target| @logic.can_battler_be_replaced?(target)} 
+
+        return true
+      end
+
 
       # Check if the move bypass chance of hit and cannot fail
       # @param user [PFM::PokemonBattler] user of the move
