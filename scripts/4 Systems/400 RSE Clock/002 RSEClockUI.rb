@@ -22,20 +22,20 @@ module GamePlay
       end
 
       def create_clock
-        @clock = Sprite.new(viewport).load('clock/clock', :interface)
-        @clock.set_origin_div(2, 2).set_position(viewport.rect.width / 2, viewport.rect.height / 2)
+        @clock_sprite = Sprite.new(viewport).load('clock/clock', :interface)
+        @clock_sprite.set_origin_div(2, 2).set_position(viewport.rect.width / 2, viewport.rect.height / 2)
       end
 
       def create_am_pm
-        @am_pm = SpriteSheet.new(viewport, 1, 2).load('clock/am_pm', :interface).set_position(@clock.x - 14, @clock.y + 24)
+        @am_pm = SpriteSheet.new(viewport, 1, 2).load('clock/am_pm', :interface).set_position(@clock_sprite.x - 14, @clock_sprite.y + 24)
       end
 
       def create_minute_aiguille
-        @minute_aiguille = Sprite.new(viewport).load('clock/minute', :interface).set_position(@clock.x, @clock.y).set_origin(6, 44)
+        @minute_aiguille = Sprite.new(viewport).load('clock/minute', :interface).set_position(@clock_sprite.x, @clock_sprite.y).set_origin(6, 44)
       end
 
       def create_hour_aiguille
-        @hour_aiguille = Sprite.new(viewport).load('clock/hour', :interface).set_position(@clock.x, @clock.y).set_origin(5, 24)
+        @hour_aiguille = Sprite.new(viewport).load('clock/hour', :interface).set_position(@clock_sprite.x, @clock_sprite.y).set_origin(5, 24)
       end
 
       def update_aiguilles
