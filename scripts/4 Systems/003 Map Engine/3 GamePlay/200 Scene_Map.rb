@@ -102,11 +102,14 @@ class Scene_Map < GamePlay::Base
   # Force the message window to close
   # @param smooth [Boolean] if the message window is closed smoothly or not
   def window_message_close(smooth)
-    if smooth
+    if smooth && $game_temp.message_window_showing
+      clock_frozen = self.clock.frozen?
+      self.clock.unfreeze
       while $game_temp.message_window_showing
         Graphics.update
         @message_window.update
       end
+      self.clock.freeze if clock_frozen
     else
       $game_temp.message_window_showing = false
       @message_window.visible = false

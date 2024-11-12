@@ -210,6 +210,7 @@ module GamePlay
     # @note This scene will stop running
     # @return [Boolean] if the scene has successfully returned to the desired scene
     def return_to_scene(name, *args)
+      message_soft_lock_prevent
       if args.empty?
         scene = self
         while scene.is_a?(Base)
@@ -340,6 +341,8 @@ module GamePlay
     # @param type [Symbol] type of transition
     # @param parameters [Integer, Array] parameters of the transition
     def fade_out(type, parameters)
+      # Force the message window of the map to be closed
+      Scene_Map.from($scene).window_message_close(true) if $scene.instance_of?(Scene_Map)
       @clock.freeze
       case type
       when :transition
