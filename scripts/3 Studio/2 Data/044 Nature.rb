@@ -56,7 +56,7 @@ module Studio
     # Used in multiple contexts so it's easier to just return the same thing as before
     # @return [Array<Integer>] [text_id, atk%, dfe%, spd%, ats%, dfs%]
     def to_a
-      return [id, atk, dfe, ats, dfs, spd]
+      return [id, atk, dfe, spd, ats, dfs]
     end
 
     # Get the liked flavor of the nature
