@@ -49,6 +49,21 @@ class Object
     __game_data[:moves__id].each(&block)
   end
 
+  # Get every be_method and the moves using them
+  # @return [Hash{ Symbol => Array<Symbol> }]
+  def moves_by_be_method_hash
+    be_array = each_data_move.map(&:be_method).uniq.compact
+
+    moves_hash = Hash.new { |hash, be_method| hash[be_method] = [] }
+    be_array.each do |be_method|
+      each_data_move.select { |move| move.be_method == be_method }.each do |move|
+        moves_hash[be_method] << move.db_symbol
+      end
+    end
+
+    return moves_hash
+  end
+
   # Get a creature
   # @param db_symbol [Symbol] db_symbol of the creature
   # @return [Studio::Creature]
