@@ -383,7 +383,10 @@ module Studio
           return unless (luck_rate = hash['luckRate']).is_a?(Integer)
 
           obj = allocate
-          obj.instance_variable_set(:@status, STATUS_TRANSLATION[status] || :confusion)
+          status_db = STATUS_TRANSLATION[status]
+          status_db ||= status.downcase.to_sym if status.include?('Custom_')
+          status_db ||= :confusion
+          obj.instance_variable_set(:@status, status_db)
           obj.instance_variable_set(:@luck_rate, luck_rate)
           return obj
         end

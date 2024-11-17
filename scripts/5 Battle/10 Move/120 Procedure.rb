@@ -366,9 +366,6 @@ module Battle
       return true
     end
 
-    # Array mapping the status effect to an action
-    STATUS_EFFECT_MAPPING = %i[nothing poison paralysis burn sleep freeze confusion flinch toxic]
-
     # Function that deals the status condition to the pokemon
     # @param user [PFM::PokemonBattler] user of the move
     # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
