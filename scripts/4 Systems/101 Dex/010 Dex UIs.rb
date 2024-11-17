@@ -178,6 +178,7 @@ module UI
       pkmn_form = pokemon.form
       @catch_icon.visible = $pokedex.creature_caught?(pkmn_symbol, pkmn_form)
       @pokeicon.visible = $pokedex.creature_seen?(pkmn_symbol, pkmn_form)
+      @pokename.visible = $pokedex.creature_seen?(pkmn_symbol, pkmn_form)
     end
   end
 

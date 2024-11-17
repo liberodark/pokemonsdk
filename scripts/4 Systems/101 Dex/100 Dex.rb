@@ -119,7 +119,7 @@ module GamePlay
         @pokemonlist = PFM::Pokemon.new(data_dex($pokedex.variant).creatures.first&.db_symbol || 1, 1)
         update_list(true)
       end
-      $game_system.cry_play(@pokemon.id, form: @pokemon.form) if @state == 1
+      $game_system.cry_play(@pokemon.id, form: @pokemon.form) if @state == 1 && $pokedex.creature_seen?(@pokemon.id, @pokemon.form)
     end
 
     # Switch the mode of the Pokédex
@@ -255,7 +255,7 @@ module GamePlay
         @index = @selected_creatures.find_index { |creature| creature.db_symbol == db_symbol && creature.form == form }
         unless @index
           @index = @selected_creatures.size
-          selected = creatures.find { |creature| creature.db_symbol == db_symbol }
+          selected = creatures.find { |creature| creature.db_symbol == db_symbol && creature.form == form}
           @selected_creatures << (selected || Studio::Dex::CreatureInfo.new(db_symbol, form))
         end
       else
