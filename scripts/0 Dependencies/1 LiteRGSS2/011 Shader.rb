@@ -72,11 +72,9 @@ class Shader < LiteRGSS::Shader
     # @param name_sym [Symbol] name of the shader
     # @return [Array<String>]
     def load_shader_params(name_sym)
-      return @registered_shaders[name_sym] if @registered_shaders.has_key?(name_sym)
+      return @registered_shaders[name_sym] if @registered_shaders.key?(name_sym)
 
-      if @pre_registered_shaders.has_key?(name_sym)
-        return load_shader_params_from_pre_registered_shader(name_sym)
-      end
+      return load_shader_params_from_pre_registered_shader(name_sym) if @pre_registered_shaders.key?(name_sym)
 
       log_error("Failed to load #{name_sym} shader. It is not registered!")
       return [DEFAULT_SHADER]
@@ -181,6 +179,7 @@ The game will sleep 10 seconds to make sure you see this message')
   register(:black_to_white, 'graphics/shaders/black_to_white.frag')
   register(:dpp_sprite_side, 'graphics/shaders/dpp_wild_ext_side.frag')
   register(:sinusoidal, 'graphics/shaders/hgss_wild_sea.frag')
+  register(:bw_wild_sea, 'graphics/shaders/bw_wild_sea.frag')
   register(:fake_3d, 'graphics/shaders/fake_3d.frag', 'graphics/shaders/fake_3d.vert', color_process: true)
   register(:battle_shadow_3d, 'graphics/shaders/battle_shadow.frag', 'graphics/shaders/battle_shadow_3d.vert')
 end
