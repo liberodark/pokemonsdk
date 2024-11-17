@@ -7,7 +7,7 @@ module Battle
     attr_reader :messages
     # @return [Array<Actions::Base>] list of the current actions to proccess during the scene
     attr_accessor :actions
-     # @return [Actions::Base] currently played action
+    # @return [Actions::Base] currently played action
     attr_reader :current_action
     # @return [Array<Actions::Base>] list of all actions that occurs within the current turn
     attr_accessor :turn_actions
@@ -47,6 +47,9 @@ module Battle
     # All the Pokemon with Ball Fetch on the field sorted by decreasing speed when the player fails the capture
     # @return [Array<PFM::PokemonBattler>]
     attr_accessor :ball_fetch_on_field
+    # Get the IDs of items being processed by the player during this turn
+    # @return [Array<Studio::Item>]
+    attr_accessor :player_processing_item
 
     # Create a new Logic instance
     # @param scene [Scene] scene that hold the logic object
@@ -74,6 +77,7 @@ module Battle
       $game_temp.battle_turn = 0
       $bag.last_ball_used_db_symbol = :__undef__
       @ball_fetch_on_field = []
+      @player_processing_item = []
     end
 
     # Safe to_s & inspect

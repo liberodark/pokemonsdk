@@ -130,12 +130,21 @@ module Battle
 
     # Method that asks the item to use
     def item_choice
+      user = @logic.battler(0, @player_actions.size)
       item_wrapper = @visual.show_item_choice
+      bag = user.bag
+
       if item_wrapper
         return if special_item_choice_action(item_wrapper)
 
         # The player made a choice we store the action and we check if he can make other choices
-        @player_actions << Actions::Item.new(self, item_wrapper, @logic.battler(0, @player_actions.size).bag, @logic.battler(0, @player_actions.size))
+        @player_actions << Actions::Item.new(self, item_wrapper, bag, user)
+
+        if item_wrapper.item.is_limited
+          bag.remove_item(item_wrapper.item.id, 1)
+          @logic.player_processing_item << item_wrapper.item
+        end
+
         log_debug("Action : #{@player_actions.last}") if debug? # To prevent useless overhead outside debug
         @next_update = can_player_make_another_action_choice? ? :player_action_choice : :trigger_all_AI
       else
@@ -241,6 +250,11 @@ module Battle
         action.who.switching = false
         action.with.switching = false
       end
+
+      if action.is_a?(Actions::Item)
+        $bag.add_item(@logic.player_processing_item.last.id)
+        @logic.player_processing_item.pop
+      end
     end
 
     # Method that checks if the flee is possible
@@ -248,6 +262,7 @@ module Battle
       @message_window.width = @visual.viewport.rect.width if @visual.viewport
       @message_window.wait_input = true
       return debug_terminate_trainer_battle if debug? && logic.battle_info.trainer_battle? && Input::Keyboard.press?(Input::Keyboard::LControl)
+
       result = @logic.flee_handler.attempt(@player_actions.size)
       if result == :success
         @logic.battle_result = 1
@@ -260,10 +275,10 @@ module Battle
     end
 
     def debug_terminate_trainer_battle
-      choice = display_message_and_wait("Do you want to terminate this battle?", 1, "Yes", "No")
+      choice = display_message_and_wait('Do you want to terminate this battle?', 1, 'Yes', 'No')
       return if choice == 1
 
-      choice = display_message_and_wait("Do you want to treat as a win or a lose?", 1, "Win", "Lose")
+      choice = display_message_and_wait('Do you want to treat as a win or a lose?', 1, 'Win', 'Lose')
       @logic.battle_result = choice == 0 ? 0 : 2
       @logic.debug_end_of_battle = true
       @next_update = :battle_end
