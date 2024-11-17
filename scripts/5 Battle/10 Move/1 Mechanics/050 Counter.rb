@@ -28,8 +28,8 @@ module Battle
           @critical = false
           return 1 unless (attacker = last_attacker(user))
 
-          log_data("damages = #{(attacker.move_history.last.move.damage_dealt * damage_multiplier).floor.clamp(1, Float::INFINITY)} # after counter")
-          return (attacker.move_history.last.move.damage_dealt * damage_multiplier).floor.clamp(1, Float::INFINITY)
+          log_data("damages = #{(attacker.move_history.last.move.damage_dealt * damage_multiplier).floor.clamp(1, target.hp)} # after counter")
+          return (attacker.move_history.last.move.damage_dealt * damage_multiplier).floor.clamp(1, target.hp)
         end
         alias counter_damages damages
 
