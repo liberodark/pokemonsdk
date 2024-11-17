@@ -7,8 +7,8 @@ module Battle
       # @param target [PFM::PokemonBattler] target of the move
       # @return [Integer]
       def real_base_power(user, target)
-        base_power = db_symbol == :stored_power ? 20 : 60
-        stat_count = stat_increase_count(user)
+        base_power = db_symbol == :punishment ? 60 : power
+        stat_count = stat_increase_count(db_symbol == :punishment ? target : user)
         stat_count = stat_count.clamp(0, 7) if db_symbol == :punishment
         return 20 * stat_count + base_power
       end
@@ -16,16 +16,10 @@ module Battle
       private
 
       # Get the number of increased stats
-      # @param user [PFM::PokemonBattler] user of the move
+      # @param pokemon [PFM::PokemonBattler] Pokémon whose stats stages are checked
       # @return [Integer]
-      def stat_increase_count(user)
-        return user.atk_stage.clamp(0, Float::INFINITY) +
-               user.dfe_stage.clamp(0, Float::INFINITY) +
-               user.spd_stage.clamp(0, Float::INFINITY) +
-               user.ats_stage.clamp(0, Float::INFINITY) +
-               user.dfs_stage.clamp(0, Float::INFINITY) +
-               user.acc_stage.clamp(0, Float::INFINITY) +
-               user.eva_stage.clamp(0, Float::INFINITY)
+      def stat_increase_count(pokemon)
+        return pokemon.battle_stage.select(&:positive?).sum
       end
     end
 
