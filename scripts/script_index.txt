@@ -768,6 +768,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Leaf Guard.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Libero - Protean.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Lightning Rod - Storm Drain.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Limber.rb
+pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Liquid Ooze.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Liquid Voice.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Magma Armor.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/100 Marvel Scale.rb
@@ -907,6 +908,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/050 TerrainSeeds.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/050 TypeResistingBerry.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Air Balloon.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Berserk Gene.rb
+pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Big Root.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Black Sludge.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Choice Scarf.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Eject Button.rb

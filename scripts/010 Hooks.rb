@@ -27,9 +27,11 @@ module Hooks
     attr_accessor :reason
     # Name of the hook that forced the return
     attr_accessor :hook_name
+
     # Constant value for hooks functionality
     CONST = new('Return forced')
   end
+
   # Extension adding reason parameter to blocks
   module Reason
     # Get the reason
@@ -44,6 +46,7 @@ module Hooks
       @reason = reason
     end
   end
+
   # Function that execute the hooks
   # @param klass [Class] class containing the hook information
   # @param name [Symbol] name of the hook list

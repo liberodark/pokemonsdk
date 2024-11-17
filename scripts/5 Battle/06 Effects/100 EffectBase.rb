@@ -239,6 +239,18 @@ module Battle
         nil && handler && hp && target && launcher && skill
       end
 
+      # Function called before drain were applied (to potentially prevent healing)
+      # @param handler [Battle::Logic::DamageHandler]
+      # @param hp [Integer] number of hp (damage) dealt
+      # @param hp_healed [Integer] number of hp healed
+      # @param target [PFM::PokemonBattler]
+      # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+      # @param skill [Battle::Move, nil] Potential move used
+      # @return [:prevent, nil] :prevent if the drain cannot be applied
+      def on_drain_prevention(handler, hp, hp_healed, target, launcher, skill)
+        nil && handler && hp && hp_healed && target && launcher && skill
+      end
+
       # Function called when testing if pokemon can switch regardless of the prevension.
       # @param handler [Battle::Logic::SwitchHandler]
       # @param pokemon [PFM::PokemonBattler]
@@ -408,6 +420,17 @@ module Battle
         nil && target && target_type && type && move
       end
 
+      # Function called before drain were applied (to change the number of hp healed)
+      # @param handler [Battle::Logic::DamageHandler]
+      # @param hp [Integer] number of hp (damage) dealt
+      # @param target [PFM::PokemonBattler]
+      # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
+      # @param skill [Battle::Move, nil] Potential move used
+      # @return [Float, Integer] multiplier
+      def on_pre_drain(handler, hp, target, launcher, skill)
+        return 1
+      end
+
       # Give the move base power mutiplier
       # @param user [PFM::PokemonBattler] user of the move
       # @param target [PFM::PokemonBattler] target of the move
@@ -549,6 +572,7 @@ module Battle
           alias on_damage_prevention on_stat_increase_prevention
           alias on_post_damage on_stat_increase_prevention
           alias on_post_damage_death on_stat_increase_prevention
+          alias on_drain_prevention on_stat_increase_prevention
           alias on_switch_passthrough on_stat_increase_prevention
           alias on_switch_prevention on_stat_increase_prevention
           alias on_switch_event on_stat_increase_prevention
@@ -566,6 +590,7 @@ module Battle
           alias on_move_ability_immunity on_stat_increase_prevention
           alias on_transform_event on_stat_increase_prevention
           alias on_single_type_multiplier_overwrite on_stat_increase_prevention
+          alias on_pre_drain base_power_multiplier
           alias sp_atk_multiplier base_power_multiplier
           alias sp_def_multiplier base_power_multiplier
           alias mod1_multiplier base_power_multiplier
