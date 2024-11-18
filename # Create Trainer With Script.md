@@ -1,3 +1,11 @@
+# !!! Before reading this file !!!
+
+To read this file the intended way, open this file using Visual Studio Code (VSCode) and type CTRL+K, then V. It will open the preview of this file.
+
+You can also read it on the official GitLab repository of PSDK.
+
+Enjoy your reading!
+
 # Create Trainer with Script
 
 In this tutorial we will see the true power of .25: creating any kind of trainer battle through the unique Battle Information interface (aka. `Battle::Logic::BattleInfo`).

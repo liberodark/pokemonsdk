@@ -1,3 +1,11 @@
+# !!! Before reading this file !!!
+
+To read this file the intended way, open this file using Visual Studio Code (VSCode) and type CTRL+K, then V. It will open the preview of this file.
+
+You can also read it on the official GitLab repository of PSDK.
+
+Enjoy your reading!
+
 # Create BattleBack with Script
 
 In this tutorial, we will explain how to create Battle Backgrounds with the Dynamic Camera.

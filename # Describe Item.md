@@ -1,3 +1,11 @@
+# !!! Before reading this file !!!
+
+To read this file the intended way, open this file using Visual Studio Code (VSCode) and type CTRL+K, then V. It will open the preview of this file.
+
+You can also read it on the official GitLab repository of PSDK.
+
+Enjoy your reading!
+
 # Describe Item
 
 In PSDK all item are a kind of GameData::Item, this kind of object only holds the data about the item. It doesn't tell how PSDK should use this item. In order to do this we have a module in `PFM` called `ItemDescriptor`.

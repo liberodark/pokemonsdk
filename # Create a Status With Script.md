@@ -1,3 +1,11 @@
+# !!! Before reading this file !!!
+
+To read this file the intended way, open this file using Visual Studio Code (VSCode) and type CTRL+K, then V. It will open the preview of this file.
+
+You can also read it on the official GitLab repository of PSDK.
+
+Enjoy your reading!
+
 # Create a Status With Script
 
 In this tutorial, you'll learn how to create your own statuses and code their effects into the Battle Engine.
@@ -141,9 +149,9 @@ For that, add a line break then paste this:
 The first assignation tells the system that the status application text is located at the line "line" in the CSV 100019. You'll need to add a new line text for this specific file inside Pokémon Studio (DON'T TRY TO EDIT IT WITHOUT STUDIO).
 The second assignation tells the system that the status application animation ID is "id". Only make this assignation if you are SURE you have an animation ready, else **don't**.
 
-Now, we need to tell the StatusChangeHandler of the application conditions. To do that, you need to copy and paste this code **after the end corresponding to `class StatusChangeHandler`**. If you don't, it won't work. Here's the code and an example of how it should look:
+Now, we need to tell the StatusChangeHandler of the application conditions. To do that, you need to copy and paste this code **after the end corresponding to `class StatusChangeHandler`**. If you don't, it won't work. Here's the code:
 ```ruby
-    # Cannot be paralyzed
+    # Cannot be custom_statused (CHANGE the custom_statused)
     StatusChangeHandler.register_status_prevention_hook('My Custom Status: custom_status') do |handler, status, target, _, skill| #Change "custom_status"
       next if status != :custom_status_db || target.can_be_custom_statused? #Change :custom_status_db and can_be_custom_statused
 
@@ -152,26 +160,7 @@ Now, we need to tell the StatusChangeHandler of the application conditions. To d
       end
     end
 ```
-The example: 
-```ruby
-module Battle
-  class Logic
-    # Handler responsive of answering properly status changes requests
-    class StatusChangeHandler < ChangeHandlerBase
-      # Your custom code here
-    end
 
-    # Cannot be paralyzed
-    StatusChangeHandler.register_status_prevention_hook('My Custom Status: custom_status') do |handler, status, target, _, skill| #Change "custom_status"
-      next if status != :custom_status_db || target.can_be_custom_statused? #Change :custom_status_db and can_be_custom_statused?
-
-      next handler.prevent_change do
-        handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 285, target)) if skill.nil? || skill.status? #Change 285 here
-      end
-    end
-  end
-end
-```
 Here, you also need to change a few things:
 - Change the `custom_status` in `'My Custom Status: custom_status'`
 - Change the `:custom_status_db` and the `can_be_custom_statused?` (you should be used to it by now)
@@ -268,9 +257,56 @@ Here, you have multiple things to change across multiple lines. Make sure that y
 Congrats, you have created your own Status Effect! 🥳
 Of course, this just means that your status will not be properly recognized by the system, and you'll know have somewhere to code all your weird interactions! I won't be going into the details of how to create such interactions, but you can have a look at any and every classes that have the Status class as its Parent class (search `< Status` with VSCode), or any class that has the EffectBase class as its Parent class (search `< EffectBase` with VSCode). From now on, only your imagination's and your Ruby skills are the limit! 
 
+## Defining the graphics of the status
+
+### Defining the status in the graphics files
+
+Like all the official statuses, you might want your own custom statuses to have their own little indicator!
+To do that, you'll need to head to the `graphics/interface` folder of your project. In this folder, you'll find 3 different files:
+- statutsfr.png, the file containing the icons in French
+- statutsen.png, the file containing the icons in English
+- statutses.png, the file containing the icons in Spanish
+
+Depending on the language of your game, you'll need to edit either the one for your language, or the English one by default. In the case your language does not figure there and you want your statuses to have specific icons for your language, you just need to create a new file named `statuts[languagecode]`, and replace `[languagecode]` by the language code you used in Studio. 
+
+Example: let's say I want to create a file for the german language. In Studio, I named the language "Deutsch", with the language code "de". This means my file will be named `statutsde`.
+
+To modify these files, you **absolutely need** to ensure you're doing things right, or else the end result won't look good at all. The modification have to be done in this order:
+
+(Reminder that ANY coordinates given in these next points are from the top-left corner of the image!)
+
+- Open the file in any decent image editor. (We recommend GraphicsGale, Aseprite or Photoshop, but any software with a modicum of respectability will do just fine)
+- Add any number of blank space of the **same size as the current icons** at the end of the file. You'll need to extend the image's size in height to do that. To know how much the height of your image should be, just take the highest ID you allocated in your states.json file, then calculate this : (Y = 10 * (ID + 1))
+  - If we take the 20 from earlier, then it means your image should now have a height of 10 * 21 = 210. 
+- Add your own icon at the position X = 0, Y = (0 + 10 * ID), ID being the ID you choose earlier in this tutorial. If you choose 20, then add your icon at X = 0, Y = 200.
+- Repeat for any language you want to update
+
+Depending on the ID you defined earlier, you might have a more or less large empty space between your icon and the latest icon before yours: this is totally okay to have, don't worry!
+
+### Defining the status in the graphics component in the code
+
+Finally, we need to ensure the class defining these icons in the code knows how many part of the image there is.
+
+To do that, you'll need to create a new custom script and copy paste this code in it:
+```ruby
+module UI
+  # Sprite that show the status of a Pokemon
+  class StatusSprite < SpriteSheet
+    remove_const :STATE_COUNT
+    # Number of official states
+    STATE_COUNT = X # Change this X
+  end
+end
+```
+
+Here, you'll only need to modify the "= X" by the highest ID you allocated in your states.json + 1. If you chose 20, then you'll need to input 21.
+Of course, if you were to add more custom statuses later, make sure to modify this value accordingly!
+
+Congrats, you can now test everything ingame, and everything should work as expected! :D
+
 ## Afterwords
 
-Thank you for reading this tutorial! We've seen how to create a status and make it available in different part of the code, we created messages to display in battle, and we created a Status Effect for our custom status! 
+Thank you for reading this tutorial! We've seen how to create a status and make it available in different part of the code, we created messages to display in battle, and we created a Status Effect for our custom status! Finally, we updated the graphics to reflect our new status!
 
 If you followed this tutorial thoroughly and made every needed changes, then your custom status should work out of the box! If it does not, make sure to create a #support post on the Discord, and make sure to document what you did and post your code in the topic! The community will be happy to help! :D
 

@@ -1,3 +1,11 @@
+# !!! Before reading this file !!!
+
+To read this file the intended way, open this file using Visual Studio Code (VSCode) and type CTRL+K, then V. It will open the preview of this file.
+
+You can also read it on the official GitLab repository of PSDK.
+
+Enjoy your reading!
+
 # Yuki::Animation
 
 `Yuki::Animation` is the module defining all the animation kind of the modern PSDK animations. The modern PSDK animations differ from other kind of animation in the way that it's not necessarely frame based. By default it uses IRL time, but if you're not happy with time, you can define another time source. All timed animations has a duration that describe how much time they will perform from the time they begin.

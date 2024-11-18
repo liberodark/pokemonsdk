@@ -1,3 +1,11 @@
+# !!! Before reading this file !!!
+
+To read this file the intended way, open this file using Visual Studio Code (VSCode) and type CTRL+K, then V. It will open the preview of this file.
+
+You can also read it on the official GitLab repository of PSDK.
+
+Enjoy your reading!
+
 # Scenarize Battles
 
 In PSDK (since .25.5) it is possible to use "battle event". Those events are ruby script that allow you to make the battle a bit more lively by showing messages (like Mid battle dialogue) or some other things.

@@ -1,3 +1,11 @@
+# !!! Before reading this file !!!
+
+To read this file the intended way, open this file using Visual Studio Code (VSCode) and type CTRL+K, then V. It will open the preview of this file.
+
+You can also read it on the official GitLab repository of PSDK.
+
+Enjoy your reading!
+
 # PSDK Plugin Manager
 
 The PSDK Plugin Manager allow scripter & makers to distribute plugins that adds things to PSDK. The PSDK Plugin Manager also allow the plugins to perform checks in order to ensure the plugin is both compatible with the current version of PSDK & all the other plugins that were not in the dependency list.
