@@ -17,16 +17,16 @@ module Battle
         # @param with [PFM::PokemonBattler] Pokemon that is switched in
         def on_switch_event(handler, who, with)
           return if with != @target
-          return if handler.logic.trainer_battlers.all?(&:alive?)
+          return if handler.logic.retrieve_party_from_battler(with).all?(&:alive?)
 
-          handler.logic.trainer_battlers.each { |battler| @multiplier += battler.ko_count }
+          handler.logic.retrieve_party_from_battler(with).each { |battler| @multiplier += battler.ko_count }
           @multiplier = @multiplier.clamp(0, 5)
           @multiplier = (@multiplier / 10.0).truncate(1)
           log_data("Supreme Overlord - Power of moves increased by #{1 + @multiplier}")
 
           handler.scene.visual.show_ability(with)
           handler.scene.visual.wait_for_animation
-          # TODO: Add the corresponding text
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(66, 1666, with))
         end
 
         # Give the move base power mutiplier

@@ -30,6 +30,8 @@ module Battle
         bounce: [19, 544],
         dig: [19, 538],
         dive: [19, 535],
+        electro_shot: [66, 1754],
+        fly: [19, 529],
         freeze_shock: [59, 866],
         geomancy: [19, 1213],
         ice_burn: [19, 869],
@@ -39,10 +41,7 @@ module Battle
         shadow_force: [19, 541],
         sky_attack: [19, 550],
         skull_bash: [19, 556],
-        solar_beam: [19, 553],
-        fly: [19, 529]
-
-        # TODO: Add the corresponding text for Electro Shot
+        solar_beam: [19, 553]
       }
 
       # Move db_symbol to a list of stat and power

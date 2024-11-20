@@ -35,7 +35,7 @@ module Battle
 
           handler.scene.visual.show_ability(owner)
           handler.scene.visual.wait_for_animation
-          #TODO: Add the corresponding text
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(file_id, text_id, @target))
           @activated = true
         end
 
@@ -66,12 +66,30 @@ module Battle
         def effect_class
           return Effects::TabletsOfRuin
         end
+
+        # Get the file ID
+        # @return [Integer]
+        def file_id
+          return 66
+        end
+
+        # Get the text ID
+        # @return [Integer]
+        def text_id
+          return 1658
+        end
       end
 
       class BeadsOfRuin < TabletsOfRuin
         # Class of the Effect given by this ability
         def effect_class
           return Effects::BeadsOfRuin
+        end
+
+        # Get the text ID
+        # @return [Integer]
+        def text_id
+          return 1662
         end
       end
 
@@ -80,12 +98,24 @@ module Battle
         def effect_class
           return Effects::VesselOfRuin
         end
+
+        # Get the text ID
+        # @return [Integer]
+        def text_id
+          return 1650
+        end
       end
 
       class SwordOfRuin < VesselOfRuin
         # Class of the Effect given by this ability
         def effect_class
           return Effects::SwordOfRuin
+        end
+
+        # Get the text ID
+        # @return [Integer]
+        def text_id
+          return 1654
         end
       end
 

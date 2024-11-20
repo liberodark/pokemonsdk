@@ -7,9 +7,9 @@ module Battle
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
-        target = logic.foes_of(user).first
-        logic.switch_bank_effects(user.bank, target.bank)
-        # TODO: Add the corresponding text
+        target = @logic.foes_of(user).first
+        @logic.switch_bank_effects(user.bank, target.bank)
+        @scene.display_message_and_wait(parse_text_with_pokemon(59, 1970, user))
       end
     end
 

@@ -186,7 +186,9 @@ module Battle
       bank = who.bank
       party_id = who.party_id
       allies = allies_of(who)
-      number = all_battlers.count { |pokemon| pokemon != who && pokemon.alive? && pokemon.bank == bank && pokemon.party_id == party_id && !allies.include?(pokemon) }
+      number = all_battlers.count do |pokemon|
+        pokemon != who && pokemon.alive? && pokemon.bank == bank && pokemon.party_id == party_id && !allies.include?(pokemon)
+      end
       return number > 0
     end
 
@@ -194,6 +196,16 @@ module Battle
     # @return [Array<PFM::PokemonBattler>]
     def trainer_battlers
       return @battlers[0].compact.select(&:from_party?)
+    end
+
+    # List all the battlers of the trainer from a battler
+    # @return [Array<PFM::PokemonBattler>]
+    def retrieve_party_from_battler(battler)
+      pokemons = @battlers[battler.bank].select do |pokemon|
+        next battler.party_id == pokemon.party_id
+      end
+
+      return pokemons
     end
 
     # Check active abilities on the field
@@ -247,6 +259,7 @@ module Battle
         did_something = false
         parties.each_value do |sub_party|
           next unless (pokemon = sub_party[i])
+
           party << pokemon
           did_something = true
         end

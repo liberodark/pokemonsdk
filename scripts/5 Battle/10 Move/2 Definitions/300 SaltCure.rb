@@ -1,7 +1,7 @@
 module Battle
   class Move
     # class managing Salt Cure move
-    class SaltCure < Basic
+    class SaltCure < BasicWithSuccessfulEffect
       # Function that deals the effect to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
@@ -10,7 +10,7 @@ module Battle
           next if target.effects.has?(:salt_cure)
 
           target.effects.add(Effects::SaltCure.new(@logic, target))
-          @scene.display_message_and_wait(parse_text_with_pokemon(19, 607, target)) # TODO: Must be replaced by gen IX text
+          @scene.display_message_and_wait(parse_text_with_pokemon(66, 1594, target))
         end
       end
     end

@@ -1,4 +1,3 @@
-
 module Battle
   module Effects
     class Ability
@@ -24,7 +23,7 @@ module Battle
 
           @activated = true
           handler.scene.visual.show_ability(target)
-          # TODO: Add the corresponding text
+          handler.scene.display_message_and_wait(parse_text_with_pokemon(66, 1614, target, PFM::Text::MOVE[1] => skill.name))
         end
         alias on_post_damage_death on_post_damage
 

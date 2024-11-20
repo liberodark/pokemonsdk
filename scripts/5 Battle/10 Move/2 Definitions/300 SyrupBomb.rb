@@ -9,10 +9,11 @@ module Battle
           next if target.effects.has?(:syrup_bomb)
 
           target.effects.add(Effects::SyrupBomb.new(@logic, target, 3, user))
-          @logic.scene.display_message_and_wait(parse_text_with_pokemon(19, 1210, target)) # TODO: Replace text id with gen IX texts
+          @logic.scene.display_message_and_wait(parse_text_with_pokemon(66, 1746, target))
         end
       end
     end
+
     Move.register(:s_syrup_bomb, SyrupBomb)
   end
 end

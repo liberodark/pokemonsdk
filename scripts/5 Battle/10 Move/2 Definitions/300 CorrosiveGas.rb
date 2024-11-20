@@ -10,7 +10,7 @@ module Battle
       # @return [Boolean] if the procedure can continue
       def move_usable_by_user(user, targets)
         return false unless super
-        return false if targets.none? { |target| logic.item_change_handler.can_lose_item?(target, user) }
+        return show_usage_failure(user) && false if targets.none? { |target| @logic.item_change_handler.can_lose_item?(target, user) }
 
         return true
       end
@@ -20,10 +20,10 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
-          next unless logic.item_change_handler.can_lose_item?(target, user)
+          next unless @logic.item_change_handler.can_lose_item?(target, user)
 
-          logic.item_change_handler.change_item(:none, false, target, user, self)
-          # TODO: Add the corresponding text
+          @scene.display_message_and_wait(parse_text_with_2pokemon(59, 2022, user, target, PFM::Text::ITEM2[2] => target.item_name))
+          @logic.item_change_handler.change_item(:none, false, target, user, self)
         end
       end
     end
