@@ -22,14 +22,14 @@ end
 PFM::ItemDescriptor.define_bag_use(Studio::BallItem, true) do |item, scene|
   battle_scene = scene.find_parent(Battle::Scene)
   if battle_scene.logic.alive_battlers(1).size > 1
-    #TODO: Write text which says NO YOU CAN'T
+    # It’s no good! It’s impossible to aim unless there is only one Pokémon!
+    scene.display_message_and_wait(parse_text(20, 50))
     next :unused
   elsif battle_scene.player_actions.size > 1
-    #TODO: Write text which says NO YOU CAN'T
+    scene.display_message_and_wait(parse_text(20, 50))
     next :unused
   else
     GamePlay.bag_mixin.from(scene).battle_item_wrapper = PFM::ItemDescriptor.actions(item.id)
-    #$scene = scene.__last_scene # This prevent the message from displaying now
     scene.return_to_scene(Battle::Scene)
   end
 end
@@ -41,14 +41,13 @@ end
 PFM::ItemDescriptor.define_bag_use(:rocket_ball, true) do |item, scene|
   battle_scene = scene.find_parent(Battle::Scene)
   if battle_scene.logic.alive_battlers(1).size > 1
-    #TODO: Write text which says NO YOU CAN'T
+    scene.display_message_and_wait(parse_text(20, 50))
     next :unused
   elsif battle_scene.player_actions.size > 1
-    #TODO: Write text which says NO YOU CAN'T
+    scene.display_message_and_wait(parse_text(20, 50))
     next :unused
   else
     GamePlay.bag_mixin.from(scene).battle_item_wrapper = PFM::ItemDescriptor.actions(item.id)
-    #$scene = scene.__last_scene # This prevent the message from displaying now
     scene.return_to_scene(Battle::Scene)
   end
 end
