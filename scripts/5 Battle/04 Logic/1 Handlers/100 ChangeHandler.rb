@@ -11,6 +11,7 @@ module Battle
       # Get the list of the pre-checked effects
       # @return [Array<Battle::Effects::EffectBase]
       attr_accessor :pre_checked_effects
+
       # Create a new ChangeHandler
       # @param logic [Battle::Logic]
       # @param scene [Battle::Scene]

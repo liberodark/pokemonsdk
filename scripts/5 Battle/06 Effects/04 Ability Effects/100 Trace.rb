@@ -1,6 +1,7 @@
 module Battle
   module Effects
     class Ability
+      # Class managing Trace ability
       class Trace < Ability
         # Function called when a Pokemon has actually switched with another one
         # @param handler [Battle::Logic::SwitchHandler]
@@ -9,19 +10,24 @@ module Battle
         def on_switch_event(handler, who, with)
           return if with != @target
 
-          foes = handler.logic.foes_of(with).select do |foe|
-            next foe.alive? && foe.ability_db_symbol != :__undef__ &&
-              handler.logic.ability_change_handler.can_change_ability?(with, foe.ability_db_symbol) # Checking if with can change to foe ability
-          end
-          return if foes.none?
+          potential_givers = handler.logic.foes_of(with).select { |giver| handler.logic.ability_change_handler.can_change_ability?(with, giver) }
+          return if potential_givers.empty?
 
-          target = foes.sample(random: handler.logic.generic_rng)
-          handler.scene.visual.show_ability(with)
-          handler.logic.ability_change_handler.change_ability(with, target.ability_db_symbol)
-          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 381, target, PFM::Text::ABILITY[1] => with.ability_name))
-          with.ability_effect.on_switch_event(handler, who, with) if with.ability_effect.class != Trace
+          giver = potential_givers.sample(random: handler.logic.generic_rng)
+          handler.logic.ability_change_handler.apply_ability_change(with, giver.battle_ability_db_symbol, giver) do
+            post_ability_change_message(with, giver)
+          end
+        end
+
+        # Get the post ability change message
+        # @param receiver [PFM::PokemonBattler] Ability receiver
+        # @param giver [PFM::PokemonBattler] Potential ability giver
+        # @return [String]
+        def post_ability_change_message(receiver, giver)
+          return parse_text_with_pokemon(19, 381, giver, PFM::Text::ABILITY[1] => giver.ability_name)
         end
       end
+
       register(:trace, Trace)
     end
   end

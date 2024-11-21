@@ -257,11 +257,13 @@ module Battle
       next unless target.ability_effect.is_a?(Effects::Ability::Mummy)
 
       target.ability_effect.on_post_damage(handler, hp, target, launcher, skill)
+      handler.pre_checked_effects << target.ability_effect
     end
     DamageHandler.register_post_damage_death_hook('PSDK post damage death: Mummy') do |handler, hp, target, launcher, skill|
       next unless target.ability_effect.is_a?(Effects::Ability::Mummy)
 
       target.ability_effect.on_post_damage_death(handler, hp, target, launcher, skill)
+      handler.pre_checked_effects << target.ability_effect
     end
 
     # Effects
@@ -274,12 +276,16 @@ module Battle
     end
     DamageHandler.register_post_damage_hook('PSDK post damage: Effects') do |handler, hp, target, launcher, skill|
       handler.logic.each_effects(launcher, target) do |e|
-        e.on_post_damage(handler, hp, target, launcher, skill)
+        next if handler.pre_checked_effects.include?(e)
+
+        next e.on_post_damage(handler, hp, target, launcher, skill)
       end
     end
     DamageHandler.register_post_damage_death_hook('PSDK post damage death: Effects') do |handler, hp, target, launcher, skill|
       handler.logic.each_effects(launcher, target) do |e|
-        e.on_post_damage_death(handler, hp, target, launcher, skill)
+        next if handler.pre_checked_effects.include?(e)
+
+        next e.on_post_damage_death(handler, hp, target, launcher, skill)
       end
     end
     DamageHandler.register_pre_drain_hook('PSDK pre drain: Effects') do |handler, hp, target, launcher, skill|
