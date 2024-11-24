@@ -8,6 +8,7 @@ module Graphics
       return if PSDK_CONFIG.release?
       return if PARGV.game_launched_by_studio?
 
+      @is_macOS = PSDK_PLATFORM == :macos && !Kernel.method_defined?(:load_extensions)
       @cmd_thread = create_command_thread
     rescue StandardError
       puts 'Failed to initialize IO related things'
@@ -16,7 +17,7 @@ module Graphics
 
     # Create the Command thread
     def create_command_thread
-      require 'readline' if PSDK_PLATFORM == :macos
+      require 'readline' if @is_macOS
 
       Thread.new do
         loop do
@@ -32,7 +33,7 @@ module Graphics
     end
 
     def read_command_from_terminal
-      if PSDK_PLATFORM != :macos
+      unless @is_macOS
         print 'Command: '
         return STDIN.gets.chomp
       end

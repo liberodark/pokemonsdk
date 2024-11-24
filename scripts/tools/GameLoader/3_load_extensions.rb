@@ -1,4 +1,5 @@
 def load_extension_multi_platform(extension)
+  return if Kernel.method_defined?(:load_extensions)
   filename = PSDK_LIB_PATH.empty? ? extension : File.join(PSDK_LIB_PATH, extension)
   require filename
 end
@@ -8,14 +9,16 @@ begin
   $DEBUG = false
   STDERR.reopen(IO::NULL) if File.exist?('Data/Scripts.dat') # This should remove SFML messages (most of the time they're success)
   ENV['__GL_THREADED_OPTIMIZATIONS'] = '0'
-  require 'zlib'
-  require 'socket'
-  require 'uri'
-  require 'openssl'
-  require 'net/http'
-  require 'csv'
-  require 'json'
-  require 'yaml'
+  unless Kernel.method_defined?(:load_extensions)
+    require 'zlib'
+    require 'socket'
+    require 'uri'
+    require 'openssl'
+    require 'net/http'
+    require 'csv'
+    require 'json'
+    require 'yaml'
+  end
   module YAML
     unless respond_to?(:unsafe_load)
       module_function
