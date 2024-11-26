@@ -436,6 +436,12 @@ module Battle
       return false
     end
 
+    # Tell that the move is a drain move
+    # @return [Boolean]
+    def drain?
+      return false
+    end
+
     # Get the effectiveness
     attr_reader :effectiveness
 
