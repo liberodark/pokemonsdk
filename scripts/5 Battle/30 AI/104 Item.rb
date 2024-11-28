@@ -49,7 +49,7 @@ module Battle
         interest_factor = boost_item_interest_factor_for(pokemon)
         BOOSTING_ITEMS.select { |item| pokemon.bag.contain_item?(item) }.map do |item|
           wrapper = PFM::ItemDescriptor.actions(item)
-          if wrapper.on_creature_choice(pokemon, @scene) # WARNING: Check if there's message shown
+          if wrapper.on_creature_choice(pokemon, @scene) # TODO: Check if there's message shown
             wrapper.bind(@scene, pokemon)
             next [interest_factor, Actions::Item.new(@scene, wrapper, pokemon.bag, pokemon)]
           else
