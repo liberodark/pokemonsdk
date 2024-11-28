@@ -3,8 +3,8 @@ module Battle
     class Ability
       class Opportunist < Ability
         COPIED_EFFECTS = {
-          focus_energy: {effect_class: Effects::FocusEnergy, text_id: 1047},
-          dragon_cheer: {effect_class: Effects::DragonCheer, text_id: 1047} # TODO Change to proper text
+          focus_energy: { effect_class: Effects::FocusEnergy, text_id: 1047 },
+          dragon_cheer: { effect_class: Effects::DragonCheer, text_id: 1047 }
         }
 
         # Create a new Opportunist effect
@@ -62,6 +62,7 @@ module Battle
           @activated = false
         end
       end
+
       register(:opportunist, Opportunist)
     end
   end

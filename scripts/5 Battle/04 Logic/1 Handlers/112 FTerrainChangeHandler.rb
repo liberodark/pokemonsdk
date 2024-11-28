@@ -34,7 +34,8 @@ module Battle
       # Function that actually change the terrain
       # @param fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
       # @param nb_turn [Integer] INFINITY if last_fterrain == :none, turn_count else
-      def fterrain_change(fterrain_type, turn_count = 5)
+      # @param no_message [Boolean] if the message about terrain change should be shown
+      def fterrain_change(fterrain_type, turn_count = 5, no_message: false)
         log_data("# fterrain_change : (#{fterrain_type})")
         last_fterrain = @logic.field_terrain || :none
 
@@ -42,7 +43,7 @@ module Battle
         @logic.field_terrain_effect
         @logic.field_terrain_effect.internal_counter = turn_count unless fterrain_type == :none
 
-        show_fterrain_message(last_fterrain, fterrain_type)
+        show_fterrain_message(last_fterrain, fterrain_type) unless no_message
         exec_hooks(FTerrainChangeHandler, :post_fterrain_change, binding)
       rescue Hooks::ForceReturn => e
         log_data("# FR: fterrain_change #{e.data} from #{e.hook_name} (#{e.reason})")
@@ -52,10 +53,11 @@ module Battle
       # Function that test if the change is possible and perform the change if so
       # @param fterrain_type [Symbol] :none, :electric_terrain, :grassy_terrain, :misty_terrain, :psychic_terrain
       # @param nb_turn [Integer] INFINITY if last_fterrain == :none, turn_count else
-      def fterrain_change_with_process(fterrain_type, turn_count = 5)
+      # @param no_message [Boolean] if the message about terrain change should be shown
+      def fterrain_change_with_process(fterrain_type, turn_count = 5, no_message: false)
         return process_prevention_reason unless fterrain_appliable?(fterrain_type)
 
-        fterrain_change(fterrain_type, turn_count)
+        fterrain_change(fterrain_type, turn_count, no_message: no_message)
       end
 
       private
