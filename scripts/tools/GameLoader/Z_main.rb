@@ -28,4 +28,5 @@ rescue Exception
   end
 ensure
   Audio.__release__
+  Fonts.clear_all if Fonts.respond_to?(:clear_all)
 end
