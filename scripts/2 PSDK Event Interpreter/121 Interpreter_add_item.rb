@@ -13,7 +13,7 @@ class Interpreter
     db_symbol = item_id.is_a?(Symbol) ? item_id : data_item(item_id).db_symbol
 
     if (max = Configs.settings.max_bag_item_count) > 0 && ($bag.item_quantity(db_symbol) + count) > max
-      add_item_no_space(db_symbol, no_space_text_id, color)
+      add_item_no_space(db_symbol, no_space_text_id, color, count)
     else
       item_text, socket = add_item_show_message_got(db_symbol, text_id, color, count: count)
       # Pokemon Sword/Shield does not show this type of message
@@ -57,8 +57,9 @@ class Interpreter
   # @param item_id [Integer]
   # @param no_space_text_id [Integer] ID of the text when the player has not enough space in the bag
   # @param color [Integer] color to put on the item name
-  def add_item_no_space(item_id, no_space_text_id, color)
-    item_text = "\\c[#{color}]#{data_item(item_id).exact_name}\\c[10]"
+  def add_item_no_space(item_id, no_space_text_id, color, count = 1)
+    item = data_item(item_id)
+    item_text = "\\c[#{color}]#{count == 1 ? item.name : item.plural_name}\\c[10]"
 
     MESSAGES[:bag_full_text] = proc { text_get(41, no_space_text_id) }
     show_message(
