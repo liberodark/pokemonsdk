@@ -8,6 +8,18 @@ module Battle
         oblivion_wing: 4 / 3.0
       }
 
+      # Returns the drain factor
+      # @return [Integer]
+      def drain_factor
+        DRAIN_FACTORS[db_symbol] || super
+      end
+
+      # Tell that the move is a drain move
+      # @return [Boolean]
+      def drain?
+        return true
+      end
+
       private
 
       # Test if the target is immune
@@ -57,18 +69,6 @@ module Battle
           return false
         end
         return true if super
-      end
-
-      # Tell that the move is a drain move
-      # @return [Boolean]
-      def drain?
-        return true
-      end
-
-      # Returns the drain factor
-      # @return [Integer]
-      def drain_factor
-        DRAIN_FACTORS[db_symbol] || super
       end
     end
 

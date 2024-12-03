@@ -2,8 +2,14 @@ module Battle
   class Move
     # Class describing a move that drains HP
     class StrengthSap < Move
+      # Tell that the move is a drain move
+      # @return [Boolean]
+      def drain?
+        return true
+      end
+
       private
-      
+
       # Function that deals the damage to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
@@ -20,7 +26,7 @@ module Battle
         end
         return true
       end
-      
+
       # Function that tests if the user is able to use the move
       # @param user [PFM::PokemonBattler] user of the move
       # @param targets [Array<PFM::PokemonBattler>] expected targets
@@ -30,18 +36,12 @@ module Battle
         return show_usage_failure(user) && false if targets.all? do |target|
           (target.atk_stage == -6 && !target.effects.has?(:contrary)) || (target.atk_stage == 6 && target.effects.has?(:contrary))
         end
-
         return show_usage_failure(user) && false unless super
-        return true
-      end
-      
-      # Tell that the move is a drain move
-      # @return [Boolean]
-      def drain?
+
         return true
       end
     end
-    
+
     Move.register(:s_strength_sap, StrengthSap)
   end
 end
