@@ -69,8 +69,6 @@ module Battle
       # @note this method yields a block in order to show the message after the animation
       # @note this shows the default message if no block has been given
       def heal(target, hp, test_heal_block: true, animation_id: nil)
-        return false if target.dead?
-
         if test_heal_block && target.effects.has?(:heal_block)
           @scene.display_message_and_wait(parse_text_with_pokemon(19, 890, target))
           return false
@@ -115,7 +113,7 @@ module Battle
         exec_hooks(DamageHandler, :drain_prevention, binding)
         log_data("# drain drain_appliable? #{hp_healed > 0} after drain_prevention hook")
 
-        @scene.display_message_and_wait(parse_text_with_pokemon(19, 905, target)) if hp_healed > 0 && heal(launcher, hp_healed)
+        @scene.display_message_and_wait(parse_text_with_pokemon(19, 905, target)) if hp_healed > 0 && launcher.alive? && heal(launcher, hp_healed)
 
         exec_hooks(DamageHandler, :post_damage, binding) if target.hp > 0
         if target.hp <= 0
