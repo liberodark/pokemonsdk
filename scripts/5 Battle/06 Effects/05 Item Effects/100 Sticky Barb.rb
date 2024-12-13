@@ -9,7 +9,7 @@ module Battle
         # @param launcher [PFM::PokemonBattler, nil] Potential launcher of a move
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
-          return unless launcher && skill&.direct? && launcher != target && !launcher.has_ability?(:long_reach)
+          return unless launcher && skill&.made_contact? && launcher != target
           return if target != @target
 
           if launcher.item_db_symbol == :__undef__
@@ -32,7 +32,6 @@ module Battle
           logic.damage_handler.damage_change((@target.max_hp / 8).clamp(1, Float::INFINITY), @target)
         end
       end
-
       register(:sticky_barb, StickyBarb)
     end
   end

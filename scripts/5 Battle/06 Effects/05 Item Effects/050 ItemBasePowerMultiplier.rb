@@ -59,6 +59,7 @@ module Battle
         register(:metal_coat) { |_, _, move| move.type_steel? }
         register(:muscle_band, 1.1) { |_, _, move| move.physical? }
         register(:wise_glasses, 1.1) { |_, _, move| move.special? }
+        register(:punching_glove, 1.1) { |_, _, move| move.punching? }
         # Plates
         register(:flame_plate) { |_, _, move| move.type_fire? }
         register(:splash_plate) { |_, _, move| move.type_water? }

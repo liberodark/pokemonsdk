@@ -66,7 +66,7 @@ module PFM
     # @param main_creature [PFM::Pokemon] pokemon that caused the rate verification
     # @return [Float] new rate or 1
     def rate_compound_eyes(creature, main_creature)
-      return creature.item_db_symbol != :__undef__ ? 1.5 : 1
+      return creature.item_db_symbol == :__undef__ ? 1 : 1.5
     end
 
     # Get rate for Statik case

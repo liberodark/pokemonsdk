@@ -17,7 +17,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target
-          return unless skill&.direct? && !launcher&.has_ability?(:long_reach)
+          return unless skill&.made_contact?
           return if launcher.dead? || launcher.has_ability?(:overcoat)
           return if (n = handler.logic.generic_rng.rand(10)) > 2 # ~30%
 
@@ -28,7 +28,6 @@ module Battle
           handler.logic.status_change_handler.status_change_with_process(status, launcher, target)
         end
       end
-
       register(:effect_spore, EffectSpore)
     end
   end

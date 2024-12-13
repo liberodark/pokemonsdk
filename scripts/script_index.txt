@@ -894,6 +894,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/101 Commander Effects.
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/101 Cud Chew Effect.rb
 pokemonsdk/scripts/5 Battle/06 Effects/04 Ability Effects/101 TabletsOfRuin.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/001 ItemBase.rb
+pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/00100 Throat Spray.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/002 Berry.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/050 Drives.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/050 Gems.rb

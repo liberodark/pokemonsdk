@@ -18,7 +18,7 @@ module Battle
       # @param skill [Battle::Move, nil] Potential move used
       def on_post_damage(handler, hp, target, launcher, skill)
         return if target != @pokemon || launcher == @pokemon
-        return unless skill&.direct? && !launcher&.has_ability?(:long_reach)
+        return unless skill&.made_contact?
         return unless launcher.alive? && launcher.can_be_burn?
         return if @pokemon.move_history.any? { |history| history.turn == $game_temp.battle_turn }
 

@@ -10,13 +10,14 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         def on_post_damage(handler, hp, target, launcher, skill)
           return if target != @target || launcher == target || !%i[none __undef__].include?(target.item_db_symbol)
-          return unless skill&.direct? && launcher && launcher.hp > 0 && !launcher.has_ability?(:long_reach)
+          return unless skill&.made_contact? && launcher && launcher.hp > 0
           return unless handler.logic.item_change_handler.can_lose_item?(launcher, target)
           return if launcher.has_ability?(:sheer_force) && launcher.ability_effect&.activated?
 
           handler.scene.visual.show_ability(target)
 
-          text = parse_text_with_pokemon(*steal_text, launcher, PFM::Text::PKNICK[0] => launcher.given_name, PFM::Text::ITEM2[1] => launcher.item_name)
+          text = parse_text_with_pokemon(*steal_text, launcher, PFM::Text::PKNICK[0] => launcher.given_name,
+                                                                PFM::Text::ITEM2[1] => launcher.item_name)
           handler.scene.display_message_and_wait(text)
 
           target.effects.get(:item_stolen).kill if target.effects.has?(:item_stolen)
@@ -54,12 +55,14 @@ module Battle
           return unless launcher && launcher.hp > 0
           return unless handler.logic.item_change_handler.can_lose_item?(target, launcher)
           return if skill&.recoil? && (hp / skill.recoil_factor >= launcher.hp)
-          return if skill&.direct? && (target.battle_item_db_symbol == :sticky_barb || (target.battle_item_db_symbol == :rocky_helmet && (launcher.max_hp / 6 >= launcher.hp)))
+          if skill&.direct? && (target.battle_item_db_symbol == :sticky_barb || (target.battle_item_db_symbol == :rocky_helmet && (launcher.max_hp / 6 >= launcher.hp)))
+            return
+          end
 
           handler.scene.visual.show_ability(launcher)
           text = parse_text_with_pokemon(*steal_text, launcher, '[VAR 1400(0002)]' => nil.to_s,
-                                                                             '[VAR ITEM2(0002)]' => target.item_name,
-                                                                             '[VAR PKNICK(0001)]' => target.given_name)
+                                                                '[VAR ITEM2(0002)]' => target.item_name,
+                                                                '[VAR PKNICK(0001)]' => target.given_name)
           handler.scene.display_message_and_wait(text)
 
           launcher.effects.get(:item_stolen).kill if launcher.effects.has?(:item_stolen)

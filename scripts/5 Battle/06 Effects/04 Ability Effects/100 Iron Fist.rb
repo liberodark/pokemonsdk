@@ -2,7 +2,7 @@ module Battle
   module Effects
     class Ability
       class IronFist < Ability
-        # Get the base power multiplier of this move
+        # Get the base power multiplier of this ability
         # @param user [PFM::PokemonBattler]
         # @param target [PFM::PokemonBattler]
         # @param move [Battle::Move]

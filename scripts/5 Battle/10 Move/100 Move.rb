@@ -442,6 +442,16 @@ module Battle
       return false
     end
 
+    # Tells if the move made contact with target
+    # @return [Boolean]
+    def made_contact?
+      return false unless direct?
+      return false if user&.has_ability?(:long_reach)
+      return false if user&.hold_item?(:punching_glove) && punching?
+
+      return true
+    end
+
     # Get the effectiveness
     attr_reader :effectiveness
 

@@ -19,7 +19,6 @@ module Battle
         end
         alias on_post_damage_death on_post_damage
       end
-
       register(:wandering_spirit, WanderingSpirit)
     end
   end

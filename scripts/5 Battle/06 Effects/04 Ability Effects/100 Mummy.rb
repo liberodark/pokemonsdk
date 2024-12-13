@@ -42,7 +42,6 @@ module Battle
           return parse_text_with_pokemon(66, 1610, receiver)
         end
       end
-
       register(:mummy, Mummy)
       register(:lingering_aroma, LingeringAroma)
     end

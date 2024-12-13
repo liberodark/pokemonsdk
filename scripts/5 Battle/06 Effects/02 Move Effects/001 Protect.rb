@@ -43,6 +43,13 @@ module Battle
         return :protect
       end
 
+      # Handle the mirror armor effect (special case)
+      # @param user [PFM::PokemonBattler, nil] Potential launcher of a move
+      # @return [PFM::PokemonBattler, nil]
+      def handle_mirror_armor_effect(user, target)
+        return user.has_ability?(:mirror_armor) ? target : nil
+      end
+
       private
 
       # Function responsive of playing the protect effect if protect got triggered (inc. message)
@@ -87,7 +94,7 @@ module Battle
         def play_protect_effect(user, target, move)
           hp = (user.hp / 8).clamp(1, Float::INFINITY)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          move.logic.damage_handler.damage_change(hp, user) if move.direct? && !user.has_ability?(:long_reach)
+          move.logic.damage_handler.damage_change(hp, user) if move.made_contact?
         end
       end
       Protect.register(:spiky_shield, SpikyShield)
@@ -113,7 +120,10 @@ module Battle
         # @param move [Battle::Move]
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          move.scene.logic.stat_change_handler.stat_change_with_process(:atk, -1, user, user.has_ability?(:mirror_armor) ? target : nil) if move.direct? && !user.has_ability?(:long_reach)
+
+          if move.made_contact?
+            return move.scene.logic.stat_change_handler.stat_change_with_process(:atk, -1, user, handle_mirror_armor_effect(user, target))
+          end
         end
       end
       Protect.register(:king_s_shield, KingsShield)
@@ -139,7 +149,9 @@ module Battle
         # @param move [Battle::Move]
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          move.scene.logic.stat_change_handler.stat_change_with_process(:spd, -1, user, user.has_ability?(:mirror_armor) ? target : nil) if move.direct? && !user.has_ability?(:long_reach)
+          if move.made_contact?
+            move.scene.logic.stat_change_handler.stat_change_with_process(:spd, -1, user, handle_mirror_armor_effect(user, target))
+          end
         end
       end
       Protect.register(:silk_trap, SilkTrap)
@@ -154,6 +166,7 @@ module Battle
         def on_move_ability_immunity(user, target, move)
           return false if goes_through_protect?(user, target, move)
           return false unless move&.direct? && !user.has_ability?(:long_reach)
+          return false if user.hold_item?(:punching_glove) && move&.punching?
           return false unless immune?(user, target, move)
 
           play_protect_effect(user, target, move)
@@ -189,16 +202,9 @@ module Battle
         # @param move [Battle::Move]
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
-          return unless move.direct? && !user.has_ability?(:long_reach)
-          move.scene.logic.stat_change_handler.stat_change_with_process(:dfe, -2, user, handle_mirror_armor_effect(user, target))
-        end
+          return unless move.made_contact?
 
-        # Handle the mirror armor effect (special case)
-        # @param target [PFM::PokemonBattler]
-        # @param user [PFM::PokemonBattler, nil] Potential launcher of a move
-        # @return [PFM::PokemonBattler, nil]
-        def handle_mirror_armor_effect(user, target)
-          return user.has_ability?(:mirror_armor) ? target : nil
+          move.scene.logic.stat_change_handler.stat_change_with_process(:dfe, -2, user, handle_mirror_armor_effect(user, target))
         end
       end
       Protect.register(:obstruct, Obstruct)
@@ -214,7 +220,7 @@ module Battle
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
           handler = @logic.status_change_handler
-          handler.status_change(:poison, user, message_overwrite: 234) if move.direct? && !user.has_ability?(:long_reach) && handler.status_appliable?(:poison, user)
+          handler.status_change(:poison, user, message_overwrite: 234) if move.made_contact? && handler.status_appliable?(:poison, user)
         end
       end
       Protect.register(:baneful_bunker, BanefulBunker)
@@ -241,7 +247,7 @@ module Battle
         def play_protect_effect(user, target, move)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 523, target))
           handler = @logic.status_change_handler
-          handler.status_change(:burn, user, message_overwrite: 255) if move.direct? && !user.has_ability?(:long_reach) && handler.status_appliable?(:burn, user)
+          handler.status_change(:burn, user, message_overwrite: 255) if move.made_contact? && handler.status_appliable?(:burn, user)
         end
       end
       Protect.register(:burning_bulwark, BurningBulwark)
