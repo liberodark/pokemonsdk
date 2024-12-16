@@ -37,7 +37,22 @@ module Battle
         modifier = modifier > 1 ? modifier : 1 if critical_hit?
         return modifier
       end
+
+      # Statistic effect modifier calculation: ATK/ATS
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] target of the move
+      # @param ph_move [Boolean] true: physical, false: special
+      # @return [Integer]
+      def calc_atk_stat_effect_modifier(user, target, ph_move)
+        modifier = 1
+        @logic.each_effects(user) do |e|
+          modifier *= (ph_move ? e.ats_modifier : e.atk_modifier)
+        end
+
+        return modifier
+      end
     end
+
     Move.register(:s_custom_stats_based, CustomStatsBased)
     Move.register(:s_psyshock, CustomStatsBased)
   end

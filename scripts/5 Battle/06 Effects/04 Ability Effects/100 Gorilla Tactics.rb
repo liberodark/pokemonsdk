@@ -2,17 +2,6 @@ module Battle
   module Effects
     class Ability
       class GorillaTactics < Ability
-        # Give the move [Spe]atk mutiplier
-        # @param user [PFM::PokemonBattler] user of the move
-        # @param target [PFM::PokemonBattler] target of the move
-        # @param move [Battle::Move] move
-        # @return [Float, Integer] multiplier
-        def sp_atk_multiplier(user, target, move)
-          return 1 if user != @target
-
-          return move.physical? ? 1.5 : 1
-        end
-
         # Function called when we try to use a move as the user (returns :prevent if user fails)
         # @param user [PFM::PokemonBattler]
         # @param targets [Array<PFM::PokemonBattler>]
@@ -36,6 +25,12 @@ module Battle
             move.scene.visual.show_ability(user)
             move.scene.display_message_and_wait(parse_text_with_pokemon(19, 911, user, PFM::Text::MOVE[1] => move.name))
           }
+        end
+
+        # Give the atk modifier over given to the Pokemon with this effect
+        # @return [Float, Integer] multiplier
+        def atk_modifier
+          return 1.5
         end
 
         private

@@ -2,15 +2,10 @@ module Battle
   module Effects
     class Ability
       class Hustle < Ability
-        # Give the move [Spe]atk mutiplier
-        # @param user [PFM::PokemonBattler] user of the move
-        # @param target [PFM::PokemonBattler] target of the move
-        # @param move [Battle::Move] move
+        # Give the atk modifier over given to the Pokemon with this effect
         # @return [Float, Integer] multiplier
-        def sp_atk_multiplier(user, target, move)
-          return 1 if user != @target
-
-          return move.physical? ? 1.5 : 1
+        def atk_modifier
+          return 1.5
         end
 
         # Return the chance of hit multiplier
@@ -24,6 +19,7 @@ module Battle
           return move.physical? ? 0.8 : 1
         end
       end
+
       register(:hustle, Hustle)
     end
   end

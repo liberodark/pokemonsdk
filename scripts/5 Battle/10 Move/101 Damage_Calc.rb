@@ -34,7 +34,7 @@ module Battle
       damage = (damage * calc_type_n_multiplier(target, :type2, types)).floor            ; log_data("damage = #{damage} # after type2")
       damage = (damage * calc_type_n_multiplier(target, :type3, types)).floor            ; log_data("damage = #{damage} # after type3")
       damage = (damage * calc_mod3(user, target)).floor                                  ; log_data("damage = #{damage} # after mod3")
-      target_hp = target.effects.get(:substitute).hp if (target.effects.has?(:substitute) && !user.has_ability?(:infiltrator) && !self.authentic?)
+      target_hp = target.effects.get(:substitute).hp if target.effects.has?(:substitute) && !user.has_ability?(:infiltrator) && !authentic?
       target_hp ||= target.hp
       damage = damage.clamp(1, target_hp)                                                ; log_data("damage = #{damage} # after clamp")
 
@@ -75,12 +75,19 @@ module Battle
       ph_move = physical?
       # Stat
       result = calc_sp_atk_basis(user, target, ph_move)
+      log_error("result = #{result} after calc_sp_atk_basis")
       # SM (Only if non-critical hit)
       result = (result * calc_atk_stat_modifier(user, target, ph_move)).floor
+      log_error("result = #{result} after calc_atk_stat_modifier")
       # Effects
+      result = (result * calc_atk_stat_effect_modifier(user, target, ph_move)).floor
+      log_error("result = #{result} after calc_atk_stat_effect_modifier")
+
       logic.each_effects(user, target) do |e|
         result = (result * e.sp_atk_multiplier(user, target, self)).floor
       end
+      log_error("result = #{result} after sp_atk_multiplier")
+
       return result
     end
 
@@ -104,6 +111,20 @@ module Battle
       return modifier
     end
 
+    # Statistic effect modifier calculation: ATK/ATS
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
+    # @param ph_move [Boolean] true: physical, false: special
+    # @return [Integer]
+    def calc_atk_stat_effect_modifier(user, target, ph_move)
+      modifier = 1
+      logic.each_effects(user) do |e|
+        modifier *= (ph_move ? e.atk_modifier : e.ats_modifier)
+      end
+
+      return modifier
+    end
+
     EXPLOSION_SELF_DESTRUCT_MOVE = %i[explosion self_destruct]
     # [Spe]def calculation
     # @param user [PFM::PokemonBattler] user of the move
@@ -114,12 +135,20 @@ module Battle
       ph_move = physical?
       # Stat
       result = calc_sp_def_basis(user, target, ph_move)
+      log_error("result = #{result} after calc_sp_def_basis")
+
       # SM (Only if non-critical hit)
       result = (result * calc_def_stat_modifier(user, target, ph_move)).floor
+      log_error("result = #{result} after calc_def_stat_modifier")
+
       # Effects
+      result = (result * calc_def_stat_effect_modifier(user, target, ph_move)).floor
+      log_error("result = #{result} after calc_def_stat_effect_modifier")
+
       logic.each_effects(user, target) do |e|
         result = (result * e.sp_def_multiplier(user, target, self)).floor
       end
+      log_error("result = #{result} after sp_def_multiplier")
       return result
     end
 
@@ -140,6 +169,20 @@ module Battle
     def calc_def_stat_modifier(user, target, ph_move)
       modifier = ph_move ? target.dfe_modifier : target.dfs_modifier
       modifier = modifier > 1 ? 1 : modifier if critical_hit?
+
+      return modifier
+    end
+
+    # Statistic effect modifier calculation: DFE/DFS
+    # @param user [PFM::PokemonBattler] user of the move
+    # @param target [PFM::PokemonBattler] target of the move
+    # @param ph_move [Boolean] true: physical, false: special
+    # @return [Integer]
+    def calc_def_stat_effect_modifier(user, target, ph_move)
+      modifier = 1
+      logic.each_effects(target) do |e|
+        modifier *= (ph_move ? e.dfe_modifier : e.dfs_modifier)
+      end
 
       return modifier
     end

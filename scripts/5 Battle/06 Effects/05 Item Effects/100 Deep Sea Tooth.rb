@@ -1,17 +1,17 @@
 module Battle
   module Effects
-    class Ability
-      class Guts < Ability
+    class Item
+      class DeepSeaTooth < Item
         # Give the atk modifier over given to the Pokemon with this effect
         # @return [Float, Integer] multiplier
-        def atk_modifier
-          return 1 unless @target.status?
+        def ats_modifier
+          return 2 if @target.db_symbol == :clamperl
 
-          return 1.5
+          return super
         end
       end
 
-      register(:guts, Guts)
+      register(:deep_sea_tooth, DeepSeaTooth)
     end
   end
 end

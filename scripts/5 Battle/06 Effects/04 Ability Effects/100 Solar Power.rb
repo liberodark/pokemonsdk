@@ -2,15 +2,12 @@ module Battle
   module Effects
     class Ability
       class SolarPower < Ability
-        # Give the move [Spe]atk mutiplier
-        # @param user [PFM::PokemonBattler] user of the move
-        # @param target [PFM::PokemonBattler] target of the move
-        # @param move [Battle::Move] move
+        # Give the ats modifier over given to the Pokemon with this effect
         # @return [Float, Integer] multiplier
-        def sp_atk_multiplier(user, target, move)
-          return 1 if user != @target
+        def ats_modifier
+          return 1.5 if $env.sunny? || $env.hardsun?
 
-          return move.special? && $env.sunny? ? 1.5 : 1
+          return super
         end
 
         # Function called at the end of a turn
@@ -25,6 +22,7 @@ module Battle
           logic.damage_handler.damage_change((@target.max_hp / 8).clamp(1, Float::INFINITY), @target)
         end
       end
+
       register(:solar_power, SolarPower)
     end
   end

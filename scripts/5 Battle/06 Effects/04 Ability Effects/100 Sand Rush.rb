@@ -8,6 +8,7 @@ module Battle
           return $env.sandstorm? ? 2 : 1
         end
       end
+
       register(:sand_rush, SandRush)
     end
   end

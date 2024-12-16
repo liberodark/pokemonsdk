@@ -22,7 +22,7 @@ module Battle
           return 1 if target != @target
           return 1 unless user.can_be_lowered_or_canceled?
 
-          return move.type_fire? ? 1.5 : 1
+          return move.type_fire? ? 0.5 : 1
         end
 
         # Function called when a status_prevention is checked
@@ -42,6 +42,7 @@ module Battle
           end
         end
       end
+
       register(:water_bubble, WaterBubble)
     end
   end

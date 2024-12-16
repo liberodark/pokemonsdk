@@ -911,9 +911,12 @@ pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Air Balloon.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Berserk Gene.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Big Root.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Black Sludge.rb
-pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Choice Scarf.rb
+pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 ChoiceItemMultiplier.rb
+pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Deep Sea Scale.rb
+pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Deep Sea Tooth.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Eject Button.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Enigma Berry.rb
+pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Eviolite.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Expert Belt.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Flame Orb.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Focus Band.rb
@@ -930,6 +933,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 LightBall.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Lum Berry.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Luminous Moss - Snowball.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 MentalHerb.rb
+pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Metal Powder.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Metronome.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Micle Berry.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Persim Berry.rb
@@ -942,6 +946,7 @@ pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 SafetyGoggles.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Shed Shell.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Shell Bell.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Sticky Barb.rb
+pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Thick Club.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Toxic Orb.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 Weakness Policy.rb
 pokemonsdk/scripts/5 Battle/06 Effects/05 Item Effects/100 White Herb.rb

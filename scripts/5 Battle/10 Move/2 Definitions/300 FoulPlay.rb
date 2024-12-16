@@ -22,6 +22,7 @@ module Battle
         return ph_move ? target.atk_modifier : target.ats_modifier
       end
     end
+
     Move.register(:s_foul_play, FoulPlay)
   end
 end

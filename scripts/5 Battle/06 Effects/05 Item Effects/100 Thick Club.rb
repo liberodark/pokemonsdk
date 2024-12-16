@@ -1,16 +1,17 @@
 module Battle
   module Effects
-    class Ability
-      class PurePower < Ability
+    class Item
+      class ThickClub < Item
         # Give the atk modifier over given to the Pokemon with this effect
         # @return [Float, Integer] multiplier
         def atk_modifier
-          return 2
+          return 2 if %i[cubone marowak].include?(@target.db_symbol)
+
+          return super
         end
       end
 
-      register(:pure_power, PurePower)
-      register(:huge_power, PurePower)
+      register(:thick_club, ThickClub)
     end
   end
 end

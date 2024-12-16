@@ -134,11 +134,11 @@ module PFM
     attr_accessor :ko_count
 
     # Get the transform pokemon
-    # @return [PFM::PokemonBattler]
+    # @return [PFM::PokemonBattler, nil]
     attr_reader :transform
 
     # Get the Illusion pokemon
-    # @return [PFM::PokemonBattler]
+    # @return [PFM::PokemonBattler, nil]
     attr_reader :illusion
 
     # Create a new PokemonBattler from a Pokemon
@@ -610,7 +610,7 @@ module PFM
     def initialize_set_is_follower
       return @is_follower = false unless $actors.include?(original) && defined?(Yuki::FollowMe)
       return @is_follower = false unless Yuki::FollowMe.enabled
-      
+
       @is_follower = $actors.index(original).to_i < Yuki::FollowMe.pokemon_count
     end
 

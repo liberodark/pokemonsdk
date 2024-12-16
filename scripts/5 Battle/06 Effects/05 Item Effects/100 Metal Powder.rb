@@ -1,17 +1,17 @@
 module Battle
   module Effects
-    class Ability
-      class GrassPelt < Ability
+    class Item
+      class MetalPowder < Item
         # Give the dfe modifier over given to the Pokemon with this effect
         # @return [Float, Integer] multiplier
         def dfe_modifier
-          return 1.5 if @logic.field_terrain_effect.grassy?
+          return 2 if @target.db_symbol == :ditto && @target.transform.nil?
 
           return super
         end
       end
 
-      register(:grass_pelt, GrassPelt)
+      register(:metal_powder, MetalPowder)
     end
   end
 end

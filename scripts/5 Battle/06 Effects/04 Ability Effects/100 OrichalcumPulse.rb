@@ -2,18 +2,15 @@ module Battle
   module Effects
     class Ability
       class OrichalcumPulse < Drought
-        # Give the move [Spe]atk mutiplier
-        # @param user [PFM::PokemonBattler] user of the move
-        # @param target [PFM::PokemonBattler] target of the move
-        # @param move [Battle::Move] move
+        # Give the atk modifier over given to the Pokemon with this effect
         # @return [Float, Integer] multiplier
-        def sp_atk_multiplier(user, target, move)
-          return 1 if user != @target
+        def atk_modifier
           return 1 unless $env.sunny? || $env.hardsun?
 
-          return move.physical? ? 1.33 : 1
+          return 1.33
         end
       end
+
       register(:orichalcum_pulse, OrichalcumPulse)
     end
   end
