@@ -33,6 +33,8 @@ module BattleUI
     # Force the action to use an item
     # @param item [Studio::Item]
     def use_item(item)
+      return if item.is_a?(Studio::BallItem) && !ball_can_be_used?(item)
+
       item_wrapper = PFM::ItemDescriptor.actions(item.id)
       return use_item_on_creature_choice(item_wrapper) if item_wrapper.on_creature_choice?
 
@@ -44,6 +46,18 @@ module BattleUI
     end
 
     private
+
+    # Check if a ball can be used
+    # @param item [Studio::BallItem]
+    # @return [Boolean]
+    def ball_can_be_used?(item)
+      @scene.message_window.wait_input = true
+      return @scene.display_message_and_wait(parse_text(20, 50)) && false if @scene.logic.alive_battlers(1).size > 1
+      return @scene.display_message_and_wait(parse_text(20, 52)) && false if @scene.logic.alive_battlers(1)[0].effects.has?(:out_of_reach_base)
+      return @scene.display_message_and_wait(parse_text(20, 53)) && false if @scene.player_actions.size >= 1
+
+      return true
+    end
 
     # Use an item that needs to pick a Pokemon
     # @param item_wrapper [PFM::ItemDescriptor::Wrapper]

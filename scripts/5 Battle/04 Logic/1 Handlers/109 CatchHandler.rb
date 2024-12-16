@@ -244,27 +244,34 @@ module Battle
       end
 
       Hooks.register(Battle::Logic::CatchHandler, :ball_blocked, 'Check if the initial rareness of the Pokemon is 0') do |hook_binding|
-        if hook_binding[:target].rareness == 0
-          # @scene.visual.ball_deflect_animation(target, ball)
-          @scene.display_message_and_wait(parse_text(18, 69)) #TODO Write the text for a Pokémon with rareness 0
-          force_return(false)
-        end
+        next unless hook_binding[:target].rareness == 0
+
+        $bag.add_item(hook_binding[:ball].db_symbol)
+        # TODO: Add the ball deflect animation in the Visual class
+        # TODO: Write the text for a Pokemon with a rareness of 0
+        @scene.display_message_and_wait(parse_text(18, 69))
+        force_return(false)
       end
 
-      Hooks.register(Battle::Logic::CatchHandler, :ball_blocked, 'Check if catching is forbidden in this battle') do |_hook_binding|
-        if $game_switches[Yuki::Sw::BT_NoCatch]
-          # @scene.visual.ball_deflect_animation(target, ball)
-          @scene.display_message_and_wait(parse_text(18, 69)) #TODO Write the text for forbidding catching in this battle
-          force_return(false)
-        end
+      Hooks.register(Battle::Logic::CatchHandler, :ball_blocked, 'Check if catching is forbidden in this battle') do
+        next unless $game_switches[Yuki::Sw::BT_NoCatch]
+
+        $bag.add_item(hook_binding[:ball].db_symbol)
+        # TODO: Add the ball deflect animation in the Visual class
+        # TODO: Write the text to indicate that capturing Pokemon is forbidden in this battle
+        @scene.display_message_and_wait(parse_text(18, 69))
+        force_return(false)
       end
 
       Hooks.register(Battle::Logic::CatchHandler, :ball_blocked, 'Check if the battle is a Trainer battle') do |hook_binding|
-        if logic.battle_info.trainer_battle? && hook_binding[:ball].db_symbol != :rocket_ball
-          # @scene.visual.ball_deflect_animation(target, ball)
-          @scene.display_message_and_wait(parse_text(18, 69)) #TODO Write the text for a Pokémon owned by a Trainer that can't be caught
-          force_return(false)
-        end
+        next unless @scene.logic.battle_info.trainer_battle?
+        next if hook_binding[:ball].db_symbol == :rocket_ball
+
+        $bag.add_item(hook_binding[:ball].db_symbol)
+        # TODO: Add the ball deflect animation in the Visual class
+        # TODO: Write the text for a Pokemon owned by a Trainer that can't be caught
+        @scene.display_message_and_wait(parse_text(18, 69))
+        force_return(false)
       end
     end
   end
