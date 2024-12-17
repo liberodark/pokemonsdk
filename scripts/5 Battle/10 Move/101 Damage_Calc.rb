@@ -75,18 +75,14 @@ module Battle
       ph_move = physical?
       # Stat
       result = calc_sp_atk_basis(user, target, ph_move)
-      log_error("result = #{result} after calc_sp_atk_basis")
       # SM (Only if non-critical hit)
       result = (result * calc_atk_stat_modifier(user, target, ph_move)).floor
-      log_error("result = #{result} after calc_atk_stat_modifier")
       # Effects
       result = (result * calc_atk_stat_effect_modifier(user, target, ph_move)).floor
-      log_error("result = #{result} after calc_atk_stat_effect_modifier")
 
       logic.each_effects(user, target) do |e|
         result = (result * e.sp_atk_multiplier(user, target, self)).floor
       end
-      log_error("result = #{result} after sp_atk_multiplier")
 
       return result
     end
@@ -135,20 +131,17 @@ module Battle
       ph_move = physical?
       # Stat
       result = calc_sp_def_basis(user, target, ph_move)
-      log_error("result = #{result} after calc_sp_def_basis")
 
       # SM (Only if non-critical hit)
       result = (result * calc_def_stat_modifier(user, target, ph_move)).floor
-      log_error("result = #{result} after calc_def_stat_modifier")
 
       # Effects
       result = (result * calc_def_stat_effect_modifier(user, target, ph_move)).floor
-      log_error("result = #{result} after calc_def_stat_effect_modifier")
 
       logic.each_effects(user, target) do |e|
         result = (result * e.sp_def_multiplier(user, target, self)).floor
       end
-      log_error("result = #{result} after sp_def_multiplier")
+
       return result
     end
 
