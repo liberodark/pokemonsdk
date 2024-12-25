@@ -72,7 +72,7 @@ module PFM
       # Parse the speaker name
       # @param info_str [String] name of the speaker
       def parse_speaker_name(info_str)
-        name, color = info_str.split(/,([0-9])/)
+        name, color = info_str.split(/,(\d+)/)
         @name = name
         @name_color = color.to_i
       end
