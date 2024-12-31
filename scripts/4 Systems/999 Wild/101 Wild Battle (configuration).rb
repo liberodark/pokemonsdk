@@ -20,8 +20,10 @@ module PFM
 
     # Configure the creature array for later selection
     # @param creatures [Array<PFM::Pokemon>]
-    # @return [Array<Array(PFM::Pokemon, Float)>] all creatures with their rate to get selected
+    # @return [Array<Array(PFM::Pokemon, Float),nil>] all creatures with their rate to get selected
     def configure_creature(creatures)
+      return [] unless creatures && !creatures.empty?
+
       main_creature = $actors[0]
       ability = creature_ability
 
@@ -112,8 +114,11 @@ module PFM
     # Select the creatures that will be in the battle
     # @param group [Studio::Group] the descriptor of the Wild group
     # @param creature_to_select [Array<Array(PFM::Pokemon, Float)>] list of Pokemon to select with their rates
-    # @return [Array<PFM::Pokemon>]
+    # @return [Array<PFM::Pokemon,nil>]
     def select_creature(group, creature_to_select)
+      return [] unless group && !group.encounters.empty?
+      return [] if creature_to_select.empty?
+
       main_creature = $actors[0]
 
       real_rareness = creature_to_select.map.with_index do |(creature, rate), index|

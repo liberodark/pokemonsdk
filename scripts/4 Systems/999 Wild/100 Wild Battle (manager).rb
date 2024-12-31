@@ -189,7 +189,10 @@ module PFM
       end
       creature_to_select = configure_creature(all_creatures)
       selected_creature = select_creature(group, creature_to_select)
-      return if selected_creature.empty?
+      if selected_creature.empty?
+        log_debug('Failed to select a creature for wild battle')
+        return nil
+      end
 
       selected_creature.each do |creature|
         add_encounter_history(creature, group)
