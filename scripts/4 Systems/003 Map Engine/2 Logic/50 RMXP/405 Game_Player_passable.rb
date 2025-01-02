@@ -42,7 +42,10 @@ class Game_Player
         @bike_forced = nil
       end
     elsif on_bike
-      return false if NO_BIKE_TILE.include?(front_system_tag)
+      if NO_BIKE_TILE.include?(front_system_tag)
+        transition_surf_to_no_bike if @state == :surfing
+        return false
+      end
     end
     return result
   end
@@ -97,6 +100,13 @@ class Game_Player
   end
 
   private
+
+  # Switch off the retained bike state when transitioning from Surf to a NO_BIKE_TILE
+  def transition_surf_to_no_bike
+    @on_acro_bike = false
+    $game_switches[::Yuki::Sw::EV_AccroBike] = false
+    $game_switches[::Yuki::Sw::EV_Bicycle] = false
+  end
 
   # is the tile in front of the player passable for maplinker uses
   # @param new_x [Integer] new x position on the Map
