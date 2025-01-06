@@ -64,6 +64,7 @@ module GamePlay
       create_description
       create_buttons
       create_frame
+      Graphics.sort_z
     end
 
     def create_viewport
