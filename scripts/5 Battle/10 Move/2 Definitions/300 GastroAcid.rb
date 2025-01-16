@@ -9,7 +9,7 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @return [Boolean]
       def target_immune?(user, target)
-        return true if target.effects.has?(:ability_suppressed) || !@logic.ability_change_handler.can_change_ability?(target, :none)
+        return true if target.effects.has?(:ability_suppressed) || !@logic.ability_change_handler.can_change_ability?(target)
 
         return super
       end
