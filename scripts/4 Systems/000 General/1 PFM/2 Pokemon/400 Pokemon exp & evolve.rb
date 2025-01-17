@@ -241,12 +241,14 @@ module PFM
       else
         form_calibrate(:evolve)
       end
-      return unless $actors.include?(self) # Don't do te rest if the pokemon isn't in the current party
 
       # evolution_items = (data.special_evolution || []).map { |hash| hash[:item_hold] || 0 }
       previous_pokemon_evolution_method = data_creature_form(old_evolution_db_symbol, old_evolution_form).evolutions
       evolution_items = previous_pokemon_evolution_method.map { |evolution| evolution.condition_data(:itemHold) }.compact
       self.item_holding = 0 if evolution_items.include?(item_db_symbol)
+
+      return unless $actors.include?(self) # Don't do te rest if the pokemon isn't in the current party
+
       # Normal skill learn
       check_skill_and_learn
       # Evolution skill learn
