@@ -81,13 +81,15 @@ module Battle
       # @param target [PFM::PokemonBattler]
       # @return [Float]
       def move_status_modifier(move, user, target)
-        result = 1.0
-        return result if move.status_effects.empty?
+        return 1.0 unless move.status? && move.status_effects.any?
 
-        result = 0 if move.status? && move.status_effects.any? { |status| Configs.states.ids[status.status] == target.status }
-        move_status = move.status_effects.first.status
-        result = 0 if !@scene.logic.status_change_handler.status_appliable?(move_status, target, user, move) && @can_switch
-        return result
+        no_status_appliable = move.status_effects.all? do |move_status|
+          next target.confused? if move_status.status == :confusion
+          next false if move_status.status == :flinch
+
+          next target.status?
+        end
+        return no_status_appliable ? scene.logic.generic_rng.rand(0.15..0.5) : 1.0
       end
 
       # Group the move actions when they're hitting several targets
