@@ -96,6 +96,13 @@ module Battle
         next :success
       end
 
+      # Ghost-type
+      FleeHandler.register_flee_passthrough_hook('PSDK Ghost-type') do |_, pokemon|
+        next unless pokemon.type_ghost?
+
+        next :success
+      end
+
       FleeHandler.register_flee_block_hook('No flee in trainer battle') do |handler|
         next unless handler.logic.battle_info.trainer_battle?
 

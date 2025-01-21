@@ -9,7 +9,7 @@ module Battle
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
       # @return [Boolean]
       def effect_working?(user, actual_targets)
-        actual_targets.any? { |target| !target.effects.has?(:bind) }
+        actual_targets.any? { |target| !target.type_ghost? && !target.effects.has?(:bind) }
       end
 
       # Function that deals the effect to the pokemon
@@ -18,7 +18,7 @@ module Battle
       def deal_effect(user, actual_targets)
         turn_count = user.hold_item?(:grip_claw) ? 7 : logic.generic_rng.rand(4..5)
         actual_targets.each do |target|
-          next if target.effects.has?(:bind)
+          next if target.type_ghost? || target.effects.has?(:bind)
 
           target.effects.add(Effects::Bind.new(logic, target, user, turn_count, self))
         end

@@ -4,6 +4,16 @@ module Battle
     class CantSwitch < Basic
       private
 
+      # Function that return the immunity
+      # @param user [PFM::PokemonBattler] user of the move
+      # @param target [PFM::PokemonBattler] expected target
+      def target_immune?(user, target)
+        return true if super
+        return true if target.type_ghost? && status?
+
+        return false
+      end
+
       # Test if the effect is working
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
@@ -11,6 +21,7 @@ module Battle
       def effect_working?(user, actual_targets)
         return actual_targets.all? { |target| !target.effects.has?(:cantswitch) }
       end
+
       # Function that deals the effect to the pokemon
       # @param user [PFM::PokemonBattler] user of the move
       # @param actual_targets [Array<PFM::PokemonBattler>] targets that will be affected by the move
