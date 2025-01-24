@@ -143,7 +143,7 @@ module LiteRGSS
   class Bitmap < Disposable
     # Create a new texture from existing texture data (PNG)
     # @param filename_or_memory [String] texture data filename or content
-    # @param from_memory [Boolean] if filename_or_memory is content 
+    # @param from_memory [Boolean] if filename_or_memory is content
     def self.new(filename_or_memory, from_memory = nil)
 
     end

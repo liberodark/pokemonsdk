@@ -688,7 +688,7 @@ module GameData
     # @return [Integer]
     attr_accessor :female_rate
     # The two groupes of compatibility for breeding. If it includes 15, there's no compatibility.
-    # @return [Array(Integer, Integer)]
+    # @return [Array<Integer, Integer>]
     attr_accessor :breed_groupes
     # List of move ID the Pokemon can have after hatching if one of its parent has the move
     # @return [Array<Integer>]

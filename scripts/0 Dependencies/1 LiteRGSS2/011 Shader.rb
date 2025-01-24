@@ -180,6 +180,6 @@ The game will sleep 10 seconds to make sure you see this message')
   register(:dpp_sprite_side, 'graphics/shaders/dpp_wild_ext_side.frag')
   register(:sinusoidal, 'graphics/shaders/hgss_wild_sea.frag')
   register(:bw_wild_sea, 'graphics/shaders/bw_wild_sea.frag')
-  register(:fake_3d, 'graphics/shaders/fake_3d.frag', 'graphics/shaders/fake_3d.vert', color_process: true)
+  register(:fake_3d, 'graphics/shaders/fake_3d.frag', 'graphics/shaders/fake_3d.vert', tone_process: true, color_process: true, alpha_process: true)
   register(:battle_shadow_3d, 'graphics/shaders/battle_shadow.frag', 'graphics/shaders/battle_shadow_3d.vert')
 end

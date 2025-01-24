@@ -10,7 +10,7 @@ module Battle
     CAMERA_TRANSLATION = [[0, -21, 0, 29, 1, 0.9, 2, 1], [-21, 15, 29, -19, 0.9, 1, 3, 1.25], [15, -44, -19, 6, 1, 1, 2.5, 1.5], [-44, 0, 6, 0, 1, 1, 1.4, 2]]
 
     # coordinates of the camera centered
-    CAMERA_CENTER = [-9, 20, 1, 0.5]
+    CAMERA_CENTER = [-9, 20, 1, 0.3]
 
     # Update the position of the camera
     def update_camera
@@ -48,17 +48,6 @@ module Battle
       @camera_animation.start
     end
 
-    # Define the translation to zoom on the Pokemon
-    def start_actor_animation
-      stop_camera
-      duration = CAMERA_CENTER[3]
-      animation = Yuki::Animation::ScalarAnimation.new(duration, @camera_positionner, :x, @camera.x, CAMERA_CENTER[0])
-      animation.parallel_add(Yuki::Animation.scalar(duration, @camera_positionner, :y, @camera.y, CAMERA_CENTER[1]))
-      animation.parallel_add(Yuki::Animation.scalar(duration, @camera_positionner, :z, @camera.z, CAMERA_CENTER[2]))
-      @camera_animation = animation
-      @camera_animation.start
-    end
-
     # Define the translation to the center of the Screen
     def start_center_animation
       stop_camera
@@ -72,12 +61,48 @@ module Battle
 
     # Time without moving at the beginning of start_camera_animation
     def no_movement_duration
-      return 5
+      return 3
     end
 
     # delete all cameras
     def stop_camera
       @camera_animation = nil
+    end
+
+    # Center the camera on one of the sprite
+    # @param bank [Integer]
+    # @param position [Integer] default 0, will be use for next update
+    def center_target(bank, position = 0)
+      if @scene.battle_info.vs_type == 1
+        coordinates = camera_zoom_1v1(bank)
+      else
+        coordinates = camera_zoom_2v2(bank, position)
+      end
+      animation = Yuki::Animation::ScalarAnimation.new(0.35, @camera_positionner, :x, @camera.x, coordinates[0])
+      animation.parallel_add(Yuki::Animation.scalar(0.35, @camera_positionner, :y, @camera.y, coordinates[1]))
+      animation.parallel_add(Yuki::Animation.scalar(0.35, @camera_positionner, :z, @camera.z, coordinates[2]))
+      @camera_animation = animation
+      @camera_animation.start
+    end
+
+    # Coordinates to zoom for the camera in 1v1
+    # @param bank [Integer]
+    # @return Array[<Float,Float,Float>]
+    def camera_zoom_1v1(bank)
+      return [56, -30, 1.4] if bank == 1
+
+      return [-40, 13, 1.2]
+    end
+
+    # Coordinates to zoom for the camera in 2v2
+    # @param bank [Integer]
+    # @param position [Integer] default 0, will be use for next update
+    # @return Array[<Float,Float,Float>]
+    def camera_zoom_2v2(bank, position)
+      # TODO (make coordinates more accurate, and dependent of the position)
+      return [56, -30, 1.4] if bank == 1
+
+      return [-40, 13, 1.2]
     end
   end
 end

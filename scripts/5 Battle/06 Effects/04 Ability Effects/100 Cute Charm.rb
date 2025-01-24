@@ -15,6 +15,7 @@ module Battle
 
           handler.scene.visual.show_ability(target)
           launcher.effects.add(Effects::Attract.new(handler.logic, launcher, target))
+          scene.show_status_animation(target, :attract)
           handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 327, launcher))
         end
       end

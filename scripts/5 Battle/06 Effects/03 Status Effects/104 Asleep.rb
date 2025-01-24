@@ -48,7 +48,7 @@ module Battle
         # @param move [Battle::Move]
         # @return [:prevent]
         def handle_sleep_prevention(user, move)
-          move.scene.visual.show_rmxp_animation(user, 469 + status_id)
+          move.scene.visual.show_status_animation(user, :sleep)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 309, user))
           # If it's a sleeping move we don't prevent user from using the move
           return if SLEEPING_MOVES.include?(move.db_symbol)

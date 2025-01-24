@@ -6,6 +6,7 @@ main_t_anim = ya.resolved
 animation_target.play_before(main_t_anim)
 main_t_anim.play_before(ya.move_sprite_position(0, :sprite, :target, :target))
 main_t_anim.play_before(ya.se_play('moves/thunder_wave'))
+main_t_anim.play_before(ya.send_command_to(:sprite, :z=, 1))
 5.times do
   main_t_anim.play_before(ya.wait(0.05))
   main_t_anim.play_before(ya.send_command_to(:sprite, :set_rect, 192, 0, 192, 192))

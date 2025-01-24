@@ -24,6 +24,36 @@ module Battle
       end
     end
 
+    # Show an animation for stat change
+    # @param target [PFM::PokemonBattler]
+    # @param amount [Integer] value for the changement
+    def show_stat_animation(target, amount)
+      wait_for_animation
+      target_sprite = battler_sprite(target.bank, target.position)
+      target_sprite.change_stat_animation(amount)
+      wait_for_animation
+    end
+
+    # Show an animation for a status
+    # @param target [PFM::PokemonBattler]
+    # @param status [Symbol]
+    def show_status_animation(target, status)
+      wait_for_animation
+      return if status == :flinch
+      target_sprite = battler_sprite(target.bank, target.position)
+      target_sprite.status_animation(status)
+      wait_for_animation
+    end
+
+    # remove the tone animation
+    # @param target [PFM::PokemonBattler]
+    def heal_status_remove_tone(target)
+      wait_for_animation
+      target_sprite = battler_sprite(target.bank, target.position)
+      target_sprite.remove_tone_animation
+      wait_for_animation
+    end
+
     # Show KO animations
     # @param targets [Array<PFM::PokemonBattler>]
     def show_kos(targets)

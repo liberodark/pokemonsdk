@@ -51,6 +51,7 @@ module Battle
         when :cure
           message_overwrite ||= cure_message_id(target)
           target.send(STATUS_APPLY_METHODS[status])
+          @scene.visual.heal_status_remove_tone(target)
         when :confuse_cure
           target.effects.get(:confusion)&.kill
           target.effects.delete_specific_dead_effect(:confusion)
@@ -58,7 +59,7 @@ module Battle
         else
           message_overwrite ||= STATUS_APPLY_MESSAGE[status]
           target.send(STATUS_APPLY_METHODS[status], true)
-          @scene.visual.show_rmxp_animation(target, STATUS_APPLY_ANIMATION[status])
+          @scene.visual.show_status_animation(target, status)
         end
         @scene.display_message_and_wait(parse_text_with_pokemon(19, message_overwrite, target)) if message_overwrite
         exec_hooks(StatusChangeHandler, :post_status_change, binding)

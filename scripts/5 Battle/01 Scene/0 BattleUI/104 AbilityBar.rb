@@ -1,5 +1,5 @@
 module BattleUI
-  # Sprite of a Trainer in the battle
+  # Sprite of an Ability Bar in the battle
   class AbilityBar < UI::SpriteStack
     include UI
     include GoingInOut

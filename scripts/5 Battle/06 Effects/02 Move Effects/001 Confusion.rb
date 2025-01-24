@@ -29,7 +29,7 @@ module Battle
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 351, user))
           kill
         else
-          move.scene.visual.show_rmxp_animation(user, 475)
+          move.scene.visual.show_status_animation(user, :confusion)
           move.scene.display_message_and_wait(parse_text_with_pokemon(19, 348, user))
           if bchance?(damage_chance)
             move.logic.damage_handler.damage_change(confuse_damage, user) do

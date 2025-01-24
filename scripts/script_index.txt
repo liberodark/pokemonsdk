@@ -481,6 +481,7 @@ pokemonsdk/scripts/5 Battle/01 Scene/0 BattleUI/600 BattleBack3D.rb
 pokemonsdk/scripts/5 Battle/01 Scene/0 BattleUI/601 PokemonSprite3D.rb
 pokemonsdk/scripts/5 Battle/01 Scene/0 BattleUI/602 TrainerSprite3D.rb
 pokemonsdk/scripts/5 Battle/01 Scene/0 BattleUI/700 BattleBackForest3D.rb
+pokemonsdk/scripts/5 Battle/02 Visual/050 RecenterSprite.rb
 pokemonsdk/scripts/5 Battle/02 Visual/200 Visual.rb
 pokemonsdk/scripts/5 Battle/02 Visual/201 Trainer_transition.rb
 pokemonsdk/scripts/5 Battle/02 Visual/202 Show_player_choice.rb
@@ -489,11 +490,26 @@ pokemonsdk/scripts/5 Battle/02 Visual/204 Show_item_or_pokemon_choice.rb
 pokemonsdk/scripts/5 Battle/02 Visual/205 Info_Bars.rb
 pokemonsdk/scripts/5 Battle/02 Visual/206 Show_stuff.rb
 pokemonsdk/scripts/5 Battle/02 Visual/300 Visual3D.rb
-pokemonsdk/scripts/5 Battle/02 Visual/301 Camera_Positionner.rb
+pokemonsdk/scripts/5 Battle/02 Visual/301 Show_stuff3D.rb
+pokemonsdk/scripts/5 Battle/02 Visual/350 Camera_Positionner.rb
 pokemonsdk/scripts/5 Battle/02 Visual/400 Camera_movement.rb
 pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/100 IdlePokemonAnimation.rb
 pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/101 HPAnimation.rb
 pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/102 FakeHPAnimation.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/150 StatAnimation.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/151 StatusAnimation.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/160 PoisonAnimation.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/161 SleepAnimation.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/162 FreezeAnimation.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/163 BurnAnimation.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/164 ParalyzeAnimation.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/165 AttractAnimation.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/166 ConfusionAnimation.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/170 ThrowingBallSprite3D.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/175 BallStars.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/176 BallBurst.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/177 BallCatch.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/178 RetrieveBurst.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/000 Transition.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/001 BattleStart.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/100 RBYTrainer.rb
@@ -518,6 +534,9 @@ pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/164 BWTrainer.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/174 XYTrainer.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/300 BattleFrontier.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/300 Red.rb
+pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/501 Transition3D.rb
+pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/502 Trainer3D.rb
+pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/503 Wild3D.rb
 pokemonsdk/scripts/5 Battle/03 PokemonBattler/001 PokemonBattler.rb
 pokemonsdk/scripts/5 Battle/03 PokemonBattler/002 Properties.rb
 pokemonsdk/scripts/5 Battle/03 PokemonBattler/003 Statistics.rb
@@ -1260,7 +1279,10 @@ pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 WonderRoom.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 WringOut.rb
 pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Yawn.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/000 MoveAnimation.rb
-pokemonsdk/scripts/5 Battle/20 MoveAnimation/001 Example.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/001 UserBankRelativeAnimation.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/002 MoveAnimation3D.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/006 VineWhip.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 Thunder_wave.rb
 pokemonsdk/scripts/5 Battle/30 AI/001 BattleSceneMock.rb
 pokemonsdk/scripts/5 Battle/30 AI/002 BattleVisualMock.rb
 pokemonsdk/scripts/5 Battle/30 AI/003 BattleLogicMock.rb

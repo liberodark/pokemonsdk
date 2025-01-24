@@ -40,6 +40,24 @@ module Battle
         @camera.set_position(new_x, new_y, new_z)
       end
 
+      # Apply a rotation to the camera using yaw
+      # @param yaw [Float] angle around axis z (left-right)
+      def rotate_z(yaw)
+        @camera.set_rotation(yaw, 0, 0)
+      end
+
+      # Apply a rotation to the camera using pitch
+      # @param pitch [Float] angle around axis y (up-down)
+      def rotate_y(pitch)
+        @camera.set_rotation(0, pitch, 0)
+      end
+
+      # Apply a rotation to the camera using roll
+      # @param roll [Float] angle around axis x (tilt)
+      def rotate_x(roll)
+        @camera.set_rotation(0, 0, roll)
+      end
+
       # Feel free to add new operations
     end
   end

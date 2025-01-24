@@ -111,7 +111,10 @@ module Battle
           color = [0, 0, 0, 0]
           @enemy_sprites.select(&:shader).each { |sp| animation.play_before(ya.send_command_to(sp.shader, :set_float_uniform, 'color', color)) }
           cries = @enemy_sprites.select { |sp| sp.respond_to?(:cry) }
-          cries.each { |sp| animation.play_before(ya.send_command_to(sp, :cry)) }
+          cries.each do |sp|
+            animation.play_before(ya.send_command_to(sp, :cry))
+            animation.play_before(ya.send_command_to(sp, :shiny_animation))
+          end
           return animation
         end
 

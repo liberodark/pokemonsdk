@@ -17,13 +17,15 @@ module PSP
 
   def animation(src_sprite, id, reverse = false)
     (sp = @main_sprite).x = src_sprite.x
+    sp.x += Graphics.width / 2 if $scene.is_a?(Battle::Scene) && $scene.visual.is_a?(Battle::Visual3D)
     sp.y = src_sprite.y
+    sp.y += Graphics.height / 2 if $scene.is_a?(Battle::Scene) && $scene.visual.is_a?(Battle::Visual3D)
     sp.z = src_sprite.z
     sp.ox = src_sprite.ox
     sp.oy = src_sprite.oy
     sp.bitmap = src_sprite.bitmap
     sp.zoom_x = sp.zoom_y = src_sprite.zoom_x
-    sp.shader = src_sprite.shader
+    sp.shader = src_sprite.shader unless $scene.is_a?(Battle::Scene) && $scene.visual.is_a?(Battle::Visual3D)
     visible = src_sprite.visible
     sp.opacity = src_sprite.opacity
     src_sprite.visible = false

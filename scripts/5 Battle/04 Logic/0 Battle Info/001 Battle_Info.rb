@@ -212,7 +212,7 @@ module Battle
         return resources if resources.is_a?(String)
         return resources.send(:sprite) if bank == 0
 
-        resource_type = Visual::TRANSITION_RESOURCE_TYPE[$game_variables[Yuki::Var::TrainerTransitionType]]
+        resource_type = Battle::BATTLE_CAMERA_3D ? Visual3D::TRANSITION_RESOURCE_TYPE3D[$game_variables[Yuki::Var::TrainerTransitionType]] : Visual::TRANSITION_RESOURCE_TYPE[$game_variables[Yuki::Var::TrainerTransitionType]]
         return resources.send(resource_type)
       end
 

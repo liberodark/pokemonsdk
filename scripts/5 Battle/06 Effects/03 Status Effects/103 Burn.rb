@@ -46,7 +46,7 @@ module Battle
           # Apply heat proof protection
           hp /= 2 if target.has_ability?(:heatproof)
           scene.display_message_and_wait(parse_text_with_pokemon(19, 261, target))
-          scene.visual.show_rmxp_animation(target, 469 + status_id)
+          scene.visual.show_status_animation(target, :burn)
           logic.damage_handler.damage_change(hp.clamp(1, Float::INFINITY), target)
 
           # Ensure the procedure does not get blocked by this effect

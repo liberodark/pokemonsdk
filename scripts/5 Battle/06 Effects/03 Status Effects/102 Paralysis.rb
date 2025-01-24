@@ -29,7 +29,7 @@ module Battle
           return if user != target
 
           if user.paralyzed? && paralysis_check
-            move.scene.visual.show_rmxp_animation(user, 469 + status_id)
+            move.scene.visual.show_status_animation(target, :paralysis)
             move.scene.display_message_and_wait(parse_text_with_pokemon(19, 276, user))
             return :prevent
           end

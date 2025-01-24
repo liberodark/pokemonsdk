@@ -40,6 +40,7 @@ module BattleUI
       @dynamic_frame_count = DYNAMIC_BACKSPRITES ? bitmap.height / bitmap.width : BACK_FRAME_COUNT
       @dynamic_frame_count = BACK_FRAME_COUNT if @dynamic_frame_count.zero?
       src_rect.height = bitmap.height / @dynamic_frame_count if @bank == 0
+      create_shader
       reset_position
     end
 
@@ -78,6 +79,10 @@ module BattleUI
         animation.play_before(ya.send_command_to(self, :show_next_frame))
       end
       return animation
+    end
+
+    # Create a shader for the TrainerSprite
+    def create_shader
     end
 
     private

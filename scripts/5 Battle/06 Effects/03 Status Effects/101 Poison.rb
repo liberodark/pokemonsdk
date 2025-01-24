@@ -39,7 +39,7 @@ module Battle
 
           # Give damage to the Pokemon
           scene.display_message_and_wait(parse_text_with_pokemon(19, 243, target))
-          scene.visual.show_rmxp_animation(target, 469 + status_id)
+          scene.visual.show_status_animation(target, :poison)
           logic.damage_handler.damage_change(poison_effect, target)
 
           # Ensure the procedure does not get blocked by this effect

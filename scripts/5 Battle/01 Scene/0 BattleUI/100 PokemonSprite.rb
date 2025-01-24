@@ -6,6 +6,42 @@ module BattleUI
     include Shader::CreatureShaderLoader
     # Constant giving the deat Delta Y (you need to adjust that so your screen animation are OK when Pokemon are KO)
     DELTA_DEATH_Y = 32
+    # Sound effect corresponding to the status
+    STATUS_SE = {
+      poison: 'moves/poison',
+      toxic: 'moves/poison',
+      confusion: 'moves/confusion',
+      sleep: 'moves/asleep',
+      freeze: 'moves/freeze',
+      paralysis: 'moves/paralysis',
+      burn: 'moves/burn',
+      attract: 'moves/attract'
+    }
+
+    # Tone according to the status
+    STATUS_TONE = {
+      neutral: [0, 0, 0, 0, 0],
+      poison: [0.4, 0, 0.49, 0.6, 0],
+      toxic: [0.4, 0, 0.49, 0.6, 0],
+      freeze: [0.23, 0.56, 1, 0.6, 0.6],
+      paralysis: [0.39, 0.47, 0, 0.6, 0],
+      burn: [0.45, 0, 0, 0.8, 0],
+      confusion: [0, 0, 0, 0, 0],
+      sleep: [0, 0, 0, 0, 0],
+      ko: [0, 0, 0, 0, 0],
+      flinch: [0, 0, 0, 0, 0],
+      attract: [0, 0, 0, 0, 0]
+    }
+
+    # Sound played by the shiny animation
+    SHINY_SE = 'se_shiny'
+
+    # Sound played when the stat rise up
+    STAT_RISE_UP = 'move/stat_rise_up'
+
+    # Sound played when the stat fall down
+    STAT_FALL_DOWN = 'move/stat_fall_down'
+
     # Tell if the sprite is currently selected
     # @return [Boolean]
     attr_accessor :selected
@@ -27,6 +63,12 @@ module BattleUI
     # Get the scene linked to this object
     # @return [Battle::Scene]
     attr_reader :scene
+    # Get the animation linked to a status tone
+    # @return [Yuki::TimedLoopAnimation]
+    attr_accessor :animation_tone
+    # Stop the animation linked to the status tone
+    # @return [Boolean]
+    attr_accessor :stop_status_tone
 
     # Create a new PokemonSprite
     # @param viewport [Viewport]
@@ -38,12 +80,15 @@ module BattleUI
       @bank = 0
       @position = 0
       @scene = scene
+      @stop_status_tone = false
     end
 
     # Update the sprite
     def update
       @animation_handler.update
-      @gif&.update(bitmap) unless pokemon&.dead?
+      @gif&.update(bitmap) unless pokemon&.dead? || @pokemon.status == 5
+      @animation_tone&.update unless @stop_status_tone
+      @shiny_animation&.update
     end
 
     # Tell if the sprite animations are done
@@ -165,15 +210,107 @@ module BattleUI
       animation = ya.move(substitute_animations_speed, self, x, y, bx, y)
       animation.play_before(ya.send_command_to(self, :load_battler, true))
       animation.play_before(ya.send_command_to(self, :reset_position))
+      animation.play_before(ya.send_command_to(self, :stop_status_tone=, false))
       animation.play_before(ya.move(substitute_animations_speed, self, bx, y, base_x, y))
       animation.start
       animation_handler[:from_substitute] = animation
     end
 
-    # Return the Substitute animations speed
-    # @return [Float]
-    def substitute_animations_speed
-      return 0.2
+    # Create a shiny animation
+    def shiny_animation
+      return unless @pokemon.shiny?
+
+      ya = Yuki::Animation
+      shiny = SpriteSheet.new(viewport, *shiny_dimension)
+      shiny.bitmap = RPG::Cache.animation(shiny_filename)
+      shiny.set_origin(width / 2, height / 2)
+      cells = (shiny.nb_x * shiny.nb_y).times.map { |i| [i % shiny.nb_x, i / shiny.nb_x] }
+      if Battle::BATTLE_CAMERA_3D
+        shiny.shader = Shader.create(:fake_3d)
+        @scene.visual.sprites3D.append(shiny)
+        shiny.shader.set_float_uniform('z', shader_z_position)
+      end
+
+      # Create the animation
+      animation = ya.se_play(SHINY_SE)
+      animation.play_before(ya.move(0, shiny, x - 27, y - 54, x - 27, y - 54))
+      animation.play_before(Yuki::Animation::SpriteSheetAnimation.new(1.5, shiny, cells))
+      animation.play_before(ya.send_command_to(shiny, :dispose))
+      animation.start
+
+      @shiny_animation = animation
+    end
+
+    # Create a status animation
+    # @param status [Symbol]
+    def status_animation(status)
+      return if under_substitute_effect?
+
+      ya = Yuki::Animation
+      status = Configs.states.symbol(status) if status.is_a?(Integer)
+
+      sprite = UI::StatusAnimation.new(viewport, status, @bank)
+      sprite.animation_coordinates(@position, @scene.battle_info.vs_type)
+      status_duration = sprite.status_duration
+
+      set_tone_status(status)
+
+      animation = ya.se_play(STATUS_SE[status])
+      animation.play_before(ya.scalar(status_duration, sprite, :animation_progression=, 0, 1))
+      animation.play_before(ya.send_command_to(sprite, :dispose))
+      animation.start
+      animation_handler[:status_animation] = animation
+    end
+
+    # Create a tone status animation
+    # @param status [Symbol or Integer] corresponding to the status of the sprite
+    # @param switch [Boolean] tell if the method is called from a switch
+    def set_tone_status(status, switch = false)
+      return remove_tone_animation if status == 0 && switch
+      return if status.nil?
+      return unless @animation_tone.nil?
+
+      ya = Yuki::Animation
+      status = Configs.states.symbol(status) if status.is_a?(Integer)
+      tone = STATUS_TONE[status]
+      return if tone == [0, 0, 0, 0, 0]
+      return if Configs.states.symbol(@pokemon.status) != status
+
+      max_alpha = tone[3]
+      min_alpha = tone[4]
+      @stop_status_tone = false
+
+      color_updater = proc do |alpha|
+        self.shader.set_float_uniform('color', tone[0..2] + [alpha])
+      end
+
+      @animation_tone = ya::TimedLoopAnimation.new(4)
+      @animation_tone.play_before(ya.scalar(2, color_updater, :call, min_alpha, max_alpha))
+      @animation_tone.play_before(ya.scalar(2, color_updater, :call, max_alpha, min_alpha))
+      @animation_tone.resolver = self
+      @animation_tone.start
+    end
+
+    # Create a stat change animation
+    def change_stat_animation(amount)
+      ya = Yuki::Animation
+
+      # Create the sprite and set the element
+      sprite = UI::StatAnimation.new(viewport, amount, z, @bank)
+      sprite.animation_coordinates(@position, @scene.battle_info.vs_type)
+
+      # animation stat change
+      animation = ya.se_play(stat_se(amount))
+      animation.play_before(ya.scalar(1.5, sprite, :animation_progression=, 0, 1))
+      animation.play_before(ya.send_command_to(sprite, :dispose))
+      animation.start
+      animation_handler[:stat_change] = animation
+    end
+
+    # remove tone animation
+    def remove_tone_animation
+      @animation_tone = nil
+      self.shader.set_float_uniform('color', [0, 0, 0, 0])
     end
 
     # Tell if the Pokemon represented by this sprite is under the effect of Substitute
@@ -185,7 +322,15 @@ module BattleUI
     # Directly switch the PokemonSprite appearance to the substitute appearance
     def switch_to_substitute_sprite
       remove_instance_variable(:@gif) if instance_variable_defined?(:@gif)
+      self.shader.set_float_uniform('color', [0,0,0,0])
       set_bitmap(bank == 0 ? 'pokeback/substitute' : 'pokefront/substitute', :pokedex)
+      @stop_status_tone = true
+    end
+
+    # Return the Substitute animations speed
+    # @return [Float]
+    def substitute_animations_speed
+      return 0.2
     end
 
     private
@@ -250,6 +395,7 @@ module BattleUI
         load_shader(@pokemon)
       end
       @last_pokemon = @pokemon.clone
+      set_tone_status(@pokemon.status, true)
     end
 
     # Creates the go_in animation (Exiting the ball)
@@ -278,10 +424,12 @@ module BattleUI
       $game_switches[Yuki::Sw::BT_NO_BALL_ANIMATION] = false if enemy?
       ya = Yuki::Animation
       animation = ya.send_command_to(self, :visible=, true)
+      animation.play_before(ya.send_command_to(self, :set_tone_status, @pokemon.status, true))
       animation.play_before(ya.send_command_to(self, :zoom=, sprite_zoom))
       animation.play_before(ya.send_command_to(self, :opacity=, 255))
       animation.play_before(ya.move(0.1, self, bx, y, x, y))
       animation.play_before(ya.send_command_to(self, :cry))
+      animation.play_before(ya.send_command_to(self, :shiny_animation))
       return animation
     end
 
@@ -293,11 +441,13 @@ module BattleUI
       animation.play_before(ya.send_command_to(self, :zoom=, 0))
       animation.play_before(ya.send_command_to(self, :opacity=, 255))
       animation.play_before(ya.send_command_to(self, :set_position, *sprite_position))
+      animation.play_before(ya.send_command_to(self, :set_tone_status, @pokemon.status, true))
       poke_out = ya.scalar(0.1, self, :zoom=, 0, sprite_zoom)
       ball_animation = enemy? ? enemy_ball_animation(poke_out) : actor_ball_animation(poke_out)
       animation.play_before(ball_animation)
       animation.play_before(ya.send_command_to(self, :cry))
                .parallel_play(ya.wait(0.3))
+      animation.play_before(ya.send_command_to(self, :shiny_animation))
 
       return animation
     end
@@ -386,24 +536,46 @@ module BattleUI
     end
 
     # SE played when the ball is sent
+    # @return [String]
     def sending_ball_se
       return 'fall'
     end
 
     # SE played when the ball is opening
+    # @return [String]
     def opening_ball_se
       return 'pokeopen'
     end
 
     # SE played when the Pokemon back to the ball
+    # @return [String]
     def back_ball_se
       return 'pokeopen'
+    end
+
+    # Filename for the shiny animation
+    # @return [String]
+    def shiny_filename
+      return 'shiny'
+    end
+
+    # Sound played when the stat change
+    # @return [String]
+    def stat_se(amount)
+      filename = amount > 0 ? STAT_RISE_UP : STAT_FALL_DOWN
+      return filename
     end
 
     # Pokemon sprite zoom
     # @return [Integer]
     def sprite_zoom
       return 1
+    end
+
+    # Dimension of the shiny animation files
+    # @return [Array(Integer, Integer)]
+    def shiny_dimension
+      return 12, 10
     end
   end
 end

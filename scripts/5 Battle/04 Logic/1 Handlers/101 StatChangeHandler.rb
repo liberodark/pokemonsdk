@@ -149,7 +149,7 @@ module Battle
         return if power.zero? && amount.zero?
 
         text_index = stat_text_index(amount, power)
-        @scene.visual.show_rmxp_animation(target, ANIMATION[stat] + animation_offset(target, power)) if amount != 0
+        @scene.visual.show_stat_animation(target, amount) if amount != 0
         @scene.display_message_and_wait(parse_text_with_pokemon(19, TEXT_POS[stat][text_index], target)) unless no_message
       end
 

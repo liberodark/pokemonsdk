@@ -21,6 +21,7 @@ module Battle
       def deal_effect(user, actual_targets)
         actual_targets.each do |target|
           target.effects.add(Effects::Attract.new(logic, target, user))
+          scene.visual.show_status_animation(target, :attract)
           scene.display_message_and_wait(parse_text_with_pokemon(19, 327, target))
 
           handle_destiny_knot_effect(user, target) if target.hold_item?(:destiny_knot)
@@ -34,7 +35,7 @@ module Battle
         return if user.effects.has?(:attract)
 
         user.effects.add(Effects::Attract.new(logic, user, target))
-        scene.visual.show_item(target)
+        scene.show_status_animation(target, :attract)
         scene.display_message_and_wait(parse_text_with_pokemon(19, 327, user))
       end
     end

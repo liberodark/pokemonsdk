@@ -35,7 +35,7 @@ module Battle
               move.scene.display_message_and_wait(parse_text_with_pokemon(19, 303, user))
             else
               # Show that user is frozen and prevent action from happening
-              move.scene.visual.show_rmxp_animation(user, 469 + status_id)
+              move.scene.visual.show_status_animation(user, :freeze)
               move.scene.display_message_and_wait(parse_text_with_pokemon(19, 288, user))
               return :prevent
             end

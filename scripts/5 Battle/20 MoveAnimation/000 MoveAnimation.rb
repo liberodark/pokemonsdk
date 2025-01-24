@@ -66,7 +66,8 @@ module Battle
         visual: visual,
         user: user_sprite,
         target: target_sprites.first,
-        viewport: user_sprite.viewport
+        viewport: user_sprite.viewport,
+        camera_positionner: visual.camera_positionner
       }.method(:[])
       animations.each_with_index do |animation, index|
         animation.resolver = {

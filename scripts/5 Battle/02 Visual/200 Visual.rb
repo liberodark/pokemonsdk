@@ -16,6 +16,9 @@ module Battle
     # @return [Array] the element to dispose on #dispose
     attr_reader :to_dispose
 
+    # Not used in Visual (avoid crash when using MoveAnimation)
+    attr_accessor :camera_positionner
+
     # Create a new visual instance
     # @param scene [Scene] scene that hold the logic object
     def initialize(scene)

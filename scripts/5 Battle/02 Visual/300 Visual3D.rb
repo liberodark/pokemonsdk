@@ -1,6 +1,7 @@
 module UI
   class Sprite3D < ShaderedSprite
     prepend Fake3D::Sprite3D
+
   end
 end
 
@@ -18,12 +19,15 @@ end
 
 module Battle
   # Tell if Visual3D should be used
-  BATTLE_CAMERA_3D = false
+  BATTLE_CAMERA_3D = true
 
   # Class that manage all the things that are visually seen on the screen used only when BATTLECAMERA is true
   class Visual3D < Visual
-    # Create a new visual instance
-    # @param scene [Scene] scene that hold the logic object
+    # Return half of the width of the default resolution
+    HALF_WIDTH = 160
+
+    # Return half of the height of the default resolution
+    HALF_HEIGHT = 120
 
     # Camera of the battle
     # @return [Fake3D::Camera]
@@ -33,6 +37,9 @@ module Battle
     # @return [Fake3D::Camera]
     attr_accessor :camera_positionner
 
+    # @return Array of the sprite applied to the camera
+    attr_accessor :sprites3D
+
     # Create a new visual instance
     # @param scene [Scene] scene that hold the logic object
     def initialize(scene)
@@ -40,15 +47,28 @@ module Battle
       @sprites3D = []
       super
       # All additions relative to Camera
+      @camera.apply_to(@sprites3D + @background.battleback_sprite3D)
+    end
+
+    # Create the Visual viewport
+    def create_viewport
+      @viewport = Viewport.create(:main, 500)
+      @viewport.extend(Viewport::WithToneAndColors)
+      @viewport.shader = Shader.create(:map_shader)
+      @viewport_sub = Viewport.create(:main, 501)
+      create_cameras
+    end
+
+    # Create the camera and the camera_positionner
+    def create_cameras
       @camera = Fake3D::Camera.new(viewport)
       @camera_positionner = CameraPositionner.new(@camera)
-      @camera.apply_to(@sprites3D + @background.battleback_sprite3D)
-      @camera_actor = nil
     end
 
     # Update the visuals
     def update
       super
+      @sprites3D&.reject!(&:disposed?)
       @background.update_battleback
       update_camera
     end
@@ -72,14 +92,15 @@ module Battle
         # create the trainer sprites
         infos.battlers[bank].each_with_index do |battler, position|
           sprite = BattleUI::TrainerSprite3D.new(@viewport, @scene, battler, bank, position, infos)
+          @sprites3D.append(sprite)
           store_battler_sprite(bank, -position - 1, sprite)
         end
         # Create the Pokemon sprites
         infos.vs_type.times do |position|
-          sprite = BattleUI::PokemonSprite3D.new(@viewport, @scene)
-          @sprites3D.append(sprite)
-          @sprites3D.append(sprite.shadow)
+          sprite = BattleUI::PokemonSprite3D.new(@viewport, @scene, @camera, @camera_positionner)
           sprite.pokemon = logic.battler(bank, position)
+          @sprites3D.append(sprite) unless sprite.pokemon.nil? 
+          @sprites3D.append(sprite.shadow) unless sprite.pokemon.nil?
           @animatable << sprite
           store_battler_sprite(bank, position, sprite)
           create_info_bar(bank, position)
@@ -99,7 +120,7 @@ module Battle
     def show_player_choice_end(pokemon_index)
       @player_choice_ui.go_out
       @animations << @player_choice_ui
-      start_actor_animation
+      start_center_animation
       if @player_choice_ui.result != :attack
         spc_stop_bouncing_animation(pokemon_index)
         wait_for_animation

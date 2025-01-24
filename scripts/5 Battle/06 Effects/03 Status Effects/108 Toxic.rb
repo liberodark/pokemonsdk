@@ -55,7 +55,7 @@ module Battle
 
           # Show the effect and apply it
           scene.display_message_and_wait(parse_text_with_pokemon(19, 243, target))
-          scene.visual.show_rmxp_animation(target, 469 + status_id)
+          scene.visual.show_status_animation(target, :poison)
           logic.damage_handler.damage_change(toxic_effect, target)
 
           # Increase the toxic counter
