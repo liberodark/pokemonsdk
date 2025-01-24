@@ -333,13 +333,13 @@ module Battle
     # Critical hit count for Galarian Farfetch'd's evolution
     DamageHandler.register_post_damage_hook('PSDK post damage: ElvFarfetchD') do |_handler, _hp, _target, launcher, skill|
       next if launcher.nil?
-      next unless launcher.db_symbol == :farfetch_d && launcher.form == 1
+      next unless launcher.evolution_condition_function?(:elv_sirfetchd)
 
       launcher.increase_evolve_var if skill.critical_hit?
     end
     DamageHandler.register_post_damage_death_hook('PSDK post damage: ElvFarfetchD') do |_handler, _hp, _target, launcher, skill|
       next if launcher.nil?
-      next unless launcher.db_symbol == :farfetch_d && launcher.form == 1
+      next unless launcher.evolution_condition_function?(:elv_sirfetchd)
 
       launcher.increase_evolve_var if skill.critical_hit?
     end

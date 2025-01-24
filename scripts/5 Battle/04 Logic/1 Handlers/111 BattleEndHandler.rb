@@ -185,7 +185,9 @@ module Battle
 
     BattleEndHandler.register_no_defeat('PSDK honey gather') do |handler, players_pokemon|
       players_pokemon.each do |pokemon|
-        next unless pokemon.original.ability_db_symbol == :honey_gather && pokemon.item_holding == 0 && handler.logic.generic_rng.rand(100) < (pokemon.level / 2)
+        unless pokemon.original.ability_db_symbol == :honey_gather && pokemon.item_holding == 0 && handler.logic.generic_rng.rand(100) < (pokemon.level / 2)
+          next
+        end
         next if pokemon.original.egg?
 
         pokemon.item_holding = data_item(:honey).id
@@ -287,7 +289,7 @@ module Battle
 
     BattleEndHandler.register("Evolve Farfetch'd-G into Sirftech'd") do |handler, players_pokemon|
       players_pokemon.each do |pokemon|
-        next unless pokemon.original.db_symbol == :farfetch_d && pokemon.original.form == 1
+        next unless pokemon.evolution_condition_function?(:elv_sirfetchd)
 
         # Make sure original gets the value before the BEH evolve check (which is before back_properties)
         # Reset the evolve var if we haven't reached 3 critical hits
@@ -303,7 +305,7 @@ module Battle
 
     BattleEndHandler.register('Evolve Primeape into Annihilape') do |handler, players_pokemon|
       players_pokemon.each do |pokemon|
-        next unless pokemon.original.db_symbol == :primeape
+        next unless pokemon.evolution_condition_function?(:elv_annihilape)
 
         # Make sure original gets the value before the BEH evolve check (which is before back_properties)
         pokemon.original.evolve_var = pokemon.evolve_var || 0
