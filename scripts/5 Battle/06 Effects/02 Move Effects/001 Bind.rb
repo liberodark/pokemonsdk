@@ -106,7 +106,7 @@ module Battle
       # Get the HP factor delt by the move
       # @return [Integer]
       def hp_factor
-        return @origin.hold_item?(:binding_band) ? 8 : 6
+        return @origin.hold_item?(:binding_band) ? 6 : 8
       end
     end
   end
