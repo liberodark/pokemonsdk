@@ -125,7 +125,7 @@ module Battle
         # https://bulbapedia.bulbagarden.net/wiki/Nest_Ball#Manual_activation
         next target.rareness if target.level >= 30
 
-        next target.rareness * (((41 - target.level) * 4096 / 10.0).to_i / 4096.0).clamp(1,4)
+        next target.rareness * (((41 - target.level) * 4096 / 10.0).to_i / 4096.0).clamp(1, 4)
       end
 
       add_ball_rate_calculation(:net_ball) do |target, _pkm_ally|
@@ -143,7 +143,7 @@ module Battle
 
       add_ball_rate_calculation(:timer_ball) do |target, _pkm_ally|
         # https://bulbapedia.bulbagarden.net/wiki/Timer_Ball#Manual_activation
-        next [(1 + ($game_temp.battle_turn) * 1229.0 / 4096), 4].min * target.rareness
+        next [(1 + $game_temp.battle_turn * 1229.0 / 4096), 4].min * target.rareness
       end
 
       add_ball_rate_calculation(:dream_ball) do |target, _pkm_ally|
@@ -239,7 +239,7 @@ module Battle
 
       def show_message_and_animation(target, ball, nb_bounce, caught)
         @scene.visual.show_catch_animation(target, ball, nb_bounce, caught)
-        @scene.display_message_and_wait(parse_text(*TEXT_CATCH[(nb_bounce) % 4], PFM::Text::PKNAME[0] => target.name)) unless caught
+        @scene.display_message_and_wait(parse_text(*TEXT_CATCH[nb_bounce % 4], PFM::Text::PKNAME[0] => target.name)) unless caught
         return caught
       end
 
@@ -253,7 +253,7 @@ module Battle
         force_return(false)
       end
 
-      Hooks.register(Battle::Logic::CatchHandler, :ball_blocked, 'Check if catching is forbidden in this battle') do
+      Hooks.register(Battle::Logic::CatchHandler, :ball_blocked, 'Check if catching is forbidden in this battle') do |hook_binding|
         next unless $game_switches[Yuki::Sw::BT_NoCatch]
 
         $bag.add_item(hook_binding[:ball].db_symbol)
