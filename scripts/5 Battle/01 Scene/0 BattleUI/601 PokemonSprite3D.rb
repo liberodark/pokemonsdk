@@ -78,6 +78,12 @@ module BattleUI
       set_tone_status(@pokemon.status, true)
     end
 
+    # Pokemon sprite zoom
+    # @return [Integer]
+    def sprite_zoom
+      return enemy? ? 1 : 1.34
+    end
+
     private
 
     # create the shadow of the Pokemon with a shader
@@ -306,12 +312,6 @@ module BattleUI
     # @return [Integer]
     def fall_height(start_battle = false)
       return start_battle ? 60 : 95
-    end
-
-    # Pokemon sprite zoom
-    # @return [Integer]
-    def sprite_zoom
-      return enemy? ? 1 : 1.34
     end
   end
 end

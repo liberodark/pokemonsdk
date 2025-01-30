@@ -19,7 +19,7 @@ end
 
 module Battle
   # Tell if Visual3D should be used
-  BATTLE_CAMERA_3D = true
+  BATTLE_CAMERA_3D = false
 
   # Class that manage all the things that are visually seen on the screen used only when BATTLECAMERA is true
   class Visual3D < Visual

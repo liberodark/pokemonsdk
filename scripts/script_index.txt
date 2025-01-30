@@ -510,6 +510,7 @@ pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/175 BallStars.rb
 pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/176 BallBurst.rb
 pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/177 BallCatch.rb
 pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/178 RetrieveBurst.rb
+pokemonsdk/scripts/5 Battle/02 Visual/1 Animations/180 MegaEvolveAnimation.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/000 Transition.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/001 BattleStart.rb
 pokemonsdk/scripts/5 Battle/02 Visual/2 Transition/100 RBYTrainer.rb

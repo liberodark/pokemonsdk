@@ -333,6 +333,12 @@ module BattleUI
       return 0.2
     end
 
+    # Pokemon sprite zoom
+    # @return [Integer]
+    def sprite_zoom
+      return 1
+    end
+
     private
 
     def create_shadow
@@ -564,12 +570,6 @@ module BattleUI
     def stat_se(amount)
       filename = amount > 0 ? STAT_RISE_UP : STAT_FALL_DOWN
       return filename
-    end
-
-    # Pokemon sprite zoom
-    # @return [Integer]
-    def sprite_zoom
-      return 1
     end
 
     # Dimension of the shiny animation files

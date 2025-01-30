@@ -39,7 +39,7 @@ module Yuki
       # @param time_factor [Float] number between 0 & 1 indicating the progression of the animation
       def update_internal(time_factor)
         @on.set_position(@origin_x + @delta_x * time_factor, @origin_y + @delta_y * time_factor)
-        @on.z = @origin_z + @delta_z * time_factor
+        @on.z = @origin_z + @delta_z * time_factor unless @on.is_a?(UI::Sprite3D)
       end
     end
 

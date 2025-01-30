@@ -125,6 +125,19 @@ module Battle
       # TODO: Implement an animation for that & write the code
     end
 
+    # Show the pokemon mega evolution animation
+    # @param target [PFM::PokemonBattler]
+    def show_mega_animation(target)
+      wait_for_animation
+      mega_evolution_sprite = UI::MegaEvolveAnimation.new(@viewport, @scene, target, battler_sprite(target.bank, target.position))
+      animation = mega_evolution_sprite.mega_evolution_animation
+      @animations << animation
+      animation.start
+      wait_for_animation
+      RPG::Cache.load_animation(true)
+      mega_evolution_sprite.dispose
+    end
+
     # Make a move animation
     # @param user [PFM::PokemonBattler]
     # @param targets [Array<PFM::PokemonBattler>]

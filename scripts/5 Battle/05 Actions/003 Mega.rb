@@ -32,7 +32,7 @@ module Battle
         @scene.logic.mega_evolve.mark_as_mega_evolved(@user)
         @scene.display_message_and_wait(pre_mega_evolution_message)
         @user.mega_evolve
-        @scene.visual.show_switch_form_animation(@user)
+        @scene.visual.show_mega_animation(@user)
         @scene.display_message_and_wait(post_mega_evolution_message)
         @user.ability_effect.on_switch_event(@scene.logic.switch_handler, @user, @user)
       end
