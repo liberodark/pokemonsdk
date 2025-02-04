@@ -42,16 +42,30 @@ module Battle
         # Function that creates the actor sprites
         def create_actors_sprites
           @actor_sprites = actor_sprites
+          @actor_pokemon_sprites = actor_pokemon_sprites
           @actor_sprites.each do |sprite|
             sprite.shader.set_float_uniform('color', SHADER_COLOR)
             sprite.opacity = 0
           end
           if Yuki::FollowMe.enabled
-            actor_pokemon_sprites[0].follower_go_in_animation
+            send_followers
           elsif $game_switches[Yuki::Sw::BT_NO_BALL_ANIMATION]
-            actor_pokemon_sprites.each(&:follower_go_in_animation)
+            @actor_pokemon_sprites.each(&:follower_go_in_animation)
           end
         end
+
+        # Play the Follower go Animation on the right sprites
+        def send_followers
+          return false unless @actor_pokemon_sprites.any? { |actor_pokemon| actor_pokemon.pokemon.is_follower }
+
+          @scene.battle_info.vs_type.times do |i|
+            next unless @actor_pokemon_sprites[i].pokemon.is_follower
+            next if @actor_sprites.length > 1 && i > 0
+
+            @actor_pokemon_sprites[i].follower_go_in_animation
+          end
+        end
+
 
         # Function that create the sprite movement animation
         # @return [Yuki::Animation::TimedAnimation]
@@ -106,23 +120,25 @@ module Battle
           return animation
         end
 
+        # Check if all the Pokémon on the field are sent
+        def all_pokemon_on_field?
+          return false if !(Yuki::FollowMe.enabled && Yuki::FollowMe.pokemon_count != 0)
+          return @actor_pokemon_sprites[0].pokemon.is_follower if @scene.battle_info.vs_type == 1
+
+          return (0..Yuki::FollowMe.pokemon_count).all? { |index| @actor_pokemon_sprites[index].pokemon.is_follower }
+        end
+
         # Function that creates the animation of the player sending its Pokemon
         # @return [Yuki::Animation::TimedAnimation
         def create_player_send_animation
-          return Yuki::Animation.wait(0) if (Yuki::FollowMe.enabled && actor_pokemon_sprites.size == 1) || $game_switches[Yuki::Sw::BT_NO_BALL_ANIMATION]
+          return Yuki::Animation.wait(0) if all_pokemon_on_field? || $game_switches[Yuki::Sw::BT_NO_BALL_ANIMATION]
 
           ya = Yuki::Animation
           animation = ya.wait(0)
           animation.parallel_add(dezoom_camera_animation)
 
-          if @actor_sprites.length == 1
-            animation.parallel_add(Yuki::Animation.opacity_change(ANIMATION_DURATION, @actor_sprites[0], 0, 255, distortion: cubic_distortion))
-          elsif Yuki::FollowMe.enabled
-            animation.parallel_add(Yuki::Animation.opacity_change(ANIMATION_DURATION, @actor_sprites[1], 0, 255, distortion: cubic_distortion))
-          else
-            @actor_sprites.each do |trainer|
-              animation.parallel_add(Yuki::Animation.opacity_change(ANIMATION_DURATION, trainer, 0, 255, distortion: cubic_distortion))
-            end
+          @actor_sprites.each do |trainer|
+            animation.parallel_add(Yuki::Animation.opacity_change(ANIMATION_DURATION, trainer, 0, 255, distortion: cubic_distortion))
           end
           animation.play_before(ball_throw_player)
           animation.play_before(ya.wait(1.5))
@@ -134,6 +150,7 @@ module Battle
         # Function that creates the animation of sending the ball(s) for each actor
         # @return [Yuki::Animation::TimedAnimation]
         def ball_throw_player
+          @trainer = @actor_sprites
           return sending_ball_classic if @scene.battle_info.vs_type == 1
           return sending_ball_duo if @actor_sprites.length == 1
 
@@ -144,13 +161,11 @@ module Battle
         # @return [Yuki::Animation::TimedAnimation]
         def sending_ball_classic
           ya = Yuki::Animation
-          pokemons = actor_pokemon_sprites
-          trainers = @actor_sprites
           send_animation = ya.wait(0)
 
-          trainer_animation = trainers[0].send_ball_animation
+          trainer_animation = @trainer[0].send_ball_animation
           pokemon_animation = ya.wait(wait_time_pokemon_animation)
-          pokemon_animation.play_before(pokemons[0].go_in_animation(true))
+          pokemon_animation.play_before(@actor_pokemon_sprites[0].go_in_animation(true))
           wait_animation = ya.wait(1.5)
 
           send_animation.play_before(wait_animation)
@@ -164,18 +179,16 @@ module Battle
         # @return [Yuki::Animation::TimedAnimation]
         def sending_ball_duo
           ya = Yuki::Animation
-          pokemons = actor_pokemon_sprites
-          trainers = @actor_sprites
           send_animation = ya.wait(0)
 
-          trainer_animation = trainers[0].send_ball_animation
+          trainer_animation = @trainer[0].send_ball_animation
           pokemon_animation = ya.wait(wait_time_pokemon_animation)
           pokemon_animation2 = ya.wait(wait_time_pokemon_animation)
-          if Yuki::FollowMe.enabled
-            pokemon_animation.play_before(pokemons[1].go_in_animation(true)) unless pokemons[1].nil?
+          if @actor_pokemon_sprites[0].pokemon.is_follower
+            pokemon_animation.play_before(@actor_pokemon_sprites[1].go_in_animation(true)) unless @actor_pokemon_sprites[1].nil?
           else
-            pokemon_animation.play_before(pokemons[0].go_in_animation(true))
-            pokemon_animation2.play_before(pokemons[1].go_in_animation(true)) unless pokemons[1].nil?
+            pokemon_animation.play_before(@actor_pokemon_sprites[0].go_in_animation(true))
+            pokemon_animation2.play_before(@actor_pokemon_sprites[1].go_in_animation(true)) unless @actor_pokemon_sprites[1].nil?
           end
           wait_animation = ya.wait(1.5)
 
@@ -191,8 +204,6 @@ module Battle
         # @return [Yuki::Animation::TimedAnimation]
         def sending_ball_multi
           ya = Yuki::Animation
-          pokemons = actor_pokemon_sprites
-          trainers = @actor_sprites
           send_animation = ya.wait(0)
 
           send_animation.play_before(ya.wait(1.5))
@@ -206,11 +217,12 @@ module Battle
         # @return [Yuki::Animation::TimedAnimation]
         def dezoom_camera_animation
           ya = Yuki::Animation
+          x, y, z, axis_x = *CAMERA_COORDINATES_PLAYER_SEND
 
-          animation = ya.scalar(ANIMATION_DURATION, @camera_positionner, :x, @camera.x, CAMERA_COORDINATES_PLAYER_SEND[0])
-          animation.parallel_add(ya.scalar(ANIMATION_DURATION, @camera_positionner, :y, @camera.y, CAMERA_COORDINATES_PLAYER_SEND[1]))
-          animation.parallel_add(ya.scalar(ANIMATION_DURATION, @camera_positionner, :z, @camera.z, CAMERA_COORDINATES_PLAYER_SEND[2]))
-          animation.parallel_add(ya.scalar(ANIMATION_DURATION, @camera_positionner, :rotate_x, 0, CAMERA_COORDINATES_PLAYER_SEND[3]))
+          animation = ya.scalar(ANIMATION_DURATION, @camera_positionner, :x, @camera.x, x)
+          animation.parallel_add(ya.scalar(ANIMATION_DURATION, @camera_positionner, :y, @camera.y, y))
+          animation.parallel_add(ya.scalar(ANIMATION_DURATION, @camera_positionner, :z, @camera.z, z))
+          animation.parallel_add(ya.scalar(ANIMATION_DURATION, @camera_positionner, :rotate_x, 0, axis_x))
 
           return animation
         end
@@ -219,13 +231,13 @@ module Battle
         # @return [Yuki::Animation::TimedAnimation]
         def reset_camera_animation
           ya = Yuki::Animation
-          x,y,z,axe_x = *CAMERA_COORDINATES_PLAYER_SEND
+          x, y, z, axis_x = *CAMERA_COORDINATES_PLAYER_SEND
           end_x, end_y, end_z, end_axe_x = *CAMERA_END_COORDINATES
 
           animation = ya.scalar(ANIMATION_DURATION, @camera_positionner, :x, x, end_x)
           animation.parallel_add(ya.scalar(ANIMATION_DURATION, @camera_positionner, :y, y, end_y))
           animation.parallel_add(ya.scalar(ANIMATION_DURATION, @camera_positionner, :z, z, end_z))
-          animation.parallel_add(ya.scalar(ANIMATION_DURATION, @camera_positionner, :rotate_x, axe_x, end_axe_x))
+          animation.parallel_add(ya.scalar(ANIMATION_DURATION, @camera_positionner, :rotate_x, axis_x, end_axe_x))
 
           return animation
         end
@@ -234,13 +246,10 @@ module Battle
         # @return [Yuki::Animation::TimedAnimation]
         def trainer_send_ball_animation(index)
           ya = Yuki::Animation
-          trainers = @actor_sprites
-          animation = ya.wait(0)
 
-          return animation.play_before(trainers[index].send_ball_animation) if index == 1
-          return animation.play_before(trainers[index].send_ball_animation) if !($game_switches[Yuki::Sw::BT_NO_BALL_ANIMATION] || Yuki::FollowMe.enabled)
+          return @trainer[index].send_ball_animation unless $game_switches[Yuki::Sw::BT_NO_BALL_ANIMATION]
 
-          return animation
+          return ya.wait(0)
         end
 
         # Animation for a Pokémon going into battle
@@ -248,13 +257,10 @@ module Battle
         # @return [Yuki::Animation::TimedAnimation]
         def pokemon_send_ball_animation(index)
           ya = Yuki::Animation
-          pokemons = actor_pokemon_sprites
           animation = ya.wait(wait_time_pokemon_animation)
 
-          if Yuki::FollowMe.enabled && index == 1
-            animation.play_before(pokemons[1].go_in_animation(true))
-          elsif !Yuki::FollowMe.enabled
-            animation.play_before(pokemons[index].go_in_animation(true))
+          unless @actor_pokemon_sprites[index].pokemon.is_follower
+            animation.play_before(@actor_pokemon_sprites[index].go_in_animation(true))
           end
 
           return animation
