@@ -279,8 +279,9 @@ module PFM
       next unless db_symbol == :ninjask && !PFM.game_state.full? && $bag.contain_item?(:poke_ball)
 
       shedinja = Pokemon.new(:shedinja, level, shiny?, !shiny?, 0, {
-                               stats: [iv_hp, iv_atk, iv_dfe, iv_ats, iv_dfs, iv_spd],
-                               bonus: [ev_hp, ev_atk, ev_dfe, ev_ats, ev_dfs, ev_spd],
+                               nature: nature_db_symbol,
+                               stats: [iv_hp, iv_atk, iv_dfe, iv_spd, iv_ats, iv_dfs],
+                               bonus: [ev_hp, ev_atk, ev_dfe, ev_spd, ev_ats, ev_dfs],
                                trainer_name: trainer_name, trainer_id: trainer_id,
                                captured_in: captured_in, captured_at: captured_at, captured_level: captured_level,
                                egg_in: egg_in, egg_at: egg_at,
