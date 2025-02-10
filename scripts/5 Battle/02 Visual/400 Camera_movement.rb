@@ -71,9 +71,9 @@ module Battle
 
     # Center the camera on one of the sprite
     # @param bank [Integer]
-    # @param position [Integer] default 0, will be use for next update
-    def center_target(bank, position = 0)
-      if @scene.battle_info.vs_type == 1
+    # @param position [Integer]
+    def center_target(bank, position)
+      if @scene.battle_info.vs_type == 1 || position < 0
         coordinates = camera_zoom_1v1(bank)
       else
         coordinates = camera_zoom_2v2(bank, position)
@@ -96,13 +96,12 @@ module Battle
 
     # Coordinates to zoom for the camera in 2v2
     # @param bank [Integer]
-    # @param position [Integer] default 0, will be use for next update
+    # @param position [Integer]
     # @return Array[<Float,Float,Float>]
     def camera_zoom_2v2(bank, position)
-      # TODO (make coordinates more accurate, and dependent of the position)
-      return [56, -30, 1.4] if bank == 1
+      return position == 0 ? [44, -33, 1.4] : [68, -27, 1.4] if bank == 1
 
-      return [-40, 13, 1.2]
+      return position == 0 ? [-52, 10, 1.2] : [-28, 16, 1.2]
     end
   end
 end

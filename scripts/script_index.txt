@@ -228,6 +228,7 @@ pokemonsdk/scripts/4 Systems/005 Animation/102 MessageLocked.rb
 pokemonsdk/scripts/4 Systems/005 Animation/103 Handler.rb
 pokemonsdk/scripts/4 Systems/005 Animation/104 MoveAnimationHelper.rb
 pokemonsdk/scripts/4 Systems/005 Animation/105 SignalWaiter.rb
+pokemonsdk/scripts/4 Systems/005 Animation/200 EllipseAnimation.rb
 pokemonsdk/scripts/4 Systems/100 Menu/099 MenuMixin.rb
 pokemonsdk/scripts/4 Systems/100 Menu/100 Menu.rb
 pokemonsdk/scripts/4 Systems/100 Menu/300 MenuButtonBase.rb
@@ -1282,8 +1283,9 @@ pokemonsdk/scripts/5 Battle/10 Move/2 Definitions/300 Yawn.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/000 MoveAnimation.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/001 UserBankRelativeAnimation.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/002 MoveAnimation3D.rb
-pokemonsdk/scripts/5 Battle/20 MoveAnimation/006 VineWhip.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 Tail_Whip.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 Thunder_wave.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 VineWhip.rb
 pokemonsdk/scripts/5 Battle/30 AI/001 BattleSceneMock.rb
 pokemonsdk/scripts/5 Battle/30 AI/002 BattleVisualMock.rb
 pokemonsdk/scripts/5 Battle/30 AI/003 BattleLogicMock.rb

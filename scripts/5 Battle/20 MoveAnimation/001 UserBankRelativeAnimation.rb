@@ -1,4 +1,4 @@
-## Module allowing the animation to chose the bank of the user in case of differeces
+## Module allowing the animation to chose the bank of the user in case of differences
 module Yuki
   module Animation
     class UserBankRelativeAnimation < Command
@@ -7,7 +7,7 @@ module Yuki
         @bank_animations = []
       end
 
-      def play_on_bank(bank, other)
+      def play_before_on_bank(bank, other)
         if @bank_animations[bank]
           @bank_animations[bank].play_before(other)
         else

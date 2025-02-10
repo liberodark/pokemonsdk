@@ -339,6 +339,15 @@ module BattleUI
       return 1
     end
 
+    # Move the camera to the battler sprite
+    # @param use_position [Boolean] if the position should be used
+    # @note can't send resolved parameter through Visual so PokemonSprite is used as an intermediary
+    def center_camera(use_position = true)
+      return false unless Battle::BATTLE_CAMERA_3D
+
+      @scene.visual.center_target(@bank, use_position ? @position : -1)
+    end
+
     private
 
     def create_shadow

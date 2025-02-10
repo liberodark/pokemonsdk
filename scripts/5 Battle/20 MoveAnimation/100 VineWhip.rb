@@ -1,5 +1,6 @@
 ya = Yuki::Animation
 # VineWhip
+
 animation_user = ya.wait(0.05)
 animation_target = ya.create_sprite(:viewport, :sprite, Sprite, nil, [:load, 'vine-whip', :animation], [:set_rect, 0, 0, 200, 200], [:zoom=, 1], [:set_origin, 100, 100])
 main_t_anim = ya.resolved

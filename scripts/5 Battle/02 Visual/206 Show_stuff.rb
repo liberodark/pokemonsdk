@@ -196,6 +196,12 @@ module Battle
       wait_for_animation
     end
 
+    # Define the translation to the center of the Screen
+    # @note This method is used only in Visual3D
+    def start_center_animation
+      return false
+    end
+
     private
 
     # Create the throw ball animation
