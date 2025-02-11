@@ -15,6 +15,7 @@ module Battle
         battlers = @logic.all_battlers.reject { |creature| creature == @scene.battle_info.caught_pokemon }
         battlers.each(&:copy_properties_back_to_original)
         exec_hooks(BattleEndHandler, :battle_end_nuzlocke, binding) if PFM.game_state.nuzlocke.enabled?
+        exec_hooks(BattleEndHandler, :battle_end_last, binding)
         unless $scene.is_a?(Yuki::SoftReset) || $scene.is_a?(Scene_Title)
           $game_system.bgm_play($game_system.playing_bgm)
           $game_system.bgs_play($game_system.playing_bgs)
@@ -102,6 +103,16 @@ module Battle
         # @yieldparam players_pokemon [Array<PFM::PokemonBattler>]
         def register_nuzlocke(reason)
           Hooks.register(BattleEndHandler, :battle_end_nuzlocke, reason) do |hook_binding|
+            yield(self, hook_binding.local_variable_get(:players_pokemon))
+          end
+        end
+
+        # Function that registers a battle end procedure after properties have been copied back onto actors
+        # @param reason [String] reason of the battle_end_last registration
+        # @yieldparam handler [BattleEndHandler]
+        # @yieldparam players_pokemon [Array<PFM::PokemonBattler>]
+        def register_battle_last(reason)
+          Hooks.register(BattleEndHandler, :battle_end_last, reason) do |hook_binding|
             yield(self, hook_binding.local_variable_get(:players_pokemon))
           end
         end
