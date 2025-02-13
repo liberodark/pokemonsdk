@@ -147,6 +147,10 @@ module PFM
     # Variable responsible of holding the value used for various evolution methods
     # @return [Integer, nil]
     attr_accessor :evolve_var
+    # Represent the Pokerus caracteristics of the Pokemon
+    # @see https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9rus#Technical_information
+    # @return [Byte]
+    attr_accessor :pokerus
 
     # ========================
     # Battle Related Modifier
@@ -236,6 +240,78 @@ module PFM
     # @return [Integer]
     def shiny_rate
       16
+    end
+
+    # Return true if the Pokemon must catch the Pokerus randomly. A Pokemon has a 3 in 65536 chance of getting the Pokerus.
+    # @return [Boolean] true if the pokemon must catch the Pokerus
+    def pokerus_check?
+      return rand(65_536) < 3
+    end
+
+    # Infect the pokemon with Pokerus. If the pokemon already has the Pokerus or is already cured, does nothing.
+    # @note Can be used to force the cured version of the Pokerus.
+    # @param opts [Hash] Hash describing optional value you want to assign to the Pokemon (for the Pokerus properties)
+    def infect_with_pokerus(opts = {})
+      return if pokerus_infected? || pokerus_cured? || opts[:no_pokerus]
+      return unless opts[:force_pokerus] || opts[:pokerus_cured] || pokerus_check?
+
+      strain = opts[:strain] ? opts[:strain].clamp(1, 15) : rand(1..15) # 0 is not a valid strain (would lose its Pokerus status once cured)
+      @pokerus = strain << 4
+      log_debug("Pokerus initialized with strain #{strain}: Value of Pokerus is #{@pokerus.to_s(2).rjust(8, '0')}")
+
+      modulo = strain % 4 + 1
+      log_debug("Nb of days for strain #{strain} is #{modulo} (#{modulo.to_s(2).rjust(8, '0')}) (0 means it's cured)")
+      modulo = 0 if opts[:pokerus_cured]
+      @pokerus |= modulo
+      log_debug("Pokerus final value is: #{@pokerus.to_s(2).rjust(8, '0')}")
+      log_debug("Pokerus cured in: #{pokerus_remaining_days} days")
+    end
+
+    # Tell if the pokemon has the Pokerus and is not yet cured
+    # @return [Boolean]
+    def pokerus_infected?
+      return pokerus_remaining_days > 0
+    end
+
+    # Return the number of remaining days before the Pokerus is cured.
+    # @note Return the lower 4 bits of Pokerus, as an integer value. 0 Means the Pokerus is cured (or the pokemon never had it).
+    # @return [Integer]
+    def pokerus_remaining_days
+      @pokerus = 0b00000000 if @pokerus.nil? # Ensure the Pokerus is initialized, for previously created pokemon
+
+      return @pokerus & 0b00001111
+    end
+
+    # Return the strain of the Pokerus.
+    # @note Return the 4 higher bits of Pokerus as an integer value. 0 means the pokemon never got the Pokerus.
+    # @return [Integer]
+    def pokerus_strain
+      @pokerus = 0b00000000 if @pokerus.nil? # Ensure the Pokerus is initialized, for previously created pokemon
+
+      return @pokerus & 0b11110000
+    end
+
+    # True if the pokemon has been cured from the Pokerus.
+    # @note Return true if the 4 higher bits of Pokerus are not 0 and the 4 lower bits are 0.
+    # @return [Boolean]
+    def pokerus_cured?
+      return pokerus_remaining_days == 0 && pokerus_strain > 0
+    end
+
+    # Decrease by one day the Pokerus counter.
+    # @note If 0 is reached, the Pokerus is cured.
+    # @note If the pokemon is not infected or is already cured, does nothing.
+    def decrease_pokerus_days
+      return unless pokerus_infected?
+
+      @pokerus -= 1 # works since we just have to decrease the lower 4 bits
+      log_debug("Pokerus updated value is: #{@pokerus.to_s(2).rjust(8, '0')}")
+    end
+
+    # Return true if the pokemon is infected by the Pokerus or has been cured.
+    # @return [Boolean]
+    def pokerus_affected?
+      return pokerus_infected? || pokerus_cured?
     end
 
     # Return the db_symbol of the Pokemon in the database

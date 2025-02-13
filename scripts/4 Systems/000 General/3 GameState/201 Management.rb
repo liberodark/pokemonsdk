@@ -60,7 +60,7 @@ module PFM
       end
     end
 
-    # Add a Pokemon to the pary (also update the Pokedex Informations)
+    # Add a Pokemon to the party (also update the Pokedex Informations)
     # @param pkmn [PFM::Pokemon]
     # @return [Boolean, Integer] Box index if stored in a box, false if failed, true if stored in the Party
     def add_pokemon(pkmn)
@@ -281,6 +281,18 @@ module PFM
           break(false) unless pokemon.send(property) == value
         end
       end
+    end
+
+    # Return the two adjacent pokemon in the party of the provided pokemon.
+    # @note Empty array is returned if the pokemon is alone in its party. One pokemon is returned if there are 2 pokemon in the party.
+    # @note Empty array is returned if the provided pokemon is not in the party.
+    # @param pokemon [PFM::Pokemon]
+    # @return [Array<PFM::Pokemon>]
+    def adjacent_in_party(pokemon)
+      return [] if pokemon.position.nil? || size < 2
+
+      position = @actors.index(pokemon)
+      return [@actors[(position - 1) % size], @actors[(position + 1) % size]].compact
     end
   end
 end

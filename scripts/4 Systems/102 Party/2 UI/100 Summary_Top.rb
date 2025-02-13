@@ -19,6 +19,10 @@ module UI
       @item.visible = false if pokemon.egg?
       @ball.set_bitmap(data_item(pokemon.captured_with).icon, :icon)
       @star.visible = pokemon.shiny && !pokemon.egg?
+      @pokerus.visible = pokemon.pokerus_affected? && !pokemon.egg?
+      return unless @pokerus.visible
+
+      @pokerus.load(pokemon.pokerus_cured? ? pokerus_cured_icon : pokerus_affected_icon, :interface)
     end
 
     # Update the graphics
@@ -35,6 +39,7 @@ module UI
       @item = create_item
       @ball = create_ball
       @star = create_star
+      @pokerus = create_pokerus
       create_status
     end
 
@@ -66,6 +71,22 @@ module UI
     # @return [Sprite]
     def create_star
       push(11, 27, 'shiny')
+    end
+
+    # @return [Sprite]
+    def create_pokerus
+      push(90, 27, 'icon_pokerus_affected')
+    end
+
+    # Pokerus cured icon filepath
+    # @return [String]
+    def pokerus_cured_icon
+      return 'icon_pokerus_cured'
+    end
+
+    # Pokerus affected icon filepath
+    def pokerus_affected_icon
+      return 'icon_pokerus_affected'
     end
 
     def create_status

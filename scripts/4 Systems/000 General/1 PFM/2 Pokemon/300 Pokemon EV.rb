@@ -7,15 +7,14 @@ module PFM
       return [data.ev_hp, data.ev_atk, data.ev_dfe, data.ev_spd, data.ev_ats, data.ev_dfs]
     end
 
-    # Add ev bonus to a Pokemon (with item interaction : x2)
+    # Add ev bonus to a Pokemon
     # @param list [Array<Integer>] an ev list  : [hp, atk, dfe, spd, ats, dfs]
     # @return [Boolean, nil] if the ev had totally been added or not (nil = couldn't be added at all)
     def add_bonus(list)
       return nil if egg?
 
       stats = Configs.stats
-      # Bracelet Macho
-      n = item_db_symbol == :macho_brace ? 2 : 1
+      n = ev_modifier
       r = add_ev_hp(list[stats.hp_index] * n, total_ev)
       r &= add_ev_atk(list[stats.atk_index] * n, total_ev)
       r &= add_ev_dfe(list[stats.dfe_index] * n, total_ev)
@@ -23,6 +22,15 @@ module PFM
       r &= add_ev_ats(list[stats.ats_index] * n, total_ev)
       r &= add_ev_dfs(list[stats.dfs_index] * n, total_ev)
       return r
+    end
+
+    # Return the EV modifier depending on some conditions
+    # @return [Integer] the EV modifier
+    def ev_modifier
+      n = 1
+      n *= 2 if item_db_symbol == :macho_brace
+      n *= 2 if pokerus_affected?
+      return n
     end
 
     # Add ev bonus to a Pokemon (without item interaction)

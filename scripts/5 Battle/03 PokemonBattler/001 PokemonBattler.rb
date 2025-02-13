@@ -12,6 +12,7 @@ module PFM
       @captured_with @captured_in @captured_at @captured_level
       @gender @skill_learnt @ribbons @character
       @exp_rate @hp_rate @egg_at @egg_in @evolve_var
+      @pokerus
     ]
     # List of properties to copy with transform
     TRANSFORM_COPIED_PROPERTIES = %i[
@@ -37,6 +38,7 @@ module PFM
       @hp @status @status_count @item_holding
       @captured_with @captured_in @captured_at @captured_level
       @gender @character @hp_rate @evolve_var
+      @pokerus
     ]
 
     # @return [Array<Battle::Move>] the moveset of the Pokemon

@@ -6,6 +6,7 @@ module Battle
 
       # Process the battle end
       def process
+        log_debug('Exiting battle process')
         @scene.message_window.blocking = true
         players_pokemon = @logic.all_battlers.select(&:from_party?)
         players_pokemon.concat($actors.map { |creature| PFM::PokemonBattler.new(creature, $scene) }) if players_pokemon.empty?
@@ -331,6 +332,23 @@ module Battle
       end
       caught_pokemon = handler.logic.battle_info.caught_pokemon
       PFM.game_state.nuzlocke.lock_catch_in_current_zone(caught_pokemon.id) if caught_pokemon
+    end
+
+    BattleEndHandler.register('PSDK Pokerus battle management') do |handler|
+      $pokemon_party.actors.select(&:pokerus_infected?).each do |pokemon|
+        log_debug("Infecting neighboring pokemon of #{pokemon}")
+        $pokemon_party.adjacent_in_party(pokemon).each do |ally|
+          log_debug("Infecting #{ally} with pokerus")
+          ally.infect_with_pokerus({ force_pokerus: true })
+          log_debug("#{ally} affected with pokerus ? #{ally.pokerus_infected?}")
+        end
+      end
+
+      handler.logic.all_battlers.select(&:from_player_party?).each do |battler|
+        next unless battler.last_battle_turn > 0
+
+        battler.original.infect_with_pokerus
+      end
     end
   end
 end

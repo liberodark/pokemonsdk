@@ -102,6 +102,12 @@ module Scheduler
     selected.each { |pkmn| pkmn.form_calibrate(:none) if $env.sunset? || $env.night? }
   end
 
+  add_proc(:on_hour_update, ::Scene_Map, 'Updating Pokerus status at midnight', 1000) do
+    next if $game_variables[Yuki::Sw::TJN_NoTime] || $game_variables[Yuki::Var::TJN_Hour] != 0
+
+    PFM.game_state.actors.select(&:pokerus_infected?).each(&:decrease_pokerus_days)
+  end
+
   add_proc(:on_scene_switch, GamePlay::Load, 'Correction of forms', 1000) do
     next unless $scene.is_a?(Scene_Map)
 
@@ -110,6 +116,37 @@ module Scheduler
     $actors.each(&block)
     $storage.each_pokemon(&block)
     $wild_battle.each_roaming_pokemon(&block)
+  end
+
+  add_proc(:on_scene_switch, GamePlay::Load, 'Updating Pokerus status on load', 1000) do
+    next unless $scene.is_a?(Scene_Map)
+    next unless $game_switches[Yuki::Sw::TJN_RealTime]
+
+    log_debug('Update pokerus status on load')
+
+    # Year is not save so we get current year. If saved date is before current date, we assume the player hasn't played the game since last year.
+    curr_time = Time.new
+    curr_year = curr_time.year.to_s
+    current_time = curr_time.to_i
+    log_debug("Current time: #{curr_time}")
+    log_debug("Current time in sec: #{current_time}")
+    mon = $game_variables[Yuki::Var::TJN_Month]
+    day = $game_variables[Yuki::Var::TJN_MDay]
+    hou = $game_variables[Yuki::Var::TJN_Hour]
+    min = $game_variables[Yuki::Var::TJN_Min]
+    save_time = Time.new(curr_year, mon, day, hou, min)
+    last_save_time = save_time.to_i
+    log_debug("Save time: #{save_time}")
+    log_debug("Save time in sec: #{last_save_time}")
+
+    nb_days_since_save = 4
+    nb_days_since_save = ((current_time - last_save_time) / 86_400).to_i if last_save_time < current_time
+    nb_days_since_save = nb_days_since_save.clamp(0, 4) # Because 4 is the max number of days before the pokerus is no longer contagious
+    log_debug("Days since last save: #{nb_days_since_save}")
+
+    nb_days_since_save.times do
+      PFM.game_state.actors.select(&:pokerus_infected?).each(&:decrease_pokerus_days)
+    end
   end
 
   add_proc(:on_update, :any, 'KeyBinding addition', 0) do

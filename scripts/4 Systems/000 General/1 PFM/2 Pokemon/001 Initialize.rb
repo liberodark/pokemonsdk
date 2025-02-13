@@ -41,8 +41,13 @@ module PFM
     # @option opts [Array(Integer, Integer)] :memo_text Text used for the memo ([file_id, text_id])
     # @option opts [String] :trainer_name Name of the trainer that caught / got the Pokemon
     # @option opts [Integer] :trainer_id ID of the trainer that caught / got the Pokemon
+    # @option opts [Boolean] :force_pokerus The Pokemon will be infected with pokerus
+    # @option opts [Boolean] :force_pokerus_cured The Pokemon will be infected with the cured version of the pokerus (override force_pokerus)
+    # @option opts [Integer] :strain If force_pokerus or force_pokerus_cured is true, this force the pokerus strain (clamped between 1 and 15)
+    # @option opts [Boolean] :no_pokerus If the Pokemon has 0% chance to have pokerus (override force_pokerus and force_pokerus_cured)
     def initialize(id, level, force_shiny = false, no_shiny = false, form = -1, opts = {})
       primary_data_initialize(id, level, force_shiny, no_shiny)
+      pokerus_initialize(opts)
       catch_data_initialize(opts)
       form_data_initialize(form)
       stat_data_initialize(opts)
@@ -121,7 +126,16 @@ module PFM
       return n
     end
 
-    # Method that initialize the data related to caching
+    # Method that initialize the pokerus data
+    # @param opts [Hash] Hash describing optional value you want to assign to the Pokemon (for the pokerus properties)
+    def pokerus_initialize(opts = {})
+      @pokerus = 0b00000000
+      return unless opts[:force_pokerus] || opts[:pokerus_cured]
+
+      infect_with_pokerus(opts)
+    end
+
+    # Method that initialize the data related to catching
     # @param opts [Hash] Hash describing optional value you want to assign to the Pokemon
     def catch_data_initialize(opts)
       @captured_with = data_item(opts[:captured_with] || :poke_ball).id

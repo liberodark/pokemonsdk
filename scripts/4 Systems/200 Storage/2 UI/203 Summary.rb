@@ -50,11 +50,15 @@ module UI
       end
 
       # Update the shown pokemon
+      # @param pokemon [PFM::Pokemon]
       def data=(pokemon)
         super
         @pokemon = pokemon
         if @sprite.visible
           reset_text_visibility
+          @shiny_icon.visible = @pokemon&.shiny?
+          @pokerus_icon.visible = @pokemon&.pokerus_affected?
+          update_pokerus_icon
           @invisible_if_egg.each { |sprite| sprite.visible = false } if @pokemon&.egg?
         end
       end
@@ -101,6 +105,13 @@ module UI
         end
       end
 
+      # Update the Pokerus icon texture
+      def update_pokerus_icon
+        return false unless @pokerus_icon&.visible
+
+        @pokerus_icon.load(@pokemon&.pokerus_cured? ? pokerus_cured_icon : pokerus_affected_icon, :interface)
+      end
+
       def create_stack
         create_background
         create_press_letter
@@ -127,6 +138,10 @@ module UI
         no_egg add_text(76, 62, 0, 15, :level_text, color: 10, type: SymText)
         no_egg add_sprite(5, 172, NO_INITIAL_IMAGE, type: UI::Type1Sprite).set_z(6)
         no_egg add_sprite(57, 172, NO_INITIAL_IMAGE, type: UI::Type2Sprite).set_z(6)
+        no_egg @shiny_icon = add_sprite(11, 52, 'shiny')
+        @shiny_icon.set_z(6)
+        no_egg @pokerus_icon = add_sprite(87, 51, 'icon_pokerus_affected')
+        @pokerus_icon.set_z(6)
         # Todo Add Symbols
         @transitionning_texts = [
           add_text(8, 189, 0, 15, :nature_text, color: 10, type: SymText),
@@ -134,6 +149,17 @@ module UI
           add_text(8, 189, 0, 15, :item_name, color: 10, type: SymText)
         ]
         @transitionning_texts.each { |text| no_egg(text) }
+      end
+
+      # Pokerus cured icon filepath
+      # @return [String]
+      def pokerus_cured_icon
+        return 'icon_pokerus_cured'
+      end
+
+      # Pokerus affected icon filepath
+      def pokerus_affected_icon
+        return 'icon_pokerus_affected'
       end
 
       def reset_text_visibility
