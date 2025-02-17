@@ -29,6 +29,8 @@ module Battle
     # @param amount [Integer] value for the changement
     def show_stat_animation(target, amount)
       wait_for_animation
+      return if target.effects.has?(&:out_of_reach?)
+
       target_sprite = battler_sprite(target.bank, target.position)
       target_sprite.change_stat_animation(amount)
       wait_for_animation
@@ -40,6 +42,7 @@ module Battle
     def show_status_animation(target, status)
       wait_for_animation
       return if status == :flinch
+
       target_sprite = battler_sprite(target.bank, target.position)
       target_sprite.status_animation(status)
       wait_for_animation
@@ -49,6 +52,8 @@ module Battle
     # @param target [PFM::PokemonBattler]
     def heal_status_remove_tone(target)
       wait_for_animation
+      return if target.position < 0
+
       target_sprite = battler_sprite(target.bank, target.position)
       target_sprite.remove_tone_animation
       wait_for_animation
