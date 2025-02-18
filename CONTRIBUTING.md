@@ -19,6 +19,45 @@ In your Pokémon SDK folder, you'll open `cmd.bat` and write the following comma
     * You can get the url by clicking on `clone` in your PSDK Fork details. Take the SSH URL otherwise it'll be hard to push.
 * `git pull`
 
+## Setup the required extensions to ensure your code follows the good practices
+
+If you don't setup these extensions, your code might not follow the good practices and future code reviews will point that out. Assuming you're using VSCode, here are the steps you need to follow. 
+- Install the "Ruby LSP" VSCode extension 
+- Install the "Ruby Solargraph" VSCode extension
+- Open a cmd **in Admin**, then run this command: `gem install solargraph && gem install ruby-lsp`
+- In VSCode (assuming you're using VSCode in english), tap CTRL+P, then '>', then select "Preferences: Open User Settings (JSON)"
+- In this JSON, paste this between the present brackets (or after your own configuration if you already have one), and don't forget the commas:
+```json
+    "solargraph.diagnostics": true,
+    "solargraph.formatting": false,
+    "rubyLsp.enabledFeatures": {
+        "codeActions": true,
+        "diagnostics": true,
+        "documentHighlights": true,
+        "documentLink": true,
+        "documentSymbols": true,
+        "foldingRanges": true,
+        "formatting": true,
+        "hover": true,
+        "inlayHint": true,
+        "onTypeFormatting": true,
+        "selectionRanges": true,
+        "semanticHighlighting": true,
+        "completion": true,
+        "codeLens": true,
+        "definition": true,
+        "workspaceSymbol": true,
+        "signatureHelp": true,
+        "typeHierarchy": true
+    },
+    "rubyLsp.formatter": "none",
+    "rubyLsp.rubyExecutablePath": "C:\\Ruby30\\bin"
+```
+- On the last line, make sure to replace the `C:\\Ruby30\\bin` by the filepath of the bin folder of your Ruby version. Most generally, it'll be located in C:, and be called Ruby30 (for Ruby 3.0), Ruby31 (for Ruby 3.1), etc. Ruby LSP might not launch if not properly done.
+- Reboot VSCode, then verify on the bottom-right part of VSCode that the messages about "No bundle found" and "No .ruby-version-file found" are displayed, in this order. If that's the case, then it's a good sign you've done it right.
+- Wait a few seconds as Ruby LSP can be a bit slow to initialize depending on your hardware.
+- Rubocop should now be policing your code. You can test whether it's the case or not by writing your worst piece of code, like several guard clauses without any line break or a single return value surrounded by parenthesis. If a blue line appear under your monstrosity then you've completed this task!
+
 ## When Making a new feature or a bugfix
 
 You should follow the branch naming :
