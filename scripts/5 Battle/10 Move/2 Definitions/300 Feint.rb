@@ -40,13 +40,13 @@ module Battle
         end
       end
 
-      INCREASED_POWER_MOVES = %i[protect]
+      INCREASED_POWER_MOVES = %i[s_protect s_crafty_shield]
 
       # Does the move increase the attack power ?
       # @param successful_move_history [PFM::PokemonBattler::SuccessfulMoveHistory]
       # @return [Boolean]
       def increased_power_move?(successful_move_history)
-        successful_move_history.current_turn? && INCREASED_POWER_MOVES.include?(successful_move_history.move.db_symbol)
+        successful_move_history.current_turn? && INCREASED_POWER_MOVES.include?(successful_move_history.move.be_method)
       end
 
       # Increased power value
@@ -55,7 +55,7 @@ module Battle
         50
       end
 
-      LIFTED_EFFECTS = %i[protect]
+      LIFTED_EFFECTS = %i[protect crafty_shield]
 
       # Is the effect lifted by the move
       # @param effect [Battle::Effects::EffectBase]
