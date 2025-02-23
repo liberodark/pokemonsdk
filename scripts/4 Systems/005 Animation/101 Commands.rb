@@ -162,6 +162,7 @@ module Yuki
       # Execute the sprite creation command
       def update_internal
         sprite = @type.new(resolve(@viewport), *@args)
+        sprite.shader = Shader.create(:color_shader) unless $scene.is_a?(Battle::Scene) && $scene.visual.is_a?(Battle::Visual3D)
         @properties.each { |property| sprite.send(*property) }
         @resolver.receiver[@name] = sprite
       end

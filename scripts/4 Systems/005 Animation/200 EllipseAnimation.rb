@@ -1,6 +1,7 @@
 module Yuki
   module Animation
     module_function
+
     # Class that performs a 2D elliptical animation (follows an ellipse)
     class EllipseAnimation < TimedAnimation
       # Create a new EllipseAnimation
@@ -13,8 +14,7 @@ module Yuki
       # @param distortion [#call, Symbol] callable taking one parameter (between 0 & 1) and
       #   converting it to another number (between 0 & 1) to distort time
       # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
-      def initialize(time_to_process, on, property, a, b, turn: 1, distortion: :UNICITY_DISTORTION,
-                     time_source: :SCENE_TIME_SOURCE)
+      def initialize(time_to_process, on, property, a, b, turn: 1, distortion: :UNICITY_DISTORTION, time_source: :SCENE_TIME_SOURCE)
         super(time_to_process, distortion, time_source)
         @a_param = a
         @b_param = b
@@ -53,13 +53,12 @@ module Yuki
     # @param on [Object] object that will receive the property
     # @param a [Float, Symbol] semi-major axis (horizontal radius)
     # @param b [Float, Symbol] semi-minor axis (vertical radius)
-    # @param turn [Integer, float] number of turns
+    # @param turn [Integer] number of turns
     # @param distortion [#call, Symbol] callable taking one parameter (between 0 & 1) and
     #   converting it to another number (between 0 & 1) to distort time
     # @param time_source [#call, Symbol] callable taking no parameter and giving the current time
     def ellipse(during, on, a, b, turn: 1, distortion: :UNICITY_DISTORTION, time_source: :SCENE_TIME_SOURCE)
-      EllipseAnimation.new(during, on, :set_position, a, b, turn: turn,
-                           distortion: distortion, time_source: time_source)
+      EllipseAnimation.new(during, on, :set_position, a, b, turn: turn, distortion: distortion, time_source: time_source)
     end
   end
 end

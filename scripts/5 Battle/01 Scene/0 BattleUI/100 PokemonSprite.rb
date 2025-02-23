@@ -37,10 +37,10 @@ module BattleUI
     SHINY_SE = 'se_shiny'
 
     # Sound played when the stat rise up
-    STAT_RISE_UP = 'move/stat_rise_up'
+    STAT_RISE_UP = 'moves/stat_rise_up'
 
     # Sound played when the stat fall down
-    STAT_FALL_DOWN = 'move/stat_fall_down'
+    STAT_FALL_DOWN = 'moves/stat_fall_down'
 
     # Tell if the sprite is currently selected
     # @return [Boolean]
