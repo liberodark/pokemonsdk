@@ -22,9 +22,10 @@ class Game_Character
       return true unless @sliding
       return true if $game_switches[::Yuki::Sw::ThroughEvent] # Event is sliding here
     end
-    sys_tag = game_map.system_tag(new_x, new_y)
-    return false unless passable_bridge_check?(x, y, d, new_x, new_y, z, game_map, sys_tag) &&
-                        passage_surf_check?(sys_tag)
+    top_sys_tag = game_map.system_tag(new_x, new_y)
+    bottom_sys_tag = @__bridge ? top_sys_tag : game_map.system_tag(new_x, new_y, skip_bridge: true)
+    return false unless passable_bridge_check?(x, y, d, new_x, new_y, z, game_map, top_sys_tag) &&
+                        passage_surf_check?(bottom_sys_tag)
 
     return true if skip_event
     return false unless event_passable_check?(new_x, new_y, z, game_map)

@@ -13,7 +13,7 @@ class Game_Map
   # @param y [Integer] y position of the tile
   # @return [Integer]
   # @author Nuri Yuri
-  def system_tag(x, y)
+  def system_tag(x, y, skip_bridge: false)
     return Yuki::MapLinker.system_tag(x, y) unless valid?(x, y)
 
     if @map_id != 0
@@ -23,6 +23,7 @@ class Game_Map
         return 0 unless tile_id
 
         tag_id = @system_tags[tile_id]
+        next if Game_Character::BRIDGE_TILES.include?(tag_id) && skip_bridge
         return tag_id if tag_id && tag_id > 0
       end
     end

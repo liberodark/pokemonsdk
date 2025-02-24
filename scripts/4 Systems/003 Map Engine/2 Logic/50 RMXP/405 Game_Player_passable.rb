@@ -57,7 +57,8 @@ class Game_Player
     if !@surfing && SurfTag.include?(sys_tag)
       if $game_switches[Yuki::Sw::NoSurfContact]
         event = front_tile_event
-        return false unless event&.through || event&.character_name&.empty?
+        return false if event && !event.through && !event.character_name.empty?
+
         $game_temp.common_event_id = Game_CommonEvent::SURF_ENTER
       end
       return false
@@ -66,6 +67,7 @@ class Game_Player
         # unless $game_switches[Yuki::Sw::NoSurfContact]
         event = front_tile_event
         return false if event && !event.through && !event.character_name.empty?
+
         change_shadow_disabled_state(false)
         @surfing = false
         $game_temp.common_event_id = Game_CommonEvent::SURF_LEAVE

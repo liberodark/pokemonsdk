@@ -13,7 +13,7 @@ class Game_Character
     xf = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
     yf = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
     $game_map.events.each_value do |event|
-      return event if event.x == xf and event.y == yf
+      return event if event.x == xf and event.y == yf && event.z == @z
     end
     return nil
   end
@@ -56,7 +56,7 @@ class Game_Character
     dy = (1 - d[2]) * (2 * d[1] - 1)
     if block_given?
       0.upto(nb_steps) do
-        (dist*2+1).times { |line| yield(x + (line - dist) * dy, y + (line - dist) * dx, d) }
+        (dist * 2 + 1).times { |line| yield(x + (line - dist) * dy, y + (line - dist) * dx, d) }
         x += dx
         y += dy
       end
@@ -74,6 +74,7 @@ class Game_Character
   # @author Nuri Yuri
   def front_name_check(name)
     return true if front_tile_event&.event&.name == name
+
     return false
   end
   alias front_name_detect front_name_check
@@ -81,9 +82,10 @@ class Game_Character
   # Return the id of the #front_tile_event
   # @return [Integer, 0] 0 if no front_tile_event
   # @author Nuri Yuri
-  def front_tile_id
+  def front_tile_event_id
     return front_tile_event&.event&.id.to_i
   end
+  alias front_tile_id front_tile_event_id
 
   # Return the SystemTag in the front of the Game_Character
   # @return [Integer] ID of the SystemTag
@@ -113,6 +115,7 @@ class Game_Character
   # @author Nuri Yuri
   def look_to(event_id)
     return unless (event = $game_map.events[event_id])
+
     delta_x = event.x - @x
     delta_y = event.y - @y
     if delta_x.abs <= delta_y.abs
@@ -143,6 +146,7 @@ class Game_Character
   # @author Nuri Yuri
   def move_speed
     return (@in_swamp == 1 ? 2 : 1) if @in_swamp
+
     move_speed = original_move_speed
     if move_speed > 1
       direction = @direction

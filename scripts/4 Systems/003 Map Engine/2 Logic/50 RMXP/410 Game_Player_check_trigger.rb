@@ -65,7 +65,8 @@ class Game_Player
   # @param d [Integer] the direction where to check
   def check_common_event_trigger_there(new_x, new_y, z, d)
     sys_tag = system_tag
-    front_sys_tag = $game_map.system_tag(new_x, new_y)
+    skip_bridge = !@__bridge
+    front_sys_tag = $game_map.system_tag(new_x, new_y, skip_bridge: skip_bridge)
     # Dive
     if terrain_tag == 6 && DIVE_TILE.include?(sys_tag)
       $game_temp.common_event_id = Game_CommonEvent::DIVE
