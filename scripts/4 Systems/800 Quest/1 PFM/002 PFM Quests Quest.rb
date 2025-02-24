@@ -135,6 +135,18 @@ module PFM
         return true
       end
 
+      class << self
+        # Get Pokémon from data
+        # @param data [Integer, Symbol, Hash, Studio::Group::Encounter] data of the Pokémon to give
+        # @param level [Integer] The level of the Pokémon (only used if the data is an Integer or a Symbol)
+        def pokemon_from_data(data, level)
+          return data.to_creature if data.is_a?(Studio::Group::Encounter)
+          return PFM::Pokemon.generate_from_hash(data) if data.is_a?(Hash)
+
+          return PFM::Pokemon.new(data, level)
+        end
+      end
+
       private
 
       # Test if the objective speak to is validated
@@ -337,9 +349,9 @@ module PFM
       end
 
       # Getting Pokemon from a quest
-      # @param data [Integer, Symbol, Hash] data of the Pokémon to give
+      # @param data [Integer, Symbol, Hash, Studio::Group::Encounter] data of the Pokémon to give
       def earning_pokemon(data)
-        pokemon = data.is_a?(Hash) ? PFM::Pokemon.generate_from_hash(data) : PFM::Pokemon.new(data, 5)
+        pokemon = Quest.pokemon_from_data(data, 5)
         return if data_get(:earnings, :pokemon, pokemon, false)
 
         PFM.game_state.add_pokemon(pokemon)
@@ -354,9 +366,9 @@ module PFM
       end
 
       # Getting egg from a quest
-      # @param data [Integer, Symbol, Hash] data of the egg to give
+      # @param data [Integer, Symbol, Hash, Studio::Group::Encounter] data of the egg to give
       def earning_egg(data)
-        pokemon = data.is_a?(Hash) ? PFM::Pokemon.generate_from_hash(data) : PFM::Pokemon.new(data, 1)
+        pokemon = Quest.pokemon_from_data(data, 1)
         pokemon.egg_init
         pokemon.memo_text = [28, 31]
         return if data_get(:earnings, :egg, pokemon, false)
