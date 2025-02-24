@@ -29,6 +29,12 @@ begin
       ScriptLoader.load_tool('StateMachineBuilder/StateMachineBuilder')
       argv = ARGV.reject { |arg| arg.start_with?('-') }
       argv.each { |machine_filename| StateMachineBuilder.run(machine_filename) } if argv[0]
+    elsif filename == 'auto_update'
+      ScriptLoader.load_tool('AutoUpdate/AutoUpdate')
+      AutoUpdate.update_maker_files
+    elsif filename == 'auto_update_refresh'
+      ScriptLoader.load_tool('AutoUpdate/AutoUpdate')
+      AutoUpdate.refresh_known_files
     else
       require filename
     end
