@@ -46,7 +46,7 @@ module Battle
           battlers = handler.logic.all_alive_battlers.reject { |battler| battler == @target }
           battlers.each do |battler|
             next if battler.effects.has?(:ability_suppressed) || battler.has_ability?(:neutralizing_gas)
-            next unless handler.logic.ability_change_handler.can_change_ability?(battler, :none)
+            next unless handler.logic.ability_change_handler.can_change_ability?(battler)
 
             battler.effects.add(Effects::AbilitySuppressed.new(@logic, battler))
           end
