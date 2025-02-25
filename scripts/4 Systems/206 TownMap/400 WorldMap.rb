@@ -315,20 +315,54 @@ module GamePlay
       @cursor_move_count = false if @cursor_move_count > CursorMoveDuration
     end
 
-    # Calculate the variables @map_display_ox and @map_display_oy
+    # Updates the display origin based on cursor position and map size
     def update_display_origin
-      max_x = VMapWidth / TileSize * TileSize  - TileSize
+      max_x = VMapWidth / TileSize * TileSize - TileSize
       max_y = VMapHeight / TileSize * TileSize - TileSize
-      if @cursor.x < @map_display_ox
-        @map_display_ox = @cursor.x
-      elsif @cursor.x - @map_display_ox >= max_x
-        @map_display_ox = @cursor.x - max_x
+
+      worldmap_larger_than_ui? ? adjust_for_large_worldmap(max_x, max_y) : adjust_for_small_worldmap(max_x, max_y)
+    end
+
+    # Checks if the worldmap is larger than the UI
+    # @return [Boolean] True if the worldmap is larger than the UI, false otherwise
+    def worldmap_larger_than_ui?
+      return @map_worldmap.width > VMapWidth || @map_worldmap.height > VMapHeight
+    end
+
+    # Adjusts the display origin when the worldmap is larger than the UI
+    # @param max_x [Integer] The maximum x offset
+    # @param max_y [Integer] The maximum y offset
+    def adjust_for_large_worldmap(max_x, max_y)
+      if cursor_before_origin?
+        @map_display_ox = VMapWidth / 2
+        @map_display_oy = VMapHeight / 2
+      elsif @cursor.x >= @map_display_ox && @cursor.y >= @map_display_oy
+        @map_display_ox = VMapWidth / 2 + @cursor.x - max_x
+        @map_display_oy = VMapHeight / 2 + @cursor.y - max_y
       end
-      if @cursor.y < @map_display_oy
+
+      @map_display_ox = [[@map_display_ox, 0].max, @map_worldmap.width - VMapWidth].min
+      @map_display_oy = [[@map_display_oy, 0].max, @map_worldmap.height - VMapHeight].min
+    end
+
+    # Adjusts the display origin when the worldmap is smaller than the UI
+    # @param max_x [Integer] The maximum x offset
+    # @param max_y [Integer] The maximum y offset
+    # @return [void]
+    def adjust_for_small_worldmap(max_x, max_y)
+      if cursor_before_origin?
+        @map_display_ox = @cursor.x
         @map_display_oy = @cursor.y
-      elsif @cursor.y - @map_display_oy >= max_y
+      elsif @cursor.x - @map_display_ox >= max_x && @cursor.y - @map_display_oy >= max_y
+        @map_display_ox = @cursor.x - max_x
         @map_display_oy = @cursor.y - max_y
       end
+    end
+
+    # Checks if the cursor is before the display origin
+    # @return [Boolean] True if the cursor is before the display origin.
+    def cursor_before_origin?
+      return @cursor.x < @map_display_ox && @cursor.y < @map_display_oy
     end
 
     # Update the map position
