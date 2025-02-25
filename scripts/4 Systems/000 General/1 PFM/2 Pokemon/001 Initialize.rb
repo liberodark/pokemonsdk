@@ -60,7 +60,7 @@ module PFM
     # @param egg_how_obtained [Symbol] :reveived => When you received the egg (ex: Daycare), :found => When you found the egg (ex: On the map)
     def egg_init(egg_how_obtained = :received)
       @egg_in = $env.master_zone
-      @egg_at = Time.new.to_i
+      @egg_at = egg_at.nil? ? Time.new.to_i : egg_at.to_i
       @step_remaining = data.hatch_steps
       @item_holding = 0
       $quests.get_egg
