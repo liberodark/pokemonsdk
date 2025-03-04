@@ -36,7 +36,7 @@ all_animations << deformation_animation
 
 all_particles_animation = ya.wait(0.6)
 20.times do |i|
-  sprite_symbol = :"sprite_#{i}"
+  sprite_symbol = "sprite_#{i}".to_sym
   particle_animation = ya.create_sprite(:viewport, sprite_symbol, Sprite, nil, [:load, 'circle_particle', :animation],
                                         [:opacity=, 0], [:set_origin, 8, 8])
   particle_anim_resolved = ya.resolved

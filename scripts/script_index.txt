@@ -1290,6 +1290,10 @@ pokemonsdk/scripts/5 Battle/20 MoveAnimation/002 MoveAnimation3D.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/003 Util_CameraMove3D.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/004 Util_SetupAnimation.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/050 PokemonSpriteAnimation.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/060 MoveParticleAnimation.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/060 ParticleOnSpriteAnimation.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/060 ParticleZoomAnimation.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/060 ScalarFromSprite.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 AcidArmor.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 Acrobatics.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 AerialAce.rb
@@ -1300,6 +1304,10 @@ pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 Assurance.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 Astonish.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 Avalanche.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 KarateChop.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 LeechSeed.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 Poison Powder.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 Sleep Powder.rb
+pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 Stun Spore.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 Tail_Whip.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 Thunder_wave.rb
 pokemonsdk/scripts/5 Battle/20 MoveAnimation/100 VineWhip.rb

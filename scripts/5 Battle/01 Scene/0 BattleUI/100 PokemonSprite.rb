@@ -69,6 +69,9 @@ module BattleUI
     # Stop the animation linked to the status tone
     # @return [Boolean]
     attr_accessor :stop_status_tone
+    # Stop the gif animation
+    # @return [Boolean]
+    attr_accessor :stop_gif_animation
 
     # Create a new PokemonSprite
     # @param viewport [Viewport]
@@ -81,12 +84,13 @@ module BattleUI
       @position = 0
       @scene = scene
       @stop_status_tone = false
+      @stop_gif_animation = false
     end
 
     # Update the sprite
     def update
       @animation_handler.update
-      @gif&.update(bitmap) unless pokemon&.dead? || pokemon&.status == 5
+      @gif&.update(bitmap) unless pokemon&.dead? || pokemon&.status == 5 || @stop_gif_animation
       @animation_tone&.update unless @stop_status_tone
       @shiny_animation&.update
     end
@@ -311,6 +315,23 @@ module BattleUI
     def remove_tone_animation
       @animation_tone = nil
       self.shader.set_float_uniform('color', [0, 0, 0, 0])
+    end
+
+    # Set a tone on the PokemonSprite
+    # @param red [Float]
+    # @param green [Float]
+    # @param blue [Float]
+    # @param alpha [Float]
+    def set_tone_to(r, g, b, alpha)
+      @stop_status_tone = true
+      shader.set_float_uniform('color', [red, green, blue, alpha])
+    end
+
+    # Reset the tone inflicted by the animation
+    def reset_tone_status
+      @stop_status_tone = false
+      shader.set_float_uniform('color', [0, 0, 0, 0])
+      set_tone_status(pokemon.status, true)
     end
 
     # Tell if the Pokemon represented by this sprite is under the effect of Substitute

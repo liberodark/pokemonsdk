@@ -19,7 +19,7 @@ module BattleUI
     # Update the sprite
     def update
       @animation_handler.update
-      @gif&.update(bitmap) unless pokemon&.dead? || pokemon&.status == 5
+      @gif&.update(bitmap) unless pokemon&.dead? || pokemon&.status == 5 || @stop_gif_animation
       @animation_tone&.update unless @stop_status_tone
       @shiny_animation&.update
     end

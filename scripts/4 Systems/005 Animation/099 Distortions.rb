@@ -25,7 +25,21 @@ module Yuki
       SQUARE010_DISTORTION: proc { |x| 1 - (x * 2 - 1)**2 },
       SIN: proc { |x| Math.sin(2 * Math::PI * x) },
       # Falling distortion with little vibrations at the end
-      FALLING_SMOOTH: proc { |x| 5 * r(x) - 6 * r(x - 0.2) + 1.25 * r(x - 0.4) - 0.25 * r(x - 0.6) }
+      FALLING_SMOOTH: proc { |x| 5 * r(x) - 6 * r(x - 0.2) + 1.25 * r(x - 0.4) - 0.25 * r(x - 0.6) },
+      # Oscillating distortion following a sin wave pattern 4 times, but always stay above 0
+      POSITIVE_OSCILLATING_4: proc { |x| (Math.sin(8 * Math::PI * x) + 1) / 2 },
+      # Oscillating distortion following a sin wave pattern 16 times, but always stay above 0
+      POSITIVE_OSCILLATING_16: proc { |x| (Math.sin(32 * Math::PI * x) + 1) / 2 },
+      # Distortion powder particle 1, start to 1.5 go to 2.5 then go to -1.5
+      POWDER_1: proc { |x| 1.5 + 5 * r(x) - 10 * r(x - 0.2) },
+      # Distortion powder particle 2, start to 1.5 go to -2.5 then go to -1.5
+      POWDER_2: proc { |x| 1.5 - 5 * r(x) + 10 * r(x - 0.8) },
+      # Distortion powder particle 3, start to -0.5 go to 2.5 then go to 0.5
+      POWDER_3: proc { |x| -0.5 + 5 * r(x) - 10 * r(x - 0.6) },
+      # Distortion powder particle 4, start to -0.5 go to -2.5 then go to 0.5
+      POWDER_4: proc { |x| -0.5 - 5 * r(x) + 10 * r(x - 0.4) },
+      # Distortion powder particle 5, start to -2.5 go to 2.5
+      POWDER_5: proc { |x| -2.5 + 5 * x }
     }
   end
 end
