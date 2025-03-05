@@ -322,7 +322,7 @@ module BattleUI
     # @param green [Float]
     # @param blue [Float]
     # @param alpha [Float]
-    def set_tone_to(r, g, b, alpha)
+    def set_tone_to(red, green, blue, alpha)
       @stop_status_tone = true
       shader.set_float_uniform('color', [red, green, blue, alpha])
     end
