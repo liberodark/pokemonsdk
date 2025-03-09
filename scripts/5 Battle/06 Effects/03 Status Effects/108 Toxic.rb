@@ -8,12 +8,12 @@ module Battle
         # @param status_id [Integer] ID of the status
         def initialize(logic, target, status_id)
           super
-          @toxic_counter = 1
+          reset
         end
 
         # Reset the toxic counter
         def reset
-          @toxic_counter = 1
+          @toxic_counter = 0
         end
 
         # Prevent toxic from being applied twice
@@ -24,7 +24,7 @@ module Battle
         # @param skill [Battle::Move, nil] Potential move used
         # @return [:prevent, nil] :prevent if the status cannot be applied
         def on_status_prevention(handler, status, target, launcher, skill)
-          # Ignore if status is not toxic or the taget is not the target of this effect
+          # Ignore if status is not toxic or the target is not the target of this effect
           return if target != self.target
           return if status != :poison && status != :toxic
 
@@ -41,12 +41,15 @@ module Battle
         def on_end_turn_event(logic, scene, battlers)
           return unless battlers.include?(target)
           return if target.dead?
+
+          # Increase the toxic counter.
+          # Neither Poison Heal nor Magic Guard stops the counter from increasing.
+          @toxic_counter += 1
+
           return if target.has_ability?(:magic_guard)
 
           # If target of the effect has poison heal, we attempt to heal
           if target.has_ability?(:poison_heal)
-            # Triggering Poison Heal still increment the counter
-            @toxic_counter += 1
             scene.visual.show_ability(target, true)
             logic.damage_handler.heal(target, poison_effect)
             scene.visual.hide_ability(target)
@@ -57,9 +60,6 @@ module Battle
           scene.display_message_and_wait(parse_text_with_pokemon(19, 243, target))
           scene.visual.show_status_animation(target, :poison)
           logic.damage_handler.damage_change(toxic_effect, target)
-
-          # Increase the toxic counter
-          @toxic_counter += 1
 
           # Ensure the procedure does not get blocked by this effect
           nil
