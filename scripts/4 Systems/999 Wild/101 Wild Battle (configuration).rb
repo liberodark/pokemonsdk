@@ -131,7 +131,7 @@ module PFM
       # This reducer prevents to select the exact same Creature twice
       reduced_rareness = real_rareness.reduce([]) { |acc, curr| acc << (curr.last + (acc.last || 0)) }
       max_rand = reduced_rareness.last
-      return [] if max_rand.zero?
+      return [] if max_rand.to_i.zero?
 
       is_double_battle = group.is_double_battle || $game_variables[Yuki::Var::Allied_Trainer_ID] > 0
       return (is_double_battle ? 2 : 1).times.reduce([]) do |acc, _|
