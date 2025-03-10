@@ -20,7 +20,7 @@ module GamePlay
       super(false)
       @force_close = nil
       @shop = PFM.game_state.shop
-      @show_background = :show_background
+      @show_background = show_background
       @symbol_or_list = symbol_or_list
       @prices = prices
       @parameters = parameters
