@@ -42,12 +42,12 @@ module Battle
       @pokemon_to_catch = target_pokemon
       origin = battler_sprite(0, 0)
       target = battler_sprite(target_pokemon.bank, target_pokemon.position)
-      sprite = UI::ThrowingBallSprite3D.new(origin.viewport, ball)
-      burst_catch = UI::BallCatch.new(origin.viewport, ball)
-      burst2 = UI::BallBurst.new(origin.viewport, ball)
-      animation = create_throw_ball_animation(sprite, burst_catch, target, origin)
-      create_move_ball_animation(animation, sprite, nb_bounce)
-      caught ? create_caught_animation(animation, sprite, target) : create_break_animation(animation, burst2, sprite, target)
+      @sprite = UI::ThrowingBallSprite3D.new(origin.viewport, ball)
+      @burst_catch = UI::BallCatch.new(origin.viewport, ball)
+      @burst2 = UI::BallBurst.new(origin.viewport, ball)
+      animation = create_throw_ball_animation(@sprite, @burst_catch, target, origin)
+      create_move_ball_animation(animation, @sprite, nb_bounce)
+      caught ? create_caught_animation(animation, @sprite, target) : create_break_animation(animation, @burst2, @sprite, target)
       animation.start
       @animations << animation
       wait_for_animation

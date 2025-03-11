@@ -192,10 +192,10 @@ module Battle
     def show_catch_animation(target_pokemon, ball, nb_bounce, caught)
       origin = battler_sprite(0, 0)
       target = battler_sprite(target_pokemon.bank, target_pokemon.position)
-      sprite = UI::ThrowingBallSprite.new(origin.viewport, ball)
-      animation = create_throw_ball_animation(sprite, target, origin)
-      create_move_ball_animation(animation, sprite, nb_bounce)
-      caught ? create_caught_animation(animation, sprite) : create_break_animation(animation, sprite, target)
+      @sprite = UI::ThrowingBallSprite.new(origin.viewport, ball)
+      animation = create_throw_ball_animation(@sprite, target, origin)
+      create_move_ball_animation(animation, @sprite, nb_bounce)
+      caught ? create_caught_animation(animation, @sprite) : create_break_animation(animation, @sprite, target)
       animation.start
       @animations << animation
       wait_for_animation
