@@ -10,7 +10,8 @@ module Battle
           return unless with == @target
 
           handler.scene.visual.show_ability(with)
-          handler.scene.display_message_and_wait(parse_text_with_pokemon(19, 442, with))
+          message = parse_text_with_pokemon(file_id, text_id, with)
+          handler.scene.display_message_and_wait(message)
         end
 
         # Function called when we try to use a move as the user (returns :prevent if user fails)
@@ -23,8 +24,37 @@ module Battle
 
           user.ability_used = false
         end
+
+        private
+
+        # ID of the text file for the on-switch message.
+        # @return [Integer]
+        def file_id
+          return 19
+        end
+
+        # ID of the text in the file for the on-switch message.
+        # @return [Integer]
+        def text_id
+          return 442
+        end
       end
+
+      class Teravolt < MoldBreaker
+        def text_id
+          return 502
+        end
+      end
+
+      class Turboblaze < MoldBreaker
+        def text_id
+          return 505
+        end
+      end
+
       register(:mold_breaker, MoldBreaker)
+      register(:teravolt, Teravolt)
+      register(:turboblaze, Turboblaze)
     end
   end
 end
