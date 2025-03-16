@@ -385,18 +385,19 @@ module PFM
 
       # Returns the custom objective status for the given index.
       #
-      # @param _text [Array<Number, Number>] (unused) The FileId and TextId of the custom objective.
       # @param index [Integer] The index of the custom objective.
+      # @param text_id [Integer] (unused) index of the text
       # @return [Boolean] The status of the custom objective.
-      def objective_custom(_text, index)
-        return data_get(:custom_objv_done, index, false)
+      def objective_custom(index, text_id)
+        data_get(:custom_objectives, index, false)
       end
 
       # Custom objective text
-      # @param text [Array<Number, Number>] The FileId and TextId of the custom objective.
+      # @param index [Integer] (unused) The index of the custom objective.
+      # @param text_id [Integer] index of the text
       # @return [String] The text of the custom objective.
-      def text_custom(text, _index)
-        return ext_text(*text)
+      def text_custom(index, text_id)
+        return ext_text(100070, text_id)
       end
     end
   end

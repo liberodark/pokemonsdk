@@ -252,13 +252,14 @@ module PFM
     # @return [Boolean] True if the objective was completed successfully, false otherwise.
     def complete_custom_objective(quest_id, objective_nb)
       return false unless (quest = active_quest(quest_id))
-      return false unless quest.custom_objective?(:objective_custom, objective_nb)
-      return false unless !quest.data_get(:custom_objv_done, objective_nb, false)
+      return false unless quest.objective?(:objective_custom, objective_nb)
+      return false if quest.data_get(:custom_objectives, objective_nb, false)
 
-      quest.data_set(:custom_objv_done, objective_nb, true)
+      quest.data_set(:custom_objectives, objective_nb, true)
       check_quest(quest_id)
       return true
     end
+
 
     # Checks if there are any quests that have started or finished.
     # If there are, it displays the quest information and updates the quest status.
