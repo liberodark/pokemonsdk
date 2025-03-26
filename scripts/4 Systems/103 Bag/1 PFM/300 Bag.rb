@@ -95,7 +95,7 @@ module PFM
 
       @items[db_symbol] += nb
       add_item_to_order(db_symbol)
-      game_state.quests.add_item(db_symbol) unless game_state.bag != self
+      game_state.quests.add_item(db_symbol, nb) unless game_state.bag != self
     end
     alias store_item add_item
 
