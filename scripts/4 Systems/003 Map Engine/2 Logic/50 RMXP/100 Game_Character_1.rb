@@ -35,7 +35,7 @@ class Game_Character
   attr_reader :direction_fix
   # If the character has reflection
   # @return [Boolean]
-  attr_reader :reflection_enabled
+  attr_accessor :reflection_enabled
 
   # Default initializer
   def initialize
@@ -95,7 +95,7 @@ class Game_Character
 
   # Adjust the character position
   def straighten
-    if @walk_anime or @step_anime
+    if @walk_anime || @step_anime
       @pattern = 0
       @pattern_state = false
     end
@@ -138,52 +138,55 @@ class Game_Character
     moveto_system_tag_manage
   end
 
-  # Change the reflection of a Game_Character
-  def reflection_enabled=(bool)
-    @reflection_enabled = bool
-  end
-
   private
 
   # Array used to detect if a character is on a bridge tile
   BRIDGE_TILES = [BridgeRL, BridgeUD]
   SLOPES_TILES = [SlopesL, SlopesR]
   # Manage the system_tag part of the moveto method
+  # @param skip_bridges [Boolean] if the method should skip the bridge tiles
   def moveto_system_tag_manage(skip_bridges = false)
-    # return @z = 1 if !@z && self == $game_player && $scene.class != Scene_Map
     sys_tag = system_tag
     unless skip_bridges
-      if BRIDGE_TILES.include?(sys_tag)
-        @z = $game_map.priorities[$game_map.get_tile(@x, @y)].to_i + 1 unless self.is_a?(Game_Event) && self.event&.name&.include?('z=')
-      elsif ZTag.include?(sys_tag)
+      handle_bridge_related_z
+
+      if ZTag.include?(sys_tag)
         @z = ZTag.index(sys_tag)
       else
-        @z = 1
+        @z ||= 1
       end
     end
-    # Handle slope moveto
-    if SLOPES_TILES.include?(sys_tag)
-      @slope_length = -1 # the center tile is counter twice
-      furthest_x = [@x, @x]
-      [0, 2].each do |step_x| #-1 / +1
-        nx = @x
-        ny = @y
-        while $game_map.system_tag(nx, ny) == sys_tag
-          furthest_x[step_x / 2] = nx
-          nx += (step_x - 1) # -1 / +1
-          @slope_length += 1
-        end
-      end
-      # Prepare the data
-      if sys_tag == SlopesR
-        @slope_origin_x = furthest_x[0] * 128
-      else
-        @slope_origin_x = furthest_x[1] * 128
-      end
-      @slope_length *= -128
-      update_slope_offset_y
-    end
+    handle_slope_moves(sys_tag)
     particle_push
+  end
+
+  # Manage bridge-related z position
+  def handle_bridge_related_z
+    return unless BRIDGE_TILES.include?(system_tag)
+    return if is_a?(Game_Event) && event&.name&.include?('z=')
+
+    @z = $game_map.priorities[$game_map.get_tile(@x, @y)].to_i + 1
+  end
+
+  # Manage slope-related movement and offsets
+  # @param system_tag [Integer] the system tag of the tile
+  def handle_slope_moves(system_tag)
+    return unless SLOPES_TILES.include?(system_tag)
+
+    @slope_length -= 1
+    furthest_x = [@x, @x]
+    [0, 2].each do |step_x|
+      nx = @x
+      ny = @y
+      while $game_map.system_tag(nx, ny) == system_tag
+        furthest_x[step_x / 2] = nx
+        nx += (step_x - 1)
+        @slope_length += 1
+      end
+    end
+    @slope_origin_x = furthest_x[system_tag == SlopesR ? 0 : 1] * 128
+    @slope_length *= -128
+    update_slope_offset_y
   end
 
   public
@@ -229,18 +232,21 @@ class Game_Character
   # @return [Integer]
   def screen_z(_height = 0)
     return 999 if @always_on_top
+
     z = (@real_y - $game_map.display_y + 3) / 4 + 32 * @z
     return z + $game_map.priorities[@tile_id].to_i * 32 if @tile_id > 0
+
     return z + 31
-    # return z + ((height > 64) ? 31 : 0)
   end
 
   # Define the function check_event_trigger_touch to prevent bugs
-  def check_event_trigger_touch(*args); end
+  def check_event_trigger_touch(*args)
+    return false
+  end
 
-  # Check if the character is activate. Useful to make difference between event without active page and others.
+  # Check if the character is activated. Useful to make difference between event without active page and others.
   # @return [Boolean]
   def activated?
-    true
+    return true
   end
 end
