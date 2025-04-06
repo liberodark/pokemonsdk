@@ -1,41 +1,46 @@
 # Pokémon SDK
 
-`PSDK` is a Starter Kit allowing to create Pokémon Games using various tools like RPG Maker XP and custom data base editors.
+`PSDK` is a Starter Kit allowing to create Pokémon Games using various tools like Tiled Map Editor, RPG Maker XP & Pokémon Studio as a data base editor.
 
 [![Discord](https://img.shields.io/discord/143824995867557888.svg?logo=discord&colorB=728ADA&label=Discord)](https://discord.gg/0noB0gBDd91B8pMk)
 [![Twitter PSDK](https://img.shields.io/twitter/follow/PokemonSDK?label=Twitter%20PSDK&logoColor=%23333333&style=social)](https://twitter.com/PokemonSDK)
 [![Twitter PW](https://img.shields.io/twitter/follow/PokemonWorkshop?label=Twitter%20PW&logoColor=%23333333&style=social)](https://twitter.com/PokemonWorkshop)
 
-
-### Generic Links
+## Generic Links
 
 [Downloads](https://download.psdk.pokemonworkshop.com/)
-| [Event Making Tutorial](https://psdk.pokemonworkshop.fr/wiki/en/event_making/index.html)
-| [Edit Database](https://psdk.pokemonworkshop.fr/wiki/en/ruby_host/index.html)
-| [Wiki](https://psdk.pokemonworkshop.com/en/)
+| [Event Making Tutorial](https://pokemonworkshop.com/en/help/event-making-in-rmxp/)
+| [Help](https://pokemonworkshop.com/en/help)
 | [LiteRGSS Documentation](https://psdk.pokemonworkshop.fr/yard/LiteRGSS.html)
 
-### Database Indexes
+## How to Install
 
-[Pokémon](https://psdk.pokemonworkshop.com/db/db_pokemon.html)
-| [Abilities](https://psdk.pokemonworkshop.com/db/db_ability.html)
-| [Items](https://psdk.pokemonworkshop.com/db/db_item.html)
-| [Moves](https://psdk.pokemonworkshop.com/db/db_skill.html)
+When you create a new project using [Pokémon Studio](https://github.com/PokemonWorkshop/PokemonStudio/releases), PSDK is automatically installed on your PC in the following folder:
+`appdata\local\programs\pokemon-studio\resources\psdk-binaries\pokemonsdk`.
+
+The application offers a dedicated page to keep it up to date.
+
+### Use your own PSDK codebase
+
+> ⚠️ Recommended for advanced users only.
+
+If you prefer to use your own PSDK codebase to manage versioning more precisely, you can create a submodule at the root of your project folder.
+
+If PSDK detects a `pokemonsdk` folder at the root of your project, it will load from that directory instead.
 
 ## Specifications
 
-Contrary to `PSP` or `Essentials`, `PSDK` doesn't use the RGSS. We wrote a graphic engine called `LiteRGSS` using `SFML`, which allows a better mastering of the Graphic part of PSDK like adding Shaders, turning some graphic process to C++ side etc...
+Contrary to `PSP` or `Essentials`, `PSDK` doesn't use the RGSS. We wrote a graphic engine called `LiteRGSS` using `SFML`, which allows a better mastering of the Graphic part of PSDK like adding Shaders, turning some graphic process to C++ side etc.
 
-* Game Engine : `LiteRGSS2` (under `Ruby 3.0.1`)
-* Default screen size : `320x240` (upscaled to `640x480`)
-* Sound : [FMOD](http://www.fmod.org/) (Support: Midi, WMA, MP3, OGG, MOD, WAVE)
-* Map Editor
-    * `RMXP`
+* Game Engine: `LiteRGSS2` (under `Ruby 3.0.1`)
+* Default screen size: `320x240` (upscaled to `640x480`)
+* Sound: [FMOD](http://www.fmod.org/) (Support: Midi, WMA, MP3, OGG, MOD, WAVE)
+* Map Editor:
     * [Tiled](https://www.mapeditor.org/)
-* Event Editor
-    * `RMXP`
-* Database Editor
-    * `RubyHost`
+* Event Editor:
+    * `RPG Maker XP`
+* Database Editor:
+    * [Pokémon Studio](https://github.com/PokemonWorkshop/PokemonStudio/releases)
 * Dependencies : `SFML`, `LodePNG`, `libnsgif`, `FMOD`, `OpenGL`, `sfeMovie`, `ffmpeg`
 
 ## PSDK Features
